@@ -385,8 +385,8 @@ test("T02-S-4 지침·문서의 opal 명령·스킬 참조는 파일:줄로 보�
   const before = Object.fromEntries(Object.keys(files).map((f) => [f, readFileSync(join(root, f), "utf8")]));
   const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
   assert.equal(r.status, 0, r.stderr);
-  assert.match(r.stdout, /AGENTS\.md:2:/); assert.match(r.stdout, /docs\/guide\.md:1:/);
-  assert.doesNotMatch(r.stdout, /docs\/guide\.md:2:/);
+  assert.match(r.stdout, /AGENTS\.md:2(?!\d)/); assert.match(r.stdout, /docs\/guide\.md:1(?!\d)/);
+  assert.doesNotMatch(r.stdout, /docs\/guide\.md:2(?!\d)/);
   for (const [f, text] of Object.entries(before)) assert.equal(readFileSync(join(root, f), "utf8"), text);
 });
 
@@ -457,7 +457,7 @@ test("T02-S-4 같은 줄의 .opal/ 경로와 opal 명령은 명령만 보고하�
   try { symlinkSync(join(root, "AGENTS.md"), join(root, "docs", "link.md")); } catch { linked = false; }
   const r = runPace(["adopt", "opal"], { home, cwd: root });
   assert.equal(r.status, 0, r.stderr);
-  assert.match(r.stdout, /AGENTS\.md:1:/); assert.doesNotMatch(r.stdout, /docs\/a\.md:1:/);
+  assert.match(r.stdout, /AGENTS\.md:1(?!\d)/); assert.doesNotMatch(r.stdout, /docs\/a\.md:1(?!\d)/);
   assert.match(r.stdout, /검색하지 못한 파일/); assert.match(r.stdout, /docs\/big\.md \(5MB 초과\)/);
   if (linked) assert.match(r.stdout, /docs\/link\.md \(링크\)/); else t.diagnostic("링크 생성 불가 — 링크 사례 생략");
 });
@@ -639,8 +639,8 @@ test("T02-S-4 docs의 확장자와 무관하게 검색하고, 바이너리는 �
   writeFileSync(join(root, "docs", "img.png"), Buffer.from([137, 80, 0, 0, 1]));
   const r = runPace(["adopt", "opal"], { home, cwd: root });
   assert.equal(r.status, 0, r.stderr);
-  assert.match(r.stdout, /docs\/guide\.html:1:/);
-  for (const n of [1, 30, 31, 45]) assert.match(r.stdout, new RegExp("docs/many\\.md:" + n + ":"));
+  assert.match(r.stdout, /docs\/guide\.html:1(?!\d)/);
+  for (const n of [1, 30, 31, 45]) assert.match(r.stdout, new RegExp("docs/many\\.md:" + n + "(?!\\d)"));
   assert.match(r.stdout, /docs\/img\.png \(바이너리\)/);
 });
 
@@ -683,7 +683,7 @@ test("T02-S-4 docs가 링크면 따라가지 않고 알린다", (t) => {
   try { symlinkSync(outside, join(root, "docs"), "junction"); } catch { t.skip("링크 생성 권한 없음"); return; }
   const r = runPace(["adopt", "opal"], { home, cwd: root });
   assert.equal(r.status, 0, r.stderr);
-  assert.doesNotMatch(r.stdout, /x\.md:1:/); assert.match(r.stdout, /docs \(링크\)/);
+  assert.doesNotMatch(r.stdout, /x\.md:1(?!\d)/); assert.match(r.stdout, /docs \(링크\)/);
 });
 
 // ── T02 구현 후 검토 3차(post-review-codex-3.md) 반영 ─────────────────────────
@@ -714,4 +714,23 @@ test("T02-S-2 이미 PACE 훅이면 그대로 두고 알린다", () => {
   const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
   assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /이미 PACE 커밋 게이트/);
   assert.equal(readFileSync(hookFile(root), "utf8"), "#!/bin/sh\n# PACE commit gate v1\nexit 0\n");
+});
+
+
+test("보안-1 참조 보고는 본문을 출력하지 않고 위치만 알린다(비밀 탐지가 놓치는 표현 포함)", () => {
+  const secretLike = "opal login --password example-secret-value";
+  const { root, home } = fixture({ "AGENTS.md": secretLike + "\n" });
+  const r = runPace(["adopt", "opal"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /AGENTS\.md:1(?!\d|:)/);
+  assert.doesNotMatch(r.stdout, /example-secret-value|--password/);
+});
+
+test("보안-3 AGENT.md가 너무 크면 읽지 않고 멈춘다", () => {
+  const { root, home } = fixture();
+  writeFileSync(join(root, ".opal", "AGENT.md"), OPAL_AGENT + "x".repeat(70 * 1024));
+  git(root, "add", "-A"); git(root, "commit", "-qm", "big");
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 1, r.stdout); assert.match(r.stdout, /너무 크다/);
+  assert.equal(existsSync(join(root, ".pace")), false);
 });

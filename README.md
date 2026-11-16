@@ -157,6 +157,8 @@ OPAL 이름은 이렇게 바꾼다.
 | 같은 `workspace_id`가 다른 위치에 등록됨 | 그 위치를 더 쓰지 않는다면(저장소를 옮긴 경우) 충돌한 ID와 위치는 멈춤 메시지에 나온다(`pace workspace list`는 활성 등록만 보이므로 비활성 항목은 등록부 폴더 `$PACE_HOME/projects/`(기본 `~/.pace/projects/`)의 `<ID>.json`을 직접 열어 확인한다). 등록부 파일을 지운 뒤 다시 실행한다. 두 저장소를 모두 쓴다면(복제한 경우) 이 저장소 `.opal/AGENT.md`의 `workspace_id`를 새 UUID(v4)로 바꿔 커밋한 뒤 실행한다 |
 | 같은 경로가 다른 `workspace_id`로 등록됨 | `$PACE_HOME/projects/`의 `<ID>.json`을 열어 확인하고 맞지 않는 등록부 파일(`$PACE_HOME/projects/<ID>.json`)을 정리한 뒤 다시 실행한다 |
 
+`pace adopt opal`은 실행하는 동안 같은 저장소를 다른 프로세스가 바꾸지 않는다는 조건에서 안전하다(검사 뒤 경로를 링크로 바꾸는 식의 동시 변경은 막지 못한다). 저장소 안 경로만 다루고 링크는 거부한다.
+
 이관이 끝나면 `pace boot --host plain`으로 프로젝트 역할·메모리가 나오는지, `pace workspace list`로 등록됐는지 확인한다.
 
 ## 개발

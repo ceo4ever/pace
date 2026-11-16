@@ -8,7 +8,6 @@ import { AGENT_BUDGET, agentKind, validateAgentDefinition } from "./agent-defini
 import { listCandidates, registerWorkspace } from "./workspace-registry.ts";
 import { COMMIT_HOOK, COMMIT_HOOK_MARKER, commitHookPath } from "./harness.ts";
 import { SHARED_MARKER, renderDashboardEntry } from "./dashboard-layout.ts";
-import { hasSecret } from "./secrets.ts";
 
 /** OPAL(v2) 프로젝트 정의(`.opal/`)를 PACE(`.pace/`)로 가져오는 계획·적용. 홈 프로필·훅·대시보드는 다루지 않는다. */
 
@@ -110,6 +109,8 @@ export function planAdoptOpal(rootInput: string, home: string): AdoptPlan {
 
   const agentPath = join(opal, "AGENT.md");
   let text: string;
+  const agentInfo = lstatSync(agentPath, { throwIfNoEntry: false });
+  if (agentInfo === undefined || !agentInfo.isFile() || agentInfo.isSymbolicLink() || agentInfo.size > 64 * 1024) return stop(".opal/AGENT.md가 일반 파일이 아니거나 너무 크다(64KB 초과)");
   try { text = readFileSync(agentPath, "utf8"); } catch { return stop(".opal/AGENT.md를 읽을 수 없다"); }
   const versions = text.match(/^[ \t]*opal_agent_version[ \t]*:/gm) ?? [];
   if (versions.length !== 1 || getString(parseFrontmatter(text).data, "opal_agent_version") !== "2") {
@@ -124,9 +125,13 @@ export function planAdoptOpal(rootInput: string, home: string): AdoptPlan {
   const dirty = git(real, ["status", "--porcelain", "--untracked-files=all", "--", ".opal"]);
   if (!dirty.ok) return stop("git 상태를 확인할 수 없다");
   if (dirty.out) return stop(`.opal에 커밋 안 한 변경이 있다 — 커밋하거나 되돌린 뒤 다시 실행한다:\n${dirty.out}`);
-  const hidden = git(real, ["ls-files", "-v", "--", ".opal"]).out.split("\n").filter((l) => /^[a-zS] /.test(l));
+  const flagged = git(real, ["ls-files", "-v", "--", ".opal"]);
+  if (!flagged.ok) return stop("git ls-files를 실행하지 못해 .opal의 상태를 확인할 수 없다");
+  const hidden = flagged.out.split("\n").filter((l) => /^[a-zS] /.test(l));
   if (hidden.length) return stop(`.opal 안에 git이 변경을 숨기는 파일(assume-unchanged·skip-worktree)이 있어 미커밋 변경을 확인할 수 없다 — 플래그를 풀고 다시 실행한다:\n${hidden.join("\n")}`);
-  if (git(real, ["ls-files", "--", ".opal"]).out === "") return stop(".opal 안에 git이 추적하는 파일이 없다(.gitignore 제외?) — git mv로 이력을 옮길 수 없다");
+  const tracked = git(real, ["ls-files", "--", ".opal"]);
+  if (!tracked.ok) return stop("git ls-files를 실행하지 못해 .opal의 상태를 확인할 수 없다");
+  if (tracked.out === "") return stop(".opal 안에 git이 추적하는 파일이 없다(.gitignore 제외?) — git mv로 이력을 옮길 수 없다");
   if (git(real, ["check-ignore", "-q", ".pace/AGENT.md"]).ok) warnings.push(".pace/AGENT.md가 .gitignore에 걸린다 — `.opal/` 제외를 `.pace/`로 바꾸지 말고 .pace/*·!.pace/AGENT.md 예외로 정리한다");
 
   const ignored = git(real, ["ls-files", "--others", "--ignored", "--exclude-standard", "--", ".opal"]).out;
@@ -279,8 +284,8 @@ function findOpalReferences(root: string): { found: string[]; skipped: string[] 
     const text = buffer.toString("utf8");
     text.split(/\r?\n/).forEach((line, index) => {
       if (COMMAND_REF.test(line)) {
-        const snippet = hasSecret(line) ? "(비밀로 보이는 값이 있어 생략)" : line.trim().slice(0, 100);
-        found.push(file + ":" + (index + 1) + ": " + snippet);
+        // 본문은 출력하지 않는다 — 비밀 탐지가 모든 표현을 잡지 못하므로 위치(파일:줄)만 알린다
+        found.push(file + ":" + (index + 1));
       }
     });
   }
@@ -379,6 +384,8 @@ export function applyAdoptOpal(rootInput: string, home: string, expected: AdoptP
     }
     if (plan.dashboard) {
       const entryPath = join(root, "backlogs", "README.html");
+      // 쓰기 직전에 경로 구성 요소가 링크로 바뀌지 않았는지 다시 확인한다(동시에 같은 저장소를 바꾸는 프로세스는 지원 조건 밖)
+      if (!noLinkInPath(root, "backlogs/README.html")) throw new Error("backlogs 경로가 링크로 바뀌어 중단한다");
       const entryBytes = readFileSync(entryPath);
       const entryMode = lstatSync(entryPath).mode & 0o777;
       undo.push(() => { writeFileAtomic(entryPath, entryBytes.toString("utf8")); chmodSync(entryPath, entryMode); });
