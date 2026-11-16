@@ -168,7 +168,7 @@ export function computeAgent(d,here,sourceText){
     if(!Array.isArray(v)||!v.length||v.some(x=>!nonEmpty(x)||(pathLike&&!x.startsWith('/'))))err(`${name}는 비어 있지 않은 문자열 배열이어야 한다`);
   };
   listOk(d.allowedOrigins,'allowedOrigins',false);listOk(d.allowedPaths,'allowedPaths',true);
-  if(d.resultTo!==undefined&&!IDENT.test(String(d.resultTo)))err('resultTo 식별자 형식 오류');
+  if(d.resultTo!==undefined&&!(typeof d.resultTo==='string'&&IDENT.test(d.resultTo)))err('resultTo 식별자 형식 오류');
   const order=steps.map(s=>s.id);
   const frames={};
   if(d.frames!==undefined){
@@ -241,7 +241,7 @@ export function computeAgent(d,here,sourceText){
       else if((w.selector===undefined)===(w.apiPath===undefined))err(`${p}.where는 selector·apiPath 중 하나만 쓴다`);
       if(!formatOk(x.format))err(`${p}.format은 형태 문법(형식 이름 토큰)만 허용한다`);
       if(!['public','masked','restricted'].includes(x.sensitivity))err(`${p}.sensitivity 값 오류`);
-      if(x.deliverTo!==undefined&&!IDENT.test(String(x.deliverTo)))err(`${p}.deliverTo 식별자 형식 오류`);
+      if(x.deliverTo!==undefined&&!(typeof x.deliverTo==='string'&&IDENT.test(x.deliverTo)))err(`${p}.deliverTo 식별자 형식 오류`);
       if((x.sensitivity==='masked'||x.sensitivity==='restricted')&&x.deliverTo===undefined)err(`${p}: masked·restricted는 deliverTo가 필요하다`);
       if(x.verify!==undefined&&!nonEmpty(x.verify))err(`${p}.verify가 비어 있다`);
       if(w&&w.apiPath!==undefined&&!(isApi&&Array.isArray(s.api.response)&&s.api.response.some(r=>r.path===w.apiPath)))err(`${p}.where.apiPath가 api.response에 없다`);

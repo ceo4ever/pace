@@ -1,6 +1,6 @@
 ---
 name: pace-playbook-maker
-description: 브라우저 자동화 업무 흐름의 실행 명세를 만들고 고친다 — 단계를 실제로 실행하며 원본 steps.json을 쓰고, 가림 처리한 기준 캡처를 사람 확인·해시 대조로 승인한 뒤 사람용 flow.html과 에이전트용 flow/overview.md·S0n.md를 생성한다. "흐름 명세 만들어 줘", "업무 단계 정리·캡처", 업무 스킬에 흐름 추가, UI 변경으로 명세 갱신일 때 쓴다. 이미 만든 명세대로 업무를 실행하는 요청에는 쓰지 않는다(그건 해당 업무 스킬).
+description: 브라우저 자동화 업무 흐름의 실행 명세를 만들고 고친다 — 단계를 실제로 실행하며 원본 steps.json을 쓰고, 가림 처리한 기준 캡처를 사람 확인·해시 대조로 승인한 뒤 사람용 flow.html과 에이전트용 flow/overview.md·S0n.md·지도를 생성하고, 인터뷰로 플레이북(업무 스킬 한 벌)까지 만든다. "흐름 명세 만들어 줘", "업무 단계 정리·캡처", "플레이북 만들어 줘", 업무 스킬에 흐름 추가, UI 변경으로 명세 갱신일 때 쓴다. 이미 만든 명세대로 업무를 실행하는 요청에는 쓰지 않는다(그건 해당 업무 스킬).
 ---
 
 # 자동화 흐름 명세 만들기 (pace-playbook-maker)
@@ -11,7 +11,8 @@ description: 브라우저 자동화 업무 흐름의 실행 명세를 만들고 
 | 문서 | 언제 |
 |---|---|
 | [references/schema.md](references/schema.md) | steps.json을 쓰거나 고칠 때 — 필드 사전 |
-| [references/adapter.md](references/adapter.md) | 서비스 캡처 어댑터를 만들거나 캡처가 거부될 때 — 계약·함정 |
+| [references/adapter.md](references/adapter.md) | 서비스 캡처 어댑터를 만들거나 캡처가 거부될 때 — 계약·함정·템플릿 |
+| [references/playbook-making.md](references/playbook-making.md) | 목표 하나로 인터뷰 → 수행·기록 → 플레이북 생성 |
 
 ## 도구 위치
 
@@ -20,14 +21,12 @@ description: 브라우저 자동화 업무 흐름의 실행 명세를 만들고 
 | 이름 | 지금 위치 | 역할 |
 |---|---|---|
 | 생성기 | `node <스킬>/tools/build.mjs --dir <흐름 폴더>` | steps.json → flow.html·flow/*.md |
-| 캡처 코어 | `<스킬>/tools/capture-core.mjs`·`agent-map.mjs` | 가림·번호 태그·사후 검사(fail-closed)·캡처 기록·승인 / `agent/` 지도 계산 |
+| 캡처 코어·지도 | `<스킬>/tools/capture-core.mjs`·`agent-map.mjs` |
+| 플레이북 | `<스킬>/tools/{interview,scaffold,orca-adapter,playbook}.mjs` | 인터뷰·뼈대·어댑터·생성 | 가림·번호 태그·사후 검사(fail-closed)·캡처 기록·승인 / `agent/` 지도 계산 |
 | 테스트 | PACE 저장소 `test/playbook/` (`npm run check`가 실행) | 생성기·코어·이 스킬 문서 검사 |
 | 서비스 어댑터 | 각 서비스 도구 폴더의 캡처 모듈 | 탭 범위·화면 판정·대기·승인 |
 
-옮길 때: 이 스킬 폴더 + 생성기·코어·테스트를 한 묶음으로 옮기고 아래를 새 위치로 바꾼다.
-- 이 표, 생성기가 생성물 머리말에 적는 명령 문구(생성기의 `GEN` 상수), 스킬 문서 테스트의 스킬 경로
-- 사례 steps.json을 읽는 테스트(스킬 문서 테스트의 `CASES`, 생성기 테스트의 사례 비교)는 사례 저장소에 남기거나 비식별 fixture로 바꾼다
-- 업무 저장소에 남는 서비스 어댑터의 코어 import 경로와 테스트 대상 목록(test-map 등)
+옮길 때: 이 스킬 폴더 + 도구·테스트를 한 묶음으로 옮기고 이 표, 생성기 `GEN` 상수(머리말 명령 문구), 스킬 문서 테스트의 스킬 경로, 어댑터의 코어 import 경로를 새 위치로 바꾼다.
 
 흐름 폴더는 업무 스킬의 `references/flows/<흐름>/`에 둔다(흐름이 하나뿐이면 `references/`). 업무 스킬 하나에 흐름 여러 개를 두고, 업무 스킬 `SKILL.md`는 공통 규칙 + 흐름 색인으로 짧게 둔다.
 

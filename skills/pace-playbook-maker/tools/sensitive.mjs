@@ -26,7 +26,8 @@ const KINDS=[
     return false;
   }]
 ];
-const HASH_PATHS=[/^steps\[\d+\]\.(shotHash|recordHash)$/,/^steps\[\d+\]\.captureRecord\.(shotSha256|contextSha)$/,/^valueReview\.contentHash$/];
+// 해시 필드(키 이름이 해시 전용인 것)는 64자 16진 형식만 허용하고 토큰 검사에서 뺀다 — 다른 경로의 같은 길이 문자열은 계속 거부한다
+const HASH_PATHS=[/(^|\.)(shotHash|recordHash|shotSha256|contextSha|contentHash|sourceHash|actionHash)$/,/(^|\.)shot\.sha256$/];
 // 캡처 기록의 좌표·크기·건수는 숫자가 정상이다(좌표 값 자체는 형식 검사에서 제외)
 const NUMERIC_OK=[/.captureRecord.(boxes|view|masking|elementsMasked)/];
 const PATTERN_PATHS=[/^mask\[\d+\]$/,/^steps\[\d+\]\.mask\[\d+\]$/,/^steps\[\d+\]\.revealInputs\[\d+\]\.value$/];
@@ -68,3 +69,11 @@ export function scanSensitive(d){
 }
 
 
+
+// 사용자가 실값을 말했을 때 기록에는 종류만 남기기 위한 보조 — 탐지된 형식의 이름만 돌려주고 값은 돌려주지 않는다.
+export function sensitiveKinds(text){
+  const kinds=new Set();
+  const s=String(text??'');
+  for(const x of decodedVariants(s).flatMap(v=>[v,v.replace(/\\([^A-Za-z0-9])/g,'$1')]))for(const [kind,test] of KINDS)if(test(x))kinds.add(kind);
+  return [...kinds];
+}

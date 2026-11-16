@@ -134,3 +134,20 @@ test('S-5 fixture: 금지어·실값 패턴 0건, 사전의 모든 필드 행을
   const unused=Object.keys(sec).flatMap(k=>rows(sec[k]).filter(f=>!used[k].has(f)).map(f=>`${k}:${f}`));
   assert.deepEqual(unused,[],`fixture가 쓰지 않는 사전 필드: ${unused.join(', ')}`);
 });
+
+test('S-8 플레이북 절차 문서: SKILL.md 링크·인터뷰·기록·생성 절차와 어댑터 템플릿 절이 있다', ()=>{
+  const skillText=skill();
+  assert.ok(skillText.includes('](references/playbook-making.md)'),'SKILL.md가 절차 문서를 가리키지 않는다');
+  assert.match(skillText,/플레이북/);
+  const t=read(join(SKILL,'references/playbook-making.md'));
+  for(const k of ['## 1. 인터뷰','한 번에 한 질문','pace-intent','interview.json','성공 기준','위험 행동','noRiskyActions','sensitiveKinds','실값을 기록하지 않는다','--check',
+    '## 2. 수행하며 기록','saveInterview','checkAgreement','initFlow','observeStep','captureStep','approvePending','addApiStep','경로·형태 이름만','--review-hash','보호 저장소',
+    '## 3. 플레이북 생성','generatePlaybook','checkPlaybook','agreements.md','driving.md'])
+    assert.ok(t.includes(k),`playbook-making.md에 없음: ${k}`);
+  const a=read(join(SKILL,'references/adapter.md'));
+  assert.ok(a.includes('## 어댑터 템플릿'));
+  for(const k of ['createStore','createOrcaBrowser','captureStep','approvePending','rejectPending','scanSensitive','store.writes','--format jpeg','discard'])assert.ok(a.includes(k),`adapter.md 템플릿 절에 없음: ${k}`);
+  assert.ok(!/tools\//.test(t),'playbook-making.md에 tools/ 경로');
+  // 링크 대상 실재(절차 문서 → schema·adapter·pace-intent)
+  for(const [,href] of t.matchAll(/\]\(([^)#]+)\)/g))assert.ok(existsSync(join(SKILL,'references',href)),`링크 대상 없음: ${href}`);
+});

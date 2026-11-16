@@ -38,3 +38,11 @@
 {"ts":"2026-11-16T09:42:10.811Z","p":"P001","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-16T09:42:18.194Z","p":"P001","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-16T09:42:18.194Z","p":"P001","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-16T09:43:42.101Z","p":"P001","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-16T09:44:22.488Z","p":"P001","t":"T03","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-16T09:49:54.436Z","p":"P001","t":"T03","type":"review","by":"agent","msg":"reviewer fail blocking 2 should_fix 1 (codex --kind task 2차, 사전 검토 한도 소진 — 지적 반영본은 미검토, 캡틴 게이트 판단 요청)","data":{"blocking":2,"should_fix":1,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-16T12:22:20.426Z","p":"P001","t":"T03","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-16T12:22:21.843Z","p":"P001","t":"T03","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2 (codex --kind task 3차, 캡틴 승인 반영 확인 1회 — S-7 덮어쓴 파일 재검사·S-5b scope 포함은 구현 테스트로)","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-16T12:59:26.079Z","p":"P001","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-16T12:59:39.052Z","p":"P001","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-16T12:59:39.052Z","p":"P001","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}

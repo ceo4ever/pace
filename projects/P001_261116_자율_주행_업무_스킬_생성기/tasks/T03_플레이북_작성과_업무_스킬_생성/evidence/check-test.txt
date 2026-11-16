@@ -1,0 +1,5 @@
+ℹ tests 122
+ℹ pass 122
+ℹ fail 0
+ℹ skipped 0
+test exit=0 (바뀐 부분 위주: test/playbook/*.test.mjs·install·canvas-skills 122건. 전체 npm run check는 finish 전 1회 — 코디네이터 지시)

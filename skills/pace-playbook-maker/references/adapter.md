@@ -51,3 +51,23 @@
 - 캡처 뒤 검사 실패·`maskRequire` 0건·저장 실패 → 원본·대기 파일 0개
 - 병합 mask가 코어에 실제로 전달됨, 단계 mask가 흐름 규칙을 지우지 못함
 - 승인: 해시 불일치·대기 없음·`capture:false` 거부, 오류 출력에 메시지 원문 없음
+
+## 어댑터 템플릿 (라이브러리 사용)
+
+`orca-adapter.mjs`(도구 폴더)가 서비스 비의존 부분을 맡는다. 업무 저장소 어댑터는 서비스 고유 부분(탭 범위·화면 판정 `screen`·로그인·대기 조건)만 얹는다.
+
+```js
+import {createStore,createOrcaBrowser,observeStep,captureStep,approvePending,rejectPending} from '<도구 폴더>/orca-adapter.mjs';
+const browser=createOrcaBrowser({page});            // 지정한 탭(browserPageId)만 다룬다
+const pending=createStore('<저장소 밖 대기 폴더>');  // 대기 파일은 버전 관리 밖
+const flow=createStore('<흐름 폴더>');
+// 1) 수행·관찰이 ok일 때만 캡처 → 대기 저장(이미지 + 숫자·해시 메타)
+const cap=captureStep({browser,pending,doc:{mask},step,frames,actions,expects});
+// 2) 사람이 대기 이미지를 열어 확인한 뒤: 해시 대조 승인
+approvePending({pending,flow,stepId:step.id,sha:cap.sha});   // 반려는 rejectPending
+```
+
+- 모든 파일 쓰기는 보호 저장소(`createStore`)를 거친다: 쓰기 직전 `scanSensitive` 검사 → 민감 형식이면 쓰지 않고 거부, 쓴 경로는 `store.writes`에 기록. 이미지는 `.jpg`만 바이트로 쓴다(이미지는 가림 증거·픽셀 검사로 따로 검증).
+- `captureStep`은 `runCapture`(가림 오버레이 → 스크린샷 → 사후 검사) → `captureRecord`(이미지 해시·box·가림 증거를 한 기록으로) 순이다. 실패하면 대기·원본 스크린샷을 지우고 던진다. 승인 실패(해시 불일치·대기 없음·캡처 금지)는 steps.json·shots를 바꾸지 않고, 대기 파일은 `rejectPending`이 지운다.
+- 스크린샷은 `orca screenshot --format jpeg`로 찍고(`shots/S0n.jpg`와 맞는다) Orca가 직접 쓰는 원본은 대기 저장 직후 `discard`로 지운다.
+- 서비스 어댑터가 얹을 것: 캡처 전 탭 소유·origin·활성 탭 검사와 `screen` 판정(위 필수 기능 1~2), 로그인·대기 조건. 이 라이브러리는 그것들을 대신하지 않는다.
