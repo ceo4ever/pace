@@ -16,3 +16,9 @@
 {"ts":"2026-11-16T06:10:28.100Z","p":"P001","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-16T06:10:33.131Z","p":"P001","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-16T06:10:33.131Z","p":"P001","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-16T06:10:45.828Z","p":"P001","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-16T06:18:31.835Z","p":"P001","t":"T02","type":"question","by":"agent","msg":"T02 구현 전 사전 검토: codex 3차 모두 revise(1~2차 실질 지적 반영, 3차는 입력 독립성만 문제) — claude 새 맥락 reviewer 배정 요청"}
+{"ts":"2026-11-16T06:19:57.436Z","p":"P001","t":"T02","type":"answer","by":"agent","msg":"(main 판단) codex 읽기 수정됨 — 파일 경로를 줘 pace agent verify 재실행, PRE-REVIEW에 changed로 추가"}
+{"ts":"2026-11-16T06:25:10.463Z","p":"P001","t":"T02","type":"question","by":"agent","msg":"codex 사전 검토 blocking: 실값 금지 보장 수준(형식 탐지+출처 제한+사람 확인 vs 완전 차단) — 캡틴 확인 요청"}
+{"ts":"2026-11-16T06:28:11.873Z","p":"P001","t":"T01","type":"decision","by":"agent","msg":"사례 이름 비식별화로 TASK.md 문구가 바뀌어 PRE-REVIEW 해시 재기록(검토 내용 불변, 이름만 자리표시)","src":"사용자 결정"}
+{"ts":"2026-11-16T06:28:38.563Z","p":"P001","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}

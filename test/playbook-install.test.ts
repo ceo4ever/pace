@@ -16,9 +16,9 @@ test("설치: pace-playbook-maker가 도구째 설치본·도구 폴더에 들�
   const home = tempDir("pace-playbook-home-");
   mkdirSync(join(home, ".claude"), { recursive: true });
   // 같은 이름 계열의 기존 사용자 스킬(업무 저장소 프로젝트 스킬을 홈에 둔 경우)과 다른 스킬은 건드리지 않는다.
-  const userSkill = join(home, ".claude/skills/opal-auto-flow-maker");
+  const userSkill = join(home, ".claude/skills/sample-user-skill");
   mkdirSync(userSkill, { recursive: true });
-  writeFileSync(join(userSkill, "SKILL.md"), "---\nname: opal-auto-flow-maker\n---\n사용자 스킬\n");
+  writeFileSync(join(userSkill, "SKILL.md"), "---\nname: sample-user-skill\n---\n사용자 스킬\n");
   const before = snapshot(join(home, ".claude/skills"));
   install({ home, repo: resolve(".") });
   const after = snapshot(join(home, ".claude/skills"));
@@ -29,7 +29,7 @@ test("설치: pace-playbook-maker가 도구째 설치본·도구 폴더에 들�
   const bundle = JSON.parse(readFileSync(resolve("skills/pace-canvas-skills/manifest.json"), "utf8")) as { skills: Record<string, unknown> };
   const own = new Set([...readdirSync(resolve("skills")).filter((n) => existsSync(join(resolve("skills"), n, "SKILL.md"))), ...Object.keys(bundle.skills)]);
   assert.deepEqual([...added].filter((n) => !own.has(n)), [], "PACE 스킬 목록 밖의 항목이 설치됐다");
-  assert.ok(!added.has("opal-auto-flow-maker"));
+  assert.ok(!added.has("sample-user-skill"));
 
   const app = join(home, ".pace/app/skills/pace-playbook-maker");
   for (const root of [app, join(home, ".claude/skills/pace-playbook-maker")]) {

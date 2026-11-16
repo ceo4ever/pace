@@ -4,6 +4,7 @@ import {mkdtempSync,writeFileSync,readFileSync,existsSync,readdirSync,rmSync} fr
 import {tmpdir} from 'node:os';
 import {join,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {privateBanned} from './private-banned.mjs';
 import {buildFlow} from '../../skills/pace-playbook-maker/tools/build.mjs';
 
 const here=dirname(fileURLToPath(import.meta.url));
@@ -50,7 +51,8 @@ test('S-3 없어진 단계 파일은 재생성 때 지운다', ()=>{
 
 test('S-4 생성기 소스에 서비스 문구가 없다', ()=>{
   const src=readFileSync(join(here,'..','..','skills','pace-playbook-maker','tools','build.mjs'),'utf8');
-  for(const w of ['발급해','정발','수발','홈택스','아마란스'])assert.ok(!src.includes(w),w);
+  const banned=privateBanned();   // 사례 이름 목록은 저장소 밖 로컬 파일 — 없으면 이 검사는 건너뛴다
+  if(banned)assert.ok(!banned.test(src),`생성기 소스에 금지어 ${src.match(banned)?.[0]}`);
 });
 
 test('S-5 미정의 위험 등급·중복 id는 오류', ()=>{
@@ -97,7 +99,7 @@ test('capture:false 단계는 캡처 금지로 표시한다', ()=>{
   assert.match(read(dir,'flow.html'),/캡처 금지 — 개인정보 화면/);
 });
 
-// P008/T07 — 운영 한 명령(run)·도구 설명(toolNote)·비결정 이벤트(events)
+// 운영 한 명령(run)·도구 설명(toolNote)·비결정 이벤트(events)
 const steps3=()=>[step('S01'),step('S02'),step('S03'),step('S04')];
 test('T-1 run: 운영 실행 절과 범위 단계 파일에만 한 줄, run 없으면 절 없음', ()=>{
   const dir=mk({title:'T',updated:'d',run:[{label:'A 회사',command:'node a.mjs --x',covers:['S02','S03'],note:'노트'},{label:'B 회사',command:'node b.mjs',covers:['S02','S04']}],steps:steps3()});

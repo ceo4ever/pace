@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {privateBanned} from './private-banned.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {join,dirname} from 'node:path';
@@ -289,7 +290,8 @@ test('S-8c 번호 태그: 뷰포트 안 요소만, 없으면 missing', ()=>{
 
 test('코어 소스에 서비스 문구가 없다', ()=>{
   const src=readFileSync(join(here,'..','..','skills','pace-playbook-maker','tools','capture-core.mjs'),'utf8');
-  for(const w of ['dscert','홈택스','아마란스','발급해','정발','수발','hometax','amaranth'])assert.ok(!src.includes(w),w);
+  const banned=privateBanned();   // 사례 이름 목록은 저장소 밖 로컬 파일 — 없으면 이 검사는 건너뛴다
+  if(banned)assert.ok(!banned.test(src),`코어 소스에 금지어 ${src.match(banned)?.[0]}`);
 });
 
 // ---- 사전 검토·구현 후 1차 지적 반영 ----

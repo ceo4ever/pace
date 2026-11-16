@@ -1,6 +1,7 @@
 // pace-playbook-maker 스킬 문서 검사 — 절·크기·서비스 비의존·필드 사전 완전성·어댑터 핵심어
 // 스킬 경로는 PACE 저장소 루트 기준(스킬을 옮기면 SKILL 상수를 바꾼다 — SKILL.md "도구 위치" 참고)
 import {test} from 'node:test';
+import {privateBanned} from './private-banned.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync,statSync,existsSync} from 'node:fs';
 import {join,resolve,dirname,relative} from 'node:path';
@@ -37,11 +38,11 @@ test('S-1 SKILL.md: frontmatter·절·생성물 규칙·API 미검증·링크·�
 });
 
 test('S-2 서비스 비의존: 금지어·실값 패턴 0건, tools/ 경로는 도구 위치 절에만', ()=>{
-  const banned=/홈택스|아마란스|위하고|wehago|hometax|amaranth|erp\.|storelink|스토어링크|핀링크|fin-link|루카스|정발|수발|결의서/i;
+  const banned=privateBanned();   // 사례 이름 목록은 저장소 밖 로컬 파일 — 없으면 일반 형식 검사만
   const rrn=/\d{6}-?[1-8]\d{6}/;
   for(const f of files(SKILL)){
     const t=read(f);
-    assert.ok(!banned.test(t),`${f}: 금지어 ${t.match(banned)?.[0]}`);
+    if(banned)assert.ok(!banned.test(t),`${f}: 금지어 ${t.match(banned)?.[0]}`);
     // tools/는 가림 검사용 합성 표본(탐지 도구)이 있어 형식 검사에서 뺀다 — 문서만 검사
     if(relative(join(SKILL,'tools'),f).startsWith('..'))assert.ok(!rrn.test(t),`${f}: 주민번호 형식 값`);
   }
@@ -112,13 +113,13 @@ test('S-4 adapter.md 핵심어: browser 계약·필수 기능·함정', ()=>{
 });
 
 test('S-5 fixture: 금지어·실값 패턴 0건, 사전의 모든 필드 행을 쓴다', ()=>{
-  const banned=/홈택스|아마란스|위하고|wehago|hometax|amaranth|erp\.|storelink|스토어링크|핀링크|fin-link|루카스|정발|수발|결의서/i;
+  const banned=privateBanned();   // 사례 이름 목록은 저장소 밖 로컬 파일 — 없으면 일반 형식 검사만
   const rrn=/\d{6}-?[1-8]\d{6}/;
   const t=read(join(SKILL,'references/schema.md'));
   const used={top:new Set(),step:new Set(),el:new Set()};
   for(const c of CASES){
     const raw=read(c);
-    assert.ok(!banned.test(raw)&&!rrn.test(raw),`${c}: 금지어·실값 형식`);
+    assert.ok(!(banned&&banned.test(raw))&&!rrn.test(raw),`${c}: 금지어·실값 형식`);
     const g=collect(JSON.parse(raw));
     for(const k of Object.keys(used))for(const x of g[k])used[k].add(x);
   }

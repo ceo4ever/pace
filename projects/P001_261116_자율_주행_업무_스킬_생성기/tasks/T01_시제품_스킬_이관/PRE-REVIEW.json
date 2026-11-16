@@ -3,7 +3,7 @@
  "author": "anthropic",
  "attempts": [
   {
-   "hash": "ff5ec579e7911c1a92abc54eaecde88f750a0b5bd746145d4c430efcf75fb200",
+   "hash": "a88600e6a422824d97426e585a084eebdaa257451b554f74dafff68cbf8069e7",
    "provider": "openai",
    "cross": true,
    "status": "unavailable",
@@ -13,7 +13,7 @@
    "reason": "읽기 전용 실행 정책으로 대상 파일 열람 불가 — 원문 대조 미수행, 판정 revise의 blocking은 근거 미확인 사유"
   },
   {
-   "hash": "ff5ec579e7911c1a92abc54eaecde88f750a0b5bd746145d4c430efcf75fb200",
+   "hash": "a88600e6a422824d97426e585a084eebdaa257451b554f74dafff68cbf8069e7",
    "provider": "openai",
    "cross": true,
    "status": "unavailable",
@@ -23,7 +23,7 @@
    "reason": "읽기 전용 실행 정책으로 대상 파일 열람 불가 — 원문 대조 미수행, 판정 revise의 blocking은 근거 미확인 사유"
   },
   {
-   "hash": "ff5ec579e7911c1a92abc54eaecde88f750a0b5bd746145d4c430efcf75fb200",
+   "hash": "a88600e6a422824d97426e585a084eebdaa257451b554f74dafff68cbf8069e7",
    "provider": "openai",
    "cross": true,
    "status": "unavailable",
@@ -33,7 +33,7 @@
    "reason": "읽기 전용 실행 정책으로 대상 파일 열람 불가 — 원문 대조 미수행, 판정 revise의 blocking은 근거 미확인 사유"
   },
   {
-   "hash": "ff5ec579e7911c1a92abc54eaecde88f750a0b5bd746145d4c430efcf75fb200",
+   "hash": "a88600e6a422824d97426e585a084eebdaa257451b554f74dafff68cbf8069e7",
    "provider": "anthropic",
    "cross": false,
    "status": "pass",
