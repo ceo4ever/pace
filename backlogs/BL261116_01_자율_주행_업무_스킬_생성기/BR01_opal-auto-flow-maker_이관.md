@@ -1,0 +1,29 @@
+# BR01 opal-auto-flow-maker 이관
+
+- 상태: 대기
+- 백로그: [BL261116_01_자율_주행_업무_스킬_생성기](BACKLOG.md)
+
+## 목적
+
+시제품을 동작 그대로 PACE로 옮겨 이후 확장(BR02~05)의 바닥을 만든다(D6·D7). 이관 단계에서는 기능을 바꾸지 않는다 — 바뀐 것이 이관 탓인지 확장 탓인지 갈라 보기 위해서다.
+
+## 범위
+
+- 옮길 것(fin-link `main` dd68b5b 기준): `.claude/skills/opal-auto-flow-maker/{SKILL.md,references/schema.md,references/adapter.md}`, `tools/flow/{build.mjs,capture-core.mjs,package.json}`, `tools/flow/tests/{build,capture-core,skill-doc}.test.mjs·dom-stub.mjs`.
+- 위치와 이름: `skills/pace-playbook-maker/`(다른 pace-* 스킬과 같은 자리, D9). SKILL.md `name`·제목·스킬 문서 테스트의 이름 검사를 새 이름으로 바꾸되, 이관 단계에서는 본문 절차·생성기 동작을 바꾸지 않는다. 도구 언어·배포 방식은 설계 때 사용자 확인(BACKLOG "설계 때 정할 것" 1·2).
+- 공존: fin-link 프로젝트 스킬 `opal-auto-flow-maker`와 PACE 설치 스킬 `pace-playbook-maker`가 한 세션에 같이 보여도 이름이 겹치지 않는다. description에 "fin-link 시제품을 대체" 같은 저장소 고유 문구는 넣지 않는다.
+- 경로 지점 갱신: SKILL.md "도구 위치" 표, 생성기 `GEN` 상수(생성 머리말 명령), 스킬 문서 테스트의 스킬 경로·`tools/` 경로 규칙.
+- 사례 의존 테스트 → 비식별 fixture: `build.test.mjs`의 실제 홈택스 사례 비교, `skill-doc.test.mjs` `CASES`(필드 사전 완전성)를 사전의 모든 필드를 쓰는 가상 흐름 하나로. 실값 금지(이름·회사·주소·번호·계정·도메인). 합성 표본(`900101-1234567` 등)과 금지어 목록은 검사 도구라 유지.
+- 일반화: schema.md "API 단계 표기"의 특정 업무 문장("지급 내역·소득자 목록", 날짜)과 fin-link 고유 표현을 일반 문장으로.
+- 테스트는 PACE 실행기가 도는 `test/*.test.ts`에서 실행되게 한다(지금 실행기는 `test/**/*.test.ts`만 — `scripts/test.ts:7`).
+- 설치본에 스킬·도구가 들어가고 업무 저장소에서 부를 수 있게 한다.
+- 제외: 기능 변경(BR02~05), fin-link 쪽 import 경로 수정(fin-link 세션).
+
+## 완료 기준
+
+- **동일성:** 이관본 생성기로 fin-link 흐름 9개(`hometax-invoice` 1, `amaranth-read` 5, `wehago-read` 3)의 steps.json을 저장소 밖 빈 폴더에서 다시 만들면, 생성 파일 목록이 같고 `git show dd68b5b:<경로>`와 바이트 동일하다. 허용 차이는 `.md` 머리말의 생성 명령 줄 하나뿐(양쪽을 같은 자리표시로 바꾼 뒤 비교).
+- 이관 파일에 fin-link 실값·서비스 이름 0건(테스트 금지어 목록 제외), PACE `node scripts/secret-scan.ts` 통과.
+- PACE `npm run check` 통과 — 생성기·코어·스킬 문서 검사가 실제로 실행된 것을 출력으로 확인.
+- 재설치 뒤 설치본 위치에서 생성기 실행과 코어 import가 Windows·macOS(가능한 기기)에서 된다.
+- fin-link `main`은 이관 중 바뀌지 않는다(fin-link `cd tools/flow && npm test`·`tools/amaranth`·`tools/hometax`·`tools/wehago` `npm test` 통과 유지).
+- **설치 전후 무영향:** 이관본을 이 PC에 설치하기 전과 후에 fin-link 테스트 4종을 각각 돌려 결과가 같고, 설치가 fin-link 저장소·`~/.claude/skills`의 기존 항목(fin-link 프로젝트 스킬과 같은 이름 포함)을 만들거나 바꾸거나 지우지 않는다(설치 전후 목록·해시 비교). PACE 설치기는 `pace-playbook-maker` 하나만 추가한다.
