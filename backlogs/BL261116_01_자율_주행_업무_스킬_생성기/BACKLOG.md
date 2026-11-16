@@ -41,7 +41,7 @@ pace-playbook-maker (생성기)
 
 | 브리프 | 상태 | 선행 | 프로젝트 | 비고 |
 |---|---|---|---|---|
-| [BR01 opal-auto-flow-maker 이관](BR01_opal-auto-flow-maker_이관.md) | 대기 | — | — | `pace-playbook-maker`로, fin-link main 기준, 기존 생성물 바이트 동일 |
+| [BR01 opal-auto-flow-maker 이관](BR01_opal-auto-flow-maker_이관.md) | 완료 | — | — | `pace-playbook-maker`로, fin-link main 기준, 기존 생성물 바이트 동일 |
 | [BR02 에이전트 지도 구조](BR02_에이전트_지도_구조.md) | 대기 | 01 | — | `agent/index.json` + `S0n.html`·`S0n.json`, `box`·`extract` |
 | [BR03 플레이북 작성과 업무 스킬 생성](BR03_플레이북_작성과_업무_스킬_생성.md) | 대기 | 02 | — | 인터뷰(pace-intent 방식) → 수행·기록 → 플레이북 |
 | [BR04 자율 주행 규약](BR04_자율_주행_규약.md) | 대기 | 02·03 | — | 브라우저·API, 화면 판정·관문·기록, 운영 명령 부분 실패 재개 |

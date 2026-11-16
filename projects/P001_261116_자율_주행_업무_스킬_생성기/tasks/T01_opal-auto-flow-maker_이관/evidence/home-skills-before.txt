@@ -1,0 +1,14 @@
+canvas-read
+canvas-wireframe
+html-plan
+orca-cli
+pace-brain
+pace-intent
+pace-memory
+pace-onboarding
+pace-project-dev
+pace-project-init
+pace-prompt
+pace-scout
+pace-tech-handbook
+synced

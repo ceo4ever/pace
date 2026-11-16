@@ -1,0 +1,46 @@
+{
+ "version": 1,
+ "author": "anthropic",
+ "attempts": [
+  {
+   "hash": "ff5ec579e7911c1a92abc54eaecde88f750a0b5bd746145d4c430efcf75fb200",
+   "provider": "openai",
+   "cross": true,
+   "status": "unavailable",
+   "blocking": 0,
+   "evidence": "evidence/review-codex.md",
+   "continuity": "new",
+   "reason": "읽기 전용 실행 정책으로 대상 파일 열람 불가 — 원문 대조 미수행, 판정 revise의 blocking은 근거 미확인 사유"
+  },
+  {
+   "hash": "ff5ec579e7911c1a92abc54eaecde88f750a0b5bd746145d4c430efcf75fb200",
+   "provider": "openai",
+   "cross": true,
+   "status": "unavailable",
+   "blocking": 0,
+   "evidence": "evidence/review-codex-2.md",
+   "continuity": "same",
+   "reason": "읽기 전용 실행 정책으로 대상 파일 열람 불가 — 원문 대조 미수행, 판정 revise의 blocking은 근거 미확인 사유"
+  },
+  {
+   "hash": "ff5ec579e7911c1a92abc54eaecde88f750a0b5bd746145d4c430efcf75fb200",
+   "provider": "openai",
+   "cross": true,
+   "status": "unavailable",
+   "blocking": 0,
+   "evidence": "evidence/review-codex-3.md",
+   "continuity": "same",
+   "reason": "읽기 전용 실행 정책으로 대상 파일 열람 불가 — 원문 대조 미수행, 판정 revise의 blocking은 근거 미확인 사유"
+  },
+  {
+   "hash": "ff5ec579e7911c1a92abc54eaecde88f750a0b5bd746145d4c430efcf75fb200",
+   "provider": "anthropic",
+   "cross": false,
+   "status": "pass",
+   "blocking": 0,
+   "evidence": "evidence/review-claude.md",
+   "continuity": "changed",
+   "reason": "codex 읽기 전용으로 파일 열람 불가 → 파일 접근 가능한 새 맥락 reviewer(같은 제공자 대체, 캡틴 결정 ①)"
+  }
+ ]
+}

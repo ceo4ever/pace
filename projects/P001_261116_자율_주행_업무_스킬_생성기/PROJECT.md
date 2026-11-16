@@ -75,7 +75,7 @@
 
 | T | 이름 | 상태 | 커밋 |
 |---|---|---|---|
-| T01 | opal-auto-flow-maker 이관 | 대기 | |
+| T01 | opal-auto-flow-maker 이관 | 완료 | |
 | T02 | 에이전트 지도 구조 | 대기 | |
 | T03 | 플레이북 작성과 업무 스킬 생성 | 대기 | |
 | T04 | 자율 주행 규약 | 대기 | |
@@ -88,3 +88,7 @@
 |---|---|
 | 2026-11-16 13:23 | 정의 작성 |
 | 2026-11-16 14:00 | 착수 결정(캡틴, 이 세션 대화): "제안대로 진행" — ① 도구 언어 `.mjs` 유지 ② 코어는 업무 저장소에 복사 + 해시 버전 확인 ③ 스킬 하나(`pace-playbook-maker`, 주행 규약은 참조 문서) ④ 기존 `flow/*.md` 폐지는 fin-link 전환 뒤 별도 결정. 브라우저는 Orca 브라우저 CLI로 진행(캡틴). fin-link는 `D:\DockerStudio\services\fin-link`에 clone(lucasstorelink 계정) — 읽기 전용 |
+| 2026-11-16 14:32 | (자체 판단) T01: 구현이 사전 검토보다 먼저 끝남 — 사후 교차 검토(pace agent verify, codex)로 대체 |
+| 2026-11-16 14:32 | (자체 판단) T01: tools/flow/package.json 미이관(.mjs는 ESM, 서비스 고유 이름)·.mjs 테스트는 test/playbook/+래퍼 .test.ts |
+| 2026-11-16 15:10 | (사용자 결정) T01: 같은 제공자 대체(캡틴 승인 ①): codex 읽기 전용으로 파일 열람 불가 → claude 새 맥락 reviewer pass |
+

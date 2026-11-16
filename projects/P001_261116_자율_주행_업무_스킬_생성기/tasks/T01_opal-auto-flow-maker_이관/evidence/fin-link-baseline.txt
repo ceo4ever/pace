@@ -1,0 +1,6 @@
+fin-link 작업 사본 HEAD 51cab14, git status 0줄 (2026-11-16, 이관본 설치 전 기준 — 이 PC 실제 HOME에는 설치하지 않았다)
+tools/flow     tests 47 pass 47 fail 0
+tools/hometax  tests 35 pass 35 fail 0
+tools/amaranth tests 619 pass 619 fail 0
+tools/wehago   tests 119 pass 119 fail 0
+후속 확인(검사 뒤): ~/.claude/skills 목록 불변(home-skills-before.txt와 diff 없음), fin-link HEAD 51cab14·git status 0줄, tools/flow npm test 47/47. 나머지 3종(hometax·amaranth·wehago)은 baseline 이후 fin-link·내 환경 변경 없음(HOME 미설치)이라 재실행 생략 — 실제 HOME 설치는 main 병합 뒤.
