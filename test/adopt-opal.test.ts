@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { applyAdoptOpal, planAdoptOpal } from "../src/project/adopt-opal.ts";
+import { applyAdoptOpal, formatPlan, planAdoptOpal } from "../src/project/adopt-opal.ts";
 import { agentKind } from "../src/project/agent-definition.ts";
 import { createCandidate, listCandidates, registerWorkspace } from "../src/project/workspace-registry.ts";
 import { runPace, tempDir } from "./helpers.ts";
@@ -161,7 +161,7 @@ test("S-5 단계별 실패는 인덱스·무관한 변경까지 적용 전으로
   }
 });
 
-test("S-5 부분 변경 뒤 실패(AGENT 일부 기록·등록부 기록)도 바이트 단위로 되돌린다", () => {
+test("S-5 AGENT를 반쯤 쓴 뒤 실패하거나 등록 시작 전에 실패해도 바이트 단위로 되돌린다", () => {
   for (const stage of ["rewrite", "register"] as const) {
     const { root, home } = fixture();
     const before = snapshot(root), registry = JSON.stringify(listCandidates(home));
@@ -296,4 +296,59 @@ test("S-7 등록 직전에 경쟁 실행이 같은 ID를 먼저 등록한 뒤 �
   });
   assert.match(result.blockers.join(), /되돌렸다/);
   assert.deepEqual(listCandidates(home).map((e) => e.id), [ID]);
+});
+
+// ── T01 구현 후 검토(post-review-codex.md) 반영 ───────────────────────────────
+
+test("T01-S-4 status.showUntrackedFiles=no여도 .opal의 새 파일을 놓치지 않고 멈춘다", () => {
+  const { root, home } = fixture();
+  git(root, "config", "status.showUntrackedFiles", "no");
+  writeFileSync(join(root, ".opal", "memory", "새.md"), "새 파일");
+  const before = snapshot(root);
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 1, r.stdout); assert.match(r.stdout, /커밋 안 한 변경/);
+  assert.equal(snapshot(root), before);
+});
+
+test("T01-S-3 같은 경로에 정상 ID 항목과 다른 ID 항목이 함께 있으면 순서와 무관하게 멈춘다", () => {
+  const { root, home } = fixture();
+  const dir = join(home, "projects");
+  mkdirSync(dir, { recursive: true });
+  const other = "11111111-2222-4333-8444-555555555555";
+  // 정렬 순서상 정상 ID 항목이 먼저 오도록 두 항목 모두 같은 경로로 직접 기록한다
+  writeFileSync(join(dir, ID + ".json"), JSON.stringify({ id: ID, path: root, name: "a", summary: "", active: true }));
+  writeFileSync(join(dir, other + ".json"), JSON.stringify({ id: other, path: root, name: "b", summary: "", active: true }));
+  const before = snapshot(root);
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 1, r.stdout); assert.match(r.stdout, /다른 workspace_id/);
+  assert.equal(snapshot(root), before);
+});
+
+test("T01-S-2 .opal/ 치환은 본문에만 적용하고 frontmatter의 다른 값은 보존한다", () => {
+  const agent = OPAL_AGENT.replace("workspace_id: " + ID + "\n", "workspace_id: " + ID + "\nnote: 옛 경로 .opal/memory\n");
+  const { root, home } = fixture({ ".opal/AGENT.md": agent });
+  assert.equal(runPace(["adopt", "opal", "--apply"], { home, cwd: root }).status, 0);
+  const text = readFileSync(join(root, ".pace", "AGENT.md"), "utf8");
+  assert.match(text, /^note: 옛 경로 \.opal\/memory$/m);
+  assert.match(text, /`\.pace\/memory\/`/);
+});
+
+test("T01-S-4 assume-unchanged·skip-worktree가 걸린 파일이 .opal에 있으면 변경을 확인할 수 없어 멈춘다", () => {
+  for (const flag of ["--assume-unchanged", "--skip-worktree"]) {
+    const { root, home } = fixture();
+    git(root, "update-index", flag, ".opal/memory/rule-a.md");
+    writeFileSync(join(root, ".opal", "memory", "rule-a.md"), "숨겨진 수정");
+    const before = snapshot(root);
+    const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+    assert.equal(r.status, 1, r.stdout); assert.match(r.stdout, /변경을 숨기는 파일/);
+    assert.equal(snapshot(root), before);
+  }
+});
+
+test("T01-S-5 복구까지 실패하면 출력이 무변경을 단정하지 않는다", () => {
+  const { root, home } = fixture();
+  const plan = planAdoptOpal(root, home);
+  const result = applyAdoptOpal(root, home, plan, { register: () => { writeFileSync(join(root, ".opal"), "x"); throw new Error("주입된 실패"); } });
+  const out = formatPlan(result, true);
+  assert.doesNotMatch(out, /원본을 바꾸지 않았다/); assert.match(out, /되돌리지 못한 것/);
 });
