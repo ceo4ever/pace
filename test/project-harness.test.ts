@@ -788,7 +788,7 @@ test("Orca 안이면 start가 작업자 세션을 띄우고, 다시 start·--no-
   assert.match(worker, /--worktree path:\S*[\\/]app\.wt[\\/]P001 --agent claude/);
   assert.ok(existsSync(wt));
   assert.match(worker, /--agent claude/);
-  assert.match(worker, /--model claude-sonnet-5-5/);
+  assert.match(worker, /--model claude-opus-5-5/);
   assert.doesNotMatch(worker, /--effort/);
   assert.match(worker, /P001 알림 프로젝트를 이어서 수행한다/);
   assert.match(worker, /\(main 판단\)/);

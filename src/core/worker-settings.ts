@@ -4,7 +4,7 @@ import { writeFileAtomic } from "./fsutil.ts";
 import { paceHome } from "./paths.ts";
 
 type Settings = Record<string, { model?: string; effort?: string }>;
-const defaults: Settings = { codex: { model: "gpt-6.1-terra" }, claude: { model: "claude-sonnet-5-5" } };
+const defaults: Settings = { codex: { model: "gpt-6.1-sol" }, claude: { model: "claude-opus-5-5" } };
 const file = (env: NodeJS.ProcessEnv) => join(paceHome(env), "worker-settings.json");
 export function validValue(value: unknown): value is string {
   return typeof value === "string" && value.trim() === value && value.length > 0 && !/[\x00-\x1f\x7f]/.test(value);

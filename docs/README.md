@@ -160,5 +160,5 @@ refresh는 기존 완성 대시보드만 갱신한다. 완전 부재는 init 안
 | 대체 규칙 | 훅이 동작하지 않는 도구에서 `pace boot`를 실행하게 하는 지침 한 줄 (Codex·Gemini·Cursor) |
 | 상황 | 세션을 연 위치: PACE 프로젝트 / 정의 없음 / 새 프로젝트 / 프로젝트 밖 |
 
-작업자 모델·effort는 `pace worker show`, `pace worker set <도구> <model|effort> <값>`, `pace worker reset <도구> <model|effort>`로 관리한다. 설정은 `PACE_HOME/worker-settings.json`에 저장되며 설치본 교체와 독립적이다. `project start --model ... --effort ...`는 해당 실행에서 우선하고 `--effort default`는 도구 기본값을 선택한다. 초기 모델은 Codex `gpt-6.1-terra`, Claude `claude-sonnet-5-5`이며 effort는 도구 기본값이다.
+작업자 모델·effort는 `pace worker show`, `pace worker set <도구> <model|effort> <값>`, `pace worker reset <도구> <model|effort>`로 관리한다. 설정은 `PACE_HOME/worker-settings.json`에 저장되며 설치본 교체와 독립적이다. `project start --model ... --effort ...`는 해당 실행에서 우선하고 `--effort default`는 도구 기본값을 선택한다. 초기 모델은 Codex `gpt-6.1-sol`, Claude `claude-opus-5-5`이며 effort는 도구 기본값이다.
 
