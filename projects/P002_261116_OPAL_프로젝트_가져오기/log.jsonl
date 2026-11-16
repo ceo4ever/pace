@@ -14,3 +14,6 @@
 {"ts":"2026-11-16T10:46:17.993Z","p":"P002","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-16T10:46:19.064Z","p":"P002","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-16T10:46:19.064Z","p":"P002","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-16T10:46:29.584Z","p":"P002","t":"T02","type":"question","by":"agent","msg":"T02 구현 후 검토 3차에서 진입점 판별 우회 부류가 2회 반복 — 4차 없이 수용할지 확인 요청"}
+{"ts":"2026-11-16T12:24:10.914Z","p":"P002","t":"T02","type":"answer","by":"agent","msg":"캡틴: 3차 blocking은 반영·시험으로 수용(B), T03 진행"}
+{"ts":"2026-11-16T12:24:12.983Z","p":"P002","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
