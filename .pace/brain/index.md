@@ -1,6 +1,6 @@
 # 프로젝트 브레인 목차
 
-> 자동 생성 — 직접 고치지 말 것. 페이지 20개. 형식은 SCHEMA.md.
+> 자동 생성 — 직접 고치지 말 것. 페이지 21개. 형식은 SCHEMA.md.
 
 ## 결정과 이유
 
@@ -10,6 +10,7 @@
 - [설치·실행 함정 모음](pages/concept/install-and-launch-pitfalls.md) — < /dev/tty로 넘기면 Claude Code(Bun)가 kqueue EINVAL로 죽음, 처음 폴더는 신뢰 창 기본값이 종료, ps1은 BOM 필수, 자동 모드는 자기 설정 수정과 rm -rf를 막음 #install #pitfalls #macos #windows
 - [LLM은 먼저 말할 수 없다 — 화면 인사와 pace onboard](pages/concept/llm-cannot-speak-first.md) — 훅은 맥락만 넣고 응답을 일으키지 못하므로, 열자마자 보이는 인사는 부트가 만든 systemMessage로, 바로 대화를 시작하려면 첫 메시지를 넣어 CLI를 연다 #boot #onboarding #ux
 - [메모리 두 영역 — 프로필과 프로젝트](pages/concept/memory-two-scopes.md) — 프로필 메모리(user·rule·todo)는 에이전트를 따라다니고, 프로젝트 메모리(status·rule·issue·todo·note·idea)는 저장소에 커밋된다. 프로젝트 메모리를 없앴다가 되살렸다 #memory #design-history
+- [OPAL 가져오기 adopt opal 결정과 함정](pages/concept/opal-가져오기-adopt-opal-결정과-함정.md) — adopt opal은 git mv로 .opal을 .pace로 옮기고 AGENT 표지·훅·진입점을 안전하게 바꾼다 — 판별은 원문 일치만, 복구는 변경 전 등록, 참조 보고는 위치만
 - [프로필 = 독립 에이전트, 역할은 AI 비서 고정](pages/concept/profile-is-independent-agent.md) — 프로필마다 정체성·사용자 정보·메모리·스킬을 격리하고(Hermes 참고), 역할은 묻지 않고 AI 비서로 고정 — 개발·관리·리서치는 일의 성격별 방식으로 RULES에 둔다 #profile #identity #design-history
 - [세션 부트는 시작 훅 + 대체 규칙](pages/concept/session-boot-via-hooks.md) — 활성화 명령 대신 각 도구의 세션 시작 훅이 pace boot를 부르고, 훅이 불안정한 도구는 한 줄 대체 규칙으로 부트한다 #boot #hooks #platform
 - [상황별 부트 — 위치를 판별해 사실을 넘긴다](pages/concept/situational-boot-greeting.md) — 부트는 세션 위치를 PACE 프로젝트·정의 없음·새 프로젝트·밖으로 판별하고 git·메모리를 넘기며, 첫 멘트는 에이전트가 판단한다. 홈 폴더(~/.pace 있음)는 프로젝트로 보지 않는다 #boot #situation

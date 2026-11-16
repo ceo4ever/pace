@@ -6,4 +6,4 @@ created: 2026-10-22
 updated: 2026-11-16
 ---
 
-P002 T01~T03 완료. 다음: finish 전 전체 npm run check 1회(멈추면 자식만 종료·단독 재실행), PROJECT-CLOSE 작성(P-1~P-6 대조·목표 달성 판정), pace project finish P002 뒤 worker_done
+P002 T01~T03·PROJECT-CLOSE 완료, finish 진행. 병합 전 사용자 판단: 실제 OPAL 산출물 표본 1회 관측, TOCTOU 지원 조건 수용

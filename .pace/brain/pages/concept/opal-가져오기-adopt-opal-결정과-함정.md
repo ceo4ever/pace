@@ -1,0 +1,37 @@
+---
+type: concept
+title: OPAL 가져오기 adopt opal 결정과 함정
+summary: "adopt opal은 git mv로 .opal을 .pace로 옮기고 AGENT 표지·훅·진입점을 안전하게 바꾼다 — 판별은 원문 일치만, 복구는 변경 전 등록, 참조 보고는 위치만"
+tags: []
+sources: [code:src/project/adopt-opal.ts, test:test/adopt-opal.test.ts, test:test/adopt-opal-e2e.test.ts, doc:README.md]
+related: [작업-하네스-흐름]
+created: 2026-11-16
+updated: 2026-11-16
+status: active
+---
+
+## 결정
+
+- `pace adopt opal`은 `.opal/`을 `git mv`로 `.pace/`에 옮기고(이력 유지) AGENT.md의 표지 키(`opal_agent_version`→`pace_agent_version`)와 **본문의 `.opal/` 경로만** 바꾼다. 복사 후 삭제나 `.opal`을 읽는 호환 계층은 쓰지 않았다(유지할 형식이 늘어난다).
+- 기본은 미리보기. `--apply`는 계획을 다시 만들어 같을 때만 쓴다(AGENT 원문·등록부·훅·진입점 지문). 검증은 이동 전에 끝내 복구 구간을 줄이고, 실패하면 이번에 바꾼 것만 되돌린다(undo는 변경 **전에** 등록).
+- OPAL 홈(`~/.opal`) 프로필은 옮기지 않는다 — 캡틴 결정. 새 PC는 온보딩으로 새 프로필.
+- 훅은 알려진 OPAL v1 원문과 정확히 같을 때만 교체(백업 `commit-msg.opal-backup`, 기존 백업은 덮어쓰지 않음). 수정된 훅은 보존하되 OPAL 제거 뒤 게이트가 빠진다고 경고한다.
+- 대시보드 진입점은 OPAL 시절 `page.html`을 현재 PACE 템플릿에서 파생해 비교하고(URL의 설치 경로만 허용, 같은 기반 경로의 세 리소스만), 정규화 표지를 위조한 입력은 거부한다.
+- 참조 보고는 `파일:줄`만 낸다 — 비밀 탐지가 모든 표현을 잡지 못해 본문을 출력하면 비밀이 샌다.
+
+## 함정
+
+| 함정 | 증상 | 대응 |
+|---|---|---|
+| `git status`만 믿기 | `status.showUntrackedFiles=no`·`assume-unchanged`·`skip-worktree`면 `.opal`의 미커밋 변경을 놓침 | `--untracked-files=all`, `ls-files -v`의 소문자·`S` 표지는 거부 |
+| 등록부 첫 항목만 검사 | 같은 경로에 정상·충돌 항목이 있으면 정렬 순서에 따라 통과 | 같은 경로 항목 전부 검사 |
+| 정규화 표지 위조 | URL을 정규화 표지 문자열로 바꾼 진입점이 OPAL 원문과 같다고 판정 | 정규화 전 입력에 표지가 있으면 거부 |
+| 복구 순서 | 훅 복원 실패 뒤 백업을 지우면 원본을 잃음 | 훅 복원이 성공한 뒤에만 이번 백업 삭제, 백업은 `wx`로 배타 생성 |
+| 소스 문자열의 NUL | diff가 binary로 표시돼 검토 불가 | 구분자는 `\0` 대신 보이는 문자 |
+| 시험 표본의 한계 | PACE 도구로 만든 `.pace`를 `.opal`로 옮긴 표본은 OPAL 원본이 아니다 | 실제 OPAL 표본이 생기면 e2e 표본 교체 |
+| 전체 검사 중 프로세스 종료 | 다른 작업자가 `scripts/test.ts` 명령줄의 node를 모두 종료 | 시작 시각·끊김 여부를 증거에 적고 끊기면 다시 |
+
+## 남은 것
+
+- 실제 OPAL이 만든 산출물과의 호환성은 미관측(소스 동일성 `git diff c5ffef4c~1 HEAD -- src/memory/memory.ts src/project/brain.ts` 비어 있음만 근거).
+- 검사와 쓰기 사이의 동시 변경(TOCTOU)은 지원 조건 밖 — README에 명시.
