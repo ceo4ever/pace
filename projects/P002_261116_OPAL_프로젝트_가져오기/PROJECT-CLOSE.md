@@ -14,7 +14,7 @@
 
 | # | 결과 | 증거 |
 |---|---|---|
-| P-1 | 통과(합성 표본) | T01 S-2·S-3, T03 S-1 — 미리보기 무변경, apply 뒤 `git mv`(rename으로 보임)·부트에 역할·메모리·브레인. 실제 OPAL 표본은 미확인(위 한계) |
+| P-1 | 통과 | (합성 표본 기준 — 실제 OPAL 표본은 미확인, 위 한계) T01 S-2·S-3, T03 S-1 — 미리보기 무변경, apply 뒤 `git mv`(rename으로 보임)·부트에 역할·메모리·브레인. 실제 OPAL 표본은 미확인(위 한계) |
 | P-2 | 통과 | T01 S-2·S-3·S-6·S-7 — `opal_agent_version`→`pace_agent_version`, ID 일치, 재실행 무변경, 같은 경로·다른 ID/다른 경로·같은 ID 거부, 같은 경로 다중 항목 순서 무관 |
 | P-3 | 통과 | T02 S-1~S-6 + T03 S-2 — 알려진 OPAL 훅만 교체·백업, 사용자·수정 훅 보존, 진입점은 원문 일치만 전환, 실제 `git commit` 4분기 |
 | P-4 | 통과 | T01 S-4·S-5·S-6·S-7, T02 S-5 — 공존·미커밋(staged/untracked/숨김 플래그)·v1·형식 불명·링크·비 git·하위 폴더·크기 초과 멈춤, 단계별 실패 주입 복원(복구 실패 보고) |
@@ -42,7 +42,8 @@
 |---|---|---|
 | `src/project/adopt-opal.ts`, `src/cli.ts` | 반영 | 새 명령 `pace adopt opal` |
 | `src/project/harness.ts` | 반영 | `commitHookPath`·`COMMIT_HOOK`·`COMMIT_HOOK_MARKER` export(동작 불변, `project-harness` 71/71) |
-| `test/adopt-opal*.test.ts` | 반영 | 단위·e2e·문서. 계획한 `test/fixtures/opal-project/**`는 만들지 않고 시험 코드가 표본을 생성한다(표본 파일 유지 부담 제거) |
+| `test/adopt-opal*.test.ts` | 반영 | 단위·e2e·문서 |
+| `test/fixtures/opal-project/**` | 해당 없음 | 계획한 표본 폴더는 만들지 않고 시험 코드가 표본을 생성한다(표본 파일 유지 부담 제거) |
 | `README.md`, `docs/README.md` | 반영 | "OPAL에서 넘어올 때", 구성 요소 행, 문서 표. 하네스 라벨 불변 |
 | `.pace/test-map.json` | 반영 | `adopt-opal` 단위 추가(`pace test unit adopt-opal`) |
 | 브레인(`.pace/brain/`) | 반영 | OPAL 가져오기 설계 결정·함정 페이지 추가 |

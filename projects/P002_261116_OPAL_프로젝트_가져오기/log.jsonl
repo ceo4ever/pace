@@ -22,3 +22,4 @@
 {"ts":"2026-11-16T12:47:51.970Z","p":"P002","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-16T12:47:53.458Z","p":"P002","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-16T12:47:53.458Z","p":"P002","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-16T14:32:52.923Z","p":"P002","type":"gate","by":"cli","msg":"finish: contract","ok":false,"data":{"finish":1}}
