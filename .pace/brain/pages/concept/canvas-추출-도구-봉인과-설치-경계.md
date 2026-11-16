@@ -1,0 +1,25 @@
+---
+type: concept
+title: Canvas 스킬 묶음 설치 경계
+summary: pace-canvas-skills 경로로 봉인 묶음을 통째 설치하며 상류 format과 바이트를 보존한다
+tags: []
+sources: [code:src/setup/install.ts, code:scripts/secret-scan.ts, doc:docs/README.md, test:test/canvas-skills.test.ts]
+related: [pace-intent-의도-파악-기획-구조와-함정]
+created: 2026-11-09
+updated: 2026-11-16
+status: active
+---
+
+## 설치 방식
+
+Canvas Studio가 배포하는 canvas-skills(2.0.1)는 루트에 SKILL.md가 없는 단일 폴더이고 도구가 `../../runtime`을 상대 import한다. 그래서 하위 스킬만 떼어 복사(평탄화)하지 않고, 링크도 쓰지 않는다. 폴더 전체를 `skills/pace-canvas-skills/`에 두면 기존 app 원자 교체가 그대로 통째 교체를 맡고, 도구 스킬 폴더(`~/.claude/skills` 등)에는 manifest `skills`의 이름·설명을 쓴 얇은 입구 SKILL.md와 `.pace-managed` 표지만 둔다. 입구 본문은 설치본 정본 SKILL.md·tools의 절대 경로를 가리킨다. 외부 pin·여러 버전 유지·활성 버전 선택은 상류가 철회했다.
+
+폴더 이름만 PACE 경로를 쓰고 상류 format과 봉인 바이트는 유지한다.
+
+## 신뢰와 검사
+
+manifest는 파일 확인용이지 외부 신뢰 보증이 아니다. 설치기는 복사 전에 폴더 파일 집합과 SHA-256이 manifest와 정확히 같은지 읽기만으로 대조하고 어긋나면 아무것도 바꾸기 전에 설치를 멈춘다(기존 활성 설치 유지). 묶음 코드는 대조 뒤 소비자 시험에서만 실행한다. 묶음 JS의 비밀 검사 오탐 5개는 경로와 SHA-256이 모두 같을 때만 제외한다. 묶음 바이트가 Windows 체크아웃에서 바뀌면 해시가 깨지므로 `.gitattributes`가 `-text`로 고정한다. 임시 HOME 설치 시험은 실제 사용자 설치와 새 세션 스킬 발견 실측을 대체하지 않는다.
+
+## 운영 경계
+
+렌더는 소유 TMPDIR의 Chrome 임시 프로필을 쓴다. 종료 뒤 프로필 일부가 남는 현상은 이전 봉인 0.1.2와 Windows 2.0.1에서 관측됐다. 시험은 소유 프로세스의 종료를 확인하고 소유 프로필만 제한적으로 회수했으며 최초 EPERM 원인이나 상류 수정은 확인하지 못했다. 상류 변경은 묶음 전체 교체로 수용한다.

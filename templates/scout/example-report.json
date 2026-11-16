@@ -1,0 +1,373 @@
+{
+  "version": 1,
+  "meta": {
+    "title": "예시 — 학부모 AI 튜터 기회 탐색",
+    "created": "2026-10-28",
+    "input": {
+      "kind": "mixed",
+      "topic": "초등 학부모의 AI 학습 도구",
+      "links": [
+        "https://example.com/news/ai-tutor",
+        "https://example.com/blog/parent-notes"
+      ]
+    },
+    "note": "schema·렌더 확인용 예시. 출처는 example.com 가상 문서다."
+  },
+  "summary": {
+    "recommendation": "I1",
+    "reasons": [
+      "학부모 62%가 이미 AI 튜터를 써 봤다는 조사가 있다 [S1]",
+      "가장 큰 불편은 아이가 무엇을 배웠는지 모른다는 것이다 [S2]",
+      "주간 요약 리포트는 혼자 2주 안에 시제품을 만들 수 있다"
+    ],
+    "biggest_assumption": "학부모가 주간 학습 요약에 월 1만 원 이상을 낼 것이다"
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "title": "학부모 AI 튜터 사용 조사",
+      "url": "https://example.com/news/ai-tutor",
+      "kind": "article",
+      "published": "2026-10-01",
+      "accessed": "2026-10-28",
+      "credibility": "high",
+      "summary": "초등 학부모 1,000명 조사 — AI 튜터 사용 경험과 걱정",
+      "claims": [
+        {
+          "type": "fact",
+          "text": "학부모의 62%가 AI 튜터를 써 봤다",
+          "quote": "학부모 62%가 AI 튜터를 써 봤다."
+        },
+        {
+          "type": "opinion",
+          "text": "AI 튜터 시장은 더 커질 것이다",
+          "who": "기사 속 업계 관계자"
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "title": "아이 AI 공부, 부모는 깜깜이",
+      "url": "https://example.com/blog/parent-notes",
+      "kind": "blog",
+      "published": "2026-09-30",
+      "accessed": "2026-10-28",
+      "credibility": "low",
+      "summary": "학부모 블로그 — 아이가 AI로 무엇을 공부했는지 알 수 없다는 불편",
+      "claims": [
+        {
+          "type": "opinion",
+          "text": "아이가 AI로 무엇을 배웠는지 알 수 없다",
+          "quote": "아이가 뭘 배웠는지 도무지 모르겠다"
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "title": "AI 튜터 리뷰 영상",
+      "url": "https://example.com/video/review",
+      "kind": "video",
+      "published": "2026-09-01",
+      "accessed": "2026-10-28",
+      "credibility": "medium",
+      "summary": "교육 채널의 AI 튜터 비교 리뷰",
+      "claims": [
+        {
+          "type": "fact",
+          "text": "리뷰한 앱 3개 모두 부모용 리포트가 없다",
+          "quote": "세 앱 모두 부모용 리포트는 없었어요",
+          "time": "03:41"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "id": "G1",
+      "type": "behavior",
+      "title": "AI 튜터 사용이 이미 흔하다",
+      "description": "학부모 다수가 AI 튜터를 써 봤다 [S1]",
+      "evidence": [
+        "S1"
+      ],
+      "agreement": "single"
+    },
+    {
+      "id": "G2",
+      "type": "problem",
+      "title": "부모는 학습 내용을 모른다",
+      "description": "부모가 아이의 AI 학습을 볼 수 없다는 불편 [S2], 리뷰한 앱에 부모 리포트가 없다 [S3 03:41]",
+      "evidence": [
+        "S2",
+        "S3 03:41"
+      ],
+      "agreement": "agree"
+    }
+  ],
+  "ideas": [
+    {
+      "id": "I1",
+      "name": "AI 학습 주간 요약 리포트",
+      "problem": "부모가 아이의 AI 학습 내용을 모른다 [S2]",
+      "customer": "AI 튜터를 쓰는 초등 학부모",
+      "solution": "아이의 AI 대화 기록을 주 1회 한 장으로 요약해 부모에게 보낸다",
+      "revenue": "월 구독(추정 9,900원)",
+      "signals": [
+        "G1",
+        "G2"
+      ],
+      "kill_assumptions": [
+        "AI 튜터 앱이 대화 기록을 내보내게 해 준다(앱 내보내기 기능 또는 부모 계정 접근 — 아이 기기 수집은 하지 않는다)"
+      ],
+      "estimates": [
+        "월 구독 9,900원은 출처가 아닌 추정"
+      ]
+    },
+    {
+      "id": "I2",
+      "name": "부모용 AI 튜터 비교 가이드",
+      "problem": "어떤 AI 튜터가 아이에게 맞는지 고르기 어렵다",
+      "customer": "AI 튜터를 처음 고르는 학부모",
+      "solution": "앱별 기능·부모 기능 유무를 비교한 유료 가이드",
+      "revenue": "건당 판매",
+      "signals": [
+        "G1"
+      ],
+      "kill_assumptions": [
+        "무료 비교 글보다 돈을 낼 만큼 낫다"
+      ]
+    },
+    {
+      "id": "I3",
+      "name": "AI 숙제 대화 기록 내보내기 도구",
+      "problem": "아이가 쓴 AI 대화를 부모가 한곳에서 볼 수 없다 [S2]",
+      "customer": "여러 AI 앱을 함께 쓰는 초등 학부모",
+      "solution": "앱별 대화 기록을 모아 내려받게 해 주는 브라우저 확장",
+      "revenue": "한 번 구매",
+      "signals": [
+        "G2"
+      ],
+      "kill_assumptions": [
+        "앱들이 대화 기록 내보내기를 막지 않는다",
+        "부모가 원문 기록까지 읽으려 한다"
+      ]
+    }
+  ],
+  "criteria": [
+    {
+      "id": "evidence",
+      "name": "근거 강도",
+      "weight": 25
+    },
+    {
+      "id": "problem",
+      "name": "문제 크기",
+      "weight": 20
+    },
+    {
+      "id": "feasibility",
+      "name": "실현성",
+      "weight": 15
+    },
+    {
+      "id": "differentiation",
+      "name": "차별성",
+      "weight": 15
+    },
+    {
+      "id": "cost",
+      "name": "시작 비용",
+      "weight": 10
+    },
+    {
+      "id": "fit",
+      "name": "사용자 적합도",
+      "weight": 15
+    }
+  ],
+  "scores": [
+    {
+      "idea": "I1",
+      "criterion": "evidence",
+      "score": 3,
+      "reason": "사실 1개와 일치하는 의견·리뷰",
+      "refs": [
+        "S1",
+        "S2",
+        "S3 03:41"
+      ],
+      "estimate": false
+    },
+    {
+      "idea": "I1",
+      "criterion": "problem",
+      "score": 3,
+      "reason": "블로그 불편과 리뷰의 기능 공백이 같은 문제를 가리킨다",
+      "refs": [
+        "S2",
+        "S3 03:41"
+      ],
+      "estimate": false
+    },
+    {
+      "idea": "I1",
+      "criterion": "feasibility",
+      "score": 3,
+      "reason": "기록 내보내기가 되면 요약은 쉽다",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I1",
+      "criterion": "differentiation",
+      "score": 4,
+      "reason": "리뷰한 앱 3개에 부모 리포트가 없다",
+      "refs": [
+        "S3 03:41"
+      ],
+      "estimate": false
+    },
+    {
+      "idea": "I1",
+      "criterion": "cost",
+      "score": 4,
+      "reason": "혼자 2주 시제품",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I1",
+      "criterion": "fit",
+      "score": 3,
+      "reason": "LLM 도구 개발 경험과 맞는다",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I2",
+      "criterion": "evidence",
+      "score": 2,
+      "reason": "사용 경험 조사 1개뿐",
+      "refs": [
+        "S1"
+      ],
+      "estimate": false
+    },
+    {
+      "idea": "I2",
+      "criterion": "problem",
+      "score": 2,
+      "reason": "고르기 어렵다는 근거가 출처에 없다",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I2",
+      "criterion": "feasibility",
+      "score": 5,
+      "reason": "글 작성만으로 가능",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I2",
+      "criterion": "differentiation",
+      "score": 1,
+      "reason": "비교 글은 흔하다",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I2",
+      "criterion": "cost",
+      "score": 5,
+      "reason": "비용 거의 없음",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I2",
+      "criterion": "fit",
+      "score": 2,
+      "reason": "콘텐츠 판매 경험이 없다",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I3",
+      "criterion": "evidence",
+      "score": 2,
+      "reason": "불편 의견과 리뷰 하나",
+      "refs": [
+        "S2",
+        "S3 03:41"
+      ],
+      "estimate": false
+    },
+    {
+      "idea": "I3",
+      "criterion": "problem",
+      "score": 3,
+      "reason": "I1과 같은 불편",
+      "refs": [
+        "S2"
+      ],
+      "estimate": false
+    },
+    {
+      "idea": "I3",
+      "criterion": "feasibility",
+      "score": 2,
+      "reason": "앱마다 내보내기 방식이 달라 어렵다",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I3",
+      "criterion": "differentiation",
+      "score": 3,
+      "reason": "부모 리포트가 없는 앱이 많다",
+      "refs": [
+        "S3 03:41"
+      ],
+      "estimate": false
+    },
+    {
+      "idea": "I3",
+      "criterion": "cost",
+      "score": 3,
+      "reason": "앱별 대응에 1달 이상",
+      "refs": [],
+      "estimate": true
+    },
+    {
+      "idea": "I3",
+      "criterion": "fit",
+      "score": 3,
+      "reason": "브라우저 확장 개발 경험이 필요하다",
+      "refs": [],
+      "estimate": true
+    }
+  ],
+  "next_steps": {
+    "experiment": {
+      "idea": "I1",
+      "what": "학부모 커뮤니티에 샘플 주간 리포트 이미지를 올리고 대기 신청을 받는다",
+      "cost": "반나절, 0원",
+      "success": "1주 안에 대기 신청 30명 이상이면 계속, 10~29명이면 문구를 바꿔 1주 더, 10명 미만이면 접는다(기준 수치는 추정)"
+    },
+    "cards": [
+      "I1"
+    ]
+  },
+  "unverified": [
+    "S3 자막은 붙여 넣은 일부만 확인",
+    "AI 튜터 앱의 대화 기록 내보내기 지원 여부"
+  ],
+  "dropped": [
+    {
+      "name": "AI 튜터 직접 개발",
+      "reason": "근거 신호가 시장 성장 의견뿐 [S1]"
+    }
+  ]
+}

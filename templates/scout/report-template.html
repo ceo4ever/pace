@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-{{scriptHash}}'; img-src data:">
+<title>{{title}}</title>
+<style>
+:root {
+  --bg: #fbfaf8; --surface: #ffffff; --text: #1d1d1f; --muted: #5f6368; --line: #e3e1dc;
+  --accent: #2f5bd3; --accent-soft: #e8eefc; --good: #1e7a46; --bad: #b3261e; --warn: #8a5a00; --warn-soft: #fdf3dc;
+  --bar: #2f5bd3; --bar-bg: #e9e7e2;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16171a; --surface: #1f2024; --text: #ecebe8; --muted: #a3a3a8; --line: #34353b;
+    --accent: #8fb0ff; --accent-soft: #263150; --good: #6fd29a; --bad: #ff8a80; --warn: #f1c26b; --warn-soft: #3a3020;
+    --bar: #8fb0ff; --bar-bg: #34353b;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif; word-break: keep-all; overflow-wrap: anywhere; }
+main { max-width: 920px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 1.7rem; line-height: 1.3; margin: 0 0 8px; }
+h2 { font-size: 1.25rem; margin: 40px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+h3 { font-size: 1.05rem; margin: 0 0 6px; }
+p { margin: 6px 0; }
+a { color: var(--accent); }
+.muted { color: var(--muted); font-size: .92rem; }
+.meta { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin: 10px 0; }
+.hero { border-color: var(--accent); background: var(--accent-soft); }
+.hero ol { margin: 6px 0 6px 20px; padding: 0; }
+.tag { display: inline-block; font-size: .78rem; line-height: 1.4; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); margin-right: 4px; white-space: nowrap; }
+.tag.fact { color: var(--good); border-color: currentColor; }
+.tag.opinion { color: var(--warn); border-color: currentColor; }
+.tag.estimate { color: var(--warn); background: var(--warn-soft); border-color: currentColor; }
+.tag.conflict { color: var(--bad); border-color: currentColor; }
+.ref { font-size: .82rem; text-decoration: none; white-space: nowrap; }
+blockquote { margin: 6px 0; padding: 4px 12px; border-left: 3px solid var(--line); color: var(--muted); }
+details { margin: 6px 0; }
+summary { cursor: pointer; color: var(--accent); }
+.grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; margin: 6px 0; }
+dt { color: var(--muted); }
+dd { margin: 0; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 520px; background: var(--surface); }
+thead th { min-width: 150px; }
+tbody th { min-width: 96px; white-space: nowrap; }
+th, td { border: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; font-size: .92rem; }
+th { background: var(--bg); }
+.bar { display: flex; align-items: center; gap: 6px; }
+.bar .track { display: block; height: 8px; border-radius: 4px; background: var(--bar-bg); flex: 0 0 60px; overflow: hidden; }
+.bar .track i { display: block; height: 100%; background: var(--bar); }
+.total td, .total th { font-weight: 700; }
+.status-pass { color: var(--good); } .status-fail { color: var(--bad); } .status-unknown { color: var(--warn); }
+@media (max-width: 600px) { main { padding: 20px 16px 48px; } h1 { font-size: 1.4rem; } }
+@media print {
+  body { background: #fff; color: #000; font-size: 11pt; }
+  main { max-width: none; padding: 0; }
+  .card, table { break-inside: avoid; }
+  a { color: inherit; }
+  summary { color: inherit; }
+}
+</style>
+</head>
+<body>
+<main>
+{{body}}
+</main>
+<script>{{script}}</script>
+</body>
+</html>

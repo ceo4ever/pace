@@ -1,0 +1,1668 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Canvas Studio version 4 authoring structure",
+  "description": "Structural guide only; validate with the bundled parser for migrations, bounds and cross references.",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "canvas-studio"
+    },
+    "version": {
+      "const": 4
+    },
+    "doc": {
+      "$ref": "#/$defs/Doc"
+    },
+    "images": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "format",
+    "version",
+    "doc",
+    "images"
+  ],
+  "$defs": {
+    "Doc": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 4
+        },
+        "name": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Page"
+          }
+        },
+        "pageOrder": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "nodes": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/SceneNode"
+          }
+        },
+        "counters": {
+          "type": "object",
+          "propertyNames": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/NodeType"
+              },
+              {
+                "const": "page"
+              }
+            ]
+          },
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "collections": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/VariableCollection"
+          }
+        },
+        "collectionOrder": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "variables": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Variable"
+          }
+        },
+        "kit": {
+          "$ref": "#/$defs/KitInfo"
+        },
+        "libraries": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/LibraryLink"
+          }
+        }
+      },
+      "required": [
+        "version",
+        "name",
+        "pages",
+        "pageOrder",
+        "nodes",
+        "counters",
+        "collections",
+        "collectionOrder",
+        "variables"
+      ]
+    },
+    "Page": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "background": {
+          "type": "string"
+        },
+        "variableModes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "library": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "children",
+        "background"
+      ]
+    },
+    "SceneNode": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FrameNode"
+        },
+        {
+          "$ref": "#/$defs/GroupNode"
+        },
+        {
+          "$ref": "#/$defs/RectNode"
+        },
+        {
+          "$ref": "#/$defs/EllipseNode"
+        },
+        {
+          "$ref": "#/$defs/LineNode"
+        },
+        {
+          "$ref": "#/$defs/VectorNode"
+        },
+        {
+          "$ref": "#/$defs/TextNode"
+        }
+      ]
+    },
+    "FrameNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NodeBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "frame"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "cornerRadius": {
+              "$ref": "#/$defs/CornerRadius"
+            },
+            "clipContent": {
+              "type": "boolean"
+            },
+            "layout": {
+              "$ref": "#/$defs/LayoutProps"
+            },
+            "reference": {
+              "type": "object",
+              "properties": {
+                "imageHash": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "imageHash"
+              ]
+            },
+            "detachedFrom": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "kitId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            },
+            "component": {
+              "const": true
+            },
+            "instanceOf": {
+              "type": "string"
+            },
+            "overrides": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "variantSet": {
+              "type": "object",
+              "properties": {
+                "properties": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/VariantProperty"
+                  }
+                }
+              },
+              "required": [
+                "properties"
+              ]
+            },
+            "variant": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "componentProps": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ComponentProp"
+              }
+            },
+            "propValues": {
+              "type": "object",
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              }
+            },
+            "variableModes": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "children",
+            "cornerRadius",
+            "clipContent",
+            "layout"
+          ]
+        }
+      ]
+    },
+    "CornerRadius": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "minItems": 4,
+          "maxItems": 4
+        }
+      ]
+    },
+    "LayoutProps": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "anyOf": [
+            {
+              "const": "none"
+            },
+            {
+              "const": "horizontal"
+            },
+            {
+              "const": "vertical"
+            },
+            {
+              "const": "grid"
+            }
+          ]
+        },
+        "gap": {
+          "type": "number"
+        },
+        "counterGap": {
+          "type": "number"
+        },
+        "padding": {
+          "type": "object",
+          "properties": {
+            "top": {
+              "type": "number"
+            },
+            "right": {
+              "type": "number"
+            },
+            "bottom": {
+              "type": "number"
+            },
+            "left": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ]
+        },
+        "primaryAlign": {
+          "anyOf": [
+            {
+              "const": "start"
+            },
+            {
+              "const": "center"
+            },
+            {
+              "const": "end"
+            },
+            {
+              "const": "space-between"
+            }
+          ]
+        },
+        "counterAlign": {
+          "anyOf": [
+            {
+              "const": "start"
+            },
+            {
+              "const": "center"
+            },
+            {
+              "const": "end"
+            }
+          ]
+        },
+        "wrap": {
+          "type": "boolean"
+        },
+        "grid": {
+          "type": "object",
+          "properties": {
+            "columns": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/GridTrack"
+              }
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/GridTrack"
+              }
+            }
+          },
+          "required": [
+            "columns",
+            "rows"
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "gap",
+        "counterGap",
+        "padding",
+        "primaryAlign",
+        "counterAlign",
+        "wrap"
+      ]
+    },
+    "GridTrack": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "anyOf": [
+            {
+              "const": "px"
+            },
+            {
+              "const": "fr"
+            },
+            {
+              "const": "auto"
+            }
+          ]
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ]
+    },
+    "VariantProperty": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "values"
+      ]
+    },
+    "ComponentProp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "const": "text"
+            },
+            {
+              "const": "boolean"
+            },
+            {
+              "const": "swap"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type"
+      ]
+    },
+    "NodeBase": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/NodeType"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "string"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "w": {
+          "type": "number"
+        },
+        "h": {
+          "type": "number"
+        },
+        "rotation": {
+          "type": "number"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "locked": {
+          "type": "boolean"
+        },
+        "fills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Paint"
+          }
+        },
+        "strokes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SolidPaint"
+          }
+        },
+        "strokeWidth": {
+          "type": "number"
+        },
+        "strokeAlign": {
+          "$ref": "#/$defs/StrokeAlign"
+        },
+        "strokeDash": {
+          "anyOf": [
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          }
+        },
+        "sizing": {
+          "type": "object",
+          "properties": {
+            "horizontal": {
+              "$ref": "#/$defs/SizingMode"
+            },
+            "vertical": {
+              "$ref": "#/$defs/SizingMode"
+            }
+          },
+          "required": [
+            "horizontal",
+            "vertical"
+          ]
+        },
+        "minWidth": {
+          "type": "number"
+        },
+        "maxWidth": {
+          "type": "number"
+        },
+        "minHeight": {
+          "type": "number"
+        },
+        "maxHeight": {
+          "type": "number"
+        },
+        "sizeBasis": {
+          "type": "object",
+          "properties": {
+            "w": {
+              "type": "object",
+              "properties": {
+                "requested": {
+                  "type": "number"
+                },
+                "resolved": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "requested",
+                "resolved"
+              ]
+            },
+            "h": {
+              "type": "object",
+              "properties": {
+                "requested": {
+                  "type": "number"
+                },
+                "resolved": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "requested",
+                "resolved"
+              ]
+            }
+          }
+        },
+        "absolute": {
+          "type": "boolean"
+        },
+        "gridCell": {
+          "$ref": "#/$defs/GridCell"
+        },
+        "alignSelf": {
+          "type": "object",
+          "properties": {
+            "horizontal": {
+              "$ref": "#/$defs/SelfAlign"
+            },
+            "vertical": {
+              "$ref": "#/$defs/SelfAlign"
+            }
+          }
+        },
+        "propRefs": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "visible": {
+              "type": "string"
+            },
+            "swap": {
+              "type": "string"
+            }
+          }
+        },
+        "bindings": {
+          "$ref": "#/$defs/Bindings"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "parentId",
+        "x",
+        "y",
+        "w",
+        "h",
+        "rotation",
+        "opacity",
+        "visible",
+        "locked",
+        "fills",
+        "strokes",
+        "strokeWidth",
+        "strokeAlign",
+        "strokeDash",
+        "effects",
+        "sizing"
+      ]
+    },
+    "NodeType": {
+      "anyOf": [
+        {
+          "const": "frame"
+        },
+        {
+          "const": "group"
+        },
+        {
+          "const": "rect"
+        },
+        {
+          "const": "ellipse"
+        },
+        {
+          "const": "line"
+        },
+        {
+          "const": "vector"
+        },
+        {
+          "const": "text"
+        }
+      ]
+    },
+    "Paint": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SolidPaint"
+        },
+        {
+          "$ref": "#/$defs/ImagePaint"
+        },
+        {
+          "$ref": "#/$defs/GradientPaint"
+        }
+      ]
+    },
+    "SolidPaint": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "solid"
+        },
+        "id": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "variable": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "color",
+        "opacity",
+        "visible"
+      ]
+    },
+    "ImagePaint": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "image"
+        },
+        "id": {
+          "type": "string"
+        },
+        "imageHash": {
+          "type": "string"
+        },
+        "scaleMode": {
+          "$ref": "#/$defs/ScaleMode"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "imageHash",
+        "scaleMode",
+        "opacity",
+        "visible"
+      ]
+    },
+    "ScaleMode": {
+      "anyOf": [
+        {
+          "const": "fill"
+        },
+        {
+          "const": "fit"
+        },
+        {
+          "const": "crop"
+        },
+        {
+          "const": "tile"
+        }
+      ]
+    },
+    "GradientPaint": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LinearGradientPaint"
+        },
+        {
+          "$ref": "#/$defs/RadialGradientPaint"
+        }
+      ]
+    },
+    "LinearGradientPaint": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "gradient-linear"
+        },
+        "id": {
+          "type": "string"
+        },
+        "stops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GradientStop"
+          }
+        },
+        "angle": {
+          "type": "number"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "stops",
+        "angle",
+        "opacity",
+        "visible"
+      ]
+    },
+    "GradientStop": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "number"
+        },
+        "color": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "position",
+        "color",
+        "opacity"
+      ]
+    },
+    "RadialGradientPaint": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "gradient-radial"
+        },
+        "id": {
+          "type": "string"
+        },
+        "stops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GradientStop"
+          }
+        },
+        "center": {
+          "$ref": "#/$defs/Vec"
+        },
+        "radius": {
+          "$ref": "#/$defs/Vec"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "stops",
+        "center",
+        "radius",
+        "opacity",
+        "visible"
+      ]
+    },
+    "Vec": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ]
+    },
+    "StrokeAlign": {
+      "anyOf": [
+        {
+          "const": "inside"
+        },
+        {
+          "const": "center"
+        },
+        {
+          "const": "outside"
+        }
+      ]
+    },
+    "Effect": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ShadowEffect"
+        },
+        {
+          "$ref": "#/$defs/BlurEffect"
+        }
+      ]
+    },
+    "ShadowEffect": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "anyOf": [
+            {
+              "const": "drop-shadow"
+            },
+            {
+              "const": "inner-shadow"
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "blur": {
+          "type": "number"
+        },
+        "spread": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "color",
+        "opacity",
+        "x",
+        "y",
+        "blur",
+        "spread",
+        "visible"
+      ]
+    },
+    "BlurEffect": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "layer-blur"
+        },
+        "id": {
+          "type": "string"
+        },
+        "radius": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "radius",
+        "visible"
+      ]
+    },
+    "SizingMode": {
+      "anyOf": [
+        {
+          "const": "fixed"
+        },
+        {
+          "const": "hug"
+        },
+        {
+          "const": "fill"
+        }
+      ]
+    },
+    "GridCell": {
+      "type": "object",
+      "properties": {
+        "column": {
+          "type": "number"
+        },
+        "row": {
+          "type": "number"
+        },
+        "columnSpan": {
+          "type": "number"
+        },
+        "rowSpan": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "column",
+        "row",
+        "columnSpan",
+        "rowSpan"
+      ]
+    },
+    "SelfAlign": {
+      "anyOf": [
+        {
+          "const": "start"
+        },
+        {
+          "const": "center"
+        },
+        {
+          "const": "end"
+        }
+      ]
+    },
+    "Bindings": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/BindableField"
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "BindableField": {
+      "enum": [
+        "minWidth",
+        "maxWidth",
+        "minHeight",
+        "maxHeight",
+        "opacity",
+        "strokeWidth",
+        "cornerRadius",
+        "fontFamily",
+        "fontSize",
+        "fontWeight",
+        "lineHeight",
+        "letterSpacing",
+        "text",
+        "gap",
+        "counterGap",
+        "paddingTop",
+        "paddingRight",
+        "paddingBottom",
+        "paddingLeft",
+        "typography"
+      ]
+    },
+    "GroupNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NodeBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "group"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "children"
+          ]
+        }
+      ]
+    },
+    "RectNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NodeBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "rect"
+            },
+            "cornerRadius": {
+              "$ref": "#/$defs/CornerRadius"
+            }
+          },
+          "required": [
+            "type",
+            "cornerRadius"
+          ]
+        }
+      ]
+    },
+    "EllipseNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NodeBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "ellipse"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        }
+      ]
+    },
+    "LineNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NodeBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "line"
+            }
+          },
+          "required": [
+            "type"
+          ]
+        }
+      ]
+    },
+    "VectorNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NodeBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "vector"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/VectorPoint"
+              }
+            },
+            "closed": {
+              "type": "boolean"
+            },
+            "paths": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/VectorPath"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "points",
+            "closed",
+            "paths"
+          ]
+        }
+      ]
+    },
+    "VectorPoint": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/Vec"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "in": {
+              "$ref": "#/$defs/Vec"
+            },
+            "out": {
+              "$ref": "#/$defs/Vec"
+            }
+          }
+        }
+      ]
+    },
+    "VectorPath": {
+      "type": "object",
+      "properties": {
+        "d": {
+          "type": "string"
+        },
+        "windingRule": {
+          "$ref": "#/$defs/WindingRule"
+        }
+      },
+      "required": [
+        "d",
+        "windingRule"
+      ]
+    },
+    "WindingRule": {
+      "anyOf": [
+        {
+          "const": "nonzero"
+        },
+        {
+          "const": "evenodd"
+        }
+      ]
+    },
+    "TextNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NodeBase"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string"
+            },
+            "fontFamily": {
+              "type": "string"
+            },
+            "fontSize": {
+              "type": "number"
+            },
+            "fontWeight": {
+              "type": "number"
+            },
+            "lineHeight": {
+              "$ref": "#/$defs/LineHeight"
+            },
+            "letterSpacing": {
+              "type": "number"
+            },
+            "textAlign": {
+              "anyOf": [
+                {
+                  "const": "left"
+                },
+                {
+                  "const": "center"
+                },
+                {
+                  "const": "right"
+                }
+              ]
+            },
+            "textAutoResize": {
+              "$ref": "#/$defs/TextAutoResize"
+            },
+            "textDecoration": {
+              "$ref": "#/$defs/TextDecoration"
+            },
+            "maxLines": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "autoName": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "type",
+            "text",
+            "fontFamily",
+            "fontSize",
+            "fontWeight",
+            "lineHeight",
+            "letterSpacing",
+            "textAlign",
+            "textAutoResize",
+            "textDecoration",
+            "maxLines",
+            "autoName"
+          ]
+        }
+      ]
+    },
+    "LineHeight": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "anyOf": [
+            {
+              "const": "multiplier"
+            },
+            {
+              "const": "px"
+            }
+          ]
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "unit",
+        "value"
+      ]
+    },
+    "TextAutoResize": {
+      "anyOf": [
+        {
+          "const": "width-and-height"
+        },
+        {
+          "const": "height"
+        },
+        {
+          "const": "none"
+        }
+      ]
+    },
+    "TextDecoration": {
+      "anyOf": [
+        {
+          "const": "none"
+        },
+        {
+          "const": "underline"
+        },
+        {
+          "const": "line-through"
+        }
+      ]
+    },
+    "VariableCollection": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "modes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VariableMode"
+          }
+        },
+        "defaultModeId": {
+          "type": "string"
+        },
+        "variableIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "library": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "modes",
+        "defaultModeId",
+        "variableIds"
+      ]
+    },
+    "VariableMode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "Variable": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/VariableType"
+        },
+        "collectionId": {
+          "type": "string"
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/VariableValue"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "collectionId",
+        "values"
+      ]
+    },
+    "VariableType": {
+      "anyOf": [
+        {
+          "const": "color"
+        },
+        {
+          "const": "number"
+        },
+        {
+          "const": "string"
+        },
+        {
+          "const": "font"
+        },
+        {
+          "const": "typography"
+        }
+      ]
+    },
+    "VariableValue": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "$ref": "#/$defs/TypographyValue"
+        },
+        {
+          "$ref": "#/$defs/VariableAlias"
+        }
+      ]
+    },
+    "TypographyValue": {
+      "type": "object",
+      "properties": {
+        "fontFamily": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/VariableAlias"
+            }
+          ]
+        },
+        "fontSize": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/VariableAlias"
+            }
+          ]
+        },
+        "fontWeight": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/VariableAlias"
+            }
+          ]
+        },
+        "lineHeight": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/VariableAlias"
+            }
+          ]
+        },
+        "letterSpacing": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/VariableAlias"
+            }
+          ]
+        }
+      },
+      "required": [
+        "fontFamily",
+        "fontSize",
+        "fontWeight",
+        "lineHeight",
+        "letterSpacing"
+      ]
+    },
+    "VariableAlias": {
+      "type": "object",
+      "properties": {
+        "alias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "alias"
+      ]
+    },
+    "KitInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "version"
+      ]
+    },
+    "LibraryLink": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "source": {
+          "anyOf": [
+            {
+              "const": "builtin"
+            },
+            {
+              "const": "file"
+            }
+          ]
+        },
+        "pageId": {
+          "type": "string"
+        },
+        "collectionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "source",
+        "pageId",
+        "collectionIds"
+      ]
+    }
+  }
+}

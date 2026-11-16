@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@TITLE@</title>
+<style>
+/*@BASE_CSS@*/
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+select{font:inherit;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--text)}
+.pri{font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;background:var(--surface-2);color:var(--muted)}
+.pri.Must{background:var(--accent-soft);color:var(--accent)}
+.gwt{display:grid;grid-template-columns:70px 1fr;gap:4px 10px;padding:12px 18px;border-bottom:1px solid var(--line)}
+.gwt:last-child{border-bottom:0}
+.gwt .k{color:var(--faint);font-size:12px;font-weight:700}
+.tbl-wrap{overflow-x:auto}
+tr:target td{background:var(--accent-soft)}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+@DATA@
+</script>
+<script>
+/*@BASE_JS@*/
+header('기능 명세', [[ '기능 ' + DATA.features.length ], [ '완료 기준 ' + DATA.criteria.length ], [ 'Must ' + DATA.features.filter(f=>f.priority==='Must').length ]]);
+const pri = el('select', {onchange:draw}, el('option', {value:''}, '우선순위 전체'), ['Must','Should','Could'].map(p=>el('option', {value:p}, p)));
+const ucSel = el('select', {onchange:draw}, el('option', {value:''}, '유스케이스 전체'), [...new Set(DATA.features.map(f=>f.uc))].map(u=>el('option', {value:u}, u)));
+const tbody = el('tbody', {});
+function draw(){
+  tbody.replaceChildren(...DATA.features.filter(f => (!pri.value || f.priority===pri.value) && (!ucSel.value || f.uc===ucSel.value)).map(f => el('tr', {id:f.id},
+    el('td', {}, el('span', {class:'id'}, f.id)), el('td', {}, el('b', {}, f.name)), el('td', {class:'muted'}, f.desc),
+    el('td', {}, el('span', {class:'pri ' + f.priority}, f.priority)), el('td', {}, idLink(f.uc)), el('td', {}, idLink(f.screen)), el('td', {}, ids(f.ac)))));
+}
+draw();
+const crit = el('div', {class:'card'}, DATA.criteria.map(c => el('div', {class:'gwt', id:c.id},
+  el('span', {}, el('span', {class:'id'}, c.id)), el('span', {class:'faint small'}, '기능 ', ids(c.features)),
+  el('span', {class:'k'}, '주어진'), el('span', {}, c.given), el('span', {class:'k'}, '하면'), el('span', {}, c.when), el('span', {class:'k'}, '그러면'), el('span', {}, el('b', {}, c.then)))));
+document.body.append(el('main', {class:'wrap'},
+  el('div', {class:'filters noprint'}, pri, ucSel),
+  el('div', {class:'card tbl-wrap'}, el('table', {}, el('thead', {}, el('tr', {}, ['ID','기능','설명','우선순위','유스케이스','화면','완료 기준'].map(t=>el('th',{},t)))), tbody)),
+  el('h2', {class:'sec-title', style:'margin-top:24px'}, '완료 기준 (Given · When · Then)'), crit)); footer();
+if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+</script>
+</body>
+</html>

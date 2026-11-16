@@ -1,0 +1,143 @@
+# 프로젝트 문서 형식
+
+## 역할 경계
+
+| | `AGENTS.md` | `docs/README.md` (정의서) |
+|---|---|---|
+| 읽는 시점 | 모든 LLM 도구가 매 세션 자동 | 필요할 때 |
+| 성격 | 이 프로젝트에서 **일하는 법** 요약 + 길 안내 | 저장소 **정의서** — `pace project` 하네스가 환경 명령과 기준 문서를 읽는 곳 |
+| 원본인 것 | 필수 명령, 꼭 지킬 것 | 그 밖의 모든 정의 |
+| 길이 | 60줄 이내 | 제한 없음 (표 위주) |
+
+- 이름은 `docs/README.md`로 고정이다(하네스가 찾는 이름). 루트 `README.md`는 사용자용 소개로 따로 둔다. 예전 이름 `docs/PROJECT.md`는 하네스가 대신 읽지만 최신화 때 이름 변경을 제안한다.
+- 같은 내용을 두 곳에 쓰지 않는다. 정의서 환경 표는 명령 전체를 담고, AGENTS.md에는 자주 쓰는 3~5개만 둔다.
+- 진행 상황·이슈·할 일은 문서에 쓰지 않는다 — 프로젝트 메모리에 둔다.
+- 프로젝트 메모리의 `rule`이 굳으면 AGENTS.md "꼭 지킬 것"으로 옮기고 메모리에서 지운다.
+
+## AGENTS.md
+
+```markdown
+# {프로젝트명}
+
+{무엇을 왜 하는지 한두 문장}
+
+## 명령
+- 테스트: `{명령}`
+- 실행: `{명령}`
+(실제로 돌려 확인한 것만. 전체는 docs/README.md "환경")
+
+## 꼭 지킬 것
+- {굳은 규칙 — 이유가 필요하면 한 구절}
+
+## 더 보기
+- docs/README.md — 정의·구성·환경·작업 프로세스·문서 표
+- docs/{문서}.md — {한 줄}
+- 작업: `pace project list` · 백로그 backlogs/ (형식은 docs/README.md "작업 프로세스")
+- 진행 상황·이슈: `pace memory list --project` · 과거 결정: `pace brain search "<질의>"`
+```
+
+`CLAUDE.md`에는 `@AGENTS.md` 한 줄 (Claude Code가 AGENTS.md를 읽게 한다).
+
+## docs/README.md
+
+```markdown
+# {프로젝트명}
+
+## 개요
+| 항목 | 값 |
+|---|---|
+| 목적 | {무엇을 왜} |
+| 유형 | 개발 / 일반 / 혼합 |
+| 단계 | 시작 / 진행 중 / 운영 |
+| 사용자·독자 | {누가 쓰나·읽나} |
+
+## 원칙과 기준
+- {판단 기준: 무엇을 우선하나, 완료의 기준}
+
+## 범위
+- 하는 것: …
+- 하지 않는 것: …
+
+## 구성 요소
+| 요소 | 경로 | 스택·형식 | 비고 |
+|---|---|---|---|
+| Frontend | `web/` | Next.js 15 | |
+| 기획 문서 | `100.기획/` | Markdown | |
+
+## 환경
+| 구분 | 명령 / 값 | 확인 |
+|---|---|---|
+| 설치 | `npm install` | ✅ 2026-10-22 |
+| 검사 | `npm run check` — 타입 + 단위 테스트 | ✅ 2026-10-22 |
+| 보안 검사 | `npx secretlint "**/*"` (없으면 이 행을 비워 두고 "선언 없음") | ⬜ 미확인 |
+| worktree 준비 | `npm ci --no-audit --no-fund` (새 worktree에서 한 번 — 취약점 조회는 `의존성 감사`가 맡는다) | ✅ 2026-10-22 |
+| 의존성 감사 | `npm audit --omit=dev` (선택 — finish가 잠금 파일이 바뀐 브랜치에서만 실행) | ⬜ 미확인 |
+| 실행 | `npm run dev` (http://localhost:3000, 포트는 `PORT`로 바꿈) | ⬜ 미확인 |
+| 테스트 위치 | 단위 `test/`, E2E `test/e2e/`(재사용 여정 `journeys/`·`fragments/`) | |
+| E2E | 프레임워크: Playwright `npx playwright test` / 없음 — 도구 브라우저로 `e2e/*.md` 실행 | |
+| E2E 비밀 | 환경 변수 이름만: `E2E_LOGIN_ID`, `E2E_LOGIN_PW` | |
+| 환경변수 | `DATABASE_URL` — `.env.example` 참고 | |
+
+**하네스 라벨** — `pace project`는 이 표에서 라벨 바로 뒤 첫 `` `명령` ``을 읽는다. 이름을 바꾸지 않는다.
+`검사`: 태스크 테스트와 finish 회귀 검사 · `보안 검사`: finish의 기계 검사(없으면 경고) · `worktree 준비`: start가 새 worktree에서 실행 — 패키지 관리자의 취약점 조회는 끈다(main과 같은 잠금) · `의존성 감사`(선택): finish가 잠금 파일이 base 대비 바뀐 브랜치에서만 실행하고 실패하면 멈춤. 라벨은 정의서 전체에서 표 첫 칸·목록 맨 앞에 **한 번만** 쓴다 — 첫 번째가 읽힌다(구성 요소 표에 같은 이름의 행을 두지 않는다).
+
+## 작업 프로세스
+- 관리 방식: 백로그(기획) + 프로젝트(실행) / 프로젝트만 / (나중에)
+- 백로그: `backlogs/{YYMMDD}_{한글명}/` — 형식은 아래 규칙
+- 프로젝트: `projects/P{NNN}_{YYMMDD}_{이름}/` — `pace project new·start·task·check·done·finish·merge`, 절차는 `pace-project-dev` 스킬
+- 브랜치: 프로젝트마다 worktree(`../{저장소}.wt/P###`, 브랜치 `project/P###`) / main 직접. 작은 일(버그·문구)은 main에 바로
+- 병합: rebase 뒤 fast-forward(태스크 커밋 유지), main에서 사람 승인 뒤 `pace project merge`
+- 작업자 도구: `{claude | codex | cursor | antigravity …}` (선택 — Orca 작업자 세션의 기본 도구, 이름 하나. 고르지 않으면 이 줄을 지운다 → 지금 세션 도구)
+- 상태 값: 대기 · 진행 · 완료 · 보류 (프로젝트는 정의 · 진행 · 병합 대기 · 완료)
+- 커밋·리뷰: {규칙이 있으면}
+
+## 문서
+| 문서 | 설명 | 용도 | 적용 범위 | 참조 시점 |
+|---|---|---|---|---|
+| `AGENTS.md` | 일하는 법 요약 | — | 전체 | 항상 (자동) |
+| `docs/ARCHITECTURE.md` | 구성과 경계 | architecture | `src/**` | 작업 시 |
+| `docs/CONVENTIONS.md` | 이름·파일 구조 규칙 | convention | `src/**`, `test/**` | 작업 시 |
+| `docs/SECURITY.md` | (필요 시) 보안 체크리스트·민감 경로 | security | `src/auth/**`, `scripts/**` | — |
+
+## 용어
+| 용어 | 뜻 |
+|---|---|
+```
+
+**용도**(하네스가 기준 문서를 고를 때 씀): `convention` · `security` · `architecture` · `api` · `test` · `e2e` · `ops` · `—`(기준 문서 아님). **적용 범위**: 이 문서가 기준이 되는 경로 패턴(glob), 저장소 전체면 `전체`.
+
+참조 시점 값: **항상 (자동)** — 도구가 매 세션 읽음 · **작업 시** — 관련 작업을 할 때 읽음 · **요청 시** — 사용자가 언급할 때만 · **—** — 아직 만들지 않음(필요 시).
+
+## 유형별 선택 문서
+
+근거가 있을 때만 만든다. 만들지 않은 문서는 정의서 문서 표에 "—"로 적는다.
+
+| 유형 | 문서 | 만드는 조건 |
+|---|---|---|
+| 개발 | `docs/ARCHITECTURE.md` — 시스템 구성, 디렉터리, 레이어와 의존 방향, 데이터 흐름, 새 기능 추가 절차 | 구성 요소 2개 이상, 또는 레이어 구조가 있음 |
+| 개발 | `docs/CONVENTIONS.md` — 네이밍, 파일 구조, 브랜치·커밋 규칙 | 린터·포매터 밖의 규칙이 실제로 있음 (사용자 답 또는 기존 문서) |
+| 개발 | `docs/SECURITY.md` — 보안 체크리스트, 민감 경로 패턴(인증·결제·설정 쓰기·삭제·셸·외부 전송) | 민감 경로가 있음, 또는 보안·규제 규칙(Q5). 없으면 `pace-project-dev`의 기본 체크리스트를 쓴다 |
+| 개발 | `docs/BACKEND.md`·`docs/FRONTEND.md` | FE·BE가 모두 있고 각각 ARCHITECTURE 한 절로 담기 어려울 만큼 큼 |
+| 개발 | `docs/services/{서비스}/` | 단일 레포 멀티서비스 |
+| 개발 | 레포별 `docs/` | 멀티레포(하위에 `.git` 여러 개) |
+| 일반 | `docs/STRUCTURE.md` — 폴더 구조, 문서 종류와 작성 규칙 | 산출물이 여러 종류 |
+| 일반 | `docs/GLOSSARY.md` | 용어가 정의서 표로 감당이 안 될 만큼 많음 |
+| 일반 | 산출물 템플릿 (`docs/templates/`) | 같은 형식 산출물을 반복해서 만듦 |
+| 혼합 | 개발·일반 조건을 각각 적용 | 정의서 구성 요소 표에 문서 영역도 포함 |
+
+구조·방법을 서술하는 문서(ARCHITECTURE·BACKEND·FRONTEND)는 작성 뒤 `analysis.md`의 1:1 대조를 한다.
+
+## projects/README.md
+
+작업 방식에 프로젝트를 고르면 만든다. 짧게 유지한다 — 절차의 원본은 `pace-project-dev` 스킬이다.
+
+```markdown
+# 프로젝트
+
+업무 단위 실행 폴더 — `P{NNN}_{YYMMDD}_{이름}/` (PACE는 `P` 접두어 폴더만 다룬다).
+
+- 시작: `pace project new "<이름>"` → 계약 승인 → `pace project start P###`
+- 태스크: `pace project task` → `check` → `done` · 마감: `finish`(worktree) → `merge`(main)
+- 현황: `pace project list` · 지표: `pace project stats P###`
+- 절차: `pace-project-dev` 스킬 · 기획(백로그): `backlogs/`
+```

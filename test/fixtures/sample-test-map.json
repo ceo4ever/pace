@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "units": [
+    {
+      "id": "core",
+      "sources": [
+        "workspace/core/src/**/*.ts"
+      ],
+      "tests": [
+        "workspace/core/test/**/*.test.ts"
+      ],
+      "runner": {
+        "kind": "vitest",
+        "cwd": "workspace",
+        "config": "workspace/vitest.config.ts"
+      },
+      "requires": [
+        "DB·외부 환경 필요 여부 파일별 미확인"
+      ]
+    },
+    {
+      "id": "backend",
+      "sources": [
+        "workspace/backend/src/**/*.ts"
+      ],
+      "tests": [
+        "workspace/backend/test/**/*.test.ts"
+      ],
+      "runner": {
+        "kind": "vitest",
+        "cwd": "workspace",
+        "config": "workspace/vitest.config.ts"
+      },
+      "requires": [
+        "DB·외부 환경 필요 여부 파일별 미확인"
+      ]
+    },
+    {
+      "id": "frontend",
+      "sources": [
+        "workspace/frontend/src/**/*.{ts,tsx}"
+      ],
+      "tests": [
+        "workspace/frontend/test/**/*.test.ts"
+      ],
+      "runner": {
+        "kind": "vitest",
+        "cwd": "workspace",
+        "config": "workspace/vitest.config.ts"
+      },
+      "requires": []
+    },
+    {
+      "id": "browser-e2e",
+      "sources": [
+        "workspace/core/src/**/*.ts",
+        "workspace/backend/src/**/*.ts",
+        "workspace/frontend/src/**/*.{ts,tsx}"
+      ],
+      "tests": [
+        "workspace/test/e2e/**/*.spec.ts"
+      ],
+      "runner": {
+        "kind": "playwright",
+        "cwd": "workspace",
+        "config": "workspace/playwright.config.ts"
+      },
+      "requires": [
+        "서버와 웹 빌드 및 DB"
+      ]
+    },
+    {
+      "id": "desktop-e2e",
+      "sources": [
+        "workspace/desktop/src/**/*.ts"
+      ],
+      "tests": [
+        "workspace/desktop/test/**/*.spec.ts"
+      ],
+      "runner": {
+        "kind": "playwright",
+        "cwd": "workspace/desktop",
+        "config": "workspace/desktop/playwright.config.ts"
+      },
+      "requires": [
+        "desktop 빌드와 실행 환경"
+      ]
+    }
+  ],
+  "common": [
+    "workspace/package.json",
+    "workspace/pnpm-lock.yaml",
+    "workspace/vitest.config.ts",
+    "workspace/tsconfig.base.json",
+    "workspace/core/src/**/*.ts"
+  ]
+}

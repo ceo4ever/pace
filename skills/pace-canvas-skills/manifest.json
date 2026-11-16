@@ -1,0 +1,102 @@
+{
+  "format": "canvas-skills",
+  "skillsVersion": "2.0.1",
+  "documentVersions": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "requires": {
+    "node": ">=22",
+    "chrome": "installed Google Chrome (or CHROME_PATH), for tools that render"
+  },
+  "skills": {
+    "canvas-read": {
+      "description": "Canvas 문서(.canvas.json)에서 프레임과 요소를 정보(read)와 이미지(render)로 꺼낸다 — 구현·검토 전에 어디에 무엇이 있는지 찾을 때 쓴다. 문서는 읽기만 한다.",
+      "requires": "Node 22+; render.mjs는 설치된 Google Chrome(CHROME_PATH)",
+      "tools": [
+        "read.mjs",
+        "render.mjs"
+      ]
+    },
+    "canvas-wireframe": {
+      "description": "기획을 좌표 없이 명세(JSON)로 쓰면 편집 가능한 와이어프레임(.canvas.json)을 만들고, 에디터 값으로 정리하고, 겹침·잘림을 검사한다 — 화면 기획·검토용 와이어프레임을 Canvas Studio 문서로 낼 때 쓴다.",
+      "requires": "Node 22+; wireframe.mjs·normalize.mjs는 설치된 Google Chrome(CHROME_PATH)",
+      "tools": [
+        "apply-edits.mjs",
+        "check.mjs",
+        "components.mjs",
+        "edit.mjs",
+        "normalize.mjs",
+        "validate-spec.mjs",
+        "wireframe.mjs"
+      ]
+    }
+  },
+  "files": {
+    "GUIDE.md": "5b3f4f32ef1017a84042e5e3638d4f6ca248e47bb0f0f4b23ac7aa7053c359f0",
+    "canvas-read/SKILL.md": "a8689a8e60b056006919cea0b8a8d4b48c9719a65ac58ff055daeae99528ec44",
+    "canvas-read/tools/read.mjs": "3a9a04135d4a35c573308d8e6b2aa897bc8aaf9ed53bce642a0d044b4e444ade",
+    "canvas-read/tools/render.mjs": "4f9b6e405e7920dc67954ba95d772e224d7ba7bc4f0e821970f4a064a99b6f1b",
+    "canvas-wireframe/SKILL.md": "22509c31f0cceeb07346091d0f78f88b797c55b1adc3580ae4867e1ff5491a4f",
+    "canvas-wireframe/tools/apply-edits.mjs": "ff037980e18c626b87e0a0ca2ec4d069bb4dbb8a905f6862dc26ee504a83b3e6",
+    "canvas-wireframe/tools/check.mjs": "8fbcedb587e579db521dd4c169493a2dd7dd85323ab06cca63b1bf4ee589a982",
+    "canvas-wireframe/tools/components.mjs": "02cd621edf0f755a583f17e202473b3fbddd6e5e79b729e7c8471f2cf257d012",
+    "canvas-wireframe/tools/edit.mjs": "921db7ad12e939753466561861eb2c1b3e3e2fab80fcfe630767581ac49153ef",
+    "canvas-wireframe/tools/normalize.mjs": "5a849bfbaccd4152971bf247c83cd049006c5d09aaa1e6541e1cb7c06493f418",
+    "canvas-wireframe/tools/validate-spec.mjs": "ccd794a8d0da13a6fc07a42c621f752b25175c745280e717a0edec3aa303f032",
+    "canvas-wireframe/tools/wireframe.mjs": "ad945e739e7827688d050f256e15b3b79ffc4e990759cd753adbe8ad43bc21a1",
+    "document/GUIDE.md": "97bb1e64b340d833aa777b01e0abff5f22da7d03bbc3170fbadc674a7c471c64",
+    "document/ICONS-LICENSE.txt": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+    "document/MODEL.ts": "254081428af3bf6b8c3ede6e62ac45433c04a7ee24f6c7df1b6750f039b0946a",
+    "document/capabilities.json": "75cd06778093e05a17a157659bb5f69056e6ddbcf38c0fe42d5caf1099a34b1c",
+    "document/examples/basic-kit.canvas.json": "855e9e906fc9e820d4fe0f266eb73232d5798b43fd6c95fe1e89a09ce9f12d8c",
+    "document/examples/image.canvas.json": "fe3eee9f998d2f27aca086520497a6b2a36819e3b69f135869feb3c2fbe7dccc",
+    "document/examples/invalid-component.canvas.json": "49932148cc7b71331cd6e0b470095972658c93db6ec2f441e4a41b6813f2b8a7",
+    "document/examples/invalid-gradient.canvas.json": "8465d4726f49152bae8b3ee96adbca5e4096790095df65804c6e3e04e46bf96d",
+    "document/examples/invalid-grid.canvas.json": "cb3193e45b3d2eb083927bec84a6e2cdbe1ca1defa8983ea1b3f8bef5b3c38f3",
+    "document/examples/invalid-image.canvas.json": "5f377428ef90b76161afbbd6279b6cdbc77292e1e8d1c67632a1ed0b011423fc",
+    "document/examples/invalid-missing-page.canvas.json": "a0d90e0b5c671938e68b854f08842e9f738e6c56116d1feb05680f60e758b68a",
+    "document/examples/invalid-reference.canvas.json": "8edf34229293cdea1e533b1fcf9a10c16d5dbd3fb7dad1bb3ae9cc31c853e513",
+    "document/examples/invalid-variable.canvas.json": "a2f28a9b27f7e77dd4ac31865d343670400ea5778a5fe5a8d2052e03a579b76e",
+    "document/examples/minimal.canvas.json": "a2ae9158f6e80f2bb6de1c7bee1e0a8f87a57636008d69cb80716d784d0e5b3d",
+    "document/examples/opal-backoffice-kit.canvas.json": "90116f577cd3c64bb258f77591147a667948e2e274a586f825910df21647aebb",
+    "document/examples/two-screens.canvas.json": "7cc82f2919094060eb08cf8f9e3375eb7b5671f4bab1cf9a48bae654158439ee",
+    "document/kit-catalog.json": "5ae603e6f810a86aac1ce386eaf5624cde97c33d7fae57293c4515f4280344ee",
+    "document/kits/opal-backoffice/kit-catalog.json": "2430b952780f2051cf05bb271476adb5077082c7878494b3ab9605a8fd4e2e98",
+    "document/parser.mjs": "d85be5f8a1890d1e0517a1f418b345e9ca4309f64b507a3c15271238e941a5fe",
+    "document/schema.json": "bead9b6387efc22e90d10f82af886d181f7847a0b815bb9c90438913d235f81b",
+    "document/validate.mjs": "16ccb24f64fae29bef60c8b64652ce626d7829b613847670d4987d499e6163bc",
+    "runtime/app/404.html": "b445c84993184efcf079b295ff42790f1e778cb3691361919c0ba1b362aab0ee",
+    "runtime/app/_next/static/canvas-skills/_buildManifest.js": "3857ca444b81498f357bac7b1001f263053364eb94d7c53a9c8105f148b726b3",
+    "runtime/app/_next/static/canvas-skills/_ssgManifest.js": "678f6ce2cb80b1fe72fc67e7412be6e2ab6ada083111b64f7c40d35e3cba5e00",
+    "runtime/app/_next/static/chunks/1329d575.ceb5da0a165e9642.js": "513da1a6833aef274b1194774ee0f9c8bb9edb1858044f8e6eb33c16d0c88b46",
+    "runtime/app/_next/static/chunks/255-92f80bf2a2a857fc.js": "dff1e7c6b91cf50c9a3118b8340a14d47ea6db261a1b9fcb76ffeb2b21322057",
+    "runtime/app/_next/static/chunks/333.ac19fc793d43ab54.js": "774bc218e00dd9b4086e0dd4febf089d2070b4c1c6b0514b7762a216a04e1485",
+    "runtime/app/_next/static/chunks/38.80f58c91800c3def.js": "1e576b83cfa50f013451fa3052e70b99a77911a173f0c8e85a01e32d154afe5d",
+    "runtime/app/_next/static/chunks/4bd1b696-5baba7b99ef0a4e0.js": "3a62bfff9472046cfae6911a20444b2a705f2c1983f651876fa76703eee88bda",
+    "runtime/app/_next/static/chunks/885.29ad3d1e1fc59b65.js": "09bb0ee4c9bcc42853bf0e8656b5fe40c959ee994a4feeb5f699779750b534c4",
+    "runtime/app/_next/static/chunks/911.0483a88f2a46fed4.js": "bc2dce6cea7f225fdb3fda155d37d0dde9cb1e41c41175f32968eb609ac56394",
+    "runtime/app/_next/static/chunks/985.c156f701f79f13d9.js": "a565a0f3615b119b8b7adb38bf1774e8ce768e2c081b4dc01a23c1ea5e2e31e1",
+    "runtime/app/_next/static/chunks/app/_not-found/page-09ea9ad758ff8034.js": "94967479d79434b44fb392bd72c893656a969a160e798221ed985f3a7042a768",
+    "runtime/app/_next/static/chunks/app/layout-7647415aa37e50b2.js": "de132b578a0d5bf46b14a71762f086a38722f5d99069f6caff5d8144a34e993a",
+    "runtime/app/_next/static/chunks/app/page-e188ca67a9578dd8.js": "1d5b3c08d57c0ac6a42189721959b75088efe263e2587426ebea7e3f0f8cfe0a",
+    "runtime/app/_next/static/chunks/framework-319ad94eef5a05ff.js": "ff49e81eb02dd0ada4fee63e6776fec738f1a411d5372430384f575375a140ea",
+    "runtime/app/_next/static/chunks/main-app-4fb44f340fbf32ef.js": "f59f49407da1e74196ce0552254523a587edf60c422c0ae03e19bc394815922e",
+    "runtime/app/_next/static/chunks/main-e86246805588bea2.js": "7c4f9e1fb6ac5f4b4a9f679fb681e0a1b4682a68f33946af62b7832a48bd2597",
+    "runtime/app/_next/static/chunks/pages/_app-e877ad6c25e0fcfe.js": "bab6cb41dfb1fa524aeb1c2c59beb62eb4ca69a1c68914cd8e9f8d4806ac0b29",
+    "runtime/app/_next/static/chunks/pages/_error-504d81f0fa3c429b.js": "569214736a3e90684977dedee243d063c092b4e2fcef5f1497b6ae6dcdfeca35",
+    "runtime/app/_next/static/chunks/polyfills-42372ed130431b0a.js": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+    "runtime/app/_next/static/chunks/webpack-06b3f14394b78faa.js": "4c75b6e5070cb6cc03fb838c1551f74ed5283fbbe89ae049231fd029b4604f76",
+    "runtime/app/_next/static/css/867b2424fa8d0c9c.css": "c3ea5d308dea89efdfa1e2c86eb00b2b272603eec4871aa67ce2c5b40fd27840",
+    "runtime/app/favicon.ico": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932",
+    "runtime/app/index.html": "e556f8d2208d16de0b6d0075ad4267bfef3955bdb0f14a602fffdf6d5de37c8a",
+    "runtime/app/index.txt": "08652cb01b308f8e090aea1dd0251585c4208157262818aabf4eb4f707f3de9e",
+    "runtime/chrome.mjs": "730f50e8c142079a693071155ed15f626e074cf9a2cd8b0fd48a044fd01593c4",
+    "runtime/core.mjs": "73b2d882fba7641f5666ca327a676748e35abf6739815f6aaf04877abf1f18e4",
+    "runtime/editor-session.mjs": "b65a0e91cb7250eb0fbdfcadd5bd0f46d16d345d10b8be409bc1e12c7d362abb",
+    "runtime/io.mjs": "019cc2bb3a26e771729b10275934a02c2445d5f6adda0bb671071fe132142ba2",
+    "runtime/normalize.mjs": "b91f2f4ed074c96980f7b6babe6e703078e01a7210107db9425541cd829e5328"
+  }
+}

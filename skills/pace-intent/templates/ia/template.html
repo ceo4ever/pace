@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@TITLE@</title>
+<style>
+/*@BASE_CSS@*/
+.tree ul{list-style:none;margin:0;padding-left:22px;border-left:1px dashed var(--line-2)}
+.tree>ul{padding-left:0;border-left:0}
+.tree li{margin:4px 0}
+.node{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font:inherit;color:var(--text)}
+.node.group{border-style:dashed;color:var(--muted);cursor:default}
+.node:hover:not(.group){border-color:var(--accent)}
+.node.on{border-color:var(--accent);background:var(--accent-soft)}
+.detail dl{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;margin:12px 0 0}
+.detail dt{color:var(--muted);font-size:12px}.detail dd{margin:0}
+.layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+@DATA@
+</script>
+<script>
+/*@BASE_JS@*/
+const scr = Object.fromEntries(DATA.screens.map(s=>[s.id,s]));
+header('IA', [[ '화면 ' + DATA.screens.length ], [ '최대 깊이 ' + DATA.maxDepth ], [ '고아 화면 ' + DATA.orphans.length, DATA.orphans.length ? 'warn' : 'ok' ]]);
+const detail = el('div', {class:'card pad detail side'});
+let current = null;
+function show(id){
+  const s = scr[id]; detail.replaceChildren(
+    el('h2', {class:'sec-title'}, '화면 정보'),
+    el('div', {}, el('span', {class:'id'}, s.id), ' ', el('b', {}, s.name), statusBadge(s)),
+    s.evidence ? el('div', {class:'faint small'}, '근거 ' + s.evidence) : null,
+    el('dl', {}, el('dt', {}, '경로'), el('dd', {}, s.path.join(' › ')),
+      el('dt', {}, '깊이'), el('dd', {}, s.depth),
+      el('dt', {}, '권한'), el('dd', {}, s.auth),
+      el('dt', {}, '쓰는 유스케이스'), el('dd', {}, s.usecases.length ? ids(s.usecases) : el('span', {class:'warnline'}, '⚠ 없음(고아 화면)')),
+      el('dt', {}, '기능'), el('dd', {}, ids(s.features)),
+      el('dt', {}, 'Canvas'), el('dd', {}, DATA.canvas.filter(c=>c.screen===id).map(c=>el('div', {}, c.state+' · '+c.document+' · '+c.frame, ' ', ids(c.refs))))));
+  document.querySelectorAll('.node.on').forEach(n=>n.classList.remove('on'));
+  document.querySelector('[data-screen="'+id+'"]')?.classList.add('on'); current = id;
+}
+function render(nodes){ return el('ul', {}, nodes.map(n => el('li', {},
+  n.screen ? el('button', {id:n.screen, class:'node', 'data-screen':n.screen, onclick:()=>show(n.screen)}, el('span', {class:'id'}, n.screen), n.label, statusBadge(scr[n.screen]))
+           : el('span', {class:'node group'}, '▣ ' + n.label),
+  n.children ? render(n.children) : null))); }
+const tree = el('div', {class:'card pad tree'}, el('h2', {class:'sec-title'}, '메뉴 트리'), render(DATA.ia),
+  el('div', {class: DATA.orphans.length ? 'warnline' : 'okline', style:'margin-top:12px'}, DATA.orphans.length ? '⚠ 고아 화면: ' + DATA.orphans.join(', ') : '✔ 모든 화면을 유스케이스가 쓴다 · 최대 깊이 ' + DATA.maxDepth));
+document.body.append(el('main', {class:'wrap'}, el('div', {class:'layout'}, tree, detail))); footer();
+show(Object.hasOwn(scr, location.hash.slice(1)) ? location.hash.slice(1) : DATA.screens[0].id);
+window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if (Object.hasOwn(scr, id)) show(id); });
+</script>
+</body>
+</html>

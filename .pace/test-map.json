@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "units": [
+    {
+      "id": "intent-preview",
+      "sources": ["src/intent/preview.ts", "templates/intent-preview/**/*"],
+      "tests": ["test/intent-preview.test.ts", "test/intent-plan.test.ts"],
+      "runner": { "kind": "node-test", "cwd": "." },
+      "requires": []
+    },
+    {
+      "id": "scout-card",
+      "sources": [
+        "src/scout/card.ts"
+      ],
+      "tests": [
+        "test/scout-ideas.test.ts",
+        "test/cli.test.ts"
+      ],
+      "runner": {
+        "kind": "node-test",
+        "cwd": "."
+      },
+      "requires": []
+    }
+  ],
+  "common": [
+    "src/cli.ts",
+    "src/core/**/*.ts",
+    "test/helpers.ts",
+    "package.json",
+    "tsconfig.json",
+    "src/memory/**/*.ts",
+    "src/profile/**/*.ts"
+  ]
+}

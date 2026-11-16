@@ -1,0 +1,118 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdirSync, readFileSync, unlinkSync, writeFileSync, symlinkSync } from 'node:fs';
+import { join } from 'node:path';
+import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { tempDir } from './helpers.ts';
+import { reviewIssues, reviewHash } from '../src/project/pre-review.ts';
+
+test('사전 검토 해시는 CRLF만 정규화하고 기존 LF 기록·기록 명령과 일치한다', () => {
+  const dir = tempDir('pace-review-eol-');
+  const task = '# 태스크\n- 상태: 진행\n- 사전 검토: v1\n\n## 목적\n기준\n';
+  const crlf = task.replaceAll('\n', '\r\n');
+  const mixed = task.replace('\n', '\r\n').replace('## 목적\n', '## 목적\r\n');
+  const legacyLf = createHash('sha256').update(task.replace(/^- 상태: .+$/m, '- 상태:')).digest('hex');
+  const legacyCrlf = createHash('sha256').update(crlf.replace(/^- 상태: .+$/m, '- 상태:')).digest('hex');
+  assert.equal(reviewHash(task), legacyLf);
+  assert.equal(reviewHash(crlf), legacyLf);
+  assert.equal(reviewHash(mixed), legacyLf);
+  assert.equal(reviewHash(crlf.replace('진행', '완료')), legacyLf);
+  for (const changed of [task + '변경', task.replace('기준\n', '기준\r'), '\uFEFF' + task]) assert.notEqual(reviewHash(changed), legacyLf);
+  mkdirSync(join(dir, 'evidence'));
+  writeFileSync(join(dir, 'evidence/review.md'), '검토 결과');
+  const record = (hash: string) => ({ version: 1, author: 'openai', attempts: [{ hash, provider: 'anthropic', cross: true, status: 'pass', blocking: 0, evidence: 'evidence/review.md', continuity: 'new' }] });
+  writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify(record(legacyLf)));
+  assert.deepEqual(reviewIssues(dir, crlf), []);
+  assert.ok(reviewIssues(dir, crlf + '변경').length);
+  writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify(record(legacyCrlf)));
+  assert.ok(reviewIssues(dir, crlf).length, '정규화 전 CRLF 기록은 재검토가 필요하다');
+  const taskPath = join(dir, 'TASK.md');
+  writeFileSync(taskPath, crlf);
+  const guide = readFileSync(new URL('../skills/pace-project-dev/references/reviewer.md', import.meta.url), 'utf8');
+  const command = /```js\r?\n([\s\S]*?)```/.exec(guide)?.[1];
+  assert.ok(command, '기록 명령이 있어야 한다');
+  const result = spawnSync(process.execPath, ['-e', command, taskPath], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stdout.trim(), legacyLf, '기록 명령과 검사 해시가 일치한다');
+});
+
+test('Git autocrlf로 다시 체크아웃한 태스크는 기존 LF 검토 기록을 유지한다', () => {
+  const dir = tempDir('pace-review-git-eol-');
+  const git = (...args: string[]) => {
+    const result = spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+  };
+  git('init', '-q');
+  git('config', 'core.autocrlf', 'true');
+  const task = '# 태스크\n- 상태: 진행\n- 사전 검토: v1\n\n## 목적\n기준\n';
+  const file = join(dir, 'TASK.md');
+  writeFileSync(file, task);
+  git('add', 'TASK.md');
+  mkdirSync(join(dir, 'evidence'));
+  writeFileSync(join(dir, 'evidence/review.md'), '검토 결과');
+  const legacyLf = createHash('sha256').update(task.replace(/^- 상태: .+$/m, '- 상태:')).digest('hex');
+  writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify({ version: 1, author: 'openai', attempts: [{ hash: legacyLf, provider: 'anthropic', cross: true, status: 'pass', blocking: 0, evidence: 'evidence/review.md', continuity: 'new' }] }));
+  unlinkSync(file); // 임시 픽스처에서 Git이 인덱스 파일을 다시 쓰게 한다.
+  git('checkout-index', '--force', 'TASK.md');
+  const checkedOut = readFileSync(file, 'utf8');
+  assert.ok(checkedOut.includes('\r\n'), 'Git이 실제로 CRLF로 체크아웃했다');
+  assert.deepEqual(reviewIssues(dir, checkedOut), []);
+});
+
+test('사전 검토 이력: 최신 대상·판정과 대체·안전한 증거를 검사한다', () => {
+  const dir = tempDir('pace-review-');
+  const task = '- 상태: 진행\n- 사전 검토: v1\n\n## 목적\n기준\n';
+  const hash = reviewHash(task);
+  const attempt = { hash, provider: 'anthropic', cross: true, status: 'pass', blocking: 0, evidence: 'evidence/review.md', continuity: 'new' };
+  const record = { version: 1, author: 'openai', attempts: [attempt] };
+  mkdirSync(join(dir, 'evidence'));
+  writeFileSync(join(dir, 'evidence/review.md'), '검토 결과');
+  const save = (value: unknown) => writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify(value));
+  assert.ok(reviewIssues(dir, task).length);
+  save(record);
+  assert.deepEqual(reviewIssues(dir, task), []);
+  assert.deepEqual(reviewIssues(dir, task.replace('진행', '완료')), []);
+  assert.ok(reviewIssues(dir, task + '변경').length);
+  save({ ...record, attempts: [attempt, { ...attempt, status: 'fail', blocking: 1 }] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, attempts: [{ ...attempt, provider: 'openai', cross: false }] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, attempts: [{ ...attempt, status: 'unavailable', reason: '실행 불가', evidence: 'evidence/review.md' }, { ...attempt, provider: 'openai', cross: false }] });
+  assert.deepEqual(reviewIssues(dir, task), []);
+  save({ ...record, attempts: [{ ...attempt, evidence: '../외부' }] });
+  assert.ok(reviewIssues(dir, task).length);
+  symlinkSync('review.md', join(dir, 'evidence/link'));
+  save({ ...record, attempts: [{ ...attempt, evidence: 'evidence/link' }] });
+  assert.ok(reviewIssues(dir, task).length);
+  assert.ok(reviewIssues(dir, task.replace('- 사전 검토: v1\n', '')).length);
+  save({ ...record, attempts: [{ ...attempt, provider: ['openai'], cross: true }] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, attempts: [{ ...attempt, status: 'fail', blocking: 1 }, { ...attempt, status: 'unavailable', reason: '불가' }, attempt] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, attempts: [{ ...attempt, blocking: 2 }, attempt] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, attempts: [{ ...attempt, status: ['pass'] }] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, attempts: [{ ...attempt, continuity: ['new'] }] });
+  assert.ok(reviewIssues(dir, task).length);
+  writeFileSync(join(dir, 'evidence/empty'), '');
+  save({ ...record, attempts: [{ ...attempt, evidence: 'evidence/empty' }] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, attempts: [{ ...attempt, status: 'fail', blocking: 1 }, { ...attempt, status: 'unavailable', reason: '불가' }, { ...attempt, provider: 'openai', cross: false, continuity: 'same' }] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, author: 'google', attempts: [attempt] });
+  assert.deepEqual(reviewIssues(dir, task), []);
+  for (const bad of ['', 'OpenAI', 'a'.repeat(65), 'openai\n']) {
+    save({ ...record, author: bad });
+    assert.ok(reviewIssues(dir, task).length);
+    save({ ...record, attempts: [{ ...attempt, provider: bad }] });
+    assert.ok(reviewIssues(dir, task).length);
+  }
+  save({ ...record, author: ['google'] });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...record, version: 2 });
+  assert.ok(reviewIssues(dir, task).length);
+  writeFileSync(join(dir, 'PRE-REVIEW.json'), '{');
+  assert.ok(reviewIssues(dir, task).length);
+});

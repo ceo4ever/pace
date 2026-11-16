@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>쇼츠 자동 발행 서비스 · 목차</title>
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --line:#dde1e7; --line-2:#c9cfd8;
+  --text:#1b1f24; --muted:#5d6672; --faint:#8a929d;
+  --accent:#2f5bea; --accent-soft:#e8eefe; --ok:#1f8a4c; --ok-soft:#e5f5ec; --warn:#b26a00; --warn-soft:#fff3dc;
+  --wf-fill:#e6e8ec; --wf-stroke:#b8bec7; --wf-ink:#4a525c; --wf-screen:#ffffff;
+  --radius:10px; --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111418; --surface:#181c21; --surface-2:#20252c; --line:#2c323a; --line-2:#3a414b;
+    --text:#e7eaee; --muted:#a3abb6; --faint:#77808b;
+    --accent:#7d9cff; --accent-soft:#1e2742; --ok:#4cc38a; --ok-soft:#173226; --warn:#f0b04c; --warn-soft:#3a2c12;
+    --wf-fill:#2a3038; --wf-stroke:#4a525d; --wf-ink:#c4cad3; --wf-screen:#1d2228;
+    --shadow:none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111418; --surface:#181c21; --surface-2:#20252c; --line:#2c323a; --line-2:#3a414b;
+  --text:#e7eaee; --muted:#a3abb6; --faint:#77808b;
+  --accent:#7d9cff; --accent-soft:#1e2742; --ok:#4cc38a; --ok-soft:#173226; --warn:#f0b04c; --warn-soft:#3a2c12;
+  --wf-fill:#2a3038; --wf-stroke:#4a525d; --wf-ink:#c4cad3; --wf-screen:#1d2228;
+  --shadow:none; color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+h1,h2,h3{margin:0;line-height:1.3}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .row1{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:14px 0 6px}
+.top .proj{font-weight:700;font-size:16px}
+.top .kind{color:var(--muted);font-size:16px}
+.top .meta{margin-left:auto;color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;padding-bottom:0;scrollbar-width:none}
+nav.tabs a{padding:8px 12px;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;font-size:13px}
+nav.tabs a:hover{color:var(--text);text-decoration:none}
+nav.tabs a.on{color:var(--text);border-bottom-color:var(--accent);font-weight:600}
+.badges{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 12px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:12px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.badge.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.badge.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+main.wrap{padding-top:20px;padding-bottom:60px}
+.checks{padding-left:0;list-style:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:16px 18px}
+.muted{color:var(--muted)} .faint{color:var(--faint)} .small{font-size:12px}
+.id{display:inline-block;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;padding:3px 6px;border-radius:5px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+a.id:hover{text-decoration:none;filter:brightness(1.1)}
+.id.plain{background:var(--surface-2);color:var(--muted)}
+.ids{display:inline-flex;gap:4px;flex-wrap:wrap}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--surface-2)}
+.sec-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin:0 0 8px}
+.grid2{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.side{position:sticky;top:132px}
+.side a.item{display:flex;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;color:var(--text)}
+.side a.item:hover{background:var(--surface-2);text-decoration:none}
+.side a.item.on{background:var(--accent-soft)}
+:target{scroll-margin-top:140px}
+.warnline{color:var(--warn);font-size:12px}
+.okline{color:var(--ok);font-size:12px}
+.st{display:inline-block;font-size:11px;padding:1px 6px;border-radius:99px;margin-left:4px;border:1px solid var(--line)}
+.st-기존{background:var(--surface-2);color:var(--muted)}
+.st-변경{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.st-신규{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+li,td,dd{overflow-wrap:anywhere}
+footer.foot{color:var(--faint);font-size:12px;padding:24px 0;border-top:1px solid var(--line)}
+@media (max-width: 760px){
+  table{display:block;overflow-x:auto}
+  .grid2{grid-template-columns:1fr}
+  .side{position:static}
+  .top .meta{margin-left:0;width:100%}
+}
+@media print{
+  header.top{position:static;backdrop-filter:none}
+  nav.tabs,.noprint,select,.seg{display:none}
+  body{background:#fff}
+  .card{box-shadow:none;break-inside:avoid}
+}
+
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+.stat{padding:14px 16px}
+.stat b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.doc{display:block;padding:14px 16px;color:var(--text)}
+.doc:hover{text-decoration:none;border-color:var(--accent)}
+.doc b{display:block;margin-bottom:2px}
+.trace td{white-space:normal}
+.status-ok{color:var(--ok);font-weight:600}.status-warn{color:var(--warn);font-weight:600}
+.checks li{margin:6px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.two>*{min-width:0}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+{"doc":{"project":"쇼츠 자동 발행 서비스","version":"v0.1","date":"2026-10-29","depth":"L2","source":"pace-intent 템플릿 예시 · 쇼츠 자동 발행 서비스"},"nav":{"docs":[["index.html","목차"],["usecase.html","유스케이스"],["ia.html","IA"],["flow.html","사용자 흐름"],["sequence.html","시퀀스"],["wireframe.html","와이어프레임"],["spec.html","기능 명세"]],"route":{"UC":"usecase.html","A":"usecase.html","SCR":"ia.html","FL":"flow.html","SQ":"sequence.html","C":"sequence.html","F":"spec.html","AC":"spec.html"}},"assumptions":["기획안 생성은 외부 LLM API를 쓴다","1차 범위는 모바일 웹만","인스타그램은 프로페셔널 계정만 Reels를 API로 게시할 수 있다 — 공식 문서 https://developers.facebook.com/docs/instagram-platform/content-publishing (2026-10-29 확인)","틱톡 Direct Post는 video.publish 권한이 필요하고, 감사(audit) 전 앱의 게시물은 비공개로만 올라간다 — 공식 문서 https://developers.tiktok.com/doc/content-posting-api-get-started (2026-10-29 확인)"],"open":[{"id":"Q-1","text":"영상 생성 엔진을 직접 만들지 외부 서비스를 쓸지","impact":"비용·품질·일정","cond":"착수 전 대안 분석"}],"checks":[{"id":"usecase-fields","name":"유스케이스마다 행위자·사전 조건·기본 흐름·예외 흐름이 있다","ok":true,"detail":""},{"id":"steps-screens","name":"유스케이스 단계마다 IA 화면을 가리킨다","ok":true,"detail":""},{"id":"no-orphans","name":"IA 화면마다 쓰는 유스케이스가 있다(고아 화면 없음)","ok":true,"detail":""},{"id":"data-states","name":"화면의 기본 상태와 데이터 화면의 오류·빈(또는 로딩) 상태가 있다","ok":true,"detail":""},{"id":"exception-ac","name":"예외 흐름마다 완료 기준(AC)이 있다","ok":true,"detail":""},{"id":"flow-dead-ends","name":"흐름에 막다른 길이 없다(끝이 아닌 노드는 나가는 길이 있다)","ok":true,"detail":""},{"id":"id-refs","name":"문서끼리 잇는 ID가 모두 있다","ok":true,"detail":""},{"id":"existing-evidence","name":"기존·변경 화면은 실제로 있는 코드 근거(경로:줄)를 갖는다","ok":true,"detail":""},{"id":"sequence-exists","name":"시퀀스 대상 유스케이스마다 시퀀스가 있다","ok":true,"detail":""},{"id":"sequence-external-alt","name":"외부 시스템 호출에 실패 분기(alt)와 완료 기준이 있다","ok":true,"detail":""},{"id":"sequence-async-done","name":"비동기 메시지 뒤에 사용자 쪽으로 끝을 알린다","ok":true,"detail":""},{"id":"sequence-docs","name":"외부 서비스 참여자마다 공식 문서 URL과 확인일이 있다(정할 수 없으면 미결 항목)","ok":true,"detail":""},{"id":"sequence-participants","name":"참여자는 모두 메시지를 주고받는다","ok":true,"detail":""}],"trace":[{"uc":"UC-01","name":"쇼츠 기획안 만들기","screens":["SCR-01","SCR-02","SCR-03"],"features":["F-01","F-02","F-03"],"ac":["AC-01","AC-02","AC-03"],"issues":[],"sq":null},{"uc":"UC-02","name":"영상 생성·편집","screens":["SCR-04"],"features":["F-04","F-05"],"ac":["AC-04","AC-05"],"issues":[],"sq":null},{"uc":"UC-03","name":"플랫폼 발행","screens":["SCR-05","SCR-07"],"features":["F-06","F-07","F-08"],"ac":["AC-06","AC-07","AC-09"],"issues":[],"sq":"SQ-03"},{"uc":"UC-04","name":"성과 보기","screens":["SCR-06"],"features":["F-09"],"ac":["AC-08"],"issues":[],"sq":null}],"counts":[["유스케이스",4],["화면",7],["흐름",2],["시퀀스",1],["기능",9],["완료 기준",9]],"docs":[{"file":"usecase.html","title":"유스케이스","desc":"누가 무엇을 하려는가 · 기본·대안·예외 흐름"},{"file":"ia.html","title":"IA","desc":"화면 트리와 메뉴 구조 · 화면별 연결"},{"file":"flow.html","title":"사용자 흐름","desc":"화면 사이 이동과 분기"},{"file":"sequence.html","title":"시퀀스","desc":"외부 연동·비동기가 있는 유스케이스만 · 실패 분기"},{"file":"wireframe.html","title":"와이어프레임","desc":"저해상도 화면 · 상태별(기본·빈·로딩·오류)"},{"file":"spec.html","title":"기능 명세","desc":"기능 목록·우선순위 · 완료 기준(GWT)"}]}
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById('pace-data').textContent);
+const DOCS = DATA.nav.docs;
+const ROUTE = DATA.nav.route;
+function el(tag, attrs, ...kids){
+  const n = document.createElementNS(tag.startsWith('svg:') ? 'http://www.w3.org/2000/svg' : 'http://www.w3.org/1999/xhtml', tag.replace('svg:',''));
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') n.setAttribute('class', v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? '' : String(v));
+  }
+  for (const k of kids.flat()) if (k !== null && k !== undefined && k !== false) n.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return n;
+}
+// ID 접두어 → 문서 파일은 템플릿 폴더(schema.json x-pace.ids)에서 명령이 만든다. 문서끼리는 이 경로로만 잇는다.
+function hrefFor(id){
+  const prefix = String(id).split('-')[0];
+  const file = Object.hasOwn(ROUTE, prefix) ? ROUTE[prefix] : null;
+  const here = location.pathname.split('/').pop() || 'index.html';
+  return file ? (file === here ? '' : file) + '#' + id : null;
+}
+function docHref(kind, id){ return DOCS.some(([f]) => f === kind + '.html') ? kind + '.html#' + id : null; }
+// 외부 링크는 http(s)만 — 다른 스킴은 링크로 만들지 않는다.
+function safeUrl(u){ return /^https?:\/\//i.test(String(u || '')) ? String(u) : null; }
+function statusBadge(s){ return s && s.status ? el('span', {class:'st st-' + s.status, title:s.evidence || ''}, s.status) : null; }
+function idLink(id){
+  if (!id) return null;
+  const href = hrefFor(id);
+  if (href === null) return el('span', {class:'id plain'}, id);
+  return el('a', {class:'id', href, title:id}, id);
+}
+function ids(list){ return el('span', {class:'ids'}, (list||[]).map(idLink)); }
+function header(kind, badges){
+  const d = DATA.doc, here = location.pathname.split('/').pop() || 'index.html';
+  document.title = d.project + ' · ' + kind;
+  const h = el('header', {class:'top'}, el('div', {class:'wrap'},
+    el('div', {class:'row1'},
+      el('span', {class:'proj'}, d.project),
+      el('span', {class:'kind'}, '· ' + kind),
+      el('span', {class:'meta'}, d.version + ' · ' + d.date + ' · 깊이 ' + d.depth + ' · ' + d.source)),
+    el('nav', {class:'tabs'}, DOCS.map(([f, t]) => el('a', {href:f, class: f === here ? 'on' : null}, t))),
+    el('div', {class:'badges'}, (badges||[]).map(([t, cls]) => el('span', {class:'badge ' + (cls||'')}, t)))
+  ));
+  document.body.prepend(h);
+}
+function footer(){
+  document.body.append(el('footer', {class:'foot'}, el('div', {class:'wrap'},
+    'pace-intent 템플릿 · 데이터는 이 파일 안 pace-data 데이터 블록(JSON)에 있고, 화면은 그 데이터로 그립니다.')));
+}
+
+const c = DATA.checks; const passed = c.filter(x=>x.ok).length;
+header('목차', [[ '가정 ' + DATA.assumptions.length ], [ '미결 ' + DATA.open.length ], [ '검사 ' + passed + '/' + c.length, passed===c.length?'ok':'warn' ]]);
+const m = el('main', {class:'wrap'});
+m.append(el('div', {class:'stats'}, DATA.counts.map(([k,v]) => el('div', {class:'card stat'}, el('b', {}, v), el('span', {class:'muted small'}, k)))));
+m.append(el('div', {class:'docs'}, DATA.docs.map(d => el('a', {class:'card doc', href:d.file}, el('b', {}, d.title), el('span', {class:'muted small'}, d.desc)))));
+m.append(el('h2', {class:'sec-title'}, '추적표 — 유스케이스 → 화면 → 기능 → 완료 기준'));
+m.append(el('div', {class:'card'}, el('table', {class:'trace'},
+  el('thead', {}, el('tr', {}, ['유스케이스','화면','기능','완료 기준','시퀀스','상태'].map(t=>el('th',{},t)))),
+  el('tbody', {}, DATA.trace.map(r => el('tr', {},
+    el('td', {}, idLink(r.uc), ' ', r.name),
+    el('td', {}, ids(r.screens)), el('td', {}, ids(r.features)), el('td', {}, ids(r.ac)), el('td', {}, r.sq ? idLink(r.sq) : el('span', {class:'faint small'}, '—')),
+    el('td', {class: r.issues.length ? 'status-warn' : 'status-ok'}, r.issues.length ? '⚠ ' + r.issues.join(', ') : '✔')))))));
+const two = el('div', {class:'two'});
+two.append(el('div', {class:'card pad'}, el('h2', {class:'sec-title'}, '증명 검사'),
+  el('ul', {class:'checks'}, c.map(x => el('li', {}, el('span', {class: x.ok ? 'status-ok' : 'status-warn'}, x.ok ? '✔ ' : '⚠ '), x.name, x.detail ? el('div', {class:'warnline'}, x.detail) : null)))));
+two.append(el('div', {class:'card pad'}, el('h2', {class:'sec-title'}, '가정'),
+  el('ul', {}, DATA.assumptions.map(a => el('li', {}, a))),
+  el('h2', {class:'sec-title', style:'margin-top:14px'}, '미결'),
+  el('ul', {}, DATA.open.map(q => el('li', {}, el('span', {class:'id plain'}, q.id), ' ', q.text, el('div', {class:'faint small'}, '영향: ' + q.impact + ' · 해결 조건: ' + q.cond))))));
+m.append(two);
+document.body.append(m); footer();
+</script>
+</body>
+</html>

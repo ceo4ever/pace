@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>쇼츠 자동 발행 서비스 · 유스케이스</title>
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --line:#dde1e7; --line-2:#c9cfd8;
+  --text:#1b1f24; --muted:#5d6672; --faint:#8a929d;
+  --accent:#2f5bea; --accent-soft:#e8eefe; --ok:#1f8a4c; --ok-soft:#e5f5ec; --warn:#b26a00; --warn-soft:#fff3dc;
+  --wf-fill:#e6e8ec; --wf-stroke:#b8bec7; --wf-ink:#4a525c; --wf-screen:#ffffff;
+  --radius:10px; --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111418; --surface:#181c21; --surface-2:#20252c; --line:#2c323a; --line-2:#3a414b;
+    --text:#e7eaee; --muted:#a3abb6; --faint:#77808b;
+    --accent:#7d9cff; --accent-soft:#1e2742; --ok:#4cc38a; --ok-soft:#173226; --warn:#f0b04c; --warn-soft:#3a2c12;
+    --wf-fill:#2a3038; --wf-stroke:#4a525d; --wf-ink:#c4cad3; --wf-screen:#1d2228;
+    --shadow:none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111418; --surface:#181c21; --surface-2:#20252c; --line:#2c323a; --line-2:#3a414b;
+  --text:#e7eaee; --muted:#a3abb6; --faint:#77808b;
+  --accent:#7d9cff; --accent-soft:#1e2742; --ok:#4cc38a; --ok-soft:#173226; --warn:#f0b04c; --warn-soft:#3a2c12;
+  --wf-fill:#2a3038; --wf-stroke:#4a525d; --wf-ink:#c4cad3; --wf-screen:#1d2228;
+  --shadow:none; color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+h1,h2,h3{margin:0;line-height:1.3}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .row1{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:14px 0 6px}
+.top .proj{font-weight:700;font-size:16px}
+.top .kind{color:var(--muted);font-size:16px}
+.top .meta{margin-left:auto;color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;padding-bottom:0;scrollbar-width:none}
+nav.tabs a{padding:8px 12px;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;font-size:13px}
+nav.tabs a:hover{color:var(--text);text-decoration:none}
+nav.tabs a.on{color:var(--text);border-bottom-color:var(--accent);font-weight:600}
+.badges{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 12px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:12px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.badge.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.badge.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+main.wrap{padding-top:20px;padding-bottom:60px}
+.checks{padding-left:0;list-style:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:16px 18px}
+.muted{color:var(--muted)} .faint{color:var(--faint)} .small{font-size:12px}
+.id{display:inline-block;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;padding:3px 6px;border-radius:5px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+a.id:hover{text-decoration:none;filter:brightness(1.1)}
+.id.plain{background:var(--surface-2);color:var(--muted)}
+.ids{display:inline-flex;gap:4px;flex-wrap:wrap}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--surface-2)}
+.sec-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin:0 0 8px}
+.grid2{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.side{position:sticky;top:132px}
+.side a.item{display:flex;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;color:var(--text)}
+.side a.item:hover{background:var(--surface-2);text-decoration:none}
+.side a.item.on{background:var(--accent-soft)}
+:target{scroll-margin-top:140px}
+.warnline{color:var(--warn);font-size:12px}
+.okline{color:var(--ok);font-size:12px}
+.st{display:inline-block;font-size:11px;padding:1px 6px;border-radius:99px;margin-left:4px;border:1px solid var(--line)}
+.st-기존{background:var(--surface-2);color:var(--muted)}
+.st-변경{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.st-신규{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+li,td,dd{overflow-wrap:anywhere}
+footer.foot{color:var(--faint);font-size:12px;padding:24px 0;border-top:1px solid var(--line)}
+@media (max-width: 760px){
+  table{display:block;overflow-x:auto}
+  .grid2{grid-template-columns:1fr}
+  .side{position:static}
+  .top .meta{margin-left:0;width:100%}
+}
+@media print{
+  header.top{position:static;backdrop-filter:none}
+  nav.tabs,.noprint,select,.seg{display:none}
+  body{background:#fff}
+  .card{box-shadow:none;break-inside:avoid}
+}
+
+.uc{margin-bottom:16px}
+.uc-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.uc-head h3{font-size:16px}
+.meta-grid{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.meta-grid dt{color:var(--muted);font-size:12px;padding-top:2px}.meta-grid dd{margin:0}
+.steps td:first-child{width:44px;color:var(--faint);font-variant-numeric:tabular-nums}
+.steps td:last-child{width:110px;text-align:right}
+.kind{font-size:11px;font-weight:700;padding:2px 6px;border-radius:5px}
+.kind.예외{background:var(--warn-soft);color:var(--warn)}.kind.대안{background:var(--surface-2);color:var(--muted)}
+.blk{padding:12px 18px}
+.actor{padding:6px 10px}
+.diagram{margin-bottom:16px}
+.diagram svg{display:block;width:100%;height:auto}
+.diagram text{font-family:inherit;fill:var(--text)}
+.ucd-boundary{fill:var(--surface-2);stroke:var(--line-2);stroke-width:1.2}
+.ucd-title{font-size:12px;font-weight:700;fill:var(--muted)}
+.ucd-uc ellipse{fill:var(--surface);stroke:var(--line-2);stroke-width:1.4}
+.ucd-uc:hover ellipse,.ucd-uc.hl ellipse{stroke:var(--accent);fill:var(--accent-soft)}
+.ucd-uc .uid{font-size:10px;font-weight:700;fill:var(--accent)}
+.ucd-actor{stroke:var(--text);stroke-width:1.6;fill:none}
+.ucd-actor-ext{stroke:var(--muted);stroke-dasharray:3 2}
+.ucd-line{stroke:var(--faint);stroke-width:1.2}
+.ucd-line.hl{stroke:var(--accent);stroke-width:2}
+.ucd-rel{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3;fill:none}
+.ucd-legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px;padding:0 18px 14px}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+{"doc":{"project":"쇼츠 자동 발행 서비스","version":"v0.1","date":"2026-10-29","depth":"L2","source":"pace-intent 템플릿 예시 · 쇼츠 자동 발행 서비스"},"nav":{"docs":[["index.html","목차"],["usecase.html","유스케이스"],["ia.html","IA"],["flow.html","사용자 흐름"],["sequence.html","시퀀스"],["wireframe.html","와이어프레임"],["spec.html","기능 명세"]],"route":{"UC":"usecase.html","A":"usecase.html","SCR":"ia.html","FL":"flow.html","SQ":"sequence.html","C":"sequence.html","F":"spec.html","AC":"spec.html"}},"actors":[{"id":"A-1","name":"크리에이터","desc":"자기 채널에 쇼츠를 올리는 개인 · 주 행위자"},{"id":"A-2","name":"플랫폼","desc":"인스타그램·틱톡 · 외부 시스템","external":true,"docs":{"title":"인스타그램 Content Publishing · 틱톡 Content Posting API","url":"https://developers.facebook.com/docs/instagram-platform/content-publishing","checked":"2026-10-29"}},{"id":"A-3","name":"AI 생성기","desc":"기획안·영상 생성 · 외부 시스템","external":true,"docs":{"title":"LLM·영상 생성 API","checked":null}}],"usecases":[{"id":"UC-01","name":"쇼츠 기획안 만들기","actor":"A-1","secondary":["A-3"],"goal":"주제 하나로 바로 찍을 수 있는 기획안을 얻는다","pre":["로그인했다"],"post":["고른 기획안이 편집기에 열린다"],"steps":[{"n":1,"text":"홈에서 '새 쇼츠'를 누른다","screen":"SCR-01"},{"n":2,"text":"주제와 분위기를 입력한다","screen":"SCR-02"},{"n":3,"text":"기획안 3개를 받는다","screen":"SCR-03"},{"n":4,"text":"하나를 고른다","screen":"SCR-03"}],"alts":[{"id":"2a","kind":"대안","text":"추천 주제 칩을 골라 주제를 채운다","screen":"SCR-02","ac":"AC-03"},{"id":"3a","kind":"예외","text":"생성이 실패하면 이유와 '다시 생성' 버튼을 보여 준다","screen":"SCR-03","ac":"AC-02"}],"features":["F-01","F-02","F-03"]},{"id":"UC-02","name":"영상 생성·편집","actor":"A-1","secondary":["A-3"],"goal":"기획안으로 발행할 영상을 완성한다","pre":["기획안을 골랐다"],"post":["발행할 영상이 저장된다"],"steps":[{"n":1,"text":"기획안으로 초안 영상을 만든다","screen":"SCR-04"},{"n":2,"text":"장면별 자막·음악·컷을 고친다","screen":"SCR-04"},{"n":3,"text":"미리 보고 저장한다","screen":"SCR-04"}],"alts":[{"id":"1a","kind":"예외","text":"렌더가 2분을 넘으면 진행률과 '끝나면 알림'을 보여 준다","screen":"SCR-04","ac":"AC-05"}],"features":["F-04","F-05"]},{"id":"UC-03","name":"플랫폼 발행","actor":"A-1","secondary":["A-2"],"goal":"완성한 영상을 여러 플랫폼에 한 번에 올린다","pre":["저장된 영상이 있다"],"post":["선택한 플랫폼에 게시되거나 예약된다"],"steps":[{"n":1,"text":"발행할 플랫폼을 고른다","screen":"SCR-05"},{"n":2,"text":"캡션·해시태그를 확인한다","screen":"SCR-05"},{"n":3,"text":"지금 발행하거나 예약한다","screen":"SCR-05"}],"alts":[{"id":"1a","kind":"대안","text":"연결된 채널이 없으면 채널 연결로 보낸 뒤 돌아온다","screen":"SCR-07","ac":"AC-07"},{"id":"3a","kind":"예외","text":"플랫폼이 거부하면 사유와 고치는 방법을 보여 준다","screen":"SCR-05","ac":"AC-09"}],"features":["F-06","F-07","F-08"],"sequence":"외부 API 업로드·OAuth 토큰·플랫폼별 실패 지점"},{"id":"UC-04","name":"성과 보기","actor":"A-1","secondary":["A-2"],"goal":"어떤 쇼츠가 잘 됐는지 보고 다음 주제를 정한다","pre":["채널을 연결했다"],"post":[],"steps":[{"n":1,"text":"성과 탭을 연다","screen":"SCR-06"},{"n":2,"text":"영상별 조회·좋아요·공유를 본다","screen":"SCR-06"}],"alts":[{"id":"2a","kind":"예외","text":"아직 데이터가 없으면 빈 상태 안내를 보여 준다","screen":"SCR-06","ac":"AC-08"}],"features":["F-09"]}],"relations":[],"sequenceOf":{"UC-03":"SQ-03"}}
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById('pace-data').textContent);
+const DOCS = DATA.nav.docs;
+const ROUTE = DATA.nav.route;
+function el(tag, attrs, ...kids){
+  const n = document.createElementNS(tag.startsWith('svg:') ? 'http://www.w3.org/2000/svg' : 'http://www.w3.org/1999/xhtml', tag.replace('svg:',''));
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') n.setAttribute('class', v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? '' : String(v));
+  }
+  for (const k of kids.flat()) if (k !== null && k !== undefined && k !== false) n.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return n;
+}
+// ID 접두어 → 문서 파일은 템플릿 폴더(schema.json x-pace.ids)에서 명령이 만든다. 문서끼리는 이 경로로만 잇는다.
+function hrefFor(id){
+  const prefix = String(id).split('-')[0];
+  const file = Object.hasOwn(ROUTE, prefix) ? ROUTE[prefix] : null;
+  const here = location.pathname.split('/').pop() || 'index.html';
+  return file ? (file === here ? '' : file) + '#' + id : null;
+}
+function docHref(kind, id){ return DOCS.some(([f]) => f === kind + '.html') ? kind + '.html#' + id : null; }
+// 외부 링크는 http(s)만 — 다른 스킴은 링크로 만들지 않는다.
+function safeUrl(u){ return /^https?:\/\//i.test(String(u || '')) ? String(u) : null; }
+function statusBadge(s){ return s && s.status ? el('span', {class:'st st-' + s.status, title:s.evidence || ''}, s.status) : null; }
+function idLink(id){
+  if (!id) return null;
+  const href = hrefFor(id);
+  if (href === null) return el('span', {class:'id plain'}, id);
+  return el('a', {class:'id', href, title:id}, id);
+}
+function ids(list){ return el('span', {class:'ids'}, (list||[]).map(idLink)); }
+function header(kind, badges){
+  const d = DATA.doc, here = location.pathname.split('/').pop() || 'index.html';
+  document.title = d.project + ' · ' + kind;
+  const h = el('header', {class:'top'}, el('div', {class:'wrap'},
+    el('div', {class:'row1'},
+      el('span', {class:'proj'}, d.project),
+      el('span', {class:'kind'}, '· ' + kind),
+      el('span', {class:'meta'}, d.version + ' · ' + d.date + ' · 깊이 ' + d.depth + ' · ' + d.source)),
+    el('nav', {class:'tabs'}, DOCS.map(([f, t]) => el('a', {href:f, class: f === here ? 'on' : null}, t))),
+    el('div', {class:'badges'}, (badges||[]).map(([t, cls]) => el('span', {class:'badge ' + (cls||'')}, t)))
+  ));
+  document.body.prepend(h);
+}
+function footer(){
+  document.body.append(el('footer', {class:'foot'}, el('div', {class:'wrap'},
+    'pace-intent 템플릿 · 데이터는 이 파일 안 pace-data 데이터 블록(JSON)에 있고, 화면은 그 데이터로 그립니다.')));
+}
+
+header('유스케이스', [[ '행위자 ' + DATA.actors.length ], [ '유스케이스 ' + DATA.usecases.length ]]);
+const actorName = Object.fromEntries(DATA.actors.map(a=>[a.id,a.name]));
+const side = el('aside', {class:'side'},
+  el('div', {class:'card pad', style:'margin-bottom:12px'}, el('h2', {class:'sec-title'}, '행위자'),
+    DATA.actors.map(a => el('div', {class:'actor', id:a.id}, el('b', {}, '● ' + a.name), el('div', {class:'faint small'}, a.desc)))),
+  el('div', {class:'card pad'}, el('h2', {class:'sec-title'}, '유스케이스'),
+    DATA.usecases.map(u => el('a', {class:'item', href:'#'+u.id}, el('span', {class:'id'}, u.id), u.name))));
+// 유스케이스 다이어그램: 행위자·유스케이스 데이터에서 배치를 계산한다(추가 데이터 없음)
+function diagram(){
+  const UCS = DATA.usecases, REL = DATA.relations || [];
+  const primary = new Set(UCS.map(u=>u.actor));
+  const meanIdx = a => { const ix = UCS.map((u,i)=>[u.actor, ...u.secondary].includes(a.id) ? i : -1).filter(i=>i>=0); return ix.reduce((s,i)=>s+i,0)/(ix.length||1); };
+  const left = DATA.actors.filter(a=>primary.has(a.id)), right = DATA.actors.filter(a=>!primary.has(a.id)).sort((a,b)=>meanIdx(a)-meanIdx(b));
+  const Wd = 860, top = 56, gap = 74, EW = 220, EH = 48;
+  const Hd = top + UCS.length*gap + 10, cx = Wd/2, bx = cx - 190, bw = 380;
+  const ucPos = Object.fromEntries(UCS.map((u,i)=>[u.id, {x:cx, y:top + i*gap + EH/2}]));
+  const place = (list, x) => Object.fromEntries(list.map((a,i)=>[a.id, {x, y: Hd/(list.length+1)*(i+1)}]));
+  const actPos = {...place(left, 90), ...place(right, Wd-90)};
+  const svg = el('svg:svg', {viewBox:'0 0 ' + Wd + ' ' + Hd, role:'img', 'aria-label':'유스케이스 다이어그램'});
+  svg.append(el('svg:defs', {}, el('svg:marker', {id:'ucarr', viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:7, markerHeight:7, orient:'auto'},
+    el('svg:path', {d:'M0,0 L10,5 L0,10', style:'fill:none;stroke:var(--muted);stroke-width:1.5'}))));
+  svg.append(el('svg:rect', {class:'ucd-boundary', x:bx, y:14, width:bw, height:Hd-24, rx:12}),
+    el('svg:text', {class:'ucd-title', x:bx+14, y:34}, DATA.doc.project));
+  const lines = [];
+  for (const u of UCS) for (const a of [u.actor, ...u.secondary]){
+    const p = actPos[a], q = ucPos[u.id], side = p.x < cx ? -1 : 1;
+    const ln = el('svg:line', {class:'ucd-line', 'data-uc':u.id, x1:p.x - side*18, y1:p.y - 6, x2:q.x + side*EW/2, y2:q.y});
+    lines.push(ln); svg.append(ln);
+  }
+  for (const r of REL){
+    const a = ucPos[r.from], b = ucPos[r.to], dx = 150;
+    svg.append(el('svg:path', {class:'ucd-rel', d:'M'+(a.x+EW/2)+','+a.y+' C'+(a.x+EW/2+dx)+','+a.y+' '+(b.x+EW/2+dx)+','+b.y+' '+(b.x+EW/2)+','+b.y, 'marker-end':'url(#ucarr)'}),
+      el('svg:text', {x:cx+EW/2+dx*0.62, y:(a.y+b.y)/2+4, style:'font-size:11px;fill:var(--muted)'}, '«' + r.type + '»'));
+  }
+  const hl = (id,on) => { lines.forEach(l=>l.classList.toggle('hl', on && l.dataset.uc===id)); svg.querySelector('[data-id="'+id+'"]').classList.toggle('hl', on); };
+  for (const u of UCS){
+    const q = ucPos[u.id];
+    svg.append(el('svg:a', {href:'#'+u.id, class:'ucd-uc', 'data-id':u.id, onmouseenter:()=>hl(u.id,true), onmouseleave:()=>hl(u.id,false)},
+      el('svg:ellipse', {cx:q.x, cy:q.y, rx:EW/2, ry:EH/2}),
+      el('svg:text', {class:'uid', x:q.x, y:q.y-6, 'text-anchor':'middle'}, u.id),
+      el('svg:text', {x:q.x, y:q.y+12, 'text-anchor':'middle', style:'font-size:13px'}, u.name)));
+  }
+  for (const a of DATA.actors){
+    const {x,y} = actPos[a.id], ext = !primary.has(a.id) ? ' ucd-actor-ext' : '';
+    svg.append(el('svg:g', {class:'ucd-actor' + ext},
+      el('svg:circle', {cx:x, cy:y-30, r:9}), el('svg:line', {x1:x, y1:y-21, x2:x, y2:y+2}),
+      el('svg:line', {x1:x-14, y1:y-12, x2:x+14, y2:y-12}), el('svg:line', {x1:x, y1:y+2, x2:x-11, y2:y+20}), el('svg:line', {x1:x, y1:y+2, x2:x+11, y2:y+20})),
+      el('svg:text', {x, y:y+38, 'text-anchor':'middle', style:'font-size:12px;font-weight:600'}, a.name),
+      el('svg:text', {x, y:y+53, 'text-anchor':'middle', style:'font-size:10px;fill:var(--faint)'}, primary.has(a.id) ? '주 행위자' : '외부 시스템'));
+  }
+  return el('section', {class:'card diagram'},
+    el('div', {class:'uc-head'}, el('h3', {}, '유스케이스 다이어그램'), el('span', {class:'muted small'}, '타원을 누르면 상세로 이동')),
+    el('div', {class:'pad'}, svg),
+    el('div', {class:'ucd-legend'}, ['🧍 주 행위자(왼쪽)', '┄ 외부 시스템(오른쪽)', '⬭ 유스케이스', '┄› «include»·«extend»(있을 때)'].map(t=>el('span', {}, t))));
+}
+const list = el('div', {}, diagram(), DATA.usecases.map(u => el('section', {class:'card uc', id:u.id},
+  el('div', {class:'uc-head'}, el('span', {class:'id'}, u.id), el('h3', {}, u.name)),
+  el('dl', {class:'meta-grid'},
+    el('dt', {}, '주 행위자'), el('dd', {}, actorName[u.actor] + (u.secondary.length ? ' · 보조: ' + u.secondary.map(s=>actorName[s]).join(', ') : '')),
+    el('dt', {}, '목표'), el('dd', {}, u.goal),
+    el('dt', {}, '사전 조건'), el('dd', {}, u.pre.join(' · ') || '—'),
+    el('dt', {}, '사후 조건'), el('dd', {}, u.post.join(' · ') || '—')),
+  el('div', {class:'blk'}, el('h2', {class:'sec-title'}, '기본 흐름'),
+    el('table', {class:'steps'}, el('tbody', {}, u.steps.map(s => el('tr', {}, el('td', {}, s.n + '.'), el('td', {}, s.text), el('td', {}, idLink(s.screen))))))),
+  el('div', {class:'blk'}, el('h2', {class:'sec-title'}, '대안·예외 흐름'),
+    el('table', {class:'steps'}, el('tbody', {}, u.alts.map(a => el('tr', {},
+      el('td', {}, a.id), el('td', {}, el('span', {class:'kind ' + a.kind}, a.kind), ' ', a.text, a.ac ? null : el('div', {class:'warnline'}, '⚠ 완료 기준 없음')),
+      el('td', {}, idLink(a.screen), ' ', a.ac ? idLink(a.ac) : null)))))),
+  el('div', {class:'blk', style:'border-top:1px solid var(--line)'}, el('span', {class:'muted small'}, '관련 기능 '), ids(u.features),
+    u.sequence ? el('span', {class:'muted small', style:'margin-left:16px'}, '시퀀스 ', (Object.hasOwn(DATA.sequenceOf, u.id) ? idLink(DATA.sequenceOf[u.id]) : '시퀀스 없음'), ' — ' + u.sequence) : null)
+)));
+document.body.append(el('main', {class:'wrap'}, el('div', {class:'grid2'}, side, list))); footer();
+</script>
+</body>
+</html>

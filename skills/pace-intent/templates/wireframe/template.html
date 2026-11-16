@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@TITLE@</title>
+<style>
+/*@BASE_CSS@*/
+.wf-layout{display:grid;grid-template-columns:200px 1fr 280px;gap:20px;align-items:start}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.seg{display:inline-flex}
+.seg button{font:inherit;font-size:12px;padding:5px 11px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;margin-left:-1px}
+.seg button:first-child{border-radius:8px 0 0 8px;margin-left:0}.seg button:last-child{border-radius:0 8px 8px 0}
+.seg button.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent);position:relative}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.stage{display:flex;justify-content:center;padding:24px;background:repeating-linear-gradient(45deg,var(--surface-2),var(--surface-2) 6px,var(--bg) 6px,var(--bg) 12px);border-radius:var(--radius);border:1px solid var(--line)}
+.device{background:var(--wf-screen);border:2px solid var(--wf-stroke);border-radius:26px;padding:14px 12px 10px;width:340px;min-height:620px;display:flex;flex-direction:column;gap:10px;color:var(--wf-ink);transition:width .2s}
+.device.desktop{width:680px;border-radius:12px;min-height:460px}
+.b{position:relative}
+.note{position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;z-index:1}
+.appbar{display:flex;align-items:center;gap:8px;padding:6px 4px 10px;border-bottom:1.5px solid var(--wf-stroke);font-weight:700}
+.appbar .r{margin-left:auto;font-weight:400}
+.lbl{font-size:11px;color:var(--wf-ink);opacity:.75;margin-bottom:4px}
+.input{border:1.5px solid var(--wf-stroke);border-radius:8px;padding:10px;font-size:13px;opacity:.85}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1.5px solid var(--wf-stroke);border-radius:99px;padding:4px 10px;font-size:12px}
+.chip.on{background:var(--wf-fill)}
+.segm{display:flex;border:1.5px solid var(--wf-stroke);border-radius:8px;overflow:hidden}.segm span{flex:1;text-align:center;padding:6px;font-size:12px;border-left:1.5px solid var(--wf-stroke)}.segm span:first-child{border-left:0}.segm span.on{background:var(--wf-fill);font-weight:700}
+.btn{border-radius:10px;padding:12px;text-align:center;font-weight:700;font-size:13px}
+.btn.primary{background:var(--wf-ink);color:var(--wf-screen)}.btn.secondary{border:1.5px solid var(--wf-stroke)}
+.wcard{border:1.5px solid var(--wf-stroke);border-radius:10px;padding:10px 12px}
+.wcard .t{font-weight:700;font-size:13px;display:flex;gap:6px;align-items:center}
+.wcard .bdg{margin-left:auto;font-size:10px;border:1.5px solid var(--wf-stroke);border-radius:99px;padding:1px 7px;font-weight:400}
+.line{height:8px;border-radius:4px;background:var(--wf-fill);margin-top:7px}.line.s{width:60%}
+.img{background:var(--wf-fill);border-radius:10px;display:grid;place-items:center;font-size:12px;aspect-ratio:9/12;background-image:linear-gradient(to top right,transparent calc(50% - 1px),var(--wf-stroke),transparent calc(50% + 1px)),linear-gradient(to top left,transparent calc(50% - 1px),var(--wf-stroke),transparent calc(50% + 1px))}
+.img span{background:var(--wf-screen);padding:2px 8px;border-radius:6px}
+.device.desktop .img{aspect-ratio:16/7}
+.wlist{border:1.5px solid var(--wf-stroke);border-radius:10px}.wlist div{padding:9px 12px;font-size:12px;border-top:1.5px solid var(--wf-stroke)}.wlist div:first-child{border-top:0}
+.section{font-size:12px;font-weight:700;margin-top:4px}
+.heading{font-size:17px;font-weight:700}
+.wtext{font-size:12px;opacity:.8;text-align:center}
+.skel{height:64px;border-radius:10px;background:var(--wf-fill);animation:pulse 1.4s infinite}
+@keyframes pulse{50%{opacity:.5}}
+.prog{height:8px;border-radius:4px;background:var(--wf-fill);overflow:hidden}.prog i{display:block;height:100%;background:var(--wf-ink)}
+.msg{text-align:center;padding:36px 12px 12px}.msg .ic{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--wf-stroke);display:grid;place-items:center;margin:0 auto 10px;font-size:20px}
+.msg .t{font-weight:700;margin-bottom:4px}.msg .x{font-size:12px;opacity:.8}
+.statsrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.statsrow div{border:1.5px solid var(--wf-stroke);border-radius:10px;padding:10px;text-align:center}.statsrow b{display:block;font-size:16px}.statsrow span{font-size:11px;opacity:.75}
+.spacer{flex:1}
+.tabbar{margin-top:auto;display:flex;border-top:1.5px solid var(--wf-stroke);padding-top:8px}.tabbar span{flex:1;text-align:center;font-size:11px;opacity:.6}.tabbar span.on{opacity:1;font-weight:700}
+.notes ol{list-style:none;padding:0;margin:0}.notes li{display:flex;gap:10px;margin:0 0 12px}
+.notes .num{flex:none;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
+.state-miss{font-size:12px;color:var(--warn);margin-top:10px}
+@media (max-width:1000px){.wf-layout{grid-template-columns:1fr}.side{position:static}.device.desktop{width:100%}}
+@media (max-width:420px){.device{width:100%}}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+@DATA@
+</script>
+<script>
+/*@BASE_JS@*/
+const scr = Object.fromEntries(DATA.screens.map(s=>[s.id,s]));
+const STATES = ['기본','빈','로딩','오류'];
+header('와이어프레임', [[ '화면 ' + DATA.wireframes.length ], [ '상태 누락 ' + DATA.missingStates.length, DATA.missingStates.length ? 'warn' : 'ok' ]]);
+let cur = { screen: DATA.wireframes[0].screen, state: '기본', device: 'mobile' };
+const nav = el('aside', {class:'card pad side'}, el('h2', {class:'sec-title'}, '화면'));
+const stageWrap = el('div', {});
+const notes = el('aside', {class:'card pad notes side'});
+document.body.append(el('main', {class:'wrap'}, el('div', {class:'wf-layout'}, nav, stageWrap, notes))); footer();
+DATA.wireframes.forEach(w => nav.append(el('a', {class:'item', href:'#'+w.screen, 'data-s':w.screen, id:w.screen}, el('span', {class:'id'}, w.screen), scr[w.screen].name)));
+function N(b){ return b.note ? el('span', {class:'note'}, b.note) : null; }
+// 데이터에서 온 수는 속성·반복 횟수에 들어가기 전에 범위로 자른다.
+function clampInt(v, lo, hi){ const n = Math.trunc(Number(v)); return Number.isFinite(n) ? Math.max(lo, Math.min(hi, n)) : lo; }
+function block(b){
+  const wrap = (cls, ...k) => el('div', {class:'b ' + (cls||'')}, N(b), ...k);
+  switch (b.t){
+    case 'appbar': return wrap('appbar', el('span', {}, b.left || ''), el('span', {}, b.title), el('span', {class:'r'}, b.right || ''));
+    case 'heading': return wrap('heading', b.text);
+    case 'section': return wrap('section', b.text);
+    case 'text': return wrap('wtext', b.text);
+    case 'input': return wrap('', el('div', {class:'lbl'}, b.label), el('div', {class:'input'}, b.placeholder));
+    case 'chips': return wrap('', b.label ? el('div', {class:'lbl'}, b.label) : null, el('div', {class:'chips'}, b.items.map((t,i)=>el('span', {class:'chip' + (i===b.active?' on':'')}, t))));
+    case 'segmented': return wrap('', b.label ? el('div', {class:'lbl'}, b.label) : null, el('div', {class:'segm'}, b.items.map((t,i)=>el('span', {class: i===b.active?'on':null}, t))));
+    case 'button': return wrap('btn ' + (b.variant === 'primary' ? 'primary' : 'secondary'), b.text);
+    case 'card': return wrap('wcard', el('div', {class:'t'}, b.title, b.badge ? el('span', {class:'bdg'}, b.badge) : null), Array.from({length:clampInt(b.lines, 1, 10)}, (_,i)=>el('div', {class:'line' + (i===(b.lines||1)-1?' s':'')})));
+    case 'image': return wrap('img', el('span', {}, b.label));
+    case 'list': return wrap('wlist', b.items.map(t=>el('div', {}, t)));
+    case 'skeleton': return wrap('', Array.from({length:clampInt(b.n, 1, 10)}, ()=>el('div', {class:'skel', style:'margin-bottom:8px'})));
+    case 'progress': return wrap('prog', el('i', {style:'width:' + clampInt(b.value, 0, 100) + '%'}));
+    case 'message': return wrap('msg', el('div', {class:'ic'}, b.icon), el('div', {class:'t'}, b.title), el('div', {class:'x'}, b.text));
+    case 'stats': return wrap('statsrow', b.items.map(([k,v])=>el('div', {}, el('b', {}, v), el('span', {}, k))));
+    case 'tabbar': return wrap('tabbar', b.items.map((t,i)=>el('span', {class: i===b.active?'on':null}, t)));
+    case 'spacer': return el('div', {class:'spacer'});
+    default: return wrap('', '[' + b.t + ']');
+  }
+}
+function render(){
+  const w = DATA.wireframes.find(x=>x.screen===cur.screen), s = scr[cur.screen];
+  if (!w.states[cur.state]) cur.state = '기본';
+  nav.querySelectorAll('a.item').forEach(a=>a.classList.toggle('on', a.dataset.s===cur.screen));
+  const stateSeg = el('div', {class:'seg'}, STATES.map(st => el('button', {class: st===cur.state?'on':null, disabled: !w.states[st], onclick:()=>{cur.state=st; render();}}, st)));
+  const devSeg = el('div', {class:'seg'}, [['mobile','모바일'],['desktop','데스크톱']].map(([k,t]) => el('button', {class:k===cur.device?'on':null, onclick:()=>{cur.device=k; render();}}, t)));
+  const blocks = w.states[cur.state];
+  stageWrap.replaceChildren(
+    el('div', {class:'controls'}, el('span', {class:'id'}, s.id), el('b', {}, s.name), statusBadge(s), el('span', {style:'flex:1'}), stateSeg, devSeg),
+    el('div', {class:'stage'}, el('div', {class:'device ' + cur.device}, blocks.map(block))));
+  const used = new Set(blocks.filter(b=>b.note).map(b=>b.note));
+  const miss = DATA.missingStates.filter(m=>m.screen===s.id);
+  notes.replaceChildren(...[el('h2', {class:'sec-title'}, '주석 · ' + cur.state),
+    el('ol', {}, w.notes.filter(n=>used.has(n.n)).map(n => el('li', {}, el('span', {class:'num'}, n.n), el('div', {}, n.text, el('div', {style:'margin-top:4px'}, ids(n.refs)))))),
+    el('h2', {class:'sec-title', style:'margin-top:16px'}, '연결'),
+    el('div', {class:'small'}, '유스케이스 ', ids(s.usecases)), el('div', {class:'small', style:'margin-top:6px'}, '기능 ', ids(s.features)),
+    el('div', {class:'small', style:'margin-top:6px'}, 'IA ', el('a', {href:docHref('ia', s.id)}, s.path.join(' › '))),
+    miss.length ? el('div', {class:'state-miss'}, '⚠ 데이터 화면인데 ' + miss[0].missing.join('·') + ' 상태가 없다') : null].filter(Boolean));
+}
+function fromHash(){ const h = location.hash.slice(1); if (Object.hasOwn(scr, h) && DATA.wireframes.some(w=>w.screen===h)) { cur.screen = h; cur.state = '기본'; } render(); }
+addEventListener('hashchange', fromHash); fromHash();
+</script>
+</body>
+</html>

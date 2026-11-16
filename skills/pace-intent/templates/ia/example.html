@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>쇼츠 자동 발행 서비스 · IA</title>
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --line:#dde1e7; --line-2:#c9cfd8;
+  --text:#1b1f24; --muted:#5d6672; --faint:#8a929d;
+  --accent:#2f5bea; --accent-soft:#e8eefe; --ok:#1f8a4c; --ok-soft:#e5f5ec; --warn:#b26a00; --warn-soft:#fff3dc;
+  --wf-fill:#e6e8ec; --wf-stroke:#b8bec7; --wf-ink:#4a525c; --wf-screen:#ffffff;
+  --radius:10px; --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111418; --surface:#181c21; --surface-2:#20252c; --line:#2c323a; --line-2:#3a414b;
+    --text:#e7eaee; --muted:#a3abb6; --faint:#77808b;
+    --accent:#7d9cff; --accent-soft:#1e2742; --ok:#4cc38a; --ok-soft:#173226; --warn:#f0b04c; --warn-soft:#3a2c12;
+    --wf-fill:#2a3038; --wf-stroke:#4a525d; --wf-ink:#c4cad3; --wf-screen:#1d2228;
+    --shadow:none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111418; --surface:#181c21; --surface-2:#20252c; --line:#2c323a; --line-2:#3a414b;
+  --text:#e7eaee; --muted:#a3abb6; --faint:#77808b;
+  --accent:#7d9cff; --accent-soft:#1e2742; --ok:#4cc38a; --ok-soft:#173226; --warn:#f0b04c; --warn-soft:#3a2c12;
+  --wf-fill:#2a3038; --wf-stroke:#4a525d; --wf-ink:#c4cad3; --wf-screen:#1d2228;
+  --shadow:none; color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+h1,h2,h3{margin:0;line-height:1.3}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .row1{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:14px 0 6px}
+.top .proj{font-weight:700;font-size:16px}
+.top .kind{color:var(--muted);font-size:16px}
+.top .meta{margin-left:auto;color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;padding-bottom:0;scrollbar-width:none}
+nav.tabs a{padding:8px 12px;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;font-size:13px}
+nav.tabs a:hover{color:var(--text);text-decoration:none}
+nav.tabs a.on{color:var(--text);border-bottom-color:var(--accent);font-weight:600}
+.badges{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 12px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:12px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.badge.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.badge.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+main.wrap{padding-top:20px;padding-bottom:60px}
+.checks{padding-left:0;list-style:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:16px 18px}
+.muted{color:var(--muted)} .faint{color:var(--faint)} .small{font-size:12px}
+.id{display:inline-block;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;padding:3px 6px;border-radius:5px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+a.id:hover{text-decoration:none;filter:brightness(1.1)}
+.id.plain{background:var(--surface-2);color:var(--muted)}
+.ids{display:inline-flex;gap:4px;flex-wrap:wrap}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--surface-2)}
+.sec-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin:0 0 8px}
+.grid2{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.side{position:sticky;top:132px}
+.side a.item{display:flex;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;color:var(--text)}
+.side a.item:hover{background:var(--surface-2);text-decoration:none}
+.side a.item.on{background:var(--accent-soft)}
+:target{scroll-margin-top:140px}
+.warnline{color:var(--warn);font-size:12px}
+.okline{color:var(--ok);font-size:12px}
+.st{display:inline-block;font-size:11px;padding:1px 6px;border-radius:99px;margin-left:4px;border:1px solid var(--line)}
+.st-기존{background:var(--surface-2);color:var(--muted)}
+.st-변경{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.st-신규{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+li,td,dd{overflow-wrap:anywhere}
+footer.foot{color:var(--faint);font-size:12px;padding:24px 0;border-top:1px solid var(--line)}
+@media (max-width: 760px){
+  table{display:block;overflow-x:auto}
+  .grid2{grid-template-columns:1fr}
+  .side{position:static}
+  .top .meta{margin-left:0;width:100%}
+}
+@media print{
+  header.top{position:static;backdrop-filter:none}
+  nav.tabs,.noprint,select,.seg{display:none}
+  body{background:#fff}
+  .card{box-shadow:none;break-inside:avoid}
+}
+
+.tree ul{list-style:none;margin:0;padding-left:22px;border-left:1px dashed var(--line-2)}
+.tree>ul{padding-left:0;border-left:0}
+.tree li{margin:4px 0}
+.node{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font:inherit;color:var(--text)}
+.node.group{border-style:dashed;color:var(--muted);cursor:default}
+.node:hover:not(.group){border-color:var(--accent)}
+.node.on{border-color:var(--accent);background:var(--accent-soft)}
+.detail dl{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;margin:12px 0 0}
+.detail dt{color:var(--muted);font-size:12px}.detail dd{margin:0}
+.layout{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+{"doc":{"project":"쇼츠 자동 발행 서비스","version":"v0.1","date":"2026-10-29","depth":"L2","source":"pace-intent 템플릿 예시 · 쇼츠 자동 발행 서비스"},"nav":{"docs":[["index.html","목차"],["usecase.html","유스케이스"],["ia.html","IA"],["flow.html","사용자 흐름"],["sequence.html","시퀀스"],["wireframe.html","와이어프레임"],["spec.html","기능 명세"]],"route":{"UC":"usecase.html","A":"usecase.html","SCR":"ia.html","FL":"flow.html","SQ":"sequence.html","C":"sequence.html","F":"spec.html","AC":"spec.html"}},"ia":[{"label":"홈","screen":"SCR-01","children":[{"label":"새 쇼츠","children":[{"label":"주제 입력","screen":"SCR-02"},{"label":"기획안 목록","screen":"SCR-03"},{"label":"편집기","screen":"SCR-04"}]}]},{"label":"발행","screen":"SCR-05"},{"label":"성과","screen":"SCR-06"},{"label":"설정","children":[{"label":"채널 연결","screen":"SCR-07"}]}],"screens":[{"id":"SCR-01","name":"홈","auth":"로그인","data":false,"status":"신규","path":["홈"],"depth":1,"usecases":["UC-01"],"features":[]},{"id":"SCR-02","name":"주제 입력","auth":"로그인","data":false,"status":"신규","path":["홈","새 쇼츠","주제 입력"],"depth":3,"usecases":["UC-01"],"features":["F-03"]},{"id":"SCR-03","name":"기획안 목록","auth":"로그인","data":true,"status":"신규","path":["홈","새 쇼츠","기획안 목록"],"depth":3,"usecases":["UC-01"],"features":["F-01","F-02"]},{"id":"SCR-04","name":"편집기","auth":"로그인","data":false,"status":"신규","path":["홈","새 쇼츠","편집기"],"depth":3,"usecases":["UC-02"],"features":["F-04","F-05"]},{"id":"SCR-05","name":"발행","auth":"로그인","data":true,"status":"신규","path":["발행"],"depth":1,"usecases":["UC-03"],"features":["F-06","F-07"]},{"id":"SCR-06","name":"성과","auth":"로그인","data":true,"status":"신규","path":["성과"],"depth":1,"usecases":["UC-04"],"features":["F-09"]},{"id":"SCR-07","name":"채널 연결","auth":"로그인","data":false,"status":"신규","path":["설정","채널 연결"],"depth":2,"usecases":["UC-03"],"features":["F-08"]}],"orphans":[],"maxDepth":3,"canvas":[]}
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById('pace-data').textContent);
+const DOCS = DATA.nav.docs;
+const ROUTE = DATA.nav.route;
+function el(tag, attrs, ...kids){
+  const n = document.createElementNS(tag.startsWith('svg:') ? 'http://www.w3.org/2000/svg' : 'http://www.w3.org/1999/xhtml', tag.replace('svg:',''));
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') n.setAttribute('class', v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? '' : String(v));
+  }
+  for (const k of kids.flat()) if (k !== null && k !== undefined && k !== false) n.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return n;
+}
+// ID 접두어 → 문서 파일은 템플릿 폴더(schema.json x-pace.ids)에서 명령이 만든다. 문서끼리는 이 경로로만 잇는다.
+function hrefFor(id){
+  const prefix = String(id).split('-')[0];
+  const file = Object.hasOwn(ROUTE, prefix) ? ROUTE[prefix] : null;
+  const here = location.pathname.split('/').pop() || 'index.html';
+  return file ? (file === here ? '' : file) + '#' + id : null;
+}
+function docHref(kind, id){ return DOCS.some(([f]) => f === kind + '.html') ? kind + '.html#' + id : null; }
+// 외부 링크는 http(s)만 — 다른 스킴은 링크로 만들지 않는다.
+function safeUrl(u){ return /^https?:\/\//i.test(String(u || '')) ? String(u) : null; }
+function statusBadge(s){ return s && s.status ? el('span', {class:'st st-' + s.status, title:s.evidence || ''}, s.status) : null; }
+function idLink(id){
+  if (!id) return null;
+  const href = hrefFor(id);
+  if (href === null) return el('span', {class:'id plain'}, id);
+  return el('a', {class:'id', href, title:id}, id);
+}
+function ids(list){ return el('span', {class:'ids'}, (list||[]).map(idLink)); }
+function header(kind, badges){
+  const d = DATA.doc, here = location.pathname.split('/').pop() || 'index.html';
+  document.title = d.project + ' · ' + kind;
+  const h = el('header', {class:'top'}, el('div', {class:'wrap'},
+    el('div', {class:'row1'},
+      el('span', {class:'proj'}, d.project),
+      el('span', {class:'kind'}, '· ' + kind),
+      el('span', {class:'meta'}, d.version + ' · ' + d.date + ' · 깊이 ' + d.depth + ' · ' + d.source)),
+    el('nav', {class:'tabs'}, DOCS.map(([f, t]) => el('a', {href:f, class: f === here ? 'on' : null}, t))),
+    el('div', {class:'badges'}, (badges||[]).map(([t, cls]) => el('span', {class:'badge ' + (cls||'')}, t)))
+  ));
+  document.body.prepend(h);
+}
+function footer(){
+  document.body.append(el('footer', {class:'foot'}, el('div', {class:'wrap'},
+    'pace-intent 템플릿 · 데이터는 이 파일 안 pace-data 데이터 블록(JSON)에 있고, 화면은 그 데이터로 그립니다.')));
+}
+
+const scr = Object.fromEntries(DATA.screens.map(s=>[s.id,s]));
+header('IA', [[ '화면 ' + DATA.screens.length ], [ '최대 깊이 ' + DATA.maxDepth ], [ '고아 화면 ' + DATA.orphans.length, DATA.orphans.length ? 'warn' : 'ok' ]]);
+const detail = el('div', {class:'card pad detail side'});
+let current = null;
+function show(id){
+  const s = scr[id]; detail.replaceChildren(
+    el('h2', {class:'sec-title'}, '화면 정보'),
+    el('div', {}, el('span', {class:'id'}, s.id), ' ', el('b', {}, s.name), statusBadge(s)),
+    s.evidence ? el('div', {class:'faint small'}, '근거 ' + s.evidence) : null,
+    el('dl', {}, el('dt', {}, '경로'), el('dd', {}, s.path.join(' › ')),
+      el('dt', {}, '깊이'), el('dd', {}, s.depth),
+      el('dt', {}, '권한'), el('dd', {}, s.auth),
+      el('dt', {}, '쓰는 유스케이스'), el('dd', {}, s.usecases.length ? ids(s.usecases) : el('span', {class:'warnline'}, '⚠ 없음(고아 화면)')),
+      el('dt', {}, '기능'), el('dd', {}, ids(s.features)),
+      el('dt', {}, 'Canvas'), el('dd', {}, DATA.canvas.filter(c=>c.screen===id).map(c=>el('div', {}, c.state+' · '+c.document+' · '+c.frame, ' ', ids(c.refs))))));
+  document.querySelectorAll('.node.on').forEach(n=>n.classList.remove('on'));
+  document.querySelector('[data-screen="'+id+'"]')?.classList.add('on'); current = id;
+}
+function render(nodes){ return el('ul', {}, nodes.map(n => el('li', {},
+  n.screen ? el('button', {id:n.screen, class:'node', 'data-screen':n.screen, onclick:()=>show(n.screen)}, el('span', {class:'id'}, n.screen), n.label, statusBadge(scr[n.screen]))
+           : el('span', {class:'node group'}, '▣ ' + n.label),
+  n.children ? render(n.children) : null))); }
+const tree = el('div', {class:'card pad tree'}, el('h2', {class:'sec-title'}, '메뉴 트리'), render(DATA.ia),
+  el('div', {class: DATA.orphans.length ? 'warnline' : 'okline', style:'margin-top:12px'}, DATA.orphans.length ? '⚠ 고아 화면: ' + DATA.orphans.join(', ') : '✔ 모든 화면을 유스케이스가 쓴다 · 최대 깊이 ' + DATA.maxDepth));
+document.body.append(el('main', {class:'wrap'}, el('div', {class:'layout'}, tree, detail))); footer();
+show(Object.hasOwn(scr, location.hash.slice(1)) ? location.hash.slice(1) : DATA.screens[0].id);
+window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if (Object.hasOwn(scr, id)) show(id); });
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# 설치 스크립트 줄바꿈 고정 — Windows 체크아웃에서도 sh는 LF, ps1·cmd는 CRLF.
+*.sh text eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+bin/pace.ts text eol=lf
+# 과거 v1 명령의 바이트 일치 판별 fixture는 체크아웃에서 바꾸지 않는다.
+
+# 개발 기록은 배포 아카이브에서 제외
+/backlogs/ export-ignore
+/projects/ export-ignore
+/test/ export-ignore
+
+
+# canvas-skills 배포 폴더(Canvas Studio 2.0.1)는 해시 대조 대상이므로 바이트 그대로 유지한다.
+/skills/pace-canvas-skills/** -text
+projects/P038_261115_Canvas_와이어프레임과_미리보기_표준화/tasks/T04_소비자_실제_생성과_통합_검증/evidence/consumer/** -text
+src/intent/preview.ts text eol=lf
+templates/intent-preview/** text eol=lf

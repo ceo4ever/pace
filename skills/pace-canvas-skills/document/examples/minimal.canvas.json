@@ -1,0 +1,27 @@
+{
+  "format": "canvas-studio",
+  "version": 4,
+  "doc": {
+    "version": 4,
+    "name": "Minimal",
+    "pages": {
+      "page1": {
+        "id": "page1",
+        "name": "Screens",
+        "children": [],
+        "background": "#F5F5F5"
+      }
+    },
+    "pageOrder": [
+      "page1"
+    ],
+    "nodes": {},
+    "counters": {
+      "page": 1
+    },
+    "collections": {},
+    "collectionOrder": [],
+    "variables": {}
+  },
+  "images": {}
+}

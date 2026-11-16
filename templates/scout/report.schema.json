@@ -1,0 +1,544 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "pace-scout report.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "enum": [
+        1
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "links",
+                "topic",
+                "mixed"
+              ]
+            },
+            "topic": {
+              "type": "string"
+            },
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^https?://"
+              }
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "created",
+        "input"
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "recommendation": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^I\\d+$"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "biggest_assumption": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "recommendation",
+        "reasons",
+        "biggest_assumption"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^S\\d+$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^https?://"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "article",
+              "blog",
+              "video"
+            ]
+          },
+          "published": {
+            "type": "string",
+            "description": "발행일 — 증명 검사 6이 비었는지 본다"
+          },
+          "accessed": {
+            "type": "string"
+          },
+          "credibility": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claims": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "fact",
+                    "opinion"
+                  ]
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "주장 요약(내 말)"
+                },
+                "quote": {
+                  "type": "string",
+                  "description": "원문 글자 그대로 — 증명 검사가 원문에서 찾는다"
+                },
+                "time": {
+                  "type": "string",
+                  "pattern": "^((\\d{1,2}:)?\\d{1,2}:\\d{2})?$",
+                  "description": "영상 자막 시간"
+                },
+                "who": {
+                  "type": "string",
+                  "description": "의견의 주인"
+                }
+              },
+              "required": [
+                "type",
+                "text"
+              ]
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "url",
+          "kind",
+          "published",
+          "accessed",
+          "credibility",
+          "summary",
+          "claims"
+        ]
+      },
+      "minItems": 1
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^G\\d+$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "problem",
+              "behavior",
+              "technology",
+              "regulation",
+              "money"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^S\\d+(?: (?:\\d{1,2}:)?\\d{1,2}:\\d{2})?$",
+              "description": "출처 번호와 선택 시간: S2 · S2 03:41"
+            },
+            "minItems": 1
+          },
+          "agreement": {
+            "type": "string",
+            "enum": [
+              "agree",
+              "conflict",
+              "single"
+            ]
+          },
+          "conflict": {
+            "type": "string",
+            "description": "충돌 내용(agreement가 conflict일 때)"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "title",
+          "description",
+          "evidence",
+          "agreement"
+        ]
+      },
+      "minItems": 1
+    },
+    "ideas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^I\\d+$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "problem": {
+            "type": "string",
+            "minLength": 1
+          },
+          "customer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "solution": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revenue": {
+            "type": "string",
+            "minLength": 1,
+            "description": "수익 모델 가설 한 줄"
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^G\\d+$"
+            },
+            "description": "근거 신호 — 증명 검사 3이 1개 이상인지 본다"
+          },
+          "kill_assumptions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "maxItems": 2
+          },
+          "estimates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "이 후보에서 출처에 없는 추정 문장·수치"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "problem",
+          "customer",
+          "solution",
+          "revenue",
+          "signals",
+          "kill_assumptions"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 5
+    },
+    "criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z_]+$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "weight"
+        ]
+      },
+      "minItems": 1
+    },
+    "scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "idea": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^I\\d+$"
+          },
+          "criterion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "reason": {
+            "type": "string",
+            "description": "점수 근거 한 줄 — 증명 검사 4"
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^S\\d+(?: (?:\\d{1,2}:)?\\d{1,2}:\\d{2})?$",
+              "description": "출처 번호와 선택 시간: S2 · S2 03:41"
+            }
+          },
+          "estimate": {
+            "type": "boolean",
+            "description": "출처가 아닌 추정에 기댄 점수"
+          }
+        },
+        "required": [
+          "idea",
+          "criterion",
+          "score",
+          "reason",
+          "refs",
+          "estimate"
+        ]
+      },
+      "minItems": 1
+    },
+    "next_steps": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "experiment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "idea": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^I\\d+$"
+            },
+            "what": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cost": {
+              "type": "string",
+              "minLength": 1
+            },
+            "success": {
+              "type": "string",
+              "minLength": 1,
+              "description": "성공·실패를 가르는 관찰"
+            }
+          },
+          "required": [
+            "idea",
+            "what",
+            "cost",
+            "success"
+          ]
+        },
+        "cards": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^I\\d+$"
+          }
+        }
+      },
+      "required": [
+        "experiment"
+      ]
+    },
+    "unverified": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "dropped": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "name",
+          "reason"
+        ]
+      },
+      "description": "버린 후보와 이유"
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "run": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "unknown"
+                ]
+              },
+              "detail": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "status"
+            ]
+          }
+        }
+      },
+      "required": [
+        "run",
+        "checks"
+      ],
+      "description": "pace scout verify가 채운다 — 직접 쓰지 않는다"
+    }
+  },
+  "required": [
+    "version",
+    "meta",
+    "summary",
+    "sources",
+    "signals",
+    "ideas",
+    "criteria",
+    "scores",
+    "next_steps",
+    "unverified"
+  ],
+  "description": "pace-scout 보고서 데이터(report.json) — D5 구성"
+}

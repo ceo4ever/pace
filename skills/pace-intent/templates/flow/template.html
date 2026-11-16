@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@TITLE@</title>
+<style>
+/*@BASE_CSS@*/
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.seg button{font:inherit;padding:6px 12px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.seg button:first-child{border-radius:8px 0 0 8px}.seg button:last-child{border-radius:0 8px 8px 0}
+.seg button.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.canvas{overflow-x:auto;padding:18px}
+svg text{font-family:inherit;fill:var(--text)}
+.n-screen rect{fill:var(--surface);stroke:var(--line-2);stroke-width:1.2}
+.n-screen:hover rect{stroke:var(--accent)}
+.n-state rect{fill:var(--warn-soft);stroke:var(--warn);stroke-dasharray:4 3}
+.n-decision polygon{fill:var(--surface-2);stroke:var(--line-2)}
+.n-term rect{fill:var(--text)} .n-term text{fill:var(--bg)}
+.edge{fill:none;stroke:var(--faint);stroke-width:1.4}
+.elabel{font-size:11px;fill:var(--muted)}
+.elabel-bg{fill:var(--bg)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+@DATA@
+</script>
+<script>
+/*@BASE_JS@*/
+header('사용자 흐름', [[ '흐름 ' + DATA.flows.length ], [ '막다른 길 ' + DATA.deadEnds, DATA.deadEnds ? 'warn' : 'ok' ]]);
+const W=150,H=54,GX=200,GY=112,P=40;
+const main = el('main', {class:'wrap'});
+const seg = el('div', {class:'seg'});
+const ucs = el('span', {class:'muted small'});
+const canvas = el('div', {class:'card canvas'});
+main.append(el('div', {class:'toolbar'}, seg, ucs), canvas,
+  el('div', {class:'legend'}, ['▭ 화면(누르면 IA)', '◇ 분기', '⬭ 시작·끝', '┅ 상태·오류'].map(t=>el('span', {}, t))));
+document.body.append(main); footer();
+function draw(f){
+  seg.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.id===f.id));
+  ucs.replaceChildren('유스케이스 ', ids(f.usecases));
+  const pos = {}; let maxC=0,maxR=0;
+  for (const n of f.nodes){ pos[n.id] = {x:P+n.col*GX+W/2, y:P+n.row*GY+H/2, n}; maxC=Math.max(maxC,n.col); maxR=Math.max(maxR,n.row); }
+  const svg = el('svg:svg', {width:P*2+maxC*GX+W, height:P*2+maxR*GY+H, role:'img'});
+  svg.append(el('svg:defs', {}, el('svg:marker', {id:'arr', viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:7, markerHeight:7, orient:'auto-start-reverse'},
+    el('svg:path', {d:'M0,0 L10,5 L0,10 z', style:'fill:var(--faint)'}))));
+  const term = n => n.type==='start' || n.type==='end';
+  const hw = n => n.type==='decision' ? 62 : term(n) ? 60 : W/2, hh = n => n.type==='decision' ? 30 : term(n) ? 17 : n.type==='state' ? H/2-6 : H/2;
+  const labels = [];
+  for (const e of f.edges){
+    const a = pos[e.from], b = pos[e.to]; let d, lx, ly;
+    if (a.y === b.y){ const s = Math.sign(b.x-a.x); d = 'M'+(a.x+s*hw(a.n))+','+a.y+' L'+(b.x-s*hw(b.n))+','+b.y; lx=(a.x+b.x)/2; ly=a.y-8; }
+    else if (a.x === b.x){ const s = Math.sign(b.y-a.y); d = 'M'+a.x+','+(a.y+s*hh(a.n))+' L'+b.x+','+(b.y-s*hh(b.n)); lx=a.x+6; ly=(a.y+b.y)/2+4; }
+    else if (e.route === 'vh'){ const sy=Math.sign(b.y-a.y), sx=Math.sign(b.x-a.x); d='M'+a.x+','+(a.y+sy*hh(a.n))+' L'+a.x+','+b.y+' L'+(b.x-sx*hw(b.n))+','+b.y; lx=a.x+6; ly=(a.y+b.y)/2; }
+    else { const sx=Math.sign(b.x-a.x), sy=Math.sign(b.y-a.y); d='M'+(a.x+sx*hw(a.n))+','+a.y+' L'+b.x+','+a.y+' L'+b.x+','+(b.y-sy*hh(b.n)); lx=(a.x+b.x)/2; ly=a.y-8; }
+    svg.append(el('svg:path', {class:'edge', d, 'marker-end':'url(#arr)'}));
+    if (e.label) labels.push([lx, ly, e.label]);
+  }
+  for (const {x,y,n} of Object.values(pos)){
+    let g;
+    if (n.type==='screen'){
+      g = el('svg:a', {href:hrefFor(n.screen), class:'n-screen' + (DATA.status && DATA.status[n.screen] ? ' st-' + DATA.status[n.screen] : '')},
+        el('svg:rect', {x:x-W/2, y:y-H/2, width:W, height:H, rx:8}),
+        el('svg:text', {x, y:y-4, 'text-anchor':'middle', style:'font-size:10px;fill:var(--accent);font-weight:600'}, n.screen),
+        el('svg:text', {x, y:y+13, 'text-anchor':'middle', style:'font-size:13px'}, n.label));
+    } else if (n.type==='decision'){
+      g = el('svg:g', {class:'n-decision'}, el('svg:polygon', {points:[[x,y-30],[x+62,y],[x,y+30],[x-62,y]].map(p=>p.join(',')).join(' ')}),
+        el('svg:text', {x, y:y+4, 'text-anchor':'middle', style:'font-size:12px'}, n.label));
+    } else if (n.type==='state'){
+      g = el('svg:g', {class:'n-state'}, el('svg:rect', {x:x-W/2, y:y-H/2+6, width:W, height:H-12, rx:6}),
+        el('svg:text', {x, y:y+4, 'text-anchor':'middle', style:'font-size:12px'}, n.label));
+    } else {
+      g = el('svg:g', {class:'n-term'}, el('svg:rect', {x:x-60, y:y-17, width:120, height:34, rx:17}),
+        el('svg:text', {x, y:y+4, 'text-anchor':'middle', style:'font-size:12px;font-weight:600'}, n.label));
+    }
+    svg.append(g);
+  }
+  for (const [lx,ly,t] of labels){
+    const w = t.length*11+10;
+    svg.append(el('svg:rect', {class:'elabel-bg', x:lx-w/2, y:ly-11, width:w, height:15, rx:4}), el('svg:text', {class:'elabel', x:lx, y:ly, 'text-anchor':'middle'}, t));
+  }
+  canvas.replaceChildren(svg);
+}
+DATA.flows.forEach(f => seg.append(el('button', {'data-id':f.id, onclick:()=>{ draw(f); history.replaceState(null,'','#'+f.id); }}, f.id + ' ' + f.name)));
+draw(DATA.flows.find(f=>f.id===location.hash.slice(1)) || DATA.flows[0]);
+</script>
+</body>
+</html>

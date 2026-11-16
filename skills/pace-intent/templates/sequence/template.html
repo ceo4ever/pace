@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@TITLE@</title>
+<style>
+/*@BASE_CSS@*/
+.sq-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px;align-items:start}
+.sq-layout>*{min-width:0}
+.sq-canvas{overflow-x:auto;padding:12px 8px}
+.sq-canvas svg{display:block}
+.sq-canvas text{font-family:inherit;fill:var(--text)}
+.p-box rect{fill:var(--surface);stroke:var(--line-2);stroke-width:1.3}
+.p-box.ext rect{stroke-dasharray:4 3;fill:var(--surface-2)}
+.p-box.actor rect{fill:var(--text)} .p-box.actor text{fill:var(--bg)}
+.p-id{font-size:10px;font-weight:700;fill:var(--accent)!important}
+.p-box.actor .p-id{fill:var(--bg)!important;opacity:.7}
+.lifeline{stroke:var(--line-2);stroke-dasharray:4 4}
+.msg{stroke:var(--text);stroke-width:1.3;fill:none}
+.msg.reply{stroke:var(--muted);stroke-dasharray:5 4}
+.mtext{font-size:12px}
+.mnum{font-size:10px;font-weight:700;fill:var(--faint)!important}
+.mref{font-size:10px;font-weight:700;fill:var(--accent)!important}
+.frame{fill:none;stroke:var(--line-2);stroke-width:1.2}
+.frame.alt{stroke:var(--warn)}
+.ftag{fill:var(--surface-2);stroke:var(--line-2)}
+.frame-alt-tag{fill:var(--warn-soft);stroke:var(--warn)}
+.ftext{font-size:11px;font-weight:700}
+.fcase{font-size:11px;fill:var(--muted)!important}
+.fsep{stroke:var(--line-2);stroke-dasharray:6 4}
+.frame.alt + .fsep{stroke:var(--warn)}
+.steps td:first-child{width:36px;color:var(--faint);font-variant-numeric:tabular-nums}
+.ctx{font-size:11px;color:var(--muted);white-space:nowrap}
+.pinfo{padding:6px 0;border-bottom:1px solid var(--line)}.pinfo:last-child{border-bottom:0}
+@media (max-width:860px){.sq-layout{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+@DATA@
+</script>
+<script>
+/*@BASE_JS@*/
+const P = Object.fromEntries(DATA.participants.map(p=>[p.id,p]));
+const c = DATA.sequenceChecks; const passed = c.filter(x=>x.ok).length;
+header('시퀀스', [[ '시퀀스 ' + DATA.sequences.length ], [ '참여자 ' + DATA.participants.length ], [ '검사 ' + passed + '/' + c.length, passed===c.length?'ok':'warn' ]]);
+const side = el('aside', {class:'side'});
+const body = el('div', {});
+document.body.append(el('main', {class:'wrap'}, el('div', {class:'sq-layout'}, side, body))); footer();
+function draw(sq){
+  const parts = sq.participants, X = {}, GX = 168, PW = 128, PH = 46, top = 20;
+  parts.forEach((id,i)=>X[id] = 80 + i*GX);
+  const back = el('svg:g', {}), front = el('svg:g', {});
+  let y = top + PH + 24, n = 0; const rows = [];
+  function msg(m, ctx){
+    n++; const x1 = X[m.from], x2 = X[m.to], reply = m.kind==='reply', self = m.from===m.to;
+    y += 40;
+    if (self){
+      front.append(el('svg:path', {class:'msg', d:'M'+x1+','+(y-8)+' h34 v18 h-30', 'marker-end':'url(#ah)'}));
+      front.append(el('svg:text', {class:'mtext', x:x1+42, y:y+2}, el('svg:tspan', {class:'mnum'}, n + '  '), m.text));
+      y += 12;
+    } else {
+      const mk = m.kind==='async' || reply ? 'url(#ao)' : 'url(#ah)', dir = Math.sign(x2-x1);
+      front.append(el('svg:line', {class:'msg' + (reply?' reply':''), x1, y1:y, x2:x2 - dir*2, y2:y, 'marker-end':mk}));
+      front.append(el('svg:text', {class:'mtext', x:(x1+x2)/2, y:y-7, 'text-anchor':'middle'}, el('svg:tspan', {class:'mnum'}, n + '  '), m.text));
+    }
+    const refs = [m.screen, m.ac].filter(Boolean);
+    if (refs.length){ const rx = self ? x1+42 : (x1+x2)/2; const a = el('svg:a', {href:hrefFor(m.screen||m.ac)}, el('svg:text', {class:'mref', x:rx, y:y+13, 'text-anchor': self ? 'start' : 'middle'}, refs.join(' · '))); front.append(a); y += 8; }
+    rows.push({n, m, ctx});
+  }
+  function involved(list){ const s = new Set(); (function w(l){ for (const m of l){ if (m.block) m.cases.forEach(cs=>w(cs.messages)); else { s.add(m.from); s.add(m.to); } } })(list); return [...s]; }
+  function walk(list, depth, ctx){
+    for (const m of list){
+      if (!m.block){ msg(m, ctx); continue; }
+      const inv = involved(m.cases.flatMap(cs=>cs.messages)).map(id=>X[id]);
+      const fx = Math.min(...inv) - 66 + depth*10, fw = Math.max(...inv) + 66 - depth*10 - fx;
+      const fy = y + 16; y += 30;
+      const seps = [];
+      m.cases.forEach((cs, i) => {
+        if (i > 0){ y += 14; seps.push([y, cs.label]); }
+        walk(cs.messages, depth+1, (ctx ? ctx + ' › ' : '') + m.block + (cs.label ? ' ' + cs.label : (m.label ? ' ' + m.label : '')));
+      });
+      y += 14;
+      const tagW = 44, alt = m.block==='alt';
+      back.append(el('svg:rect', {class:'frame' + (alt?' alt':''), x:fx, y:fy, width:fw, height:y-fy, rx:4}),
+        el('svg:path', {class: alt ? 'frame-alt-tag' : 'ftag', d:'M'+fx+','+fy+' h'+tagW+' v12 l-8,8 h-'+(tagW-8)+' z'}),
+        el('svg:text', {class:'ftext', x:fx+8, y:fy+14}, m.block),
+        el('svg:text', {class:'fcase', x:fx+tagW+10, y:fy+14}, '[' + (m.label || m.cases[0].label || '') + ']'));
+      for (const [sy, lab] of seps) back.append(el('svg:line', {class:'fsep', x1:fx, y1:sy, x2:fx+fw, y2:sy}), el('svg:text', {class:'fcase', x:fx+10, y:sy+14}, '[' + lab + ']'));
+    }
+  }
+  walk(sq.messages, 0, '');
+  const H = y + 40, Wd = 80*2 + (parts.length-1)*GX;
+  const svg = el('svg:svg', {width:Wd, height:H, role:'img', 'aria-label':sq.name + ' 시퀀스 다이어그램'});
+  svg.append(el('svg:defs', {},
+    el('svg:marker', {id:'ah', viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:8, markerHeight:8, orient:'auto'}, el('svg:path', {d:'M0,0 L10,5 L0,10 z', style:'fill:var(--text)'})),
+    el('svg:marker', {id:'ao', viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:8, markerHeight:8, orient:'auto'}, el('svg:path', {d:'M0,0 L10,5 L0,10', style:'fill:none;stroke:var(--muted);stroke-width:1.6'}))));
+  for (const id of parts) svg.append(el('svg:line', {class:'lifeline', x1:X[id], y1:top+PH, x2:X[id], y2:H-10}));
+  svg.append(back, front);
+  for (const id of parts){
+    const p = P[id], cls = 'p-box' + (p.kind==='actor' ? ' actor' : '') + (p.external ? ' ext' : '');
+    svg.append(el('svg:a', {href: p.kind==='component' ? '#' + id : hrefFor(id), class:cls},
+      el('svg:rect', {x:X[id]-PW/2, y:top, width:PW, height:PH, rx:p.kind==='actor'?23:8}),
+      el('svg:text', {class:'p-id', x:X[id], y:top+18, 'text-anchor':'middle'}, id),
+      el('svg:text', {x:X[id], y:top+35, 'text-anchor':'middle', style:'font-size:13px;font-weight:600'}, p.name)));
+  }
+  const uc = Object.hasOwn(DATA.sequenceUsecases, sq.usecase) ? DATA.sequenceUsecases[sq.usecase] : { name: sq.usecase, reason: "" };
+  body.replaceChildren(
+    el('section', {class:'card', id:sq.id},
+      el('div', {class:'pad', style:'border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap'},
+        el('span', {class:'id'}, sq.id), el('b', {}, sq.name), el('span', {class:'muted small'}, '유스케이스 '), idLink(sq.usecase), el('span', {class:'faint small'}, '— 만든 이유: ' + uc.reason)),
+      el('div', {class:'sq-canvas'}, svg)),
+    el('h2', {class:'sec-title', style:'margin-top:20px'}, '단계'),
+    el('div', {class:'card'}, el('table', {class:'steps'}, el('tbody', {}, rows.map(r => el('tr', {},
+      el('td', {}, r.n), el('td', {}, P[r.m.from].name + ' → ' + P[r.m.to].name), el('td', {}, r.m.text, r.ctx ? el('div', {class:'ctx'}, r.ctx) : null),
+      el('td', {}, ids([r.m.screen, r.m.ac].filter(Boolean)))))))));
+}
+side.append(
+  el('div', {class:'card pad', style:'margin-bottom:12px'}, el('h2', {class:'sec-title'}, '시퀀스'),
+    DATA.sequences.map(s => el('a', {class:'item on', href:'#'+s.id}, el('span', {class:'id'}, s.id), s.name))),
+  el('div', {class:'card pad', style:'margin-bottom:12px'}, el('h2', {class:'sec-title'}, '참여자'),
+    DATA.participants.map(p => el('div', {class:'pinfo', id: p.kind==='component' ? p.id : null},
+      el('span', {class:'id' + (p.kind==='component' ? ' plain' : '')}, p.id), ' ', el('b', {}, p.name),
+      el('div', {class:'faint small'}, p.desc),
+      p.external ? el('div', {class: p.docs && p.docs.checked ? 'okline' : 'warnline'}, p.docs && p.docs.checked ? '✔ 공식 문서 확인 ' + p.docs.checked : p.docs && p.docs.open ? '⚠ 미결 ' + p.docs.open + ' — ' + p.docs.title : '⚠ 공식 문서 확인 전 — ' + (p.docs ? p.docs.title : ''), p.docs && safeUrl(p.docs.url) ? el('a', {href:safeUrl(p.docs.url), rel:'noopener noreferrer', style:'margin-left:6px'}, '문서') : null) : null))),
+  el('div', {class:'card pad'}, el('h2', {class:'sec-title'}, '시퀀스 검사'),
+    el('ul', {class:'checks'}, c.map(x => el('li', {class:'small', style:'margin:6px 0'}, el('span', {class: x.ok ? 'okline' : 'warnline'}, x.ok ? '✔ ' : '⚠ '), x.name, x.detail ? el('div', {class:'warnline'}, x.detail) : null)))),
+  el('div', {class:'faint small', style:'margin-top:10px'}, '범례: ─▶ 동기 · ─▷ 비동기 · ┄▷ 응답 · alt 분기 · loop 반복 · opt 선택'));
+draw(DATA.sequences[0]);
+</script>
+</body>
+</html>

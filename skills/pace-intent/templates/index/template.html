@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@TITLE@</title>
+<style>
+/*@BASE_CSS@*/
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+.stat{padding:14px 16px}
+.stat b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.doc{display:block;padding:14px 16px;color:var(--text)}
+.doc:hover{text-decoration:none;border-color:var(--accent)}
+.doc b{display:block;margin-bottom:2px}
+.trace td{white-space:normal}
+.status-ok{color:var(--ok);font-weight:600}.status-warn{color:var(--warn);font-weight:600}
+.checks li{margin:6px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.two>*{min-width:0}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+@DATA@
+</script>
+<script>
+/*@BASE_JS@*/
+const c = DATA.checks; const passed = c.filter(x=>x.ok).length;
+header('목차', [[ '가정 ' + DATA.assumptions.length ], [ '미결 ' + DATA.open.length ], [ '검사 ' + passed + '/' + c.length, passed===c.length?'ok':'warn' ]]);
+const m = el('main', {class:'wrap'});
+m.append(el('div', {class:'stats'}, DATA.counts.map(([k,v]) => el('div', {class:'card stat'}, el('b', {}, v), el('span', {class:'muted small'}, k)))));
+m.append(el('div', {class:'docs'}, DATA.docs.map(d => el('a', {class:'card doc', href:d.file}, el('b', {}, d.title), el('span', {class:'muted small'}, d.desc)))));
+m.append(el('h2', {class:'sec-title'}, '추적표 — 유스케이스 → 화면 → 기능 → 완료 기준'));
+m.append(el('div', {class:'card'}, el('table', {class:'trace'},
+  el('thead', {}, el('tr', {}, ['유스케이스','화면','기능','완료 기준','시퀀스','상태'].map(t=>el('th',{},t)))),
+  el('tbody', {}, DATA.trace.map(r => el('tr', {},
+    el('td', {}, idLink(r.uc), ' ', r.name),
+    el('td', {}, ids(r.screens)), el('td', {}, ids(r.features)), el('td', {}, ids(r.ac)), el('td', {}, r.sq ? idLink(r.sq) : el('span', {class:'faint small'}, '—')),
+    el('td', {class: r.issues.length ? 'status-warn' : 'status-ok'}, r.issues.length ? '⚠ ' + r.issues.join(', ') : '✔')))))));
+const two = el('div', {class:'two'});
+two.append(el('div', {class:'card pad'}, el('h2', {class:'sec-title'}, '증명 검사'),
+  el('ul', {class:'checks'}, c.map(x => el('li', {}, el('span', {class: x.ok ? 'status-ok' : 'status-warn'}, x.ok ? '✔ ' : '⚠ '), x.name, x.detail ? el('div', {class:'warnline'}, x.detail) : null)))));
+two.append(el('div', {class:'card pad'}, el('h2', {class:'sec-title'}, '가정'),
+  el('ul', {}, DATA.assumptions.map(a => el('li', {}, a))),
+  el('h2', {class:'sec-title', style:'margin-top:14px'}, '미결'),
+  el('ul', {}, DATA.open.map(q => el('li', {}, el('span', {class:'id plain'}, q.id), ' ', q.text, el('div', {class:'faint small'}, '영향: ' + q.impact + ' · 해결 조건: ' + q.cond))))));
+m.append(two);
+document.body.append(m); footer();
+</script>
+</body>
+</html>

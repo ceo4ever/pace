@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>쇼츠 자동 발행 서비스 · 시퀀스</title>
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --line:#dde1e7; --line-2:#c9cfd8;
+  --text:#1b1f24; --muted:#5d6672; --faint:#8a929d;
+  --accent:#2f5bea; --accent-soft:#e8eefe; --ok:#1f8a4c; --ok-soft:#e5f5ec; --warn:#b26a00; --warn-soft:#fff3dc;
+  --wf-fill:#e6e8ec; --wf-stroke:#b8bec7; --wf-ink:#4a525c; --wf-screen:#ffffff;
+  --radius:10px; --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111418; --surface:#181c21; --surface-2:#20252c; --line:#2c323a; --line-2:#3a414b;
+    --text:#e7eaee; --muted:#a3abb6; --faint:#77808b;
+    --accent:#7d9cff; --accent-soft:#1e2742; --ok:#4cc38a; --ok-soft:#173226; --warn:#f0b04c; --warn-soft:#3a2c12;
+    --wf-fill:#2a3038; --wf-stroke:#4a525d; --wf-ink:#c4cad3; --wf-screen:#1d2228;
+    --shadow:none; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111418; --surface:#181c21; --surface-2:#20252c; --line:#2c323a; --line-2:#3a414b;
+  --text:#e7eaee; --muted:#a3abb6; --faint:#77808b;
+  --accent:#7d9cff; --accent-soft:#1e2742; --ok:#4cc38a; --ok-soft:#173226; --warn:#f0b04c; --warn-soft:#3a2c12;
+  --wf-fill:#2a3038; --wf-stroke:#4a525d; --wf-ink:#c4cad3; --wf-screen:#1d2228;
+  --shadow:none; color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+h1,h2,h3{margin:0;line-height:1.3}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .row1{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:14px 0 6px}
+.top .proj{font-weight:700;font-size:16px}
+.top .kind{color:var(--muted);font-size:16px}
+.top .meta{margin-left:auto;color:var(--faint);font-size:12px;font-variant-numeric:tabular-nums}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;padding-bottom:0;scrollbar-width:none}
+nav.tabs a{padding:8px 12px;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;font-size:13px}
+nav.tabs a:hover{color:var(--text);text-decoration:none}
+nav.tabs a.on{color:var(--text);border-bottom-color:var(--accent);font-weight:600}
+.badges{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 12px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:12px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.badge.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.badge.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+main.wrap{padding-top:20px;padding-bottom:60px}
+.checks{padding-left:0;list-style:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:16px 18px}
+.muted{color:var(--muted)} .faint{color:var(--faint)} .small{font-size:12px}
+.id{display:inline-block;font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;padding:3px 6px;border-radius:5px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+a.id:hover{text-decoration:none;filter:brightness(1.1)}
+.id.plain{background:var(--surface-2);color:var(--muted)}
+.ids{display:inline-flex;gap:4px;flex-wrap:wrap}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--surface-2)}
+.sec-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin:0 0 8px}
+.grid2{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+.side{position:sticky;top:132px}
+.side a.item{display:flex;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;color:var(--text)}
+.side a.item:hover{background:var(--surface-2);text-decoration:none}
+.side a.item.on{background:var(--accent-soft)}
+:target{scroll-margin-top:140px}
+.warnline{color:var(--warn);font-size:12px}
+.okline{color:var(--ok);font-size:12px}
+.st{display:inline-block;font-size:11px;padding:1px 6px;border-radius:99px;margin-left:4px;border:1px solid var(--line)}
+.st-기존{background:var(--surface-2);color:var(--muted)}
+.st-변경{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.st-신규{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+li,td,dd{overflow-wrap:anywhere}
+footer.foot{color:var(--faint);font-size:12px;padding:24px 0;border-top:1px solid var(--line)}
+@media (max-width: 760px){
+  table{display:block;overflow-x:auto}
+  .grid2{grid-template-columns:1fr}
+  .side{position:static}
+  .top .meta{margin-left:0;width:100%}
+}
+@media print{
+  header.top{position:static;backdrop-filter:none}
+  nav.tabs,.noprint,select,.seg{display:none}
+  body{background:#fff}
+  .card{box-shadow:none;break-inside:avoid}
+}
+
+.sq-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px;align-items:start}
+.sq-layout>*{min-width:0}
+.sq-canvas{overflow-x:auto;padding:12px 8px}
+.sq-canvas svg{display:block}
+.sq-canvas text{font-family:inherit;fill:var(--text)}
+.p-box rect{fill:var(--surface);stroke:var(--line-2);stroke-width:1.3}
+.p-box.ext rect{stroke-dasharray:4 3;fill:var(--surface-2)}
+.p-box.actor rect{fill:var(--text)} .p-box.actor text{fill:var(--bg)}
+.p-id{font-size:10px;font-weight:700;fill:var(--accent)!important}
+.p-box.actor .p-id{fill:var(--bg)!important;opacity:.7}
+.lifeline{stroke:var(--line-2);stroke-dasharray:4 4}
+.msg{stroke:var(--text);stroke-width:1.3;fill:none}
+.msg.reply{stroke:var(--muted);stroke-dasharray:5 4}
+.mtext{font-size:12px}
+.mnum{font-size:10px;font-weight:700;fill:var(--faint)!important}
+.mref{font-size:10px;font-weight:700;fill:var(--accent)!important}
+.frame{fill:none;stroke:var(--line-2);stroke-width:1.2}
+.frame.alt{stroke:var(--warn)}
+.ftag{fill:var(--surface-2);stroke:var(--line-2)}
+.frame-alt-tag{fill:var(--warn-soft);stroke:var(--warn)}
+.ftext{font-size:11px;font-weight:700}
+.fcase{font-size:11px;fill:var(--muted)!important}
+.fsep{stroke:var(--line-2);stroke-dasharray:6 4}
+.frame.alt + .fsep{stroke:var(--warn)}
+.steps td:first-child{width:36px;color:var(--faint);font-variant-numeric:tabular-nums}
+.ctx{font-size:11px;color:var(--muted);white-space:nowrap}
+.pinfo{padding:6px 0;border-bottom:1px solid var(--line)}.pinfo:last-child{border-bottom:0}
+@media (max-width:860px){.sq-layout{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<script type="application/json" id="pace-data">
+{"doc":{"project":"쇼츠 자동 발행 서비스","version":"v0.1","date":"2026-10-29","depth":"L2","source":"pace-intent 템플릿 예시 · 쇼츠 자동 발행 서비스"},"nav":{"docs":[["index.html","목차"],["usecase.html","유스케이스"],["ia.html","IA"],["flow.html","사용자 흐름"],["sequence.html","시퀀스"],["wireframe.html","와이어프레임"],["spec.html","기능 명세"]],"route":{"UC":"usecase.html","A":"usecase.html","SCR":"ia.html","FL":"flow.html","SQ":"sequence.html","C":"sequence.html","F":"spec.html","AC":"spec.html"}},"sequences":[{"id":"SQ-03","usecase":"UC-03","name":"플랫폼 발행","participants":["A-1","C-1","C-2","C-3","A-2"],"messages":[{"from":"A-1","to":"C-1","text":"발행하기 (플랫폼·캡션·시점)","screen":"SCR-05"},{"from":"C-1","to":"C-2","text":"발행 요청"},{"block":"opt","label":"채널 토큰이 없거나 만료","cases":[{"messages":[{"from":"C-2","to":"C-1","text":"채널 연결 필요","kind":"reply"},{"from":"C-1","to":"A-1","text":"채널 연결 화면으로","screen":"SCR-07","ac":"AC-07"}]}]},{"from":"C-2","to":"C-3","text":"플랫폼별 업로드 작업 등록","kind":"async"},{"from":"C-2","to":"C-1","text":"접수됨 · 상태 '대기'","kind":"reply","ac":"AC-06"},{"block":"loop","label":"선택한 플랫폼마다","cases":[{"messages":[{"from":"C-3","to":"A-2","text":"영상 업로드 (OAuth 토큰)"},{"block":"alt","cases":[{"label":"성공","messages":[{"from":"A-2","to":"C-3","text":"게시 ID","kind":"reply"},{"from":"C-3","to":"C-2","text":"상태 '완료'"}]},{"label":"거부 (길이·형식)","messages":[{"from":"A-2","to":"C-3","text":"거부 사유","kind":"reply"},{"from":"C-3","to":"C-2","text":"상태 '실패' + 사유","ac":"AC-09"}]},{"label":"일시 오류 (5xx·한도)","messages":[{"from":"A-2","to":"C-3","text":"오류 응답","kind":"reply"},{"from":"C-3","to":"C-3","text":"재시도 (최대 3회, 간격 늘림)"}]}]}]}]},{"from":"C-2","to":"C-1","text":"상태 알림 (완료·실패)","kind":"async"},{"from":"C-1","to":"A-1","text":"발행 목록 갱신","screen":"SCR-05","ac":"AC-06"}]}],"sequenceChecks":[{"id":"sequence-exists","name":"시퀀스 대상 유스케이스마다 시퀀스가 있다","ok":true,"detail":""},{"id":"sequence-external-alt","name":"외부 시스템 호출에 실패 분기(alt)와 완료 기준이 있다","ok":true,"detail":""},{"id":"sequence-async-done","name":"비동기 메시지 뒤에 사용자 쪽으로 끝을 알린다","ok":true,"detail":""},{"id":"sequence-docs","name":"외부 서비스 참여자마다 공식 문서 URL과 확인일이 있다(정할 수 없으면 미결 항목)","ok":true,"detail":""},{"id":"sequence-participants","name":"참여자는 모두 메시지를 주고받는다","ok":true,"detail":""}],"sequenceUsecases":{"UC-03":{"name":"플랫폼 발행","reason":"외부 API 업로드·OAuth 토큰·플랫폼별 실패 지점"}},"participants":[{"id":"A-1","name":"크리에이터","desc":"자기 채널에 쇼츠를 올리는 개인 · 주 행위자","kind":"actor"},{"id":"A-2","name":"플랫폼","desc":"인스타그램·틱톡 · 외부 시스템","external":true,"docs":{"title":"인스타그램 Content Publishing · 틱톡 Content Posting API","url":"https://developers.facebook.com/docs/instagram-platform/content-publishing","checked":"2026-10-29"},"kind":"actor"},{"id":"A-3","name":"AI 생성기","desc":"기획안·영상 생성 · 외부 시스템","external":true,"docs":{"title":"LLM·영상 생성 API","checked":null},"kind":"actor"},{"id":"C-1","name":"앱","desc":"모바일 웹","client":true,"kind":"component"},{"id":"C-2","name":"서버","desc":"API·상태 저장","kind":"component"},{"id":"C-3","name":"업로드 워커","desc":"작업 큐에서 플랫폼별 업로드","kind":"component"}]}
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById('pace-data').textContent);
+const DOCS = DATA.nav.docs;
+const ROUTE = DATA.nav.route;
+function el(tag, attrs, ...kids){
+  const n = document.createElementNS(tag.startsWith('svg:') ? 'http://www.w3.org/2000/svg' : 'http://www.w3.org/1999/xhtml', tag.replace('svg:',''));
+  for (const [k,v] of Object.entries(attrs||{})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') n.setAttribute('class', v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? '' : String(v));
+  }
+  for (const k of kids.flat()) if (k !== null && k !== undefined && k !== false) n.append(k.nodeType ? k : document.createTextNode(String(k)));
+  return n;
+}
+// ID 접두어 → 문서 파일은 템플릿 폴더(schema.json x-pace.ids)에서 명령이 만든다. 문서끼리는 이 경로로만 잇는다.
+function hrefFor(id){
+  const prefix = String(id).split('-')[0];
+  const file = Object.hasOwn(ROUTE, prefix) ? ROUTE[prefix] : null;
+  const here = location.pathname.split('/').pop() || 'index.html';
+  return file ? (file === here ? '' : file) + '#' + id : null;
+}
+function docHref(kind, id){ return DOCS.some(([f]) => f === kind + '.html') ? kind + '.html#' + id : null; }
+// 외부 링크는 http(s)만 — 다른 스킴은 링크로 만들지 않는다.
+function safeUrl(u){ return /^https?:\/\//i.test(String(u || '')) ? String(u) : null; }
+function statusBadge(s){ return s && s.status ? el('span', {class:'st st-' + s.status, title:s.evidence || ''}, s.status) : null; }
+function idLink(id){
+  if (!id) return null;
+  const href = hrefFor(id);
+  if (href === null) return el('span', {class:'id plain'}, id);
+  return el('a', {class:'id', href, title:id}, id);
+}
+function ids(list){ return el('span', {class:'ids'}, (list||[]).map(idLink)); }
+function header(kind, badges){
+  const d = DATA.doc, here = location.pathname.split('/').pop() || 'index.html';
+  document.title = d.project + ' · ' + kind;
+  const h = el('header', {class:'top'}, el('div', {class:'wrap'},
+    el('div', {class:'row1'},
+      el('span', {class:'proj'}, d.project),
+      el('span', {class:'kind'}, '· ' + kind),
+      el('span', {class:'meta'}, d.version + ' · ' + d.date + ' · 깊이 ' + d.depth + ' · ' + d.source)),
+    el('nav', {class:'tabs'}, DOCS.map(([f, t]) => el('a', {href:f, class: f === here ? 'on' : null}, t))),
+    el('div', {class:'badges'}, (badges||[]).map(([t, cls]) => el('span', {class:'badge ' + (cls||'')}, t)))
+  ));
+  document.body.prepend(h);
+}
+function footer(){
+  document.body.append(el('footer', {class:'foot'}, el('div', {class:'wrap'},
+    'pace-intent 템플릿 · 데이터는 이 파일 안 pace-data 데이터 블록(JSON)에 있고, 화면은 그 데이터로 그립니다.')));
+}
+
+const P = Object.fromEntries(DATA.participants.map(p=>[p.id,p]));
+const c = DATA.sequenceChecks; const passed = c.filter(x=>x.ok).length;
+header('시퀀스', [[ '시퀀스 ' + DATA.sequences.length ], [ '참여자 ' + DATA.participants.length ], [ '검사 ' + passed + '/' + c.length, passed===c.length?'ok':'warn' ]]);
+const side = el('aside', {class:'side'});
+const body = el('div', {});
+document.body.append(el('main', {class:'wrap'}, el('div', {class:'sq-layout'}, side, body))); footer();
+function draw(sq){
+  const parts = sq.participants, X = {}, GX = 168, PW = 128, PH = 46, top = 20;
+  parts.forEach((id,i)=>X[id] = 80 + i*GX);
+  const back = el('svg:g', {}), front = el('svg:g', {});
+  let y = top + PH + 24, n = 0; const rows = [];
+  function msg(m, ctx){
+    n++; const x1 = X[m.from], x2 = X[m.to], reply = m.kind==='reply', self = m.from===m.to;
+    y += 40;
+    if (self){
+      front.append(el('svg:path', {class:'msg', d:'M'+x1+','+(y-8)+' h34 v18 h-30', 'marker-end':'url(#ah)'}));
+      front.append(el('svg:text', {class:'mtext', x:x1+42, y:y+2}, el('svg:tspan', {class:'mnum'}, n + '  '), m.text));
+      y += 12;
+    } else {
+      const mk = m.kind==='async' || reply ? 'url(#ao)' : 'url(#ah)', dir = Math.sign(x2-x1);
+      front.append(el('svg:line', {class:'msg' + (reply?' reply':''), x1, y1:y, x2:x2 - dir*2, y2:y, 'marker-end':mk}));
+      front.append(el('svg:text', {class:'mtext', x:(x1+x2)/2, y:y-7, 'text-anchor':'middle'}, el('svg:tspan', {class:'mnum'}, n + '  '), m.text));
+    }
+    const refs = [m.screen, m.ac].filter(Boolean);
+    if (refs.length){ const rx = self ? x1+42 : (x1+x2)/2; const a = el('svg:a', {href:hrefFor(m.screen||m.ac)}, el('svg:text', {class:'mref', x:rx, y:y+13, 'text-anchor': self ? 'start' : 'middle'}, refs.join(' · '))); front.append(a); y += 8; }
+    rows.push({n, m, ctx});
+  }
+  function involved(list){ const s = new Set(); (function w(l){ for (const m of l){ if (m.block) m.cases.forEach(cs=>w(cs.messages)); else { s.add(m.from); s.add(m.to); } } })(list); return [...s]; }
+  function walk(list, depth, ctx){
+    for (const m of list){
+      if (!m.block){ msg(m, ctx); continue; }
+      const inv = involved(m.cases.flatMap(cs=>cs.messages)).map(id=>X[id]);
+      const fx = Math.min(...inv) - 66 + depth*10, fw = Math.max(...inv) + 66 - depth*10 - fx;
+      const fy = y + 16; y += 30;
+      const seps = [];
+      m.cases.forEach((cs, i) => {
+        if (i > 0){ y += 14; seps.push([y, cs.label]); }
+        walk(cs.messages, depth+1, (ctx ? ctx + ' › ' : '') + m.block + (cs.label ? ' ' + cs.label : (m.label ? ' ' + m.label : '')));
+      });
+      y += 14;
+      const tagW = 44, alt = m.block==='alt';
+      back.append(el('svg:rect', {class:'frame' + (alt?' alt':''), x:fx, y:fy, width:fw, height:y-fy, rx:4}),
+        el('svg:path', {class: alt ? 'frame-alt-tag' : 'ftag', d:'M'+fx+','+fy+' h'+tagW+' v12 l-8,8 h-'+(tagW-8)+' z'}),
+        el('svg:text', {class:'ftext', x:fx+8, y:fy+14}, m.block),
+        el('svg:text', {class:'fcase', x:fx+tagW+10, y:fy+14}, '[' + (m.label || m.cases[0].label || '') + ']'));
+      for (const [sy, lab] of seps) back.append(el('svg:line', {class:'fsep', x1:fx, y1:sy, x2:fx+fw, y2:sy}), el('svg:text', {class:'fcase', x:fx+10, y:sy+14}, '[' + lab + ']'));
+    }
+  }
+  walk(sq.messages, 0, '');
+  const H = y + 40, Wd = 80*2 + (parts.length-1)*GX;
+  const svg = el('svg:svg', {width:Wd, height:H, role:'img', 'aria-label':sq.name + ' 시퀀스 다이어그램'});
+  svg.append(el('svg:defs', {},
+    el('svg:marker', {id:'ah', viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:8, markerHeight:8, orient:'auto'}, el('svg:path', {d:'M0,0 L10,5 L0,10 z', style:'fill:var(--text)'})),
+    el('svg:marker', {id:'ao', viewBox:'0 0 10 10', refX:9, refY:5, markerWidth:8, markerHeight:8, orient:'auto'}, el('svg:path', {d:'M0,0 L10,5 L0,10', style:'fill:none;stroke:var(--muted);stroke-width:1.6'}))));
+  for (const id of parts) svg.append(el('svg:line', {class:'lifeline', x1:X[id], y1:top+PH, x2:X[id], y2:H-10}));
+  svg.append(back, front);
+  for (const id of parts){
+    const p = P[id], cls = 'p-box' + (p.kind==='actor' ? ' actor' : '') + (p.external ? ' ext' : '');
+    svg.append(el('svg:a', {href: p.kind==='component' ? '#' + id : hrefFor(id), class:cls},
+      el('svg:rect', {x:X[id]-PW/2, y:top, width:PW, height:PH, rx:p.kind==='actor'?23:8}),
+      el('svg:text', {class:'p-id', x:X[id], y:top+18, 'text-anchor':'middle'}, id),
+      el('svg:text', {x:X[id], y:top+35, 'text-anchor':'middle', style:'font-size:13px;font-weight:600'}, p.name)));
+  }
+  const uc = Object.hasOwn(DATA.sequenceUsecases, sq.usecase) ? DATA.sequenceUsecases[sq.usecase] : { name: sq.usecase, reason: "" };
+  body.replaceChildren(
+    el('section', {class:'card', id:sq.id},
+      el('div', {class:'pad', style:'border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap'},
+        el('span', {class:'id'}, sq.id), el('b', {}, sq.name), el('span', {class:'muted small'}, '유스케이스 '), idLink(sq.usecase), el('span', {class:'faint small'}, '— 만든 이유: ' + uc.reason)),
+      el('div', {class:'sq-canvas'}, svg)),
+    el('h2', {class:'sec-title', style:'margin-top:20px'}, '단계'),
+    el('div', {class:'card'}, el('table', {class:'steps'}, el('tbody', {}, rows.map(r => el('tr', {},
+      el('td', {}, r.n), el('td', {}, P[r.m.from].name + ' → ' + P[r.m.to].name), el('td', {}, r.m.text, r.ctx ? el('div', {class:'ctx'}, r.ctx) : null),
+      el('td', {}, ids([r.m.screen, r.m.ac].filter(Boolean)))))))));
+}
+side.append(
+  el('div', {class:'card pad', style:'margin-bottom:12px'}, el('h2', {class:'sec-title'}, '시퀀스'),
+    DATA.sequences.map(s => el('a', {class:'item on', href:'#'+s.id}, el('span', {class:'id'}, s.id), s.name))),
+  el('div', {class:'card pad', style:'margin-bottom:12px'}, el('h2', {class:'sec-title'}, '참여자'),
+    DATA.participants.map(p => el('div', {class:'pinfo', id: p.kind==='component' ? p.id : null},
+      el('span', {class:'id' + (p.kind==='component' ? ' plain' : '')}, p.id), ' ', el('b', {}, p.name),
+      el('div', {class:'faint small'}, p.desc),
+      p.external ? el('div', {class: p.docs && p.docs.checked ? 'okline' : 'warnline'}, p.docs && p.docs.checked ? '✔ 공식 문서 확인 ' + p.docs.checked : p.docs && p.docs.open ? '⚠ 미결 ' + p.docs.open + ' — ' + p.docs.title : '⚠ 공식 문서 확인 전 — ' + (p.docs ? p.docs.title : ''), p.docs && safeUrl(p.docs.url) ? el('a', {href:safeUrl(p.docs.url), rel:'noopener noreferrer', style:'margin-left:6px'}, '문서') : null) : null))),
+  el('div', {class:'card pad'}, el('h2', {class:'sec-title'}, '시퀀스 검사'),
+    el('ul', {class:'checks'}, c.map(x => el('li', {class:'small', style:'margin:6px 0'}, el('span', {class: x.ok ? 'okline' : 'warnline'}, x.ok ? '✔ ' : '⚠ '), x.name, x.detail ? el('div', {class:'warnline'}, x.detail) : null)))),
+  el('div', {class:'faint small', style:'margin-top:10px'}, '범례: ─▶ 동기 · ─▷ 비동기 · ┄▷ 응답 · alt 분기 · loop 반복 · opt 선택'));
+draw(DATA.sequences[0]);
+</script>
+</body>
+</html>

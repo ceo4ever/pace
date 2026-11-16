@@ -1,0 +1,22 @@
+{
+  "name": "pace",
+  "version": "0.1.0",
+  "description": "PACE — LLM CLI 세션에 올라오는 개인 비서 에이전트",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "pace": "bin/pace.ts"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node scripts/test.ts",
+    "check": "npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.9",
+    "typescript": "^7.0.2"
+  }
+}

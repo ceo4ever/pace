@@ -1,0 +1,9 @@
+﻿<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'sha256-@@SCRIPT_HASH@@'; base-uri 'none'; form-action 'none'">
+<meta name="pace-preview-map-sha256" content="__PACE_MAP_HASH__">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>화면 미리보기</title>
+<style>body{font:16px system-ui;margin:0;color:#142238;background:#f4f7fb}header{padding:1rem;background:#fff;border-bottom:1px solid #d5dfea}main{display:grid;grid-template-columns:14rem minmax(0,1fr);gap:1rem;padding:1rem}nav button{display:block;width:100%;text-align:left;margin-bottom:.4rem;padding:.6rem}button{cursor:pointer}.frame{position:relative;max-width:100%;width:max-content}.frame img{display:block;max-width:100%;height:auto}.hotspot{position:absolute;background:#2563eb25;border:2px solid #2563eb;box-sizing:border-box}.hotspot[aria-disabled=true]{background:#f59e0b30;border:2px dashed #b45309;cursor:not-allowed}.status{padding:.6rem} @media(max-width:700px){main{display:block}nav{display:flex;overflow:auto;gap:.4rem}nav button{min-width:9rem}}</style></head>
+<body><header><strong>화면 미리보기</strong><span id="current"></span></header><main><nav id="screens" aria-label="화면 선택"></nav><section><div id="status" class="status" role="status"></div><div id="font-warning" class="status" role="note"></div><div id="frame" class="frame"></div><p>파란 영역은 화면 이동, 주황 점선은 미연결 동작입니다.</p></section></main>
+<script type="application/json" id="preview-data">@@DATA@@</script>
+<script>@@SCRIPT@@</script></body></html>

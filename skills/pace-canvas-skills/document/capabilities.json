@@ -1,0 +1,38 @@
+{
+  "documentFormat": "canvas-studio",
+  "authoringVersion": 4,
+  "importVersions": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "limits": {
+    "MAX_EFFECTS": 64,
+    "MAX_BLUR": 1000,
+    "MAX_SHADOW_OFFSET": 10000,
+    "MAX_DASH": 10000,
+    "MAX_STOPS": 64,
+    "MAX_GRADIENT_FRACTION": 1000,
+    "MAX_ANGLE": 3600,
+    "MAX_LINE_HEIGHT_PX": 10000,
+    "MAX_LINE_HEIGHT_MULTIPLIER": 100,
+    "MAX_LINES": 10000,
+    "MAX_PATHS": 1000,
+    "MAX_PATH_LENGTH": 1000000,
+    "MAX_TRACKS": 1000,
+    "MAX_VARIABLES": 5000,
+    "MAX_COLLECTIONS": 100,
+    "MAX_MODES": 20,
+    "MAX_ALIAS_DEPTH": 64,
+    "MAX_VARIABLE_NAME": 200
+  },
+  "rules": [
+    "Document tree identifiers and references must be consistent.",
+    "Variable aliases, modes and bindings must resolve with compatible types.",
+    "Component, instance and variant references must be valid and acyclic.",
+    "Images are base64 image data URLs indexed by SHA-256-shaped keys.",
+    "Additional bounds, migration and cross-field rules are enforced by the bundled parser."
+  ],
+  "source": "MODEL.ts and parser.mjs; run validate.mjs for authoritative validation"
+}

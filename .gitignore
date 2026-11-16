@@ -1,0 +1,22 @@
+.DS_Store
+
+# machine-local 산출물
+*.local.md
+*.local.json
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+.env
+
+# Node.js
+node_modules/
+
+# 외부 저장소로 받은 로컬 스킬
+.claude/skills/
+
+# 백로그 작업 폴더의 수집 원문 (pace-intent)
+backlogs/*/sources/

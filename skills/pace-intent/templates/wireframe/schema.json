@@ -1,0 +1,1522 @@
+{
+ "description": "Page data embedded in wireframe.html (built by `pace intent render` from plan.json — the AI never writes this).",
+ "x-pace": {
+  "title": "와이어프레임",
+  "order": 50,
+  "desc": "저해상도 화면 · 상태별(기본·빈·로딩·오류)",
+  "ids": [],
+  "uses": [
+   "screens",
+   "wireframes",
+   "missingStates"
+  ],
+  "requires": [
+   "wireframes"
+  ]
+ },
+ "type": "object",
+ "required": [
+  "doc",
+  "nav",
+  "screens",
+  "wireframes",
+  "missingStates"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "doc": {
+   "$ref": "#/definitions/doc"
+  },
+  "nav": {
+   "type": "object",
+   "required": [
+    "docs",
+    "route"
+   ],
+   "properties": {
+    "docs": {
+     "type": "array",
+     "items": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "route": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "string"
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "screens": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "auth",
+     "data",
+     "path",
+     "depth",
+     "usecases",
+     "features"
+    ],
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^SCR-[A-Za-z0-9-]+$"
+     },
+     "name": {
+      "type": "string",
+      "minLength": 1
+     },
+     "auth": {
+      "type": "string",
+      "minLength": 1
+     },
+     "data": {
+      "type": "boolean",
+      "description": "shows loaded data — needs error and empty/loading states"
+     },
+     "status": {
+      "enum": [
+       "기존",
+       "변경",
+       "신규"
+      ]
+     },
+     "evidence": {
+      "type": "string",
+      "description": "path:line in the product repository, required for 기존·변경"
+     },
+     "path": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "depth": {
+      "type": "integer"
+     },
+     "usecases": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "features": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "additionalProperties": false
+   }
+  },
+  "wireframes": {
+   "type": "array",
+   "items": {
+    "$ref": "#/definitions/wireframe"
+   }
+  },
+  "missingStates": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "screen",
+     "missing"
+    ],
+    "properties": {
+     "screen": {
+      "type": "string",
+      "minLength": 1
+     },
+     "missing": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "additionalProperties": false
+   }
+  }
+ },
+ "definitions": {
+  "doc": {
+   "type": "object",
+   "required": [
+    "project",
+    "version",
+    "date",
+    "depth",
+    "source"
+   ],
+   "properties": {
+    "project": {
+     "type": "string",
+     "minLength": 1
+    },
+    "version": {
+     "type": "string",
+     "minLength": 1
+    },
+    "date": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "depth": {
+     "enum": [
+      "L0",
+      "L1",
+      "L2",
+      "L3"
+     ]
+    },
+    "source": {
+     "type": "string",
+     "minLength": 1
+    }
+   },
+   "additionalProperties": false
+  },
+  "actor": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "desc"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^A-[A-Za-z0-9-]+$"
+    },
+    "name": {
+     "type": "string",
+     "minLength": 1
+    },
+    "desc": {
+     "type": "string"
+    },
+    "external": {
+     "type": "boolean"
+    },
+    "docs": {
+     "type": "object",
+     "required": [
+      "title"
+     ],
+     "properties": {
+      "title": {
+       "type": "string",
+       "minLength": 1
+      },
+      "url": {
+       "type": "string",
+       "pattern": "^https?://"
+      },
+      "checked": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "open": {
+       "type": "string",
+       "minLength": 1,
+       "description": "id of an `open` item when the provider is not chosen yet — the premise stays 미결, never an assumption"
+      }
+     },
+     "additionalProperties": false
+    }
+   },
+   "additionalProperties": false
+  },
+  "component": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "desc"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^C-[A-Za-z0-9-]+$"
+    },
+    "name": {
+     "type": "string",
+     "minLength": 1
+    },
+    "desc": {
+     "type": "string"
+    },
+    "client": {
+     "type": "boolean",
+     "description": "the component the user sees (app); async completion must reach it or a human actor"
+    }
+   },
+   "additionalProperties": false
+  },
+  "usecase": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "actor",
+    "goal",
+    "pre",
+    "post",
+    "steps",
+    "alts",
+    "features"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^UC-[A-Za-z0-9-]+$"
+    },
+    "name": {
+     "type": "string",
+     "minLength": 1
+    },
+    "actor": {
+     "type": "string",
+     "pattern": "^A-[A-Za-z0-9-]+$"
+    },
+    "secondary": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^A-[A-Za-z0-9-]+$"
+     }
+    },
+    "goal": {
+     "type": "string",
+     "minLength": 1
+    },
+    "pre": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "post": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "steps": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "n",
+       "text",
+       "screen"
+      ],
+      "properties": {
+       "n": {
+        "type": "integer"
+       },
+       "text": {
+        "type": "string",
+        "minLength": 1
+       },
+       "screen": {
+        "type": "string",
+        "pattern": "^SCR-[A-Za-z0-9-]+$"
+       }
+      },
+      "additionalProperties": false
+     },
+     "minItems": 1
+    },
+    "alts": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "id",
+       "kind",
+       "text",
+       "screen"
+      ],
+      "properties": {
+       "id": {
+        "type": "string",
+        "minLength": 1
+       },
+       "kind": {
+        "enum": [
+         "대안",
+         "예외"
+        ]
+       },
+       "text": {
+        "type": "string",
+        "minLength": 1
+       },
+       "screen": {
+        "type": "string",
+        "pattern": "^SCR-[A-Za-z0-9-]+$"
+       },
+       "ac": {
+        "type": "string",
+        "pattern": "^AC-[A-Za-z0-9-]+$"
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "features": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^F-[A-Za-z0-9-]+$"
+     }
+    },
+    "sequence": {
+     "type": "string",
+     "description": "why this use case needs a sequence (D13); omit when it does not"
+    }
+   },
+   "additionalProperties": false
+  },
+  "relation": {
+   "type": "object",
+   "required": [
+    "from",
+    "to",
+    "kind"
+   ],
+   "properties": {
+    "from": {
+     "type": "string",
+     "pattern": "^UC-[A-Za-z0-9-]+$"
+    },
+    "to": {
+     "type": "string",
+     "pattern": "^UC-[A-Za-z0-9-]+$"
+    },
+    "kind": {
+     "enum": [
+      "include",
+      "extend"
+     ]
+    }
+   },
+   "additionalProperties": false
+  },
+  "screen": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "auth",
+    "data"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^SCR-[A-Za-z0-9-]+$"
+    },
+    "name": {
+     "type": "string",
+     "minLength": 1
+    },
+    "auth": {
+     "type": "string",
+     "minLength": 1
+    },
+    "data": {
+     "type": "boolean",
+     "description": "shows loaded data — needs error and empty/loading states"
+    },
+    "status": {
+     "enum": [
+      "기존",
+      "변경",
+      "신규"
+     ]
+    },
+    "evidence": {
+     "type": "string",
+     "description": "path:line in the product repository, required for 기존·변경"
+    }
+   },
+   "additionalProperties": false
+  },
+  "iaNode": {
+   "type": "object",
+   "required": [
+    "label"
+   ],
+   "properties": {
+    "label": {
+     "type": "string",
+     "minLength": 1
+    },
+    "screen": {
+     "type": "string",
+     "pattern": "^SCR-[A-Za-z0-9-]+$"
+    },
+    "children": {
+     "type": "array",
+     "items": {
+      "$ref": "#/definitions/iaNode"
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "flow": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "usecases",
+    "nodes",
+    "edges"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^FL-[A-Za-z0-9-]+$"
+    },
+    "name": {
+     "type": "string",
+     "minLength": 1
+    },
+    "usecases": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^UC-[A-Za-z0-9-]+$"
+     }
+    },
+    "nodes": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "id",
+       "type",
+       "label",
+       "col",
+       "row"
+      ],
+      "properties": {
+       "id": {
+        "type": "string",
+        "minLength": 1
+       },
+       "type": {
+        "enum": [
+         "start",
+         "end",
+         "screen",
+         "decision",
+         "state"
+        ]
+       },
+       "label": {
+        "type": "string",
+        "minLength": 1
+       },
+       "col": {
+        "type": "number"
+       },
+       "row": {
+        "type": "number"
+       },
+       "screen": {
+        "type": "string",
+        "pattern": "^SCR-[A-Za-z0-9-]+$"
+       }
+      },
+      "additionalProperties": false
+     },
+     "minItems": 2
+    },
+    "edges": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "from",
+       "to"
+      ],
+      "properties": {
+       "from": {
+        "type": "string",
+        "minLength": 1
+       },
+       "to": {
+        "type": "string",
+        "minLength": 1
+       },
+       "label": {
+        "type": "string"
+       },
+       "route": {
+        "enum": [
+         "vh",
+         "hv"
+        ]
+       }
+      },
+      "additionalProperties": false
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "wireframe": {
+   "type": "object",
+   "required": [
+    "screen",
+    "states",
+    "notes"
+   ],
+   "properties": {
+    "screen": {
+     "type": "string",
+     "pattern": "^SCR-[A-Za-z0-9-]+$"
+    },
+    "states": {
+     "type": "object",
+     "required": [
+      "기본"
+     ],
+     "additionalProperties": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+       "$ref": "#/definitions/wfBlock"
+      }
+     }
+    },
+    "notes": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "n",
+       "text",
+       "refs"
+      ],
+      "properties": {
+       "n": {
+        "type": "integer"
+       },
+       "text": {
+        "type": "string",
+        "minLength": 1
+       },
+       "refs": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "additionalProperties": false
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "feature": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "desc",
+    "priority",
+    "uc",
+    "screen",
+    "ac"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^F-[A-Za-z0-9-]+$"
+    },
+    "name": {
+     "type": "string",
+     "minLength": 1
+    },
+    "desc": {
+     "type": "string"
+    },
+    "priority": {
+     "enum": [
+      "Must",
+      "Should",
+      "Could",
+      "Won't"
+     ]
+    },
+    "uc": {
+     "type": "string",
+     "pattern": "^UC-[A-Za-z0-9-]+$"
+    },
+    "screen": {
+     "type": "string",
+     "pattern": "^SCR-[A-Za-z0-9-]+$"
+    },
+    "ac": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^AC-[A-Za-z0-9-]+$"
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "criterion": {
+   "type": "object",
+   "required": [
+    "id",
+    "given",
+    "when",
+    "then"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^AC-[A-Za-z0-9-]+$"
+    },
+    "given": {
+     "type": "string",
+     "minLength": 1
+    },
+    "when": {
+     "type": "string",
+     "minLength": 1
+    },
+    "then": {
+     "type": "string",
+     "minLength": 1
+    }
+   },
+   "additionalProperties": false
+  },
+  "call": {
+   "type": "object",
+   "required": [
+    "from",
+    "to",
+    "text"
+   ],
+   "properties": {
+    "from": {
+     "type": "string",
+     "minLength": 1
+    },
+    "to": {
+     "type": "string",
+     "minLength": 1
+    },
+    "text": {
+     "type": "string",
+     "minLength": 1
+    },
+    "kind": {
+     "enum": [
+      "sync",
+      "async",
+      "reply"
+     ]
+    },
+    "screen": {
+     "type": "string",
+     "pattern": "^SCR-[A-Za-z0-9-]+$"
+    },
+    "ac": {
+     "type": "string",
+     "pattern": "^AC-[A-Za-z0-9-]+$"
+    }
+   },
+   "additionalProperties": false
+  },
+  "block": {
+   "type": "object",
+   "required": [
+    "block",
+    "cases"
+   ],
+   "properties": {
+    "block": {
+     "enum": [
+      "alt",
+      "loop",
+      "opt"
+     ]
+    },
+    "label": {
+     "type": "string"
+    },
+    "cases": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "messages"
+      ],
+      "properties": {
+       "label": {
+        "type": "string"
+       },
+       "messages": {
+        "type": "array",
+        "items": {
+         "$ref": "#/definitions/message"
+        }
+       }
+      },
+      "additionalProperties": false
+     },
+     "minItems": 1
+    }
+   },
+   "additionalProperties": false
+  },
+  "message": {
+   "oneOf": [
+    {
+     "$ref": "#/definitions/call"
+    },
+    {
+     "$ref": "#/definitions/block"
+    }
+   ]
+  },
+  "sequence": {
+   "type": "object",
+   "required": [
+    "id",
+    "usecase",
+    "name",
+    "participants",
+    "messages"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^SQ-[A-Za-z0-9-]+$"
+    },
+    "usecase": {
+     "type": "string",
+     "pattern": "^UC-[A-Za-z0-9-]+$"
+    },
+    "name": {
+     "type": "string",
+     "minLength": 1
+    },
+    "participants": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "minItems": 2
+    },
+    "messages": {
+     "type": "array",
+     "items": {
+      "$ref": "#/definitions/message"
+     },
+     "minItems": 1
+    }
+   },
+   "additionalProperties": false
+  },
+  "open": {
+   "type": "object",
+   "required": [
+    "id",
+    "text",
+    "impact",
+    "cond"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "minLength": 1
+    },
+    "text": {
+     "type": "string",
+     "minLength": 1
+    },
+    "impact": {
+     "type": "string",
+     "minLength": 1
+    },
+    "cond": {
+     "type": "string",
+     "minLength": 1
+    }
+   },
+   "additionalProperties": false
+  },
+  "block-appbar": {
+   "type": "object",
+   "required": [
+    "t",
+    "title"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "appbar"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "title": {
+     "type": "string",
+     "maxLength": 200
+    },
+    "left": {
+     "type": "string",
+     "maxLength": 40
+    },
+    "right": {
+     "type": "string",
+     "maxLength": 40
+    }
+   }
+  },
+  "block-heading": {
+   "type": "object",
+   "required": [
+    "t",
+    "text"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "heading"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "text": {
+     "type": "string",
+     "maxLength": 200
+    }
+   }
+  },
+  "block-section": {
+   "type": "object",
+   "required": [
+    "t",
+    "text"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "section"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "text": {
+     "type": "string",
+     "maxLength": 200
+    }
+   }
+  },
+  "block-text": {
+   "type": "object",
+   "required": [
+    "t",
+    "text"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "text"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "text": {
+     "type": "string",
+     "maxLength": 400
+    }
+   }
+  },
+  "block-input": {
+   "type": "object",
+   "required": [
+    "t",
+    "label"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "input"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "label": {
+     "type": "string",
+     "maxLength": 200
+    },
+    "placeholder": {
+     "type": "string",
+     "maxLength": 200
+    }
+   }
+  },
+  "block-chips": {
+   "type": "object",
+   "required": [
+    "t",
+    "items"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "chips"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "label": {
+     "type": "string",
+     "maxLength": 200
+    },
+    "items": {
+     "type": "array",
+     "maxItems": 20,
+     "items": {
+      "type": "string",
+      "maxLength": 80
+     }
+    },
+    "active": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 19
+    }
+   }
+  },
+  "block-segmented": {
+   "type": "object",
+   "required": [
+    "t",
+    "items"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "segmented"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "label": {
+     "type": "string",
+     "maxLength": 200
+    },
+    "items": {
+     "type": "array",
+     "maxItems": 20,
+     "items": {
+      "type": "string",
+      "maxLength": 80
+     }
+    },
+    "active": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 19
+    }
+   }
+  },
+  "block-button": {
+   "type": "object",
+   "required": [
+    "t",
+    "text"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "button"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "text": {
+     "type": "string",
+     "maxLength": 200
+    },
+    "variant": {
+     "enum": [
+      "primary",
+      "secondary"
+     ]
+    }
+   }
+  },
+  "block-card": {
+   "type": "object",
+   "required": [
+    "t",
+    "title"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "card"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "title": {
+     "type": "string",
+     "maxLength": 200
+    },
+    "lines": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 10
+    },
+    "badge": {
+     "type": "string",
+     "maxLength": 20
+    }
+   }
+  },
+  "block-image": {
+   "type": "object",
+   "required": [
+    "t",
+    "label"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "image"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "label": {
+     "type": "string",
+     "maxLength": 200
+    }
+   }
+  },
+  "block-list": {
+   "type": "object",
+   "required": [
+    "t",
+    "items"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "list"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "items": {
+     "type": "array",
+     "maxItems": 20,
+     "items": {
+      "type": "string",
+      "maxLength": 80
+     }
+    }
+   }
+  },
+  "block-skeleton": {
+   "type": "object",
+   "required": [
+    "t",
+    "n"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "skeleton"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "n": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 10
+    }
+   }
+  },
+  "block-progress": {
+   "type": "object",
+   "required": [
+    "t",
+    "value"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "progress"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "value": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 100
+    }
+   }
+  },
+  "block-message": {
+   "type": "object",
+   "required": [
+    "t",
+    "title"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "message"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "icon": {
+     "type": "string",
+     "maxLength": 4
+    },
+    "title": {
+     "type": "string",
+     "maxLength": 200
+    },
+    "text": {
+     "type": "string",
+     "maxLength": 400
+    }
+   }
+  },
+  "block-stats": {
+   "type": "object",
+   "required": [
+    "t",
+    "items"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "stats"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "items": {
+     "type": "array",
+     "maxItems": 8,
+     "items": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+       "type": [
+        "string",
+        "number"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "block-tabbar": {
+   "type": "object",
+   "required": [
+    "t",
+    "items"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "tabbar"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    },
+    "items": {
+     "type": "array",
+     "maxItems": 20,
+     "items": {
+      "type": "string",
+      "maxLength": 80
+     }
+    },
+    "active": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 19
+    }
+   }
+  },
+  "block-spacer": {
+   "type": "object",
+   "required": [
+    "t"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "t": {
+     "enum": [
+      "spacer"
+     ]
+    },
+    "note": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 50
+    }
+   }
+  },
+  "wfBlock": {
+   "description": "Low-fidelity wireframe block; the `t` field picks the kind. No pixels or styles (D12).",
+   "oneOf": [
+    {
+     "$ref": "#/definitions/block-appbar"
+    },
+    {
+     "$ref": "#/definitions/block-heading"
+    },
+    {
+     "$ref": "#/definitions/block-section"
+    },
+    {
+     "$ref": "#/definitions/block-text"
+    },
+    {
+     "$ref": "#/definitions/block-input"
+    },
+    {
+     "$ref": "#/definitions/block-chips"
+    },
+    {
+     "$ref": "#/definitions/block-segmented"
+    },
+    {
+     "$ref": "#/definitions/block-button"
+    },
+    {
+     "$ref": "#/definitions/block-card"
+    },
+    {
+     "$ref": "#/definitions/block-image"
+    },
+    {
+     "$ref": "#/definitions/block-list"
+    },
+    {
+     "$ref": "#/definitions/block-skeleton"
+    },
+    {
+     "$ref": "#/definitions/block-progress"
+    },
+    {
+     "$ref": "#/definitions/block-message"
+    },
+    {
+     "$ref": "#/definitions/block-stats"
+    },
+    {
+     "$ref": "#/definitions/block-tabbar"
+    },
+    {
+     "$ref": "#/definitions/block-spacer"
+    }
+   ]
+  },
+  "canvasEntry": {
+   "type": "object",
+   "required": [
+    "screen",
+    "document",
+    "frame",
+    "state",
+    "refs",
+    "links"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "screen": {
+     "type": "string",
+     "pattern": "^SCR-[A-Za-z0-9-]+$"
+    },
+    "document": {
+     "type": "string",
+     "minLength": 1
+    },
+    "frame": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 256,
+     "pattern": "^[^\\-\\u0000-\\u001f\\u007f][^\\u0000-\\u001f\\u007f]*$"
+    },
+    "state": {
+     "type": "string",
+     "minLength": 1
+    },
+    "refs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "pattern": "^((UC|AC|F)-[A-Za-z0-9-]+|BR[0-9]+)$"
+     }
+    },
+    "links": {
+     "type": "array",
+     "items": {
+      "oneOf": [
+       {
+        "type": "object",
+        "required": [
+         "element",
+         "to"
+        ],
+        "additionalProperties": false,
+        "properties": {
+         "element": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\-\\u0000-\\u001f\\u007f][^\\u0000-\\u001f\\u007f]*$"
+         },
+         "to": {
+          "type": "object",
+          "required": [
+           "screen",
+           "state"
+          ],
+          "additionalProperties": false,
+          "properties": {
+           "screen": {
+            "type": "string",
+            "pattern": "^SCR-[A-Za-z0-9-]+$"
+           },
+           "state": {
+            "type": "string",
+            "minLength": 1
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "object",
+        "required": [
+         "element",
+         "unlinked"
+        ],
+        "additionalProperties": false,
+        "properties": {
+         "element": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\-\\u0000-\\u001f\\u007f][^\\u0000-\\u001f\\u007f]*$"
+         },
+         "unlinked": {
+          "type": "boolean",
+          "enum": [
+           true
+          ]
+         }
+        }
+       }
+      ]
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,925 @@
+{
+ "doc": {
+  "project": "쇼츠 자동 발행 서비스",
+  "version": "v0.1",
+  "date": "2026-10-29",
+  "depth": "L2",
+  "source": "pace-intent 템플릿 예시 · 쇼츠 자동 발행 서비스"
+ },
+ "assumptions": [
+  "기획안 생성은 외부 LLM API를 쓴다",
+  "1차 범위는 모바일 웹만",
+  "인스타그램은 프로페셔널 계정만 Reels를 API로 게시할 수 있다 — 공식 문서 https://developers.facebook.com/docs/instagram-platform/content-publishing (2026-10-29 확인)",
+  "틱톡 Direct Post는 video.publish 권한이 필요하고, 감사(audit) 전 앱의 게시물은 비공개로만 올라간다 — 공식 문서 https://developers.tiktok.com/doc/content-posting-api-get-started (2026-10-29 확인)"
+ ],
+ "open": [
+  {
+   "id": "Q-1",
+   "text": "영상 생성 엔진을 직접 만들지 외부 서비스를 쓸지",
+   "impact": "비용·품질·일정",
+   "cond": "착수 전 대안 분석"
+  }
+ ],
+ "actors": [
+  {
+   "id": "A-1",
+   "name": "크리에이터",
+   "desc": "자기 채널에 쇼츠를 올리는 개인 · 주 행위자"
+  },
+  {
+   "id": "A-2",
+   "name": "플랫폼",
+   "desc": "인스타그램·틱톡 · 외부 시스템",
+   "external": true,
+   "docs": {
+    "title": "인스타그램 Content Publishing · 틱톡 Content Posting API",
+    "url": "https://developers.facebook.com/docs/instagram-platform/content-publishing",
+    "checked": "2026-10-29"
+   }
+  },
+  {
+   "id": "A-3",
+   "name": "AI 생성기",
+   "desc": "기획안·영상 생성 · 외부 시스템",
+   "external": true,
+   "docs": {
+    "title": "LLM·영상 생성 API",
+    "checked": null
+   }
+  }
+ ],
+ "components": [
+  {
+   "id": "C-1",
+   "name": "앱",
+   "desc": "모바일 웹",
+   "client": true
+  },
+  {
+   "id": "C-2",
+   "name": "서버",
+   "desc": "API·상태 저장"
+  },
+  {
+   "id": "C-3",
+   "name": "업로드 워커",
+   "desc": "작업 큐에서 플랫폼별 업로드"
+  }
+ ],
+ "usecases": [
+  {
+   "id": "UC-01",
+   "name": "쇼츠 기획안 만들기",
+   "actor": "A-1",
+   "secondary": [
+    "A-3"
+   ],
+   "goal": "주제 하나로 바로 찍을 수 있는 기획안을 얻는다",
+   "pre": [
+    "로그인했다"
+   ],
+   "post": [
+    "고른 기획안이 편집기에 열린다"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "홈에서 '새 쇼츠'를 누른다",
+     "screen": "SCR-01"
+    },
+    {
+     "n": 2,
+     "text": "주제와 분위기를 입력한다",
+     "screen": "SCR-02"
+    },
+    {
+     "n": 3,
+     "text": "기획안 3개를 받는다",
+     "screen": "SCR-03"
+    },
+    {
+     "n": 4,
+     "text": "하나를 고른다",
+     "screen": "SCR-03"
+    }
+   ],
+   "alts": [
+    {
+     "id": "2a",
+     "kind": "대안",
+     "text": "추천 주제 칩을 골라 주제를 채운다",
+     "screen": "SCR-02",
+     "ac": "AC-03"
+    },
+    {
+     "id": "3a",
+     "kind": "예외",
+     "text": "생성이 실패하면 이유와 '다시 생성' 버튼을 보여 준다",
+     "screen": "SCR-03",
+     "ac": "AC-02"
+    }
+   ],
+   "features": [
+    "F-01",
+    "F-02",
+    "F-03"
+   ]
+  },
+  {
+   "id": "UC-02",
+   "name": "영상 생성·편집",
+   "actor": "A-1",
+   "secondary": [
+    "A-3"
+   ],
+   "goal": "기획안으로 발행할 영상을 완성한다",
+   "pre": [
+    "기획안을 골랐다"
+   ],
+   "post": [
+    "발행할 영상이 저장된다"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "기획안으로 초안 영상을 만든다",
+     "screen": "SCR-04"
+    },
+    {
+     "n": 2,
+     "text": "장면별 자막·음악·컷을 고친다",
+     "screen": "SCR-04"
+    },
+    {
+     "n": 3,
+     "text": "미리 보고 저장한다",
+     "screen": "SCR-04"
+    }
+   ],
+   "alts": [
+    {
+     "id": "1a",
+     "kind": "예외",
+     "text": "렌더가 2분을 넘으면 진행률과 '끝나면 알림'을 보여 준다",
+     "screen": "SCR-04",
+     "ac": "AC-05"
+    }
+   ],
+   "features": [
+    "F-04",
+    "F-05"
+   ]
+  },
+  {
+   "id": "UC-03",
+   "name": "플랫폼 발행",
+   "actor": "A-1",
+   "secondary": [
+    "A-2"
+   ],
+   "goal": "완성한 영상을 여러 플랫폼에 한 번에 올린다",
+   "pre": [
+    "저장된 영상이 있다"
+   ],
+   "post": [
+    "선택한 플랫폼에 게시되거나 예약된다"
+   ],
+   "steps": [
+    {
+     "n": 1,
+     "text": "발행할 플랫폼을 고른다",
+     "screen": "SCR-05"
+    },
+    {
+     "n": 2,
+     "text": "캡션·해시태그를 확인한다",
+     "screen": "SCR-05"
+    },
+    {
+     "n": 3,
+     "text": "지금 발행하거나 예약한다",
+     "screen": "SCR-05"
+    }
+   ],
+   "alts": [
+    {
+     "id": "1a",
+     "kind": "대안",
+     "text": "연결된 채널이 없으면 채널 연결로 보낸 뒤 돌아온다",
+     "screen": "SCR-07",
+     "ac": "AC-07"
+    },
+    {
+     "id": "3a",
+     "kind": "예외",
+     "text": "플랫폼이 거부하면 사유와 고치는 방법을 보여 준다",
+     "screen": "SCR-05",
+     "ac": "AC-09"
+    }
+   ],
+   "features": [
+    "F-06",
+    "F-07",
+    "F-08"
+   ],
+   "sequence": "외부 API 업로드·OAuth 토큰·플랫폼별 실패 지점"
+  },
+  {
+   "id": "UC-04",
+   "name": "성과 보기",
+   "actor": "A-1",
+   "secondary": [
+    "A-2"
+   ],
+   "goal": "어떤 쇼츠가 잘 됐는지 보고 다음 주제를 정한다",
+   "pre": [
+    "채널을 연결했다"
+   ],
+   "post": [],
+   "steps": [
+    {
+     "n": 1,
+     "text": "성과 탭을 연다",
+     "screen": "SCR-06"
+    },
+    {
+     "n": 2,
+     "text": "영상별 조회·좋아요·공유를 본다",
+     "screen": "SCR-06"
+    }
+   ],
+   "alts": [
+    {
+     "id": "2a",
+     "kind": "예외",
+     "text": "아직 데이터가 없으면 빈 상태 안내를 보여 준다",
+     "screen": "SCR-06",
+     "ac": "AC-08"
+    }
+   ],
+   "features": [
+    "F-09"
+   ]
+  }
+ ],
+ "screens": [
+  {
+   "id": "SCR-01",
+   "name": "홈",
+   "auth": "로그인",
+   "data": false,
+   "status": "신규"
+  },
+  {
+   "id": "SCR-02",
+   "name": "주제 입력",
+   "auth": "로그인",
+   "data": false,
+   "status": "신규"
+  },
+  {
+   "id": "SCR-03",
+   "name": "기획안 목록",
+   "auth": "로그인",
+   "data": true,
+   "status": "신규"
+  },
+  {
+   "id": "SCR-04",
+   "name": "편집기",
+   "auth": "로그인",
+   "data": false,
+   "status": "신규"
+  },
+  {
+   "id": "SCR-05",
+   "name": "발행",
+   "auth": "로그인",
+   "data": true,
+   "status": "신규"
+  },
+  {
+   "id": "SCR-06",
+   "name": "성과",
+   "auth": "로그인",
+   "data": true,
+   "status": "신규"
+  },
+  {
+   "id": "SCR-07",
+   "name": "채널 연결",
+   "auth": "로그인",
+   "data": false,
+   "status": "신규"
+  }
+ ],
+ "ia": [
+  {
+   "label": "홈",
+   "screen": "SCR-01",
+   "children": [
+    {
+     "label": "새 쇼츠",
+     "children": [
+      {
+       "label": "주제 입력",
+       "screen": "SCR-02"
+      },
+      {
+       "label": "기획안 목록",
+       "screen": "SCR-03"
+      },
+      {
+       "label": "편집기",
+       "screen": "SCR-04"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "발행",
+   "screen": "SCR-05"
+  },
+  {
+   "label": "성과",
+   "screen": "SCR-06"
+  },
+  {
+   "label": "설정",
+   "children": [
+    {
+     "label": "채널 연결",
+     "screen": "SCR-07"
+    }
+   ]
+  }
+ ],
+ "flows": [
+  {
+   "id": "FL-01",
+   "name": "기획에서 발행까지",
+   "usecases": [
+    "UC-01",
+    "UC-02",
+    "UC-03"
+   ],
+   "nodes": [
+    {
+     "id": "s",
+     "type": "start",
+     "label": "시작",
+     "col": 0,
+     "row": 0
+    },
+    {
+     "id": "n2",
+     "type": "screen",
+     "screen": "SCR-02",
+     "label": "주제 입력",
+     "col": 1,
+     "row": 0
+    },
+    {
+     "id": "n3",
+     "type": "screen",
+     "screen": "SCR-03",
+     "label": "기획안 목록",
+     "col": 2,
+     "row": 0
+    },
+    {
+     "id": "e1",
+     "type": "state",
+     "label": "생성 실패 안내",
+     "col": 2,
+     "row": 1
+    },
+    {
+     "id": "n4",
+     "type": "screen",
+     "screen": "SCR-04",
+     "label": "편집기",
+     "col": 3,
+     "row": 0
+    },
+    {
+     "id": "d1",
+     "type": "decision",
+     "label": "채널 연결됨?",
+     "col": 3,
+     "row": 1
+    },
+    {
+     "id": "n7",
+     "type": "screen",
+     "screen": "SCR-07",
+     "label": "채널 연결",
+     "col": 4,
+     "row": 1
+    },
+    {
+     "id": "n5",
+     "type": "screen",
+     "screen": "SCR-05",
+     "label": "발행",
+     "col": 3,
+     "row": 2
+    },
+    {
+     "id": "end",
+     "type": "end",
+     "label": "게시·예약 완료",
+     "col": 3,
+     "row": 3
+    }
+   ],
+   "edges": [
+    {
+     "from": "s",
+     "to": "n2"
+    },
+    {
+     "from": "n2",
+     "to": "n3",
+     "label": "만들기"
+    },
+    {
+     "from": "n3",
+     "to": "e1",
+     "label": "실패"
+    },
+    {
+     "from": "e1",
+     "to": "n2",
+     "label": "다시 시도",
+     "route": "hv"
+    },
+    {
+     "from": "n3",
+     "to": "n4",
+     "label": "선택"
+    },
+    {
+     "from": "n4",
+     "to": "d1",
+     "label": "저장"
+    },
+    {
+     "from": "d1",
+     "to": "n7",
+     "label": "아니오"
+    },
+    {
+     "from": "n7",
+     "to": "n5",
+     "label": "연결 완료",
+     "route": "vh"
+    },
+    {
+     "from": "d1",
+     "to": "n5",
+     "label": "예"
+    },
+    {
+     "from": "n5",
+     "to": "end",
+     "label": "발행"
+    }
+   ]
+  },
+  {
+   "id": "FL-02",
+   "name": "성과 확인",
+   "usecases": [
+    "UC-04"
+   ],
+   "nodes": [
+    {
+     "id": "s",
+     "type": "start",
+     "label": "시작",
+     "col": 0,
+     "row": 0
+    },
+    {
+     "id": "n1",
+     "type": "screen",
+     "screen": "SCR-01",
+     "label": "홈",
+     "col": 1,
+     "row": 0
+    },
+    {
+     "id": "n6",
+     "type": "screen",
+     "screen": "SCR-06",
+     "label": "성과",
+     "col": 2,
+     "row": 0
+    },
+    {
+     "id": "d1",
+     "type": "decision",
+     "label": "데이터 있음?",
+     "col": 3,
+     "row": 0
+    },
+    {
+     "id": "empty",
+     "type": "state",
+     "label": "빈 상태 안내",
+     "col": 3,
+     "row": 1
+    },
+    {
+     "id": "next",
+     "type": "end",
+     "label": "FL-01로 이어짐",
+     "col": 2,
+     "row": 1
+    },
+    {
+     "id": "end",
+     "type": "end",
+     "label": "다음 주제 결정",
+     "col": 4,
+     "row": 0
+    }
+   ],
+   "edges": [
+    {
+     "from": "s",
+     "to": "n1"
+    },
+    {
+     "from": "n1",
+     "to": "n6",
+     "label": "성과 탭"
+    },
+    {
+     "from": "n6",
+     "to": "d1"
+    },
+    {
+     "from": "d1",
+     "to": "end",
+     "label": "예"
+    },
+    {
+     "from": "d1",
+     "to": "empty",
+     "label": "아니오"
+    },
+    {
+     "from": "empty",
+     "to": "next",
+     "label": "새 쇼츠"
+    }
+   ]
+  }
+ ],
+ "features": [
+  {
+   "id": "F-01",
+   "name": "기획안 생성",
+   "desc": "주제·분위기로 기획안 3개(제목·훅·장면 구성)",
+   "priority": "Must",
+   "uc": "UC-01",
+   "screen": "SCR-03",
+   "ac": [
+    "AC-01"
+   ]
+  },
+  {
+   "id": "F-02",
+   "name": "다시 생성",
+   "desc": "실패하거나 마음에 안 들 때 같은 주제로 다시 만들기",
+   "priority": "Should",
+   "uc": "UC-01",
+   "screen": "SCR-03",
+   "ac": [
+    "AC-02"
+   ]
+  },
+  {
+   "id": "F-03",
+   "name": "주제 추천",
+   "desc": "최근 인기 주제 칩 3개",
+   "priority": "Could",
+   "uc": "UC-01",
+   "screen": "SCR-02",
+   "ac": [
+    "AC-03"
+   ]
+  },
+  {
+   "id": "F-04",
+   "name": "초안 영상 생성",
+   "desc": "기획안의 장면 구성으로 9:16 초안 영상",
+   "priority": "Must",
+   "uc": "UC-02",
+   "screen": "SCR-04",
+   "ac": [
+    "AC-04"
+   ]
+  },
+  {
+   "id": "F-05",
+   "name": "자막·음악 편집",
+   "desc": "장면별 자막, 배경 음악, 컷 길이",
+   "priority": "Must",
+   "uc": "UC-02",
+   "screen": "SCR-04",
+   "ac": [
+    "AC-05"
+   ]
+  },
+  {
+   "id": "F-06",
+   "name": "멀티 플랫폼 발행",
+   "desc": "고른 플랫폼에 한 번에 업로드",
+   "priority": "Must",
+   "uc": "UC-03",
+   "screen": "SCR-05",
+   "ac": [
+    "AC-06",
+    "AC-09"
+   ]
+  },
+  {
+   "id": "F-07",
+   "name": "예약 발행",
+   "desc": "날짜·시간을 정해 예약",
+   "priority": "Should",
+   "uc": "UC-03",
+   "screen": "SCR-05",
+   "ac": [
+    "AC-06"
+   ]
+  },
+  {
+   "id": "F-08",
+   "name": "채널 연결",
+   "desc": "인스타그램·틱톡 계정 연결(공식 인증)",
+   "priority": "Must",
+   "uc": "UC-03",
+   "screen": "SCR-07",
+   "ac": [
+    "AC-07"
+   ]
+  },
+  {
+   "id": "F-09",
+   "name": "성과 대시보드",
+   "desc": "기간별 조회·좋아요·공유와 영상 순위",
+   "priority": "Should",
+   "uc": "UC-04",
+   "screen": "SCR-06",
+   "ac": [
+    "AC-08"
+   ]
+  }
+ ],
+ "criteria": [
+  {
+   "id": "AC-01",
+   "given": "주제를 입력했을 때",
+   "when": "'기획안 만들기'를 누르면",
+   "then": "30초 안에 기획안 3개가 제목·훅·장면 구성과 함께 보인다"
+  },
+  {
+   "id": "AC-02",
+   "given": "생성이 실패했을 때",
+   "when": "기획안 화면을 보면",
+   "then": "실패 이유와 '다시 생성' 버튼이 보이고, 입력한 주제는 그대로 남아 있다"
+  },
+  {
+   "id": "AC-03",
+   "given": "주제 칸이 비어 있을 때",
+   "when": "추천 칩을 누르면",
+   "then": "칩 내용이 주제 칸에 채워진다"
+  },
+  {
+   "id": "AC-04",
+   "given": "기획안을 골랐을 때",
+   "when": "편집기가 열리면",
+   "then": "초안 영상과 장면별 자막이 보인다"
+  },
+  {
+   "id": "AC-05",
+   "given": "렌더가 2분을 넘을 때",
+   "when": "편집기에 머물면",
+   "then": "진행률과 '끝나면 알림' 선택이 보인다"
+  },
+  {
+   "id": "AC-06",
+   "given": "영상을 저장했을 때",
+   "when": "플랫폼을 골라 발행하거나 예약하면",
+   "then": "발행 목록에 상태(대기·완료·실패)가 보인다"
+  },
+  {
+   "id": "AC-07",
+   "given": "연결된 채널이 없을 때",
+   "when": "발행을 누르면",
+   "then": "채널 연결 화면으로 가고, 연결하면 발행 화면으로 돌아온다"
+  },
+  {
+   "id": "AC-09",
+   "given": "플랫폼이 업로드를 거부했을 때",
+   "when": "발행 목록을 보면",
+   "then": "그 플랫폼만 실패로 표시되고, 거부 사유와 '편집으로' 버튼이 보인다. 다른 플랫폼 발행은 그대로 진행된다"
+  },
+  {
+   "id": "AC-08",
+   "given": "게시한 영상이 없을 때",
+   "when": "성과 탭을 열면",
+   "then": "빈 상태 안내와 '새 쇼츠' 버튼이 보인다"
+  }
+ ],
+ "sequences": [
+  {
+   "id": "SQ-03",
+   "usecase": "UC-03",
+   "name": "플랫폼 발행",
+   "participants": [
+    "A-1",
+    "C-1",
+    "C-2",
+    "C-3",
+    "A-2"
+   ],
+   "messages": [
+    {
+     "from": "A-1",
+     "to": "C-1",
+     "text": "발행하기 (플랫폼·캡션·시점)",
+     "screen": "SCR-05"
+    },
+    {
+     "from": "C-1",
+     "to": "C-2",
+     "text": "발행 요청"
+    },
+    {
+     "block": "opt",
+     "label": "채널 토큰이 없거나 만료",
+     "cases": [
+      {
+       "messages": [
+        {
+         "from": "C-2",
+         "to": "C-1",
+         "text": "채널 연결 필요",
+         "kind": "reply"
+        },
+        {
+         "from": "C-1",
+         "to": "A-1",
+         "text": "채널 연결 화면으로",
+         "screen": "SCR-07",
+         "ac": "AC-07"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "from": "C-2",
+     "to": "C-3",
+     "text": "플랫폼별 업로드 작업 등록",
+     "kind": "async"
+    },
+    {
+     "from": "C-2",
+     "to": "C-1",
+     "text": "접수됨 · 상태 '대기'",
+     "kind": "reply",
+     "ac": "AC-06"
+    },
+    {
+     "block": "loop",
+     "label": "선택한 플랫폼마다",
+     "cases": [
+      {
+       "messages": [
+        {
+         "from": "C-3",
+         "to": "A-2",
+         "text": "영상 업로드 (OAuth 토큰)"
+        },
+        {
+         "block": "alt",
+         "cases": [
+          {
+           "label": "성공",
+           "messages": [
+            {
+             "from": "A-2",
+             "to": "C-3",
+             "text": "게시 ID",
+             "kind": "reply"
+            },
+            {
+             "from": "C-3",
+             "to": "C-2",
+             "text": "상태 '완료'"
+            }
+           ]
+          },
+          {
+           "label": "거부 (길이·형식)",
+           "messages": [
+            {
+             "from": "A-2",
+             "to": "C-3",
+             "text": "거부 사유",
+             "kind": "reply"
+            },
+            {
+             "from": "C-3",
+             "to": "C-2",
+             "text": "상태 '실패' + 사유",
+             "ac": "AC-09"
+            }
+           ]
+          },
+          {
+           "label": "일시 오류 (5xx·한도)",
+           "messages": [
+            {
+             "from": "A-2",
+             "to": "C-3",
+             "text": "오류 응답",
+             "kind": "reply"
+            },
+            {
+             "from": "C-3",
+             "to": "C-3",
+             "text": "재시도 (최대 3회, 간격 늘림)"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "from": "C-2",
+     "to": "C-1",
+     "text": "상태 알림 (완료·실패)",
+     "kind": "async"
+    },
+    {
+     "from": "C-1",
+     "to": "A-1",
+     "text": "발행 목록 갱신",
+     "screen": "SCR-05",
+     "ac": "AC-06"
+    }
+   ]
+  }
+ ],
+ "canvas": [
+  {
+   "screen": "SCR-03",
+   "document": "canvas/ui.canvas.json",
+   "frame": "frame-0",
+   "state": "기본",
+   "refs": [
+    "UC-01"
+   ],
+   "links": [
+    {
+     "element": "button-1",
+     "to": {
+      "screen": "SCR-03",
+      "state": "오류"
+     }
+    }
+   ]
+  },
+  {
+   "screen": "SCR-03",
+   "document": "canvas/ui.canvas.json",
+   "frame": "frame-1",
+   "state": "오류",
+   "refs": [
+    "UC-01"
+   ],
+   "links": []
+  },
+  {
+   "screen": "SCR-03",
+   "document": "canvas/ui.canvas.json",
+   "frame": "frame-2",
+   "state": "빈",
+   "refs": [
+    "UC-01"
+   ],
+   "links": []
+  }
+ ]
+}

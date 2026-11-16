@@ -1,0 +1,120 @@
+{
+  "format": "canvas-studio",
+  "version": 4,
+  "doc": {
+    "version": 4,
+    "name": "Two screens",
+    "pages": {},
+    "pageOrder": [
+      "page1"
+    ],
+    "nodes": {
+      "screen1": {
+        "id": "screen1",
+        "type": "frame",
+        "name": "Screen 1",
+        "parentId": "page1",
+        "x": 0,
+        "y": 0,
+        "w": 360,
+        "h": 640,
+        "rotation": 0,
+        "opacity": 1,
+        "visible": true,
+        "locked": false,
+        "fills": [
+          {
+            "type": "solid",
+            "id": "screen1fill",
+            "color": "#FFFFFF",
+            "opacity": 1,
+            "visible": true
+          }
+        ],
+        "strokes": [],
+        "strokeWidth": 1,
+        "strokeAlign": "inside",
+        "strokeDash": null,
+        "effects": [],
+        "sizing": {
+          "horizontal": "fixed",
+          "vertical": "fixed"
+        },
+        "children": [],
+        "cornerRadius": 0,
+        "clipContent": true,
+        "layout": {
+          "mode": "none",
+          "gap": 10,
+          "counterGap": 10,
+          "padding": {
+            "top": 10,
+            "right": 10,
+            "bottom": 10,
+            "left": 10
+          },
+          "primaryAlign": "start",
+          "counterAlign": "start",
+          "wrap": false
+        }
+      },
+      "screen2": {
+        "id": "screen2",
+        "type": "frame",
+        "name": "Screen 2",
+        "parentId": "page1",
+        "x": 400,
+        "y": 0,
+        "w": 360,
+        "h": 640,
+        "rotation": 0,
+        "opacity": 1,
+        "visible": true,
+        "locked": false,
+        "fills": [
+          {
+            "type": "solid",
+            "id": "screen2fill",
+            "color": "#FFFFFF",
+            "opacity": 1,
+            "visible": true
+          }
+        ],
+        "strokes": [],
+        "strokeWidth": 1,
+        "strokeAlign": "inside",
+        "strokeDash": null,
+        "effects": [],
+        "sizing": {
+          "horizontal": "fixed",
+          "vertical": "fixed"
+        },
+        "children": [],
+        "cornerRadius": 0,
+        "clipContent": true,
+        "layout": {
+          "mode": "none",
+          "gap": 10,
+          "counterGap": 10,
+          "padding": {
+            "top": 10,
+            "right": 10,
+            "bottom": 10,
+            "left": 10
+          },
+          "primaryAlign": "start",
+          "counterAlign": "start",
+          "wrap": false
+        }
+      }
+    },
+    "counters": {
+      "page": 1,
+      "frame": 2
+    },
+    "collections": {},
+    "collectionOrder": [],
+    "variables": {}
+  },
+  "images": {}
+}
