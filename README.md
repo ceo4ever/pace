@@ -95,6 +95,7 @@ pace memory status --project --body "06 진행 중 · 다음: 07"               
 pace workspace register /path/to/repo --name "내 프로젝트"  # 정의를 확인하거나 만들고 전역 등록
 pace workspace list                     # 유효한 등록 워크스페이스
 pace workspace move <ID> /new/path      # 같은 정의의 새 위치로 변경
+pace adopt opal [--apply]                # OPAL(.opal) 프로젝트 정의 가져오기 — 기본 미리보기 (아래 "OPAL에서 넘어올 때")
 pace project new "예약 발송"           # 프로젝트 정의 (main) → 계약 승인 뒤 start로 worktree
 pace project start P001                # worktree ../<저장소>.wt/P001 (Orca 안이면 작업자 세션)
 pace project task P001 "저장"          # 태스크 TASK.md (worktree) → 구현·테스트 → TASK-CLOSE
@@ -116,6 +117,47 @@ pace brain init && pace brain search "부트 훅"
 ```
 
 전체 명령은 `pace --help`.
+
+## OPAL에서 넘어올 때
+
+다른 PC에 PACE를 설치했는데 기존 프로젝트가 OPAL(`.opal/`)로 정의되어 있으면, PACE는 `.pace/`만 읽으므로 프로젝트 메모리·브레인·역할이 사라진 것처럼 보이고 OPAL의 커밋 게이트 훅 때문에 PACE 게이트도 설치되지 않는다. 프로젝트 폴더에서 `pace adopt opal`로 OPAL 정의를 PACE로 옮긴다.
+
+1. **OPAL 제거** — OPAL 설치본과 시작 훅을 지운다(OPAL의 제거 방법을 따른다).
+2. **PACE 설치** — 위 [설치](#설치)를 따른다.
+3. **온보딩으로 새 프로필** — `pace onboard`로 새 프로필을 만든다. OPAL 홈(`~/.opal`)의 프로필은 옮기지 않는다.
+4. **프로젝트마다 `pace adopt opal`** — 저장소 루트에서 실행한다. 기본은 미리보기라 아무것도 바꾸지 않고 바꿀 목록만 보여 준다. 목록을 확인한 뒤 `pace adopt opal --apply`로 적용한다.
+5. **변경을 확인하고 직접 커밋** — 이동은 `git mv`라 이력이 이어지고, 자동 커밋·push는 하지 않는다. `git status`로 확인한 뒤 직접 커밋한다.
+6. **`pace backlog refresh`** — 백로그 대시보드 자료를 PACE 형식으로 갱신한다.
+
+적용하면 이렇게 바뀐다.
+
+| 대상 | 바뀌는 것 |
+|---|---|
+| `.opal/` | `.pace/`로 `git mv`(메모리·브레인·로컬 파일 그대로). `AGENT.md`는 `opal_agent_version`→`pace_agent_version`, 본문의 `.opal/` 경로→`.pace/`만 바뀌고 `workspace_id`는 그대로 이어받아 워크스페이스 등록부에 등록한다 |
+| `commit-msg` 훅 | 알려진 OPAL 커밋 게이트 원문이면 PACE 게이트로 바꾸고 원본은 `commit-msg.opal-backup`에 남긴다. 사용자가 만든·수정한 훅은 건드리지 않고 알린다 |
+| `backlogs/README.html` | OPAL 공용 진입점이면 PACE 공용 참조로 바꾼다. 수정했거나 링크인 진입점, `data.js`·사용자 파일은 보존한다 |
+| `AGENTS.md`·`CLAUDE.md`·`docs/**` | 바꾸지 않는다. `opal` 명령·`opal-*` 스킬 이름이 남은 곳을 `파일:줄` 목록으로 보고하니 그 목록으로 직접 고친다 |
+
+OPAL 이름은 이렇게 바꾼다.
+
+| OPAL | PACE |
+|---|---|
+| `opal …` 명령 (`opal project …`·`opal memory …` 등) | `pace …` |
+| `opal-*` 스킬 (`opal-project-dev` 등) | `pace-*` (`pace-project-dev` 등) |
+| `opi` | `pace-project-init` 스킬 |
+
+원본을 바꾸지 않고 멈추는 경우와 대처는 다음과 같다. 멈추면 이유를 출력하고 종료 코드 1이며, 적용 도중 실패하면 이번에 바꾼 것만 되돌린다.
+
+| 멈춤 이유 | 대처 |
+|---|---|
+| `.pace/`가 이미 있음 | 어느 쪽이 정본인지 확인해 한쪽을 정리한 뒤 다시 실행한다 |
+| `.opal/`에 커밋 안 한 변경 | 커밋하거나 되돌린 뒤 다시 실행한다. `assume-unchanged`·`skip-worktree` 숨김 플래그가 걸린 파일이 있어도 멈추므로, `git update-index --no-assume-unchanged <파일>`·`--no-skip-worktree <파일>`로 플래그를 풀고 변경을 다시 확인한 뒤 실행한다 |
+| OPAL v1 형식(`MEMORY.json`)·`AGENT.md` 형식 불명·`.opal/` 안의 링크 | 자동 이전을 지원하지 않는다. 원본은 그대로 있으니 직접 정리한다 |
+| 저장소 루트가 아님·git 저장소가 아님 | 저장소 루트에서 실행한다 |
+| 같은 `workspace_id`가 다른 위치에 등록됨 | 그 위치를 더 쓰지 않는다면(저장소를 옮긴 경우) 충돌한 ID와 위치는 멈춤 메시지에 나온다(`pace workspace list`는 활성 등록만 보이므로 비활성 항목은 등록부 폴더 `$PACE_HOME/projects/`(기본 `~/.pace/projects/`)의 `<ID>.json`을 직접 열어 확인한다). 등록부 파일을 지운 뒤 다시 실행한다. 두 저장소를 모두 쓴다면(복제한 경우) 이 저장소 `.opal/AGENT.md`의 `workspace_id`를 새 UUID(v4)로 바꿔 커밋한 뒤 실행한다 |
+| 같은 경로가 다른 `workspace_id`로 등록됨 | `$PACE_HOME/projects/`의 `<ID>.json`을 열어 확인하고 맞지 않는 등록부 파일(`$PACE_HOME/projects/<ID>.json`)을 정리한 뒤 다시 실행한다 |
+
+이관이 끝나면 `pace boot --host plain`으로 프로젝트 역할·메모리가 나오는지, `pace workspace list`로 등록됐는지 확인한다.
 
 ## 개발
 

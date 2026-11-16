@@ -17,3 +17,8 @@
 {"ts":"2026-11-16T10:46:29.584Z","p":"P002","t":"T02","type":"question","by":"agent","msg":"T02 구현 후 검토 3차에서 진입점 판별 우회 부류가 2회 반복 — 4차 없이 수용할지 확인 요청"}
 {"ts":"2026-11-16T12:24:10.914Z","p":"P002","t":"T02","type":"answer","by":"agent","msg":"캡틴: 3차 blocking은 반영·시험으로 수용(B), T03 진행"}
 {"ts":"2026-11-16T12:24:12.983Z","p":"P002","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-16T12:24:23.606Z","p":"P002","t":"T03","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-16T12:28:03.175Z","p":"P002","t":"T03","type":"decision","by":"agent","msg":"사전 검토 2회(1차 fail blocking1 skip 가능성 → 반영, 2차 pass). 1차 hash는 TASK 해시 미보존으로 증거 파일 해시 대체"}
+{"ts":"2026-11-16T12:47:51.970Z","p":"P002","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-16T12:47:53.458Z","p":"P002","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-16T12:47:53.458Z","p":"P002","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}

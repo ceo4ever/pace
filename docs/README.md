@@ -23,7 +23,7 @@
 
 ## 범위
 
-- 하는 것: 프로필(독립 에이전트) 생성·온보딩, 세션 부트(상황 판별·메모리 주입·화면 인사), 프로필·프로젝트 메모리, 프로젝트 브레인, 작업 하네스(`pace project` — 프로젝트·태스크의 계약·게이트·기록), 설치·제거, 기본 스킬
+- 하는 것: 프로필(독립 에이전트) 생성·온보딩, OPAL(`.opal`) 프로젝트 정의 가져오기(`pace adopt opal` — 절차는 [README.md](../README.md#opal에서-넘어올-때)), 세션 부트(상황 판별·메모리 주입·화면 인사), 프로필·프로젝트 메모리, 프로젝트 브레인, 작업 하네스(`pace project` — 프로젝트·태스크의 계약·게이트·기록), 설치·제거, 기본 스킬
 - 하지 않는 것(1차): 다중 프로필 운영, 에이전트끼리의 자동 위임망(`pace agent`는 오케스트레이션 세션이 필요할 때 부르는 도구), 프로필 브레인
 
 ## 구성 요소
@@ -43,6 +43,7 @@
 | 기회 탐색 | `src/scout/` | TypeScript | `pace scout` — 탐색 실행 폴더(main이면 `backlogs/`, 아니면 `$PACE_HOME/scout/`), 출처 수집(`fetch`·`add`), 보고서 렌더(`render`, schema·템플릿은 `templates/scout/`), 아이디어 카드(`card`), 증명 검사(`verify`), 브라우저 자막 추출(`transcript` — `orca`·`agent-browser`를 인자 배열로 실행). 스킬 pace-scout의 기계적 일 |
 | 의도 파악 기획 | `src/intent/` | TypeScript | `pace intent` — 렌즈 형식 검사(`lint`)와 렌즈 머리말에서 `references/INDEX.md` 다시 만들기(`index`). 인계 문서(BACKLOG·BR·PROJECT) 빈 칸·필수 절 검사(`check`). 기능·화면 설계 문서: `docs/plan.json` → 연결 계산·증명 검사·HTML(`render`·`verify`, 템플릿은 `skills/pace-intent/templates/<종류>/` 폴더 — 추가는 폴더만), Canvas 제품 프레임 이미지 미리보기 생성·출처 검사(`preview`·`preview --verify`), 템플릿 예시 다시 만들기(`examples`). 스킬 pace-intent의 기계적 일 |
 | 워크스페이스 등록부 | `src/project/workspace-registry.ts`, `src/project/agent-definition.ts` | TypeScript | `PACE_HOME/projects/` 후보·활성 워크스페이스와 `.pace/AGENT.md` 정의(`pace_agent_version: 2`) 연결. Git worktree 관리는 기존 작업 하네스 책임 |
+| OPAL 가져오기 | `src/project/adopt-opal.ts` | TypeScript | `pace adopt opal [--cwd <폴더>] [--apply]` — 기본 미리보기, `--apply`는 계획을 다시 만들어 같을 때만 `.opal/`→`.pace/` `git mv`·AGENT 표지 변환(`opal_agent_version`→`pace_agent_version`, 본문 `.opal/`→`.pace/`)·`workspace_id` 승계 등록, 알려진 OPAL 커밋 게이트 훅 교체(원본 `commit-msg.opal-backup`)·OPAL 공용 대시보드 진입점의 PACE 공용 참조 전환, `AGENTS.md`·`CLAUDE.md`·`docs/**`의 `opal` 참조는 `파일:줄`로 보고만 한다. 저장소 안 경로만 다루며(링크 거부) 실패하면 이번에 바꾼 것만 되돌린다. OPAL 홈 프로필은 옮기지 않는다. 사용자 절차는 README.md의 "OPAL에서 넘어올 때" |
 | 설치 | `src/setup/`, `scripts/install.sh`, `scripts/install.ps1`·`install.cmd` | TypeScript·sh·PowerShell | 훅·대체 규칙·스킬 등록, `pace onboard`. 데이터는 `PACE_HOME`, 설치본·명령·`install.json`은 사용자 홈 `~/.pace`. 스킬은 `.pace-managed` 표지가 있는 것만, 훅·블록은 PACE 부트 명령·PACE 표지가 있는 것만 바꾸고 다른 사용자 훅·스킬은 그대로 둔다. 고친 설정 원본은 `~/.pace-install-backup-<시각>-<임의값>/`에 둔다. Antigravity IDE의 공식 전역 훅은 CLI와 공유하는 설정 경로에 있어 CLI에서도 로드될 수 있으며 CLI 지원 검증을 뜻하지 않음 |
 | 스킬 | `skills/` | Markdown (Agent Skills) | pace-onboarding · pace-memory · pace-brain · pace-project-init · pace-project-dev(프로젝트·태스크 워크플로우) · pace-prompt · pace-scout(링크·주제에서 사업 아이디어 탐색 보고서) · pace-intent(요청의 목적 파악·인터뷰·기획·인계, 본문 영어·출력 한국어) · pace-tech-handbook(언어별 교본, 라이선스 확인된 원문만) · pace-canvas-skills(Canvas Studio 배포 묶음 2.0.1, 본문·해시 봉인 — canvas-read·canvas-wireframe 두 스킬, 묶음 통째 설치) · html-plan(대화형 HTML 계획, 외부 원본) |
 | 템플릿 | `templates/RULES.md`, `templates/profile/`, `templates/brain/`, `templates/project/`, `templates/backlog/`, `templates/scout/` | Markdown·YAML·JSON·HTML | 시스템 운영 규칙(부트가 직접 읽음), 프로필·브레인·프로젝트(PROJECT·TASK·마감·E2E 시나리오) 원본 |
@@ -142,7 +143,7 @@ refresh는 기존 완성 대시보드만 갱신한다. 완전 부재는 init 안
 |---|---|---|---|---|
 | `AGENTS.md` | 일하는 법 요약과 길 안내 | — | 전체 | 항상 (자동) |
 | `docs/README.md` §보안 | 민감 경로와 보안 체크리스트 | security | `src/setup/**`, `scripts/**`, `src/boot.ts`, `src/core/fsutil.ts`, `src/project/**`, `src/memory/**`, `src/profile/**`, `src/scout/**`, `src/intent/**` | 작업 시 |
-| `README.md` | 소개·설치·사용 (사용자용) | — | — | 요청 시 |
+| `README.md` | 소개·설치·사용·OPAL에서 넘어올 때 (사용자용) | — | — | 요청 시 |
 | `skills/pace-project-init/references/` | 정의서·백로그 형식, 분석 방법 | convention | `docs/**`, `backlogs/**`, `skills/pace-project-init/**` | 작업 시 |
 | `skills/pace-project-dev/references/` | 테스트·E2E·리뷰·보안 기준 | test | 전체 | 작업 시 |
 | `.pace/brain/` | 결정과 이유, 도구별 훅 동작, 설치 함정 (`pace brain search`) | — | — | 작업 시 |

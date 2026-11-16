@@ -22,6 +22,13 @@
         "cwd": "."
       },
       "requires": []
+    },
+    {
+      "id": "adopt-opal",
+      "sources": ["src/project/adopt-opal.ts", "README.md", "docs/README.md"],
+      "tests": ["test/adopt-opal.test.ts", "test/adopt-opal-e2e.test.ts", "test/adopt-opal-docs.test.ts"],
+      "runner": { "kind": "node-test", "cwd": "." },
+      "requires": []
     }
   ],
   "common": [
