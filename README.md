@@ -48,7 +48,7 @@ curl -fsSL https://raw.githubusercontent.com/ceo4ever/pace/main/scripts/install.
 ```powershell
 # Windows (PowerShell 5.1 / 7) — 실행 정책과 무관하게 동작
 scripts\install.cmd               # 저장소 안에서 (PowerShell은 .\scripts\install.cmd)
-irm https://raw.githubusercontent.com/ceo4ever/pace/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/ceo4ever/pace/main/scripts/get.ps1 | iex   # 원격 설치
 ```
 
 원격 설치는 저장소를 `~/.local/share/pace`(Windows `%LOCALAPPDATA%\pace`)에 받는다. 설치 스크립트는 설치까지만 하고, 성공하면 결과 한 줄(`✓ PACE 0.1.0 설치 완료` 또는 `업데이트 완료`)만 보인다. 온보딩은 `pace onboard` 또는 새 세션 첫 메시지로 시작한다.

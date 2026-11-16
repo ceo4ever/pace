@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, symlinkSync } from 'node:fs';
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { install, uninstall } from '../src/setup/install.ts';
 import { packageRoot } from '../src/core/paths.ts';
 import { sessionFreeEnv, tempDir } from './helpers.ts';
@@ -173,4 +174,33 @@ test('PowerShell 5.1 격리 설치·재설치·제거는 한 줄로 보고하고
   const removed = spawnSync(process.execPath, [join(packageRoot, 'bin', 'pace.ts'), 'uninstall'], { env, encoding: 'utf8', timeout: 120000 });
   assert.equal(removed.status, 0, removed.stderr);
   assert.equal(readFileSync(wrapper, 'utf8'), '#!/bin/sh\necho user\n');
+});
+
+test('원격 설치 입구 get.ps1은 ASCII·BOM 없이 두고 README가 그것을 가리킨다 (irm | iex는 BOM이 붙은 install.ps1을 해석하지 못한다)', () => {
+  const get = readFileSync(join(packageRoot, 'scripts', 'get.ps1'));
+  assert.ok([...get].every((b) => b < 0x80), 'get.ps1은 ASCII만 쓴다 — BOM·한글이 없어야 iex가 해석한다');
+  const text = get.toString('utf8');
+  assert.match(text, /-File \$file/, 'install.ps1은 임시 파일로 받아 -File로 실행한다');
+  assert.match(text, /^& \{/m, '변수가 사용자 셸에 새지 않게 스크립트 블록 안에서 실행한다');
+  assert.doesNotMatch(text, /^\s*exit\b/m, 'iex 안의 exit은 사용자 셸을 닫는다');
+  const readme = readFileSync(join(packageRoot, 'README.md'), 'utf8');
+  assert.match(readme, /raw\.githubusercontent\.com\/ceo4ever\/pace\/main\/scripts\/get\.ps1 \| iex/);
+  assert.doesNotMatch(readme, /scripts\/install\.ps1 \| iex/);
+});
+
+test('get.ps1을 iex로 실행하면 BOM 있는 install.ps1을 받아 설치하고 사용자 셸은 살아 있다', { skip: process.platform !== 'win32' ? 'Windows PowerShell 실측' : false }, () => {
+  const home = tempDir();
+  const original = readFileSync(join(packageRoot, 'scripts', 'install.ps1'), 'utf8').replace(/^\uFEFF/, '');
+  const sandboxed = original
+    .replace('[Environment]::GetEnvironmentVariable("Path", "User")', '$PaceBinDir')
+    .replace('[Environment]::SetEnvironmentVariable(', '[void]("sandbox")#');
+  assert.notEqual(sandboxed, original);
+  const script = join(home, 'install-sandbox.ps1');
+  writeFileSync(script, '\uFEFF' + sandboxed, 'utf8');
+  const env = { ...sessionFreeEnv(), USERPROFILE: home, HOME: home, PACE_HOME: join(home, '.pace'), PACE_REPO: packageRoot, PACE_INSTALL_URL: pathToFileURL(script).href, PSModuleAnalysisCachePath: join(home, 'module-analysis-cache') };
+  const command = `Get-Content -Raw '${join(packageRoot, 'scripts', 'get.ps1').replaceAll("'", "''")}' | iex; 'shell-alive'`;
+  const run = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command], { env, cwd: home, encoding: 'utf8', timeout: 180000 });
+  assert.equal(run.status, 0, run.stdout + run.stderr);
+  assert.match(run.stdout, /shell-alive/);
+  assert.ok(existsSync(join(home, '.pace', 'install.json')), run.stdout + run.stderr);
 });

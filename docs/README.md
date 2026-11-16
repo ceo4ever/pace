@@ -56,12 +56,12 @@
 | 런타임 | Node.js 24 이상 (로컬 24.15.0) | ✅ 2026-11-16 |
 | Windows 에이전트 | OS 기본 Windows PowerShell 5.1과 .NET Add-Type이 필요하다. 감시자 프로세스에만 실행 정책 Bypass를 적용하며 그룹 정책이나 제한 언어 모드가 준비를 막으면 에이전트를 실행하지 않고 오류를 안내한다 | Windows 실측 |
 | 설치 | `npm install` (devDependencies만) | ✅ |
-| 검사 | `npm run check` — `tsc` 타입 검사 + Node 테스트; Windows는 테스트 파일을 순차 실행하고 macOS·Linux는 기본 동시성을 사용 | 🔶 2026-11-16 `tsc`만 확인 — 0.1.0 정리 뒤 전체 테스트 미완(P001 실행 결과로 갱신) |
+| 검사 | `npm run check` — `tsc` 타입 검사 + Node 테스트; Windows는 테스트 파일을 순차 실행하고 macOS·Linux는 기본 동시성을 사용 | ✅ 2026-11-16 (P001 worktree 전체 실행: 878건 중 통과 872·실패 0·건너뜀 6) |
 | 보안 검사 | `node scripts/secret-scan.ts` — 커밋될 파일(추적 + 무시되지 않는 새 파일)의 비밀 원문(제외: 교본 원문 예시 파일 5개, 테스트 파일의 가짜 값(별도 이유 표기), 대시보드 data.js는 JSON을 풀어 값별 검사(코드 파일 키만 표현식 완화), Canvas 묶음 2.0.1의 JS 오탐 5개는 정확한 경로와 SHA-256이 일치할 때만 제외) | ✅ 2026-10-23 |
 | worktree 준비 | `npm ci --no-audit --no-fund` (새 worktree에 `node_modules`가 없어 `tsc`가 없다. 취약점 조회는 main과 같은 잠금이라 생략 — `의존성 감사`가 맡는다) | ✅ 2026-11-13 |
 | 의존성 감사 | `npm audit --omit=dev` (finish가 잠금 파일이 base 대비 바뀐 브랜치에서만 실행. 런타임 의존성 0이라 보통 생략된다) | ✅ 2026-11-13 |
 | 실행 | `./bin/pace.ts <명령>` (`pace --help`) | ✅ 2026-11-15 (`pace --help`) |
-| 설치(PC) | `bash scripts/install.sh` · `scripts\install.cmd` | ⬜ 실제 사용자 홈 설치 미확인 |
+| 설치(PC) | `bash scripts/install.sh` · `scripts\install.cmd` · 원격 Windows `irm …/scripts/get.ps1 \| iex`(ASCII 입구 — BOM 있는 install.ps1을 임시 파일로 받아 `-File` 실행) | ⬜ 실제 사용자 홈 설치 미확인 |
 | 선택 검사 | `pace test file <경로>` · `pace test unit <id>` · `pace test all` — 단위 구성 `.pace/test-map.json`, 부분 검사는 전체 회귀를 대체하지 않음 | |
 | 테스트 위치 | `test/*.test.ts` (임시 `PACE_HOME`·TMP, `PACE_PROFILE` 제거, 세션 환경 변수 격리 — `test/helpers.ts` `sessionFreeEnv`) | |
 | E2E | 프레임워크 없음 — 실제 도구 세션·임시 저장소 실측을 태스크 `evidence/`에 기록 | |

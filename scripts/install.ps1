@@ -5,7 +5,7 @@
 .EXAMPLE
   scripts\install.cmd   # 실행 정책(Restricted 기본값)을 피하는 래퍼
   powershell -ExecutionPolicy Bypass -File scripts\install.ps1
-  irm <raw URL>/scripts/install.ps1 | iex
+  irm <raw URL>/scripts/get.ps1 | iex   # 원격 설치. 이 파일은 BOM 때문에 iex로 바로 실행할 수 없다
 
 .NOTES
   Windows PowerShell 5.1 / PowerShell 7 공용.
