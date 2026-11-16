@@ -1,4 +1,4 @@
-import { chmodSync, closeSync, existsSync, lstatSync, openSync, readdirSync, readFileSync, realpathSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, closeSync, existsSync, lstatSync, mkdirSync, openSync, readdirSync, readFileSync, realpathSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -8,6 +8,7 @@ import { AGENT_BUDGET, agentKind, validateAgentDefinition } from "./agent-defini
 import { listCandidates, registerWorkspace } from "./workspace-registry.ts";
 import { COMMIT_HOOK, COMMIT_HOOK_MARKER, commitHookPath } from "./harness.ts";
 import { SHARED_MARKER, renderDashboardEntry } from "./dashboard-layout.ts";
+import { rebuildMemoryIndex } from "../memory/memory.ts";
 
 /** OPAL(v2) 프로젝트 정의(`.opal/`)를 PACE(`.pace/`)로 가져오는 계획·적용. 홈 프로필·훅·대시보드는 다루지 않는다. */
 
@@ -31,7 +32,12 @@ export interface AdoptPlan {
   references: string[];
   /** 검색하지 못한 파일(링크·너무 큼·읽기 실패) — 보고가 완전하지 않다는 뜻 */
   referencesSkipped: string[];
+  /** .opal 옆에 PACE 메모리 명령이 먼저 만든 .pace/memory — .opal 쪽으로 합친 뒤 옮긴다 */
+  recover: Recovery[];
 }
+
+/** move: .opal에 없는 파일 · replace: .pace 쪽이 최신인 진행 상황 · drop: 목차·같은 내용·오래된 진행 상황 */
+export interface Recovery { file: string; action: "move" | "replace" | "drop"; reason: string }
 
 interface Deps {
   register?: typeof registerWorkspace;
@@ -43,6 +49,8 @@ interface Deps {
   writeHook?: (path: string, text: string) => void;
   /** 시험용: 대시보드 진입점 쓰기 단계 교체 */
   writeEntry?: (path: string, text: string) => void;
+  /** 시험용: 회수 뒤 메모리 목차 다시 만들기 단계 교체 */
+  rebuildIndex?: (dir: string) => void;
 }
 
 function git(root: string, args: string[]): { ok: boolean; out: string } {
@@ -80,7 +88,7 @@ export function planAdoptOpal(rootInput: string, home: string): AdoptPlan {
   const root = resolve(rootInput);
   const blockers: string[] = [];
   const warnings: string[] = [];
-  const plan: AdoptPlan = { root, state: "ready", blockers, warnings, moves: [], workspaceId: "", needsRegister: false, fingerprint: "", hook: null, dashboard: false, references: [], referencesSkipped: [] };
+  const plan: AdoptPlan = { root, state: "ready", blockers, warnings, moves: [], workspaceId: "", needsRegister: false, fingerprint: "", hook: null, dashboard: false, references: [], referencesSkipped: [], recover: [] };
   const stop = (reason: string): AdoptPlan => { blockers.push(reason); return plan; };
 
   const top = git(root, ["rev-parse", "--show-toplevel"]);
@@ -101,11 +109,15 @@ export function planAdoptOpal(rootInput: string, home: string): AdoptPlan {
     plan.workspaceId = getString(parseFrontmatter(doneText).data, "workspace_id");
     return checkRegistry(plan, home, real, doneText);
   }
-  if (paceInfo !== null) return stop(".pace/가 이미 있다 — .opal/과 섞지 않고 멈춘다(어느 쪽이 정본인지 직접 확인)");
   if (!opalInfo.isDirectory() || opalInfo.isSymbolicLink()) return stop(".opal이 실제 디렉터리가 아니다");
   if (info(join(opal, "MEMORY.json")) !== null) return stop("OPAL v1 형식(MEMORY.json)이다 — 자동 이전을 지원하지 않는다");
   const link = findLink(opal);
   if (link) return stop(`.opal 안에 링크가 있어 옮기지 않는다: ${link}`);
+  if (paceInfo !== null) {
+    const recovered = planRecovery(real);
+    if (typeof recovered === "string") return stop(recovered);
+    plan.recover = recovered;
+  }
 
   const agentPath = join(opal, "AGENT.md");
   let text: string;
@@ -136,8 +148,56 @@ export function planAdoptOpal(rootInput: string, home: string): AdoptPlan {
 
   const ignored = git(real, ["ls-files", "--others", "--ignored", "--exclude-standard", "--", ".opal"]).out;
   if (ignored) warnings.push(`.gitignore에 걸린 파일 ${ignored.split("\n").length}개도 함께 .pace로 옮겨진다 — .gitignore에 .pace 대응 항목을 추가해야 커밋에 섞이지 않는다`);
+  if (plan.recover.length) {
+    const label = { move: "합침", replace: "최신으로 교체", drop: "버림" } as const;
+    plan.moves.push(`.pace/memory 회수 → .opal/memory에 먼저 합친다: ${plan.recover.map((r) => `${r.file} ${label[r.action]}(${r.reason})`).join(" · ")}`);
+  }
   plan.moves.push(".opal → .pace (git mv)", ".pace/AGENT.md: opal_agent_version → pace_agent_version, 본문 .opal/ → .pace/");
+  if (plan.recover.length) plan.moves.push(".pace/memory/INDEX.md: 파일 목록에서 다시 만든다");
   return checkRegistry(plan, home, real, text);
+}
+
+const commitTime = (root: string, rel: string): number => Number(git(root, ["log", "-1", "--format=%ct", "--", rel]).out) || 0;
+
+/**
+ * .opal이 정본인데 PACE 메모리 명령이 .pace/memory를 먼저 만든 경우만 회수한다.
+ * .pace에 memory 밖의 항목이 있거나, 같은 이름의 다른 메모리(진행 상황 제외)가 양쪽에 있으면 정본을 정할 수 없어 멈춘다.
+ */
+function planRecovery(root: string): Recovery[] | string {
+  const pace = join(root, ".pace"), memory = join(pace, "memory");
+  const paceInfo = info(pace);
+  if (!paceInfo?.isDirectory() || paceInfo.isSymbolicLink()) return ".pace가 실제 디렉터리가 아니다";
+  const others = readdirSync(pace).filter((name) => name !== "memory");
+  if (others.length) return `.pace/가 이미 있다 — 메모리 밖의 항목(${others.join(", ")})이 있어 .opal/과 섞지 않고 멈춘다(어느 쪽이 정본인지 직접 확인)`;
+  const memoryInfo = info(memory);
+  if (!memoryInfo?.isDirectory() || memoryInfo.isSymbolicLink()) return ".pace/memory가 실제 디렉터리가 아니다";
+  const entries = readdirSync(memory, { withFileTypes: true });
+  const odd = entries.filter((e) => !e.isFile() || !e.name.endsWith(".md"));
+  if (odd.length) return `.pace/memory에 메모리 파일이 아닌 항목이 있다: ${odd.map((e) => e.name).join(", ")}`;
+  const dirty = git(root, ["status", "--porcelain", "--untracked-files=all", "--", ".pace"]);
+  if (!dirty.ok) return "git 상태를 확인할 수 없다";
+  if (dirty.out) return `.pace에 커밋 안 한 변경이 있다 — 커밋하거나 되돌린 뒤 다시 실행한다:\n${dirty.out}`;
+  const flagged = git(root, ["ls-files", "-v", "--", ".pace"]);
+  if (!flagged.ok) return "git ls-files를 실행하지 못해 .pace의 상태를 확인할 수 없다";
+  if (flagged.out.split("\n").some((l) => /^[a-zS] /.test(l))) return ".pace 안에 git이 변경을 숨기는 파일(assume-unchanged·skip-worktree)이 있다 — 플래그를 풀고 다시 실행한다";
+  const listed = git(root, ["-c", "core.quotepath=false", "ls-files", "--", ".pace/memory"]);
+  if (!listed.ok) return "git ls-files를 실행하지 못해 .pace의 상태를 확인할 수 없다";
+  const tracked = new Set(listed.out.split("\n").filter(Boolean));
+  const untracked = entries.filter((e) => !tracked.has(`.pace/memory/${e.name}`));
+  if (untracked.length) return `.pace/memory에 git이 추적하지 않는 파일이 있다(.gitignore?): ${untracked.map((e) => e.name).join(", ")}`;
+  const result: Recovery[] = [];
+  for (const { name } of [...entries].sort((a, b) => a.name.localeCompare(b.name))) {
+    if (name === "INDEX.md") { result.push({ file: name, action: "drop", reason: "목차 — 다시 만든다" }); continue; }
+    const target = join(root, ".opal", "memory", name);
+    const targetInfo = info(target);
+    if (targetInfo === null) { result.push({ file: name, action: "move", reason: ".opal에 없음" }); continue; }
+    if (!targetInfo.isFile() || targetInfo.isSymbolicLink()) return `.opal/memory/${name}이 일반 파일이 아니다`;
+    if (readFileSync(target).equals(readFileSync(join(memory, name)))) { result.push({ file: name, action: "drop", reason: "같은 내용" }); continue; }
+    if (name !== "status.md") return `같은 이름의 다른 메모리가 .opal과 .pace에 모두 있다: memory/${name} — 직접 합친 뒤 다시 실행한다`;
+    const paceNewer = commitTime(root, `.pace/memory/${name}`) >= commitTime(root, `.opal/memory/${name}`);
+    result.push(paceNewer ? { file: name, action: "replace", reason: ".pace 쪽 커밋이 최신" } : { file: name, action: "drop", reason: ".opal 쪽 커밋이 최신" });
+  }
+  return result;
 }
 
 
@@ -356,7 +416,21 @@ export function applyAdoptOpal(rootInput: string, home: string, expected: AdoptP
   let original = "";
   const agent = join(root, ".pace", "AGENT.md");
   const undo: (() => void)[] = [];
+  // 회수가 건드리는 파일의 적용 전 바이트(null = 없던 파일) — 실패하면 인덱스는 HEAD로, 작업 트리는 이 바이트로 되돌린다
+  const saved = new Map<string, Buffer | null>();
   try {
+    if (plan.state === "ready" && plan.recover.length) {
+      const keep = (rel: string) => { const path = join(root, rel); saved.set(rel, existsSync(path) ? readFileSync(path) : null); };
+      for (const { file } of plan.recover) { keep(`.pace/memory/${file}`); keep(`.opal/memory/${file}`); }
+      keep(".opal/memory/INDEX.md");
+      mkdirSync(join(root, ".opal", "memory"), { recursive: true });
+      for (const { file, action } of plan.recover) {
+        const from = `.pace/memory/${file}`, to = `.opal/memory/${file}`;
+        const step = action === "drop" ? git(root, ["rm", "-q", "--", from]) : git(root, ["mv", ...(action === "replace" ? ["-f"] : []), "--", from, to]);
+        if (!step.ok) throw new Error(`.pace/memory 회수 실패(${file}): ${step.out}`);
+      }
+      for (const dir of [join(root, ".pace", "memory"), join(root, ".pace")]) if (existsSync(dir)) rmdirSync(dir);
+    }
     if (plan.state === "ready") {
       original = readFileSync(join(root, ".opal", "AGENT.md"), "utf8");
       const mv = (deps.move ?? ((r) => git(r, ["mv", ".opal", ".pace"])))(root);
@@ -364,6 +438,7 @@ export function applyAdoptOpal(rootInput: string, home: string, expected: AdoptP
       if (!mv.ok) throw new Error(`git mv 실패: ${mv.out}`);
       rewrite(agent, convertAgent(original));
     }
+    if (plan.recover.length) (deps.rebuildIndex ?? ((dir: string) => { rebuildMemoryIndex(dir, "project"); }))(join(root, ".pace", "memory"));
     if (plan.hook !== null) {
       const hookText = readFileSync(plan.hook, "utf8");
       let backup = `${plan.hook}.opal-backup`;
@@ -403,6 +478,21 @@ export function applyAdoptOpal(rootInput: string, home: string, expected: AdoptP
       try { writeFileAtomic(agent, original); } catch (e) { failures.push(`AGENT 원문 복원 실패: ${e instanceof Error ? e.message : "오류"}`); }
       const back = git(root, ["mv", ".pace", ".opal"]);
       if (!back.ok) failures.push(`git mv 되돌리기 실패: ${back.out}`);
+    }
+    if (saved.size) {
+      // 회수 전 .opal·.pace는 커밋된 깨끗한 상태였다(계획에서 확인) — 두 폴더의 인덱스는 HEAD로, 파일은 저장한 바이트로 되돌린다
+      if (!existsSync(join(root, ".opal")) || existsSync(join(root, ".pace", "AGENT.md"))) failures.push("이동을 되돌리지 못해 .pace/memory 회수 복원을 건너뛴다");
+      else {
+        const reset = git(root, ["reset", "-q", "HEAD", "--", ".opal/memory", ".pace/memory"]);
+        if (!reset.ok) failures.push(`회수 인덱스 복원 실패: ${reset.out}`);
+        for (const [rel, bytes] of saved) {
+          const path = join(root, rel);
+          try {
+            if (bytes === null) { if (existsSync(path)) unlinkSync(path); }
+            else { mkdirSync(join(path, ".."), { recursive: true }); writeFileSync(path, bytes); }
+          } catch (e) { failures.push(`회수 파일 복원 실패(${rel}): ${e instanceof Error ? e.message : "오류"}`); }
+        }
+      }
     }
     const reason = error instanceof Error ? error.message : "오류";
     plan.blockers.push(failures.length ? `적용 실패: ${reason} — 되돌리지 못한 것이 있어 직접 확인한다: ${failures.join("; ")}` : `적용 실패 — 되돌렸다: ${reason}`);
