@@ -117,6 +117,9 @@ export function checkPlaybook(dir,{name}={}){
   for(const f of walk(root)){
     const rel=f.slice(root.length+1).split(sep).join('/');
     if(SKIP.has(basename(f))||/(^|\/)pending(\/|$)/.test(rel)){problems.push(`작업 중간 파일이 산출물에 있다: ${rel}`);continue;}
+    // 학습이 보관한 이전 버전(versions/v{n}) — 이미지는 현재 shotHash와 달라도 되고 json은 민감 형식을 검사한다
+    if(/^references\/flows\/[^/]+\/versions\/v\d+\/shots\/S\d+\.jpg$/.test(rel))continue;
+    if(/^references\/flows\/[^/]+\/versions\/v\d+\/steps\.json$/.test(rel)){try{scanSensitive(JSON.parse(readFileSync(f,'utf8')));}catch(e){problems.push(`${rel}: 민감 형식 — ${e.message.replace(/^.*?: /,'').slice(0,120)}`);}continue;}
     const shot=/^references\/flows\/([^/]+)\/shots\/S\d+\.jpg$/.exec(rel);
     if(shot){if(!(shotHashes.get(shot[1])||new Set()).has(createHash('sha256').update(readFileSync(f)).digest('hex')))problems.push(`승인 증거(shotHash)와 맞지 않는 이미지: ${rel}`);continue;}
     if(!ALLOWED.some(re=>re.test(rel))){problems.push(`허용 목록 밖 파일: ${rel}`);continue;}

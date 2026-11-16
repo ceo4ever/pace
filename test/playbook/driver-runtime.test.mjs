@@ -169,3 +169,44 @@ test('S-7 기대·대기 — 지연된 정상 결과는 성공, 이전 결과가
   e=env();e.add(e.doc.body,'input',{id:'from',value:''});e.add(e.doc.body,'button',{id:'go'},b=>{b.click=()=>e.at(200,()=>e.add(e.doc.body,'table',{attrs:{class:'list'},text:'생김'}));});
   r=await rt(e).perform(step({elements:[{n:1,name:'시작일',find:'input#from',action:'입력'},{n:2,name:'조회',find:'button#go',action:'클릭'}]}));assert.equal(r.ok,true);
 });
+
+test('T05 S-9 createApiRuntime.observe — 마지막 응답의 필드 경로 이름과 상태 코드만(값·식별자 모양이 아닌 키·민감 키 제외)', async()=>{
+  const FAKE=['900101','1234567'].join('-');
+  const body={result:{state:'ZZ-값',items:[{id:7,note:'ZZ-값'}],[FAKE]:'x','a b':1},meta:{count:2}};
+  const f=fakeFetch({response:{status:202,body}});
+  const rt=api(f);
+  assert.deepEqual(rt.observe(),{shape:[],httpStatus:null});
+  const r=await rt.perform(S04,ctx);   // result.status가 없다 → schema-mismatch
+  assert.equal(r.reason,'schema-mismatch');
+  const o=rt.observe();
+  assert.deepEqual([...o.shape].sort(),['meta.count','result.items[].id','result.items[].note','result.state']);
+  assert.equal(o.httpStatus,202);
+  assert.ok(!JSON.stringify(o).includes('ZZ-값')&&!JSON.stringify(o).includes(FAKE));
+  // 상태 불일치도 코드만 남는다
+  const f2=fakeFetch({response:{status:503,body:{error:'ZZ-값'}}});const rt2=api(f2);
+  assert.equal((await rt2.perform(S04,ctx)).reason,'status-mismatch');assert.deepEqual(rt2.observe(),{shape:[],httpStatus:503});
+});
+
+test('T05 S-1 createWebRuntime — 지도에 선언된 screen.dismiss를 호출자 주입 없이 적용한다', async()=>{
+  const e=env();page(e);let clicked=0;const modal=e.add(e.doc.body,'div',{attrs:{class:'promo'}});
+  e.add(e.doc.body,'button',{id:'x'},b=>{b.click=()=>{clicked++;modal.remove();};});
+  const st=step({screen:{url:'^/box$',require:['table.list'],forbid:['.promo'],dismiss:[{when:'.promo',click:'button#x'}]}});
+  assert.equal(await rt(e).judgeScreen(st),true);assert.equal(clicked,1);
+  // 선언이 없으면 닫지 않고 멈춘다
+  const e2=env();page(e2);e2.add(e2.doc.body,'div',{attrs:{class:'promo'}});
+  assert.equal(await rt(e2).judgeScreen(step({screen:{url:'^/box$',require:['table.list'],forbid:['.promo']}})),false);
+});
+
+test('T05 검토1-⑦ 선언된 응답 경로가 모두 있어야 성공이고, 웹은 읽기 대상을 관찰했을 때만 expectChecked', async()=>{
+  const st={...S04,extract:[],api:{...S04.api,response:[{path:'result.status',type:'선택값'},{path:'result.extra',type:'선택값'}]}};
+  let f=fakeFetch({response:{status:202,body:{result:{status:'완료'}}}});
+  assert.equal((await api(f).perform(st,ctx)).reason,'schema-mismatch');   // result.extra 없음
+  f=fakeFetch({response:{status:202,body:{result:{status:'완료',extra:'x'}}}});
+  const r=await api(f).perform(st,ctx);assert.equal(r.ok,true);assert.equal(r.expectChecked,true);
+  // 웹: 읽기 대상이 있으면 true, 클릭만 있으면 false(기대 결과를 관찰하지 않았다)
+  const e=env();page(e,{onClick:tbl=>e.at(200,()=>{tbl.textContent='새 결과';})});
+  assert.equal((await rt(e).perform(step())).expectChecked,true);
+  const e2=env();e2.add(e2.doc.body,'button',{id:'go'},b=>{b.click=()=>{};});
+  const only=await rt(e2).perform(step({elements:[{n:1,name:'조회',find:'button#go',action:'클릭'}],extract:[]}));
+  assert.equal(only.ok,true);assert.equal(only.expectChecked,false);
+});

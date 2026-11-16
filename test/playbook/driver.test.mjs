@@ -427,3 +427,18 @@ test('독립 검토 2차 반영: 보고의 요소 번호는 지도에 선언된 
   assert.equal(r.status,'undelivered');assert.equal(r.step,'S04');assert.equal(stateOf(store).runs.u.steps.S04.status,'done');assert.equal(stateOf(store).runs.u.steps.S04.delivered,false);
   r=await run(dir,f,{approvals:ap,state:store,runId:'u'});assert.equal(r.status,'undelivered');assert.equal(r.step,'S04');assert.equal(f.c.perform.S04,1);   // 재호출에서도 미전달은 숨겨지지 않고 다시 수행하지도 않는다
 });
+
+test('T05 overlay — 그 실행에만 덧씌운 단계 json을 쓰고 정본 지도는 읽기만 한다(해시 필드 그대로)', async()=>{
+  const dir=mk();const ap=[apOf(dir,'S04')];
+  const seen=[];
+  const rt={async judgeScreen(){return true;},async perform(s){seen.push([s.id,(s.elements||[]).map(e=>e.find).join(','),s.actionHash]);return {ok:true,values:VALUES[s.id]||{}};}};
+  const ov={S02:{...stepJson(dir,'S02'),elements:stepJson(dir,'S02').elements.map((e,j)=>j===0?{...e,find:'#patched'}:e)}};
+  const store=createStore(mkdir());
+  let r=await drive({flowDir:dir,runId:'o1',runtime:rt,approvals:ap,state:store,sink:async()=>{},to:'S02',overlay:ov});
+  assert.equal(r.status,'done');
+  assert.ok(seen.find(x=>x[0]==='S02')[1].startsWith('#patched'));assert.equal(seen.find(x=>x[0]==='S02')[2],stepJson(dir,'S02').actionHash);
+  // overlay 없는 다음 실행은 정본(원래 선택자)을 읽는다
+  seen.length=0;
+  r=await drive({flowDir:dir,runId:'o2',runtime:rt,approvals:ap,state:store,sink:async()=>{},to:'S02'});
+  assert.ok(!seen.find(x=>x[0]==='S02')[1].includes('#patched'));
+});

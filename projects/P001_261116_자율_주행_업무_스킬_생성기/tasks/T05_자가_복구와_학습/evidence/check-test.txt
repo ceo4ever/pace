@@ -1,0 +1,10 @@
+ℹ tests 183
+ℹ suites 0
+ℹ pass 183
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 829959.7572
+test exit=0
+(바뀐 부분 위주: test/playbook/*.test.mjs·install·maker 래퍼·canvas-skills 183건, Orca e2e 포함 건너뜀 0. 전체 npm run check는 finish 전 1회 — 코디네이터 지시)

@@ -81,6 +81,12 @@
     ],
     "forbid": [
      ".notice-modal"
+    ],
+    "dismiss": [
+     {
+      "when": ".notice-modal",
+      "click": ".notice-modal button.close"
+     }
     ]
    },
    "elements": [

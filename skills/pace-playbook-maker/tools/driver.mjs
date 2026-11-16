@@ -5,7 +5,9 @@ import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {checkAgentFresh} from './build.mjs';
 import {checkAccess} from './agent-map.mjs';
-import {boxMatches} from './capture-core.mjs';
+import {createHash} from 'node:crypto';
+import {boxMatches,canonicalJson} from './capture-core.mjs';
+import {sensitiveKinds} from './sensitive.mjs';
 
 const HEX64=/^[0-9a-f]{64}$/;
 const nonEmpty=v=>typeof v==='string'&&v.trim().length>0;
@@ -27,16 +29,25 @@ export function loadMap(flowDir){
 }
 
 // ---- 승인 규칙 ----------------------------------------------------------------------------------------
+// 단계 식별(요소 번호·이름·find·동작 종류, API 메서드·경로) + 대상 계정·업무·흐름의 해시 — 복구가 승인에 붙이는 키(key)다.
+export function approvalKeyOf(step,{account='',task='',flow=''}={}){
+  const kind=a=>KINDS[FIRST(a)]||'other';
+  const ident={stepId:step.id,elements:(step.elements||[]).map(e=>({n:e.n,name:e.name,find:e.find,action:kind(e.action)})),
+    api:step.api?{method:step.api.method,path:String(step.api.endpoint||'').split('?')[0]}:null,account,task,flow};
+  return createHash('sha256').update(canonicalJson(ident)).digest('hex');
+}
 const needsRule=s=>s.risk!=='read'||nonEmpty(s.gate);
 const irreversible=s=>s.risk!=='read'||nonEmpty(s.gate);
 const isIrr=irreversible;
 // 비읽기 단계는 지도에 승인 규칙(gate)이 선언되어 있고 사용자 승인 기록(once/standing)이 해시에 맞을 때만 자율이다.
 // once는 소모되기 전에도 한 실행(runId)에 예약되어 다른 실행이 쓰지 못한다.
-export function approvalCheck(step,approvals,consumed=[],{reserved={},runId}={}){
+export function approvalCheck(step,approvals,consumed=[],{reserved={},runId,ctx}={}){
   if(!needsRule(step))return {ok:true};
   if(!nonEmpty(step.gate))return {ok:false,reason:'no-map-rule'};   // 지도에 규칙이 없으면 외부 기록이 있어도 묻는다
   for(const a of approvals||[]){
     if(!a||a.by!=='user'||a.stepId!==step.id||a.actionHash!==step.actionHash||a.sourceHash!==step.sourceHash)continue;
+    // 계정·업무·흐름 맥락(ctx)이 주어지면(복구 주행) 키가 있고 현재 맥락과 같은 승인만 쓴다 — 키 없는 옛 승인은 거부한다. 맥락이 없으면 키 있는 승인은 쓰지 않는다(검증할 수 없다).
+    if(ctx){if(a.key===undefined||a.key!==approvalKeyOf(step,ctx))continue;}else if(a.key!==undefined)continue;
     if(a.scope==='standing')return {ok:true,approval:a};
     if(a.scope==='once'&&nonEmpty(a.id)&&!consumed.includes(a.id)&&(reserved[a.id]===undefined||reserved[a.id]===runId))return {ok:true,approval:a};
   }
@@ -48,13 +59,13 @@ export function recordApproval({store,approval}){
   if(!nonEmpty(a.stepId)||!HEX64.test(String(a.actionHash))||!HEX64.test(String(a.sourceHash))||!['once','standing'].includes(a.scope)||a.by!=='user')throw new Error('승인 기록 형식 오류(stepId·actionHash·sourceHash·scope·by:user)');
   if(a.scope==='once'&&!nonEmpty(a.id))throw new Error('once 승인은 id가 필요하다');
   const list=store.exists('approvals.json')?store.readJson('approvals.json'):[];
-  list.push({id:a.id,stepId:a.stepId,actionHash:a.actionHash,sourceHash:a.sourceHash,scope:a.scope,by:'user',date:a.date});
+  list.push({id:a.id,stepId:a.stepId,actionHash:a.actionHash,sourceHash:a.sourceHash,scope:a.scope,by:'user',date:a.date,...(HEX64.test(String(a.key))?{key:a.key}:{})});   // key: 복구가 붙이는 식별·계정·업무 키(있으면 보존)
   store.writeJson('approvals.json',list,{scanAs:stripHashes(list)});
   return list.length;
 }
 // 쓰기 시작할 때 once를 이 실행에 예약하고, 행동이 실행된 뒤 소모한다
 function reserve(st,a,runId){if(a&&a.scope==='once')st.reserved[a.id]=runId;}
-function consume(st,s,approvals,runId){const a=approvalCheck(s,approvals,st.consumed,{reserved:st.reserved,runId}).approval;if(a&&a.scope==='once'&&!st.consumed.includes(a.id))st.consumed.push(a.id);}
+function consume(st,s,approvals,runId,ctx){const a=approvalCheck(s,approvals,st.consumed,{reserved:st.reserved,runId,ctx}).approval;if(a&&a.scope==='once'&&!st.consumed.includes(a.id))st.consumed.push(a.id);}
 
 // ---- 상태(주행 기록) ----------------------------------------------------------------------------------
 function makeState(state){
@@ -67,7 +78,7 @@ function makeState(state){
   }:{load(){return norm(mem);},save(d){Object.assign(mem,d);}};
 }
 // 해시 필드(키 이름이 해시 전용)는 검사에서 면제되므로 상태의 숫자·코드 구조만 검사에 넘긴다
-const stripHashes=d=>JSON.parse(JSON.stringify(d,(k,v)=>/Hash$/.test(k)?undefined:v));
+const stripHashes=d=>JSON.parse(JSON.stringify(d,(k,v)=>/Hash$|^key$/.test(k)?undefined:v));   // key: 승인에 붙는 식별·계정·업무 해시
 function markDone(rec,s,n,evidence,delivered){
   Object.assign(rec,{status:'done',actionHash:s.actionHash,sourceHash:s.sourceHash,extractCount:n,reason:undefined,delivered});
   if(isIrr(s))rec.irreversible={executed:true,evidence};
@@ -93,10 +104,12 @@ async function resolveUnknown(s,rec,runtime,ctx,attempt){
 }
 
 // ---- 주행 ---------------------------------------------------------------------------------------------
-export async function drive({flowDir,runId,runtime,approvals=[],state,sink,from,to,now=()=>Date.now(),log=()=>{}}){
+export async function drive({flowDir,runId,runtime,approvals=[],state,sink,from,to,overlay,approvalCtx,now=()=>Date.now(),log=()=>{}}){
   if(!nonEmpty(runId))throw new Error('runId가 필요하다');
   const map=loadMap(flowDir);
   if(!map.ok){log({type:'stale-map'});return {status:'stale-map',completed:[],counts:{}};}
+  // overlay: 이 실행에만 덧씌우는 단계 json(복구 후보 검증용) — 정본 지도는 읽기만 하고 해시 필드는 그대로 둔다
+  if(overlay)map.steps=map.steps.map(s=>overlay[s.id]??s);
   const io=makeState(state);
   const st=io.load();
   const run=(st.runs[runId]??={steps:{}});
@@ -106,7 +119,7 @@ export async function drive({flowDir,runId,runtime,approvals=[],state,sink,from,
   const endIdx=to?map.steps.findIndex(s=>s.id===to):map.steps.length-1;   // to: 이 단계까지만(범위 주행)
   if(startIdx<0||endIdx<startIdx)return {status:'bad-range',completed,counts};   // 모르는 단계 id를 처음부터 다시 도는 것으로 바꾸지 않는다
   const ctx={index:map.index,runId};
-  const gate=s=>approvalCheck(s,approvals,st.consumed,{reserved:st.reserved,runId});
+  const gate=s=>approvalCheck(s,approvals,st.consumed,{reserved:st.reserved,runId,ctx:approvalCtx});
   const stop=(s,status,extra={})=>{
     const rec=run.steps[s.id]??={};
     if(rec.status!=='unknown')rec.status='stopped';
@@ -128,7 +141,7 @@ export async function drive({flowDir,runId,runtime,approvals=[],state,sink,from,
     let attempt=(rec&&rec.attempt)||0,resumedRetry=false;
     if(irr&&rec&&(rec.status==='in-progress'||rec.status==='unknown')&&rec.actionHash===s.actionHash&&rec.sourceHash===s.sourceHash){
       const r=await resolveUnknown(s,rec,runtime,ctx,attempt);
-      if(r==='done'){markDone(rec,s,0,'lookup',!hasExtract);consume(st,s,approvals,runId);persist();completed.push(s.id);counts[s.id]=0;if(hasExtract)return undelivered(s);continue;}
+      if(r==='done'){markDone(rec,s,0,'lookup',!hasExtract);consume(st,s,approvals,runId,approvalCtx);persist();completed.push(s.id);counts[s.id]=0;if(hasExtract)return undelivered(s);continue;}
       if(r!=='retry')return stop(s,r==='in-flight'?'in-flight':'unknown-outcome',{reason:r});
       resumedRetry=true;
     }
@@ -154,7 +167,7 @@ export async function drive({flowDir,runId,runtime,approvals=[],state,sink,from,
         r0.status='unknown';persist();
         if(retried)return stop(s,'unknown-outcome',{reason:'unknown-outcome'});
         const r=await resolveUnknown(s,r0,runtime,ctx,attempt);
-        if(r==='done'){markDone(r0,s,0,'lookup',!hasExtract);consume(st,s,approvals,runId);persist();completed.push(s.id);counts[s.id]=0;if(hasExtract)return undelivered(s);break;}
+        if(r==='done'){markDone(r0,s,0,'lookup',!hasExtract);consume(st,s,approvals,runId,approvalCtx);persist();completed.push(s.id);counts[s.id]=0;if(hasExtract)return undelivered(s);break;}
         if(r==='retry'){retried=true;continue;}
         return stop(s,r==='in-flight'?'in-flight':'unknown-outcome',{reason:r});
       }
@@ -163,7 +176,7 @@ export async function drive({flowDir,runId,runtime,approvals=[],state,sink,from,
         const status=code==='expect-failed'?'expect-failed':code==='conflict'?'conflict':'step-failed';
         return stop(s,status,{reason:code,report:out&&out.report?{...out.report,reason:out.report.reason??code}:undefined});
       }
-      consume(st,s,approvals,runId);   // 행동이 실행됐다 — 값 전달 실패가 있어도 once는 다시 쓰이지 않는다
+      consume(st,s,approvals,runId,approvalCtx);   // 행동이 실행됐다 — 값 전달 실패가 있어도 once는 다시 쓰이지 않는다
       // 추출 전달 — 선언된 이름만 sink로, 값은 기록하지 않는다
       const afterExec=(status,reason)=>{if(irr){r0.status='unknown';r0.irreversible={executed:true,evidence:'perform'};}return stop(s,status,{reason});};   // 행동은 이미 실행됨 — 다시 수행하지 않게 불명으로 둔다
       let n=0;
@@ -189,7 +202,7 @@ export async function drive({flowDir,runId,runtime,approvals=[],state,sink,from,
 // 운영 명령(여러 단계를 한 번에 수행)을 주입한 operation({from,to},{checkpoint,attemptKey,runId})로 부른다. 실제 명령 호출은 호출자 몫.
 // 계약: 되돌릴 수 없는 단계는 수행 전에 checkpoint(id,'in-progress'), 끝나면 checkpoint(id,'done',values?)를 부른다.
 // 이 계약을 어기고 체크포인트 없이 행동한 명령은 라이브러리가 판정할 수 없다 — 규약은 그런 명령을 읽기 전용 단계에만 쓰게 한다.
-export async function driveOperation({flowDir,runLabel,runId,operation,runtime,approvals=[],state,sink,maxResumes=3,log=()=>{}}){
+export async function driveOperation({flowDir,runLabel,runId,operation,runtime,approvals=[],state,sink,maxResumes=3,approvalCtx,log=()=>{}}){
   if(!nonEmpty(runId))throw new Error('runId가 필요하다');
   const map=loadMap(flowDir);
   if(!map.ok)return {status:'stale-map',completed:[]};
@@ -202,7 +215,7 @@ export async function driveOperation({flowDir,runLabel,runId,operation,runtime,a
   const io=makeState(state);
   const st=io.load();
   const run=(st.runs[runId]??={steps:{}});
-  const gate=s=>approvalCheck(s,approvals,st.consumed,{reserved:st.reserved,runId});
+  const gate=s=>approvalCheck(s,approvals,st.consumed,{reserved:st.reserved,runId,ctx:approvalCtx});
   const valid=(s,r)=>r&&r.actionHash===s.actionHash&&r.sourceHash===s.sourceHash;
   const pending=()=>range.filter(s=>!(valid(s,run.steps[s.id])&&run.steps[s.id].status==='done'));
   const doneIds=()=>range.filter(s=>!pending().includes(s)).map(s=>s.id);
@@ -221,7 +234,7 @@ export async function driveOperation({flowDir,runLabel,runId,operation,runtime,a
       Object.assign(rec,{status:'done',actionHash:s.actionHash,sourceHash:s.sourceHash});
       if(isIrr(s))rec.irreversible={executed:true,evidence:'checkpoint'};
       if((s.extract||[]).length&&rec.delivered!==true)rec.delivered=false;
-      consume(st,s,approvals,runId);   // 행동이 실행됐다 — 이 once는 다시 쓰이지 않는다
+      consume(st,s,approvals,runId,approvalCtx);   // 행동이 실행됐다 — 이 once는 다시 쓰이지 않는다
       if(values)queue.push([stepId,values]);
     }else{
       Object.assign(rec,{status:'in-progress',actionHash:s.actionHash,sourceHash:s.sourceHash,attempt:(rec.attempt||0)+1});
@@ -260,7 +273,7 @@ export async function driveOperation({flowDir,runLabel,runId,operation,runtime,a
     if(normalReturn&&firstIrr&&!inProg(firstIrr)&&!(fa>=0&&fa<=ids.indexOf(firstIrr.id)))return {status:'unknown-outcome',step:firstIrr.id,completed:doneIds()};
     if(isIrr(first)&&rec&&(rec.status==='in-progress'||rec.status==='unknown')){
       const r=await resolveUnknown(first,rec,runtime,{index:map.index,runId},rec.attempt||resume);
-      if(r==='done'){markDone(rec,first,0,'lookup',!(first.extract||[]).length);consume(st,first,approvals,runId);io.save(st);continue;}
+      if(r==='done'){markDone(rec,first,0,'lookup',!(first.extract||[]).length);consume(st,first,approvals,runId,approvalCtx);io.save(st);continue;}
       if(r!=='retry'){io.save(st);return {status:r==='in-flight'?'in-flight':'unknown-outcome',step:first.id,completed:doneIds()};}
     }
     let result=null;lastResult=null;
@@ -298,7 +311,8 @@ export function createWebRuntime({browser,params={},waitMs=3000,pollMs=100,sleep
       const check=()=>(sc.require||[]).every(visible)&&!(sc.forbid||[]).some(visible);
       if(check())return true;
       // 늦은 덮개: 닫는 방법이 주입되어 있으면 한 번 닫고 다시 판정한다
-      for(const f of sc.forbid||[])if(visible(f)&&dismiss[f]){ev(`(()=>{const e=document.querySelector(${q(dismiss[f])});if(e)e.click();return true;})()`);sleep(pollMs);}
+      const how={...Object.fromEntries((sc.dismiss||[]).map(x=>[x.when,x.click])),...dismiss};   // 지도에 선언된 닫는 방법 + 호출자가 주입한 것
+      for(const f of sc.forbid||[])if(visible(f)&&how[f]){ev(`(()=>{const e=document.querySelector(${q(how[f])});if(e)e.click();return true;})()`);sleep(pollMs);}
       return check();
     },
     async perform(step){
@@ -315,7 +329,7 @@ export function createWebRuntime({browser,params={},waitMs=3000,pollMs=100,sleep
       for(const {el} of plan){
         const r=rectOf(el.find);
         if(!r)return refuse('conflict',{report:{step:step.id,element:el.n,reason:'missing',sourceHash:step.sourceHash,shotSha256:step.shot&&step.shot.sha256}});
-        if(el.box&&!el.stale&&!boxMatches(el.box,r).ok)return refuse('conflict',{report:{step:step.id,element:el.n,reason:'moved',sourceHash:step.sourceHash,shotSha256:step.shot&&step.shot.sha256}});
+        if(el.box&&!el.stale&&r.w>0&&r.h>0&&!boxMatches(el.box,r).ok)return refuse('conflict',{report:{step:step.id,element:el.n,reason:'moved',sourceHash:step.sourceHash,shotSha256:step.shot&&step.shot.sha256}});
       }
       const readers=plan.filter(p=>p.kind==='read').map(p=>p.el.find);
       for(const x of step.extract||[])if(x.where&&x.where.selector&&!readers.includes(x.where.selector)&&cssOnly(x.where.selector))readers.push(x.where.selector);
@@ -341,7 +355,7 @@ export function createWebRuntime({browser,params={},waitMs=3000,pollMs=100,sleep
       for(const x of step.extract||[]){
         if(x.where&&x.where.selector)values[x.name]=ev(`(()=>{const e=document.querySelector(${q(x.where.selector)});return e?String(e.value??e.textContent??''):null;})()`);
       }
-      return {ok:true,values};
+      return {ok:true,values,expectChecked:readers.length>0};   // 읽기 대상이 있어 기대 결과를 실제로 관찰했을 때만 true — 복구 검증이 요구한다
     }
   };
 }
@@ -359,8 +373,21 @@ const getPath=(obj,path)=>{
   };
   const r=walk(obj,0);return r===null?undefined:r;
 };
+// 응답의 필드 경로 이름만(값 없음) — 식별자 모양이 아니거나 민감 형식인 키는 뺀다
+function shapePaths(v,prefix='',depth=0,out=[]){
+  if(out.length>=200||depth>6||v===null||typeof v!=='object')return out;
+  if(Array.isArray(v)){if(v.length)shapePaths(v[0],prefix+'[]',depth+1,out);return out;}
+  for(const [k,x] of Object.entries(v)){
+    if(!/^[A-Za-z_][A-Za-z0-9_-]{0,40}$/.test(k)||sensitiveKinds(k).length)continue;
+    const path=prefix?`${prefix}.${k}`:k;
+    if(x!==null&&typeof x==='object')shapePaths(x,path,depth+1,out);else out.push(path);
+  }
+  return out;
+}
 export function createApiRuntime({fetch:fetchFn,params={},timeoutMs=10000,lookup,settle}={}){
+  let last={shape:[],httpStatus:null};   // 마지막 응답의 경로 이름·상태 코드만 — 진단용, 메모리에만 둔다
   return {
+    observe:()=>({...last,shape:[...last.shape]}),
     ...(lookup?{lookup}:{}),...(settle?{settle}:{}),
     async perform(step,ctx={}){
       const a=step.api;
@@ -391,10 +418,13 @@ export function createApiRuntime({fetch:fetchFn,params={},timeoutMs=10000,lookup
         res=await fetchFn(finalUrl,{method:a.method,headers:params.headers||{},...(params.body?{body:JSON.stringify(params.body)}:{}),redirect:'manual',signal:ac.signal});
       }catch(e){clearTimeout(timer);return {ok:false,timeout:true};}
       clearTimeout(timer);
+      last={shape:[],httpStatus:res.status};
       if(res.type==='opaqueredirect'||(res.status>=300&&res.status<400))return {ok:false,reason:'redirect-refused'};
       if(a.successStatus!==undefined&&String(res.status)!==String(a.successStatus))return {ok:false,reason:'status-mismatch'};
       let body;
       try{body=await res.json();}catch{body=undefined;}
+      last={shape:shapePaths(body),httpStatus:res.status};
+      for(const q of a.response||[]){if(q&&typeof q.path==='string'&&getPath(body,q.path)===undefined)return {ok:false,reason:'schema-mismatch'};}   // 선언된 응답 경로가 모두 있어야 한다
       const values={};
       for(const x of step.extract||[]){
         if(!x.where||x.where.apiPath===undefined)continue;
@@ -402,7 +432,7 @@ export function createApiRuntime({fetch:fetchFn,params={},timeoutMs=10000,lookup
         if(got===undefined||(Array.isArray(got)&&!got.length&&!(a.response||[]).some(r=>r.path===x.where.apiPath)))return {ok:false,reason:'schema-mismatch'};
         values[x.name]=got.length===1?got[0]:got;
       }
-      return {ok:true,status:res.status,values};
+      return {ok:true,status:res.status,values,expectChecked:true};
     }
   };
 }

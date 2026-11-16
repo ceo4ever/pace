@@ -27,7 +27,7 @@ const KINDS=[
   }]
 ];
 // 해시 필드(키 이름이 해시 전용인 것)는 64자 16진 형식만 허용하고 토큰 검사에서 뺀다 — 다른 경로의 같은 길이 문자열은 계속 거부한다
-const HASH_PATHS=[/(^|\.)(shotHash|recordHash|shotSha256|contextSha|contentHash|sourceHash|actionHash)$/,/(^|\.)shot\.sha256$/];
+const HASH_PATHS=[/(^|\.)(shotHash|recordHash|shotSha256|contextSha|contentHash|sourceHash|actionHash|candidateHash)$/,/(^|\.)shot\.sha256$/];
 // 캡처 기록의 좌표·크기·건수는 숫자가 정상이다(좌표 값 자체는 형식 검사에서 제외)
 const NUMERIC_OK=[/.captureRecord.(boxes|view|masking|elementsMasked)/];
 const PATTERN_PATHS=[/^mask\[\d+\]$/,/^steps\[\d+\]\.mask\[\d+\]$/,/^steps\[\d+\]\.revealInputs\[\d+\]\.value$/];

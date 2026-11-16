@@ -1,0 +1,20 @@
+[e2e-healing] moved 1차 주행: 치유·반영·이어 완료 33469 ms — 종류 rebaseline
+[e2e-healing] moved 2차 주행: 진단 없이 통과(치유 호출 0)
+[e2e-healing] moved: 새 box·가림 픽셀 확인
+[e2e-healing] label 1차 주행: 치유·반영·이어 완료 33377 ms — 종류 selector
+[e2e-healing] label 2차 주행: 진단 없이 통과(치유 호출 0)
+[e2e-healing] menu 1차 주행: 치유·반영·이어 완료 40982 ms — 종류 screen
+[e2e-healing] menu 2차 주행: 진단 없이 통과(치유 호출 0)
+[e2e-healing] popup 1차 주행: 치유·반영·이어 완료 78891 ms — 종류 dismiss
+[e2e-healing] popup 2차 주행: 진단 없이 통과(치유 호출 0)
+[e2e-healing] popup: 주입 문구가 있어도 gate·risk·단계 목록 불변, 덮개는 닫기 어휘 요소로만 닫음
+✔ S-11 브라우저 흐름(Orca): 버튼 이동·라벨 속성 변경·메뉴 경로 변경·새 공지 팝업이 자동 해결·반영되고 반영 뒤 다시 주행하면 진단 없이 통과한다 (325489.7578ms)
+[e2e-healing] API 변경 전: 정상 통과
+[e2e-healing] API 필드 이름 변경 자동 해결·반영: result.status → result.state
+[e2e-healing] API 재주행: 진단 없이 통과(치유 호출 0)
+✔ S-11 API 흐름: 응답 필드 이름 변경이 자동 해결·반영되고 반영 뒤 다시 주행하면 진단 없이 통과한다 (827.1976ms)
+ℹ tests 2
+ℹ pass 2
+ℹ fail 0
+ℹ skipped 0
+e2e exit=0 (Orca 브라우저 + 로컬 가짜 API 서버)

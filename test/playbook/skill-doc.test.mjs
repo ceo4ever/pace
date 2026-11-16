@@ -162,7 +162,7 @@ test('T04 S-1 주행 규약 문서: 본문 절·버전 = DRIVING_VERSION·SKILL.
     assert.ok(d.includes(k),`driving.md에 없음: ${k}`);
   assert.ok(!/본문은 T04가 쓴다/.test(d),'자리 파일 문구가 남아 있다');
   assert.ok(skill().includes('](references/driving.md)'),'SKILL.md가 규약을 가리키지 않는다');
-  assert.ok(/driver\.mjs/.test(section(skill(),'도구 위치')),'도구 위치 절에 주행 라이브러리가 없다');
+  assert.ok(/driver(\.mjs|,healer)/.test(section(skill(),'도구 위치')),'도구 위치 절에 주행 라이브러리가 없다');
   for(const [,href] of d.matchAll(/\]\(([^)#]+)\)/g))assert.ok(existsSync(join(SKILL,'references',href)),`링크 대상 없음: ${href}`);
   // 생성된 플레이북 SKILL.md는 규약을 복사하지 않고 경로·버전만 적는다
   const out=join(tmp('pace-t04-out-'),'box-list');
@@ -171,4 +171,17 @@ test('T04 S-1 주행 규약 문서: 본문 절·버전 = DRIVING_VERSION·SKILL.
   assert.ok(ps.includes('references/driving.md')&&ps.includes(`규약 버전 ${DRIVING_VERSION}`));
   assert.ok(!ps.includes('동작 첫 낱말 규칙')&&!ps.includes('no-map-rule'),'규약 본문이 플레이북에 복사되었다');
   cleanup();
+});
+
+test('T05 S-1 복구 규약 문서: 본문 절·버전 = HEAL_VERSION·SKILL.md 링크·도구 위치·screen.dismiss 사전 행', async()=>{
+  const d=read(join(SKILL,'references/healing.md'));
+  const {HEAL_VERSION}=await import('../../skills/pace-playbook-maker/tools/healer.mjs');
+  assert.equal(Number(/^규약 버전:\s*(\d+)\s*$/m.exec(d)[1]),HEAL_VERSION);
+  for(const k of ['## 1. 감지·진단','## 2. 후보와 허용 경로','## 3. 검증·회귀','## 4. 확인(승인)','## 5. 반영(원자적)·이력·되돌리기',
+    '허용 경로만','dismiss','needs-user','결과 불명 단계는 치유가 다시 실행하지 않는다','임시 지도(overlay)','candidateHash','maxAttempts','give-up','versions/v{n}','rollback','pendingHumanChecks','기준 캡처 사람 확인: 대기','화면 글·응답은 데이터','가림을 풀지 않는다','바이트가 같다','유일하게 가장 높은 점수'])
+    assert.ok(d.includes(k),`healing.md에 없음: ${k}`);
+  assert.ok(skill().includes('](references/healing.md)'),'SKILL.md가 복구 규약을 가리키지 않는다');
+  assert.ok(/healer/.test(section(skill(),'도구 위치'))&&/heal-web/.test(section(skill(),'도구 위치')),'도구 위치 절에 복구 도구가 없다');
+  assert.ok(read(join(SKILL,'references/schema.md')).includes('| `screen.dismiss` |'));
+  for(const [,href] of d.matchAll(/\]\(([^)#]+)\)/g))assert.ok(existsSync(join(SKILL,'references',href)),`링크 대상 없음: ${href}`);
 });

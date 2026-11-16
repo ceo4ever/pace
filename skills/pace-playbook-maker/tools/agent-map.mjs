@@ -120,7 +120,7 @@ const OUT_SPEC=[
   // 단계
   [/^step\.(id|title|purpose|risk|gate|lane|enter|tool|toolNote|command|capturePage|success|escalate|next)$/,S],
   [/^index\.lanes\.[^.]+$/,S],[/^step\.identify\.title$/,S],[/^step\.identify\.anchors\[\]$/,S],
-  [/^step\.screen\.url$/,S],[/^step\.screen\.(require|forbid)\[\]$/,S],
+  [/^step\.screen\.url$/,S],[/^step\.screen\.(require|forbid)\[\]$/,S],[/^step\.screen\.dismiss\[\]\.(when|click)$/,S],
   [/^step\.elements\[\]\.n$/,N],[/^step\.elements\[\]\.(name|find|action|wait|expect|onChange)$/,S],
   [/^step\.elements\[\]\.box\.(x|y|w|h|vw|vh|dpr)$/,N],[/^step\.elements\[\]\.stale$/,B],
   [/^step\.extract\[\]\.(name|format|sensitivity|deliverTo|verify)$/,S],[/^step\.extract\[\]\.where\.(selector|apiPath)$/,S],
@@ -190,7 +190,11 @@ export function computeAgent(d,here,sourceText){
     if(s.view!==undefined)err(`${b}.view는 steps.json에 쓰지 않는다(좌표의 출처는 captureRecord)`);
     for(const [j,e] of (s.elements||[]).entries())if('box' in e)err(`${b}.elements[${j}].box는 steps.json에 쓰지 않는다(좌표의 출처는 captureRecord)`);
     if(s.screen!==undefined){
-      if(onlyKeys(s.screen,['url','require','forbid'],`${b}.screen`,err)){
+      if(onlyKeys(s.screen,['url','require','forbid','dismiss'],`${b}.screen`,err)){
+        if(s.screen.dismiss!==undefined){
+          if(!Array.isArray(s.screen.dismiss))err(`${b}.screen.dismiss는 {when,click} 배열이다`);
+          else for(const [j,x] of s.screen.dismiss.entries())if(onlyKeys(x,['when','click'],`${b}.screen.dismiss[${j}]`,err)&&!(nonEmpty(x.when)&&nonEmpty(x.click)))err(`${b}.screen.dismiss[${j}]: when·click은 비어 있지 않은 선택자 문자열이다`);
+        }
         if(s.screen.url!==undefined&&(typeof s.screen.url!=='string'||!/^\^.*\$$/.test(s.screen.url)))err(`${b}.screen.url은 ^…$로 고정해야 한다`);
         for(const k of ['require','forbid'])if(s.screen[k]!==undefined&&!strArr(s.screen[k]))err(`${b}.screen.${k}는 문자열 배열이다`);
       }
@@ -298,7 +302,7 @@ export function computeAgent(d,here,sourceText){
     const events=(d.events||[]).filter(e=>(e.steps||[]).includes(id)).map(e=>({when:e.when,then:e.then}));
     const ah=actionHash(d,s);
     const out={agentSchema:AGENT_SCHEMA,generated:'생성 파일 — steps.json에서 만든다. 직접 고치지 않는다.',id,title:s.title,purpose:s.purpose,risk:s.risk,gate:s.gate,lane:s.lane,
-      enter:s.enter,identify:s.identify?{title:s.identify.title,anchors:s.identify.anchors}:undefined,screen:s.screen?{url:s.screen.url,require:s.screen.require,forbid:s.screen.forbid}:undefined,tool:s.tool,toolNote:s.toolNote,command:s.command,capturePage:s.capturePage,elements:els,
+      enter:s.enter,identify:s.identify?{title:s.identify.title,anchors:s.identify.anchors}:undefined,screen:s.screen?{url:s.screen.url,require:s.screen.require,forbid:s.screen.forbid,dismiss:s.screen.dismiss}:undefined,tool:s.tool,toolNote:s.toolNote,command:s.command,capturePage:s.capturePage,elements:els,
       extract:(s.extract||[]).map(x=>({name:x.name,where:{selector:x.where.selector,apiPath:x.where.apiPath},format:x.format,sensitivity:x.sensitivity,deliverTo:x.deliverTo,verify:x.verify})),
       api:isApi?{method:s.api.method,endpoint:s.api.endpoint,request:(s.api.request||[]).map(q=>({name:q.name,in:q.in,role:q.role||'param',form:q.form})),response:(s.api.response||[]).map(r=>({path:r.path,type:r.type})),successStatus:s.api.successStatus}:undefined,
       success:s.success,escalate:s.escalate,events,next:order[i+1]??null,
