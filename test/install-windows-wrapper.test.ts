@@ -193,8 +193,11 @@ test('get.ps1을 iex로 실행하면 BOM 있는 install.ps1을 받아 설치하�
   const original = readFileSync(join(packageRoot, 'scripts', 'install.ps1'), 'utf8').replace(/^\uFEFF/, '');
   const sandboxed = original
     .replace('[Environment]::GetEnvironmentVariable("Path", "User")', '$PaceBinDir')
-    .replace('[Environment]::SetEnvironmentVariable(', '[void]("sandbox")#');
+    .replace('[Environment]::SetEnvironmentVariable(', '[void]("sandbox")#')
+    // PACE_REPO가 이 저장소라 업데이트 분기(fetch·checkout·pull)가 개발 저장소를 건드린다 — 입구 경로만 시험한다
+    .replace('(Test-Path ([IO.Path]::Combine($Repo, ".git")))', '$false');
   assert.notEqual(sandboxed, original);
+  assert.ok(original.includes('(Test-Path ([IO.Path]::Combine($Repo, ".git")))') && !sandboxed.includes('(Test-Path ([IO.Path]::Combine($Repo, ".git")))'), '업데이트 분기를 막아야 한다');
   const script = join(home, 'install-sandbox.ps1');
   writeFileSync(script, '\uFEFF' + sandboxed, 'utf8');
   const env = { ...sessionFreeEnv(), USERPROFILE: home, HOME: home, PACE_HOME: join(home, '.pace'), PACE_REPO: packageRoot, PACE_INSTALL_URL: pathToFileURL(script).href, PSModuleAnalysisCachePath: join(home, 'module-analysis-cache') };
