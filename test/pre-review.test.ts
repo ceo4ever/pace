@@ -116,3 +116,36 @@ test('사전 검토 이력: 최신 대상·판정과 대체·안전한 증거를
   writeFileSync(join(dir, 'PRE-REVIEW.json'), '{');
   assert.ok(reviewIssues(dir, task).length);
 });
+
+test('사용자 게이트 예외: 실행된 검토가 pass에 못 미쳐도 사용자 결정·현재 해시·근거에 묶이면 통과, 이력은 그대로', () => {
+  const dir = tempDir('pace-review-');
+  const task = '- 상태: 진행\n- 사전 검토: v1\n\n## 목적\n기준\n';
+  const hash = reviewHash(task);
+  mkdirSync(join(dir, 'evidence'));
+  writeFileSync(join(dir, 'evidence/review.md'), '검토 결과');
+  writeFileSync(join(dir, 'evidence/user-decision.md'), '캡틴: 둘 다 1번으로 진행해 줘');
+  const fail = { hash, provider: 'openai', cross: true, status: 'fail', blocking: 1, evidence: 'evidence/review.md', continuity: 'new' };
+  const waiver = { by: 'user', date: '2026-11-16', reason: '계획 단계 지적이 수렴하지 않음', evidence: 'evidence/user-decision.md', hash };
+  const save = (value: unknown) => writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify(value));
+  const base = { version: 1, author: 'anthropic', attempts: [fail] };
+  save(base);
+  assert.ok(reviewIssues(dir, task).length, '예외 없이 fail이면 막는다');
+  save({ ...base, waiver });
+  assert.deepEqual(reviewIssues(dir, task), []);
+  save({ ...base, waiver: { ...waiver, by: 'agent' } });
+  assert.match(reviewIssues(dir, task).join(), /사용자 결정만/);
+  save({ ...base, waiver: { ...waiver, reason: ' ' } });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...base, waiver: { ...waiver, date: '어제' } });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...base, waiver: { ...waiver, evidence: '../밖' } });
+  assert.ok(reviewIssues(dir, task).length);
+  save({ ...base, waiver });
+  assert.match(reviewIssues(dir, task + '변경').join(), /해시/, 'TASK가 바뀌면 예외도 무효');
+  save({ ...base, attempts: [{ ...fail, status: 'unavailable', blocking: 0, reason: '실행 불가' }], waiver });
+  assert.match(reviewIssues(dir, task).join(), /실행된 검토 없이/);
+  save({ ...base, attempts: [{ ...fail, status: 'pass', blocking: 0 }], waiver });
+  assert.match(reviewIssues(dir, task).join(), /필요 없다/);
+  save({ ...base, attempts: [{ ...fail, evidence: '../밖' }], waiver });
+  assert.ok(reviewIssues(dir, task).length, '이력 형식 검사는 예외와 무관하게 유지');
+});
