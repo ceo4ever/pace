@@ -9,6 +9,9 @@
 //  - mutationIgnore는 텍스트 변경(characterData)만 허용한다 — textContent·innerHTML로 갱신하는 영역은 childList라 항상 거부된다
 // mask 항목: `re:` 접두 = 정규식(글자 노드), 그 외 = CSS 선택자(보이는 요소 중 글자·값이 있는 것). `text:`는 find 전용이라 mask에는 쓰지 않는다.
 
+import {createHash} from 'node:crypto';
+import {scanSensitive} from './sensitive.mjs';
+
 export class CaptureRefused extends Error {
   constructor(message,code='refused'){super(message);this.name='CaptureRefused';this.code=code;}
 }
@@ -47,9 +50,9 @@ export function overlay(cfg){
   const inCap=n=>{let e=n&&(n.nodeType===1?n:n.parentElement);while(e){if(e.id==='__flowcap')return true;e=e.parentElement;}return false;};
   const rectOf=(r,off)=>{const l=r.left+(off?off.left:0),t=r.top+(off?off.top:0);return {left:l,top:t,width:r.width,height:r.height,right:l+r.width,bottom:t+r.height};};
   const sig=(getRects,off)=>{const out=[];for(const r of getRects())out.push(rectOf(r,off));return JSON.stringify(out);};
-  const maskedEls=new Set(),sigs=[];let masked=0;
+  const maskedEls=new Set(),sigs=[],maskRects=[];let masked=0;
   const box=(r,bg,txt)=>{const b=document.createElement('div');b.style.cssText='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;background:'+bg+';color:#fff;font:10px sans-serif;overflow:hidden';if(txt)b.textContent=txt;root.appendChild(b);return b;};
-  const cover=(el,getRects,off)=>{for(const r of getRects())box(rectOf(r,off),'#475569','●●●');masked++;if(el)maskedEls.add(el);sigs.push({f:()=>sig(getRects,off),s0:sig(getRects,off)});};
+  const cover=(el,getRects,off)=>{for(const r of getRects()){const rr=rectOf(r,off);maskRects.push(rr);box(rr,'#475569','●●●');}masked++;if(el)maskedEls.add(el);sigs.push({f:()=>sig(getRects,off),s0:sig(getRects,off)});};
   // 문서 목록: 최상위 + 선언한 frames (접근 못 하면 거부 사유)
   const docs=[{doc:document,off:null}],declared=new Set();
   // frames 값: 선택자 문자열(필수 — 없으면 거부) 또는 {selector, optional:true}(화면에 없으면 통과, 있는데 접근 못 하면 거부)
@@ -151,7 +154,9 @@ export function overlay(cfg){
   // 번호 태그(뷰포트 안 요소만)
   const view=document.defaultView||globalThis;
   const vis=r=>r.width>0&&r.height>0&&r.bottom>0&&r.right>0&&r.top<view.innerHeight&&r.left<view.innerWidth;
-  const missing=[];
+  const missing=[],boxes={},elementsMasked={};
+  // 요소 rect 전체가 가림 rect들의 합집합에 들어갈 때만 true(부분 가림은 false)
+  const covered=(r,rects)=>{if(!(r.width>0&&r.height>0))return false;const xs=[r.left,r.right],ys=[r.top,r.bottom];for(const m of rects){for(const x of [m.left,m.right])if(x>r.left&&x<r.right)xs.push(x);for(const y of [m.top,m.bottom])if(y>r.top&&y<r.bottom)ys.push(y);}xs.sort((a,b)=>a-b);ys.sort((a,b)=>a-b);for(let i=0;i<xs.length-1;i++)for(let j=0;j<ys.length-1;j++){if(xs[i+1]-xs[i]<=0||ys[j+1]-ys[j]<=0)continue;const cx=(xs[i]+xs[i+1])/2,cy=(ys[j]+ys[j+1])/2;if(!rects.some(m=>cx>=m.left&&cx<=m.right&&cy>=m.top&&cy<=m.bottom))return false;}return true;};
   for(const e of cfg.elements||[]){
     try{
       let f=String(e.find||''),d=document,off=null;
@@ -166,6 +171,7 @@ export function overlay(cfg){
       else el=[...d.querySelectorAll(f)].find(x=>vis(rectOf(x.getBoundingClientRect(),off)));
       if(!el){missing.push(e.n);continue;}
       const r=rectOf(el.getBoundingClientRect(),off);
+      boxes[e.n]={x:r.left,y:r.top,w:r.width,h:r.height};elementsMasked[e.n]=covered(r,maskRects);
       box({left:r.left-3,top:r.top-3,width:r.width+6,height:r.height+6},'transparent').style.border='2px solid #dc2626';
       const t=box({left:r.left-12,top:r.top-12,width:18,height:18},'#dc2626',String(e.n));t.style.borderRadius='9px';
       // 숫자를 원 가운데에 — 가로 가운데·세로는 줄 높이를 원 지름과 같게
@@ -219,7 +225,7 @@ export function overlay(cfg){
     },
     cleanup(){for(const mo of observers)mo.disconnect();root.remove();delete G.__flowcap;return true;}
   };
-  return {masked,errors,frames,perRule,missing};
+  return {masked,errors,frames,perRule,missing,boxes,elementsMasked,view:{vw:view.innerWidth,vh:view.innerHeight,dpr:view.devicePixelRatio||1}};
 }
 
 // 공개 허용 입력 형식 검사 — {selector, value}. value는 ^…$로 고정된 정규식이어야 한다(부분 일치로 넓게 풀리지 않게)
@@ -288,4 +294,138 @@ export function runCapture({doc,step,frames={},mutationIgnore=[],browser,delayMs
     throw err;
   }
   return {...result,cleanupFailed};
+}
+
+// ---- 에이전트 지도(agentView)용: 캡처 기록·승인·위치 대응 -------------------------------------
+// 좌표·가림 증거는 숫자·불리언·해시뿐이다(화면 글자 없음). 정본 저장 위치는 steps.json의 단계 captureRecord 하나.
+export const sha256Hex=data=>createHash('sha256').update(data).digest('hex');
+const HEX64=/^[0-9a-f]{64}$/;
+const isNum=x=>typeof x==='number'&&Number.isFinite(x);
+// 키 정렬 JSON(UTF-8) — 해시 입력의 정규 직렬화
+export function canonicalJson(v){
+  if(Array.isArray(v))return '['+v.map(canonicalJson).join(',')+']';
+  if(v&&typeof v==='object')return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonicalJson(v[k])).join(',')+'}';
+  return JSON.stringify(v);
+}
+// 캡처가 증거로 유효한 화면 조건 — 화면 판정(screen)과 프레임 별칭(선택자)이 바뀌면 이전 캡처 증거를 재사용하지 않는다.
+export function contextHash(step,frames={}){
+  const sc=step&&step.screen||{};
+  const fr={};
+  for(const [alias,def] of Object.entries(frames||{}))fr[alias]=typeof def==='string'?def:(def&&def.selector)??null;
+  return sha256Hex(canonicalJson({screen:{url:sc.url??null,require:sc.require??[],forbid:sc.forbid??[]},frames:fr}));
+}
+// 추출 선언이 가리키는 번호 요소(where.selector === 요소 find). 없으면 null.
+export function extractTarget(step,ex){
+  const sel=ex&&ex.where&&ex.where.selector;
+  if(typeof sel!=='string')return null;
+  const el=(step.elements||[]).find(e=>e.find===sel);
+  return el?el.n:null;
+}
+const refuse=(msg,code)=>{throw new CaptureRefused(msg,code);};
+
+// runCapture 반환({info,post})·단계·승인 캡처 해시를 한 기록으로 묶는다. 실패 입력은 기록을 만들지 않고 거부한다.
+export function captureRecord({info,post,step,shotSha256,frames={}}){
+  if(!info||typeof info!=='object')refuse('캡처 결과 info가 없다','record_info');
+  if(!post||post.ok!==true)refuse('사후 검사가 통과하지 않은 캡처는 기록하지 않는다','record_post');
+  if(!Array.isArray(info.errors)||info.errors.length)refuse('오버레이 오류가 있는 캡처는 기록하지 않는다','record_errors');
+  if(!HEX64.test(String(shotSha256)))refuse('캡처 해시 형식 오류','record_sha');
+  if(!step||step.capture===false)refuse('캡처하지 않는 단계는 기록하지 않는다','record_step');
+  const missing=new Set((info.missing||[]).map(Number));
+  const boxes={},finds={};
+  for(const e of step.elements||[]){
+    finds[e.n]=e.find;
+    const b=info.boxes&&info.boxes[e.n];
+    if(!b){if(missing.has(Number(e.n)))continue;refuse(`요소 ${e.n} box가 없다`,'record_box');}
+    for(const k of ['x','y','w','h'])if(!isNum(b[k]))refuse(`요소 ${e.n} box 값이 숫자가 아니다`,'record_box');
+    boxes[e.n]={x:b.x,y:b.y,w:b.w,h:b.h};
+  }
+  const v=info.view||{};
+  for(const k of ['vw','vh','dpr'])if(!isNum(v[k])||v[k]<=0)refuse('화면 크기·배율 값이 올바르지 않다','record_view');
+  const elementsMasked={};
+  for(const e of step.elements||[])if(boxes[e.n])elementsMasked[e.n]=Boolean(info.elementsMasked&&info.elementsMasked[e.n]);
+  const perRule={};
+  for(const [k,n] of Object.entries(info.perRule||{})){if(!isNum(n))refuse('perRule 건수가 숫자가 아니다','record_masking');perRule[k]=n;}
+  if(!isNum(info.masked))refuse('masked 건수가 숫자가 아니다','record_masking');
+  // 가림 필수 규칙은 건수 1 이상이어야 한다
+  for(const rule of step.maskRequire||[])if(!(perRule[rule]>=1))refuse('가림 필수 규칙이 0건이다','mask_require_zero');
+  // 추출 대상: 번호 요소에 연결되고 가려져야 하며, restricted는 캡처 단계에 둘 수 없다
+  for(const ex of step.extract||[]){
+    if(ex.sensitivity==='restricted')refuse('restricted 추출은 캡처 단계에 둘 수 없다','extract_restricted');
+    if(ex.where&&ex.where.selector===undefined)continue;
+    const n=extractTarget(step,ex);
+    if(n===null)refuse('추출 대상이 번호 요소에 연결되지 않았다','extract_unlinked');
+    if(missing.has(Number(n))||!boxes[n])refuse('추출 대상 요소를 화면에서 찾지 못했다','extract_missing');
+    if(elementsMasked[n]!==true)refuse('추출 대상 요소가 가려지지 않았다','extract_unmasked');
+  }
+  const payload={boxes,view:{vw:v.vw,vh:v.vh,dpr:v.dpr},shotSha256,masking:{masked:info.masked,perRule},post:true,elementsMasked,finds,contextSha:contextHash(step,frames)};
+  try{scanSensitive({steps:[{captureRecord:payload}]})}catch(e){refuse('캡처 기록에 민감 형식이 있다 — 기록하지 않는다','record_sensitive');}
+  return {...payload,recordHash:sha256Hex(canonicalJson(payload))};
+}
+
+// 기록(payload) 구조 검사 — approveStep과 생성기가 같은 의미로 쓴다. 문제 목록을 돌려준다(값 없음).
+export function recordShapeProblems(p){
+  const probs=[];
+  if(!p||typeof p!=='object'||Array.isArray(p))return ['기록이 객체가 아니다'];
+  const isObj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+  const exact=(o,keys,name)=>{if(isObj(o)&&Object.keys(o).some(k=>!keys.includes(k)))probs.push(`${name}에 허용되지 않은 키가 있다`);};
+  exact(p,['boxes','view','shotSha256','masking','post','elementsMasked','finds','contextSha'],'기록');
+  if(!HEX64.test(String(p.contextSha)))probs.push('contextSha 형식 오류');
+  if(!isObj(p.boxes))probs.push('boxes가 객체가 아니다');
+  else for(const [n,b] of Object.entries(p.boxes)){
+    if(!/^\d+$/.test(n)||!isObj(b)||!['x','y','w','h'].every(k=>isNum(b[k]))||b.w<=0||b.h<=0)probs.push('box 값이 올바르지 않다');
+  }
+  if(!isObj(p.view)||!['vw','vh','dpr'].every(k=>isNum(p.view[k])&&p.view[k]>0))probs.push('view 값이 올바르지 않다');
+  exact(p.view,['vw','vh','dpr'],'view');
+  if(isObj(p.boxes))for(const b of Object.values(p.boxes))exact(b,['x','y','w','h'],'box');
+  exact(p.masking,['masked','perRule'],'masking');
+  if(!HEX64.test(String(p.shotSha256)))probs.push('shotSha256 형식 오류');
+  if(!isObj(p.masking)||!isNum(p.masking.masked)||!isObj(p.masking.perRule)||Object.values(p.masking.perRule).some(v=>!isNum(v)))probs.push('masking 형식 오류');
+  if(p.post!==true)probs.push('post가 true가 아니다(사후 검사 미통과)');
+  if(!isObj(p.elementsMasked)||Object.values(p.elementsMasked).some(v=>typeof v!=='boolean'))probs.push('elementsMasked 형식 오류');
+  else if(isObj(p.boxes)&&JSON.stringify(Object.keys(p.boxes).sort())!==JSON.stringify(Object.keys(p.elementsMasked).sort()))probs.push('elementsMasked 키가 boxes와 다르다');
+  if(!isObj(p.finds)||Object.values(p.finds).some(v=>typeof v!=='string'))probs.push('finds 형식 오류');
+  return probs;
+}
+
+// 승인: 기록 해시가 내용과 맞고 기록의 캡처 해시가 승인 해시와 같을 때만 새 step을 돌려준다(순수 함수).
+export function approveStep(step,record,{approvedSha}={}){
+  if(!step||step.capture===false)refuse('캡처하지 않는 단계는 승인하지 않는다','approve_step');
+  if(!record||typeof record!=='object'||!HEX64.test(String(record.recordHash)))refuse('캡처 기록이 없거나 해시 형식이 아니다','approve_record');
+  if(!HEX64.test(String(approvedSha)))refuse('승인 해시 형식 오류','approve_sha');
+  const {recordHash,...payload}=record;
+  if(sha256Hex(canonicalJson(payload))!==recordHash)refuse('캡처 기록이 변조되었다(해시 불일치)','approve_tamper');
+  if(recordShapeProblems(payload).length)refuse('캡처 기록 구조가 올바르지 않다','approve_shape');
+  try{scanSensitive({steps:[{captureRecord:payload}]})}catch(e){refuse('캡처 기록에 민감 형식이 있다 — 승인하지 않는다','approve_sensitive');}
+  if(payload.shotSha256!==approvedSha)refuse('승인 해시가 기록의 캡처 해시와 다르다','approve_sha_mismatch');
+  if(payload.post!==true)refuse('사후 검사가 통과하지 않은 기록','approve_post');
+  for(const rule of step.maskRequire||[])if(!(payload.masking&&payload.masking.perRule&&payload.masking.perRule[rule]>=1))refuse('가림 필수 규칙이 0건이다','mask_require_zero');
+  for(const e of step.elements||[]){
+    if(payload.finds[e.n]!==e.find)refuse(`요소 ${e.n}의 선택자가 캡처 당시와 다르다 — 재캡처가 필요하다`,'approve_find');
+    if(!payload.boxes[e.n])refuse(`요소 ${e.n} box가 기록에 없다`,'approve_box');
+  }
+  for(const ex of step.extract||[]){
+    if(ex.sensitivity==='restricted')refuse('restricted 추출은 캡처 단계에 둘 수 없다','extract_restricted');
+    if(ex.where&&ex.where.selector===undefined)continue;
+    const n=extractTarget(step,ex);
+    if(n===null)refuse('추출 대상이 번호 요소에 연결되지 않았다','extract_unlinked');
+    if(payload.elementsMasked[n]!==true)refuse('추출 대상 요소가 가려지지 않았다','extract_unmasked');
+  }
+  const out={...step,captureRecord:payload,shotHash:approvedSha,recordHash};
+  delete out.view;
+  for(const e of out.elements||[])if('box' in e){out.elements=out.elements.map(({box,...rest})=>rest);break;}
+  return out;
+}
+
+// 기록 box를 현재 뷰포트 비율로 환산해 실제 rect와 IoU로 같은 요소를 가리키는지 판정한다(CSS px 기준).
+// recorded: {x,y,w,h,vw,vh}, actual: {x,y,w,h,vw,vh}. 한계: 같은 위치일 뿐 요소 정체성을 증명하지 않는다.
+export function boxMatches(recorded,actual,{tolerance=0.6}={}){
+  const ok=b=>b&&['x','y','w','h','vw','vh'].every(k=>isNum(b[k]))&&b.w>0&&b.h>0&&b.vw>0&&b.vh>0;
+  if(!ok(recorded)||!ok(actual))return {ok:false,iou:0};
+  const sx=actual.vw/recorded.vw,sy=actual.vh/recorded.vh;
+  const a={l:recorded.x*sx,t:recorded.y*sy,r:(recorded.x+recorded.w)*sx,b:(recorded.y+recorded.h)*sy};
+  const b={l:actual.x,t:actual.y,r:actual.x+actual.w,b:actual.y+actual.h};
+  const iw=Math.max(0,Math.min(a.r,b.r)-Math.max(a.l,b.l)),ih=Math.max(0,Math.min(a.b,b.b)-Math.max(a.t,b.t));
+  const inter=iw*ih,union=(a.r-a.l)*(a.b-a.t)+(b.r-b.l)*(b.b-b.t)-inter;
+  const iou=union>0?inter/union:0;
+  return {ok:iou>=tolerance,iou};
 }

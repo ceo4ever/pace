@@ -1,0 +1,52 @@
+{
+ "version": 1,
+ "author": "anthropic",
+ "attempts": [
+  {
+   "hash": "04ece63ec5f25154030124e9ed73f558eef6868e700e655e287fbc9924d08c61",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 1,
+   "evidence": "evidence/pre-review-codex.md",
+   "continuity": "new"
+  },
+  {
+   "hash": "29946ef1150b37e4a056b440e440d983dd0f487e8cf71bae1d16ab87df9026a5",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 2,
+   "evidence": "evidence/pre-review-codex-2.md",
+   "continuity": "changed",
+   "reason": "새 codex 세션 — 이전 지적은 본문으로 전달(같은 세션 연속 불가). 해시는 검토 입력 번들에 실린 TASK.md 본문 기준"
+  },
+  {
+   "hash": "1b2431461f9d3f315e2b98f304acc1e3d250de69fb27cc3326c59d144127630d",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 2,
+   "evidence": "evidence/pre-review-codex-3.md",
+   "continuity": "changed",
+   "reason": "새 codex 세션 — 이전 지적은 본문으로 전달(같은 세션 연속 불가). 해시는 검토 입력 번들에 실린 TASK.md 본문 기준"
+  },
+  {
+   "hash": "c45df1fbf84efe9f3424fb6fd4cce46b2487b2cec47b213354a983aab8825b35",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 1,
+   "evidence": "evidence/pre-review-task-6.md",
+   "continuity": "new",
+   "reason": "codex --kind task 검토 6차(원문 evidence/pre-review-task-*.md, 앞선 codex 18회는 --kind 수정 전 프롬프트라 중간 판 해시를 보존하지 못함). 마지막 차수 blocking(URL query·인코딩 값)과 should_fix 2(캡처 시점 n↔find 결합·box 추출 범위)는 TASK에 반영했으나 반영본은 재검토 전. 매 차수 새 경계 사례가 나오는 장꼬리라 캡틴 게이트 판단 요청"
+  }
+ ],
+ "waiver": {
+  "by": "user",
+  "date": "2026-11-16",
+  "reason": "계획 단계 codex 지적이 경계 사례로 수렴하지 않음",
+  "evidence": "evidence/user-gate-decision.md",
+  "hash": "1b58b8a0b3a86bc96e8bd3349f849a91d2f880c0baa79d94bdb5c3c160295b0a"
+ }
+}

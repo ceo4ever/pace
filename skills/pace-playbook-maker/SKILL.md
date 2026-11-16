@@ -20,7 +20,7 @@ description: 브라우저 자동화 업무 흐름의 실행 명세를 만들고 
 | 이름 | 지금 위치 | 역할 |
 |---|---|---|
 | 생성기 | `node <스킬>/tools/build.mjs --dir <흐름 폴더>` | steps.json → flow.html·flow/*.md |
-| 캡처 코어 | `<스킬>/tools/capture-core.mjs` | 가림·번호 태그·사후 검사(fail-closed) |
+| 캡처 코어 | `<스킬>/tools/capture-core.mjs`·`agent-map.mjs` | 가림·번호 태그·사후 검사(fail-closed)·캡처 기록·승인 / `agent/` 지도 계산 |
 | 테스트 | PACE 저장소 `test/playbook/` (`npm run check`가 실행) | 생성기·코어·이 스킬 문서 검사 |
 | 서비스 어댑터 | 각 서비스 도구 폴더의 캡처 모듈 | 탭 범위·화면 판정·대기·승인 |
 
@@ -44,7 +44,8 @@ description: 브라우저 자동화 업무 흐름의 실행 명세를 만들고 
 7. **사람 확인 → 승인** — 사람이 대기 이미지를 직접 연다. "확인했다"는 말을 받으면 에이전트가 메타 해시와 파일 해시를 대조한 뒤 `--approve S0n --sha <해시>`로 승인한다. 고칠 점이 있으면 `--reject` 뒤 재캡처. 에이전트가 이미지를 대신 판정하지 않는다.
 8. **생성·검사** — 생성기를 돌리고, overview·단계 파일의 링크와 도구 명령이 실재하는지 확인한다. 업무 스킬 `SKILL.md` 색인에 흐름 명세 링크와 "캡처는 어댑터로만" 한 줄을 넣는다.
 9. **재구성 검증** — 새 맥락 에이전트에게 overview·단계 파일만 주고 명령·시작 조건·실패 동작을 재구성하게 한다. 다르면 명세를 고치고 그 부분을 다시 확인한다.
-10. **UI 변경 갱신** — 화면이 달라지면 steps.json·캡처를 같은 커밋에서 고치고 `changes`에 날짜·단계·내용을 더한 뒤 다시 생성한다.
+10. **에이전트 지도(선택)** — `agentView:true`면 `agent/`도 만든다. 승인 때 어댑터가 `captureRecord`→`approveStep`을 부르고, 사람이 값 자리를 확인해 `--review-hash` 값을 `valueReview`에 적는다. 낡음은 `--check-agent`. 경계는 [schema.md](references/schema.md) "에이전트 지도" 절.
+11. **UI 변경 갱신** — 화면이 달라지면 steps.json·캡처를 같은 커밋에서 고치고 `changes`에 날짜·단계·내용을 더한 뒤 다시 생성한다.
 
 ## 보안 규칙
 

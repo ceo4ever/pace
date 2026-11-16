@@ -27,7 +27,7 @@
 4. **코어 캡처** 호출.
 5. **캡처 후 검사** — 탭·화면 판정 재실행, `maskRequire` 규칙 0건이면 거부, 정리 실패면 거부.
 6. **대기 저장** — 버전 관리 밖 대기 폴더에 jpg + 메타(sha256·규칙별 건수). 저장이 실패하면 대기 파일과 원본을 모두 지운다. 출력은 상태·건수·짧은 해시뿐.
-7. **승인·반려** — `--approve S0n --sha <해시>`: 메타 해시 = 파일 해시 = 받은 해시 접두일 때만 `shots/S0n.jpg`로 옮기고 단계 `status`·`verified`를 쓴다. `capture:false` 단계는 승인 거부. `--reject`는 대기 파일 삭제.
+7. **승인·반려** — `--approve S0n --sha <해시>`: 메타 해시 = 파일 해시 = 받은 해시 접두일 때만 `shots/S0n.jpg`로 옮기고 단계 `status`·`verified`를 쓴다. `agentView` 흐름이면 캡처 직후(4~6) 코어 `captureRecord({info,post,step,shotSha256,frames})`(`frames`는 steps.json의 frames 그대로)로 기록을 만들어 대기 메타에 함께 저장하고, 승인 때 코어 `approveStep(step, record, {approvedSha})`로 `captureRecord`·`shotHash`·`recordHash`를 steps.json에 쓴다(좌표를 따로 쓰지 않는다. 기록 생성·승인이 거부하는 캡처는 승인하지 않는다). `capture:false` 단계는 승인 거부. `--reject`는 대기 파일 삭제.
 
 ## 관측된 함정 (새 서비스·새 브라우저 도구면 다시 관측)
 

@@ -1,6 +1,6 @@
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,writeFileSync,readFileSync,existsSync,readdirSync,rmSync} from 'node:fs';
+import {mkdtempSync,writeFileSync,readFileSync,existsSync,readdirSync,rmSync,cpSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -80,7 +80,7 @@ test('S-6 가상 흐름 fixture: gate는 S04 하나, 위험 등급은 read·send
   assert.deepEqual(d.steps.filter(s=>s.gate).map(s=>s.id),['S04']);
   assert.equal(d.steps.find(s=>s.id==='S04').risk,'send');
   assert.deepEqual([...new Set(d.steps.map(s=>s.risk))].sort(),['private','read','send']);
-  const dir=mk(d);
+  const dir=mkdtempSync(join(tmpdir(),'flow-'));tmps.push(dir);cpSync(FIXTURE,dir,{recursive:true});   // agentView 표본이라 shots/까지 통째로 복사
   assert.equal(buildFlow(dir),4);
   assert.ok(read(dir,'flow/S04.md').includes('**사람의 보내기 승인 한마디 필요**'));
   assert.ok(read(dir,'flow/overview.md').includes('**목록 읽기** (S02~S03)'));

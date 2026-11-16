@@ -5,6 +5,7 @@ import {readFileSync,writeFileSync,existsSync,mkdirSync,readdirSync,unlinkSync} 
 import {join,resolve,relative,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {validateMask} from './capture-core.mjs';
+import {scanSensitive,computeAgent,contentHash,sourceHashOf,MANAGED} from './agent-map.mjs';
 
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const md=s=>String(s??'').replace(/\r?\n/g,' ').replace(/\|/g,'\\|');
@@ -62,9 +63,54 @@ export function validate(d,RISK){
 export const runsFor=(d,id)=>{const order=d.steps.map(s=>s.id),i=order.indexOf(id);return (d.run||[]).filter(r=>order.indexOf(r.covers[0])<=i&&i<=order.indexOf(r.covers[1]));};
 export const eventsFor=(d,id)=>(d.events||[]).filter(e=>(e.steps||[]).includes(id));
 
+// ---- 에이전트 지도(agent/) — steps.json에서 agentView:true인 흐름만 -------------------------------------
+// 민감 형식 검사는 기존 검증보다 먼저 원본 전체에 돌려, 민감 형식이 다른 오류 메시지로 새지 않게 한다.
+function planAgent(here,sourceText,d){
+  scanSensitive(d);
+  validate(d,riskTable(d));
+  const files=computeAgent(d,here,sourceText);
+  const agentDir=join(here,'agent');
+  if(existsSync(agentDir))for(const f of readdirSync(agentDir))if(!MANAGED.test(f))throw new Error('agent/에 관리 밖 파일이 있다 — 직접 제거하라');
+  return files;
+}
+function writeAgent(here,files){
+  const agentDir=join(here,'agent');
+  mkdirSync(agentDir,{recursive:true});
+  for(const f of readdirSync(agentDir))if(MANAGED.test(f)&&!files.has(f))unlinkSync(join(agentDir,f));   // 없어진 단계의 옛 관리 파일 정리
+  for(const [name,text] of files)writeFileSync(join(agentDir,name),text);
+}
+const lf=s=>s.replace(/\r\n/g,'\n');
+// 낡았는지 검사(디스크를 고치지 않는다): (a) steps.json 해시 (b) 승인 캡처 해시·기록 해시 (c) 정본에서 메모리로 다시 만든 agent/* 바이트와 디스크 비교 (d) 파일 집합
+export function checkAgentFresh(dir){
+  const here=resolve(dir);
+  const sourceText=readFileSync(join(here,'steps.json'),'utf8');
+  const d=JSON.parse(sourceText);
+  if(d.agentView!==true)return {ok:true,applicable:false,problems:[]};
+  const problems=[];
+  let files;
+  try{scanSensitive(d);validate(d,riskTable(d));files=computeAgent(d,here,sourceText);}
+  catch(e){return {ok:false,applicable:true,problems:[e.message.split('\n')[0]+(e.message.includes('\n')?' …':''),...e.message.split('\n').slice(1)].filter(Boolean)};}
+  const agentDir=join(here,'agent');
+  const onDisk=existsSync(agentDir)?readdirSync(agentDir):[];
+  const idxPath=join(agentDir,'index.json');
+  if(existsSync(idxPath)){
+    try{if(JSON.parse(readFileSync(idxPath,'utf8')).sourceHash!==sourceHashOf(sourceText))problems.push('steps.json이 바뀌었다 — agent/index.json이 낡았다(재생성 필요)');}catch{problems.push('agent/index.json을 읽을 수 없다');}
+  }
+  for(const name of files.keys()){
+    if(!onDisk.includes(name)){problems.push(`agent/${name}이 없다`);continue;}
+    if(lf(readFileSync(join(agentDir,name),'utf8'))!==lf(files.get(name)))problems.push(`agent/${name}이 정본과 다르다(낡았거나 손으로 고쳤다)`);
+  }
+  for(const name of onDisk)if(!files.has(name))problems.push(MANAGED.test(name)?`agent/${name}은 없어진 단계의 옛 파일이다`:`agent/${name}은 관리 밖 파일이다`);
+  return {ok:problems.length===0,applicable:true,problems};
+}
+export function reviewHash(dir){return contentHash(JSON.parse(readFileSync(join(resolve(dir),'steps.json'),'utf8')));}
+
 export function buildFlow(dir){
   const here=resolve(dir);
-  const d=JSON.parse(readFileSync(join(here,'steps.json'),'utf8'));
+  const sourceText=readFileSync(join(here,'steps.json'),'utf8');
+  const d=JSON.parse(sourceText);
+  const agentPlan=d.agentView===true?planAgent(here,sourceText,d):null;   // agentView 흐름만 — 꺼진 흐름의 동작·출력은 그대로
+  if(d.agentView!==undefined&&typeof d.agentView!=='boolean')throw new Error('steps.json agentView는 true/false다');
   const RISK=riskTable(d);
   validate(d,RISK);
   // 생성 명세가 안내하는 경로 접두(흐름 폴더가 스킬의 references 아래 등에 있을 때)
@@ -183,11 +229,20 @@ ${eventsFor(d,s.id).map(e=>`- ${e.when} → ${e.then}`).join('\n')}
 ${s.success||''}
 ${s.escalate?`\n## 에스컬레이트\n${s.escalate}\n`:''}`);
   });
+  if(agentPlan)writeAgent(here,agentPlan);
   return d.steps.length;
 }
 
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   const i=process.argv.indexOf('--dir');
+  if(i>=0&&process.argv[i+1]&&process.argv.includes('--review-hash')){console.log(reviewHash(process.argv[i+1]));process.exit(0);}
+  if(i>=0&&process.argv[i+1]&&process.argv.includes('--check-agent')){
+    const res=checkAgentFresh(process.argv[i+1]);
+    if(!res.applicable)console.log('agentView가 꺼진 흐름 — 검사 대상 아님');
+    else if(res.ok)console.log('agent/ 최신');
+    else{console.error('agent/ 낡음:\n'+res.problems.map(x=>'- '+x).join('\n'));process.exit(1);}
+    process.exit(0);
+  }
   if(i<0||!process.argv[i+1]){console.error('사용: node build.mjs --dir <흐름 폴더>');process.exit(2);}
   console.log(`flow.html + flow/overview.md + 단계 ${buildFlow(process.argv[i+1])}개 생성`);
 }

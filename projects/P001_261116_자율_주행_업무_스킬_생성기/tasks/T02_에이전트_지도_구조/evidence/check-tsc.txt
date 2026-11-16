@@ -1,0 +1,1 @@
+tsc exit=0 (재실행: test/playbook-install.test.ts 타입 수정 뒤)

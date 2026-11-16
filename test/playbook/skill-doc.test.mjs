@@ -70,7 +70,12 @@ function collect(d){
     for(const k of Object.keys(s.screen||{}))out.step.add(`screen.${k}`);
     for(const r of s.revealInputs||[])for(const k of Object.keys(r))out.step.add(`revealInputs[].${k}`);
     for(const e of s.elements||[])for(const k of Object.keys(e))out.el.add(k);
+    // 에이전트 지도 필드(중첩)
+    for(const x of s.extract||[]){for(const k of Object.keys(x))out.step.add(`extract[].${k}`);for(const k of Object.keys(x.where||{}))out.step.add(`extract[].where.${k}`);}
+    if(s.api){for(const k of Object.keys(s.api))out.step.add(`api.${k}`);for(const q of s.api.request||[])for(const k of Object.keys(q))out.step.add(`api.request[].${k}`);for(const q of s.api.response||[])for(const k of Object.keys(q))out.step.add(`api.response[].${k}`);}
+    for(const k of Object.keys(s.captureRecord||{}))out.step.add(`captureRecord.${k}`);
   }
+  for(const k of Object.keys(d.valueReview||{}))out.top.add(`valueReview.${k}`);
   return out;
 }
 
@@ -119,7 +124,8 @@ test('S-5 fixture: 금지어·실값 패턴 0건, 사전의 모든 필드 행을
   const used={top:new Set(),step:new Set(),el:new Set()};
   for(const c of CASES){
     const raw=read(c);
-    assert.ok(!(banned&&banned.test(raw))&&!rrn.test(raw),`${c}: 금지어·실값 형식`);
+    const noHash=raw.replace(/[0-9a-f]{64}/g,'');   // 승인 기록의 64자 16진 해시는 실값 형식 검사에서 뺀다
+    assert.ok(!(banned&&banned.test(raw))&&!rrn.test(noHash),`${c}: 금지어·실값 형식`);
     const g=collect(JSON.parse(raw));
     for(const k of Object.keys(used))for(const x of g[k])used[k].add(x);
   }
