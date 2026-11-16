@@ -51,7 +51,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
     "",
     "## 묻는 것",
     "1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?",
-    "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어(pass | revise | fail)를 쓴다.",
+    "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.",
     "",
     `## 산출물: ${artifactName}`,
     artifact,

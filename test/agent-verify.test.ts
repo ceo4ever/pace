@@ -96,3 +96,12 @@ test("구현 전 TASK 사전 검토(kind task)는 TASK.md를 결과물로 읽게
   assert.match(task, /검출력/);
   assert.ok(task.indexOf("목적") < task.indexOf("본문"));
 });
+
+test("판정은 등급으로 정한다 — blocking 없으면 pass, revise 같은 중간 단어를 쓰지 않게 한다", () => {
+  for (const kind of ["goal", "task"] as const) {
+    const p = buildVerifyPrompt("목적", "x.md", "본문", kind);
+    assert.match(p, /blocking이 하나라도 있으면 fail, 없으면 pass/);
+    assert.match(p, /revise 같은 다른 단어는 쓰지 않는다/);
+    assert.doesNotMatch(p, /pass \| revise \| fail/);
+  }
+});
