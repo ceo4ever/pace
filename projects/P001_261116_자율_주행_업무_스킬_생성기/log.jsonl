@@ -46,3 +46,5 @@
 {"ts":"2026-11-16T12:59:26.079Z","p":"P001","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-16T12:59:39.052Z","p":"P001","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-16T12:59:39.052Z","p":"P001","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-16T13:00:10.090Z","p":"P001","t":"T03","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 (바뀐 부분 위주 122건)","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-16T13:00:18.314Z","p":"P001","t":"T03","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2 (codex 구현 후 2차, 1차 지적 3건 반영)","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
