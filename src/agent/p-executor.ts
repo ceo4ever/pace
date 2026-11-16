@@ -92,17 +92,26 @@ function header(stderr: string): Record<string, string> {
   return out;
 }
 
+/**
+ * Windows의 codex exec는 sandbox 구현을 고르지 않으면(사용자 설정은 --ignore-user-config로 끈다) 셸 명령을
+ * 모두 "blocked by policy"로 거부해 read-only에서 파일조차 읽지 못한다. 관리자 권한이 필요 없는 unelevated
+ * sandbox를 지정하면 읽기는 되고 쓰기는 막힌다(codex-cli 0.168.0 Windows 실측 2026-11-16).
+ */
+export function codexWindowsSandbox(platform: NodeJS.Platform = process.platform): string[] {
+  return platform === "win32" ? ["-c", 'windows.sandbox="unelevated"'] : [];
+}
+
 export const codexP: PAdapter = {
   agent: "codex",
   command: "codex",
   // codex exec는 시스템 프롬프트 플래그가 없고 resume가 별도 서브커맨드 — 이번 범위에서는 미지원(오류)
   capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
   build(request) {
-    const args = ["exec", "--skip-git-repo-check", "--ephemeral", "--ignore-user-config", "-c", 'approval_policy="never"', "-C", request.cwd, "--sandbox", request.access === "write" ? "workspace-write" : "read-only"];
+    const args = ["exec", "--skip-git-repo-check", "--ephemeral", "--ignore-user-config", "-c", 'approval_policy="never"', "-C", request.cwd, "--sandbox", request.access === "write" ? "workspace-write" : "read-only", ...codexWindowsSandbox()];
     if (request.model) args.push("-m", request.model);
     if (request.effort) args.push("-c", `model_reasoning_effort=${JSON.stringify(request.effort)}`);
     args.push("-");
-    return { args, enforcement: request.access === "read-only" ? "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인" : "write 요청" };
+    return { args, enforcement: request.access === "read-only" ? `codex exec --sandbox read-only${codexWindowsSandbox().length ? " (Windows unelevated sandbox)" : ""} + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인` : "write 요청" };
   },
   parse(stdout, stderr) {
     const h = header(stderr);

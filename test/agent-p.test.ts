@@ -4,7 +4,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, realpathSync, statSync,
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { AgentError, runAgent } from "../src/agent/contract.ts";
-import { claudeP, codexP, createPExecutor as createExecutor, type PAdapter } from "../src/agent/p-executor.ts";
+import { claudeP, codexP, codexWindowsSandbox, createPExecutor as createExecutor, type PAdapter } from "../src/agent/p-executor.ts";
 import { buildChildEnv, runProcess } from "../src/agent/process.ts";
 import { runPace, tempDir, spawnTestChild as spawn } from "./helpers.ts";
 
@@ -249,5 +249,18 @@ test("자식 부트 차단: PACE_AGENT_CHILD=1이면 종료 0과 유효한 훅 J
     assert.match(r.stdout, /자식 세션/);
     if (host !== "plain") assert.ok(JSON.parse(r.stdout));
     assert.ok(!r.stdout.includes("프로필"), "부트 맥락 미포함");
+  }
+});
+
+test("codex: Windows에서는 unelevated sandbox를 지정해 read-only에서도 파일을 읽게 한다(없으면 셸이 모두 blocked by policy)", () => {
+  assert.deepEqual(codexWindowsSandbox("win32"), ["-c", 'windows.sandbox="unelevated"']);
+  assert.deepEqual(codexWindowsSandbox("linux"), []);
+  assert.deepEqual(codexWindowsSandbox("darwin"), []);
+  for (const access of ["read-only", "write"] as const) {
+    const { args } = codexP.build({ agent: "codex", mode: "p", prompt: "x", cwd: "/w", access, timeoutMs: 1000 });
+    const sandbox = args.indexOf("--sandbox");
+    assert.equal(args[sandbox + 1], access === "write" ? "workspace-write" : "read-only");
+    if (process.platform === "win32") assert.ok(args.includes('windows.sandbox="unelevated"'), args.join(" "));
+    else assert.ok(!args.some((a) => a.startsWith("windows.sandbox")), args.join(" "));
   }
 });
