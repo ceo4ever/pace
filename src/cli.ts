@@ -28,6 +28,7 @@ import { PaceMcpServer } from "./mcp/server.ts";
 import { serveStdio } from "./mcp/stdio.ts";
 import { basename, dirname, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { applyAdoptOpal, formatPlan, planAdoptOpal } from "./project/adopt-opal.ts";
 import { inspectWorkspaces, registerWorkspace, relocateWorkspace } from "./project/workspace-registry.ts";
 import { AGENT_BUDGET } from "./project/agent-definition.ts";
 import { agentEvent, ProjectLogError } from "./project/event-log.ts";
@@ -110,6 +111,7 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
 사용법:
   pace test file <경로> | unit <id> | all — 선택 또는 전체 검사
   pace boot [--host claude|codex|gemini|cursor|antigravity|plain] [--cwd <dir>] [--text]
+  pace adopt opal [--cwd <폴더>] [--apply]   OPAL(.opal) 프로젝트 정의를 PACE(.pace)로 가져온다 — 기본은 미리보기, 커밋 없음
   pace workspace register <경로> [--name <이름>] [--summary <요약>] · list · move <ID> <경로>
   pace profile create <이름> [--display-name --alias --owner --tone --personality --language] [--clone <원본>]
   pace profile questions [--json]          프로필 인터뷰 질문 목록 (pace-onboarding 스킬용)
@@ -209,6 +211,8 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
       return mcpCommand(rest);
     case "workspace":
       return workspaceCommand(rest);
+    case "adopt":
+      return adoptCommand(rest);
     case "scout":
       return scoutCommand(rest);
     case "intent":
@@ -250,6 +254,20 @@ async function mcpCommand(args: string[]): Promise<number> {
   }
   await serveStdio(server, process.stdin, process.stdout);
   return 0;
+}
+
+function adoptCommand(args: string[]): number {
+  const usage = "pace adopt opal [--cwd <폴더>] [--apply]";
+  const [what, ...rest] = args;
+  if (what !== "opal") throw new UsageError(usage);
+  const { values, positionals } = parseArgs({ args: rest, allowPositionals: true, options: { cwd: { type: "string" }, apply: { type: "boolean" } } });
+  if (positionals.length > 0) throw new UsageError(usage);
+  const root = resolve(values.cwd ?? process.cwd());
+  const plan = planAdoptOpal(root, paceHome());
+  const result = values.apply && plan.blockers.length === 0 ? applyAdoptOpal(root, paceHome(), plan) : plan;
+  const out = formatPlan(result, Boolean(values.apply));
+  process.stdout.write(out + "\n");
+  return result.blockers.length ? 1 : 0;
 }
 
 function workspaceCommand(args: string[]): number {

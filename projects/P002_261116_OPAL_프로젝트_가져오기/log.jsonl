@@ -1,0 +1,7 @@
+{"ts":"2026-11-16T06:32:28.967Z","p":"P002","t":"T01","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-16T06:32:30.876Z","p":"P002","type":"start","by":"cli","msg":"start: claude · launch launched","ok":true,"src":"지금 세션","data":{}}
+{"ts":"2026-11-16T06:32:30.879Z","p":"P002","type":"decision","by":"cli","msg":"착수 결정 — 출처에 따라 바로 수행","src":"대화 2026-11-16","ref":"PROJECT.md"}
+{"ts":"2026-11-16T06:32:45.960Z","p":"P002","t":"T01","type":"decision","by":"agent","msg":"task 명령이 T04를 새로 만들어 T01로 정정(표 행·폴더)"}
+{"ts":"2026-11-16T08:52:38.196Z","p":"P002","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-16T08:52:43.193Z","p":"P002","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-16T08:52:43.193Z","p":"P002","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
