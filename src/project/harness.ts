@@ -681,8 +681,8 @@ export function launchWorker(ref: ProjectRef, worktree: string, cwd: string, opt
   return { status: "launched", detail: `${agent}${from} 작업자를 띄웠다 (Orca orchestration)`, manual };
 }
 
-const COMMIT_HOOK_MARKER = "#!/bin/sh\n# PACE commit gate v1\n";
-const COMMIT_HOOK = COMMIT_HOOK_MARKER + String.raw`branch=$(git symbolic-ref --quiet --short HEAD) || exit 0
+export const COMMIT_HOOK_MARKER = "#!/bin/sh\n# PACE commit gate v1\n";
+export const COMMIT_HOOK = COMMIT_HOOK_MARKER + String.raw`branch=$(git symbolic-ref --quiet --short HEAD) || exit 0
 case "$branch" in project/P[0-9][0-9][0-9]) ;; *) exit 0 ;; esac
 tags=$(git stripspace --strip-comments < "$1" | grep -oE '\(P[0-9]{3}/T[0-9]{2}\)' | sort -u | tr -d '()')
 [ -n "$tags" ] || exit 0
@@ -697,27 +697,33 @@ for tag in $tags; do
 done
 `;
 
+/** commit-msg 훅의 안전한 경로를 돌려준다 — hooksPath·링크·git 디렉터리 밖 경로는 던진다. */
+export function commitHookPath(root: string): string {
+  const configured = gitSpawn(root, ["config", "--get", "core.hooksPath"]);
+  if (configured.status !== 0 && configured.status !== 1) throw new Error("hooksPath 설정을 읽지 못했다");
+  if (configured.status === 0 && !isAbsolute(configured.stdout.trim())) throw new Error("상대 hooksPath는 linked worktree에서 같은 훅을 가리키지 않아 보존한다");
+  const common = realpathSync(git(root, ["rev-parse", "--path-format=absolute", "--git-common-dir"]));
+  const hooks = resolve(git(root, ["rev-parse", "--path-format=absolute", "--git-path", "hooks"]));
+  const path = join(hooks, "commit-msg");
+  const rel = relative(common, path);
+  if (rel.startsWith("..") || isAbsolute(rel)) throw new Error("hooksPath가 저장소 git 디렉터리 밖이다");
+  let part = common;
+  for (const name of rel.split(sep)) {
+    part = join(part, name);
+    let info;
+    try { info = lstatSync(part); } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") continue;
+      throw error;
+    }
+    if (info.isSymbolicLink() || (part !== path && !info.isDirectory()) || (part === path && !info.isFile())) throw new Error("훅 경로가 일반 파일·디렉터리가 아니다");
+  }
+  return path;
+}
+
 /** Git 내부의 PACE 소유 훅만 관리한다. 사용자 hooksPath·링크·기존 훅은 보존한다. */
 function installCommitHook(repo: Repo): void {
   try {
-    const configured = gitSpawn(repo.root, ["config", "--get", "core.hooksPath"]);
-    if (configured.status !== 0 && configured.status !== 1) throw new Error("hooksPath 설정을 읽지 못했다");
-    if (configured.status === 0 && !isAbsolute(configured.stdout.trim())) throw new Error("상대 hooksPath는 linked worktree에서 같은 훅을 가리키지 않아 보존한다");
-    const common = realpathSync(git(repo.root, ["rev-parse", "--path-format=absolute", "--git-common-dir"]));
-    const hooks = resolve(git(repo.root, ["rev-parse", "--path-format=absolute", "--git-path", "hooks"]));
-    const path = join(hooks, "commit-msg");
-    const rel = relative(common, path);
-    if (rel.startsWith("..") || isAbsolute(rel)) throw new Error("hooksPath가 저장소 git 디렉터리 밖이다");
-    let part = common;
-    for (const name of rel.split(sep)) {
-      part = join(part, name);
-      let info;
-      try { info = lstatSync(part); } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === "ENOENT") continue;
-        throw error;
-      }
-      if (info.isSymbolicLink() || (part !== path && !info.isDirectory()) || (part === path && !info.isFile())) throw new Error("훅 경로가 일반 파일·디렉터리가 아니다");
-    }
+    const path = commitHookPath(repo.root);
     if (existsSync(path) && !readFileSync(path, "utf8").startsWith(COMMIT_HOOK_MARKER)) throw new Error("사용자 commit-msg 훅이 있어 보존한다");
     writeFileAtomic(path, COMMIT_HOOK);
     chmodSync(path, 0o755);

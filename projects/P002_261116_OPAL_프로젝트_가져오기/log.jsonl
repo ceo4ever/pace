@@ -5,3 +5,12 @@
 {"ts":"2026-11-16T08:52:38.196Z","p":"P002","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-16T08:52:43.193Z","p":"P002","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-16T08:52:43.193Z","p":"P002","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-16T08:53:55.000Z","p":"P002","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-16T09:14:40.082Z","p":"P002","t":"T02","type":"question","by":"agent","msg":"T02 사전 검토 2회차 blocking 잔존 — 진행·게이트 예외 판단 요청"}
+{"ts":"2026-11-16T09:18:47.388Z","p":"P002","t":"T02","type":"answer","by":"agent","msg":"캡틴: 세 가지 모두 권장안 — T02 waiver 진행, T01 PRE-REVIEW 이력 복원, T01 구현 후 검토"}
+{"ts":"2026-11-16T09:19:15.993Z","p":"P002","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-16T09:34:02.318Z","p":"P002","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-16T09:36:54.518Z","p":"P002","t":"T02","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-16T10:46:17.993Z","p":"P002","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-16T10:46:19.064Z","p":"P002","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-16T10:46:19.064Z","p":"P002","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}

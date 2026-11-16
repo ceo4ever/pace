@@ -1,4 +1,4 @@
-import { lstatSync, readdirSync, readFileSync, realpathSync } from "node:fs";
+import { chmodSync, closeSync, existsSync, lstatSync, openSync, readdirSync, readFileSync, realpathSync, unlinkSync, writeFileSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -6,6 +6,9 @@ import { writeFileAtomic } from "../core/fsutil.ts";
 import { getString, parseFrontmatter } from "../core/frontmatter.ts";
 import { AGENT_BUDGET, agentKind, validateAgentDefinition } from "./agent-definition.ts";
 import { listCandidates, registerWorkspace } from "./workspace-registry.ts";
+import { COMMIT_HOOK, COMMIT_HOOK_MARKER, commitHookPath } from "./harness.ts";
+import { SHARED_MARKER, renderDashboardEntry } from "./dashboard-layout.ts";
+import { hasSecret } from "./secrets.ts";
 
 /** OPAL(v2) 프로젝트 정의(`.opal/`)를 PACE(`.pace/`)로 가져오는 계획·적용. 홈 프로필·훅·대시보드는 다루지 않는다. */
 
@@ -21,6 +24,14 @@ export interface AdoptPlan {
   needsRegister: boolean;
   /** AGENT 원문·등록부 상태의 해시 — 미리보기와 적용 사이에 바뀌면 멈춘다 */
   fingerprint: string;
+  /** 바꿀 OPAL 커밋 게이트 훅 경로(없으면 null) */
+  hook: string | null;
+  /** OPAL 공용 대시보드 진입점을 PACE 공용 참조로 바꿀지 */
+  dashboard: boolean;
+  /** AGENTS.md·CLAUDE.md·docs의 opal 명령·opal-* 스킬 참조(file:줄) — 자동으로 바꾸지 않는다 */
+  references: string[];
+  /** 검색하지 못한 파일(링크·너무 큼·읽기 실패) — 보고가 완전하지 않다는 뜻 */
+  referencesSkipped: string[];
 }
 
 interface Deps {
@@ -29,6 +40,10 @@ interface Deps {
   rewriteAgent?: (path: string, text: string) => void;
   /** 시험용: git mv 단계 교체 */
   move?: (root: string) => { ok: boolean; out: string };
+  /** 시험용: 훅 쓰기 단계 교체 */
+  writeHook?: (path: string, text: string) => void;
+  /** 시험용: 대시보드 진입점 쓰기 단계 교체 */
+  writeEntry?: (path: string, text: string) => void;
 }
 
 function git(root: string, args: string[]): { ok: boolean; out: string } {
@@ -66,7 +81,7 @@ export function planAdoptOpal(rootInput: string, home: string): AdoptPlan {
   const root = resolve(rootInput);
   const blockers: string[] = [];
   const warnings: string[] = [];
-  const plan: AdoptPlan = { root, state: "ready", blockers, warnings, moves: [], workspaceId: "", needsRegister: false, fingerprint: "" };
+  const plan: AdoptPlan = { root, state: "ready", blockers, warnings, moves: [], workspaceId: "", needsRegister: false, fingerprint: "", hook: null, dashboard: false, references: [], referencesSkipped: [] };
   const stop = (reason: string): AdoptPlan => { blockers.push(reason); return plan; };
 
   const top = git(root, ["rev-parse", "--show-toplevel"]);
@@ -120,6 +135,158 @@ export function planAdoptOpal(rootInput: string, home: string): AdoptPlan {
   return checkRegistry(plan, home, real, text);
 }
 
+
+const OPAL_HOOK = [
+  "#!/bin/sh",
+  "# OPAL commit gate v1",
+  'branch=$(git symbolic-ref --quiet --short HEAD) || exit 0',
+  'case "$branch" in project/P[0-9][0-9][0-9]) ;; *) exit 0 ;; esac',
+  "tags=$(git stripspace --strip-comments < \"$1\" | grep -oE '\\(P[0-9]{3}/T[0-9]{2}\\)' | sort -u | tr -d '()')",
+  '[ -n "$tags" ] || exit 0',
+  "if ! command -v opal >/dev/null 2>&1; then",
+  "  echo 'opal: 경고: opal을 찾지 못해 커밋 태스크 검사를 건너뜀' >&2",
+  "  exit 0",
+  "fi",
+  'for tag in $tags; do',
+  '  project=$(printf "%s" "$tag" | cut -d/ -f1)',
+  '  task=$(printf "%s" "$tag" | cut -d/ -f2)',
+  '  OPAL_COMMIT_CHECK=1 opal project check "$project" "$task" || exit 1',
+  "done",
+  "",
+].join("\n");
+const OPAL_DASHBOARD_MARKER = "<!-- opal:backlog-shared:1 -->";
+const OPAL_DASHBOARD_TEXT = "OPAL 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 OPAL 설치를 확인하고 이 프로젝트에서 opi를 실행하세요.";
+const PACE_DASHBOARD_TEXT = "PACE 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 PACE 설치를 확인하고 이 프로젝트에서 pace-project-init을 실행하세요.";
+const lf = (text: string) => text.replace(/\r\n/g, "\n");
+const RESOURCE_URL = /file:([^"\r\n]*?)\/src\/dashboard\/backlog\/(style\.css|core\.js|app\.js)/g;
+/** 설치 위치만 다를 수 있다 — 세 리소스가 같은 기반 경로 아래 알려진 구조(src/dashboard/backlog/)일 때만 정규화하고, 그 밖의 참조는 그대로 둬 원문과 달라지게 한다. */
+function normalizeUrls(html: string): string {
+  const text = lf(html);
+  if (text.includes("@@res:")) return "\u0000" + text; // 정규화 표지를 직접 쓴 입력은 어떤 원문과도 같지 않게 한다
+  const bases = new Set([...text.matchAll(RESOURCE_URL)].map((m) => m[1]));
+  if (bases.size !== 1) return text;
+  return text.replace(RESOURCE_URL, "@@res:$2");
+}
+
+/** root 아래 상대 경로의 모든 구성 요소가 링크가 아닌 실제 항목이면 true. */
+function noLinkInPath(root: string, rel: string): boolean {
+  let current = root;
+  for (const part of rel.split("/")) {
+    current = join(current, part);
+    const info = lstatSync(current, { throwIfNoEntry: false });
+    if (info === undefined) return true;
+    if (info.isSymbolicLink()) return false;
+  }
+  return true;
+}
+
+/** 읽을 수 있는 일반 파일만 — 경로 중간 링크·링크 파일·디렉터리·너무 큰 파일은 null. */
+function readSmall(root: string, rel: string, limit = 512 * 1024): string | null {
+  try {
+    if (!noLinkInPath(root, rel)) return null;
+    const path = join(root, rel);
+    const info = lstatSync(path);
+    if (!info.isFile() || info.size > limit) return null;
+    return readFileSync(path, "utf8");
+  } catch { return null; }
+}
+
+/** 커밋 게이트 훅·대시보드 진입점·지침 참조를 계획에 더한다(읽기 전용). */
+function planExtras(plan: AdoptPlan, root: string): void {
+  const hashes: string[] = [];
+  // 1) 커밋 게이트 훅 — 알려진 OPAL v1 원문과 같을 때만 바꾼다
+  try {
+    const path = commitHookPath(root);
+    const text = existsSync(path) ? readFileSync(path, "utf8") : null;
+    hashes.push(text ?? "");
+    if (text !== null && text.startsWith(COMMIT_HOOK_MARKER)) {
+      plan.warnings.push("commit-msg 훅이 이미 PACE 커밋 게이트라 그대로 둔다");
+    } else if (text !== null) {
+      if (lf(text) === OPAL_HOOK) {
+        plan.hook = path;
+        plan.moves.push("commit-msg 훅: OPAL 게이트 → PACE 게이트 (원본은 commit-msg.opal-backup)");
+      } else if (/opal/i.test(text)) {
+        plan.warnings.push("commit-msg 훅이 OPAL 게이트처럼 보이지만 원문과 달라 보존했다 — PACE 게이트가 필요하면 직접 합친다");
+      } else {
+        plan.warnings.push("기존 commit-msg 훅(OPAL 게이트 아님)을 보존했다 — PACE 커밋 게이트는 설치되지 않는다. 필요하면 pace project check 호출을 직접 합친다");
+      }
+    }
+  } catch (error) {
+    plan.warnings.push("커밋 게이트 훅을 확인하지 못했다: " + (error instanceof Error ? error.message : "오류"));
+  }
+  // 2) 대시보드 진입점 — OPAL이 만든 공용 진입점(원문 일치)만 PACE 공용 참조로
+  const entry = readSmall(root, "backlogs/README.html");
+  hashes.push(entry ?? "");
+  if (entry !== null && entry.startsWith(OPAL_DASHBOARD_MARKER)) {
+    try {
+      const asOpal = renderDashboardEntry().replace(SHARED_MARKER, OPAL_DASHBOARD_MARKER);
+      const legacy = asOpal.replace(PACE_DASHBOARD_TEXT, OPAL_DASHBOARD_TEXT);
+      const current = normalizeUrls(entry);
+      if (current === normalizeUrls(asOpal) || current === normalizeUrls(legacy)) {
+        plan.dashboard = true;
+        plan.moves.push("backlogs/README.html: OPAL 공용 진입점 → PACE 공용 참조 (data.js 등 다른 파일은 그대로 — 화면 자료는 pace backlog refresh로 갱신)");
+      } else {
+        plan.warnings.push("backlogs/README.html이 OPAL 진입점에서 수정된 것 같아 보존했다 — pace backlog init으로 직접 전환한다");
+      }
+    } catch (error) {
+      plan.warnings.push("PACE 대시보드 진입점을 만들 수 없어 건너뛴다: " + (error instanceof Error ? error.message : "오류"));
+    }
+  }
+  // 3) 지침·문서의 opal 명령·opal-* 스킬 참조 — 보고만
+  ({ found: plan.references, skipped: plan.referencesSkipped } = findOpalReferences(root));
+  plan.fingerprint = createHash("sha256").update(plan.fingerprint).update("|").update(hashes.join("|")).digest("hex");
+}
+
+const REFERENCE_SIZE_LIMIT = 5 * 1024 * 1024;
+const COMMAND_REF = /(?<![\w.\/-])opal(?![\w])|(?<![\w])opal-[a-z]/;
+
+/** 보고 범위를 조용히 줄이지 않는다 — 읽지 못한 파일은 skipped로 돌려 사용자에게 알린다. */
+function findOpalReferences(root: string): { found: string[]; skipped: string[] } {
+  const files: string[] = [];
+  const skipped: string[] = [];
+  const consider = (rel: string) => {
+    let info;
+    try { info = lstatSync(join(root, rel), { throwIfNoEntry: false }); } catch { skipped.push(rel + " (상태를 확인하지 못함)"); return; }
+    if (info === undefined) return;
+    if (info.isSymbolicLink()) skipped.push(rel + " (링크)");
+    else if (!info.isFile()) skipped.push(rel + " (일반 파일이 아님)");
+    else if (info.size > REFERENCE_SIZE_LIMIT) skipped.push(rel + " (5MB 초과)");
+    else files.push(rel);
+  };
+  for (const name of ["AGENTS.md", "CLAUDE.md"]) consider(name);
+  const walk = (dir: string) => {
+    let entries;
+    try { entries = readdirSync(join(root, dir), { withFileTypes: true }); } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") skipped.push(dir + " (폴더를 읽지 못함)");
+      return;
+    }
+    for (const e of entries) {
+      const rel = dir + "/" + e.name;
+      if (e.isSymbolicLink()) { skipped.push(rel + " (링크)"); continue; }
+      if (e.isDirectory()) walk(rel);
+      else if (e.isFile()) consider(rel);
+    }
+  };
+  let docsInfo;
+  try { docsInfo = lstatSync(join(root, "docs"), { throwIfNoEntry: false }); } catch { skipped.push("docs (상태를 확인하지 못함)"); docsInfo = undefined; }
+  if (docsInfo?.isSymbolicLink()) skipped.push("docs (링크)");
+  else if (docsInfo !== undefined) walk("docs");
+  const found: string[] = [];
+  for (const file of files) {
+    let buffer: Buffer;
+    try { buffer = readFileSync(join(root, file)); } catch { skipped.push(file + " (읽지 못함)"); continue; }
+    if (buffer.subarray(0, 8192).includes(0)) { skipped.push(file + " (바이너리)"); continue; }
+    const text = buffer.toString("utf8");
+    text.split(/\r?\n/).forEach((line, index) => {
+      if (COMMAND_REF.test(line)) {
+        const snippet = hasSecret(line) ? "(비밀로 보이는 값이 있어 생략)" : line.trim().slice(0, 100);
+        found.push(file + ":" + (index + 1) + ": " + snippet);
+      }
+    });
+  }
+  return { found, skipped };
+}
+
 function checkRegistry(plan: AdoptPlan, home: string, root: string, agentText: string): AdoptPlan {
   let entries;
   try { entries = listCandidates(home); } catch (error) {
@@ -127,6 +294,7 @@ function checkRegistry(plan: AdoptPlan, home: string, root: string, agentText: s
     return plan;
   }
   plan.fingerprint = createHash("sha256").update(agentText).update("|").update(JSON.stringify(entries)).digest("hex");
+  void agentText;
   const norm = (p: string) => (process.platform === "win32" ? p.toLowerCase() : p);
   const samePaths = entries.filter((e) => norm(e.path) === norm(root));
   const samePath = samePaths.find((e) => e.id === plan.workspaceId);
@@ -141,7 +309,8 @@ function checkRegistry(plan: AdoptPlan, home: string, root: string, agentText: s
     plan.needsRegister = true;
     plan.moves.push(`워크스페이스 등록: ${basename(root)} · ${plan.workspaceId}`);
   }
-  if (plan.state === "done" && !plan.needsRegister && plan.blockers.length === 0) plan.moves.length = 0;
+  if (plan.blockers.length === 0) planExtras(plan, root);
+  if (plan.state === "done" && plan.moves.length === 0) plan.moves.length = 0;
   return plan;
 }
 
@@ -157,6 +326,12 @@ export function formatPlan(plan: AdoptPlan, applied: boolean): string {
     if (applied) lines.push("커밋·push는 하지 않았다 — git status로 확인하고 직접 커밋한다.");
   }
   for (const w of plan.warnings) lines.push(`주의: ${w}`);
+  if (plan.blockers.length === 0 && plan.references.length > 0) {
+    lines.push(`OPAL 명령·스킬 참조 ${plan.references.length}곳 — 자동으로 바꾸지 않았다. 직접 pace 이름으로 고친다:`, ...plan.references.map((r) => `  ${r}`));
+  }
+  if (plan.blockers.length === 0 && plan.referencesSkipped.length > 0) {
+    lines.push(`주의: 검색하지 못한 파일 ${plan.referencesSkipped.length}개 — 참조 보고가 완전하지 않다. 직접 확인한다:`, ...plan.referencesSkipped.map((f) => `  ${f}`));
+  }
   return lines.join("\n");
 }
 
@@ -175,6 +350,7 @@ export function applyAdoptOpal(rootInput: string, home: string, expected: AdoptP
   let moved = false;
   let original = "";
   const agent = join(root, ".pace", "AGENT.md");
+  const undo: (() => void)[] = [];
   try {
     if (plan.state === "ready") {
       original = readFileSync(join(root, ".opal", "AGENT.md"), "utf8");
@@ -183,11 +359,39 @@ export function applyAdoptOpal(rootInput: string, home: string, expected: AdoptP
       if (!mv.ok) throw new Error(`git mv 실패: ${mv.out}`);
       rewrite(agent, convertAgent(original));
     }
+    if (plan.hook !== null) {
+      const hookText = readFileSync(plan.hook, "utf8");
+      let backup = `${plan.hook}.opal-backup`;
+      for (let n = 2; lstatSync(backup, { throwIfNoEntry: false }) !== undefined; n++) backup = `${plan.hook}.opal-backup-${n}`;
+      const hookPath = plan.hook, backupPath = backup;
+      const hookMode = lstatSync(hookPath).mode & 0o777;
+      // 이번에 만든 백업은 훅 복원이 성공한 뒤에만 지운다 — 복원이 실패하면 백업이 유일한 원본이다
+      let backupCreated = false;
+      undo.push(() => {
+        writeFileAtomic(hookPath, hookText);
+        chmodSync(hookPath, hookMode);
+        if (backupCreated) unlinkSync(backupPath);
+      });
+      const fd = openSync(backupPath, "wx", hookMode);
+      backupCreated = true;
+      try { writeFileSync(fd, hookText, "utf8"); } finally { closeSync(fd); }
+      (deps.writeHook ?? ((path: string, text: string) => { writeFileAtomic(path, text); chmodSync(path, 0o755); }))(hookPath, COMMIT_HOOK);
+    }
+    if (plan.dashboard) {
+      const entryPath = join(root, "backlogs", "README.html");
+      const entryBytes = readFileSync(entryPath);
+      const entryMode = lstatSync(entryPath).mode & 0o777;
+      undo.push(() => { writeFileAtomic(entryPath, entryBytes.toString("utf8")); chmodSync(entryPath, entryMode); });
+      (deps.writeEntry ?? writeFileAtomic)(entryPath, renderDashboardEntry());
+    }
     if (plan.needsRegister) {
       // registerWorkspace는 항목을 마지막에 원자적으로(link) 만든다 — 던졌다면 항목이 없으므로 등록부는 되돌릴 것이 없다
       register(home, { path: root, name: basename(root), summary: "" }, AGENT_BUDGET);
     }
   } catch (error) {
+    for (const step of undo.reverse()) {
+      try { step(); } catch (e) { failures.push(`파일 복원 실패: ${e instanceof Error ? e.message : "오류"}`); }
+    }
     if (moved) {
       try { writeFileAtomic(agent, original); } catch (e) { failures.push(`AGENT 원문 복원 실패: ${e instanceof Error ? e.message : "오류"}`); }
       const back = git(root, ["mv", ".pace", ".opal"]);

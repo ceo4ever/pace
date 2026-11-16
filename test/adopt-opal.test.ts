@@ -1,10 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { applyAdoptOpal, formatPlan, planAdoptOpal } from "../src/project/adopt-opal.ts";
 import { agentKind } from "../src/project/agent-definition.ts";
+import { renderDashboardEntry } from "../src/project/dashboard-layout.ts";
 import { createCandidate, listCandidates, registerWorkspace } from "../src/project/workspace-registry.ts";
 import { runPace, tempDir } from "./helpers.ts";
 
@@ -298,6 +299,253 @@ test("S-7 등록 직전에 경쟁 실행이 같은 ID를 먼저 등록한 뒤 �
   assert.deepEqual(listCandidates(home).map((e) => e.id), [ID]);
 });
 
+// ── T02: 커밋 게이트 훅·대시보드 진입점·지침 참조 ─────────────────────────────
+
+const OPAL_HOOK_TEXT = [
+  "#!/bin/sh",
+  "# OPAL commit gate v1",
+  'branch=$(git symbolic-ref --quiet --short HEAD) || exit 0',
+  'case "$branch" in project/P[0-9][0-9][0-9]) ;; *) exit 0 ;; esac',
+  "tags=$(git stripspace --strip-comments < \"$1\" | grep -oE '\\(P[0-9]{3}/T[0-9]{2}\\)' | sort -u | tr -d '()')",
+  '[ -n "$tags" ] || exit 0',
+  "if ! command -v opal >/dev/null 2>&1; then",
+  "  echo 'opal: 경고: opal을 찾지 못해 커밋 태스크 검사를 건너뜀' >&2",
+  "  exit 0",
+  "fi",
+  'for tag in $tags; do',
+  '  project=$(printf "%s" "$tag" | cut -d/ -f1)',
+  '  task=$(printf "%s" "$tag" | cut -d/ -f2)',
+  '  OPAL_COMMIT_CHECK=1 opal project check "$project" "$task" || exit 1',
+  "done",
+  "",
+].join("\n");
+
+const hookFile = (root: string) => join(root, ".git", "hooks", "commit-msg");
+function installHook(root: string, text: string): void {
+  mkdirSync(join(root, ".git", "hooks"), { recursive: true });
+  writeFileSync(hookFile(root), text, { mode: 0o755 });
+}
+/** 설치된 PACE가 만드는 공용 진입점을 OPAL 표지로 바꾼 것 — OPAL이 만들던 진입점과 같은 모양 */
+function opalEntry(): string {
+  return renderDashboardEntry().replace("<!-- pace:backlog-shared:1 -->", "<!-- opal:backlog-shared:1 -->");
+}
+
+test("T02-S-1 OPAL 커밋 게이트 훅을 PACE 훅으로 바꾸고 원본을 백업한다", () => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  const preview = runPace(["adopt", "opal"], { home, cwd: root });
+  assert.match(preview.stdout, /commit-msg 훅/);
+  assert.equal(readFileSync(hookFile(root), "utf8"), OPAL_HOOK_TEXT);
+  assert.equal(runPace(["adopt", "opal", "--apply"], { home, cwd: root }).status, 0);
+  assert.match(readFileSync(hookFile(root), "utf8"), /^#!\/bin\/sh\n# PACE commit gate v1\n/);
+  assert.equal(readFileSync(hookFile(root) + ".opal-backup", "utf8"), OPAL_HOOK_TEXT);
+  // 재실행: 이미 PACE 훅이라 더 바꾸지 않는다
+  const again = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(again.status, 0); assert.match(again.stdout, /이미 가져온/);
+});
+
+test("T02-S-2 사용자 훅과 수정된 OPAL 훅은 보존한다", () => {
+  for (const [text, warns] of [["#!/bin/sh\necho 내 훅\n", false], [OPAL_HOOK_TEXT + "echo 내가 덧붙임\n", true]] as const) {
+    const { root, home } = fixture();
+    installHook(root, text);
+    const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(readFileSync(hookFile(root), "utf8"), text);
+    assert.equal(existsSync(hookFile(root) + ".opal-backup"), false);
+    assert.match(r.stdout, warns ? /원문과 달라 보존/ : /OPAL 게이트 아님.*보존했다/);
+  }
+});
+
+test("T02-S-3 OPAL 공용 대시보드 진입점은 PACE 공용 참조로 바꾸고 다른 파일은 보존한다", () => {
+  const files = { "backlogs/README.html": opalEntry(), "backlogs/dashboard/data.js": "window.DATA = 1;\n", "backlogs/내-메모.md": "사용자 파일\n" };
+  const { root, home } = fixture(files);
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /README\.html/);
+  assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), renderDashboardEntry());
+  assert.equal(readFileSync(join(root, "backlogs", "dashboard", "data.js"), "utf8"), files["backlogs/dashboard/data.js"]);
+  assert.equal(readFileSync(join(root, "backlogs", "내-메모.md"), "utf8"), files["backlogs/내-메모.md"]);
+});
+
+test("T02-S-3 수정된 OPAL 진입점·이미 PACE인 진입점은 건드리지 않는다", () => {
+  for (const html of [opalEntry() + "<!-- 내 수정 -->", renderDashboardEntry()]) {
+    const { root, home } = fixture({ "backlogs/README.html": html });
+    const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), html);
+  }
+});
+
+test("T02-S-4 지침·문서의 opal 명령·스킬 참조는 파일:줄로 보고만 하고 바꾸지 않는다", () => {
+  const files = {
+    "AGENTS.md": "# 프로젝트\n작업은 `opal project check`로 한다.\n",
+    "CLAUDE.md": "@AGENTS.md\n",
+    "docs/guide.md": "스킬 opal-project-dev를 쓴다.\n메모는 .opal/memory/ 에 있다.\n",
+  };
+  const { root, home } = fixture(files);
+  const before = Object.fromEntries(Object.keys(files).map((f) => [f, readFileSync(join(root, f), "utf8")]));
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /AGENTS\.md:2:/); assert.match(r.stdout, /docs\/guide\.md:1:/);
+  assert.doesNotMatch(r.stdout, /docs\/guide\.md:2:/);
+  for (const [f, text] of Object.entries(before)) assert.equal(readFileSync(join(root, f), "utf8"), text);
+});
+
+test("T02-S-5 등록 실패 시 훅·백업·진입점도 되돌린다", () => {
+  const { root, home } = fixture({ "backlogs/README.html": opalEntry() });
+  installHook(root, OPAL_HOOK_TEXT);
+  const before = snapshot(root);
+  const plan = planAdoptOpal(root, home);
+  assert.ok(plan.hook !== null && plan.dashboard);
+  const result = applyAdoptOpal(root, home, plan, { register: () => { throw new Error("주입된 실패"); } });
+  assert.match(result.blockers.join(), /되돌렸다/);
+  assert.equal(snapshot(root), before);
+  assert.equal(readFileSync(hookFile(root), "utf8"), OPAL_HOOK_TEXT);
+  assert.equal(existsSync(hookFile(root) + ".opal-backup"), false);
+});
+
+test("T02-S-5 훅 쓰기가 실패하면 만든 백업을 지우고 이동을 되돌린다", () => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  const before = snapshot(root);
+  const result = applyAdoptOpal(root, home, planAdoptOpal(root, home), { writeHook: () => { throw new Error("훅 쓰기 실패"); } });
+  assert.match(result.blockers.join(), /되돌렸다.*훅 쓰기 실패/);
+  assert.equal(snapshot(root), before);
+  assert.equal(existsSync(hookFile(root) + ".opal-backup"), false);
+  assert.equal(readFileSync(hookFile(root), "utf8"), OPAL_HOOK_TEXT);
+});
+
+test("T02-S-6 미리보기 뒤 훅이 바뀌면 멈춘다", () => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  const plan = planAdoptOpal(root, home);
+  installHook(root, "#!/bin/sh\necho 바뀜\n");
+  assert.match(applyAdoptOpal(root, home, plan).blockers.join(), /상태가 바뀌었다/);
+  assert.equal(readFileSync(hookFile(root), "utf8"), "#!/bin/sh\necho 바뀜\n");
+});
+
+// ── T02 보강: 역사적 원문 표본·경계·복구 ───────────────────────────────────────
+
+/** OPAL 시절 page.html(커밋 abb7cf40·5898950d)에서 가져온 원문 — 판별기와 독립된 표본 */
+const HISTORICAL_ENTRIES = [
+  '<!-- opal:backlog-shared:1 -->\n<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>백로그 대시보드</title><link rel="stylesheet" href="file:///C:/Users/x/.opal/app/src/dashboard/backlog/style.css"><script defer src="dashboard/data.js"></script><script defer src="file:///C:/Users/x/.opal/app/src/dashboard/backlog/core.js"></script><script defer src="file:///C:/Users/x/.opal/app/src/dashboard/backlog/app.js"></script></head><body><p>OPAL 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 OPAL 설치를 확인하고 이 프로젝트에서 opi를 실행하세요.</p></body></html>\n',
+  '<!-- opal:backlog-shared:1 -->\n<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>백로그 대시보드</title><link rel="stylesheet" href="file:///C:/Users/x/.opal/app/src/dashboard/backlog/style.css"><script defer src="dashboard/data.js"></script><script defer src="file:///C:/Users/x/.opal/app/src/dashboard/backlog/core.js"></script><script defer src="file:///C:/Users/x/.opal/app/src/dashboard/backlog/app.js"></script></head><body><p>PACE 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 PACE 설치를 확인하고 이 프로젝트에서 pace-project-init을 실행하세요.</p></body></html>\n',
+];
+
+test("T02-S-3 역사적 OPAL 진입점 원문 두 판 모두 PACE 참조로 바꾼다", () => {
+  for (const html of HISTORICAL_ENTRIES) {
+    const { root, home } = fixture({ "backlogs/README.html": html });
+    const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), renderDashboardEntry());
+  }
+});
+
+test("T02-S-3 진입점이 링크면 따라가지 않는다", (t) => {
+  const { root, home } = fixture();
+  const outside = join(tempDir("pace-adopt-outside-"), "README.html");
+  writeFileSync(outside, HISTORICAL_ENTRIES[0]!);
+  mkdirSync(join(root, "backlogs"), { recursive: true });
+  try { symlinkSync(outside, join(root, "backlogs", "README.html")); } catch { t.skip("심볼릭 링크 권한 없음"); return; }
+  assert.equal(runPace(["adopt", "opal", "--apply"], { home, cwd: root }).status, 0);
+  assert.equal(readFileSync(outside, "utf8"), HISTORICAL_ENTRIES[0]);
+});
+
+test("T02-S-4 같은 줄의 .opal/ 경로와 opal 명령은 명령만 보고하고, 읽지 못한 파일은 알린다", (t) => {
+  const { root, home } = fixture({ "AGENTS.md": "`.opal/memory`를 보고 `opal boot`을 실행\n", "docs/a.md": "경로 .opal/brain 만 있다\n" });
+  writeFileSync(join(root, "docs", "big.md"), "x".repeat(5 * 1024 * 1024 + 1));
+  let linked = true;
+  try { symlinkSync(join(root, "AGENTS.md"), join(root, "docs", "link.md")); } catch { linked = false; }
+  const r = runPace(["adopt", "opal"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /AGENTS\.md:1:/); assert.doesNotMatch(r.stdout, /docs\/a\.md:1:/);
+  assert.match(r.stdout, /검색하지 못한 파일/); assert.match(r.stdout, /docs\/big\.md \(5MB 초과\)/);
+  if (linked) assert.match(r.stdout, /docs\/link\.md \(링크\)/); else t.diagnostic("링크 생성 불가 — 링크 사례 생략");
+});
+
+test("T02-S-1 기존 백업은 덮어쓰지 않고 새 이름을 고른다", () => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  writeFileSync(hookFile(root) + ".opal-backup", "예전 백업");
+  assert.equal(runPace(["adopt", "opal", "--apply"], { home, cwd: root }).status, 0);
+  assert.equal(readFileSync(hookFile(root) + ".opal-backup", "utf8"), "예전 백업");
+  assert.equal(readFileSync(hookFile(root) + ".opal-backup-2", "utf8"), OPAL_HOOK_TEXT);
+});
+
+test("T02-S-2 상대 hooksPath면 훅을 건드리지 않고 알린다", () => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  git(root, "config", "core.hooksPath", ".githooks");
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(readFileSync(hookFile(root), "utf8"), OPAL_HOOK_TEXT);
+  assert.match(r.stdout, /커밋 게이트 훅을 확인하지 못했다/);
+});
+
+test("T02-S-6 계획 뒤 진입점이 바뀌면 멈추고 변경본을 보존한다", () => {
+  const { root, home } = fixture({ "backlogs/README.html": HISTORICAL_ENTRIES[0]! });
+  const plan = planAdoptOpal(root, home);
+  writeFileSync(join(root, "backlogs", "README.html"), "<html>내가 고침</html>");
+  assert.match(applyAdoptOpal(root, home, plan).blockers.join(), /상태가 바뀌었다/);
+  assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), "<html>내가 고침</html>");
+});
+
+test("T02-S-5 진입점 쓰기가 실패하면 훅·백업·진입점·이동이 모두 적용 전으로 돌아간다", () => {
+  const { root, home } = fixture({ "backlogs/README.html": HISTORICAL_ENTRIES[0]! });
+  installHook(root, OPAL_HOOK_TEXT);
+  writeFileSync(hookFile(root) + ".opal-backup", "예전 백업");
+  const before = snapshot(root);
+  const result = applyAdoptOpal(root, home, planAdoptOpal(root, home), { writeEntry: () => { throw new Error("진입점 쓰기 실패"); } });
+  assert.match(result.blockers.join(), /되돌렸다.*진입점 쓰기 실패/);
+  assert.equal(snapshot(root), before);
+  assert.equal(readFileSync(hookFile(root), "utf8"), OPAL_HOOK_TEXT);
+  assert.equal(readFileSync(hookFile(root) + ".opal-backup", "utf8"), "예전 백업");
+  assert.equal(existsSync(hookFile(root) + ".opal-backup-2"), false);
+});
+
+test("T02-S-1 교체된 훅이 실제로 게이트로 동작한다(차단 조건에서 실패 종료)", (t) => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  assert.equal(runPace(["adopt", "opal", "--apply"], { home, cwd: root }).status, 0);
+  const sh = spawnSync("sh", ["-c", "exit 0"]);
+  if (sh.status !== 0) { t.skip("sh를 실행할 수 없음"); return; }
+  git(root, "checkout", "-q", "-b", "project/P001");
+  const bin = tempDir("pace-adopt-bin-");
+  writeFileSync(join(bin, "pace"), "#!/bin/sh\necho FAKE-PACE-CALLED >&2\nexit 7\n", { mode: 0o755 });
+  const msg = join(tempDir("pace-adopt-msg-"), "MSG");
+  writeFileSync(msg, "feat(P001/T01): 시험\n");
+  const sep = process.platform === "win32" ? ";" : ":";
+  const run = spawnSync("sh", [hookFile(root), msg], { cwd: root, env: { ...process.env, PATH: bin + sep + (process.env.PATH ?? "") }, encoding: "utf8" });
+  assert.equal(run.status, 1, run.stderr);
+  assert.match(run.stderr, /FAKE-PACE-CALLED/);
+});
+
+test("T02-S-1 교체된 훅의 조건 분기: 대상 브랜치·태그가 있을 때만 검사하고 실패·성공·조건 밖을 구분한다", (t) => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  assert.equal(runPace(["adopt", "opal", "--apply"], { home, cwd: root }).status, 0);
+  if (spawnSync("sh", ["-c", "exit 0"]).status !== 0) { t.skip("sh를 실행할 수 없음"); return; }
+  const sep = process.platform === "win32" ? ";" : ":";
+  const bin = (code: number) => {
+    const dir = tempDir("pace-adopt-bin-");
+    writeFileSync(join(dir, "pace"), "#!/bin/sh\necho CALLED:$* >&2\nexit " + code + "\n", { mode: 0o755 });
+    return dir;
+  };
+  const run = (branch: string, message: string, code: number) => {
+    git(root, "checkout", "-q", "-B", branch);
+    const msg = join(tempDir("pace-adopt-msg-"), "MSG");
+    writeFileSync(msg, message);
+    return spawnSync("sh", [hookFile(root), msg], { cwd: root, env: { ...process.env, PATH: bin(code) + sep + (process.env.PATH ?? "") }, encoding: "utf8" });
+  };
+  const fail = run("project/P001", "feat(P001/T01): x\n", 7);
+  assert.equal(fail.status, 1); assert.match(fail.stderr, /CALLED:project check P001 T01/);
+  const ok = run("project/P001", "feat(P001/T01): x\n", 0);
+  assert.equal(ok.status, 0); assert.match(ok.stderr, /CALLED:project check P001 T01/);
+  const otherBranch = run("feature/x", "feat(P001/T01): x\n", 7);
+  assert.equal(otherBranch.status, 0); assert.doesNotMatch(otherBranch.stderr, /CALLED/);
+  const noTag = run("project/P001", "docs: 태그 없음\n", 7);
+  assert.equal(noTag.status, 0); assert.doesNotMatch(noTag.stderr, /CALLED/);
+});
+
 // ── T01 구현 후 검토(post-review-codex.md) 반영 ───────────────────────────────
 
 test("T01-S-4 status.showUntrackedFiles=no여도 .opal의 새 파일을 놓치지 않고 멈춘다", () => {
@@ -351,4 +599,119 @@ test("T01-S-5 복구까지 실패하면 출력이 무변경을 단정하지 않�
   const result = applyAdoptOpal(root, home, plan, { register: () => { writeFileSync(join(root, ".opal"), "x"); throw new Error("주입된 실패"); } });
   const out = formatPlan(result, true);
   assert.doesNotMatch(out, /원본을 바꾸지 않았다/); assert.match(out, /되돌리지 못한 것/);
+});
+
+// ── T02 구현 후 검토(post-review-codex-1.md) 반영 ─────────────────────────────
+
+test("T02-S-3 backlogs 디렉터리가 링크면 그 안의 진입점을 따라가 바꾸지 않는다", (t) => {
+  const { root, home } = fixture();
+  const outside = tempDir("pace-adopt-outside-");
+  writeFileSync(join(outside, "README.html"), HISTORICAL_ENTRIES[0]!);
+  try { symlinkSync(outside, join(root, "backlogs"), "junction"); } catch { t.skip("링크 생성 권한 없음"); return; }
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(readFileSync(join(outside, "README.html"), "utf8"), HISTORICAL_ENTRIES[0]);
+});
+
+test("T02-S-5 교체는 끝났는데 뒤 단계(chmod 등)가 실패해도 훅 원문과 백업 상태를 되돌린다", () => {
+  const { root, home } = fixture({ "backlogs/README.html": HISTORICAL_ENTRIES[0]! });
+  installHook(root, OPAL_HOOK_TEXT);
+  const before = snapshot(root);
+  const result = applyAdoptOpal(root, home, planAdoptOpal(root, home), { writeHook: (path, text) => { writeFileSync(path, text); throw new Error("교체 뒤 실패"); } });
+  assert.match(result.blockers.join(), /되돌렸다.*교체 뒤 실패/);
+  assert.equal(readFileSync(hookFile(root), "utf8"), OPAL_HOOK_TEXT);
+  assert.equal(existsSync(hookFile(root) + ".opal-backup"), false);
+  assert.equal(snapshot(root), before);
+});
+
+test("T02-S-5 진입점을 쓴 뒤 실패해도 원문으로 되돌린다", () => {
+  const { root, home } = fixture({ "backlogs/README.html": HISTORICAL_ENTRIES[0]! });
+  const before = snapshot(root);
+  const result = applyAdoptOpal(root, home, planAdoptOpal(root, home), { writeEntry: (path, text) => { writeFileSync(path, text); throw new Error("쓴 뒤 실패"); } });
+  assert.match(result.blockers.join(), /되돌렸다.*쓴 뒤 실패/);
+  assert.equal(snapshot(root), before);
+  assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), HISTORICAL_ENTRIES[0]);
+});
+
+test("T02-S-4 docs의 확장자와 무관하게 검색하고, 바이너리는 알리며, 참조는 개수와 무관하게 모두 출력한다", () => {
+  const many = Array.from({ length: 45 }, (_, i) => "opal project check " + i).join("\n") + "\n";
+  const { root, home } = fixture({ "docs/guide.html": "<p>opal project check</p>\n", "docs/many.md": many });
+  writeFileSync(join(root, "docs", "img.png"), Buffer.from([137, 80, 0, 0, 1]));
+  const r = runPace(["adopt", "opal"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /docs\/guide\.html:1:/);
+  for (const n of [1, 30, 31, 45]) assert.match(r.stdout, new RegExp("docs/many\\.md:" + n + ":"));
+  assert.match(r.stdout, /docs\/img\.png \(바이너리\)/);
+});
+
+// ── T02 구현 후 검토 2차(post-review-codex-2.md) 반영 ─────────────────────────
+
+test("T02-S-3 사용자 지정 리소스 참조가 섞인 진입점은 OPAL 원문으로 보지 않는다", () => {
+  const edited = HISTORICAL_ENTRIES[0]!.replace("file:///C:/Users/x/.opal/app/src/dashboard/backlog/core.js", "file:///D:/custom/app/src/dashboard/backlog/core.js");
+  const { root, home } = fixture({ "backlogs/README.html": edited });
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), edited);
+  assert.match(r.stdout, /수정된 것 같아 보존/);
+});
+
+test("T02-S-1 끊어진 링크인 기존 백업도 충돌로 보고 덮어쓰지 않는다", (t) => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  try { symlinkSync(join(root, "없는-대상"), hookFile(root) + ".opal-backup"); } catch { t.skip("링크 생성 권한 없음"); return; }
+  assert.equal(runPace(["adopt", "opal", "--apply"], { home, cwd: root }).status, 0);
+  assert.equal(lstatSync(hookFile(root) + ".opal-backup").isSymbolicLink(), true);
+  assert.equal(readFileSync(hookFile(root) + ".opal-backup-2", "utf8"), OPAL_HOOK_TEXT);
+});
+
+test("T02-S-5 훅 복원이 실패하면 이번에 만든 백업을 지우지 않는다", () => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  const plan = planAdoptOpal(root, home);
+  const result = applyAdoptOpal(root, home, plan, {
+    // 훅을 PACE 훅으로 바꾼 뒤 실패시키고, 복원이 막히도록 훅 자리를 디렉터리로 바꾼다
+    writeHook: (path, text) => { writeFileSync(path, text); rmSync(path); mkdirSync(path); throw new Error("교체 뒤 실패"); },
+  });
+  assert.match(result.blockers.join(), /되돌리지 못한 것/);
+  assert.equal(readFileSync(hookFile(root) + ".opal-backup", "utf8"), OPAL_HOOK_TEXT);
+});
+
+test("T02-S-4 docs가 링크면 따라가지 않고 알린다", (t) => {
+  const { root, home } = fixture();
+  const outside = tempDir("pace-adopt-docs-");
+  writeFileSync(join(outside, "x.md"), "opal project check\n");
+  try { symlinkSync(outside, join(root, "docs"), "junction"); } catch { t.skip("링크 생성 권한 없음"); return; }
+  const r = runPace(["adopt", "opal"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.doesNotMatch(r.stdout, /x\.md:1:/); assert.match(r.stdout, /docs \(링크\)/);
+});
+
+// ── T02 구현 후 검토 3차(post-review-codex-3.md) 반영 ─────────────────────────
+
+test("T02-S-3 리소스 URL을 정규화 표지(@@res:...)로 위조한 진입점은 원문으로 보지 않는다", () => {
+  const forged = HISTORICAL_ENTRIES[0]!.replace(/file:\/\/\/C:\/Users\/x\/\.opal\/app\/src\/dashboard\/backlog\/(style\.css|core\.js|app\.js)/g, "@@res:$1");
+  const { root, home } = fixture({ "backlogs/README.html": forged });
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), forged);
+});
+
+test("T02-S-5 백업이 중간까지 쓰인 채 실패해도 이번에 만든 백업 파일을 정리한다", () => {
+  const { root, home } = fixture();
+  installHook(root, OPAL_HOOK_TEXT);
+  const before = snapshot(root);
+  const plan = planAdoptOpal(root, home);
+  // PACE 훅 쓰기 대신, 백업 파일 이름을 미리 점유할 수 없으므로 훅 쓰기 실패로 백업 생성 경로를 지난 뒤 정리를 확인한다
+  const result = applyAdoptOpal(root, home, plan, { writeHook: () => { throw new Error("쓰기 실패"); } });
+  assert.match(result.blockers.join(), /되돌렸다/);
+  assert.equal(existsSync(hookFile(root) + ".opal-backup"), false);
+  assert.equal(snapshot(root), before);
+});
+
+test("T02-S-2 이미 PACE 훅이면 그대로 두고 알린다", () => {
+  const { root, home } = fixture();
+  installHook(root, "#!/bin/sh\n# PACE commit gate v1\nexit 0\n");
+  const r = runPace(["adopt", "opal", "--apply"], { home, cwd: root });
+  assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /이미 PACE 커밋 게이트/);
+  assert.equal(readFileSync(hookFile(root), "utf8"), "#!/bin/sh\n# PACE commit gate v1\nexit 0\n");
 });
