@@ -211,7 +211,7 @@ function planExtras(plan: AdoptPlan, root: string): void {
         plan.hook = path;
         plan.moves.push("commit-msg 훅: OPAL 게이트 → PACE 게이트 (원본은 commit-msg.opal-backup)");
       } else if (/opal/i.test(text)) {
-        plan.warnings.push("commit-msg 훅이 OPAL 게이트처럼 보이지만 원문과 달라 보존했다 — PACE 게이트가 필요하면 직접 합친다");
+        plan.warnings.push("commit-msg 훅이 OPAL 게이트처럼 보이지만 원문과 달라 보존했다 — PACE 커밋 게이트는 설치되지 않았다. OPAL을 제거하면 이 훅은 opal 명령을 못 찾아 검사 없이 통과하므로, OPAL 제거 전에 훅을 직접 정리하거나 pace project check 호출을 합친다");
       } else {
         plan.warnings.push("기존 commit-msg 훅(OPAL 게이트 아님)을 보존했다 — PACE 커밋 게이트는 설치되지 않는다. 필요하면 pace project check 호출을 직접 합친다");
       }

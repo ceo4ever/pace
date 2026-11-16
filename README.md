@@ -122,7 +122,7 @@ pace brain init && pace brain search "부트 훅"
 
 다른 PC에 PACE를 설치했는데 기존 프로젝트가 OPAL(`.opal/`)로 정의되어 있으면, PACE는 `.pace/`만 읽으므로 프로젝트 메모리·브레인·역할이 사라진 것처럼 보이고 OPAL의 커밋 게이트 훅 때문에 PACE 게이트도 설치되지 않는다. 프로젝트 폴더에서 `pace adopt opal`로 OPAL 정의를 PACE로 옮긴다.
 
-1. **OPAL 제거** — OPAL 설치본과 시작 훅을 지운다(OPAL의 제거 방법을 따른다).
+1. **OPAL 제거** — OPAL 설치본과 시작 훅을 지운다(OPAL의 제거 방법을 따른다). 저장소의 `commit-msg` 훅을 직접 수정했다면 4단계 `pace adopt opal` 미리보기의 훅 경고를 먼저 확인한다 — 수정된 OPAL 훅은 자동 교체되지 않아 OPAL 제거 뒤 검사 없이 통과하게 된다.
 2. **PACE 설치** — 위 [설치](#설치)를 따른다.
 3. **온보딩으로 새 프로필** — `pace onboard`로 새 프로필을 만든다. OPAL 홈(`~/.opal`)의 프로필은 옮기지 않는다.
 4. **프로젝트마다 `pace adopt opal`** — 저장소 루트에서 실행한다. 기본은 미리보기라 아무것도 바꾸지 않고 바꿀 목록만 보여 준다. 목록을 확인한 뒤 `pace adopt opal --apply`로 적용한다.
@@ -134,7 +134,7 @@ pace brain init && pace brain search "부트 훅"
 | 대상 | 바뀌는 것 |
 |---|---|
 | `.opal/` | `.pace/`로 `git mv`(메모리·브레인·로컬 파일 그대로). `AGENT.md`는 `opal_agent_version`→`pace_agent_version`, 본문의 `.opal/` 경로→`.pace/`만 바뀌고 `workspace_id`는 그대로 이어받아 워크스페이스 등록부에 등록한다 |
-| `commit-msg` 훅 | 알려진 OPAL 커밋 게이트 원문이면 PACE 게이트로 바꾸고 원본은 `commit-msg.opal-backup`에 남긴다. 사용자가 만든·수정한 훅은 건드리지 않고 알린다 |
+| `commit-msg` 훅 | 알려진 OPAL 커밋 게이트 원문이면 PACE 게이트로 바꾸고 원본은 `commit-msg.opal-backup`에 남긴다. 사용자가 만든·수정한 훅은 건드리지 않고 알린다 — 수정된 OPAL 훅이 남으면 OPAL 제거 뒤 `opal` 명령을 못 찾아 검사 없이 통과하므로 PACE 게이트가 빠진 상태다. `pace adopt opal` 출력의 훅 경고를 확인하고 훅을 직접 정리하거나 `pace project check` 호출을 합친다 |
 | `backlogs/README.html` | OPAL 공용 진입점이면 PACE 공용 참조로 바꾼다. 수정했거나 링크인 진입점, `data.js`·사용자 파일은 보존한다 |
 | `AGENTS.md`·`CLAUDE.md`·`docs/**` | 바꾸지 않는다. `opal` 명령·`opal-*` 스킬 이름이 남은 곳을 `파일:줄` 목록으로 보고하니 그 목록으로 직접 고친다 |
 
