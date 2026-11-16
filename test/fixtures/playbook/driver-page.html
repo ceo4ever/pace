@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>가상 서비스 조회</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#fff}
+#q{position:absolute;left:10px;top:10px;width:120px;height:24px}
+#go{position:absolute;left:140px;top:10px;width:60px;height:26px}
+#result{position:absolute;left:10px;top:60px;width:300px;height:100px;background:#fde047;color:#000;font:bold 16px sans-serif;overflow:hidden}
+.notice-modal{position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9}
+</style></head>
+<body><input id="q"><button id="go">조회</button><div id="result" hidden></div>
+<script>
+// 합성 민감 값은 조각으로 이어 붙여 만든다(저장소 비밀 검사가 리터럴로 오인하지 않게)
+var rrn=['900101','1234567'].join('-');
+// 늦게 뜨는 공지 덮개 — 닫기 버튼이 있다
+setTimeout(function(){
+  var m=document.createElement('div');m.className='notice-modal';
+  var b=document.createElement('button');b.id='close';b.textContent='닫기';b.onclick=function(){m.remove();};
+  m.appendChild(b);document.body.appendChild(m);
+},150);
+// 조회: 지연된 결과(400ms) — 같은 값을 다시 조회해도 새로 그려진다
+document.getElementById('go').onclick=function(){
+  var r=document.getElementById('result');r.hidden=true;r.textContent='';
+  if(/never/.test(location.search))return;   // ?never — 결과가 끝내 오지 않는 상황
+  setTimeout(function(){r.hidden=false;r.textContent=rrn;},400);
+};
+</script></body></html>

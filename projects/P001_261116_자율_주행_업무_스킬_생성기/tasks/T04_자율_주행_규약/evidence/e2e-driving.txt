@@ -1,0 +1,17 @@
+[e2e-driving] 승인 없음 → needs-approval, POST 0
+[e2e-driving] 승인 뒤 → done, POST 1
+[e2e-driving] 새 실행(standing) → 묻지 않음, POST 2
+[e2e-driving] 허용 밖 경로·리다이렉트 → 거부, /evil·/admin 호출 0
+[e2e-driving] 운영 명령: 승인 없음 POST 0 → 승인 뒤 1회 → 재호출 0
+[e2e-driving] 상태·로그 파일 검사 — 응답 값 0건
+[e2e-driving] 브라우저 흐름 done 55908 ms — 덮개 닫음·지연 결과(400ms) 대기 후 sink에 1건
+[e2e-driving] 반환·상태·로그 검사 — 값 0건
+[e2e-driving] 결과가 대기 안에 안 옴 → expect-failed, 다음 단계 호출 0
+✔ S-8 API 흐름: 승인 없으면 POST 0회 → 승인 뒤 1회 → standing 재주행, 허용 밖·리다이렉트 호출 0, 운영 명령도 같은 관문 (1368.8666ms)
+✔ S-8 브라우저 흐름(Orca): 늦은 덮개 닫기·입력·클릭·지연된 결과 대기·추출 전달, 값은 sink에만 (124666.4297ms)
+ℹ tests 2
+ℹ pass 2
+ℹ fail 0
+ℹ skipped 0
+e2e exit=0 (Orca 브라우저 + 로컬 가짜 API 서버)
+(마지막 driver 수정 뒤 래퍼 실행에서도 driver-e2e 2건 통과·건너뜀 0 — check-test.txt)

@@ -1,0 +1,42 @@
+{
+ "version": 1,
+ "author": "anthropic",
+ "attempts": [
+  {
+   "hash": "2051fa68b7a12aefe3ee17250a96e62da0c14b8d3b5e6b825c14a04815ffc406",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 2,
+   "evidence": "evidence/pre-review-task-1.md",
+   "continuity": "new"
+  },
+  {
+   "hash": "291e192fea6fc154f93ef589740af28e52dae1cfab1bcbb7e73faecf1e6a1e6e",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 2,
+   "evidence": "evidence/pre-review-task-2.md",
+   "continuity": "changed",
+   "reason": "새 codex 세션 — 1차 지적 반영본 재검토(이전 지적은 전달하지 않음). 사전 검토 상한 2회 소진"
+  },
+  {
+   "hash": "d1e112ba36db6d5081d72945c1065e7f5339413870b0971b44304b5aa9bbe87f",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 1,
+   "evidence": "evidence/pre-review-task-3.md",
+   "continuity": "changed",
+   "reason": "캡틴 승인 반영 확인 1회(evidence/user-gate-decision-t04.md) — 새 codex 세션, 앞선 blocking 4건 해소 여부만. 3건 해소·1건(승인 정책의 지도 선언 연결) 남음"
+  }
+ ],
+ "waiver": {
+  "by": "user",
+  "date": "2026-11-16",
+  "reason": "반영 확인에서 4건 중 3건 해소, 남은 승인 정책 1건은 BR04 원문(지도에 승인 규칙이 있을 때만 자율)대로 no-map-rule로 반영 — 범위 변경 아닌 구체화",
+  "evidence": "evidence/user-gate-decision-t04.md",
+  "hash": "5797e241d4569eba949f3ea63487f7100ee4521d44f15bda4fa4281656030dd4"
+ }
+}
