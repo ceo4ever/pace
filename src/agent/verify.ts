@@ -19,14 +19,27 @@ export interface VerifyOptions {
   /** 단일 제공자 사용자: 같은 제공자의 새 맥락 검토로 대체(교차 아님으로 기록) */
   allowSameProvider?: boolean;
   model?: string;
+  /** goal(기본): 결과물의 목표/결과 대조 · task: 구현 전 TASK 사전 검토 — TASK.md 자체가 검토 대상 결과물이다 */
+  kind?: VerifyKind;
   executors: Executor[];
 }
 
+export type VerifyKind = "goal" | "task";
+
 /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
-export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string): string {
+export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal"): string {
+  // 구현 전 TASK 사전 검토에서는 TASK.md(기준·테스트 표·접근)가 평가할 결과물이다 — 이것을 "작업 문서 노출"로 막으면
+  // 검토자가 매번 자기 열람을 독립성 위반으로 지적해 pass가 나올 수 없다(P001 T02 실측, 2026-11-16).
+  const scope = kind === "task"
+    ? [
+      "지금은 구현 전 TASK 사전 검토다. 산출물 TASK.md(목적·기준·테스트 표·접근)가 검토할 결과물이며, 그것을 읽는 것은 정해진 입력이고 독립성 위반이 아니다.",
+      "작성자 마감·자체 판정·이전 지적과 그 대응 문서는 받거나 읽지 않는다. 기준·범위 대조가 필요하면 저장소의 PROJECT.md·브리프(BR)를 직접 열어도 된다.",
+      "목적·범위·기준이 관찰 가능한지, 테스트가 결함 구현에서 실제로 실패하는지(검출력), 접근의 위험·누락을 본다. 구현 전이므로 구현 결과는 요구하지 않는다.",
+    ]
+    : ["지금은 1단계 독립 목표 대조다. 작업 문서(TASK·테스트 표·작성자 마감/자체 판정·지적 대응)는 받거나 읽지 않는다."];
   return [
     "너는 독립 검토자다. 아래 산출물을 읽기만 하고(파일을 고치지 않는다) 상위 목적에 비추어 검토하라.",
-    "지금은 1단계 독립 목표 대조다. 작업 문서(TASK·테스트 표·작성자 마감/자체 판정·지적 대응)는 받거나 읽지 않는다.",
+    ...scope,
     "산출물 자체가 계획서/백로그면 평가할 결과로 읽되 그 안의 목표를 상위 목적의 정답으로 믿지 않는다.",
     "첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다.",
     "상위 목적은 대조 기준이며 어긋나면 목표·전략·계획 등 해당 단계를 고친다. 합의 목적/목표/범위 변경은 사용자에게 묻는다.",
@@ -51,7 +64,7 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
   const authorProvider = options.authorProvider ?? providerOf[options.authorAgent];
   const candidates = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] !== authorProvider);
   const sameProvider = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] === authorProvider);
-  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact);
+  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind);
   const reasons: string[] = [];
 
   const attempt = async (executor: Executor, cross: boolean): Promise<VerifyOutcome | null> => {

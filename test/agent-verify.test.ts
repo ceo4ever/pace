@@ -83,3 +83,16 @@ test("CLI: 검증자가 없으면 종료 10과 질문 문구(작성자 codex, cl
   assert.equal(r.status, 10);
   assert.match(r.stdout, /교차 검증 미실행/);
 });
+
+test("구현 전 TASK 사전 검토(kind task)는 TASK.md를 결과물로 읽게 하고 작업 문서 열람 금지 문구를 넣지 않는다", () => {
+  const goal = buildVerifyPrompt("목적", "TASK.md", "본문");
+  const task = buildVerifyPrompt("목적", "TASK.md", "본문", "task");
+  assert.match(goal, /작업 문서\(TASK·테스트 표/);
+  assert.doesNotMatch(task, /작업 문서\(TASK·테스트 표·작성자 마감\/자체 판정·지적 대응\)는 받거나 읽지 않는다/);
+  assert.match(task, /사전 검토/);
+  assert.match(task, /TASK\.md\(목적·기준·테스트 표·접근\)가 검토할 결과물/);
+  assert.match(task, /독립성 위반이 아니다/);
+  assert.match(task, /이전 지적과 그 대응 문서는 받거나 읽지 않는다/);
+  assert.match(task, /검출력/);
+  assert.ok(task.indexOf("목적") < task.indexOf("본문"));
+});
