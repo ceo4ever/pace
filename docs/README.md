@@ -53,10 +53,10 @@
 
 | 구분 | 명령 / 값 | 확인 |
 |---|---|---|
-| 런타임 | Node.js 24 이상 (로컬 25.8.2) | ✅ |
+| 런타임 | Node.js 24 이상 (로컬 24.15.0) | ✅ 2026-11-16 |
 | Windows 에이전트 | OS 기본 Windows PowerShell 5.1과 .NET Add-Type이 필요하다. 감시자 프로세스에만 실행 정책 Bypass를 적용하며 그룹 정책이나 제한 언어 모드가 준비를 막으면 에이전트를 실행하지 않고 오류를 안내한다 | Windows 실측 |
 | 설치 | `npm install` (devDependencies만) | ✅ |
-| 검사 | `npm run check` — `tsc` 타입 검사 + Node 테스트; Windows는 테스트 파일을 순차 실행하고 macOS·Linux는 기본 동시성을 사용 | ✅ 2026-10-23 |
+| 검사 | `npm run check` — `tsc` 타입 검사 + Node 테스트; Windows는 테스트 파일을 순차 실행하고 macOS·Linux는 기본 동시성을 사용 | 🔶 2026-11-16 `tsc`만 확인 — 0.1.0 정리 뒤 전체 테스트 미완(P001 실행 결과로 갱신) |
 | 보안 검사 | `node scripts/secret-scan.ts` — 커밋될 파일(추적 + 무시되지 않는 새 파일)의 비밀 원문(제외: 교본 원문 예시 파일 5개, 테스트 파일의 가짜 값(별도 이유 표기), 대시보드 data.js는 JSON을 풀어 값별 검사(코드 파일 키만 표현식 완화), Canvas 묶음 2.0.1의 JS 오탐 5개는 정확한 경로와 SHA-256이 일치할 때만 제외) | ✅ 2026-10-23 |
 | worktree 준비 | `npm ci --no-audit --no-fund` (새 worktree에 `node_modules`가 없어 `tsc`가 없다. 취약점 조회는 main과 같은 잠금이라 생략 — `의존성 감사`가 맡는다) | ✅ 2026-11-13 |
 | 의존성 감사 | `npm audit --omit=dev` (finish가 잠금 파일이 base 대비 바뀐 브랜치에서만 실행. 런타임 의존성 0이라 보통 생략된다) | ✅ 2026-11-13 |

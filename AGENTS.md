@@ -15,7 +15,7 @@ LLM CLI 세션 시작 훅으로 올라오는 개인 비서 에이전트. TypeScr
 - `scripts/install.ps1`은 UTF-8 BOM을 유지한다 — PowerShell 5.1이 BOM 없는 파일의 한글을 깨뜨린다. 스크립트로 고친 뒤 `head -c3`로 `efbbbf` 확인.
 - 설치 스크립트는 설치까지만 한다 — 성공하면 결과 한 줄만, 실패할 때만 상세 출력. 온보딩 실행·안내 없음.
 - 백로그(`BL{YYMMDD}_{NN}_이름/`) → 프로젝트, 브리프(영어 brief, `BR{NN}_이름.md`) → 같은 번호 태스크. 상태를 바꾸면 `BACKLOG.md` 현황 표도 고친다(`pace project done`은 함께 갱신). 완료 백로그에는 덧붙이지 않고 새 백로그·메모리 `idea`로 발의한다.
-- 작은 일이 아니면 프로젝트(`pace project`)로 한다 — worktree에서 태스크마다 check 통과·done 뒤 커밋, 병합은 main에서 사람 승인 뒤. 절차는 `pace-project-dev` 스킬.
+- 작은 일이 아니면 프로젝트(`pace project`)로 한다 — worktree에서 태스크마다 check 통과·done 뒤 커밋, 병합은 main에서 사람 승인 뒤. 작은 일은 main 직접 커밋, 설치(`scripts/install.*`)는 main에서만. 절차는 `pace-project-dev` 스킬.
 - `docs/README.md` 환경의 하네스 라벨(`검사`·`보안 검사`·`worktree 준비`)은 이름을 바꾸지 않는다 — `pace project`가 읽는다.
 
 ## 더 보기

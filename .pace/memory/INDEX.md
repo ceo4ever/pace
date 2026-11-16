@@ -8,7 +8,7 @@
 
 ## 지킬 것 · 하지 말 것
 
-- [커밋 브랜치 방식](커밋-브랜치-방식.md) — 작은 일은 main 직접 커밋, 프로젝트(projects/P###)는 worktree·project/P### 브랜치, 설치는 main에서만
+- (없음)
 
 ## 열린 이슈
 
@@ -23,13 +23,11 @@
 - [Windows 설치 스킬 교체 EPERM](windows-설치-스킬-교체-eperm.md) — Windows 설치가 스킬 폴더 교체 중 EPERM으로 실패하면 잠근 프로세스를 확인하고 재시도·이름 바꾼 뒤 지우기를 검토한다
 - [Windows 실제 ACP 세션 환경 검증](windows-실제-acp-세션-환경-검증.md) — Windows 실제 Claude ACP 세션에서 Git Bash 위치 환경과 요청 흐름을 검증한다
 - [Windows Git 명령 탐색 경계 검토](windows-git-명령-탐색-경계-검토.md) — Windows에서 이름으로 실행하는 Git이 작업 폴더 실행 파일을 선택하는지 실측하고 안전한 절대 경로 탐색을 검토한다
-- [telegram-flow 시험 고아 프로세스](telegram-flow-시험-고아-프로세스.md) — 09:18 시작한 node --test test/telegram-flow.test.ts 자식(PID 27356)이 종료되지 않고 남음 — 원인 미확인, 사람 확인 뒤 정리·재현
 - [daemon-store S-15 간헐 실패 — Windows 제외 포트 범위](daemon-store-s-15-간헐-실패-windows-제외-포트-범위.md) — 임시 PACE_HOME의 해시 인스턴스 포트가 Windows 제외 범위면 listen EACCES 실패 — 다음 후보 포트로 넘어가게 고침
 
 ## 할 일
 
 - [원격 저장소 공개 여부](원격-푸시-여부-결정.md) — 저장소 공개 여부를 결정한다 — 비공개라 README curl·irm 익명 설치 404
-- [WorkStudio 시범 편집본 보존](workstudio-시범-편집본-보존.md) — WorkStudio 별도 worktree의 시범 문서와 루카스 편집본을 해당 프로젝트에서 보존할지 결정한다
 - [호스트 실사용 검증](호스트-실사용-검증.md) — GUI 호스트와 Windows에서 프로젝트 역할 수신·부트를 실사용으로 확인한다
 - [pace agent Codex 호스트 조건 안내 확인](pace-agent-codex-호스트-조건-안내-확인.md) — Codex 호스트의 네트워크 허용·중첩 Codex의 샌드박스 해제 필요 안내가 실제 사용 때 드러나는지 확인한다
 
@@ -65,3 +63,4 @@
 - [pace-intent wireframe 데스크톱 영역 배치](pace-intent-wireframe-데스크톱-영역-배치.md) — wireframe이 세로 쌓기만, 사이드바·본문·우측 패널 배치 불가, 기본 모바일 — opalwrite layout.html 수작업
 - [pace-scout 번역 요약이 원문에 없는 숫자를 만듦(툴박스)](pace-scout-번역-요약이-원문에-없는-숫자를-만듦-툴박스.md) — 영어 출처 주장을 한국어로 요약하며 October→10월, one percent→1%로 바꿔 검사 ①이 실패
 - [pace-scout 본문 추출 잡음과 카드 범위](pace-scout-본문-추출-잡음과-카드-범위.md) — fetch 본문에 사이트 메뉴·관련 기사가 섞여 인용 대조가 본문 밖 글자도 통과시키고, 카드가 근거 출처의 모든 주장을 펼친다
+- [test-map 단위 확장](test-map-단위-확장.md) — test-map 단위가 2개뿐이라 테스트 87개 중 85개가 단위 밖 — 영역별 단위로 나눠 부분 검사를 살린다

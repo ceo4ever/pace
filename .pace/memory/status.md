@@ -6,4 +6,4 @@ created: 2026-10-22
 updated: 2026-11-16
 ---
 
-PACE 0.1.0 신규 이력으로 공개(main 단일 커밋·v0.1.0), 설치·워크스페이스 등록 완료. OPAL 제거(opal uninstall, 백업 보존)·PACE 재설치로 공용 스킬 인계, 새 Claude 세션은 [PACE-BOOT]만 받음. 남은 것: OPAL daemon 정리 여부, 저장소 공개 여부 결정.
+P001 자율 주행 업무 스킬 생성기 진행 중(worktree, T01 이관 마감 단계) — 설계 결정 1~4 제안대로·브라우저 Orca CLI. 2026-11-16 opi 최신화 반영(환경 표·projects/README·대시보드 재생성·메모리 정리). 남은 것: 전체 검사 결과로 docs 검사 확인일 갱신, 저장소 공개 여부 결정
