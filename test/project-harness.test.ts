@@ -2173,3 +2173,27 @@ test('신규 태스크 사전 검토 게이트는 check와 done을 막고 기록
   writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify({ ...record, attempts: [{ ...newAttempt, evidence: 'linked/review.md' }] }));
   assert.equal(runCli(home, wt, 'check', 'P001', 'T01').status, 1);
 });
+
+test("start --launch: worktree에서 done이 백로그 현황 표를 고치고 main이 앞서 나가도 다시 띄운다", () => {
+  const { home, main } = repoFixture();
+  const orca = fakeOrca();
+  const inOrca = { TERM_PROGRAM: "Orca", ORCA_CLI_COMMAND: orca.bin, ...(orca.preload ? { NODE_OPTIONS: orca.preload } : {}) };
+  const startIn = (...args: string[]) => runPace(["project", "start", ...args], { home, cwd: main, timeout: 60_000, env: inOrca });
+  const bl = join(main, "backlogs", "BL261117_01_재기동");
+  write(join(bl, "BACKLOG.md"), "# 재기동\n- 상태: 대기\n\n## 진행 현황\n\n| 브리프 | 상태 | 선행 | 프로젝트 | 비고 |\n|---|---|---|---|---|\n| [BR01 일](BR01_일.md) | 대기 | — | — | |\n");
+  write(join(bl, "BR01_일.md"), "# BR01 일\n- 상태: 대기\n");
+  git(main, "add", "-A"); git(main, "commit", "-q", "-m", "백로그");
+  assert.equal(runCli(home, main, "new", "재기동", "--from", "BL261117_01").status, 0);
+  const started = startIn("P001");
+  assert.equal(started.status, 0, started.stderr);
+  const wt = join(dirname(main), "app.wt", "P001");
+  // worktree: done이 현황 표를 바꾼 것처럼 BACKLOG.md를 고쳐 커밋 / main: 다른 커밋으로 앞서 나감
+  const wtBacklog = join(wt, "backlogs", "BL261117_01_재기동", "BACKLOG.md");
+  writeFileSync(wtBacklog, readFileSync(wtBacklog, "utf8").replace("| 대기 | — | — |", "| 완료 | — | P001 |"));
+  git(wt, "add", "-A"); git(wt, "commit", "-q", "-m", "done");
+  write(join(main, "other.txt"), "x"); git(main, "add", "-A"); git(main, "commit", "-q", "-m", "main 앞섬");
+  const relaunched = startIn("P001", "--launch", "--model", "m2");
+  assert.equal(relaunched.status, 0, relaunched.stderr + relaunched.stdout);
+  assert.match(calls(orca.log).at(-1)!, /orchestration worker-start[\s\S]*--model m2/);
+  assert.match(readFileSync(wtBacklog, "utf8"), /\| 완료 \| — \| P001 \|/, "worktree 백로그를 되돌리지 않는다");
+});

@@ -758,7 +758,9 @@ function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { 
     const existingPath = join(existing, backlogRel);
     if (existsSync(existingPath)) {
       assertBacklogPath(join(existing, "backlogs"), existingPath);
-      if (readFileSync(existingPath, "utf8") === backlogChange.text) {
+      // worktree의 BACKLOG.md는 태스크 done이 현황 표를 고쳐 main과 달라진다 — 전체 상태가 이미 진행이면 동기화할 것이 없다
+      const inWorktree = readFileSync(existingPath, "utf8");
+      if (inWorktree === backlogChange.text || alreadyInProgress(inWorktree)) {
         const launch = options.relaunch ? launchWorker(ref, existing, repo.root, options) : null;
         return { ref: { ...ref, worktree: existing }, created: false, setup: null, launch, choice: options.choice };
       }
@@ -941,6 +943,10 @@ function backlogStateChange(repo: Repo, projectPath: string, project: string, ne
   if (!existsSync(path)) throw new HarnessError("백로그 개요 BACKLOG.md가 없다");
   assertBacklogPath(join(repo.root, "backlogs"), path);
   return { path, text: updatedBacklogState(readFileSync(path, "utf8"), next) };
+}
+
+function alreadyInProgress(text: string): boolean {
+  try { return updatedBacklogState(text, "진행") === text; } catch { return false; }
 }
 
 function updatedBacklogState(original: string, next: "진행" | "완료"): string {
