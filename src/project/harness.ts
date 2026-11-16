@@ -81,6 +81,13 @@ function gitSpawn(cwd: string, args: string[], extraEnv: Record<string, string> 
   });
 }
 
+/** git 실패 원인 한 줄: stderr·stdout, 없으면 실행 오류(시간 초과 등)·신호·종료 코드. */
+export function spawnFailure(r: { status: number | null; signal?: NodeJS.Signals | null; error?: Error; stdout?: string | null; stderr?: string | null }): string {
+  const text = `${r.stderr ?? ""}`.trim() || `${r.stdout ?? ""}`.trim();
+  const parts = [text, r.error ? `실행 오류: ${(r.error as NodeJS.ErrnoException).code ?? r.error.message}` : "", r.signal ? `신호 ${r.signal}` : "", r.status !== null ? `종료 코드 ${r.status}` : ""].filter(Boolean);
+  return parts.join(" · ") || "원인 정보 없음";
+}
+
 function git(cwd: string, args: string[], allowFail = false): string {
   const r = gitSpawn(cwd, args);
   if (r.status !== 0 && !allowFail) throw new HarnessError(`git ${args.join(" ")} 실패: ${(r.stderr || r.stdout).trim()}`);
@@ -139,7 +146,7 @@ export function snapshotOwned(root: string, paths: string[]): () => void {
       mode = info.mode & 0o7777;
     } catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
     const index = gitSpawn(root, ["ls-files", "--stage", "-z", "--", path]);
-    if (index.status !== 0) throw new HarnessError(`인덱스를 읽지 못했다: ${path}`);
+    if (index.status !== 0) throw new HarnessError(`인덱스를 읽지 못했다: ${path} — ${spawnFailure(index)}`);
     const entry = /^(\d+) ([0-9a-f]+) 0\t/.exec(index.stdout);
     if (index.stdout && !entry) throw new HarnessError(`충돌 중인 인덱스: ${path}`);
     return { path, absolute, body, mode, entry };

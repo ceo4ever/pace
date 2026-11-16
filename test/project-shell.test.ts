@@ -12,6 +12,7 @@ const api = harness as unknown as {
   withRestoration<T>(operation: () => T, restore: () => void): T;
   gitShellAt(core: string): { shell?: string; error?: string };
   snapshotOwned(root: string, paths: string[]): () => void;
+  spawnFailure(r: { status: number | null; signal?: NodeJS.Signals | null; error?: Error; stdout?: string | null; stderr?: string | null }): string;
 };
 
 test("선언 셸: 공백 경로와 인용·환경 변수·한글 및 종료 오류를 보존한다", () => {
@@ -117,4 +118,17 @@ test("중첩 경로의 파일과 Git 인덱스를 정확히 복원한다", () =>
   restore();
   assert.equal(git("show", ":nested/file.txt"), "original");
   assert.equal(readFileSync(join(root, relativeFile), "utf8"), "original");
+});
+
+test("인덱스 읽기 실패: git 오류 원문을 메시지에 남긴다", () => {
+  const root = tempDir("pace-snapshot-fail-");
+  writeFileSync(join(root, "a.txt"), "x");
+  assert.throws(() => api.snapshotOwned(root, ["a.txt"]), (error: Error) => /인덱스를 읽지 못했다: a\.txt — .*fatal.*종료 코드 128/.test(error.message));
+});
+
+test("git 실패 원인: stderr·실행 오류·신호·종료 코드를 한 줄로", () => {
+  assert.equal(api.spawnFailure({ status: 128, stderr: " fatal: 잠금 \n", stdout: "" }), "fatal: 잠금 · 종료 코드 128");
+  const timeout = Object.assign(new Error("spawnSync git ETIMEDOUT"), { code: "ETIMEDOUT" });
+  assert.equal(api.spawnFailure({ status: null, signal: "SIGTERM", error: timeout }), "실행 오류: ETIMEDOUT · 신호 SIGTERM");
+  assert.equal(api.spawnFailure({ status: null }), "원인 정보 없음");
 });
