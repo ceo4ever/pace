@@ -33,7 +33,7 @@
 | CLI 진입점 | `bin/pace.ts`, `src/cli.ts` | TypeScript | 명령 분기 |
 | 부트 | `src/boot.ts` | TypeScript | 부트 맥락, 플랫폼별 출력, 화면 인사 |
 | 에이전트 호출 | `src/agent/` | TypeScript | `pace agent setup [--agents claude,codex] [--yes] [--login] [--install-adapters]`(`setup.ts` — 감지(읽기만) → 계획·확인 → 적용, 공식 CLI 로그인만 쓰고 토큰·자격증명 파일은 읽거나 복사하지 않는다, 프로필 `agent-chains.json`의 `default` 체인은 기존 파일을 보존·병합하고 바꾸기 전 확인과 `.bak`) · `pace agent` — 호출 계약(`contract.ts`: 입력·정규화 결과·오류 코드·능력 검사)과 실행기 등록(`registry.ts`). 실행기: `-p`(`p-executor.ts`)·ACP(`acp-executor.ts`), 프로세스 수명·env 허용 목록(`process.ts`), 체인·폴백(`chain.ts`·`limits.ts`·`snapshot.ts`, `pace agent run --chain <이름>` — 프로필 `agent-chains.json`의 단계 순서대로, 한도·인증·실행기 없음이면 다음 단계로 폴백하고 쓰기 요청이 시작된 뒤에는 기본적으로 `handoff_required`로 사람에게 넘긴다. 읽기 전용 요청은 읽기 전용 강제가 실측으로 확인된 단계만 실행), ACP 보강(`hooks.ts`·`acp-executor.ts` — 실행 훅: 이벤트 스트림 `onEvent`(상한 큐, 원본 `--raw-dir` 저장은 별도 64MB 상한)·권한 위임 `onPermission`(식별 실패·읽기 전용의 허용 밖은 강제 거절, 읽기 전용에서 콜백은 허용을 낮추기만)·`paceMcp`·정체성 맥락 `context`·이전 대화 요약 `handoffSummary`, 대화 이어가기 `session/resume`은 호출자 보관 `savedSession` 대조 필수, 읽기→쓰기 전환은 `continueSession`이 새 세션+요약으로), 교차 검증(`verify.ts`, `pace agent verify` — 다른 제공자 에이전트가 읽기 전용으로 독립 검토, 불가하면 미실행·질문). Codex 호스트에서 쓸 때는 호스트 샌드박스의 네트워크 허용이 필요하고(기본 차단 → 타임아웃), Codex를 다시 부르려면 호스트 샌드박스 해제가 필요하다. Claude ACP는 모델을 보고하지 않아 교차 검증 근거로 쓸 수 없다(`-p` 사용). 회수 보증: POSIX는 프로세스 그룹, Windows는 최선 노력(`process_cleanup: best-effort-unverified`, 실기 검증은 병합 후). 용어: **에이전트**(도구를 쓰며 일하는 프로그램: Claude Code·Codex) · **모델** · **제공자**(모델 회사) · **호출 방식**(`p` 헤드리스 단발 / `acp` 세션) · **Client**(ACP에서 부르는 쪽 = pace agent). 프롬프트는 stdin·파일만(argv 금지), 기본 읽기 전용, 미지원 옵션은 오류 |
-| 검사 선택 | `src/test-runner/`, `.pace/test-map.json` | TypeScript·Node·Python unittest | 파일·단위 선택과 확인 불가 판정, 전체는 기존 검사 선언 사용 |
+| 검사 선택 | `src/test-runner/`, `.pace/test-map.json` | TypeScript·Node·Python unittest·vitest | 파일·단위 선택과 확인 불가 판정(vitest는 단위의 파일을 한 프로세스로), 전체는 기존 검사 선언 사용 |
 | 공통 | `src/core/` | TypeScript | 경로·파일·frontmatter |
 | 메모리 | `src/memory/` | TypeScript | 프로필·프로젝트 공용 저장소 |
 | 프로필 | `src/profile/` | TypeScript | 프로필 생성·복제, 온보딩 질문 원본 |
@@ -129,7 +129,7 @@ refresh는 기존 완성 대시보드만 갱신한다. 완전 부재는 init 안
 | `src/setup/`, `scripts/install.*` | 사용자 홈의 도구 설정(`~/.claude`·`~/.codex` 등) 쓰기·백업·삭제 |
 | `src/boot.ts`, `src/project/situation.ts` | 모든 세션 시작 경로 — 오류·지연이 세션을 막으면 안 된다(종료 코드 0, git timeout) |
 | `src/core/fsutil.ts` | 원자적 파일 교체와 실패한 임시 파일 정리 — 이 호출이 만든 파일만 정리 |
-| `src/test-runner/` | 경로·glob·실경로와 실행 대상을 검사, 고정 Node·Python 어댑터만 인자 배열로 실행. 작업본 구성은 선택 범위 증거이며 사용자 코드 실행을 격리하지 않음. 테스트 코드는 결과 채널을 조작할 수 있으므로 신뢰한 코드만 실행하고 결과를 보안 증거로 취급하지 않음. `all`은 신뢰한 저장소의 검사 선언을 셸로 실행 |
+| `src/test-runner/` | 경로·glob·실경로와 실행 대상을 검사, 고정 Node·Python·vitest 어댑터만 인자 배열로 실행(vitest는 프로젝트 루트 안의 로컬 `node_modules/vitest`만 — 사용자 의존성 코드를 실행한다). 작업본 구성은 선택 범위 증거이며 사용자 코드 실행을 격리하지 않음. 테스트 코드는 결과 채널을 조작할 수 있으므로 신뢰한 코드만 실행하고 결과를 보안 증거로 취급하지 않음. `all`은 신뢰한 저장소의 검사 선언을 셸로 실행 |
 | `src/project/backlog.ts`, `harness.ts` (new·done) | BL·BR·BACKLOG 파일 생성·기존 문서 상태 쓰기 — 실제 경로의 backlogs 포함 확인·외부 링크 거부·검증 후 쓰기, git 이력으로 복구 |
 | `src/project/harness.ts` (merge·finish·start) | git 병합·브랜치 삭제·rebase, 파일 이동·덮어쓰기, 정의서에 선언된 명령을 `sh -c`로 실행(검사·보안 검사·worktree 준비·의존성 감사), Orca 작업자 세션 실행(`launchWorker`) |
 | `src/scout/**` | 외부 URL 읽기(사용자가 준 링크·검색 결과, GET·시간 제한·크기 상한), 받은 콘텐츠를 HTML로 렌더(모두 이스케이프, 스크립트 실행 경로 없음), 실행 폴더 안에만 쓰기 |
