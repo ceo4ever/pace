@@ -136,3 +136,4 @@
 {"ts":"2026-11-17T06:53:44.278Z","p":"P001","type":"decision","by":"agent","msg":"finish 검사 실패(playbook.test S-5): rebase 재체크아웃으로 driving.md가 CRLF(core.autocrlf) — 시험이 원본 줄바꿈을 정규화하도록 고침(T04 시험, 동작 변경 없음)","src":"자체 판단"}
 {"ts":"2026-11-17T07:36:39.602Z","p":"P001","type":"gate","by":"cli","msg":"finish","ok":true,"data":{"finish":1}}
 {"ts":"2026-11-17T07:36:39.602Z","p":"P001","type":"finish","by":"cli","msg":"finish","ok":true}
+{"ts":"2026-11-17T09:10:04.729Z","p":"P001","type":"merge","by":"cli","msg":"merge: 사용자 승인","ok":true,"data":{"approved":1,"commits":17}}
