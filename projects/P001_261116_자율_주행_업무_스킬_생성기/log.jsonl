@@ -117,3 +117,13 @@
 {"ts":"2026-11-17T04:24:41.053Z","p":"P001","t":"T06","type":"decision","by":"agent","msg":"구현 후 검토 반영 확인 1회(3차 4건만), fail이면 남은 지적을 한계로 기록하고 마감","src":"사용자 결정"}
 {"ts":"2026-11-17T05:08:34.427Z","p":"P001","t":"T06","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
 {"ts":"2026-11-17T05:16:31.490Z","p":"P001","t":"T06","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
+{"ts":"2026-11-17T05:16:45.368Z","p":"P001","type":"gate","by":"cli","msg":"finish: command","ok":false,"data":{"finish":1}}
+{"ts":"2026-11-17T05:17:00.460Z","p":"P001","t":"T01","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
+{"ts":"2026-11-17T05:17:01.372Z","p":"P001","t":"T02","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
+{"ts":"2026-11-17T05:17:02.329Z","p":"P001","t":"T04","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
+{"ts":"2026-11-17T05:17:03.362Z","p":"P001","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-17T05:17:04.400Z","p":"P001","t":"T05","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-17T05:17:31.210Z","p":"P001","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-17T05:17:32.121Z","p":"P001","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-17T05:17:33.002Z","p":"P001","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-17T05:17:41.761Z","p":"P001","type":"decision","by":"agent","msg":"finish는 설치본 pace로 실행: 브랜치의 pre-review.ts에 사용자 게이트 예외(waiver) 검사가 없어 T01·T02·T04가 실패 — main·설치본은 지원(설치본으로 세 태스크 check 통과). 코디네이터의 verify 설치본 지시와 같은 원인(브랜치가 main보다 뒤)","src":"자체 판단"}
