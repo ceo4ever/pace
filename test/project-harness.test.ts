@@ -846,7 +846,7 @@ test("작업자 설정 CLI와 실행별 우선순위 및 사전 오류", () => {
   assert.equal(run("project", "start", "P001", "--launch", "--agent", "codex", "--effort", "default").status, 0);
   assert.doesNotMatch(calls(orca.log).at(-1)!, /--effort/);
   assert.equal(run("worker", "reset", "codex", "model").status, 0);
-  assert.match(run("worker", "show").stdout, /gpt-6\.1-terra/);
+  assert.match(run("worker", "show").stdout, /gpt-6\.1-sol/);
   assert.equal(runCli(home, main, "new", "오류").status, 0);
   assert.notEqual(run("project", "start", "P002", "--model", "").status, 0);
   assert.equal(existsSync(join(dirname(main), "app.wt", "P002")), false);
