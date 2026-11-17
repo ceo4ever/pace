@@ -56,7 +56,7 @@ test('S-6 산출물 목록: 기대한 파일뿐이고 interview.json·대기 파
 });
 
 test('S-5 driving.md 자리 파일: 머리말 버전이 DRIVING_VERSION과 같고 플레이북이 규약 본문을 복사하지 않는다', ()=>{
-  const text=readFileSync(join(SKILL,'references','driving.md'),'utf8');
+  const text=readFileSync(join(SKILL,'references','driving.md'),'utf8').replace(/\r\n/g,'\n');   // Windows 체크아웃(core.autocrlf)은 CRLF다
   assert.match(text,new RegExp(`^# 자율 주행 규약\\n\\n규약 버전: ${DRIVING_VERSION}\\n`));
   const out=gen(makeWork());
   assert.ok(!readFileSync(join(out,'SKILL.md'),'utf8').includes('본문은 T04가 쓴다'));

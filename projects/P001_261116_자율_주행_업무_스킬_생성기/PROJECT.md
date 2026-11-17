@@ -117,4 +117,5 @@
 | 2026-11-17 11:07 | (main 판단) T06: T06 마감: 상태 보류(T-4 미충족), TASK-CLOSE 판정 미달, BR06·BACKLOG 보류, 태그 없는 커밋, PROJECT-CLOSE 부분 달성으로 finish |
 | 2026-11-17 13:24 | (사용자 결정) T06: 구현 후 검토 반영 확인 1회(3차 4건만), fail이면 남은 지적을 한계로 기록하고 마감 |
 | 2026-11-17 14:17 | (자체 판단) finish는 설치본 pace로 실행: 브랜치의 pre-review.ts에 사용자 게이트 예외(waiver) 검사가 없어 T01·T02·T04가 실패 — main·설치본은 지원(설치본으로 세 태스크 check 통과). 코디네이터의 verify 설치본 지시와 같은 원인(브랜치가 main보다 뒤) |
+| 2026-11-17 15:53 | (자체 판단) finish 검사 실패(playbook.test S-5): rebase 재체크아웃으로 driving.md가 CRLF(core.autocrlf) — 시험이 원본 줄바꿈을 정규화하도록 고침(T04 시험, 동작 변경 없음) |
 
