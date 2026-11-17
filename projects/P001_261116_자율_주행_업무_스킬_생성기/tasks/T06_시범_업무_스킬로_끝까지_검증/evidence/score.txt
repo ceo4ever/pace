@@ -1,0 +1,21 @@
+{
+ "playbook": {
+  "n": 3,
+  "success": 3,
+  "medianMs": 24028,
+  "medianToolCalls": 7,
+  "medianExplore": 1,
+  "medianMapBytes": 10791
+ },
+ "nomap": {
+  "n": 3,
+  "success": 2,
+  "medianMs": 36088,
+  "medianToolCalls": 8,
+  "medianExplore": 3,
+  "medianMapBytes": 0
+ },
+ "mapUsedInAllPlaybookSamples": true,
+ "p6": "충족",
+ "reasons": []
+}

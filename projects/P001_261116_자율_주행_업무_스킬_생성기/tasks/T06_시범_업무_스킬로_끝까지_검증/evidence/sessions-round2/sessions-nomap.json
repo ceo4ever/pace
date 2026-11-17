@@ -1,0 +1,53 @@
+[
+ {
+  "label": "n1",
+  "repo": "anthropics/claude-code",
+  "ok": true,
+  "ms": 34277,
+  "toolCalls": 8,
+  "screenExplorations": 3,
+  "profileViolation": false,
+  "fields": {
+   "branch": true,
+   "sha7": true,
+   "title": true,
+   "date": true,
+   "stars": true
+  },
+  "model": "sonnet"
+ },
+ {
+  "label": "n2",
+  "repo": "microsoft/vscode",
+  "ok": true,
+  "ms": 42990,
+  "toolCalls": 10,
+  "screenExplorations": 4,
+  "profileViolation": false,
+  "fields": {
+   "branch": true,
+   "sha7": true,
+   "title": true,
+   "date": true,
+   "stars": true
+  },
+  "model": "sonnet"
+ },
+ {
+  "label": "n3",
+  "repo": "nodejs/node",
+  "ok": true,
+  "ms": 38165,
+  "toolCalls": 8,
+  "screenExplorations": 3,
+  "profileViolation": false,
+  "fields": {
+   "branch": true,
+   "sha7": true,
+   "title": true,
+   "date": true,
+   "stars": true
+  },
+  "model": "sonnet"
+ }
+]

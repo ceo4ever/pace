@@ -1,6 +1,6 @@
 # 프로젝트 브레인 목차
 
-> 자동 생성 — 직접 고치지 말 것. 페이지 21개. 형식은 SCHEMA.md.
+> 자동 생성 — 직접 고치지 말 것. 페이지 23개. 형식은 SCHEMA.md.
 
 ## 결정과 이유
 
@@ -11,6 +11,8 @@
 - [LLM은 먼저 말할 수 없다 — 화면 인사와 pace onboard](pages/concept/llm-cannot-speak-first.md) — 훅은 맥락만 넣고 응답을 일으키지 못하므로, 열자마자 보이는 인사는 부트가 만든 systemMessage로, 바로 대화를 시작하려면 첫 메시지를 넣어 CLI를 연다 #boot #onboarding #ux
 - [메모리 두 영역 — 프로필과 프로젝트](pages/concept/memory-two-scopes.md) — 프로필 메모리(user·rule·todo)는 에이전트를 따라다니고, 프로젝트 메모리(status·rule·issue·todo·note·idea)는 저장소에 커밋된다. 프로젝트 메모리를 없앴다가 되살렸다 #memory #design-history
 - [OPAL 가져오기 adopt opal 결정과 함정](pages/concept/opal-가져오기-adopt-opal-결정과-함정.md) — adopt opal은 git mv로 .opal을 .pace로 옮기고 AGENT 표지·훅·진입점을 안전하게 바꾼다 — 판별은 원문 일치만, 복구는 변경 전 등록, 참조 보고는 위치만
+- [pace-playbook-maker — 구조와 결정](pages/concept/playbook-maker-구조와-결정.md) — 원본은 steps.json과 사람이 확인한 캡처뿐, 지도·사람용 문서는 생성물. 설치 스킬은 하나, 만든 플레이북은 업무 저장소. 값은 지도·기록에 쓰지 않고 sink로만 — 학습은 위치 필드만 고친다 #playbook #skill #agent-map
+- [플레이북 작성·주행·복구 함정 모음](pages/concept/playbook-주행-복구-함정.md) — 식별자 검사 String(undefined), Windows heredoc 정규식, 합의 대조 누락, Orca 동기 호출과 같은 프로세스 서버, 가림은 값의 모든 노출 위치, 기본 브라우저 프로필은 로그인 상태, 학습 뒤 해시 불일치, 화면 말줄임·button value·내용 따라 움직이는 box, 세션 기록의 사용자 환경(tab list·폴더 인코딩) #playbook #pitfalls #orca #capture
 - [프로필 = 독립 에이전트, 역할은 AI 비서 고정](pages/concept/profile-is-independent-agent.md) — 프로필마다 정체성·사용자 정보·메모리·스킬을 격리하고(Hermes 참고), 역할은 묻지 않고 AI 비서로 고정 — 개발·관리·리서치는 일의 성격별 방식으로 RULES에 둔다 #profile #identity #design-history
 - [세션 부트는 시작 훅 + 대체 규칙](pages/concept/session-boot-via-hooks.md) — 활성화 명령 대신 각 도구의 세션 시작 훅이 pace boot를 부르고, 훅이 불안정한 도구는 한 줄 대체 규칙으로 부트한다 #boot #hooks #platform
 - [상황별 부트 — 위치를 판별해 사실을 넘긴다](pages/concept/situational-boot-greeting.md) — 부트는 세션 위치를 PACE 프로젝트·정의 없음·새 프로젝트·밖으로 판별하고 git·메모리를 넘기며, 첫 멘트는 에이전트가 판단한다. 홈 폴더(~/.pace 있음)는 프로젝트로 보지 않는다 #boot #situation

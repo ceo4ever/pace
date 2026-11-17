@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>S01 저장소 페이지 열기</title>
+<!-- 생성 파일 — steps.json에서 만든다. 직접 고치지 않는다. -->
+<style>body{font:14px/1.5 system-ui,'Malgun Gothic',sans-serif;margin:16px;max-width:1100px}table{border-collapse:collapse;width:100%;margin:8px 0}th,td{border:1px solid #cbd5e1;padding:3px 6px;text-align:left;vertical-align:top}.shot{position:relative;max-width:900px;border:1px solid #cbd5e1}.shot img{display:block;width:100%;height:100%}.b{position:absolute;border:2px solid #dc2626;box-sizing:border-box}.b i{position:absolute;left:-2px;top:-2px;background:#dc2626;color:#fff;font:11px/16px Arial,sans-serif;min-width:16px;text-align:center;font-style:normal}code{font-size:12px}</style></head>
+<body><h1>S01 저장소 페이지 열기</h1>
+<p><b>목적</b>: 입력한 공개 저장소의 첫 화면을 연다</p>
+<p>위험: read · 다음: S02</p>
+<p><b>진입 조건</b>: 새 탭이 열려 있다</p>
+<p><b>화면 판정</b>: url <code>^/[^/]+/[^/]+/?$</code> · 있어야 함 <code>[data-testid=&quot;repo-name-link&quot;]</code> · 보이면 안 됨 —</p>
+<p><b>화면 식별</b>: 저장소 첫 화면 · 저장소 이름 머리글이 보인다 · Code 탭이 보인다</p>
+<p><b>도구</b>: <code>orca</code> — <code>orca tab create --url https://github.com/&lt;owner/repo&gt;</code></p>
+
+
+<h2>요소(번호 = 캡처 박스)</h2><table><thead><tr><th>#</th><th>이름</th><th>찾기</th><th>동작</th><th>대기</th><th>기대</th><th>다르면</th></tr></thead><tbody><tr><td colspan="8">요소 없음</td></tr></tbody></table>
+<h2>추출</h2><table><thead><tr><th>이름</th><th>위치</th><th>형식</th><th>민감도</th><th>전달 위치</th><th>검증</th></tr></thead><tbody><tr><td colspan="6">없음</td></tr></tbody></table>
+
+<p><b>성공 판정</b>: 저장소 페이지가 열려 머리글에 저장소 이름이 보인다</p><p><b>에스컬레이트</b>: 404가 나오거나 로그인을 요구한다</p>
+
+<p><b>위치 정책</b>: 1차 <code>find</code>, 보조 <code>box</code>, 충돌 시 <code>stop</code> — 보고 항목: <code>step</code> <code>element</code> <code>reason</code> <code>sourceHash</code> <code>shotSha256</code></p>
+</body></html>

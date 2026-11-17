@@ -1,0 +1,46 @@
+{
+  "agentSchema": 1,
+  "generated": "생성 파일 — steps.json에서 만든다. 직접 고치지 않는다.",
+  "id": "S01",
+  "title": "저장소 페이지 열기",
+  "purpose": "입력한 공개 저장소의 첫 화면을 연다",
+  "risk": "read",
+  "lane": "both",
+  "enter": "새 탭이 열려 있다",
+  "identify": {
+    "title": "저장소 첫 화면",
+    "anchors": [
+      "저장소 이름 머리글이 보인다",
+      "Code 탭이 보인다"
+    ]
+  },
+  "screen": {
+    "url": "^/[^/]+/[^/]+/?$",
+    "require": [
+      "[data-testid=\"repo-name-link\"]"
+    ],
+    "forbid": []
+  },
+  "tool": "orca",
+  "command": "orca tab create --url https://github.com/<owner/repo>",
+  "elements": [],
+  "extract": [],
+  "success": "저장소 페이지가 열려 머리글에 저장소 이름이 보인다",
+  "escalate": "404가 나오거나 로그인을 요구한다",
+  "events": [],
+  "next": "S02",
+  "locate": {
+    "primary": "find",
+    "secondary": "box",
+    "onConflict": "stop",
+    "report": [
+      "step",
+      "element",
+      "reason",
+      "sourceHash",
+      "shotSha256"
+    ]
+  },
+  "actionHash": "b3988a682ba013e7a30c10ab43c122a4544dc42da9114f9c63ea017477018a39",
+  "sourceHash": "6e5de5c174492244bc5b9e8c7f8a8aca86944ba4e33634e6597669142e025c71"
+}

@@ -1,0 +1,38 @@
+# codex 구현 후 검토가 로컬 파일을 못 읽은 문제 — 재현 기록(T06, 코디네이터 요청)
+
+- 실행한 명령(pace): ./bin/pace.ts agent verify --author-agent claude --target <T06>/evidence/review-target*.md --purpose-file <임시>/t06-goal.md --out <T06>/evidence/review-goal-N.md
+- cwd: 이 worktree 루트(브랜치 project/P001)
+- pace가 만든 codex 인자(src/agent/p-executor.ts:101, 이 브랜치): codex exec --skip-git-repo-check --ephemeral --ignore-user-config -c approval_policy="never" -C <worktree 루트> --sandbox read-only -
+- 기록(review-goal-1~3.md result): access read-only, stop_reason completed, is_error false, raw_path null(원문 기록 없음) — 모델 요약에만 '로컬 명령이 정책상 거부되어 읽은 파일 0개'
+- 이 브랜치에는 main의 f385e03b(fix(agent): Windows codex 읽기 전용 검토가 파일을 못 읽는 문제 — unelevated sandbox 지정)가 없다(git merge-base 이후 main 커밋).
+
+## 최소 재현(같은 인자, 프롬프트: AGENTS.md 첫 줄 읽기)
+```
+exit 0
+OpenAI Codex v0.169.0
+--------
+workdir: D:\DockerStudio\services\pace.wt\P001
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 01a1e7c0-6f53-7143-ac0b-e0e3d8f1ce8c
+--------
+user
+Run: Get-Content AGENTS.md -TotalCount 1 (or type/cat) and print the first line of AGENTS.md exactly. If any command fails, print the exact error text.
+codex
+AGENTS.md의 첫 줄을 확인하겠습니다.
+2026-11-17T04:25:15.836960Z ERROR codex_core::tools::router: error=exec_command failed: CreateProcess { message: "Rejected(\"`\\\"C:\\\\\\\\WINDOWS\\\\\\\\System32\\\\\\\\WindowsPowerShell\\\\\\\\v1.0\\\\\\\\powershell.exe\\\" -Command 'Get-Content AGENTS.md -TotalCount 1'` rejected: blocked by policy\")" }
+codex
+```text
+exec_command failed: CreateProcess { message: "Rejected(\"`\\\"C:\\\\\\\\WINDOWS\\\\\\\\System32\\\\\\\\WindowsPowerShell\\\\\\\\v1.0\\\\\\\\powershell.exe\\\" -Command 'Get-Content AGENTS.md -TotalCount 1'` rejected: blocked by policy\")" }
+```
+tokens used
+5,958
+--- 최종 출력 ---
+```text
+exec_command failed: CreateProcess { message: "Rejected(\"`\\\"C:\\\\\\\\WINDOWS\\\\\\\\System32\\\\\\\\WindowsPowerShell\\\\\\\\v1.0\\\\\\\\powershell.exe\\\" -Command 'Get-Content AGENTS.md -TotalCount 1'` rejected: blocked by policy\")" }
+```
+```

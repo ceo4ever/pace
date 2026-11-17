@@ -1,0 +1,23 @@
+{
+ "playbook": {
+  "n": 3,
+  "success": 3,
+  "medianMs": 28509,
+  "medianToolCalls": 8,
+  "medianExplore": 1,
+  "medianMapBytes": 10526
+ },
+ "nomap": {
+  "n": 3,
+  "success": 3,
+  "medianMs": 38165,
+  "medianToolCalls": 8,
+  "medianExplore": 3,
+  "medianMapBytes": 0
+ },
+ "mapUsedInAllPlaybookSamples": true,
+ "p6": "미충족",
+ "reasons": [
+  "플레이북 도구 호출 중앙값이 지도 없음보다 작지 않음"
+ ]
+}

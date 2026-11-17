@@ -1,0 +1,82 @@
+{
+ "label": "n3",
+ "mode": "nomap",
+ "repo": "nodejs/node",
+ "model": "sonnet",
+ "claudeVersion": "2.1.326 (Claude Code)",
+ "startedAt": "2026-11-16T22:25:02.799Z",
+ "ms": 43700,
+ "timedOut": false,
+ "profileViolation": false,
+ "permissionDenials": 1,
+ "bashNonOrca": 0,
+ "bashNonOrcaWords": {},
+ "ok": true,
+ "toolCalls": 11,
+ "perTool": {
+  "Bash": 10,
+  "Read": 1
+ },
+ "orcaCalls": 10,
+ "tabCreates": 1,
+ "screenExplorations": 6,
+ "mapBytes": 0,
+ "mapRead": false,
+ "mapReadFiles": 0,
+ "output": {
+  "branch": "main",
+  "stars": "124k",
+  "sha7": "cb4cba6",
+  "title": "http2: do not end compat requests reset before END_STREAM",
+  "date": "2026-11-16"
+ },
+ "judge": {
+  "ok": true,
+  "fields": {
+   "branch": true,
+   "sha7": true,
+   "title": true,
+   "date": true,
+   "stars": true
+  },
+  "whole": true,
+  "mixed": false,
+  "missing": []
+ },
+ "truthStart": {
+  "at": "2026-11-16T22:25:02.798Z",
+  "repo": "nodejs/node",
+  "branch": "main",
+  "stars": 123749,
+  "sha7": "cb4cba6",
+  "title": "http2: do not end compat requests reset before END_STREAM",
+  "date": "2026-11-16",
+  "dateAlt": "2026-11-16"
+ },
+ "truthEnd": {
+  "at": "2026-11-16T22:25:47.096Z",
+  "repo": "nodejs/node",
+  "branch": "main",
+  "stars": 123749,
+  "sha7": "cb4cba6",
+  "title": "http2: do not end compat requests reset before END_STREAM",
+  "date": "2026-11-16",
+  "dateAlt": "2026-11-16"
+ },
+ "numTurns": 12,
+ "isError": false,
+ "init": {
+  "tools": [
+   "Bash",
+   "Read"
+  ],
+  "model": "claude-sonnet-5-5",
+  "permissionMode": "dontAsk",
+  "slashCommands": 0,
+  "skills": [],
+  "mcpServers": [],
+  "memoryPaths": {
+   "auto": "<HOME>\\.claude\\projects\\C--Users-<USER>-AppData-Local-Temp-pace-t06-sess-orsFtm\\memory\\"
+  }
+ }
+}

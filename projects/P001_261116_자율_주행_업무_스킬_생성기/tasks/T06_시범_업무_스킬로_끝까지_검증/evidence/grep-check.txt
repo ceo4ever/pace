@@ -1,0 +1,7 @@
+대상: T06 폴더·skills/pace-playbook-maker·test/playbook·시험 래퍼 — 파일 200개(이미지 제외)
+사용자 이름(원형·단축형·인코딩): 0건
+사례 저장소·회사·사람 금지어(비공개 목록): 0건
+절대 사용자 경로: 0건 (시험 합성 이름 x·someone·me 5건 제외)
+증거의 URL 호스트: github.com 243 · example.com 120 · linear.app 30 · gitlab.example.com 30 · claude.ai 12 · x 3 · 127.0.0.1 3 · app.example.test 2
+  (example.com·gitlab.example.com·linear.app는 orca --help 예시 글, claude.ai는 GitHub 저장소 README의 설치 명령 글, github.com은 업무 대상, x·127.0.0.1·app.example.test는 검토 대상 문서에 실은 코드·시험 글)
+판정: 식별 정보 0건

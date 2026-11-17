@@ -1,0 +1,76 @@
+{
+ "label": "n2",
+ "mode": "nomap",
+ "repo": "microsoft/vscode",
+ "model": "sonnet",
+ "claudeVersion": "2.1.326 (Claude Code)",
+ "startedAt": "2026-11-17T01:02:55.310Z",
+ "ms": 39097,
+ "timedOut": false,
+ "profileViolation": false,
+ "permissionDenials": 1,
+ "bashNonOrca": 0,
+ "bashNonOrcaWords": {},
+ "ok": false,
+ "toolCalls": 7,
+ "perTool": {
+  "Bash": 6,
+  "Read": 1
+ },
+ "orcaCalls": 6,
+ "tabCreates": 1,
+ "screenExplorations": 4,
+ "mapBytes": 0,
+ "mapRead": false,
+ "mapReadFiles": 0,
+ "output": null,
+ "judge": {
+  "ok": false,
+  "fields": {},
+  "whole": false,
+  "mixed": false,
+  "missing": [
+   "branch",
+   "stars",
+   "sha7",
+   "title",
+   "date"
+  ]
+ },
+ "truthStart": {
+  "at": "2026-11-17T01:02:55.309Z",
+  "repo": "microsoft/vscode",
+  "branch": "main",
+  "stars": 195502,
+  "sha7": "9917ee5",
+  "title": "Engineering - check that build-only product build jobs import only build dependencies (#348726)",
+  "date": "2026-11-17",
+  "dateAlt": "2026-11-17"
+ },
+ "truthEnd": {
+  "at": "2026-11-17T01:03:34.463Z",
+  "repo": "microsoft/vscode",
+  "branch": "main",
+  "stars": 195502,
+  "sha7": "9917ee5",
+  "title": "Engineering - check that build-only product build jobs import only build dependencies (#348726)",
+  "date": "2026-11-17",
+  "dateAlt": "2026-11-17"
+ },
+ "numTurns": 8,
+ "isError": false,
+ "init": {
+  "tools": [
+   "Bash",
+   "Read"
+  ],
+  "model": "claude-sonnet-5-5",
+  "permissionMode": "dontAsk",
+  "slashCommands": 0,
+  "skills": [],
+  "mcpServers": [],
+  "memoryPaths": {
+   "auto": "<HOME>\\.claude\\projects\\C--Users-<USER>-AppData-Local-Temp-pace-t06-sess-CR1kpn\\memory\\"
+  }
+ }
+}

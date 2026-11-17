@@ -19,6 +19,7 @@
 | 기획 도구 | `src/intent/`, `src/scout/` | plan의 의미 연결 검사·비와이어프레임 HTML 렌더와 보고서 처리; Canvas 제품 프레임을 이미지 미리보기로 생성하고 출처·해시를 검증하며 예전 wireframe HTML은 명시적 호환 렌더 |
 | 설치 | `src/setup/`, `scripts/` | 훅·스킬 설치와 환경 작업 — 스킬 묶음(`skills/pace-canvas-skills/`, 본문·해시는 Canvas Studio 배포본 그대로)은 manifest 해시 대조 뒤 app에 통째로 올리고 도구 폴더에는 하위 스킬 입구만 둔다. 설치·제거는 `.pace-managed` 표지가 있는 스킬, PACE 부트 명령을 가리키는 훅, PACE 표지 블록만 바꾼다 |
 | 지침·템플릿 | `skills/`, `templates/` | 에이전트 절차와 생성 문서 원본 |
+| 플레이북 | `skills/pace-playbook-maker/` | 목표 → 인터뷰 → 수행·기록 → 플레이북 생성, 지도(`agent/`)를 읽고 도는 자율 주행 라이브러리, 변경을 진단·검증·반영하는 자가 복구·학습 — 무빌드 `.mjs` 도구와 규약 문서(주행 v1·복구 v1). 설치 스킬은 하나이고 만든 플레이북은 업무 저장소가 갖는다 |
 
 근거: `docs/README.md` 구성 요소, 각 경로 및 `src/cli.ts` import.
 

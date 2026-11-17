@@ -1,0 +1,196 @@
+{
+  "agentSchema": 1,
+  "generated": "생성 파일 — steps.json에서 만든다. 직접 고치지 않는다.",
+  "id": "S02",
+  "title": "저장소 요약 읽기",
+  "purpose": "기본 브랜치·별 개수·최신 커밋을 화면에서 읽는다",
+  "risk": "read",
+  "lane": "forward",
+  "enter": "S01 성공",
+  "identify": {
+    "title": "저장소 첫 화면",
+    "anchors": [
+      "최신 커밋 줄이 보인다",
+      "별(Star) 단추가 보인다"
+    ]
+  },
+  "screen": {
+    "url": "^/[^/]+/[^/]+/?$",
+    "require": [
+      "[data-testid=\"latest-commit\"]"
+    ],
+    "forbid": []
+  },
+  "tool": "orca",
+  "elements": [
+    {
+      "n": 1,
+      "name": "기본 브랜치",
+      "find": "#ref-picker-repos-header-ref-selector",
+      "box": {
+        "x": 32,
+        "y": 261,
+        "w": 105.546875,
+        "h": 32,
+        "vw": 1280,
+        "vh": 900,
+        "dpr": 1
+      },
+      "action": "읽기",
+      "expect": "브랜치 이름이 보인다",
+      "wait": "없음",
+      "onChange": "멈춘다"
+    },
+    {
+      "n": 2,
+      "name": "별 개수",
+      "find": "[data-testid=\"star-button\"]",
+      "box": {
+        "x": 1149.09375,
+        "y": 188,
+        "w": 83.90625,
+        "h": 28,
+        "vw": 1280,
+        "vh": 900,
+        "dpr": 1
+      },
+      "action": "읽기",
+      "expect": "Star 옆에 개수가 보인다(예 124k)",
+      "wait": "없음",
+      "onChange": "멈춘다"
+    },
+    {
+      "n": 3,
+      "name": "최신 커밋 제목",
+      "find": "[data-testid=\"latest-commit-html\"]",
+      "box": {
+        "x": 216.390625,
+        "y": 325.5,
+        "w": 397.5625,
+        "h": 21,
+        "vw": 1280,
+        "vh": 900,
+        "dpr": 1
+      },
+      "action": "읽기",
+      "expect": "비어 있지 않다",
+      "wait": "없음",
+      "onChange": "멈춘다"
+    },
+    {
+      "n": 4,
+      "name": "최신 커밋 링크",
+      "find": "[data-testid=\"latest-commit-details\"] a[href*=\"/commit/\"]",
+      "box": {
+        "x": 657.953125,
+        "y": 327,
+        "w": 47.46875,
+        "h": 18,
+        "vw": 1280,
+        "vh": 900,
+        "dpr": 1
+      },
+      "action": "읽기",
+      "expect": "링크 글자가 7자 해시다",
+      "wait": "없음",
+      "onChange": "멈춘다"
+    },
+    {
+      "n": 5,
+      "name": "최신 커밋 날짜",
+      "find": "[data-testid=\"latest-commit-details\"] relative-time",
+      "box": {
+        "x": 714.609375,
+        "y": 327,
+        "w": 81.984375,
+        "h": 18,
+        "vw": 1280,
+        "vh": 900,
+        "dpr": 1
+      },
+      "action": "읽기",
+      "expect": "datetime 속성(UTC 시각)이 있다",
+      "wait": "없음",
+      "onChange": "멈춘다"
+    }
+  ],
+  "extract": [
+    {
+      "name": "기본 브랜치",
+      "where": {
+        "selector": "#ref-picker-repos-header-ref-selector"
+      },
+      "format": "문자열",
+      "sensitivity": "public",
+      "deliverTo": "result-table",
+      "verify": "비어 있지 않음"
+    },
+    {
+      "name": "별 개수",
+      "where": {
+        "selector": "[data-testid=\"star-button\"]"
+      },
+      "format": "문자열",
+      "sensitivity": "public",
+      "deliverTo": "result-table",
+      "verify": "숫자 또는 k·m 표기"
+    },
+    {
+      "name": "최신 커밋 해시",
+      "where": {
+        "selector": "[data-testid=\"latest-commit-details\"] a[href*=\"/commit/\"]"
+      },
+      "format": "문자열",
+      "sensitivity": "public",
+      "deliverTo": "result-table",
+      "verify": "링크 글자(7자 해시) — 링크 주소 끝 전체 해시의 앞 7자와 같다"
+    },
+    {
+      "name": "최신 커밋 제목",
+      "where": {
+        "selector": "[data-testid=\"latest-commit-html\"]"
+      },
+      "format": "문자열",
+      "sensitivity": "public",
+      "deliverTo": "result-table",
+      "verify": "비어 있지 않음"
+    },
+    {
+      "name": "최신 커밋 날짜",
+      "where": {
+        "selector": "[data-testid=\"latest-commit-details\"] relative-time"
+      },
+      "format": "문자열",
+      "sensitivity": "public",
+      "deliverTo": "result-table",
+      "verify": "datetime 속성의 UTC 날짜"
+    }
+  ],
+  "success": "다섯 값이 모두 읽힌다",
+  "escalate": "선택자가 하나라도 없다 — 화면이 바뀐 것이다",
+  "events": [],
+  "next": null,
+  "locate": {
+    "primary": "find",
+    "secondary": "box",
+    "onConflict": "stop",
+    "report": [
+      "step",
+      "element",
+      "reason",
+      "sourceHash",
+      "shotSha256"
+    ]
+  },
+  "shot": {
+    "path": "shots/S02.jpg",
+    "sha256": "9fd8d5cd92b53eae5596e1761bc2f180e1506d0ec5c7f5400af4b6572425eb4e"
+  },
+  "view": {
+    "vw": 1280,
+    "vh": 900,
+    "dpr": 1
+  },
+  "actionHash": "39a459f07129fabb6fbe7446dde8426b5d7406e9d45ff553b0110eeff0b1ffc5",
+  "sourceHash": "6e5de5c174492244bc5b9e8c7f8a8aca86944ba4e33634e6597669142e025c71"
+}

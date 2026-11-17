@@ -23,8 +23,8 @@ description: 브라우저 자동화 업무 흐름의 실행 명세를 만들고 
 | 이름 | 지금 위치 | 역할 |
 |---|---|---|
 | 생성기 | `node <스킬>/tools/build.mjs --dir <흐름 폴더>` | steps.json → flow.html·flow/*.md |
-| 캡처 코어·지도 | `<스킬>/tools/capture-core.mjs`·`agent-map.mjs` |
-| 플레이북 | `<스킬>/tools/{interview,scaffold,orca-adapter,playbook}.mjs` | 인터뷰·뼈대·어댑터·생성 | 가림·번호 태그·사후 검사(fail-closed)·캡처 기록·승인 / `agent/` 지도 계산 |
+| 캡처 코어·지도 | `<스킬>/tools/capture-core.mjs`·`agent-map.mjs` | 가림·번호 태그·사후 검사(fail-closed)·캡처 기록·승인 / `agent/` 지도 계산 |
+| 플레이북 | `<스킬>/tools/{interview,scaffold,orca-adapter,playbook}.mjs` | 인터뷰·뼈대·어댑터·생성 |
 | 주행·복구 | `<스킬>/tools/{driver,healer,heal-web}.mjs` | 관문·재개·진단·반영 |
 | 테스트 | PACE 저장소 `test/playbook/` (`npm run check`가 실행) | 생성기·코어·이 스킬 문서 검사 |
 | 서비스 어댑터 | 각 서비스 도구 폴더의 캡처 모듈 | 탭 범위·화면 판정·대기·승인 |

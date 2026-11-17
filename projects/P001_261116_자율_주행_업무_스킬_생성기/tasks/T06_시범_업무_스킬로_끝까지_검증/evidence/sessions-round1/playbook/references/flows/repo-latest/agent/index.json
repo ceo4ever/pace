@@ -1,0 +1,41 @@
+{
+  "agentSchema": 1,
+  "generated": "생성 파일 — steps.json에서 만든다. 직접 고치지 않는다.",
+  "title": "공개 GitHub 저장소 페이지에서 기본 브랜치·별 개수·최신 커밋(해시 앞 7자·제목·날짜)을 읽어 표로 낸다",
+  "purpose": "공개 GitHub 저장소 페이지에서 기본 브랜치·별 개수·최신 커밋(해시 앞 7자·제목·날짜)을 읽어 표로 낸다",
+  "resultTo": "result-table",
+  "allowedOrigins": [
+    "https://github.com"
+  ],
+  "allowedPaths": [
+    "/{owner}/{repo}"
+  ],
+  "risks": {},
+  "rules": [],
+  "start": "새 탭이 열려 있다",
+  "run": [],
+  "events": [],
+  "steps": [
+    {
+      "id": "S01",
+      "title": "저장소 페이지 열기",
+      "risk": "read",
+      "html": "S01.html",
+      "json": "S01.json",
+      "actionHash": "b3988a682ba013e7a30c10ab43c122a4544dc42da9114f9c63ea017477018a39"
+    },
+    {
+      "id": "S02",
+      "title": "저장소 요약 읽기",
+      "risk": "read",
+      "html": "S02.html",
+      "json": "S02.json",
+      "shot": {
+        "path": "shots/S02.jpg",
+        "sha256": "9fd8d5cd92b53eae5596e1761bc2f180e1506d0ec5c7f5400af4b6572425eb4e"
+      },
+      "actionHash": "39a459f07129fabb6fbe7446dde8426b5d7406e9d45ff553b0110eeff0b1ffc5"
+    }
+  ],
+  "sourceHash": "6e5de5c174492244bc5b9e8c7f8a8aca86944ba4e33634e6597669142e025c71"
+}

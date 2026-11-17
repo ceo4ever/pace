@@ -31,6 +31,73 @@ export function validateMask(mask){
   return true;
 }
 
+// 값 노출 검사 — 추출 대상 요소가 가려져도 **같은 값이 화면의 다른 곳**(예: 파일 목록의 커밋 제목·About의 별 개수)에 가려지지 않은 채 보이면 캡처 이미지에 값이 남는다.
+// 화면에서 각 추출 대상의 현재 값을 읽어, 대상 요소 밖의 보이는 곳 중 mask 규칙(CSS 선택자 안·정규식 일치)에 덮이지 않은 곳에 그 값이 있는지 센다.
+//  · 글자: 각 요소의 **대상 밖 글자**(대상 요소 하위 글자를 뺀 글자 — 대상을 품은 부모의 다른 글자도 본다)에서 값을 품은 **가장 작은 요소**를 센다
+//    — 값이 여러 노드로 나뉘어(ab<span>cd</span>) 보여도 잡는다. 값은 길이와 무관하게 낱말 단위로 찾는다(짧은 값 '7'도 '별: 7'에서 잡는다).
+//  · 입력칸: 다른 입력칸의 value에 같은 값이 있으면 센다.
+// 대상마다 결과를 하나씩 낸다 — 대상 요소가 없거나 값이 비었으면 checked:false(검사하지 못함). 결과에는 이름·개수·사유만 있다(값 없음).
+export function leakScript({mask,step}){
+  const css=(mask||[]).filter(m=>typeof m==='string'&&!m.startsWith('re:'));
+  const res=(mask||[]).filter(m=>typeof m==='string'&&m.startsWith('re:')).map(m=>m.slice(3));
+  return `(()=>{
+const CSS=${JSON.stringify(css)},RES=${JSON.stringify(res)},TG=${JSON.stringify(leakTargets(step))};
+// 캡처는 뷰포트만 찍는다 — 화면 밖(스크롤 아래) 요소는 이미지에 남지 않는다
+const VW=typeof innerWidth==='number'?innerWidth:Infinity,VH=typeof innerHeight==='number'?innerHeight:Infinity;
+const vis=e=>{const r=e.getBoundingClientRect();const right=r.right??(r.left+r.width),bottom=r.bottom??(r.top+r.height);return r.width>0&&r.height>0&&right>0&&bottom>0&&r.left<VW&&r.top<VH&&getComputedStyle(e).visibility!=='hidden';};
+const closest=(el,sel)=>{for(let p=el;p;p=p.parentElement){try{if(p.matches&&p.matches(sel))return true;}catch(e){return false;}}return false;};
+const isInput=e=>/^(INPUT|SELECT|TEXTAREA)$/.test(e.tagName);
+const norm=s=>String(s??'').replace(/\\s+/g,' ').trim();
+const escRe=s=>s.replace(/[.*+?^\${}()|[\\]\\\\]/g,'\\\\$&');
+const coveredEl=(el,text)=>{for(const m of CSS)if(closest(el,m))return true;for(const r of RES){try{if(new RegExp(r).test(text))return true;}catch(e){}}return false;};
+const inside=(a,b)=>{for(let q=b;q;q=q.parentElement)if(q===a)return true;return false;};
+const els=[];const walk=n=>{for(const c of n.children||[]){if(c.nodeType!==1)continue;els.push(c);walk(c);}};walk(document.body);
+const out=[];
+for(const t of TG){
+  let el=null;try{el=document.querySelector(t.f);}catch(e){}
+  if(!el){out.push({name:t.n,checked:false,reason:'missing'});continue;}
+  const v=norm(isInput(el)?el.value:el.textContent);
+  if(!v){out.push({name:t.n,checked:false,reason:'empty'});continue;}
+  // 값은 낱말 단위로 찾는다(앞뒤가 글자·숫자가 아님) — 'main'이 'domain' 안에서 잡히지 않게. 길이와 무관(짧은 값도 낱말로 있으면 센다 — fail-closed)
+  const tok=new RegExp('(^|[^\\\\p{L}\\\\p{N}])'+escRe(v)+'($|[^\\\\p{L}\\\\p{N}])','u');
+  const has=s=>tok.test(norm(s));
+  // 대상 밖 글자: 대상 요소 하위 글자를 빼고(경계는 공백) 이어 붙인다 — 대상을 품은 조상의 다른 글자도 검사된다
+  const memo=new Map();
+  const outText=nd=>{if(nd===el)return ' ';if(nd.nodeType===3)return nd.nodeValue||'';if(memo.has(nd))return memo.get(nd);const s=Array.from(nd.childNodes||nd.children||[]).map(outText).join('');memo.set(nd,s);return s;};
+  let n=0;
+  for(const e of els){
+    if(e===el||inside(el,e))continue;   // 대상 자신·대상 안
+    if(!vis(e))continue;
+    if(isInput(e)){if(e.value!==undefined&&has(e.value)&&!coveredEl(e,String(e.value)))n++;continue;}
+    const txt=outText(e);
+    if(!has(txt))continue;
+    // 더 작은 자식 요소가 값을 품으면 그 자식에서 센다(실제 DOM의 children은 HTMLCollection — 배열 메서드 없음)
+    if(Array.from(e.children||[]).some(c=>c.nodeType===1&&c!==el&&!inside(el,c)&&has(outText(c))))continue;
+    if(!coveredEl(e,txt))n++;
+  }
+  out.push({name:t.n,checked:true,exposed:n});
+}
+return out;
+})()`;
+}
+// 값 노출 검사 대상 — 화면 선택자로 읽는 추출 선언(이름·선택자)
+export function leakTargets(step){return ((step&&step.extract)||[]).filter(x=>x&&x.where&&typeof x.where.selector==='string').map(x=>({n:x.name,f:x.where.selector}));}
+// 문제 문구 배열(이름·개수·사유만, 값 없음) — fail-closed: 결과가 배열이 아니거나, 대상마다 하나씩 checked 결과가 없거나, 노출이 있으면 문제다
+export function leakProblems(res,step){
+  if(!Array.isArray(res))return ['값 노출 검사 결과를 읽지 못했다'];
+  const probs=[];
+  const names=step?leakTargets(step).map(t=>t.n):res.map(x=>x&&x.name);
+  for(const name of names){
+    const x=res.find(r=>r&&r.name===name);
+    const label=`추출 '${String(name).slice(0,40)}'`;
+    if(!x||typeof x!=='object'){probs.push(`${label}의 값 노출 검사 결과가 없다`);continue;}
+    if(x.checked!==true){probs.push(`${label}의 값 노출을 검사하지 못했다(${x.reason==='missing'?'대상 없음':x.reason==='empty'?'값 없음':'사유 모름'})`);continue;}
+    if(!Number.isInteger(x.exposed)||x.exposed<0){probs.push(`${label}의 값 노출 검사 결과를 해석하지 못했다`);continue;}
+    if(x.exposed>0)probs.push(`${label}의 값이 대상 밖 ${x.exposed}곳에 가려지지 않고 보인다`);
+  }
+  return probs;
+}
+
 // 단계·흐름 설정이 캡처를 허용하는지 — 아니면 CaptureRefused
 export function assertCapturable(step,doc){
   if(!step||typeof step!=='object')throw new CaptureRefused('단계를 찾지 못했다','step');

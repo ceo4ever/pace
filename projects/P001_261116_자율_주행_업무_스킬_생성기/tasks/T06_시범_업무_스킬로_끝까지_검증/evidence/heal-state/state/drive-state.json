@@ -1,0 +1,42 @@
+{
+ "version": 1,
+ "runs": {
+  "t06-pre": {
+   "steps": {
+    "S02": {
+     "status": "done",
+     "actionHash": "5ee96138bdec69b4d862d038a8c8bc244c70ff842e52becbc11471b7fa74ea56",
+     "sourceHash": "31562558feaec6db5eb16ea468ce6c5a5caf6c656a24cecf2e5822116a61b58c",
+     "attempt": 2,
+     "extractCount": 5,
+     "delivered": true,
+     "ms": 13158
+    }
+   }
+  },
+  "t06-damaged": {
+   "steps": {
+    "S02": {
+     "status": "stopped",
+     "actionHash": "5ee96138bdec69b4d862d038a8c8bc244c70ff842e52becbc11471b7fa74ea56",
+     "sourceHash": "cef5db5dc774439c49a0d0eaf5ebd8bef6fbe24ab6e23d0679a511a2e9f69161",
+     "attempt": 1,
+     "reason": "conflict"
+    }
+   }
+  },
+  "t06-heal": {
+   "steps": {
+    "S02": {
+     "status": "stopped",
+     "actionHash": "5ee96138bdec69b4d862d038a8c8bc244c70ff842e52becbc11471b7fa74ea56",
+     "sourceHash": "cef5db5dc774439c49a0d0eaf5ebd8bef6fbe24ab6e23d0679a511a2e9f69161",
+     "attempt": 1,
+     "reason": "conflict"
+    }
+   }
+  }
+ },
+ "consumed": [],
+ "reserved": {}
+}

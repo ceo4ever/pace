@@ -1,0 +1,28 @@
+# npm run check (전체 1회, T06 마감 전, 2026-11-17)
+
+명령: npm run check (tsc 타입 검사 + node --test, Windows 순차) — 전체 로그는 기존 시험의 문구가 많아 요약만 남긴다
+
+> pace@0.1.0 check
+> npm run typecheck && npm test
+> pace@0.1.0 typecheck
+
+ℹ tests 879
+ℹ suites 0
+ℹ pass 873
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 6
+ℹ todo 0
+
+건너뜀:
+﹣ 지연된 git은 합산 부트 예산 안에서 유효한 훅 출력으로 열화한다 # POSIX 지연 git 대역
+﹣ git 상태 조회가 시간 초과되면 변경 0개로 오인하지 않는다 # POSIX 지연 git 대역
+﹣ 신규 설치: 훅 등록, pace 링크, PATH를 zshrc에 한 번만 추가 # install.sh는 macOS·Linux 전용
+﹣ 미리보기는 아무것도 바꾸지 않는다 # install.sh는 macOS·Linux 전용
+﹣ 임시 설치된 Antigravity 훅은 단일 workspacePaths의 활성 역할을 반환한다 # Windows 설치 실행 경로는 별도 실기 검증 필요
+﹣ 구현 후 리뷰 1차: 조회 도중 루트가 통째로 바뀌면 거부된다(열기 뒤 루트 식별자 재확인) # 루트 교체 훅이 동작하지 않음(권한·열린 핸들)
+
+✔ 설치: pace-playbook-maker가 도구째 설치본·도구 폴더에 들어가고 설치본에서 생성기·코어가 돈다
+✔ playbook-maker .mjs 테스트가 실제로 실행되고 모두 통과한다
+✔ T06 측정 도구 단위 시험이 실제로 실행되고 모두 통과한다
+exit 0

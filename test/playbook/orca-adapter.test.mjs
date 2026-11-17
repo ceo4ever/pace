@@ -13,13 +13,15 @@ const PW=['pass','word=','hunter2','value'].join('');
 const OVERLAY_OK={masked:2,errors:[],frames:{viewer:{ok:true},side:{ok:true}},perRule:{'td.owner':1},missing:[],boxes:{1:{x:40,y:80,w:120,h:24},2:{x:40,y:140,w:720,h:300}},elementsMasked:{1:false,2:true},view:{vw:800,vh:600,dpr:1}};
 
 // runCapture·observeStep이 부르는 browser 계약을 흉내 낸다(식 안의 표지로 종류 판별)
-function fakeBrowser({shotDir,overlay=OVERLAY_OK,post={ok:true,reasons:[]},observe={ar:[true,true],er:[true]}}={}){
+// leak 기본값 'clean': 식의 검사 대상(TG)마다 검사함·노출 0을 돌려준다. 배열·null을 주면 그대로 돌려준다.
+function fakeBrowser({shotDir,overlay=OVERLAY_OK,post={ok:true,reasons:[]},observe={ar:[true,true],er:[true]},leak='clean'}={}){
   const calls=[];let n=0;
+  const clean=expr=>{const m=/TG=(\[.*?\]);\n/.exec(expr);return (m?JSON.parse(m[1]):[]).map(t=>({name:t.n,checked:true,exposed:0}));};
   return {calls,
     evalJs(expr){
-      const kind=expr.includes('const A=')?'observe':expr.includes('f.post()')?'post':expr.includes('f.cleanup()')?'cleanup':'overlay';
+      const kind=expr.includes('const A=')?'observe':expr.includes('const CSS=')?'leak':expr.includes('f.post()')?'post':expr.includes('f.cleanup()')?'cleanup':'overlay';
       calls.push(kind);
-      return kind==='observe'?observe:kind==='post'?post:kind==='cleanup'?true:overlay;
+      return kind==='observe'?observe:kind==='leak'?(leak==='clean'?clean(expr):leak):kind==='post'?post:kind==='cleanup'?true:overlay;
     },
     screenshot(){calls.push('screenshot');const p=join(shotDir,`raw-${++n}.jpg`);copyFileSync(join(FIX,'shots','S02.jpg'),p);return p;},
     discard(p){calls.push('discard');if(existsSync(p))writeFileSync(p,'');require_unlink(p);},
@@ -106,7 +108,13 @@ test('S-4 캡처 단계 거부: 사후 검사 실패·오버레이 오류·가�
     ['post 실패',{post:{ok:false,reasons:['dom_changed']}},{},/캡처 중 화면이 바뀌어 거부/],
     ['오버레이 오류',{overlay:{...OVERLAY_OK,errors:['x']}},{},/마스킹 오버레이 오류/],
     ['가림 필수 0건',{overlay:{...OVERLAY_OK,perRule:{'td.owner':0}}},{step:s=>({...s,maskRequire:['td.owner']})},/가림 필수 규칙이 0건/],
-    ['추출 미가림',{overlay:{...OVERLAY_OK,elementsMasked:{1:false,2:false}}},{},/가려지지 않았다/]
+    ['추출 미가림',{overlay:{...OVERLAY_OK,elementsMasked:{1:false,2:false}}},{},/가려지지 않았다/],
+    ['같은 값이 대상 밖에 노출',{leak:[{name:'목록 행',checked:true,exposed:2}]},{},/대상 밖 2곳에 가려지지 않고 보인다/],
+    ['값 노출 검사를 읽지 못함(fail-closed)',{leak:null},{},/값 노출 검사 결과를 읽지 못했다/],
+    ['빈 결과(대상별 결과 없음, fail-closed)',{leak:[]},{},/값 노출 검사 결과가 없다/],
+    ['불완전 결과([{}])',{leak:[{}]},{},/값 노출 검사 결과가 없다/],
+    ['대상 없음·값 없음은 검사하지 못함',{leak:[{name:'목록 행',checked:false,reason:'empty'}]},{},/값 노출을 검사하지 못했다\(값 없음\)/],
+    ['개수 해석 불가',{leak:[{name:'목록 행',checked:true,exposed:'2'}]},{},/해석하지 못했다/]
   ];
   for(const [name,opts,extra,re] of cases){
     const {err,pending,shotDir}=run(opts,extra);
@@ -147,4 +155,21 @@ test('createOrcaBrowser는 page가 없으면 거부한다(지정한 탭만 다�
   assert.throws(()=>createOrcaBrowser({}),/page/);
   const b=createOrcaBrowser({page:'p',exe:process.execPath,tries:1});
   assert.equal(typeof b.evalJs,'function');assert.equal(typeof b.screenshot,'function');assert.equal(b.page,'p');
+});
+
+test('T06 S-14 recaptureStep(복구 재캡처)은 최초 캡처와 같은 값 노출 관문을 거치고, 통과하면 기록·이미지를 돌려주고 원본을 지운다', async()=>{
+  const {recaptureStep}=await import('../../skills/pace-playbook-maker/tools/orca-adapter.mjs');
+  const {shotDir,step,doc}=setup();
+  // 노출이 있으면 스크린샷 전에 거부
+  const bad=fakeBrowser({shotDir,leak:[{name:'목록 행',checked:true,exposed:1}]});
+  assert.throws(()=>recaptureStep({browser:bad,doc,step}),e=>e instanceof CaptureRefused&&e.code==='value_exposed');
+  assert.ok(!bad.calls.includes('screenshot'));
+  // 결과 없음도 거부(fail-closed)
+  assert.throws(()=>recaptureStep({browser:fakeBrowser({shotDir,leak:null}),doc,step}),e=>e.code==='value_exposed');
+  // 통과: 기록·이미지, 원본 스크린샷은 지운다
+  const ok=fakeBrowser({shotDir});
+  const r=recaptureStep({browser:ok,doc,step});
+  assert.equal(r.record.shotSha256,sha256Hex(r.bytes));
+  assert.ok(ok.calls.indexOf('leak')<ok.calls.indexOf('screenshot'),'노출 검사가 먼저다');
+  assert.ok(ok.calls.includes('discard'));
 });

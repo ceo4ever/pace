@@ -389,3 +389,73 @@ test('S-5b+ ignore 하위 요소의 childList·attributes는 실패, frame은 �
   const sc=withDom(d2,()=>{overlay({elements:[],css:['td'],res:[],frames:{cert:'#c'},ignore:[]});a.doc.defaultView.scrollY=50;return globalThis.__flowcap.post();});
   assert.deepEqual(sc.reasons,['scroll_changed']);
 });
+
+// ---- 값 노출 검사(T06 검토 반영): 추출 대상 밖의 같은 값 노출 위치 ----
+import {leakScript,leakProblems} from '../../skills/pace-playbook-maker/tools/capture-core.mjs';
+const runLeak=(doc,mask,step)=>new Function('document','NodeFilter','getComputedStyle','return '+leakScript({mask,step}))(doc,{SHOW_TEXT:4},()=>({visibility:'visible'}));
+
+const mkDoc=()=>{const d=new Doc();const mk=(tag,o={},parent=d.body)=>{const e=new El(tag,{rect:{left:0,top:0,width:100,height:20},...o});parent.appendChild(e);return e;};return {d,mk};};
+
+test('값 노출 S-1 같은 값이 가림 밖 다른 곳에 보이면 개수로 잡고, 가려진 곳·대상 자신은 세지 않는다 — 대상마다 결과 하나', ()=>{
+  const {d,mk}=mkDoc();
+  mk('span',{attrs:{class:'stars'},text:'124k'});            // 추출 대상
+  mk('p',{attrs:{class:'about'},text:'About: 124k stars'});   // 같은 값이 다른 곳(가려지지 않음)
+  mk('td',{attrs:{class:'row'},text:'124k'});                 // 같은 값이 다른 곳(가려짐)
+  const step={extract:[{name:'별',where:{selector:'span.stars'}}]};
+  let r=runLeak(d,['td.row'],step);
+  assert.deepEqual(r,[{name:'별',checked:true,exposed:1}]);   // about의 124k만(td는 가려짐, 대상 자신 제외)
+  assert.deepEqual(leakProblems(r,step),["추출 '별'의 값이 대상 밖 1곳에 가려지지 않고 보인다"]);
+  // 정규식 가림 규칙이 덮으면 세지 않는다
+  const covered=runLeak(d,['td.row','re:\\d+k stars'],step);
+  assert.deepEqual(covered,[{name:'별',checked:true,exposed:0}]);assert.deepEqual(leakProblems(covered,step),[]);
+  // 결과는 이름·개수뿐(값 없음)
+  assert.ok(!JSON.stringify(r).includes('124k'));
+});
+
+test('값 노출 S-2 노드로 나뉜 글자·다른 입력칸의 value·짧은 값(낱말 단위)도 센다', ()=>{
+  const {d,mk}=mkDoc();
+  mk('span',{attrs:{class:'title'},text:'가상 제목 abcd'});
+  const p=mk('p',{attrs:{class:'list'}});mk('b',{text:'가상 제목 ab'},p);mk('i',{text:'cd'},p);   // ab<i>cd</i>로 나뉨 → p에서 한 번
+  mk('input',{attrs:{class:'search'},value:'가상 제목 abcd'});                                      // 다른 입력칸의 value
+  mk('span',{attrs:{class:'stars'},text:'7'});mk('em',{text:'7'});mk('em',{text:'v1.7 release'});    // 짧은 값도 낱말로: em '7'과 'v1.7'의 '7'(점 뒤 낱말)
+  const step={extract:[{name:'제목',where:{selector:'span.title'}},{name:'별',where:{selector:'span.stars'}}]};
+  const r=runLeak(d,[],step);
+  assert.deepEqual(r,[{name:'제목',checked:true,exposed:2},{name:'별',checked:true,exposed:2}]);
+  // 가리면 0
+  assert.deepEqual(runLeak(d,['p.list','input.search','em'],step).map(x=>x.exposed),[0,0]);
+});
+
+test('값 노출 S-2b 화면(뷰포트) 밖 요소와 다른 낱말 속 부분 일치는 세지 않는다', ()=>{
+  const {d,mk}=mkDoc();
+  mk('span',{attrs:{class:'branch'},text:'main'});
+  mk('p',{text:'custom domain settings'});                                  // 'main'이 낱말 안에만 — 세지 않음
+  mk('p',{text:'switch to main now'});                                      // 낱말로 있음 — 셈
+  mk('pre',{text:'git checkout main',rect:{left:0,top:2000,width:100,height:20}});   // 뷰포트(800×600) 밖 — 이미지에 없음
+  const step={extract:[{name:'브랜치',where:{selector:'span.branch'}}]};
+  const run=new Function('document','NodeFilter','getComputedStyle','innerWidth','innerHeight','return '+leakScript({mask:[],step}));
+  assert.deepEqual(run(d,{SHOW_TEXT:4},()=>({visibility:'visible'}),800,600),[{name:'브랜치',checked:true,exposed:1}]);
+});
+
+test('값 노출 S-2c 대상을 품은 부모의 다른 글자와 주변 글자가 붙은 짧은 값도 센다(검토 3차)', ()=>{
+  const {d,mk}=mkDoc();
+  const box=mk('div',{attrs:{class:'box'}});
+  mk('span',{id:'target',text:'abcd'},box);box.appendChild(new Text(' · abcd'));   // <div><span id=target>abcd</span> · abcd</div>
+  mk('span',{attrs:{class:'stars'},text:'7'});mk('p',{text:'별: 7'});mk('p',{text:'v17 release'});   // 짧은 값: '별: 7'만(낱말), 'v17'은 아님
+  const step={extract:[{name:'제목',where:{selector:'#target'}},{name:'별',where:{selector:'span.stars'}}]};
+  assert.deepEqual(runLeak(d,['#target','span.stars'],step),[{name:'제목',checked:true,exposed:1},{name:'별',checked:true,exposed:1}]);
+  // 부모 전체를 가리면 0
+  assert.deepEqual(runLeak(d,['div.box','span.stars','p'],step).map(x=>x.exposed),[0,0]);
+});
+
+test('값 노출 S-3 fail-closed — 대상 없음·값 없음·결과 없음·불완전·해석 불가는 모두 문제', ()=>{
+  const {d,mk}=mkDoc();
+  mk('span',{attrs:{class:'empty'},text:''});
+  const step={extract:[{name:'없음',where:{selector:'span.none'}},{name:'빈값',where:{selector:'span.empty'}}]};
+  const r=runLeak(d,[],step);
+  assert.deepEqual(r,[{name:'없음',checked:false,reason:'missing'},{name:'빈값',checked:false,reason:'empty'}]);
+  assert.deepEqual(leakProblems(r,step),["추출 '없음'의 값 노출을 검사하지 못했다(대상 없음)","추출 '빈값'의 값 노출을 검사하지 못했다(값 없음)"]);
+  assert.equal(leakProblems(undefined,step).length,1);
+  assert.equal(leakProblems([],step).length,2);              // 대상마다 결과가 있어야 한다
+  assert.equal(leakProblems([{}],step).length,2);
+  assert.deepEqual(leakProblems([{name:'없음',checked:true,exposed:'0'},{name:'빈값',checked:true,exposed:0}],step),["추출 '없음'의 값 노출 검사 결과를 해석하지 못했다"]);
+});

@@ -25,6 +25,17 @@ test('S-5 정상: 승인 완료 흐름에서 플레이북 폴더가 만들어지
   for(const s of ['가상 서비스의 보관함 목록 조회까지(전송 제외)','목록 행 수가 응답 건수와 같다','전송 — 되돌릴 수 없음 · 관문: 사람의 보내기 승인 한마디 필요','box(web) https://app.example.test — 인증: env-token(BOX_TOKEN)','목록 행(문자열, masked) → result-sheet','종류: 주민번호','주 1회','공지 창이 늦게 뜬다','S01: auth','기간(YYYY-MM-DD) ← user'])
     assert.ok(skill.includes(s),`SKILL.md에 없음: ${s}`);
   assert.ok(skill.includes('[index.json](references/flows/sample-flow/agent/index.json)')&&skill.includes('[flow.html](references/flows/sample-flow/flow.html)'));
+  // 흐름 색인은 단계 지도 파일 경로까지 모두 적고(탐색 없이 바로 읽기 — T06 측정), 적힌 경로는 모두 실재한다
+  const ids=readJson(join(out,'references','flows','sample-flow','steps.json')).steps.map(s=>s.id);
+  assert.ok(ids.length>1);
+  for(const id of ids)assert.ok(skill.includes(`[${id}.json](references/flows/sample-flow/agent/${id}.json)`),`단계 지도 경로 없음: ${id}`);
+  for(const m of skill.matchAll(/\]\((references\/[^)]+)\)/g))assert.ok(existsSync(join(out,m[1])),`색인 경로가 없다: ${m[1]}`);
+  // 생성 머리말의 --dir은 최종 위치 자리표시다 — 임시 작업 폴더(사용자 이름이 든 절대 경로)가 남지 않는다(T06 유출 검사에서 드러남)
+  for(const md of readdirSync(join(out,'references','flows','sample-flow','flow'))){
+    const t=readFileSync(join(out,'references','flows','sample-flow','flow',md),'utf8');
+    assert.ok(t.includes('--dir <플레이북 폴더>/references/flows/sample-flow'),`머리말 자리표시 없음: ${md}`);
+    assert.ok(!t.includes(tmpdir())&&!t.includes(tmpdir().replace(/\\/g,'/'))&&!/pace-playbook-[A-Za-z0-9]{6}[\\/]/.test(t),`임시 경로가 남음: ${md}`);
+  }
   assert.ok(skill.includes(`규약 버전 ${DRIVING_VERSION}`)&&skill.includes('`pace-playbook-maker` 스킬의 `references/driving.md`'));
   assert.ok(skill.includes('[references/history.md](references/history.md)'));
   assert.deepEqual(checkPlaybook(out),{ok:true,problems:[]});

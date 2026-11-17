@@ -12,7 +12,7 @@ import {sensitiveKinds} from './sensitive.mjs';
 const HEX64=/^[0-9a-f]{64}$/;
 const nonEmpty=v=>typeof v==='string'&&v.trim().length>0;
 // 값이 섞일 수 있는 문자열(이유·예외 메시지·오류 본문)은 허용 어휘 목록에 있을 때만 남긴다 — 모양만 맞는 문자열은 통과시키지 않는다
-const REASONS=new Set(['needs-approval','no-map-rule','screen-mismatch','expect-failed','conflict','step-failed','param-missing','action-unsupported','find-unsupported','access-denied','undeclared-key','not-api-step','redirect-refused','status-mismatch','schema-mismatch','missing-value','no-destination','sink-failed','unknown-outcome','in-flight','undelivered','moved','missing','unknown','timeout']);
+const REASONS=new Set(['needs-approval','no-map-rule','screen-mismatch','expect-failed','conflict','step-failed','param-missing','action-unsupported','find-unsupported','access-denied','undeclared-key','not-api-step','redirect-refused','status-mismatch','schema-mismatch','missing-value','no-destination','sink-failed','unknown-outcome','in-flight','undelivered','moved','missing','unknown','timeout','truncated']);
 const safeCode=x=>typeof x==='string'&&REASONS.has(x)?x:'<가려짐>';
 const errCode=e=>safeCode(e&&typeof e==='object'&&typeof e.code==='string'?e.code:'');
 // 중단 보고(locate.report)는 지도에서 단계 정보를 만들고 runtime이 준 것은 요소 번호·이유 코드만 받는다 — 임의 필드는 버린다
@@ -301,7 +301,7 @@ export function createWebRuntime({browser,params={},waitMs=3000,pollMs=100,sleep
   const q=JSON.stringify;
   const cssOnly=f=>typeof f==='string'&&!/^text:/.test(f)&&!/^[A-Za-z_][\w-]*:(?!:)/.test(f.replace(/\[[^\]]*\]/g,''))||false;
   const rectOf=find=>ev(`(()=>{const e=document.querySelector(${q(find)});if(!e)return null;const r=e.getBoundingClientRect();return {x:r.left,y:r.top,w:r.width,h:r.height,vw:innerWidth,vh:innerHeight};})()`);
-  const state=find=>ev(`(()=>{const e=document.querySelector(${q(find)});if(!e)return {exists:false};const r=e.getBoundingClientRect();const vis=!e.hidden&&r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden';const t=String(e.value??e.textContent??'');let h=0;for(let i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))|0;return {exists:true,vis,filled:vis&&t.trim().length>0,h};})()`);
+  const state=find=>ev(`(()=>{const e=document.querySelector(${q(find)});if(!e)return {exists:false};const r=e.getBoundingClientRect();const vis=!e.hidden&&r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden';const t=String(/^(INPUT|SELECT|TEXTAREA)$/.test(e.tagName)?(e.value??''):(e.textContent??''));let h=0;for(let i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))|0;return {exists:true,vis,filled:vis&&t.trim().length>0,h};})()`);
   const visible=sel=>{const s=state(sel);return s.exists&&s.vis;};
   return {
     async judgeScreen(step){
@@ -353,8 +353,10 @@ export function createWebRuntime({browser,params={},waitMs=3000,pollMs=100,sleep
       if(!ok)return {ok:false,reason:'expect-failed',executed:undefined};
       const values={};
       for(const x of step.extract||[]){
-        if(x.where&&x.where.selector)values[x.name]=ev(`(()=>{const e=document.querySelector(${q(x.where.selector)});return e?String(e.value??e.textContent??''):null;})()`);
+        if(x.where&&x.where.selector)values[x.name]=ev(`(()=>{const e=document.querySelector(${q(x.where.selector)});return e?String(/^(INPUT|SELECT|TEXTAREA)$/.test(e.tagName)?(e.value??''):(e.textContent??'')):null;})()`);
       }
+      // 말줄임 검사: 화면이 줄여 보인 글자('…'로 끝남)는 값 전체가 아니다 — 잘린 값을 넘기지 않고 멈춘다(fail-closed). 전체 값을 읽는 방법은 지도(단계 command·verify)에 적는다
+      for(const v of Object.values(values))if(typeof v==='string'&&/(?:…|\.\.\.)\s*$/.test(v))return {ok:false,reason:'truncated'};
       return {ok:true,values,expectChecked:readers.length>0};   // 읽기 대상이 있어 기대 결과를 실제로 관찰했을 때만 true — 복구 검증이 요구한다
     }
   };

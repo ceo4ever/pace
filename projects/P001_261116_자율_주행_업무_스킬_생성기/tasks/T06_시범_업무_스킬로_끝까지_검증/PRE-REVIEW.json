@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "author": "anthropic",
+ "attempts": [
+  {
+   "hash": "a39d5b207b509a413f16f5e1ef26456428ea141db2d596089964cf531e2a5dd1",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 2,
+   "evidence": "evidence/pre-review-task-1.md",
+   "continuity": "new"
+  },
+  {
+   "hash": "92543a577c10800dc6046708d23ec7db231171a2fd385bed77af9367db3584bb",
+   "provider": "openai",
+   "cross": true,
+   "status": "fail",
+   "blocking": 1,
+   "evidence": "evidence/pre-review-task-2.md",
+   "continuity": "changed",
+   "reason": "새 codex 세션 — 1차 지적 반영본을 다시 검토(이전 지적은 전달하지 않음). 해시는 반영 전후 TASK 판을 역변환으로 복원"
+  },
+  {
+   "hash": "a80077c716fc36836bb0299ffd95aa3e0d8925eba33bac847b985da793eef182",
+   "provider": "openai",
+   "cross": true,
+   "status": "pass",
+   "blocking": 0,
+   "evidence": "evidence/pre-review-task-3.md",
+   "continuity": "changed",
+   "reason": "reviewer.md 2회+반영 확인 1회 규칙 — 새 codex 세션, 2차 blocking 1건(S-4 지도 손상 방법)의 해소만 판정"
+  }
+ ]
+}

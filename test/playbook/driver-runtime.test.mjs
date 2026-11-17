@@ -210,3 +210,29 @@ test('T05 검토1-⑦ 선언된 응답 경로가 모두 있어야 성공이고, 
   const only=await rt(e2).perform(step({elements:[{n:1,name:'조회',find:'button#go',action:'클릭'}],extract:[]}));
   assert.equal(only.ok,true);assert.equal(only.expectChecked,false);
 });
+
+test('T06 S-11 말줄임(…)으로 끝나는 읽기 값은 넘기지 않고 truncated로 멈춘다 — 전체 글자는 통과', async()=>{
+  // 화면이 줄여 보인 제목: 값이 넘어가지 않는다
+  let e=env();page(e,{onClick:tbl=>e.at(200,()=>{tbl.textContent='긴 제목이 화면에서 잘려 보인다…';})});
+  let r=await rt(e).perform(step());
+  assert.deepEqual([r.ok,r.reason,r.values],[false,'truncated',undefined]);
+  // 세 점 말줄임도 같다
+  e=env();page(e,{onClick:tbl=>e.at(200,()=>{tbl.textContent='잘린 제목...';})});
+  r=await rt(e).perform(step());assert.equal(r.reason,'truncated');
+  // 가운데 말줄임표는 잘림이 아니다(전체 값)
+  e=env();page(e,{onClick:tbl=>e.at(200,()=>{tbl.textContent='범위 1…3 전체 제목';})});
+  r=await rt(e).perform(step());assert.equal(r.ok,true);assert.equal(r.values['목록 행'],'범위 1…3 전체 제목');
+});
+
+test('T06 S-12 읽기 대상이 button·a 같은 비입력 요소면 value 속성이 아니라 글자를 읽는다(button.value는 빈 문자열)', async()=>{
+  const e=env();page(e);
+  // 실제 화면(공개 저장소 페이지)의 브랜치 선택 단추처럼: <button value="">main</button>
+  e.add(e.doc.body,'button',{id:'branch',value:'',text:'가상 브랜치'});
+  const s=step({elements:[{n:1,name:'브랜치',find:'button#branch',action:'읽기'}],extract:[{name:'브랜치',where:{selector:'button#branch'}}]});
+  const r=await rt(e,{freshness:false}).perform(s);
+  assert.deepEqual([r.ok,r.values&&r.values['브랜치']],[true,'가상 브랜치']);
+  // 입력칸은 여전히 value를 읽는다
+  const e2=env();page(e2);e2.add(e2.doc.body,'input',{id:'q',value:'가상 입력값',text:''});
+  const r2=await rt(e2,{freshness:false}).perform(step({elements:[{n:1,name:'칸',find:'input#q',action:'읽기'}],extract:[{name:'칸',where:{selector:'input#q'}}]}));
+  assert.deepEqual([r2.ok,r2.values&&r2.values['칸']],[true,'가상 입력값']);
+});

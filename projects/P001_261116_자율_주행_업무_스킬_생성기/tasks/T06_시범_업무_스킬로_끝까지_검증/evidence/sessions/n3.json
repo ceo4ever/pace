@@ -1,0 +1,82 @@
+{
+ "label": "n3",
+ "mode": "nomap",
+ "repo": "nodejs/node",
+ "model": "sonnet",
+ "claudeVersion": "2.1.326 (Claude Code)",
+ "startedAt": "2026-11-17T01:04:31.404Z",
+ "ms": 36088,
+ "timedOut": false,
+ "profileViolation": false,
+ "permissionDenials": 1,
+ "bashNonOrca": 0,
+ "bashNonOrcaWords": {},
+ "ok": true,
+ "toolCalls": 8,
+ "perTool": {
+  "Bash": 7,
+  "Read": 1
+ },
+ "orcaCalls": 7,
+ "tabCreates": 1,
+ "screenExplorations": 3,
+ "mapBytes": 0,
+ "mapRead": false,
+ "mapReadFiles": 0,
+ "output": {
+  "branch": "main",
+  "stars": "124k",
+  "sha7": "bc6dd40",
+  "title": "deps: update zlib to 1.4-ec453dc",
+  "date": "2026-11-17"
+ },
+ "judge": {
+  "ok": true,
+  "fields": {
+   "branch": true,
+   "sha7": true,
+   "title": true,
+   "date": true,
+   "stars": true
+  },
+  "whole": true,
+  "mixed": false,
+  "missing": []
+ },
+ "truthStart": {
+  "at": "2026-11-17T01:04:31.402Z",
+  "repo": "nodejs/node",
+  "branch": "main",
+  "stars": 123753,
+  "sha7": "bc6dd40",
+  "title": "deps: update zlib to 1.4-ec453dc",
+  "date": "2026-11-17",
+  "dateAlt": "2026-11-17"
+ },
+ "truthEnd": {
+  "at": "2026-11-17T01:05:07.535Z",
+  "repo": "nodejs/node",
+  "branch": "main",
+  "stars": 123753,
+  "sha7": "bc6dd40",
+  "title": "deps: update zlib to 1.4-ec453dc",
+  "date": "2026-11-17",
+  "dateAlt": "2026-11-17"
+ },
+ "numTurns": 9,
+ "isError": false,
+ "init": {
+  "tools": [
+   "Bash",
+   "Read"
+  ],
+  "model": "claude-sonnet-5-5",
+  "permissionMode": "dontAsk",
+  "slashCommands": 0,
+  "skills": [],
+  "mcpServers": [],
+  "memoryPaths": {
+   "auto": "<HOME>\\.claude\\projects\\C--Users-<USER>-AppData-Local-Temp-pace-t06-sess-bHNQeJ\\memory\\"
+  }
+ }
+}

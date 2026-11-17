@@ -143,3 +143,13 @@ test('T-3 events: 개요·html 절, 지정 단계 파일에만, 없는 단계 id
   assert.throws(()=>buildFlow(mk({title:'T',updated:'d',events:[{when:'',then:'y'}],steps:steps3()})),/events/);
   const none=mk({title:'T',updated:'d',steps:steps3()});buildFlow(none);assert.doesNotMatch(read(none,'flow/overview.md'),/비결정 이벤트/);
 });
+test('T06 S-13 머리말 --dir: 실행 위치 밖 흐름 폴더면 절대 경로 대신 자리표시, dirLabel이 있으면 그 표기', ()=>{
+  const dir=mk({title:'T',updated:'2026-01-01',base:'references/x',steps:[step('S01')]});   // 임시 폴더 — 저장소(실행 위치) 밖
+  buildFlow(dir);
+  const ov=read(dir,'flow/overview.md');
+  assert.match(ov,/--dir <흐름 폴더>`/);
+  const slash=s=>s.split('\\').join('/');
+  assert.ok(!ov.includes(dir)&&!ov.includes(slash(dir))&&!ov.includes(slash(tmpdir())),'임시 절대 경로가 남았다');
+  buildFlow(dir,{dirLabel:'<플레이북 폴더>/references/flows/x'});
+  assert.match(read(dir,'flow/S01.md'),/--dir <플레이북 폴더>\/references\/flows\/x`/);
+});

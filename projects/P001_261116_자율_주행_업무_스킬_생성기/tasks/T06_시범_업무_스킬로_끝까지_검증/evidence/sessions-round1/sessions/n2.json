@@ -1,0 +1,82 @@
+{
+ "label": "n2",
+ "mode": "nomap",
+ "repo": "microsoft/vscode",
+ "model": "sonnet",
+ "claudeVersion": "2.1.326 (Claude Code)",
+ "startedAt": "2026-11-16T22:22:57.073Z",
+ "ms": 47401,
+ "timedOut": false,
+ "profileViolation": false,
+ "permissionDenials": 1,
+ "bashNonOrca": 0,
+ "bashNonOrcaWords": {},
+ "ok": true,
+ "toolCalls": 8,
+ "perTool": {
+  "Bash": 7,
+  "Read": 1
+ },
+ "orcaCalls": 7,
+ "tabCreates": 1,
+ "screenExplorations": 4,
+ "mapBytes": 0,
+ "mapRead": false,
+ "mapReadFiles": 0,
+ "output": {
+  "branch": "main",
+  "stars": "195k",
+  "sha7": "27bac47",
+  "title": "agentHost: attribute BYOK turns to the model they selected (#348714)",
+  "date": "2026-11-16"
+ },
+ "judge": {
+  "ok": true,
+  "fields": {
+   "branch": true,
+   "sha7": true,
+   "title": true,
+   "date": true,
+   "stars": true
+  },
+  "whole": true,
+  "mixed": false,
+  "missing": []
+ },
+ "truthStart": {
+  "at": "2026-11-16T22:22:57.071Z",
+  "repo": "microsoft/vscode",
+  "branch": "main",
+  "stars": 195491,
+  "sha7": "27bac47",
+  "title": "agentHost: attribute BYOK turns to the model they selected (#348714)",
+  "date": "2026-11-16",
+  "dateAlt": "2026-11-16"
+ },
+ "truthEnd": {
+  "at": "2026-11-16T22:23:45.053Z",
+  "repo": "microsoft/vscode",
+  "branch": "main",
+  "stars": 195492,
+  "sha7": "24dfb10",
+  "title": "Chat: Show Agent Sessions Sidebar widens the Chat view past the chrome of its part (#348317)",
+  "date": "2026-11-16",
+  "dateAlt": "2026-11-16"
+ },
+ "numTurns": 9,
+ "isError": false,
+ "init": {
+  "tools": [
+   "Bash",
+   "Read"
+  ],
+  "model": "claude-sonnet-5-5",
+  "permissionMode": "dontAsk",
+  "slashCommands": 0,
+  "skills": [],
+  "mcpServers": [],
+  "memoryPaths": {
+   "auto": "<HOME>\\.claude\\projects\\C--Users-<USER>-AppData-Local-Temp-pace-t06-sess-nTcu1Z\\memory\\"
+  }
+ }
+}

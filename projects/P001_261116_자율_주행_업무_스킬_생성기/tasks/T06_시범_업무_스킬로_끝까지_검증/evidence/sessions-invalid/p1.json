@@ -1,0 +1,72 @@
+{
+ "label": "p1",
+ "mode": "playbook",
+ "repo": "anthropics/claude-code",
+ "model": "sonnet",
+ "claudeVersion": "2.1.326 (Claude Code)",
+ "startedAt": "2026-11-16T22:17:20.557Z",
+ "ms": 30380,
+ "timedOut": false,
+ "profileViolation": false,
+ "ok": false,
+ "toolCalls": 5,
+ "perTool": {
+  "Bash": 5
+ },
+ "orcaCalls": 3,
+ "tabCreates": 1,
+ "screenExplorations": 1,
+ "mapBytes": 0,
+ "mapRead": false,
+ "mapReadFiles": 0,
+ "output": null,
+ "judge": {
+  "ok": false,
+  "fields": {},
+  "whole": false,
+  "mixed": false,
+  "missing": [
+   "branch",
+   "stars",
+   "sha7",
+   "title",
+   "date"
+  ]
+ },
+ "truthStart": {
+  "at": "2026-11-16T22:17:20.555Z",
+  "repo": "anthropics/claude-code",
+  "branch": "main",
+  "stars": 155910,
+  "sha7": "a5840c6",
+  "title": "chore: Update mods/",
+  "date": "2026-11-16",
+  "dateAlt": "2026-11-16"
+ },
+ "truthEnd": {
+  "at": "2026-11-16T22:17:50.974Z",
+  "repo": "anthropics/claude-code",
+  "branch": "main",
+  "stars": 155910,
+  "sha7": "a5840c6",
+  "title": "chore: Update mods/",
+  "date": "2026-11-16",
+  "dateAlt": "2026-11-16"
+ },
+ "numTurns": 6,
+ "isError": false,
+ "init": {
+  "tools": [
+   "Bash",
+   "Read"
+  ],
+  "model": "claude-sonnet-5-5",
+  "permissionMode": "dontAsk",
+  "slashCommands": 0,
+  "skills": [],
+  "mcpServers": [],
+  "memoryPaths": {
+   "auto": "<HOME>\\.claude\\projects\\C--Users-<USER>-AppData-Local-Temp-pace-t06-sess-4rwFVI\\memory\\"
+  }
+ }
+}

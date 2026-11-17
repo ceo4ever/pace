@@ -1,0 +1,4 @@
+시범 화면(만들 때 입력, 게스트 프로필, 1280×900) · 흐름 mask 11개 · 대상별 결과: [{"name":"기본 브랜치","checked":true,"exposed":0},{"name":"별 개수","checked":true,"exposed":0},{"name":"최신 커밋 해시","checked":true,"exposed":0},{"name":"최신 커밋 제목","checked":true,"exposed":0},{"name":"최신 커밋 날짜","checked":true,"exposed":0}]
+대조(mask 없음): 대상별 노출 기본 브랜치 3 · 별 개수 0 · 최신 커밋 해시 0 · 최신 커밋 제목 2 · 최신 커밋 날짜 13 → 문제 3건
+관문(assertNoValueExposure): 통과 — 노출 0, 검사 못한 대상 0
+판정: 강화한 관문을 시범 화면이 통과하고, mask 없이는 같은 관문이 노출을 잡는다

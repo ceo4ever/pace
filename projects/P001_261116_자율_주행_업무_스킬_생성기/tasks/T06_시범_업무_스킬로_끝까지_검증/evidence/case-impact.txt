@@ -1,0 +1,23 @@
+사례 저장소 작업 사본 HEAD 기록(값은 비식별로 남기지 않음), git status 0줄 (검사 전)
+임시 HOME 설치: 추가된 스킬 1개(pace-playbook-maker) — PACE 스킬 목록 밖 추가 0개
+기존 항목(PACE 소유가 아닌 것) 파일별 해시 변경 0개 (PACE 소유로 새 버전이 덮은 스킬 3개)
+사례 저장소 프로젝트 스킬 4개 + 설치 스킬 pace-playbook-maker — 이름 모두 서로 다름(총 5개)
+--- 흐름 생성물 동일성(설치본 생성기) ---
+OK   흐름 1 생성물 12개
+OK   흐름 2 생성물 15개
+OK   흐름 3 생성물 12개
+OK   흐름 4 생성물 13개
+OK   흐름 5 생성물 15개
+OK   흐름 6 생성물 14개
+OK   흐름 7 생성물 7개
+OK   흐름 8 생성물 10개
+OK   흐름 9 생성물 8개
+흐름 9개, 파일 106개 비교, 불일치 흐름 0
+--- 사례 저장소 테스트 ---
+OK   flow tests pass 47 fail 0 (baseline 47)
+OK   service-a tests pass 35 fail 0 (baseline 35)
+OK   service-b tests pass 619 fail 0 (baseline 619)
+OK   service-c tests pass 119 fail 0 (baseline 119)
+사례 저장소 작업 사본 HEAD 불변, git status 0줄 (검사 후)
+실제 ~/.claude/skills 목록 불변(14개)
+판정: 흐름 동일 OK · 테스트 OK · 작업 사본 불변 OK · 실제 HOME 불변 OK · 공존(해시·추가·이름) OK → 통과

@@ -2,7 +2,7 @@
 // 사용: node <pace-playbook-maker 스킬 폴더>/tools/build.mjs --dir <흐름 폴더>
 // 서비스 비의존 — 위험 등급(risks)·승인 관문(단계 gate)·대상 칸(lanes)·안내 경로(base)는 모두 steps.json에서 읽는다.
 import {readFileSync,writeFileSync,existsSync,mkdirSync,readdirSync,unlinkSync} from 'node:fs';
-import {join,resolve,relative,sep} from 'node:path';
+import {join,resolve,relative,sep,isAbsolute} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {validateMask} from './capture-core.mjs';
 import {scanSensitive,computeAgent,contentHash,sourceHashOf,MANAGED} from './agent-map.mjs';
@@ -105,7 +105,8 @@ export function checkAgentFresh(dir){
 }
 export function reviewHash(dir){return contentHash(JSON.parse(readFileSync(join(resolve(dir),'steps.json'),'utf8')));}
 
-export function buildFlow(dir){
+// opts.dirLabel: 머리말 --dir 표기를 정한다(플레이북 생성처럼 임시 폴더에서 만들 때 최종 위치로 적는다)
+export function buildFlow(dir,{dirLabel}={}){
   const here=resolve(dir);
   const sourceText=readFileSync(join(here,'steps.json'),'utf8');
   const d=JSON.parse(sourceText);
@@ -154,7 +155,9 @@ table{border-collapse:collapse;width:100%;font-size:12px}th,td{border:1px solid 
   // 에이전트용 분할 명세 — 시작 시 overview.md 1회, 각 단계 실행 직전 S0n.md만 읽는다(대화가 길어지거나 요약돼도 실행 시점에 정확한 명세를 다시 읽게)
   const outDir=join(here,'flow');mkdirSync(outDir,{recursive:true});
   // 머리말에는 실제 --dir(실행한 위치 기준 상대 경로 — 저장소 루트에서 실행하는 것이 기준)을 적는다
-  const dirArg=relative(process.cwd(),here).split(sep).join('/')||'.';
+  // 실행 위치 밖(상위 폴더·다른 드라이브)이면 절대 경로(사용자 이름이 든 임시 경로 등)를 남기지 않고 자리표시로 적는다
+  const relDir=relative(process.cwd(),here);
+  const dirArg=dirLabel??(relDir.startsWith('..')||isAbsolute(relDir)?'<흐름 폴더>':relDir.split(sep).join('/')||'.');
   const GEN=`> 생성 파일 — \`steps.json\`에서 \`node <PACE 설치본 app>/skills/pace-playbook-maker/tools/build.mjs --dir ${dirArg}\`로 만든다(\`<PACE 설치본 app>\`은 PACE 데이터 폴더의 \`app\`, 기본 \`~/.pace/app\`). 직접 고치지 않는다.`;
   const ids=new Set(d.steps.map(s=>s.id));
   for(const f of readdirSync(outDir))if(/^S\d+\.md$/.test(f)&&!ids.has(f.slice(0,-3)))unlinkSync(join(outDir,f));   // 없어진 단계 파일 정리

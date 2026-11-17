@@ -1,0 +1,24 @@
+[1라운드] init·모델·버전 같음(6세션): true — 모델 sonnet(init claude-sonnet-5-5) · CLI 2.1.326 (Claude Code) · 도구 ["Bash","Read"] · 권한 dontAsk · 스킬 [] · MCP []
+  p1 playbook anthropics/claude-code: 정확 true · 29206ms · 호출 9({"Bash":5,"Read":4}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 4개 10149B)
+  p2 playbook microsoft/vscode: 정확 false · 36699ms · 호출 9({"Bash":5,"Read":4}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 4개 10149B)
+  p3 playbook nodejs/node: 정확 true · 25934ms · 호출 8({"Bash":4,"Read":4}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 4개 10149B)
+  n1 nomap anthropics/claude-code: 정확 true · 40135ms · 호출 7({"Bash":7}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false
+  n2 nomap microsoft/vscode: 정확 true · 47401ms · 호출 8({"Bash":7,"Read":1}) · orca 밖 Bash 0 · 거부 1 · 프로필 위반 false · 시간 초과 false
+  n3 nomap nodejs/node: 정확 true · 43700ms · 호출 11({"Bash":10,"Read":1}) · orca 밖 Bash 0 · 거부 1 · 프로필 위반 false · 시간 초과 false
+[2라운드] init·모델·버전 같음(6세션): true — 모델 sonnet(init claude-sonnet-5-5) · CLI 2.1.326 (Claude Code) · 도구 ["Bash","Read"] · 권한 dontAsk · 스킬 [] · MCP []
+  p1 playbook anthropics/claude-code: 정확 true · 28707ms · 호출 8({"Bash":5,"Read":3}) · orca 밖 Bash 2{"ls":2} · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 3개 10526B)
+  p2 playbook microsoft/vscode: 정확 true · 26009ms · 호출 8({"Bash":5,"Read":3}) · orca 밖 Bash 2{"ls":2} · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 3개 10526B)
+  p3 playbook nodejs/node: 정확 true · 28509ms · 호출 8({"Bash":5,"Read":3}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 3개 10526B)
+  n1 nomap anthropics/claude-code: 정확 true · 34277ms · 호출 8({"Bash":8}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false
+  n2 nomap microsoft/vscode: 정확 true · 42990ms · 호출 10({"Bash":9,"Read":1}) · orca 밖 Bash 0 · 거부 1 · 프로필 위반 false · 시간 초과 false
+  n3 nomap nodejs/node: 정확 true · 38165ms · 호출 8({"Bash":7,"Read":1}) · orca 밖 Bash 0 · 거부 1 · 프로필 위반 false · 시간 초과 false
+  프롬프트 6개 1라운드와 바이트 동일: true
+[3라운드] init·모델·버전 같음(6세션): true — 모델 sonnet(init claude-sonnet-5-5) · CLI 2.1.326 (Claude Code) · 도구 ["Bash","Read"] · 권한 dontAsk · 스킬 [] · MCP []
+  p1 playbook anthropics/claude-code: 정확 true · 24444ms · 호출 7({"Bash":4,"Read":3}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 3개 10791B)
+  p2 playbook microsoft/vscode: 정확 true · 22106ms · 호출 7({"Bash":4,"Read":3}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 3개 10791B)
+  p3 playbook nodejs/node: 정확 true · 24028ms · 호출 7({"Bash":4,"Read":3}) · orca 밖 Bash 1{"ls":1} · 거부 0 · 프로필 위반 false · 시간 초과 false · 지도 읽음 true(파일 3개 10791B)
+  n1 nomap anthropics/claude-code: 정확 true · 35571ms · 호출 8({"Bash":8}) · orca 밖 Bash 0 · 거부 0 · 프로필 위반 false · 시간 초과 false
+  n2 nomap microsoft/vscode: 정확 false · 39097ms · 호출 7({"Bash":6,"Read":1}) · orca 밖 Bash 0 · 거부 1 · 프로필 위반 false · 시간 초과 false
+  n3 nomap nodejs/node: 정확 true · 36088ms · 호출 8({"Bash":7,"Read":1}) · orca 밖 Bash 0 · 거부 1 · 프로필 위반 false · 시간 초과 false
+  프롬프트 6개 1라운드와 바이트 동일: true
+판정: 두 군 조건 같음·플레이북 군 지도 읽음·프로필 위반 0

@@ -1,0 +1,6 @@
+인계 문서: ~/.pace-private/ 아래 있음(4941자) · 사례 저장소 작업 사본 git status 0줄
+1절 코어 import 위치 9곳 중 실재(그 줄이 코어 import) 9곳
+그 밖의 변경 위치 4곳 중 실재 4곳
+검사 명령: npm test 4 · compare-identity 1 · git status 2 · 해시 비교(sha256sum) 1 · import grep 1
+main 분기점 대비 바뀐·새 파일 338개(새 파일 전체·기존 파일은 더한 줄) × 금지어 25개 — 일치 0건
+판정: 통과

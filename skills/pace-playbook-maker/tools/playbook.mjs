@@ -33,13 +33,15 @@ function sections(iv){
   };
 }
 
-function skillText({name,iv,flows,full}){
+function skillText({name,iv,flows,full,stepsOf}){
   const S=sections(iv);
   const desc=oneLine(`${iv.goal} — ${iv.scope}`).slice(0,300)+' 이 업무를 자율 주행으로 수행할 때 쓴다.';
   const head=`---\nname: ${name}\ndescription: ${desc}\n---\n\n# ${oneLine(iv.goal)} (${name})\n\n이 스킬은 \`pace-playbook-maker\`가 만든 플레이북(업무 스킬)이다. 지도(\`references/flows/*/agent/\`)를 읽고 주행한다.\n\n`;
   const core=`## 범위\n${S.scope}\n\n## 성공 기준\n${S.success}\n\n## 안전 규칙\n${S.safety}\n- 읽기는 자율이다. 밖으로 나가는 행동은 지도에 승인 규칙이 있을 때만 자율이고 없으면 사용자에게 확인한다.\n- 지도와 화면이 다르면 멈추고 보고한다.\n\n`;
   const detail=`## 시작 조건(서비스·인증)\n${S.start}\n\n## 입력\n${S.inputs}\n\n## 결과와 저장 위치\n${S.outputs}\n\n## 개인정보 처리\n${S.privacy}\n\n## 예외와 빈도\n${S.exceptions}\n\n## 사람과 함께하는 지점\n${S.human}\n\n`;
-  const idx=`## 흐름 색인\n| 흐름 | 지도 | 사람용 |\n|---|---|---|\n${flows.map(f=>`| ${f} | [index.json](references/flows/${f}/agent/index.json) | [flow.html](references/flows/${f}/flow.html) |`).join('\n')}\n\n`;
+  // 지도 파일 경로를 모두 적는다 — 주행하는 에이전트가 폴더를 탐색(ls·glob)하지 않고 바로 읽게(T06 측정에서 탐색 호출이 드러남)
+  const steps=f=>((stepsOf&&stepsOf[f])||[]).map(id=>`[${id}.json](references/flows/${f}/agent/${id}.json)`).join(' · ')||'-';
+  const idx=`## 흐름 색인\n경로는 이 스킬 폴더 기준이다. 폴더를 탐색하지 않고 아래 파일을 바로 읽는다 — 개요 \`index.json\` 한 번, 각 단계 직전에 그 단계 파일.\n\n| 흐름 | 지도 개요 | 단계 지도 | 사람용 |\n|---|---|---|---|\n${flows.map(f=>`| ${f} | [index.json](references/flows/${f}/agent/index.json) | ${steps(f)} | [flow.html](references/flows/${f}/flow.html) |`).join('\n')}\n\n`;
   const tail=`## 주행 규약\n\`pace-playbook-maker\` 스킬의 \`references/driving.md\`(규약 버전 ${DRIVING_VERSION})를 따른다. 규약은 이 스킬에 복사하지 않는다.\n\n## 학습 이력\n[references/history.md](references/history.md)\n`;
   if(full)return head+core+detail+idx+tail;
   return head+core+`## 그 밖의 합의\n서비스·인증, 입력, 결과 저장 위치, 개인정보 처리, 예외·빈도, 사람과 함께하는 지점은 [references/agreements.md](references/agreements.md)에 있다.\n\n`+idx+tail;
@@ -175,7 +177,7 @@ export function generatePlaybook({workDir,outDir,name}){
         const sp=join(src,'shots',s.id+'.jpg');
         if(existsSync(sp)&&createHash('sha256').update(readFileSync(sp)).digest('hex')===s.shotHash){mkdirSync(join(copy,'shots'),{recursive:true});cpSync(sp,join(copy,'shots',s.id+'.jpg'));}
       }
-      buildFlow(copy);   // 승인·증거가 무효면 여기서 던진다. 파생물만 낡은 것은 이 재생성으로 해소된다.
+      buildFlow(copy,{dirLabel:`<플레이북 폴더>/references/flows/${f}`});   // 임시 복사본에서 만들므로 머리말은 최종 위치로 적는다. 승인·증거가 무효면 여기서 던진다. 파생물만 낡은 것은 이 재생성으로 해소된다.
       const fresh=checkAgentFresh(copy);
       if(!fresh.ok)throw new Error(`${f}: 지도 최신성 검사 실패`);
       const dest=join(out,'references','flows',f);
@@ -183,11 +185,12 @@ export function generatePlaybook({workDir,outDir,name}){
       for(const item of ['steps.json','shots','agent','flow.html','flow'])if(existsSync(join(copy,item)))cpSync(join(copy,item),join(dest,item),{recursive:true});
     }
     writeFileSync(join(out,'references','history.md'),`# 학습 이력\n\n주행 규약 버전 ${DRIVING_VERSION}. 아직 학습한 변경이 없다.\n`);
-    let text=skillText({name,iv,flows,full:true});
+    const stepsOf=Object.fromEntries(flows.map(f=>[f,(sources.get(f).steps||[]).map(x=>x.id)]));
+    let text=skillText({name,iv,flows,full:true,stepsOf});
     if(crlfSize(Buffer.from(text,'utf8'))>SKILL_LIMIT-400){
       const S=sections(iv);
       writeFileSync(join(out,'references','agreements.md'),`# 합의 사항\n\n## 시작 조건(서비스·인증)\n${S.start}\n\n## 입력\n${S.inputs}\n\n## 결과와 저장 위치\n${S.outputs}\n\n## 개인정보 처리\n${S.privacy}\n\n## 예외와 빈도\n${S.exceptions}\n\n## 사람과 함께하는 지점\n${S.human}\n`);
-      text=skillText({name,iv,flows,full:false});
+      text=skillText({name,iv,flows,full:false,stepsOf});
     }
     writeFileSync(join(out,'SKILL.md'),text);
     const res=checkPlaybook(out,{name});

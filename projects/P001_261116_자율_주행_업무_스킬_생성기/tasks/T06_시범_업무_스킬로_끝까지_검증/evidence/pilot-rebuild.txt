@@ -1,0 +1,10 @@
+{"generated":"<repo>_261116_자율_주행_업무_스킬_생성기\\tasks\\T06_시범_업무_스킬로_끝까지_검증\\pilot\\github-repo-latest","check":{"ok":true,"problems":[]}}
+지도 파일: index.json S02.html S02.json
+S02 요소 stale: [false,false,false,false,false] · 승인 캡처 shot sha256 앞 12자: 9fd8d5cd92b5 (사람 확인 해시 9fd8d5cd92b5와 같음: true)
+index 단계: S02
+지도 파일: index.json S02.html S02.json
+S02 요소 stale: [false,false,false,false,false] · 승인 캡처 shot sha256 앞 12자: 9fd8d5cd92b5 (사람 확인 해시 9fd8d5cd92b5와 같음: true)
+index 단계: S02
+3라운드 재생성: SKILL.md 흐름 색인에 단계 지도 경로 포함
+측정(3라운드) 뒤 재생성: 생성기 머리말 수정(임시 절대 경로 → <플레이북 폴더>/references/flows/repo-latest)으로 flow/overview.md·flow/S02.md 머리말 2줄만 바뀜 — 측정 세션이 읽은 SKILL.md·agent/*는 바이트 동일(diff -r 확인)
+보존본(sessions-round1/2 playbook, heal-state)의 같은 머리말 줄은 임시 경로를 가림 처리했다(<흐름 폴더(임시 경로 가림)>)

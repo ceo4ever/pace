@@ -1,0 +1,52 @@
+{
+ "at": "2026-11-17T00:59:38.415Z",
+ "ms": 22661,
+ "model": "claude-sonnet-5-5",
+ "claudeVersion": "2.1.326 (Claude Code)",
+ "calls": 1,
+ "retries": 0,
+ "allowedTools": [
+  "Read"
+ ],
+ "toolUses": [
+  "Read",
+  "Read"
+ ],
+ "nonRead": 0,
+ "initSkillCount": 47,
+ "initSkillsChecked": [
+  "<프로젝트 스킬 1>",
+  "<프로젝트 스킬 2>",
+  "<프로젝트 스킬 3>",
+  "<프로젝트 스킬 4>",
+  "pace-playbook-maker"
+ ],
+ "loaded": {
+  "playbookMaker": true,
+  "projectSkills": 4
+ },
+ "said": {
+  "playbookMaker": false,
+  "projectSkills": 1,
+  "overview": true
+ },
+ "realHomeSkills": {
+  "files": 500,
+  "dirs": 14,
+  "sameListAndHashes": false,
+  "changedNote": "세션 전후 실제 ~/.claude/skills에서 바뀐 파일은 synced/<동기화 id>/ 아래 manifest.json·.last-complete-round 2개뿐 — claude.ai 동기화 스킬의 관리 파일. [확인] claude -p가 돌지 않던 10:33:59(KST)·10:55:13(KST)에도 다시 쓰였다(stat 2회) — 실행 중인 Claude Code가 주기적으로 쓰는 파일이라 이 검사의 세션이 원인이라고 할 수 없다. 스킬 폴더 14개·이름 목록 동일, 이 검사는 실제 HOME에 아무것도 설치·쓰지 않았다(코드 확인: 실제 HOME은 snapshot 읽기만)."
+ },
+ "caseRepo": {
+  "statusBefore": 0,
+  "statusAfter": 0,
+  "headSame": true
+ },
+ "verdict": {
+  "distinguishes": false,
+  "overviewGuidance": true,
+  "playbookMakerLoaded": "로드됨",
+  "readOnly": false
+ },
+ "verdictNote": "init 스킬 목록에 사례 저장소 프로젝트 스킬 4개와 pace-playbook-maker가 모두 로드됨(이름 서로 다름). 그러나 허용 도구가 Read뿐이라 세션이 스킬 목록을 조회할 수단이 없어 답변은 프로젝트 스킬 1개만 열어 말했다 — 답변으로 5개를 구별하는 부분은 미확인(재시도 없음 조건). 기존 업무 스킬 안내는 그 1개 스킬에서 흐름 overview.md를 가리킴.",
+ "trimmed": "공개 저장소 대비 줄임(T06 유출 검사): 세션의 전체 도구 목록·스킬 이름 목록·답변 원문·stream 원본은 사례 저장소 부트 맥락과 사용자 환경 정보를 담아 지웠다. 남긴 것: 개수, 확인 대상 5개 이름(사례 저장소 스킬은 번호), 판정"
+}

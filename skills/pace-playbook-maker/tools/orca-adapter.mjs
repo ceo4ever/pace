@@ -5,7 +5,7 @@ import {spawnSync} from 'node:child_process';
 import {existsSync,mkdirSync,readFileSync,readdirSync,rmSync,statSync,unlinkSync,writeFileSync} from 'node:fs';
 import {homedir} from 'node:os';
 import {dirname,join,resolve,relative,sep} from 'node:path';
-import {runCapture,captureRecord,approveStep,sha256Hex,CaptureRefused} from './capture-core.mjs';
+import {runCapture,captureRecord,approveStep,sha256Hex,CaptureRefused,leakScript,leakProblems} from './capture-core.mjs';
 import {scanSensitive} from './sensitive.mjs';
 
 const refuse=(msg,code)=>{throw new CaptureRefused(msg,code);};
@@ -71,7 +71,7 @@ export function observeStep({browser,actions=[],expects=[]}){
   const act=JSON.stringify(actions.map(a=>({type:a.type,find:a.find,value:a.value??''})));
   const exp=JSON.stringify(expects.map(e=>({find:e.find,state:e.state})));
   const expr=`(()=>{const A=${act},E=${exp};const ar=A.map(a=>{try{const el=document.querySelector(a.find);if(!el)return false;if(a.type==='click'){el.click();return true;}if(a.type==='fill'){el.focus&&el.focus();el.value=a.value;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));return true;}return false;}catch(e){return false;}});
-const er=E.map(e=>{try{const el=document.querySelector(e.find);if(!el)return false;const r=el.getBoundingClientRect();const vis=!el.hidden&&r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden';if(e.state==='visible')return vis;if(e.state==='filled')return vis&&String(el.value??el.textContent??'').trim().length>0;return false;}catch(e){return false;}});
+const er=E.map(e=>{try{const el=document.querySelector(e.find);if(!el)return false;const r=el.getBoundingClientRect();const vis=!el.hidden&&r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden';if(e.state==='visible')return vis;if(e.state==='filled')return vis&&String(/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)?(el.value??''):(el.textContent??'')).trim().length>0;return false;}catch(e){return false;}});
 return {ar,er};})()`;
   let res;
   try{res=browser.evalJs(expr);}catch{return {ok:false,failed:[{kind:'browser',index:0}]};}
@@ -84,12 +84,35 @@ return {ar,er};})()`;
 
 // ---- 캡처 → 대기 → 승인 ---------------------------------------------------------------------------------
 const pendingJpg=id=>`${id}.jpg`,pendingMeta=id=>`${id}.json`;
+// 값 노출 검사(캡처 공통 관문): 추출 대상 값이 대상 밖 다른 곳에 가려지지 않은 채 보이면 캡처하지 않는다(대상 요소만 가려서는 부족하다).
+// 검사하지 못한 대상(대상 없음·값 없음)·결과 없음도 거부한다(fail-closed). 최초 캡처(captureStep)와 복구 재캡처(recaptureStep)가 같이 쓴다.
+export function assertNoValueExposure({browser,doc,step}){
+  if(!(step.extract||[]).some(x=>x&&x.where&&typeof x.where.selector==='string'))return;
+  // 추출 선택자가 번호 요소에 연결되지 않았으면 그 사유(extract_unlinked)로 먼저 거부한다 — 화면에서 찾지 못한 추출 대상과 같은 원인이다
+  const finds=new Set((step.elements||[]).map(e=>e&&e.find));
+  if((step.extract||[]).some(x=>x&&x.where&&typeof x.where.selector==='string'&&!finds.has(x.where.selector)))refuse('추출 대상이 번호 요소에 연결되지 않았다','extract_unlinked');
+  let leak;try{leak=browser.evalJs(leakScript({mask:doc&&doc.mask,step}));}catch{leak=null;}
+  const probs=leakProblems(leak,step);
+  if(probs.length)refuse(`캡처하지 않는다 — ${probs.join('; ')}. mask에 그 위치를 더하거나 값이 같은 곳을 가린다`,'value_exposed');
+}
+// 복구(자가 학습)의 재캡처 — driveWithHealing의 recapture 주입용. 최초 캡처와 같은 값 노출 관문을 거친 뒤 가림 캡처·기록을 만들고 원본 스크린샷은 지운다.
+// 반환 {record, bytes}: 기록·이미지는 복구가 반영 트랜잭션에서 쓰고, 새 기준 캡처는 history에 '사람 확인: 대기'로 남는다(healing.md).
+export function recaptureStep({browser,doc,step,frames={},delayMs}){
+  assertNoValueExposure({browser,doc,step});
+  const cap=runCapture({doc,step,frames,browser,...(delayMs!==undefined?{delayMs}:{})});
+  try{
+    const bytes=readFileSync(cap.path);
+    const record=captureRecord({info:cap.info,post:cap.post,step,shotSha256:sha256Hex(bytes),frames});
+    return {record,bytes};
+  }finally{try{browser.discard(cap.path);}catch{/* 원본 삭제 실패는 결과를 바꾸지 않는다 */}}
+}
 // pending: 저장소 밖 대기 폴더의 보호 저장소. actions·expects가 주어지면 관찰이 ok일 때만 진행한다.
 export function captureStep({browser,pending,doc,step,frames={},actions,expects,delayMs}){
   if(actions||expects){
     const obs=observeStep({browser,actions,expects});
     if(!obs.ok)refuse(`수행·관찰 실패(${obs.failed.map(f=>f.kind+':'+f.index).join(',')}) — 기록하지 않는다`,'observe_failed');
   }
+  assertNoValueExposure({browser,doc,step});
   let rawPath=null,stored=false;
   try{
     const cap=runCapture({doc,step,frames,browser,...(delayMs!==undefined?{delayMs}:{})});
