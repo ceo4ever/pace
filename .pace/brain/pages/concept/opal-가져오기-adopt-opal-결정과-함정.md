@@ -3,10 +3,10 @@ type: concept
 title: OPAL 가져오기 adopt opal 결정과 함정
 summary: "adopt opal은 git mv로 .opal을 .pace로 옮기고 AGENT 표지·훅·진입점을 안전하게 바꾼다 — 판별은 원문 일치만, 복구는 변경 전 등록, 참조 보고는 위치만"
 tags: []
-sources: [code:src/project/adopt-opal.ts, test:test/adopt-opal.test.ts, test:test/adopt-opal-e2e.test.ts, doc:README.md]
+sources: [code:src/project/adopt-opal.ts, test:test/adopt-opal.test.ts, test:test/adopt-opal-e2e.test.ts, test:test/adopt-opal-recover.test.ts, doc:README.md]
 related: [작업-하네스-흐름]
 created: 2026-11-16
-updated: 2026-11-16
+updated: 2026-11-17
 status: active
 ---
 
@@ -17,6 +17,7 @@ status: active
 - OPAL 홈(`~/.opal`) 프로필은 옮기지 않는다 — 캡틴 결정. 새 PC는 온보딩으로 새 프로필.
 - 훅은 알려진 OPAL v1 원문과 정확히 같을 때만 교체(백업 `commit-msg.opal-backup`, 기존 백업은 덮어쓰지 않음). 수정된 훅은 보존하되 OPAL 제거 뒤 게이트가 빠진다고 경고한다.
 - 대시보드 진입점은 OPAL 시절 `page.html`을 현재 PACE 템플릿에서 파생해 비교하고(URL의 설치 경로만 허용, 같은 기반 경로의 세 리소스만), 정규화 표지를 위조한 입력은 거부한다.
+- `.opal` 옆에 PACE 메모리 명령이 먼저 만든 `.pace/memory`만 있으면 **회수**한다(2026-11-17 실사용: 다른 PC에서 OPAL 프로젝트에 `pace memory`를 써서 생김). `.opal/memory`에 먼저 합친 뒤 평소대로 옮긴다: 없는 파일은 옮기고, 같은 내용·`INDEX.md`는 버리고(목차는 파일 목록에서 다시 만듦), `status.md`는 마지막 커밋 시각이 더 최신인 쪽(같으면 `.pace`). 메모리 밖 항목·`.md`가 아닌 항목·커밋 안 한 변경·추적 안 되는 파일·숨김 표지·같은 이름의 다른 내용이면 어느 쪽이 정본인지 사람이 정하도록 멈춘다. 실패하면 영향 파일 바이트를 저장해 둔 것으로 양쪽을 되돌리고 인덱스도 `git reset`한다.
 - 참조 보고는 `파일:줄`만 낸다 — 비밀 탐지가 모든 표현을 잡지 못해 본문을 출력하면 비밀이 샌다.
 
 ## 함정
@@ -29,9 +30,10 @@ status: active
 | 복구 순서 | 훅 복원 실패 뒤 백업을 지우면 원본을 잃음 | 훅 복원이 성공한 뒤에만 이번 백업 삭제, 백업은 `wx`로 배타 생성 |
 | 소스 문자열의 NUL | diff가 binary로 표시돼 검토 불가 | 구분자는 `\0` 대신 보이는 문자 |
 | 시험 표본의 한계 | PACE 도구로 만든 `.pace`를 `.opal`로 옮긴 표본은 OPAL 원본이 아니다 | 실제 OPAL 표본이 생기면 e2e 표본 교체 |
+| 회수 실패 복원을 `git checkout`으로 | `core.autocrlf=true`에서 CRLF로 다시 써져 원본과 바이트가 달라지고, 다시 만든 목차가 `.opal`에 남음 | 적용 전 바이트를 저장해 그대로 되쓰고(없던 파일은 지움), 스테이징은 `git reset -q HEAD -- .opal/memory .pace/memory` |
 | 전체 검사 중 프로세스 종료 | 다른 작업자가 `scripts/test.ts` 명령줄의 node를 모두 종료 | 시작 시각·끊김 여부를 증거에 적고 끊기면 다시 |
 
 ## 남은 것
 
-- 실제 OPAL이 만든 산출물과의 호환성은 미관측(소스 동일성 `git diff c5ffef4c~1 HEAD -- src/memory/memory.ts src/project/brain.ts` 비어 있음만 근거).
+- 실제 OPAL 저장소 가져오기는 2026-11-17 관측했다(실데이터 시험 1곳 통과, 다른 1곳은 `.pace/memory` 회수로 해결). 표본 수가 적어 모든 OPAL 산출물 형식을 대표하지는 않는다.
 - 검사와 쓰기 사이의 동시 변경(TOCTOU)은 지원 조건 밖 — README에 명시.

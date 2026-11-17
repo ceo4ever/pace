@@ -6,7 +6,7 @@ tags: []
 sources: [대화:2026-10-24, code:src/project/harness.ts]
 related: [brain-pull-not-push, 작업-하네스-흐름]
 created: 2026-10-24
-updated: 2026-11-16
+updated: 2026-11-17
 status: active
 ---
 

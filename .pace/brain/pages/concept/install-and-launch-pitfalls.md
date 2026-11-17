@@ -6,7 +6,7 @@ tags: [install, pitfalls, macos, windows]
 sources: [code:scripts/install.sh, code:scripts/install.ps1, code:src/setup/onboard.ts, 실측:2026-10-22, code:src/project/harness.ts, test:test/project-harness.test.ts, code:src/project/brain.ts, test:test/brain.test.ts, code:src/setup/install.ts, test:test/install-windows-wrapper.test.ts, test/intent-preview.test.ts]
 related: [llm-cannot-speak-first]
 created: 2026-10-22
-updated: 2026-11-16
+updated: 2026-11-17
 status: active
 ---
 

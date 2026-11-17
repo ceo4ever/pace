@@ -6,7 +6,7 @@ tags: [boot, hooks, platform]
 sources: [code:src/boot.ts, code:src/setup/install.ts, 대화:2026-10-22, url:https://github.com/anthropics/claude-code/blob/v2.1.316/CHANGELOG.md, url:https://learn.chatgpt.com/docs/hooks, url:https://cursor.com/docs/hooks, url:https://antigravity.google/docs/hooks, url:https://antigravity.google/docs/rules/, code:scripts/benchmark-boot.ts, code:src/project/harness.ts, code:src/project/workspace-registry.ts, test:test/boot.test.ts, doc:templates/RULES.md]
 related: [platform-hook-behavior, llm-cannot-speak-first, situational-boot-greeting]
 created: 2026-10-22
-updated: 2026-11-16
+updated: 2026-11-17
 status: active
 ---
 
