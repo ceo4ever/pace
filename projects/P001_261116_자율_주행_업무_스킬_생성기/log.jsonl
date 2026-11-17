@@ -129,3 +129,6 @@
 {"ts":"2026-11-17T05:17:41.761Z","p":"P001","type":"decision","by":"agent","msg":"finish는 설치본 pace로 실행: 브랜치의 pre-review.ts에 사용자 게이트 예외(waiver) 검사가 없어 T01·T02·T04가 실패 — main·설치본은 지원(설치본으로 세 태스크 check 통과). 코디네이터의 verify 설치본 지시와 같은 원인(브랜치가 main보다 뒤)","src":"자체 판단"}
 {"ts":"2026-11-17T05:18:27.927Z","p":"P001","type":"question","by":"agent","msg":"finish rebase 충돌: .pace/memory/status.md(main은 P002 진행, 브랜치 커밋 6개가 P001 진행으로 갱신) — 해소 방식 질문, rebase는 abort로 원상 복구"}
 {"ts":"2026-11-17T05:19:03.059Z","p":"P001","type":"answer","by":"agent","msg":"(main 판단) rebase 중 status.md는 main 쪽 선택, 끝나면 현재 상태로 다시 써 커밋 후 finish 재실행(설치본), 다른 충돌은 멈춤"}
+{"ts":"2026-11-17T06:02:19.742Z","p":"P001","type":"gate","by":"cli","msg":"finish: checks","ok":false,"data":{"finish":1}}
+{"ts":"2026-11-17T06:02:55.659Z","p":"P001","type":"question","by":"agent","msg":"finish 검사 실패 1건: main의 test/project-harness.test.ts:849가 codex 기본 모델 gpt-6.1-terra를 기대하나 main 소스 기본값은 gpt-6.1-sol(423f1fb5) — P001 무관, 해결 주체 질문"}
+{"ts":"2026-11-17T06:04:00.957Z","p":"P001","type":"answer","by":"agent","msg":"(main 판단) main 3f07f242에서 테스트 기대값 수정 — rebase(status.md 같은 방식) 후 finish 재실행"}
