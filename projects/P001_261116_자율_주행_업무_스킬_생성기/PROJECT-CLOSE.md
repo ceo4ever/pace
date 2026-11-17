@@ -38,7 +38,7 @@
 
 ## 보안
 
-- 기계 검사: `node scripts/secret-scan.ts` 통과(922개 파일, `tasks/T06…/evidence/secret-scan.txt`). finish가 선언된 `보안 검사`를 다시 돈다. 의존성 감사: 잠금 파일 변경 없음.
+- 기계 검사: `node scripts/secret-scan.ts` 통과(936개 파일, `tasks/T06…/evidence/secret-scan.txt`). finish가 선언된 `보안 검사`를 다시 돈다. 의존성 감사: 잠금 파일 변경 없음.
 - 전체 diff 판단(`security.md`·docs 민감 경로 `skills/pace-playbook-maker/tools/`): 값 비기록(쓰기 전 민감 형식 검사), 캡처 가림 fail-closed(대상별 값 노출 관문 — 최초 캡처·복구 재캡처 공통), 승인은 사람이 확인한 해시와 단계·행동·원본 해시·계정·업무에 결속, 되돌릴 수 없는 행동은 수행 전 기록·조회로 판정, 복구 반영은 저널로 원자적, 화면·응답 내용은 지시로 받지 않음. blocking 0(T06 구현 후 검토 반영 확인 pass). should_fix 남은 위험: 픽셀 가림 검사가 일부 남은 글자를 놓칠 수 있음(보조 검사 — 1차 근거는 요소 rect 완전 피복·사후 검사·사람 확인), T05 후속(웹 `expectChecked`의 문장 평가 등).
 - 증거·시나리오의 비밀·사용자 데이터: 측정 세션 기록에서 사용자의 다른 Orca 탭 URL·작업 폴더·사용자 이름(경로 인코딩)이 발견돼 커밋 전에 가림(도구 보강·재적용·시험), 공존 세션 원문 삭제. 사례 저장소 이름·경로·서비스명은 추적 파일 0(금지어 검사 `handoff-check.txt`·`grep-check.txt`), 인계 문서와 매핑은 저장소 밖 `~/.pace-private/`.
 

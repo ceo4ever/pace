@@ -6,11 +6,11 @@
     "S02": {
      "status": "done",
      "actionHash": "5ee96138bdec69b4d862d038a8c8bc244c70ff842e52becbc11471b7fa74ea56",
-     "sourceHash": "31562558feaec6db5eb16ea468ce6c5a5caf6c656a24cecf2e5822116a61b58c",
+     "sourceHash": "41b770421456280c9ded5e19a47a77668139ed9417382d694e45a3bd31efbfc9",
      "attempt": 2,
      "extractCount": 5,
      "delivered": true,
-     "ms": 13158
+     "ms": 13265
     }
    }
   },
@@ -19,7 +19,7 @@
     "S02": {
      "status": "stopped",
      "actionHash": "5ee96138bdec69b4d862d038a8c8bc244c70ff842e52becbc11471b7fa74ea56",
-     "sourceHash": "cef5db5dc774439c49a0d0eaf5ebd8bef6fbe24ab6e23d0679a511a2e9f69161",
+     "sourceHash": "8644370d3484329115f7f629bd3f677407ffa4d5ac4bd762663351f1bf8c4871",
      "attempt": 1,
      "reason": "conflict"
     }
@@ -30,7 +30,7 @@
     "S02": {
      "status": "stopped",
      "actionHash": "5ee96138bdec69b4d862d038a8c8bc244c70ff842e52becbc11471b7fa74ea56",
-     "sourceHash": "cef5db5dc774439c49a0d0eaf5ebd8bef6fbe24ab6e23d0679a511a2e9f69161",
+     "sourceHash": "8644370d3484329115f7f629bd3f677407ffa4d5ac4bd762663351f1bf8c4871",
      "attempt": 1,
      "reason": "conflict"
     }

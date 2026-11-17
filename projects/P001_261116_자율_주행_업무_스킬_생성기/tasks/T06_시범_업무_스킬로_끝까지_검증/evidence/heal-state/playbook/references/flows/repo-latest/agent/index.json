@@ -24,10 +24,10 @@
       "json": "S02.json",
       "shot": {
         "path": "shots/S02.jpg",
-        "sha256": "90e83c5ee60f8e9669955b3fb263f5d7e5dab052e65e520a9b581980f4e46da3"
+        "sha256": "98e1426f8a382bee0e2596585ea8b661544db0d01c5632f64bf04e11e45ee2c1"
       },
       "actionHash": "5ee96138bdec69b4d862d038a8c8bc244c70ff842e52becbc11471b7fa74ea56"
     }
   ],
-  "sourceHash": "cef5db5dc774439c49a0d0eaf5ebd8bef6fbe24ab6e23d0679a511a2e9f69161"
+  "sourceHash": "8644370d3484329115f7f629bd3f677407ffa4d5ac4bd762663351f1bf8c4871"
 }

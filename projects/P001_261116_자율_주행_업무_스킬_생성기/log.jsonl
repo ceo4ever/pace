@@ -116,3 +116,4 @@
 {"ts":"2026-11-17T04:24:40.110Z","p":"P001","t":"T06","type":"answer","by":"agent","msg":"(사용자 결정) 반영 확인 1회(3차 지적 4건만), fail이면 한계 기록·마감. codex 파일 읽기 실패 명령줄·오류를 evidence에"}
 {"ts":"2026-11-17T04:24:41.053Z","p":"P001","t":"T06","type":"decision","by":"agent","msg":"구현 후 검토 반영 확인 1회(3차 4건만), fail이면 남은 지적을 한계로 기록하고 마감","src":"사용자 결정"}
 {"ts":"2026-11-17T05:08:34.427Z","p":"P001","t":"T06","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
+{"ts":"2026-11-17T05:16:31.490Z","p":"P001","t":"T06","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}

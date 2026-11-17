@@ -178,7 +178,7 @@
      "vh": 900,
      "dpr": 1
     },
-    "shotSha256": "90e83c5ee60f8e9669955b3fb263f5d7e5dab052e65e520a9b581980f4e46da3",
+    "shotSha256": "98e1426f8a382bee0e2596585ea8b661544db0d01c5632f64bf04e11e45ee2c1",
     "masking": {
      "masked": 55,
      "perRule": {
@@ -213,8 +213,8 @@
     },
     "contextSha": "9f96ffbc0b3210a4c11ab8df7e9329ea2bf854dd88bf59de8f521be934b10616"
    },
-   "shotHash": "90e83c5ee60f8e9669955b3fb263f5d7e5dab052e65e520a9b581980f4e46da3",
-   "recordHash": "04c2103b09814348d0cda2efd54e701e2c333675c83b5d69972d99d35ec4fe49",
+   "shotHash": "98e1426f8a382bee0e2596585ea8b661544db0d01c5632f64bf04e11e45ee2c1",
+   "recordHash": "2b33504db9af2a69105e299d6aba12d0a0cc862b19470b679dbdae706fa46ee3",
    "verified": "2026-11-16",
    "toolNote": "orca 명령 세 가지면 된다(도움말 불필요): 열기는 enter, 읽기는 command 한 번(다섯 값을 JSON으로 — 값이 null이면 그 요소가 없는 것이니 멈추고 보고), 닫기 `orca tab close --page <page>`. 제목이 화면에서 줄었으면 command의 식이 펼침 단추로 전체 제목을 읽는다",
    "command": "orca eval --page <page> --expression \"(async()=>{const q=s=>document.querySelector(s);const vis=e=>e.getBoundingClientRect().height>0;const H='[data-testid=latest-commit-html]';const all=()=>[...document.querySelectorAll(H)].filter(vis).map(e=>e.textContent.trim());let t=all()[0]||null;if(t&&t.endsWith('…')){const b=q('[data-testid=latest-commit-details-toggle]');if(b&&b.getAttribute('aria-expanded')!=='true')b.click();let c=null;for(let i=0;i<20&&!c;i++){c=all().find(x=>x.startsWith('…'));if(!c)await new Promise(r=>setTimeout(r,150));}t=c?t.slice(0,-1)+c.slice(1).split('\\n')[0]:null;}const a=q('[data-testid=latest-commit-details] a[href*=commit]');const rt=q('[data-testid=latest-commit-details] relative-time');const st=q('[data-testid=star-button]');return JSON.stringify({path:location.pathname,branch:(q('#ref-picker-repos-header-ref-selector')||{}).innerText||null,stars:st?((st.innerText.match(/\\(([^)]+)\\)/)||[])[1]||null):null,sha7:a?a.textContent.trim():null,title:t,date:rt?(rt.getAttribute('datetime')||'').slice(0,10):null});})()\""
