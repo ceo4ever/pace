@@ -3,7 +3,7 @@ name: 진행 상황
 description: 어디까지 했나 · 다음 할 일 · 막힌 것
 type: status
 created: 2026-10-22
-updated: 2026-11-16
+updated: 2026-11-17
 ---
 
-P002 T01~T03·PROJECT-CLOSE 완료, finish 진행. 병합 전 사용자 판단: 실제 OPAL 산출물 표본 1회 관측, TOCTOU 지원 조건 수용
+P002 병합 완료(3e4b1bb0). P001 마감 — finish 진행, 병합 대기 예정. T06 보류(T-4 미충족: 가림 요소는 복구 후보 제외 설계, idea 2건 발의)·판정 미달, P-6 3라운드 충족(플레이북 3/3·24.0s·7 vs 지도 없음 2/3·36.1s·8), T-6 세션 답변 구별 미확인. PROJECT-CLOSE 목표 판정 부분 달성 — 병합은 main에서 캡틴 승인. 막힌 것 없음
