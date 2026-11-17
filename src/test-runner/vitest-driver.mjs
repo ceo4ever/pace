@@ -39,11 +39,21 @@ child.on('close', (status, signal) => {
     const r = JSON.parse(readFileSync(outputFile, 'utf8'));
     const ran = new Set((r.testResults ?? []).map((t) => posix(realpathSync.native(t.name))));
     const missing = files.filter((f) => !ran.has(posix(realpathSync.native(f))));
-    const failedFiles = (r.testResults ?? []).filter((t) => t.status === 'failed').length;
+    // 실패 테스트는 numFailedTests에 이미 들어 있다. 파일은 실패인데 실패한 테스트가 없는 경우(불러오기 오류 등)만 따로 센다
+    const firstLine = (text) => String(text ?? '').split('\n').map((l) => l.trim()).find(Boolean) ?? '';
+    const lines = [];
+    let fileErrors = 0;
+    for (const t of r.testResults ?? []) {
+      const name = posix(relative(here, realpathSync.native(t.name)));
+      const failed = (t.assertionResults ?? []).filter((a) => a.status === 'failed');
+      for (const a of failed) lines.push(`${name} › ${a.fullName ?? a.title ?? '(이름 없음)'}${a.failureMessages?.length ? ` — ${firstLine(a.failureMessages[0])}` : ''}`);
+      if (t.status === 'failed' && !failed.length) { fileErrors++; lines.push(`${name} — 파일 실패: ${firstLine(t.message) || '원인 없음'}`); }
+    }
+    if (lines.length) process.stderr.write(`실패한 테스트:\n${lines.slice(0, 50).map((l) => `- ${l}`).join('\n')}${lines.length > 50 ? `\n… 외 ${lines.length - 50}건` : ''}\n`);
     if (missing.length) process.stderr.write(`실행되지 않은 파일: ${missing.map((f) => posix(relative(here, f))).join(', ')}\n`);
     report({
-      success: r.success === true && !missing.length && !failedFiles && r.numFailedTestSuites === 0,
-      counts: { tests: r.numTotalTests, skipped: r.numPendingTests, failed: r.numFailedTests + failedFiles + missing.length, todo: r.numTodoTests ?? 0 },
+      success: r.success === true && !missing.length && !fileErrors && r.numFailedTestSuites === 0,
+      counts: { tests: r.numTotalTests, skipped: r.numPendingTests, failed: r.numFailedTests + fileErrors + missing.length, todo: r.numTodoTests ?? 0 },
     });
   } catch (error) {
     report({ unavailable: `vitest 보고서 해석 실패: ${error.message}` });
