@@ -24,3 +24,17 @@
 - 타입 검사(`tsc`) 통과.
 
 전체 재실행은 `pace project finish`의 `검사`가 맡는다(중복 실행 피함).
+
+## 전체 검사 2차 — 개발자 모드(symlink) 켠 뒤, Python PATH 우선 (2026-11-18)
+
+- ℹ tests 963
+- ℹ pass 956
+- ℹ fail 1
+- ℹ skipped 6
+- ℹ duration_ms 1846876.2573
+
+| 실패 | 이 변경 때문인가 | 근거 |
+|---|---|---|
+| playbook-maker 묶음 중 `playbook-guard` "저장 경계…"(임시 폴더가 남았다) | 아님 | 단독 실행은 P003 이전 커밋(4602130) 임시 worktree와 현재 모두 통과 — 공용 tmpdir 증가로 판정하는 시험의 병렬 경합. 이슈로 기록 |
+
+1차의 symlink 50개·Python 1개·legacy script 1개는 모두 통과. telegram S-9f도 통과(1차 실패는 symlink 권한 관련으로 보임 [추정]).

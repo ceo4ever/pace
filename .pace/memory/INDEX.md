@@ -24,11 +24,15 @@
 - [Windows 실제 ACP 세션 환경 검증](windows-실제-acp-세션-환경-검증.md) — Windows 실제 Claude ACP 세션에서 Git Bash 위치 환경과 요청 흐름을 검증한다
 - [Windows Git 명령 탐색 경계 검토](windows-git-명령-탐색-경계-검토.md) — Windows에서 이름으로 실행하는 Git이 작업 폴더 실행 파일을 선택하는지 실측하고 안전한 절대 경로 탐색을 검토한다
 - [daemon-store S-15 간헐 실패 — Windows 제외 포트 범위](daemon-store-s-15-간헐-실패-windows-제외-포트-범위.md) — 임시 PACE_HOME의 해시 인스턴스 포트가 Windows 제외 범위면 listen EACCES 실패 — 다음 후보 포트로 넘어가게 고침
+- [codex 같은 세션 재검토 불가](codex-같은-세션-재검토-불가.md) — pace agent run codex p 모드가 --resume을 지원하지 않아 reviewer 지침의 같은 세션 재검토를 못 한다 — 재개 지원 또는 지침 대안 정리
+- [main 직접 finish 브레인 반영 검사 모순](main-직접-finish-브레인-반영-검사-모순.md) — main 직접 프로젝트 finish가 커밋 안 한 변경만 보고 브레인 반영을 판정해, 브레인을 고친 main 직접 프로젝트는 통과 불가 — 프로젝트 번호 커밋도 보게 고친다
+- [playbook-guard 임시 폴더 시험 병렬 경합](playbook-guard-임시-폴더-시험-병렬-경합.md) — playbook-guard 저장 경계 시험이 공용 tmpdir의 pace-playbook-* 증가로 판정해 병렬 실행 때 다른 시험 파일의 임시 폴더를 잡고 실패 — 시험 전용 임시 루트로 격리
 
 ## 할 일
 
 - [호스트 실사용 검증](호스트-실사용-검증.md) — GUI 호스트와 Windows에서 프로젝트 역할 수신·부트를 실사용으로 확인한다
 - [pace agent Codex 호스트 조건 안내 확인](pace-agent-codex-호스트-조건-안내-확인.md) — Codex 호스트의 네트워크 허용·중첩 Codex의 샌드박스 해제 필요 안내가 실제 사용 때 드러나는지 확인한다
+- [설치본 재설치로 대시보드 연결 갱신](설치본-재설치로-대시보드-연결-갱신.md) — main에서 bash scripts/install.sh 뒤 설치 CLI로 pace backlog init — 이 저장소 local.js가 소스 checkout 대신 설치본을 가리키게 한다
 
 ## 메모 (사실·결정)
 
@@ -65,3 +69,5 @@
 - [test-map 단위 확장](test-map-단위-확장.md) — test-map 단위가 2개뿐이라 테스트 87개 중 85개가 단위 밖 — 영역별 단위로 나눠 부분 검사를 살린다
 - [가림 요소 사람 확인 복구 후보](가림-요소-사람-확인-복구-후보.md) — 가림 대상 읽기 요소의 선택자가 바뀌면 구조 선택자·box만으로 사람 확인 필수 복구 후보를 만든다
 - [사람 확인 대기 완료 표시 명령](사람-확인-대기-완료-표시-명령.md) — pendingHumanChecks 대기 항목을 사람이 이미지 확인 뒤 확인 완료로 표시하는 명령을 둔다
+- [대시보드 local.js 복구 경합](대시보드-local-js-복구-경합.md) — ensureLocalLink 복구가 내용 확인 직후 교체된 파일을 덮을 수 있는 좁은 창 — local.js 쓰기를 refresh 잠금 안으로 옮기는 안 검토
+- [main 직접 프로젝트 착수 기록](main-직접-프로젝트-착수-기록.md) — main 직접 프로젝트도 start처럼 상태 진행·착수 결정 log.jsonl을 남기는 명령(start --main 등)을 둔다

@@ -10,7 +10,8 @@
 - 실제 화면: headless Chrome에서 스타일·자료·앱이 그려지고, local.js가 없으면 init 안내가 보인다(P-6 캡처).
 - 넘어올 길·하네스: 수정 안 한 v1은 init이 전환하고 고친 v1·사용자 local.js·추적 중 local.js·기존 .gitignore는 보존(P-3, 리뷰 B1·B2). 실제 `project start` worktree에서 local.js가 자동 생성되고 추적 변경은 하네스 소유 파일뿐(`evidence/worktree-flow.md`).
 - 독립 검토: 다른 제공자(codex) 1단계 fail(blocking 3) → 2단계 fail(blocking 4) → 3차 fail(blocking 1) → 4차 반영 확인 **pass**. 1단계는 작업 문서 없이 목적·diff만으로 판정. 2단계 이후는 세션 재개가 안 돼(codex `p` 모드 `--resume` 미지원) 매 차수 새 세션에 직전 지적 원문을 넘겼다 — 같은 검토자의 연속 판단은 아니다.
-- 한계: 이 PC는 symlink 권한이 없어(개발자 모드 꺼짐) 전체 검사의 symlink 시험 50개를 이 PC에서 확인하지 못한다 — 이 변경과 무관한 환경 실패(`evidence/check-summary.md`).
+- 전체 검사(개발자 모드 켠 뒤 2차): 963개 중 956 통과·6 건너뜀·실패 1 — 실패는 이 변경과 무관한 playbook-guard 시험의 병렬 경합(단독 실행은 P003 전·후 통과, 이슈 기록). `evidence/check-summary.md`.
+- **마감 방식(캡틴 결정 2026-11-18)**: `pace project finish`가 하네스 결함(main 직접 프로젝트의 브레인 반영 검사가 커밋된 변경을 보지 않음 — 이슈 `main-직접-finish-브레인-반영-검사-모순`)으로 통과할 수 없어, finish 없이 이 문서·기록으로 마감했다. finish가 하던 METRICS.md 생성·병합 대기 커밋·커밋 칸 해시는 하지 않았다. 하네스 개선은 캡틴이 따로 진행.
 
 ## 기준 대조
 
@@ -22,7 +23,7 @@
 | P-4 | 통과 | `test/dashboard-init.test.ts` "P-4…", 실제 worktree `evidence/worktree-flow.md` |
 | P-5 | 통과 | `test/adopt-opal.test.ts` T02-S-3 묶음 6개(v2·local.js·제외 확인 추가) |
 | P-6 | 통과 | `evidence/browser-local-ok.png`·`evidence/browser-no-local.png` |
-| P-7 | 통과 | 변경으로 생긴 실패 0 — 1차 전체 검사 실패 53개 중 변경 원인 1개(legacy script 시험 의존 목록) 수정, 나머지 52개는 환경(symlink 50·Python PATH 1·telegram S-9f 1, 변경 전 HEAD에서도 재현) `evidence/check-summary.md`. 최종 전체 검사는 finish의 `검사` |
+| P-7 | 통과 | 변경으로 생긴 실패 0 — 1차 실패 53개 중 변경 원인 1개(legacy script 시험 의존 목록) 수정, 2차(symlink 허용) 실패 1개는 무관한 playbook-guard 병렬 경합 `evidence/check-summary.md` |
 
 ## 보안
 
@@ -49,7 +50,7 @@
 - 복구 경합(codex should_fix): 내용 확인 직후 다른 작업이 파일을 교체하면 복구가 덮을 수 있는 좁은 창 — init 잠금과 refresh 잠금이 달라 남는다. 필요하면 local.js 쓰기를 refresh 잠금 안으로 옮긴다.
 - 설치본 반영: `bash scripts/install.sh`(main) 뒤 설치 CLI로 이 저장소 `pace backlog init`을 다시 돌리면 local.js가 설치본을 가리킨다(지금은 소스 checkout 참조).
 - 다른 PC: 이 커밋을 받은 PC는 `pace backlog init`(또는 refresh) 한 번으로 연결 — 커밋할 변경 없음.
-- 이 PC 개발자 모드(symlink) — 전체 검사 환경 실패 50개 해소(BL261118_01 측정 전제).
+- 하네스 기록(이슈·아이디어): `main-직접-finish-브레인-반영-검사-모순`, `main-직접-프로젝트-착수-기록`, `codex-같은-세션-재검토-불가`, `playbook-guard-임시-폴더-시험-병렬-경합` — 프로젝트 메모리.
 
 ## 회고
 
@@ -57,4 +58,4 @@
 
 ## 지표
 
-[지표 집계](METRICS.md) — 태스크 없는 main 직접 프로젝트. 교차 검토 4회가 작업 시간의 큰 몫이고 전체 검사 1회(약 34분)는 환경 실패 분류에 쓰였다.
+finish를 돌리지 못해 METRICS.md는 생성되지 않았다 — `pace project stats P003`로 볼 수 있다. 태스크 없는 main 직접 프로젝트. 교차 검토 4회가 작업 시간의 큰 몫이고 전체 검사 1회(약 34분)는 환경 실패 분류에 쓰였다.
