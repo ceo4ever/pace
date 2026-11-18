@@ -1,0 +1,34 @@
+✖ changed stops remaining files inside the same unit after an actual failure (2294.178ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2578.4974
+
+✖ failing tests:
+
+test at test\changed-test.test.ts:80:1
+✖ changed stops remaining files inside the same unit after an actual failure (2294.178ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'check',
+  +   'after'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:84:77)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'check', 'after' ],
+    expected: [ 'check' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,12 @@
+✔ changed preserves staged deletion when the same working path remains untracked (2367.8855ms)
+✔ changed treats assume-unchanged and skip-worktree as uncertain without mutating flags (5338.283ms)
+✔ changed sparse checkout and sparse-index policies execute full without rewriting the index (5397.9321ms)
+✔ changed converts a post-check selected-path exception to unavailable without a success retry (1837.0781ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15325.9026

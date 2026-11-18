@@ -1,0 +1,39 @@
+{
+  "verified": true,
+  "fullEvidence": "evidence/t04-fixed-full-2026-11-18T18-29-13-627Z",
+  "environmentSha256": "0e4a4178ae284f028f4faec0d5c5d2aa9df20e2aef1e8d4cb2b9aa05cff113f3",
+  "resultsSha256": "1bfc12f8ebfc8d04ee652c69b8c39ef920eb1a574483ce63b3ce9a69f6963168",
+  "before": {
+    "file": "evidence/runtime-v2-before-full.json",
+    "sha256": "c7ea8132ce2102e5d3e6c5e30bcc7114262ea5eea4b3e74a76a907e95782584c",
+    "sourceTreeSha256": "6dfb8bc6fa7cf2ccab6a5ac7d47f14d6908a9dc790d360ab9e7f5056447b6b12"
+  },
+  "after": {
+    "file": "evidence/runtime-v2-after-full.json",
+    "sha256": "5a32025638786a798f2ab08160c5680aac225b5d64feb6ecb3753b220c89298c",
+    "sourceTreeSha256": "6dfb8bc6fa7cf2ccab6a5ac7d47f14d6908a9dc790d360ab9e7f5056447b6b12"
+  },
+  "fileArraysEqual": true,
+  "fullyEqual": false,
+  "metadataDifferentKeys": [
+    "captured"
+  ],
+  "caseSourceMatchesMeasurement": true,
+  "totals": {
+    "tests": 995,
+    "suites": 0,
+    "pass": 986,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 9,
+    "todo": 0,
+    "duration_ms": 708978.0144
+  },
+  "elapsedMs": 710711.7803,
+  "focused": {
+    "file": "evidence/post-review-focused-all.tap",
+    "sha256": "0c4463f42894f2f6073bbc4ebbb62c4382f1240048767eb7ac1a8c61df96a5e5",
+    "caseSourceSha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c",
+    "caseSourceMatchesWhole": true
+  }
+}

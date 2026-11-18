@@ -1,0 +1,27 @@
+변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외
+전체 회귀: 프로젝트 전체 명령 · pace test all/finish는 기존 main 기준
+선언 기준: main 0697fb32817f085249d47e97d00f874f2e8a5f68
+변경 파일: ["src/scout/card.ts"]
+선택 scout-card: ["src/scout/card.ts"] → ["test/cli.test.ts","test/scout-ideas.test.ts"]
+사전 검사 · cwd: "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-fast-ePzSiU\\pace-sample" · 명령: "npm run typecheck" · 시간: 1733ms · 상태: passed
+> pace@0.1.0 typecheck
+> tsc -p tsconfig.json
+
+npm notice
+npm notice New major version of npm available! 11.19.1 -> 12.2.3
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.3
+npm notice To update run: npm install -g npm@12.2.3
+npm notice
+단위 scout-card:
+대상: test/cli.test.ts
+명령: ["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fast-ePzSiU\\installed home\\app\\src\\test-runner\\node-driver.mjs","C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-fast-ePzSiU\\pace-sample\\test\\cli.test.ts"]
+시간: 10637ms · 종료: 0
+테스트 6 · skip 0 · 실패 0
+
+대상: test/scout-ideas.test.ts
+명령: ["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fast-ePzSiU\\installed home\\app\\src\\test-runner\\node-driver.mjs","C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-fast-ePzSiU\\pace-sample\\test\\scout-ideas.test.ts"]
+시간: 1681ms · 종료: 0
+테스트 5 · skip 0 · 실패 0
+
+판정: 부분 통과 · 전체 회귀 제외
+실행: npm run typecheck

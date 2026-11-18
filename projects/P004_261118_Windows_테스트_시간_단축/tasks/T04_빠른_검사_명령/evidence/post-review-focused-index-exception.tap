@@ -1,0 +1,32 @@
+✔ changed preserves staged deletion when the same working path remains untracked (2339.8104ms)
+✖ changed treats assume-unchanged and skip-worktree as uncertain without mutating flags (5186.4674ms)
+✔ changed sparse checkout and sparse-index policies execute full without rewriting the index (5497.6591ms)
+✔ changed converts a post-check selected-path exception to unavailable without a success retry (1837.5352ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15246.1429
+
+✖ failing tests:
+
+test at test\changed-test.test.ts:126:1
+✖ changed treats assume-unchanged and skip-worktree as uncertain without mutating flags (5186.4674ms)
+  AssertionError [ERR_ASSERTION]: [{"flag":"--assume-unchanged","status":0,"fullExecuted":true,"partialPassed":false,"output":"변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외\n전체 회귀: 프로젝트 전체 명령 · pace test all/finish는 기존 main 기준\n선언 기준: main c2a2c3a13bcf179f00ee76f377c87b06413150ce\n전체 검사 전환: 숨김 인덱스 플래그: \"h src/b.ts\"\n전체 검사 · 명령: \"node full.cjs\" · 시간: 544ms · 실행시작: true\n(node:84972) Warning: node:test run() is being called recursively within a test file. skipping running files.\n(Use `node --trace-warnings ...` to show where the warning was created)\n판정: 전체 검사 통과\n"},{"flag":"--skip-worktree","status":0,"fullExecuted":true,"partialPassed":false,"output":"변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외\n전체 회귀: 프로젝트 전체 명령 · pace test all/finish는 기존 main 기준\n선언 기준: main 1e00cf200349cad8cbf0f03633d2294ca4ff777c\n전체 검사 전환: 숨김 인덱스 플래그: \"S src/b.ts\"\n전체 검사 · 명령: \"node full.cjs\" · 시간: 539ms · 실행시작: true\n(node:63480) Warning: node:test run() is being called recursively within a test file. skipping running files.\n(Use `node --trace-warnings ...` to show where the warning was created)\n판정: 전체 검사 통과\n"}]
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:138:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

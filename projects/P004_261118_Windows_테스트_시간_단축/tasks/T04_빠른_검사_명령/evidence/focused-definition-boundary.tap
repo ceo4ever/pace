@@ -1,0 +1,27 @@
+✖ changed does not read an escaping working definition during full fallback (439.6131ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 615.732
+
+✖ failing tests:
+
+test at test\changed-test.test.ts:206:1
+✖ changed does not read an escaping working definition during full fallback (439.6131ms)
+  Error: ENOENT: no such file or directory, symlink 'C:\Users\root-user\AppData\Local\Temp\pace-test-run-K5A2eZ\pace-external-definition-LObYAA\README.md' -> 'C:\Users\root-user\AppData\Local\Temp\pace-test-run-K5A2eZ\pace-changed-sample-JTUa0f\docs\README.md'
+      at symlinkSync (node:fs:1937:11)
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:209:34)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'symlink',
+    path: 'C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-test-run-K5A2eZ\\pace-external-definition-LObYAA\\README.md',
+    dest: 'C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-test-run-K5A2eZ\\pace-changed-sample-JTUa0f\\docs\\README.md'
+  }

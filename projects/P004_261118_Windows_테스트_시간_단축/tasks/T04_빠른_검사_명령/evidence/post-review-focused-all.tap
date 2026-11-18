@@ -1,0 +1,48 @@
+실행: node wait.cjs
+실행: node -e "require('node:fs').writeFileSync('overflow.pid',String(process.pid));setTimeout(()=>process.exit(0),250);process.stdout.write(String.fromCharCode(120).repeat(18*1024*1024))"
+✔ changed CLI uses the installed app and the external repository map (2222.4992ms)
+✔ changed includes staged, unstaged and nested untracked files once per unit (2227.5323ms)
+✔ changed runs every related unit and preserves a related failure over a successful full command (2191.9865ms)
+✔ changed test files select the entire unit with overlapping test globs deduplicated (2171.2027ms)
+✔ changed stops remaining files inside the same unit after an actual failure (2040.0109ms)
+✔ changed common, unknown, deleted, renamed and control paths execute the committed full declaration (11973.5481ms)
+✔ changed conflict, executable mode and gitlink states cannot become a partial success (6253.7675ms)
+✔ changed preserves staged deletion when the same working path remains untracked (2011.5583ms)
+✔ changed treats assume-unchanged and skip-worktree as uncertain without mutating flags (5373.1017ms)
+✔ changed sparse checkout and sparse-index policies execute full without rewriting the index (5411.8818ms)
+✔ changed converts a post-check selected-path exception to unavailable without a success retry (1839.3326ms)
+✔ changed supports master and HEAD fallbacks while legacy all keeps its main boundary (5647.437ms)
+✔ changed never adopts committed feature-branch checks over the selected main map (2268.185ms)
+✔ changed distinguishes no changes, unborn, outside Git, missing Git and damaged refs (4940.4629ms)
+✔ changed missing or unsupported map/checks falls back and full absence/failure remains distinct (18707.5575ms)
+✔ changed shell checks use the declared cwd and Git sh syntax and stop on failure (3963.6167ms)
+✔ changed rejects escaping cwd/tests and handles special paths without shell interpolation (8206.54ms)
+✔ changed Windows matching is conservative across case while POSIX stays case sensitive (1960.1776ms)
+✔ changed does not read an escaping working definition during full fallback (1438.4389ms)
+✔ changed empty/all-skip tests fail and unknown Python results trigger the actual full check (7687.443ms)
+✔ Windows changed missing Python start falls back while legacy unit keeps its failure (2837.0114ms)
+실행: node check.cjs
+✔ shell execution state distinguishes real timeout/overflow and missing executables (787.1805ms)
+{"installedEntry":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-test-run-TFoPx2\\pace-installed-changed-R64sWo\\installed home\\app\\bin\\pace.ts","runtimeDependencies":false,"pristineAndObservedPassed":true,"copiedDrivers":[{"name":"node-driver.mjs","sha256":"bf918c93ab9f479856d8c18fe402500b2143a4549aee157e95c69b75f063d3ef","target":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-test-run-TFoPx2\\pace-installed-changed-R64sWo\\installed home\\app\\src\\test-runner\\node-driver.mjs"},{"name":"python-driver.py","sha256":"dc0e069f584e32184404f138580e68c2444d3e577e0d996f5bfe75e3fa0ffce0","target":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-test-run-TFoPx2\\pace-installed-changed-R64sWo\\installed home\\app\\src\\test-runner\\python-driver.py"}],"posixShimExecuted":false}
+✔ changed check timeout and parent OS termination never continue into tests or full fallback (4344.6584ms)
+✔ installed Windows entry and copied real Node/Python drivers execute outside the checkout (5269.524ms)
+✔ the user README map example runs unchanged through the installed CLI (2673.2742ms)
+✔ 실제 Node·Python 테스트의 성공, 빈 파일, 전체 skip 및 실패를 구분한다 (2897.3747ms)
+✔ 공통·미분류·전제와 잘못된 패턴 및 외부 경로를 오인하지 않는다 (2074.6702ms)
+✔ 전체 검사는 base 선언을 사용하고 CLI는 결과를 전달한다 (1829.4491ms)
+✔ 미지원 구성과 여러 소속의 실패 우선 및 테스트·소스 겹침을 구분한다 (2151.6024ms)
+✔ 실제 외부 파일과 밖을 가리키는 구성 경로는 실경로에서 거부한다 (805.9944ms)
+✔ Python 0건과 실패, Node 시그널 및 타임아웃은 실패한다 (1368.9488ms)
+✔ 전체 검사 선언 부재와 base 조회 실패는 작업본 선언으로 성공하지 않는다 (1640.3054ms)
+✔ T02 다중 패키지 시범 구성은 스키마로 읽고 미지원 Vitest를 확인 불가로 처리한다 (817.6118ms)
+✔ 외부 SIGTERM으로 중단해도 선택 테스트 자식이 남지 않는다 (0.2926ms)
+✔ 공통은 등록된 단위보다 우선하고 파일 선택은 지정된 테스트만 실행하며 실행 정보가 나온다 (1454.7681ms)
+✔ 미지원 러너 설정과 결과를 읽지 못하는 실행은 확인 불가다 (574.1061ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 115710.5929

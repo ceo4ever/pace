@@ -1,0 +1,42 @@
+✖ changed empty/all-skip tests fail and unknown Python results trigger the actual full check (7223.6117ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7547.1995
+
+✖ failing tests:
+
+test at test\changed-test.test.ts:184:1
+✖ changed empty/all-skip tests fail and unknown Python results trigger the actual full check (7223.6117ms)
+  AssertionError [ERR_ASSERTION]: 변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외
+  선언 기준: main 9d42210b5effaa78873ac7a7fc38ef1024640ebd
+  변경 파일: ["pkg/__pycache__/__init__.cpython-314.pyc","pkg/__pycache__/value.cpython-314.pyc","pkg/value.py","test/__pycache__/test_sample.cpython-314.pyc"]
+  전체 검사 전환: 미분류: "pkg/__pycache__/__init__.cpython-314.pyc"
+  전체 검사 · 명령: "node full.cjs" · 시간: 484ms · 실행시작: true
+  
+  판정: 전체 검사 통과
+  실행: node full.cjs
+  
+  + actual - expected
+  
+    [
+  -   'check',
+      'full'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:195:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'full' ],
+    expected: [ 'check', 'full' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

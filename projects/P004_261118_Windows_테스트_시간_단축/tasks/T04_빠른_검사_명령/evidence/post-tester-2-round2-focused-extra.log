@@ -1,0 +1,10 @@
+✔ changed preserves staged deletion when the same working path remains untracked (2400.33ms)
+✔ changed converts a post-check selected-path exception to unavailable without a success retry (1868.5686ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4580.7549

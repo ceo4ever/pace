@@ -1,0 +1,36 @@
+{
+  "verified": true,
+  "records": [
+    {
+      "file": "src/test-runner/changed.ts",
+      "source": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fast-ZAbPCm\\installed home\\app\\src\\test-runner\\changed.ts",
+      "evidence": "v1-source/src/test-runner/changed.ts",
+      "sha256": "5cf539bd3eb440be5c588fdec867b078325cf6e958cd1bebed01528df3c182d9"
+    },
+    {
+      "file": "test/changed-test.test.ts",
+      "source": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fast-ZAbPCm\\pace-sample\\test\\changed-test.test.ts",
+      "evidence": "v1-source/test/changed-test.test.ts",
+      "sha256": "238b3aca3b5b2a59dd7e4471fe68323d132114641efcb841b0a666e22aec3fbe"
+    },
+    {
+      "file": "README.md",
+      "source": "D:\\LucasStudio\\pace.wt\\P004\\README.md",
+      "evidence": "v1-source/README.md",
+      "sha256": "6f4b370fb3e27c3757a509b0a9b0b9c004b64cab923b5eab31b659cf25b00828"
+    },
+    {
+      "file": "skills/pace-project-init/references/test-map.md",
+      "source": "D:\\LucasStudio\\pace.wt\\P004\\skills\\pace-project-init\\references\\test-map.md",
+      "evidence": "v1-source/skills/pace-project-init/references/test-map.md",
+      "sha256": "a57e2eed466c0714e507fba0c02bd05b635da7a4286c337a597b4a6b5443451d"
+    },
+    {
+      "file": "skills/pace-project-dev/references/testing.md",
+      "source": "D:\\LucasStudio\\pace.wt\\P004\\skills\\pace-project-dev\\references\\testing.md",
+      "evidence": "v1-source/skills/pace-project-dev/references/testing.md",
+      "sha256": "286d3404cb4ac63793c87315634369ed38160bfb4fc1e0098bd9ac8457cdb0ef"
+    }
+  ],
+  "note": "Original bytes verified against the first successful runtime snapshot; copied from current unchanged sources or the retained original installed/sample copies, without reconstruction."
+}

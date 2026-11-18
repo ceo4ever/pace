@@ -1,0 +1,12 @@
+실행: node wait.cjs
+실행: node -e "require('node:fs').writeFileSync('overflow.pid',String(process.pid));setTimeout(()=>process.exit(0),250);process.stdout.write(String.fromCharCode(120).repeat(18*1024*1024))"
+✔ changed does not read an escaping working definition during full fallback (2131.771ms)
+✔ shell execution state distinguishes real timeout/overflow and missing executables (791.4293ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3222.5071

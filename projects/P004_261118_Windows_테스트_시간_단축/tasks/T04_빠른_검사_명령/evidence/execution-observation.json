@@ -1,0 +1,29 @@
+{
+  "verified": true,
+  "platform": "win32",
+  "interrupted": {
+    "ok": false,
+    "output": "종료 코드: 3840",
+    "execution": "failed",
+    "started": true,
+    "status": 3840,
+    "signal": null
+  },
+  "unavailable": {
+    "ok": false,
+    "output": "Git 실행 파일을 찾지 못했다 (ENOENT)",
+    "execution": "unavailable",
+    "started": false,
+    "status": null,
+    "signal": null
+  },
+  "expectedChangedCodes": {
+    "interrupted": 1,
+    "unavailable": 3
+  },
+  "limitations": [
+    "The signal is sent by the owned child shell to itself. No unrelated PID is signaled.",
+    "Windows Git sh may encode a signal as a nonzero status rather than a Node signal field; both represent an execution that started and failed.",
+    "This auxiliary observation ran after the full regression, outside its timing."
+  ]
+}

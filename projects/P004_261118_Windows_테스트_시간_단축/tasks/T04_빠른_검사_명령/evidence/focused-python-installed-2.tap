@@ -1,0 +1,32 @@
+✔ changed never adopts committed feature-branch checks over the selected main map (2397.798ms)
+✔ changed empty/all-skip tests fail and unknown Python results trigger the actual full check (7076.1154ms)
+✖ installed Windows entry and copied real Node/Python drivers execute outside the checkout (3352.0595ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13191.5796
+
+✖ failing tests:
+
+test at test\changed-test.test.ts:231:1
+✖ installed Windows entry and copied real Node/Python drivers execute outside the checkout (3352.0595ms)
+  AssertionError [ERR_ASSERTION]: The network path was not found.
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:254:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

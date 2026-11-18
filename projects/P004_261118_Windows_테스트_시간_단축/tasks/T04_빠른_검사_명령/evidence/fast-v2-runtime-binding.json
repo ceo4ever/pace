@@ -1,0 +1,495 @@
+{
+  "valid": true,
+  "installedRuntimeFiles": 97,
+  "mismatches": [],
+  "runtimeSnapshot": "runtime-v2-before-full.json",
+  "runtimeSnapshotSha256": "c7ea8132ce2102e5d3e6c5e30bcc7114262ea5eea4b3e74a76a907e95782584c",
+  "fastManifest": "fast-2026-11-18T18-26-09-503Z/environment.json",
+  "files": [
+    {
+      "destination": "installed-app",
+      "file": "bin/pace.ts",
+      "sha256": "92112876727b414cf917c4bb0cf69b8d2d6ed67fc34ed5fe5b8c30a4f91d3ca3"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/acp-executor.ts",
+      "sha256": "4fcab64278cfdfdbb20fe09a5567cdd283657c1201a7f0bdcaf0faafc8be5d70"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/chain.ts",
+      "sha256": "8eb3009151d1bb646d663de0ffb41e5b3ba7fc89f212d687a5f5399154a82b50"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/contract.ts",
+      "sha256": "3c77b9eae82c4cf8e37f369247eec0626af1666bf5b9ce0c10bfaa5ff863d768"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/hooks.ts",
+      "sha256": "ecf7aa820a8884c2ba02fbd62164415fca1470841910fb4ef8c1a65e0fb3adc4"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/limits.ts",
+      "sha256": "18cd3725601b902b3f1bb98f2b672c28562dc8b398f3fb9fe0c1358a48bf66a3"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/p-executor.ts",
+      "sha256": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/proc-group.ts",
+      "sha256": "a2fdfe2154bc86be361ffa07b22cd52531ee84188e5eed6205b770f76b89ac7d"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/process.ts",
+      "sha256": "79188ddb12d7c8e0fdd96015648162133f69952084af5dea26d7dff518f72588"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/registry.ts",
+      "sha256": "323ff91fed9d933e06b02c555498a12e1e34ac48b343b9ae008233a6242465c7"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/setup-cli.ts",
+      "sha256": "d2490ac01d13e38bb238fe3d7d1ce37a21fe4d1f79e191f837860ae32ceb6623"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/setup.ts",
+      "sha256": "ee7f233fbddeab5e96b056300293c23ff7c287839c28b79c6aaa5c77f963ad84"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/snapshot.ts",
+      "sha256": "071dce9d2ca3006d4a2b833de730e9ec53d522fe454a7f021c84342ee1101fb1"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/verify.ts",
+      "sha256": "d368970bdcd1c1ddb6d0ac8cc4ce171e3c7918b5ec6db45581d9c71abd676bd3"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/win-command.ts",
+      "sha256": "64a9cf48435de8be9888e865fdfafaa51b150059ff0e5a6302ecf0dd28e6da19"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/windows-job.cs",
+      "sha256": "3f67829f996e3238f19106a17581f51972931931106580d4b98a6d0b5d69d2d3"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/windows-job.ps1",
+      "sha256": "17e705dc95b9c94625433563bb7d9788bdf4845006d03184640c65fbe307d9ae"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/windows-job.ts",
+      "sha256": "fd29973107b15e756072f57ef33ebe1f167e1d6ee805909aad27dc41faa10d76"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/agent/windows-supervisor.ts",
+      "sha256": "f3f222b5fbfa34b3802c498a9b342bfd739c53bb8211c88283cf79a7ff7a8825"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/boot.ts",
+      "sha256": "f1da1099d9b0f9ee29913935b563969fe1dc08b8f21071d98435a8c36edcae8a"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/cli.ts",
+      "sha256": "020040e969db51731463a2a45c191a1e107e33d9538757864aae1c2c411d0386"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/core/console-decode.ts",
+      "sha256": "f7b8d524c54c716b64056fbcd93ef71c9b250d7a674a9c282f5203f1c49bb29c"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/core/frontmatter.ts",
+      "sha256": "dcb9d6e6294b808b030c5908251e75e716954f4ca1e41a9c7efb8080654b6dde"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/core/fsutil.ts",
+      "sha256": "4b6ffce7172d71060a1855e017b3b075b02daffbf76dd90e3a81dbeba00395af"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/core/paths.ts",
+      "sha256": "a9d11c9482c1e3f44f4dda494a10414c278616451d82e8ecc5ac7e8d1779301c"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/core/prompt.ts",
+      "sha256": "b2b6570819514657aa5ad4d7238338c30f0738e5936bb5556656f929aca87d4f"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/core/worker-settings.ts",
+      "sha256": "66f14195874ef2d18a98f3daf6d5361e474210f251adf2df800f24097acd39f0"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/autostart.ts",
+      "sha256": "f8951599cbda27d22317a129ec78f1f45a86f247f4ed77909967bf2d26cafd5c"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/cli.ts",
+      "sha256": "700a4a5ccae6b124443fc3dfc69c3d4b97ac4374aae4ed5749b8d0d983e271f8"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/config.ts",
+      "sha256": "56879c50bcc4eb7afa643c195c1afab10174bd3ec734b61de06072f31834772d"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/core.ts",
+      "sha256": "ea076871210f0eb3b834553d3b03a737d1d865362dee349974b88aa3b992758c"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/gateway.ts",
+      "sha256": "e95ed9f14af791f0beecba40c10eaefe686d3e72272a8375f99569a6a4b5c539"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/index.ts",
+      "sha256": "4d56a00d69a9694e1d5d8f4e0efe43eb3bf9832d8b4b986db62763be385be957"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/install-wizard.ts",
+      "sha256": "3875eee8cb8155998a2f5744015a410bb52afc7df270f6a40c393478c967c73e"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/instance.ts",
+      "sha256": "28cdba28d2ab920ac38400257c23b0f5ac47b550f63753521e276f5355c466ca"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/runner.ts",
+      "sha256": "0f5bae4e859c9ed0cd4ed8691d9812c191106dc2189fcfab2260ef6919ab11af"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/secrets.ts",
+      "sha256": "4c74e12a12e9481729333b8a8fb11ebe39a047bcd8e749d29ae8160cb43b200d"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/store.ts",
+      "sha256": "4099ec70c9861fa758a5b3073307bd3d7589e0051cfdada5f75d93980520c22b"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/telegram/adapter.ts",
+      "sha256": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/telegram/api.ts",
+      "sha256": "f73681174e8274ee1da59eab32ab694acf1c112c6c49ef8be24c46941fb2f9fd"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/telegram/fsworker-thread.ts",
+      "sha256": "b875a1e7d6ac51659ce9e4f0fdc8e5595fe0d45a98ce3c76b266ebb5fd1fc132"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/telegram/fsworker.ts",
+      "sha256": "622ec0fc2512860886bce6f3d617488e3cf6adc88d361d765e41ea8c6d96a3af"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/telegram/index.ts",
+      "sha256": "bb98e3bd5c0710571213c4e55412f584388ba694577323114db6dce465da505f"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/telegram/markdown.ts",
+      "sha256": "9684722b5968b4bb38516b408bdb884d2b40068decdd96489148036adfab8407"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/telegram/render.ts",
+      "sha256": "3b1f9e1e279bdcd19426dac4206cabf2e3bdbfee0bafa6ef3b0f69e60460daf2"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/telegram/state.ts",
+      "sha256": "2924f67bc3b5c9c9b263c16aa7b2ba66cdc04747ee8f0f2a61017afbc60500ab"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/daemon/types.ts",
+      "sha256": "bcc24aba3fc8a8d70f4992e655b77755d36415ef301547534295b17d4f8b5930"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/dashboard/backlog/app.js",
+      "sha256": "85c166061840c17a7fc4459cb338ea5aad5ee9d0437c64f34f6be8263272b9b1"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/dashboard/backlog/core.js",
+      "sha256": "57ae746c1d859798a6ad0c9608193badb1898998a359074d35d3f3bcec03a0af"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/dashboard/backlog/page.html",
+      "sha256": "6d3bb241fe9fbedb9f60e7b0a36698f1b894561b4e07b70fb53499fddbb644da"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/dashboard/backlog/style.css",
+      "sha256": "74329256b63e943dc07b1d68f2e1bc4f1a6fd88ba59570176a1e46ecc5b7caf2"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/intent/handoff.ts",
+      "sha256": "0ea8640ba1db38fa68f8d61138c09a06068bf6343471ae4d8c18a08edaf07b1a"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/intent/lens.ts",
+      "sha256": "78775a0e3b2f638e6e4f502d77376f89fc2dd5cf5e28026df4cdfb3bf7496129"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/intent/plan.ts",
+      "sha256": "fd8b4af78acee88c3465b01e959b20642f65f4120669cdfb0c922641fe3e8268"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/intent/preview.ts",
+      "sha256": "feed002d5f450711ff7a8ee9c6415035e4d226dc1abd5b6c874f4c1f267db02d"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/intent/schema.ts",
+      "sha256": "bd677f82a146511bf8d4c6e0e7391010319c89d044700fabaa57031d3d9abee9"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/mcp/names.ts",
+      "sha256": "aa1406c72709bdc122ba7c838778928a53e9567b85b2a487036c0cd31e8ae1ab"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/mcp/safefs.ts",
+      "sha256": "3a3b69808762867d1093d9d80a174b4f1ac263a3a00d8aa19dbfc0dd133d697e"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/mcp/server.ts",
+      "sha256": "df510c01e6c6c8d262a0005200dff1aea38584d9dcbec92c1489830150b1ac9c"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/mcp/stdio.ts",
+      "sha256": "e0c939143bb5279390546a60e828e509c9e723fe297a4fef191fd5fdfcab67ce"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/memory/memory.ts",
+      "sha256": "c61ddccbb8aeb477230bc7ed3f662ef8850e3d8b05650d3c7918f9d6ae8b099d"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/profile/onboarding.ts",
+      "sha256": "3dee0b2bba6306b32997f8475400c606351560e5d986b1b0bebe86cf407defe7"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/profile/profile.ts",
+      "sha256": "37f9fc8c9a96e668410c6bc859326b69ea5b5b4e1de56378b7d1c468bf5b622c"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/adopt-opal.ts",
+      "sha256": "535e5c42ed90ce2d96fdf6f3731d03c0094b7b4157e8fa3510ab53ca25727e1f"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/agent-definition.ts",
+      "sha256": "88e968ca0afc83c949c9becda431e32e0d4fba8a9896e6228356de33a5f429ac"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/backlog.ts",
+      "sha256": "4bff5818b32ead78481be5becd53e68690f10f3e24865074c17631e6110e053d"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/brain.ts",
+      "sha256": "027329378cdbd8342fc7971f796e1d2bb6ce899b5e6895946c3ddd69d682e62a"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/dashboard-init.ts",
+      "sha256": "be5451fc959e8916e86491a8122212c1bd51368d41925b706600af3ae845415b"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/dashboard-layout.ts",
+      "sha256": "c8c4042dfc59e5be8b1a8d623eb548dd1a3f1c31f86848eebf07bcf6c2e002d7"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/dashboard.ts",
+      "sha256": "014668d0c7c2d1c77a0d88e7a73afe7298b17b3889bf77ed788a613fd265b95c"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/event-log.ts",
+      "sha256": "9332a7b54094ce93a80fc31e06fba8fe1db4dee28256e68310ed251c617c7627"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/harness.ts",
+      "sha256": "18bbb1090b7878ff395db9e4aaca6886b222874ba530a872ddae09d7a640d913"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/metrics-document.ts",
+      "sha256": "ac9950e22d2c292e0be4010b3b7d7895fb74aa0133e29cd2a6c74bf9e43769e4"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/metrics-index.ts",
+      "sha256": "3b5bb388db0b8f702db7beda11664696983cdc897a1841511dedbd0bc701185e"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/metrics-report.ts",
+      "sha256": "3a571de9b540df437e8e261a455c68b263950a0391acc5894360488659ef576d"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/metrics.ts",
+      "sha256": "d91e2a84e6e405e7f4b1e8e343b55ef323d5681e5e2e973280311354ca178857"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/pre-review.ts",
+      "sha256": "7a8a27bc749def8df7a4ab7a838427ead41bb7b2fa9e55317989a76870fbba60"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/secrets.ts",
+      "sha256": "9778f4d8170bf1eac70b5ecc242fdda1a6a2df0098de40e8179e884858ddadd9"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/shell-result.ts",
+      "sha256": "9360011be9f3669e361452a885ff67aefaecff76bbee65a5d69dc3f5e8bfb3b2"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/situation.ts",
+      "sha256": "e92651adfefd9f8507a942f27e373351b50c2fe20e73b749aeb3bd1908e902e4"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/tokens.ts",
+      "sha256": "811540b6730c8f5e50b04dca4f0e01c5b63d0500609ae5060b2fa4a7c42cd642"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/project/workspace-registry.ts",
+      "sha256": "045705c94866e3a5468b18f51ea5d9ef5a15df3a7cc781a5a14a94681a06a45e"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/scout/card.ts",
+      "sha256": "59affb02da0d909994253bf6aa0f2f282207939ea6498438746b0300f18f4bd0"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/scout/report.ts",
+      "sha256": "ab572bf031e9713147227174d321f5aa8488a6fd852a2299d3c9c97f651d0d98"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/scout/run.ts",
+      "sha256": "001a49bbfa5e361b14999f7d4a617bcd3fc97465474b329764db4b5b13068f59"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/scout/schema.ts",
+      "sha256": "3c1fe4de85a44c42c713d226203fd08fd74ca922ba669aa4df6d6479750363f4"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/scout/source.ts",
+      "sha256": "eee767bd7fdc73df815c2782833e2e8db49e990630c292ab05c1c0d12a1691fe"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/scout/transcript.ts",
+      "sha256": "f4ec861b92b72653911b3ebc88a0faf40088cc1f850637663aad899d6f886f5a"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/scout/verify.ts",
+      "sha256": "83b910dac54600d0107155a099105a546a0b8d17e7522d612e33780d61938297"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/setup/install.ts",
+      "sha256": "db9f7a83023ca2e49dff510dcbe1b8e2969ef12c119c6f62ca914f206873d6e5"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/setup/onboard.ts",
+      "sha256": "5b771f6acc87216fe87990608e04dd6a12756d05e78b4a99ef63098e7e6385f9"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/test-runner/changed.ts",
+      "sha256": "bf86c9364baede4faf1cefc6894ccde7690f9773b13c8e06a5f267c3f7e03cda"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/test-runner/execute.ts",
+      "sha256": "b0bcd38e1c3d8add3da6e862a84985ecc759889ae1fc00d237b2a2acc818898b"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/test-runner/map.ts",
+      "sha256": "03e73074b562f74d04db4ae2a11aee56711dbc5841c0f7671e07cf1f0686a3ea"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/test-runner/node-driver.mjs",
+      "sha256": "bf918c93ab9f479856d8c18fe402500b2143a4549aee157e95c69b75f063d3ef"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/test-runner/python-driver.py",
+      "sha256": "dc0e069f584e32184404f138580e68c2444d3e577e0d996f5bfe75e3fa0ffce0"
+    },
+    {
+      "destination": "installed-app",
+      "file": "src/test-runner/runner.ts",
+      "sha256": "a494a161a50498d96d0b08d19f3c39052bd5e5a25cf815045bb5dbd73a3a42d4"
+    }
+  ]
+}

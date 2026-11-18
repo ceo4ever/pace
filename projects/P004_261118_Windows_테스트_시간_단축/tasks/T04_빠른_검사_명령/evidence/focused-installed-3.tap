@@ -1,0 +1,10 @@
+{"installedEntry":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-test-run-SOu2LP\\pace-installed-changed-uWk8i9\\installed home\\app\\bin\\pace.ts","runtimeDependencies":false,"pristineAndObservedPassed":true,"copiedDrivers":[{"name":"node-driver.mjs","sha256":"bf918c93ab9f479856d8c18fe402500b2143a4549aee157e95c69b75f063d3ef","target":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-test-run-SOu2LP\\pace-installed-changed-uWk8i9\\installed home\\app\\src\\test-runner\\node-driver.mjs"},{"name":"python-driver.py","sha256":"dc0e069f584e32184404f138580e68c2444d3e577e0d996f5bfe75e3fa0ffce0","target":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-test-run-SOu2LP\\pace-installed-changed-uWk8i9\\installed home\\app\\src\\test-runner\\python-driver.py"}],"posixShimExecuted":false}
+✔ installed Windows entry and copied real Node/Python drivers execute outside the checkout (5101.1409ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5387.0005

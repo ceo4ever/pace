@@ -1,0 +1,20 @@
+변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외
+선언 기준: main cd4e8517897656e6d6e9088c7e244d6b1887370a
+변경 파일: ["src/scout/card.ts"]
+선택 scout-card: ["src/scout/card.ts"] → ["test/cli.test.ts","test/scout-ideas.test.ts"]
+사전 검사 · cwd: "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-fast-0n08Wp\\pace-sample" · 명령: "npm run typecheck" · 시간: 1178ms · 상태: passed
+> pace@0.1.0 typecheck
+> tsc -p tsconfig.json
+단위 scout-card:
+대상: test/cli.test.ts
+명령: ["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fast-0n08Wp\\installed home\\app\\src\\test-runner\\node-driver.mjs","C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-fast-0n08Wp\\pace-sample\\test\\cli.test.ts"]
+시간: 10677ms · 종료: 0
+테스트 6 · skip 0 · 실패 0
+
+대상: test/scout-ideas.test.ts
+명령: ["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fast-0n08Wp\\installed home\\app\\src\\test-runner\\node-driver.mjs","C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-fast-0n08Wp\\pace-sample\\test\\scout-ideas.test.ts"]
+시간: 1681ms · 종료: 0
+테스트 5 · skip 0 · 실패 0
+
+판정: 부분 통과 · 전체 회귀 제외
+실행: npm run typecheck

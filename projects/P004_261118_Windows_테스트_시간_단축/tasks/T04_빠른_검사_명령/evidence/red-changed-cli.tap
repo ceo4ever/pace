@@ -1,0 +1,31 @@
+✖ changed CLI uses the installed app and the external repository map (2582.4526ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2826.1198
+
+✖ failing tests:
+
+test at test\changed-test.test.ts:40:1
+✖ changed CLI uses the installed app and the external repository map (2582.4526ms)
+  AssertionError [ERR_ASSERTION]: 실패: 사용법: pace test file <경로> | unit <id> | all
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:42:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

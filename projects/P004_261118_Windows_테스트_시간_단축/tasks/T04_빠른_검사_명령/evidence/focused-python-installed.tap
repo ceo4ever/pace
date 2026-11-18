@@ -1,0 +1,50 @@
+✖ changed never adopts committed feature-branch checks over the selected main map (609.8611ms)
+✖ changed empty/all-skip tests fail and unknown Python results trigger the actual full check (537.0188ms)
+✖ installed Windows entry and copied real Node/Python drivers execute outside the checkout (553.9429ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1919.1514
+
+✖ failing tests:
+
+test at test\changed-test.test.ts:119:1
+✖ changed never adopts committed feature-branch checks over the selected main map (609.8611ms)
+  Error: Invalid test temporary directory prefix
+      at tempDir (file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts:83:98)
+      at installed (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:18:14)
+      at Object.run (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:41:112)
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:122:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at test\changed-test.test.ts:193:1
+✖ changed empty/all-skip tests fail and unknown Python results trigger the actual full check (537.0188ms)
+  Error: Invalid test temporary directory prefix
+      at tempDir (file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts:83:98)
+      at installed (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:18:14)
+      at Object.run (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:41:112)
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:196:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:151:7
+
+test at test\changed-test.test.ts:231:1
+✖ installed Windows entry and copied real Node/Python drivers execute outside the checkout (553.9429ms)
+  Error: Invalid test temporary directory prefix
+      at tempDir (file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts:83:98)
+      at installed (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:18:14)
+      at Object.run (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:41:112)
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:236:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)

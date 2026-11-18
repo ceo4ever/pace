@@ -1,0 +1,78 @@
+✖ changed preserves staged deletion when the same working path remains untracked (2190.1568ms)
+✖ changed treats assume-unchanged and skip-worktree as uncertain without mutating flags (5155.3154ms)
+✖ changed converts a post-check selected-path exception to unavailable without a success retry (1687.1294ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9372.8654
+
+✖ failing tests:
+
+test at test\changed-test.test.ts:116:1
+✖ changed preserves staged deletion when the same working path remains untracked (2190.1568ms)
+  AssertionError [ERR_ASSERTION]: {"status":"D  src/a.ts\u0000?? src/a.ts\u0000","raw":":100644 000000 efeee5d 0000000 D\u0000src/a.ts\u0000","output":"변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외\n선언 기준: main 4656b2d6f0ef9937de709a19aeb64914c8193c4d\n변경 파일: [\"src/a.ts\"]\n선택 a: [\"src/a.ts\"] → [\"test/a.test.mjs\"]\n사전 검사 · cwd: \"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-changed-sample-SNWIiG\" · 명령: \"node check.cjs\" · 시간: 182ms · 상태: passed\n\n단위 a:\n대상: test/a.test.mjs\n명령: [\"C:\\\\nvm4w\\\\nodejs\\\\node.exe\",\"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-installed-changed-BITee4\\\\installed home\\\\app\\\\src\\\\test-runner\\\\node-driver.mjs\",\"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-changed-sample-SNWIiG\\\\test\\\\a.test.mjs\"]\n시간: 128ms · 종료: 0\n테스트 1 · skip 0 · 실패 0\n\n판정: 부분 통과 · 전체 회귀 제외\n"}
+  + actual - expected
+  
+    [
+  +   'check',
+  +   'a'
+  -   'full'
+    ]
+  
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:122:58)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'check', 'a' ],
+    expected: [ 'full' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test\changed-test.test.ts:126:1
+✖ changed treats assume-unchanged and skip-worktree as uncertain without mutating flags (5155.3154ms)
+  AssertionError [ERR_ASSERTION]: [{"flag":"--assume-unchanged","status":0,"fullExecuted":false,"partialPassed":true,"output":"변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외\n선언 기준: main 65d2230d3341a9d0724475418a76f6613699d589\n변경 파일: [\"src/a.ts\"]\n선택 a: [\"src/a.ts\"] → [\"test/a.test.mjs\"]\n사전 검사 · cwd: \"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-changed-sample-MTqHJw\" · 명령: \"node check.cjs\" · 시간: 172ms · 상태: passed\n\n단위 a:\n대상: test/a.test.mjs\n명령: [\"C:\\\\nvm4w\\\\nodejs\\\\node.exe\",\"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-installed-changed-BITee4\\\\installed home\\\\app\\\\src\\\\test-runner\\\\node-driver.mjs\",\"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-changed-sample-MTqHJw\\\\test\\\\a.test.mjs\"]\n시간: 131ms · 종료: 0\n테스트 1 · skip 0 · 실패 0\n\n판정: 부분 통과 · 전체 회귀 제외\n"},{"flag":"--skip-worktree","status":0,"fullExecuted":false,"partialPassed":true,"output":"변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외\n선언 기준: main c9823c3d4b7422516f27a8cf41005a6d589e54e6\n변경 파일: [\"src/a.ts\"]\n선택 a: [\"src/a.ts\"] → [\"test/a.test.mjs\"]\n사전 검사 · cwd: \"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-changed-sample-Xb9kgK\" · 명령: \"node check.cjs\" · 시간: 176ms · 상태: passed\n\n단위 a:\n대상: test/a.test.mjs\n명령: [\"C:\\\\nvm4w\\\\nodejs\\\\node.exe\",\"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-installed-changed-BITee4\\\\installed home\\\\app\\\\src\\\\test-runner\\\\node-driver.mjs\",\"C:\\\\Users\\\\root-user\\\\AppData\\\\Local\\\\Temp\\\\pace-test-run-n3bYZ6\\\\pace-changed-sample-Xb9kgK\\\\test\\\\a.test.mjs\"]\n시간: 129ms · 종료: 0\n테스트 1 · skip 0 · 실패 0\n\n판정: 부분 통과 · 전체 회귀 제외\n"}]
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:138:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test\changed-test.test.ts:141:1
+✖ changed converts a post-check selected-path exception to unavailable without a success retry (1687.1294ms)
+  AssertionError [ERR_ASSERTION]: 실행: node remove-test.cjs
+  pace: ENOENT: no such file or directory, lstat 'C:\Users\root-user\AppData\Local\Temp\pace-test-run-n3bYZ6\pace-changed-sample-RUMtyr\test\a.test.mjs'
+  
+  
+  1 !== 3
+  
+      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/changed-test.test.ts:144:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

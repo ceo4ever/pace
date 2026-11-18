@@ -118,6 +118,52 @@ pace brain init && pace brain search "부트 훅"
 
 전체 명령은 `pace --help`.
 
+### 변경 기반 빠른 검사
+
+설치한 PACE는 다른 Git 저장소에서도 사용할 수 있습니다. 그 저장소에서 `pace test changed`를 실행하면 staged·unstaged·ignore되지 않은 untracked 파일에 관련된 단위의 시험을 실행합니다. 커밋된 브랜치 차이를 검사하는 명령은 아닙니다. 선택 이유, 실제 대상·명령·시간과 부분/전체 판정을 출력합니다.
+
+먼저 프로젝트의 `.pace/test-map.json`을 작성합니다. 아래 예시의 경로와 명령을 실제 프로젝트에 맞추고, 필요한 타입·린트·생성 검사를 `checks`에 모두 선언하세요. 사전 검사가 없다면 `checks: []`를 명시합니다. 전체 검사 명령은 기존 `docs/README.md` 또는 `docs/PROJECT.md`의 `검사` 선언에 둡니다.
+
+<!-- pace:changed-example -->
+```json
+{
+  "version": 1,
+  "checks": [{ "cwd": ".", "command": "npm run typecheck" }],
+  "common": ["package.json", "tsconfig.json", "src/shared.ts"],
+  "units": [{
+    "id": "feature",
+    "sources": ["src/feature/**/*.ts"],
+    "tests": ["test/feature.test.mjs"],
+    "runner": { "kind": "node-test", "cwd": "." },
+    "requires": []
+  }]
+}
+```
+
+map을 기준 브랜치에 커밋한 뒤 소스를 고치고 실행합니다. 모든 패턴은 실제 파일과 일치해야 합니다. 현재 지원 러너는 `node-test`와 `python-unittest`이며, 미지원 러너·설정·전제가 선택되면 전체 검사로 전환합니다.
+
+```sh
+pace test changed
+pace test unit feature
+pace test all
+```
+
+changed의 선언 기준은 로컬 `main`, 없으면 `master`, 둘 다 없으면 현재 `HEAD`의 검증된 커밋입니다. map/checks와 전체 선언은 같은 기준을 사용하며, 작업본 map이 기준 map과 다르면 전체 검사로 전환합니다. PACE 자체도 새 checks map이 main에 반영되기 전의 프로젝트 worktree에서는 전체 전환합니다. HEAD 대체 기준은 현재 커밋을 읽는다는 뜻이며, 검토받은 브랜치임을 보장하지 않습니다. 기존 `pace test all`·finish는 종전 main 기준 정책을 유지합니다. 다른 기본 브랜치의 수동 전체 검사는 해당 프로젝트가 선언한 명령을 사용하세요.
+
+checks는 신뢰하는 프로젝트가 명시하는 코드 실행 선언입니다. Windows에서는 Git 설치 경계의 sh, 그 밖에서는 POSIX sh를 쓰며 cwd는 저장소 안으로 제한됩니다. 명령은 단일 행·최대 4,000자이고 파일명을 명령에 보간하지 않습니다. 사전 검사 기본 제한은 30분·출력 16MiB, 전체 전환은 기존 2시간 제한입니다. 명령 본문이 읽는 작업본 스크립트나 환경까지 격리하는 샌드박스는 아닙니다.
+
+| 결과 | 종료 코드 |
+|---|---:|
+| 실제 선택 검사 또는 전환한 전체 검사 통과 | 0 |
+| 실행된 검사 실패·0건/전체 skip·시간 초과·출력 상한·자식 중단 | 1 |
+| 변경 없음으로 미실행, 저장소/HEAD/선언/실행 시작 확인 불가 | 3 |
+
+실제 실패가 나면 후속 시험이나 전체 재실행으로 성공을 덮지 않습니다. 선택 결과만 확인할 수 없으면 전체 검사를 실행하고 그 결과를 표시합니다. 부모 프로세스 자체가 OS 신호로 끝나면 1과 다른 비성공 코드일 수 있으며 후속 검사는 실행하지 않습니다.
+
+공통·미분류·삭제·이름 변경·충돌·모드·submodule·구성 변경 등은 보수적으로 전체 검사로 전환합니다. staged 삭제 뒤 같은 경로가 untracked로 남아 있어도 삭제로 처리합니다. 인덱스에 assume-unchanged 또는 skip-worktree 플래그가 있거나 sparse checkout/sparse-index 설정이 켜져 있으면 작업본 누락 가능성 때문에 전체 검사로 전환하며 플래그나 인덱스를 바꾸지 않습니다.
+
+map은 수동 의존성 선언이므로 공유 helper·설정·생성 입력을 common에 넣고 관련 단위를 모두 등록하세요. ignored 입력은 자동 검증되지 않습니다. Python 러너에는 실제 Python이 필요하며, Windows Store 별칭이 시작된 뒤 실패하는 경우는 실행 실패1로 처리합니다. 빠른 검사 이후 태스크와 finish의 전체 회귀를 계속 수행합니다.
+
 ## OPAL에서 넘어올 때
 
 다른 PC에 PACE를 설치했는데 기존 프로젝트가 OPAL(`.opal/`)로 정의되어 있으면, PACE는 `.pace/`만 읽으므로 프로젝트 메모리·브레인·역할이 사라진 것처럼 보이고 OPAL의 커밋 게이트 훅 때문에 PACE 게이트도 설치되지 않는다. 프로젝트 폴더에서 `pace adopt opal`로 OPAL 정의를 PACE로 옮긴다.

@@ -1,0 +1,68 @@
+[
+  {
+    "run": 1,
+    "status": 0,
+    "signal": null,
+    "elapsedMs": 19184.4131,
+    "counts": [
+      {
+        "tests": 6,
+        "skipped": 0,
+        "failed": 0
+      },
+      {
+        "tests": 5,
+        "skipped": 0,
+        "failed": 0
+      }
+    ],
+    "partialPassed": true,
+    "fullFallback": false,
+    "actualTypecheck": true,
+    "selectedBothFiles": true
+  },
+  {
+    "run": 2,
+    "status": 0,
+    "signal": null,
+    "elapsedMs": 14673.592299999997,
+    "counts": [
+      {
+        "tests": 6,
+        "skipped": 0,
+        "failed": 0
+      },
+      {
+        "tests": 5,
+        "skipped": 0,
+        "failed": 0
+      }
+    ],
+    "partialPassed": true,
+    "fullFallback": false,
+    "actualTypecheck": true,
+    "selectedBothFiles": true
+  },
+  {
+    "run": 3,
+    "status": 0,
+    "signal": null,
+    "elapsedMs": 14628.658799999997,
+    "counts": [
+      {
+        "tests": 6,
+        "skipped": 0,
+        "failed": 0
+      },
+      {
+        "tests": 5,
+        "skipped": 0,
+        "failed": 0
+      }
+    ],
+    "partialPassed": true,
+    "fullFallback": false,
+    "actualTypecheck": true,
+    "selectedBothFiles": true
+  }
+]

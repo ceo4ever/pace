@@ -1,0 +1,35 @@
+{
+  "sensitiveCheck": true,
+  "records": [
+    {
+      "source": "C:/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-t04-post-review-rlz5fpol/review-stage1.md",
+      "evidence": "post-review-1-stage1.md",
+      "sha256": "5ef527f3d426b4b4021c12c763242e7682a9675072e17d0a72bc2c1a7a7dac2d"
+    },
+    {
+      "source": "C:/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-t04-post-review-rlz5fpol/review-stage2.md",
+      "evidence": "post-review-1-stage2.md",
+      "sha256": "95284072ec7c984b28fc3e68a2b4c9111593e447a820e17ff47626a96962a020"
+    },
+    {
+      "source": "C:/Users/root-user/AppData/Local/Temp/pace-t04-tester-independent-20261119-9682/phase-1.md",
+      "evidence": "post-tester-1-phase-1.md",
+      "sha256": "bc59771620ca0d9b5bf2a209037037d984cc841bd0957faec0934481cec7c4a1"
+    },
+    {
+      "source": "C:/Users/root-user/AppData/Local/Temp/pace-t04-tester-independent-20261119-9682/phase-2.md",
+      "evidence": "post-tester-1-phase-2.md",
+      "sha256": "5b344ce45ec77ad239bb4d803e77d47da21b0fcaace603c817df622e265cc681"
+    },
+    {
+      "source": "C:/Users/root-user/AppData/Local/Temp/pace-t04-tester-independent-20261119-9682/index-observations.jsonl",
+      "evidence": "post-tester-1-index-observations.jsonl",
+      "sha256": "ec1600df6393223bc196d73ba3bbf460b12ed9d60537a5396b9f9b1c877fe9c4"
+    },
+    {
+      "source": "C:/Users/root-user/AppData/Local/Temp/pace-t04-tester-independent-20261119-9682/focused.log",
+      "evidence": "post-tester-1-focused.log",
+      "sha256": "ce1a62f4e19ab007033434f1896db48aa8074fd6039a089ef4e479e2f2048ab1"
+    }
+  ]
+}

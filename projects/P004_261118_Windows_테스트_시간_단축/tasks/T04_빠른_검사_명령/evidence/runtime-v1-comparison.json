@@ -1,0 +1,14 @@
+{
+  "filesEqual": true,
+  "fileCount": 607,
+  "fullyEqual": false,
+  "metadataDifferences": [
+    {
+      "key": "captured",
+      "before": "2026-11-18T17:44:48.240Z",
+      "after": "2026-11-18T17:57:24.108Z"
+    }
+  ],
+  "sourceTreeSha256": "9c559f3882ff85b2b5647decb176cd3fffa43355038d6f9328d1b776b259c7b8",
+  "sourceVersion": "initial successful full snapshot, before post-review fixes"
+}

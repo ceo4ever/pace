@@ -1,4 +1,5 @@
 import { reviewIssues } from "./pre-review.ts";
+import { shellState } from "./shell-result.ts";
 import { generateDashboard, refreshDashboard } from "./dashboard.ts";
 import { resolveWorkerSettings } from "../core/worker-settings.ts";
 import { assertBacklogPath, listBriefs, resolveBacklog } from "./backlog.ts";
@@ -362,7 +363,7 @@ function commandInDocument(text: string, label: string): string | null {
   return null;
 }
 
-const DEFINITION_FILES = ["docs/README.md", "docs/PROJECT.md"];
+export const DEFINITION_FILES = ["docs/README.md", "docs/PROJECT.md"] as const;
 const COMMAND_LABELS = ["검사", "보안 검사", "worktree 준비", "의존성 감사"];
 
 /** 의존성 잠금 파일 — 이 중 하나라도 base 대비 바뀌었을 때만 `의존성 감사`를 돌린다(같은 잠금이면 main과 같은 패키지라 다시 조회할 필요가 없다). */
@@ -395,18 +396,19 @@ function committedCommand(repo: Repo, revision: string, label: string): string |
 }
 
 /** base에 선언이 있으면 그것을 사용한다. 명령 본문 외 스크립트 내용까지 격리하지는 않는다. */
-function executionCommand(repo: Repo, root: string, label: string): string | null {
+function executionCommand(repo: Repo, root: string, label: string, revision = repo.base): string | null {
   const local = declaredCommand(root, label);
-  const base = committedCommand(repo, repo.base, label);
-  if (base !== null && local !== base) process.stderr.write(`pace: ${label}: worktree 선언이 다름(병합 뒤 적용) — ${repo.base} 선언 사용\n`);
+  const base = committedCommand(repo, revision, label);
+  if (base !== null && local !== base) process.stderr.write(`pace: ${label}: worktree 선언이 다름(병합 뒤 적용) — ${revision} 선언 사용\n`);
   return base ?? local;
 }
 
 /** 전체 검사 실행은 finish와 같은 base 선언 경계를 사용한다. */
-export function runDeclaredCheck(cwd: string): { command: string | null; ok: boolean; output: string } {
+export function runDeclaredCheck(cwd: string, revision?: string) {
+  if (revision !== undefined && !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(revision)) throw new HarnessError("검사 선언 기준은 검증된 commit SHA여야 한다");
   const repo = openRepo(cwd);
-  const command = executionCommand(repo, repo.root, "검사");
-  if (command === null) return { command: null, ok: false, output: "검사 선언 없음" };
+  const command = executionCommand(repo, repo.root, "검사", revision);
+  if (command === null) return { command: null, ok: false, output: "검사 선언 없음", execution: "unavailable" as const, started: false, status: null, signal: null };
   return { command, ...run(repo.root, command, CHECK_TIMEOUT_MS) };
 }
 
@@ -439,15 +441,16 @@ export function gitShellAt(core: string): { shell?: string; error?: string } {
 /** 선언 `검사`(전체 회귀)의 제한 시간 — Windows는 테스트 파일을 순차 실행해 30분을 넘는다(2026-11-13 실측 34분). */
 export const CHECK_TIMEOUT_MS = 2 * 60 * 60_000;
 
-export function runDeclaredShell(cwd: string, command: string, timeoutMs = 30 * 60_000): { ok: boolean; output: string } {
+export function runDeclaredShell(cwd: string, command: string, timeoutMs = 30 * 60_000) {
   process.stderr.write(`실행: ${command}\n`);
   const located = process.platform === "win32" ? windowsGitShell() : { shell: "sh" };
-  if (!located.shell) return { ok: false, output: located.error ?? "셸을 찾지 못했다" };
+  if (!located.shell) return { ok: false, output: located.error ?? "셸을 찾지 못했다", execution: "unavailable" as const, started: false, status: null, signal: null };
   const r = spawnSync(located.shell, ["-c", command], { cwd, encoding: "utf8", timeout: timeoutMs, maxBuffer: 16 * 1024 * 1024, windowsHide: true });
   const output = `${r.stdout ?? ""}${r.stderr ?? ""}`.trim();
-  if (r.status === 0) return { ok: true, output };
+  const metadata = { ...shellState(r), status: r.status, signal: r.signal, errorCode: (r.error as NodeJS.ErrnoException | undefined)?.code };
+  if (r.status === 0) return { ok: true, output, ...metadata };
   const details = [r.error?.message, r.status !== null ? `종료 코드: ${r.status}` : undefined, r.signal ? `신호: ${r.signal}` : undefined].filter(Boolean).join(" · ");
-  return { ok: false, output: [output, details].filter(Boolean).join("\n") };
+  return { ok: false, output: [output, details].filter(Boolean).join("\n"), ...metadata };
 }
 
 const run = runDeclaredShell;

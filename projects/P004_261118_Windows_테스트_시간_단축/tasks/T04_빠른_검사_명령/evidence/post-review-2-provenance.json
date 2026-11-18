@@ -1,0 +1,44 @@
+[
+  {
+    "source": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t04-post-review-rlz5fpol\\review-round2.md",
+    "destination": "post-review-2.md",
+    "sha256": "805b7dbff31b165f41ff50e156162182a7cfb97f68ea1226a0d915eff62689b6",
+    "sensitiveCheck": "passed"
+  },
+  {
+    "source": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t04-post-review-rlz5fpol\\review-fast-addendum.md",
+    "destination": "post-review-2-fast-addendum.md",
+    "sha256": "63b477ceb1031cc0f8d2a4e1e1bb76784959bf4b2dcc70f4706abdea0cc4a424",
+    "sensitiveCheck": "passed"
+  },
+  {
+    "source": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-t04-tester-independent-20261119-9682\\phase-3-retest.md",
+    "destination": "post-tester-2-phase-3-retest.md",
+    "sha256": "08c95fef7a4396b4af5ba666329423be4bccb75f95a1b53ec1c5ae8bee054406",
+    "sensitiveCheck": "passed"
+  },
+  {
+    "source": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-t04-tester-independent-20261119-9682\\round2-focused-extra.log",
+    "destination": "post-tester-2-round2-focused-extra.log",
+    "sha256": "2f071eb5d73551c556e59bef04ec89485383170d956a364ca46aae0a62f72dbe",
+    "sensitiveCheck": "passed"
+  },
+  {
+    "source": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-t04-tester-independent-20261119-9682\\round2-focused.log",
+    "destination": "post-tester-2-round2-focused.log",
+    "sha256": "fc5bb46a9c35a4892189f35e5cfb78c4ffc2535a2e2ebb9107c223b8e63eb40a",
+    "sensitiveCheck": "passed"
+  },
+  {
+    "source": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-t04-tester-independent-20261119-9682\\round2-index-observations.jsonl",
+    "destination": "post-tester-2-round2-index-observations.jsonl",
+    "sha256": "c736e309909a4d0bfcbad9b2226c6e52aff2ad587a60479e145cde6ace0666e8",
+    "sensitiveCheck": "passed"
+  },
+  {
+    "source": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-t04-tester-independent-20261119-9682\\round2-index-verified.jsonl",
+    "destination": "post-tester-2-round2-index-verified.jsonl",
+    "sha256": "fd3347ab43865b1946c26dd0ab1ad621b3961aa0539c97f8d001e8eed33ccadb",
+    "sensitiveCheck": "passed"
+  }
+]

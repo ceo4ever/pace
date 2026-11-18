@@ -1,0 +1,11 @@
+✔ changed stops remaining files inside the same unit after an actual failure (2162.3749ms)
+✔ changed missing or unsupported map/checks falls back and full absence/failure remains distinct (17220.0477ms)
+✔ the user README map example runs unchanged through the installed CLI (2559.7469ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22417.1996

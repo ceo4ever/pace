@@ -109,7 +109,7 @@ import {
 const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
 
 사용법:
-  pace test file <경로> | unit <id> | all — 선택 또는 전체 검사
+  pace test changed | file <경로> | unit <id> | all — 변경 기반·선택·전체 검사
   pace boot [--host claude|codex|gemini|cursor|antigravity|plain] [--cwd <dir>] [--text]
   pace adopt opal [--cwd <폴더>] [--apply]   OPAL(.opal) 프로젝트 정의를 PACE(.pace)로 가져온다 — 기본은 미리보기, 커밋 없음
   pace workspace register <경로> [--name <이름>] [--summary <요약>] · list · move <ID> <경로>

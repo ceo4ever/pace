@@ -1,6 +1,14 @@
 {
   "version": 1,
+  "checks": [{ "cwd": ".", "command": "npm run typecheck" }],
   "units": [
+    {
+      "id": "test-runner",
+      "sources": ["src/test-runner/**/*.ts", "src/test-runner/*.mjs", "src/test-runner/*.py", "src/project/shell-result.ts"],
+      "tests": ["test/test-runner.test.ts", "test/changed-test.test.ts"],
+      "runner": { "kind": "node-test", "cwd": "." },
+      "requires": []
+    },
     {
       "id": "git-fixture",
       "sources": ["test/helpers.ts"],
@@ -39,6 +47,8 @@
     }
   ],
   "common": [
+    "src/project/harness.ts",
+    "src/project/shell-result.ts",
     "src/cli.ts",
     "src/core/**/*.ts",
     "test/helpers.ts",

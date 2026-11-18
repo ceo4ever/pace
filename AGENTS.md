@@ -5,6 +5,7 @@ LLM CLI 세션 시작 훅으로 올라오는 개인 비서 에이전트. TypeScr
 ## 명령
 
 - 검사: `npm run check` (타입 검사 `tsc` + `node --test`)
+- 개발 중 빠른 검사: `pace test changed` — 커밋되지 않은 변경과 기준 브랜치의 `.pace/test-map.json`·`checks`를 사용한다. 구성 채택 전/공통·미분류 변경은 선언된 전체 검사로 전환한다. 태스크·finish의 전체 검사는 유지한다(`docs/README.md`, 사용자 예시는 `README.md`).
 - 실행: `./bin/pace.ts <명령>` — 개발·테스트는 `PACE_HOME`을 임시 폴더로 지정한다. `~/.pace`은 설치 때 복사한 설치본이다 — 소스 변경은 `bash scripts/install.sh`를 다시 실행해야 반영된다
 
 ## 꼭 지킬 것

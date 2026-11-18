@@ -1,0 +1,13 @@
+{
+  "valid": true,
+  "runs": 3,
+  "medianMs": 14687.4689,
+  "minMs": 14646.872300000003,
+  "maxMs": 15223.740000000002,
+  "setupMs": 4670.360000000001,
+  "originalFullBaselineMs": 1425464.3327,
+  "recentT03FullMedianMs": 680918.0485,
+  "percentOfOriginalFull": 1.0303638304425462,
+  "percentOfRecentFull": 2.157009780010259,
+  "comparisonsHaveDifferentTestScope": true
+}

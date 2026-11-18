@@ -1,0 +1,13 @@
+실행: node wait.cjs
+실행: node -e "require('node:fs').writeFileSync('overflow.pid',String(process.pid));setTimeout(()=>process.exit(0),250);process.stdout.write(String.fromCharCode(120).repeat(18*1024*1024))"
+✔ changed treats assume-unchanged and skip-worktree as uncertain without mutating flags (5919.3931ms)
+✔ changed sparse checkout and sparse-index policies execute full without rewriting the index (5456.7566ms)
+✔ shell execution state distinguishes real timeout/overflow and missing executables (771.6066ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12534.1571
