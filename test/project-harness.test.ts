@@ -1,3 +1,4 @@
+import { createProjectCalls } from "./project-call.ts";
 import { renderDashboardEntry } from '../src/project/dashboard-layout.ts';
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -94,6 +95,52 @@ const runCli = (home: string, cwd: string, ...args: string[]) => {
   }
   return result;
 };
+
+test("함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다", async (ctx) => {
+  const direct = createProjectCalls();
+  ctx.after(() => direct.close());
+  const a = repoFixture(), b = repoFixture();
+  const first = await direct.run(a.home, a.main, "new", "직접A");
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  const project = join(projectDir(a.main), "PROJECT.md");
+  writeFileSync(project, readFileSync(project, "utf8").replace(/\| P-1 \| <!--.*?--> \| <!--.*?--> \|/, "| P-1 | 결과 | CLI |"));
+  const started = await direct.run(a.home, a.main, "start", "P001", "--no-launch");
+  assert.equal(started.status, 0, started.stdout + started.stderr);
+  const wt = join(dirname(a.main), "app.wt/P001");
+  const inWorktree = await direct.run(a.home, wt, "list");
+  assert.equal(inWorktree.status, 0, inWorktree.stderr);
+  assert.equal(inWorktree.pid, first.pid);
+  assert.equal(inWorktree.generation, first.generation);
+  assert.equal(inWorktree.context.cwd, (await import("node:fs")).realpathSync.native(wt));
+  assert.equal(inWorktree.context.home, a.home);
+  assert.equal(inWorktree.context.paceHome, a.home);
+  assert.equal(inWorktree.restored, true);
+  for (const [args, expected] of [[['unknown-project-command'], 2], [['new', 'bad', '--unknown-option'], 1], [['done', 'P999', 'T01'], 1]] as const) {
+    const actualCli = runCli(a.home, a.main, ...args);
+    const actualFunction = await direct.run(a.home, a.main, ...args);
+    assert.equal(actualCli.status, expected, actualCli.stderr);
+    assert.equal(actualFunction.status, actualCli.status);
+    assert.equal(actualFunction.stdout, actualCli.stdout);
+    assert.equal(actualFunction.stderr, actualCli.stderr, "런타임 경고도 정규화하거나 버리지 않는다");
+    assert.equal(actualFunction.signal, null);
+    assert.equal(actualFunction.error, undefined);
+    assert.equal(actualFunction.restored, true);
+  }
+  const afterError = await direct.run(a.home, wt, "list");
+  assert.equal(afterError.status, 0, afterError.stderr);
+  assert.equal(afterError.generation, first.generation);
+  const other = await direct.run(b.home, b.main, "new", "직접B");
+  assert.equal(other.status, 0, other.stderr);
+  assert.notEqual(other.generation, first.generation);
+  assert.equal(other.context.home, b.home);
+  assert.match(readFileSync(join(projectDir(b.main), "PROJECT.md"), "utf8"), /직접B/);
+  const back = await direct.run(a.home, a.main, "list");
+  assert.equal(back.status, 0, back.stderr);
+  assert.notEqual(back.generation, first.generation);
+  assert.notEqual(back.generation, other.generation);
+  assert.match(back.stdout, /직접A/);
+  assert.doesNotMatch(back.stdout, /직접B/);
+});
 
 test("CRLF 설치본: BL 프로젝트 생성·예정/추가 태스크·check/done은 줄바꿈과 번호를 보존한다", () => {
   const { home, main } = repoFixture();
@@ -554,7 +601,10 @@ function passTask(taskDir: string): void {
   );
 }
 
-test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다", () => {
+test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다", async (ctx) => {
+  const direct = createProjectCalls();
+  ctx.after(() => direct.close());
+  const runDirect = direct.run;
   const { home, main } = repoFixture();
   installDashboardFixture(main);
   const backlog = join(main, "backlogs", "261001_알림");
@@ -567,7 +617,7 @@ test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞�
   );
   git(main, "add", "-A");
   git(main, "commit", "-q", "-m", "백로그");
-  assert.equal(runCli(home, main, "new", "알림").status, 0);
+  assert.equal((await runDirect(home, main, "new", "알림")).status, 0);
   const projMain = projectDir(main);
   writeFileSync(
     join(projMain, "PROJECT.md"),
@@ -577,12 +627,12 @@ test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞�
     ),
   );
   writeFileSync(join(projMain, "PROJECT.md"), readFileSync(join(projMain, "PROJECT.md"), "utf8").replace(/^- 출처: .*$/m, "- 출처: [알림](../../backlogs/261001_알림/02_보내기.md)"));
-  assert.equal(runCli(home, main, "start", "P001").status, 0);
+  assert.equal((await runDirect(home, main, "start", "P001")).status, 0);
   const wt = join(dirname(main), "app.wt", "P001");
   const proj = projectDir(wt);
   const projectPath = join(proj, "PROJECT.md");
   const read = (path: string) => readFileSync(path, "utf8");
-  assert.equal(runCli(home, wt, "task", "P001", "보내기").status, 0);
+  assert.equal((await runDirect(home, wt, "task", "P001", "보내기")).status, 0);
   const t01 = join(proj, "tasks", "T01_보내기");
   // 태스크 문서의 출처 링크는 태스크 폴더 기준으로 맞는다
   const link = /백로그: \[[^\]]+\]\(([^)]+)\)/.exec(read(join(t01, "TASK.md")))?.[1];
@@ -594,7 +644,7 @@ test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞�
   const backlogFiles = ["02_보내기.md", "00_현황.md"].map((n) => join(wt, "backlogs", "261001_알림", n));
   const dashboardBefore = read(join(wt, "backlogs/dashboard/data.js"));
   const before = [read(join(t01, "TASK.md")), read(projectPath), ...backlogFiles.map(read)];
-  const bad = runCli(home, wt, "done", "P001", "T01");
+  const bad = (await runDirect(home, wt, "done", "P001", "T01"));
   assert.equal(bad.status, 1);
   assert.match(bad.stdout, /판정이 "통과"가 아니다/);
   assert.deepEqual([read(join(t01, "TASK.md")), read(projectPath), ...backlogFiles.map(read)], before);
@@ -603,7 +653,7 @@ test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞�
   // 통과 — TASK.md·표·백로그 단계 파일·00 표, 커밋하지 않음
   passTask(t01);
   const commits = git(wt, "rev-list", "--count", "HEAD");
-  const good = runCli(home, wt, "done", "P001", "T01");
+  const good = (await runDirect(home, wt, "done", "P001", "T01"));
   assert.equal(good.status, 0, good.stdout + good.stderr);
   assert.match(good.stdout, /바뀐 파일\(커밋은 직접\): .*TASK\.md.*PROJECT\.md.*02_보내기\.md.*00_현황\.md/);
   assert.equal(git(wt, "rev-list", "--count", "HEAD"), commits, "커밋하지 않는다");
@@ -617,7 +667,7 @@ test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞�
   assert.match(overview, /^\| 02 \| 기록 \| 진행 \|$/m, "뒤 절의 표도 건드리지 않는다");
   assert.match(overview, /^\| 03 \| \[받기\]\(03_받기\.md\) \| 대기 \| 02 \| \|$/m, "다른 행은 그대로");
   assert.match(read(join(wt, "backlogs", "261001_알림", "03_받기.md")), /- 상태: 대기/);
-  assert.match(runCli(home, wt, "done", "P001", "T01").stdout, /바뀐 파일 없음/);
+  assert.match((await runDirect(home, wt, "done", "P001", "T01")).stdout, /바뀐 파일 없음/);
   git(wt, "add", "-A");
   git(wt, "commit", "-q", "-m", "feat(P001/T01): 보내기");
   // 같은 태스크의 뒤 커밋이 있으면 가장 최근 것, 완료가 아닌 태스크의 커밋은 채우지 않는다
@@ -629,14 +679,14 @@ test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞�
   git(wt, "-c", "core.hooksPath=/dev/null", "commit", "-q", "--allow-empty", "-m", "docs(P001/T03): 미리");
 
   // 백로그 칸이 `—`면 백로그는 그대로, 앞 태스크 커밋 칸은 채운다
-  assert.equal(runCli(home, wt, "task", "P001", "다듬기").status, 0);
+  assert.equal((await runDirect(home, wt, "task", "P001", "다듬기")).status, 0);
   const t02 = join(proj, "tasks", "T02_다듬기");
   passTask(t02);
   // 이 태스크의 중간 커밋 — 자기 커밋 칸은 아직 채우지 않는다
   git(wt, "add", "-A");
   git(wt, "commit", "-q", "-m", "wip(P001/T02): 중간");
   const backlogBefore = read(join(wt, "backlogs", "261001_알림", "00_현황.md"));
-  const second = runCli(home, wt, "done", "P001", "T02");
+  const second = (await runDirect(home, wt, "done", "P001", "T02"));
   assert.equal(second.status, 0, second.stdout + second.stderr);
   assert.match(second.stdout, new RegExp(`커밋 칸 T01 ${t01Hash}`));
   assert.doesNotMatch(second.stdout, /00_개요/);
@@ -646,70 +696,70 @@ test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞�
   assert.match(read(projectPath), /^\| T03 \| 받기 \| 09 \| 대기 \| \|$/m, "완료가 아닌 행은 채우지 않는다");
   // 손으로 적은 해시 아닌 커밋 칸은 덮어쓰지 않는다
   writeFileSync(projectPath, read(projectPath).replace(`| 완료 | ${t01Hash} |`, "| 완료 | 메모 |"));
-  assert.equal(runCli(home, wt, "done", "P001", "T02").status, 0);
+  assert.equal((await runDirect(home, wt, "done", "P001", "T02")).status, 0);
   assert.match(read(projectPath), /^\| T01 \| 보내기 \| 02 \| 완료 \| 메모 \|$/m);
 
   // 백로그 단계 파일이 없으면 실패하고 아무것도 바꾸지 않는다
-  assert.equal(runCli(home, wt, "task", "P001", "받기").status, 0);
+  assert.equal((await runDirect(home, wt, "task", "P001", "받기")).status, 0);
   const t03 = join(proj, "tasks", "T03_받기");
   passTask(t03);
-  assert.match(runCli(home, wt, "list").stdout, /T03 받기/);
-  assert.match(runCli(home, wt, "finish", "P001").stdout, /T03: 상태가 완료가 아니다 \(진행\)/);
+  assert.match((await runDirect(home, wt, "list")).stdout, /T03 받기/);
+  assert.match((await runDirect(home, wt, "finish", "P001")).stdout, /T03: 상태가 완료가 아니다 \(진행\)/);
   const projectBefore = read(projectPath);
-  const missing = runCli(home, wt, "done", "P001", "T03");
+  const missing = (await runDirect(home, wt, "done", "P001", "T03"));
   assert.equal(missing.status, 1);
   assert.match(missing.stderr, /백로그 단계 파일이 없다: backlogs\/261001_알림\/09_\*\.md/);
   assert.equal(read(projectPath), projectBefore);
   assert.match(read(join(t03, "TASK.md")), /^- 상태: 진행$/m);
   // 단계 파일은 있는데 진행 현황 표에 행이 없어도 실패하고 아무것도 바꾸지 않는다
-  assert.equal(runCli(home, wt, "task", "P001", "표 밖").status, 0);
+  assert.equal((await runDirect(home, wt, "task", "P001", "표 밖")).status, 0);
   const t04 = join(proj, "tasks", "T04_표_밖");
   passTask(t04);
   const stepFive = join(wt, "backlogs", "261001_알림", "05_표_밖.md");
   const snapshot = [read(projectPath), read(join(t04, "TASK.md")), read(stepFive), ...backlogFiles.map(read)];
-  const noRow = runCli(home, wt, "done", "P001", "T04");
+  const noRow = (await runDirect(home, wt, "done", "P001", "T04"));
   assert.equal(noRow.status, 1);
   assert.match(noRow.stderr, /진행 현황 표에 05 행이 없다/);
   assert.deepEqual([read(projectPath), read(join(t04, "TASK.md")), read(stepFive), ...backlogFiles.map(read)], snapshot);
   // main 체크아웃에서는 하지 않는다, 태스크 번호는 T##만
-  assert.match(runCli(home, main, "done", "P001", "T01").stderr, /worktree에서 실행/);
-  assert.match(runCli(home, wt, "done", "P001", "T0.*").stderr, /태스크 번호 형식이 아니다/);
+  assert.match((await runDirect(home, main, "done", "P001", "T01")).stderr, /worktree에서 실행/);
+  assert.match((await runDirect(home, wt, "done", "P001", "T0.*")).stderr, /태스크 번호 형식이 아니다/);
 
   // 출처가 백로그가 아니면 단계 칸이 번호라도 백로그를 건드리지 않는다
-  assert.equal(runCli(home, main, "new", "대화로").status, 0);
+  assert.equal((await runDirect(home, main, "new", "대화로")).status, 0);
   const p2Main = join(main, "projects", readdirSync(join(main, "projects")).find((n) => n.startsWith("P002_"))!);
   writeFileSync(
     join(p2Main, "PROJECT.md"),
     read(join(p2Main, "PROJECT.md")).replace(/\r\n/g, "\n").replace("| T | 이름 | 상태 | 커밋 |\n|---|---|---|---|", "| T | 이름 | 백로그 단계 | 상태 | 커밋 |\n|---|---|---|---|---|\n| T01 | 보내기 | 03 | 대기 | |"),
   );
-  assert.equal(runCli(home, main, "start", "P002").status, 0);
+  assert.equal((await runDirect(home, main, "start", "P002")).status, 0);
   const wt2 = join(dirname(main), "app.wt", "P002");
-  assert.equal(runCli(home, wt2, "task", "P002", "보내기").status, 0);
+  assert.equal((await runDirect(home, wt2, "task", "P002", "보내기")).status, 0);
   const p2 = join(wt2, "projects", basename(p2Main));
   passTask(join(p2, "tasks", "T01_보내기"));
-  const p2Done = runCli(home, wt2, "done", "P002", "T01");
+  const p2Done = (await runDirect(home, wt2, "done", "P002", "T01"));
   assert.equal(p2Done.status, 0, p2Done.stdout + p2Done.stderr);
   assert.doesNotMatch(p2Done.stdout, /backlogs/);
   // 출처 링크가 backlogs/ 밖이면(문서 링크) 백로그로 보지 않는다
   writeFileSync(join(p2, "PROJECT.md"), read(join(p2, "PROJECT.md")).replace(/^- 출처: .*$/m, "- 출처: [안내](../../docs/README.md)"));
   writeFileSync(join(p2, "PROJECT.md"), read(join(p2, "PROJECT.md")).replace("| T01 | 보내기 | 03 | 완료 | |", "| T01 | 보내기 | 02 | 완료 | |"));
-  const docsDone = runCli(home, wt2, "done", "P002", "T01");
+  const docsDone = (await runDirect(home, wt2, "done", "P002", "T01"));
   assert.equal(docsDone.status, 0, docsDone.stdout + docsDone.stderr);
   assert.match(read(join(wt2, "backlogs", "261001_알림", "02_보내기.md")), /- 상태: 진행/);
   // 출처가 backlogs/ 아래인데 가리킨 파일이 없으면 멈춘다
   writeFileSync(join(p2, "PROJECT.md"), read(join(p2, "PROJECT.md")).replace(/^- 출처: .*$/m, "- 출처: [옛 단계](../../backlogs/261001_알림/02_옛이름.md)"));
-  assert.match(runCli(home, wt2, "done", "P002", "T01").stderr, /출처의 백로그가 없다/);
+  assert.match((await runDirect(home, wt2, "done", "P002", "T01")).stderr, /출처의 백로그가 없다/);
   // backlogs/ 안의 링크가 바깥을 가리키면 따라가지 않는다
   const outside = tempDir("pace-outside-");
   write(join(outside, "02_밖.md"), "- 상태: 진행\n");
   symlinkSync(outside, join(wt2, "backlogs", "밖"));
   writeFileSync(join(p2, "PROJECT.md"), read(join(p2, "PROJECT.md")).replace(/^- 출처: .*$/m, "- 출처: [밖](../../backlogs/밖/02_밖.md)"));
-  assert.match(runCli(home, wt2, "done", "P002", "T01").stderr, /backlogs\/ 밖을 가리킨다/);
+  assert.match((await runDirect(home, wt2, "done", "P002", "T01")).stderr, /backlogs\/ 밖을 가리킨다/);
   assert.match(read(join(outside, "02_밖.md")), /- 상태: 진행/);
   rmSync(join(wt2, "backlogs", "밖"));
   // 앵커·인코딩이 붙은 링크도 파일로 읽는다
   writeFileSync(join(p2, "PROJECT.md"), read(join(p2, "PROJECT.md")).replace(/^- 출처: .*$/m, "- 출처: [보내기](../../backlogs/261001_%EC%95%8C%EB%A6%BC/02_보내기.md#목표)"));
-  const anchored = runCli(home, wt2, "done", "P002", "T01");
+  const anchored = (await runDirect(home, wt2, "done", "P002", "T01"));
   assert.equal(anchored.status, 0, anchored.stdout + anchored.stderr);
   assert.match(read(join(wt2, "backlogs", "261001_알림", "02_보내기.md")), /- 상태: 완료/);
   assert.match(read(join(wt2, "backlogs", "261001_알림", "03_받기.md")), /- 상태: 대기/);
@@ -1831,19 +1881,22 @@ test("P025 v2: 다른 BR이 있어도 누락된 BR은 완료를 막는다", () =
   assert.equal(readFileSync(bl, "utf8"), before); assert.equal(git(main, "rev-parse", "HEAD"), head);
 });
 
-test("P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다", () => {
+test("P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다", async (ctx) => {
+  const direct = createProjectCalls();
+  ctx.after(() => direct.close());
+  const runDirect = direct.run;
   for (const mode of ["metrics", "dashboard"]) for (const branchOnly of [false, true]) {
     const { home, main } = repoFixture();
     const bl = join(main, "backlogs/BL261108_01_EIO/BACKLOG.md");
     write(bl, "# 백로그\n- 상태: 대기\n"); write(join(main, "backlogs/README.html"), "dashboard"); write(join(main, "backlogs/dashboard/data.js"), "old");
     git(main, "add", "-A"); git(main, "commit", "-qm", "준비");
-    assert.equal(runCli(home, main, "new", "EIO", "--from", "BL261108_01").status, 0);
+    assert.equal((await runDirect(home, main, "new", "EIO", "--from", "BL261108_01")).status, 0);
     const project = join(projectDir(main), "PROJECT.md");
     writeFileSync(project, readFileSync(project, "utf8").replace(/\| P-1 \| <!--.*?--> \| <!--.*?--> \|/, "| P-1 | 결과 | CLI |"));
-    assert.equal(runCli(home, main, "start", "P001").status, 0);
+    assert.equal((await runDirect(home, main, "start", "P001")).status, 0);
     const wt = join(dirname(main), "app.wt/P001");
     write(join(projectDir(wt), "PROJECT-CLOSE.md"), "# 마감\n## 기준 대조\n| # | 결과 | 증거 |\n|---|---|---|\n| P-1 | 통과 | CLI |\n## 보안\n검사\n## 정본 반영\n| 정본 | 반영 | 비고 |\n|---|---|---|\n| docs/README.md | 해당 없음 | 없음 |\n## 지표\n[집계](METRICS.md)\n시간 확인.\n");
-    const ready = runCli(home, wt, "finish", "P001"); assert.equal(ready.status, 0, ready.stdout + ready.stderr);
+    const ready = (await runDirect(home, wt, "finish", "P001")); assert.equal(ready.status, 0, ready.stdout + ready.stderr);
     if (branchOnly) git(main, "worktree", "remove", wt);
     const injection = join(home, "fault.mjs");
     write(injection, `import fs from 'node:fs';\nimport { syncBuiltinESMExports } from 'node:module';\nconst original = fs.renameSync; let fired = false;\nfs.renameSync = function(src, dest) {\n const complete = (() => { try { return fs.readFileSync(process.env.P025_FAULT_BACKLOG, 'utf8').includes('- 상태: 완료'); } catch { return false; } })();\n const matches = process.env.P025_FAULT_MODE === 'metrics' ? String(dest).endsWith('METRICS.md') : String(dest).endsWith('data.js') && complete;\n if (!fired && matches) { fired = true; const error = new Error('P025_INJECTED_EIO'); error.code = 'EIO'; throw error; }\n return original.call(this, src, dest);\n};\nsyncBuiltinESMExports();\n`);
@@ -1854,10 +1907,10 @@ test("P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 
     assert.deepEqual(readdirSync(join(main, "projects")).filter((n) => /^\.[0-9a-f]{12}\.tmp$/.test(n)), []);
     if (branchOnly) {
       const log = join(projectDir(main), "log.jsonl"); git(main, "add", log); git(main, "commit", "-qm", "실패 기록 보존");
-      const restarted = runCli(home, main, "start", "P001"); assert.equal(restarted.status, 0, restarted.stdout + restarted.stderr);
+      const restarted = (await runDirect(home, main, "start", "P001")); assert.equal(restarted.status, 0, restarted.stdout + restarted.stderr);
     }
-    const recovered = runCli(home, wt, "finish", "P001"); assert.equal(recovered.status, 0, recovered.stdout + recovered.stderr);
-    const merged = runCli(home, main, "merge", "P001", "--yes"); assert.equal(merged.status, 0, merged.stdout + merged.stderr);
+    const recovered = (await runDirect(home, wt, "finish", "P001")); assert.equal(recovered.status, 0, recovered.stdout + recovered.stderr);
+    const merged = (await runDirect(home, main, "merge", "P001", "--yes")); assert.equal(merged.status, 0, merged.stdout + merged.stderr);
     const data = JSON.parse(/^window\.PACE_DATA = (.+);$/m.exec(readFileSync(join(main, "backlogs/dashboard/data.js"), "utf8"))![1]!) as { files: Record<string, string> };
     assert.equal(data.files["backlogs/BL261108_01_EIO/BACKLOG.md"], readFileSync(bl, "utf8"));
     assert.match(readFileSync(bl, "utf8"), /상태: 완료/);
@@ -1916,7 +1969,10 @@ test("BL 출처는 슬래시로 기록하고 기존 Windows 백슬래시 링크�
   assert.match(readFileSync(bl, "utf8"), /상태: 진행/);
 });
 
-test("BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다", () => {
+test("BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다", async (ctx) => {
+  const direct = createProjectCalls();
+  ctx.after(() => direct.close());
+  const runDirect = direct.run;
   for (const mode of ["worktree", "branch-only", "direct"]) {
     const direct = mode === "direct";
     const { home, main } = repoFixture();
@@ -1925,23 +1981,23 @@ test("BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기
     write(join(main, "backlogs/README.html"), "dashboard");
     write(join(main, "backlogs/dashboard/data.js"), "old");
     git(main, "add", "-A"); git(main, "commit", "-qm", "백로그");
-    assert.equal(runCli(home, main, "new", "생명주기", "--from", "BL261108_01").status, 0);
+    assert.equal((await runDirect(home, main, "new", "생명주기", "--from", "BL261108_01")).status, 0);
     const project = join(projectDir(main), "PROJECT.md");
     writeFileSync(project, readFileSync(project, "utf8").replace(/\| P-1 \| <!--.*?--> \| <!--.*?--> \|/, "| P-1 | 결과 | CLI |"));
-    if (!direct) assert.equal(runCli(home, main, "start", "P001").status, 0);
+    if (!direct) assert.equal((await runDirect(home, main, "start", "P001")).status, 0);
     const root = direct ? main : join(dirname(main), "app.wt", "P001");
     const close = join(projectDir(root), "PROJECT-CLOSE.md");
     write(close, "# 마감\n## 기준 대조\n| # | 결과 | 증거 |\n|---|---|---|\n| P-1 | 통과 | CLI |\n## 보안\n검사\n## 정본 반영\n| 정본 | 반영 | 비고 |\n|---|---|---|\n| docs/README.md | 해당 없음 | 없음 |\n## 지표\n[집계](METRICS.md)\n시간 확인.\n");
-    const finished = runCli(home, root, "finish", "P001");
+    const finished = (await runDirect(home, root, "finish", "P001"));
     assert.equal(finished.status, 0, finished.stdout + finished.stderr);
     const overview = join(root, "backlogs", basename(bl), "BACKLOG.md");
     assert.match(readFileSync(overview, "utf8"), direct ? /상태: 완료/ : /상태: 진행/);
     if (!direct) {
       const before = readFileSync(join(bl, "BACKLOG.md"), "utf8");
-      assert.equal(runCli(home, main, "merge", "P001").status, 0);
+      assert.equal((await runDirect(home, main, "merge", "P001")).status, 0);
       assert.equal(readFileSync(join(bl, "BACKLOG.md"), "utf8"), before);
       if (mode === "branch-only") git(main, "worktree", "remove", root);
-      const merged = runCli(home, main, "merge", "P001", "--yes");
+      const merged = (await runDirect(home, main, "merge", "P001", "--yes"));
       assert.equal(merged.status, 0, merged.stdout + merged.stderr);
       assert.match(readFileSync(join(bl, "BACKLOG.md"), "utf8"), /상태: 완료/);
     }

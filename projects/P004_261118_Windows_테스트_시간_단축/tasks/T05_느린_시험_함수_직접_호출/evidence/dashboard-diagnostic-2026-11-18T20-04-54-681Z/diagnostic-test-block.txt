@@ -1,0 +1,20 @@
+test('simultaneous stale-lock recovery serializes writers without leaving generated files', async () => {
+  const { readdir } = await import('node:fs/promises');
+  const root = tempDir('pace-dashboard-recovery-');
+  await mkdir(join(root, 'backlogs/dashboard'), { recursive: true });
+  await writeFile(join(root, 'backlogs/README.html'), 'dashboard');
+  await writeFile(join(root, 'backlogs/dashboard/data.js'), 'old');
+  await writeFile(join(root, 'backlogs/dashboard/.pace-refresh-lock'), '2147483647:dead');
+  assert.equal(spawnSync('git', ['init', '-q', root]).status, 0);
+  const moduleUrl = new URL('../src/project/dashboard.ts', import.meta.url).href;
+  const observations: unknown[] = [];
+  const runs = Array.from({ length: 8 }, () => new Promise<number | null>((done) => {
+    const child = spawn(process.execPath, ['--input-type=module', '-e', `import { generateDashboard } from ${JSON.stringify(moduleUrl)}; generateDashboard(process.argv[1]);`, root], { stdio: ['ignore', 'pipe', 'pipe'] });
+    let stdout='', stderr=''; child.stdout!.on('data',d=>{stdout+=d;}); child.stderr!.on('data',d=>{stderr+=d;}); child.on('close',(code,signal)=>{observations.push({pid:child.pid,code,signal,stdout,stderr});done(code);});
+  }));
+  const results=await Promise.all(runs); console.log('DIAG_CHILDREN '+JSON.stringify({root,observations,files:await readdir(join(root,'backlogs/dashboard'))})); assert.deepEqual(results, Array(8).fill(0));
+  assert.deepEqual((await readdir(join(root, 'backlogs/dashboard'))).filter(name => name.startsWith('.pace-')), []);
+  const output = await readFile(join(root, 'backlogs/dashboard/data.js'), 'utf8');
+  assert.equal(typeof (await import('node:vm')).runInNewContext(output + ';window.PACE_DATA', { window: {} }).generated, 'string');
+});
+

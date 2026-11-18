@@ -1,0 +1,23 @@
+DIAG_SAVE {"boundA2":true,"hasN3":false,"offset":0}
+DIAG_SAVE {"boundA2":false,"provisionA2":true,"hasN3":false,"offset":2}
+DIAG_SAVE {"boundA2":false,"provisionA2":true,"hasN3":false,"intentN3":true,"offset":2}
+DIAG_SAVE {"boundA2":false,"provisionA2":true,"hasN3":false,"offset":3}
+✖ 구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다 (6086.7103ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6390.4703
+
+✖ failing tests:
+
+test at test\telegram-flow.test.ts:662:1
+✖ 구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다 (6086.7103ms)
+  Error: 시간 초과: /new 저장 실패
+      at until (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-validation-2kpGXy/source/test/telegram-helpers.ts:48:9)
+      at async TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-validation-2kpGXy/source/test/telegram-flow.test.ts:683:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

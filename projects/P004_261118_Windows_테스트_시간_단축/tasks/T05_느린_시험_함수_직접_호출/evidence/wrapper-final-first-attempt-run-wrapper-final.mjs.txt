@@ -1,0 +1,35 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {spawnSync,spawn} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../..'),tasks=path.dirname(here),e=path.join(here,'evidence');
+const task=n=>path.join(tasks,fs.readdirSync(tasks).find(x=>x.startsWith(n+'_'))),t01=task('T01'),t03=task('T03'),t04=task('T04');
+const label='t05-wrapper-final',freezeLabel='t05-wrapper',sha=f=>createHash('sha256').update(fs.readFileSync(f)).digest('hex'),json=f=>JSON.parse(fs.readFileSync(f,'utf8'));
+const run=(exe,argv)=>{const r=spawnSync(exe,argv,{cwd:root,encoding:'utf8',windowsHide:true,maxBuffer:16*1024*1024});assert.equal(r.status,0,r.stdout+r.stderr);return r.stdout;};
+const git=(...args)=>run('git',args);
+for(const key of ['NODE_OPTIONS','NODE_V8_COVERAGE','NODE_TEST_CONTEXT','NODE_INSPECT_RESUME_ON_START','PACE_PROJECT_CALL_TRACE'])assert.ok(!process.env[key],'Unexpected instrumentation: '+key);
+assert.equal(fs.existsSync(path.join(e,'wrapper-final-launch.json')),false);
+assert.equal(fs.existsSync(path.join(e,'final-views')),false);
+assert.equal(fs.readdirSync(e).some(n=>n.startsWith(label+'-')),false);
+run(process.execPath,[path.join(t04,'freeze-runtime.mjs'),'capture',freezeLabel]);
+const freezeBefore=path.join(t04,'evidence/runtime-'+freezeLabel+'-before-full.json'),before=json(freezeBefore);assert.equal(before.files.length,609);
+const previous=json(path.join(t04,'evidence/runtime-t05-function-after-full.json'));
+const delta=before.files.filter(x=>!previous.files.some(p=>p.file===x.file&&p.sha256===x.sha256));assert.equal(delta.length,1);assert.equal(delta[0].file,'test/install-windows-wrapper.test.ts');assert.equal(delta[0].sha256,'253993658e31df3e2681c07773781b32769597b303e35d69f565069cf3e0f175');
+const toolFiles=[path.join(t01,'measure.ts'),path.join(t01,'reporter.ts'),path.join(tasks,'../report.ts'),path.join(tasks,'../measurement-data.ts'),path.join(t03,'observations.ts'),path.join(t04,'freeze-runtime.mjs'),...['verify-final.mjs','source-audit.mjs','compare-regression.mjs','transform-harness.mjs','source-fixture.mjs','wrapper-source-audit.mjs','run-wrapper-final.mjs'].map(n=>path.join(here,n))];
+const tools=toolFiles.map(file=>({file:path.relative(root,file).replaceAll('\\','/'),sha256:sha(file)}));
+const t04Files=fs.readdirSync(path.join(t04,'evidence')).map(n=>path.join(t04,'evidence',n)).filter(f=>fs.lstatSync(f).isFile()).map(file=>({file:path.relative(root,file).replaceAll('\\','/'),sha256:sha(file)}));
+const argv=[path.join(t01,'measure.ts'),'--runs','3','--label',label,'--evidence-dir',e];
+const launch={created:new Date().toISOString(),head:git('rev-parse','HEAD').trim(),gitStatus:git('status','--porcelain=v1','-z'),freezeLabel,sourceFiles:609,deltaFromFunctionSet:delta,sourceChangesAudited:3,newHelpers:2,tools,preservedT04TopLevelFiles:t04Files,argv,limits:['Before/after snapshots do not continuously monitor edits or freeze host load.','No execution sources or verification tools are edited during measurement; reading/status/evidence work can occur.','Only this newly labelled set is eligible for final acceptance.']};
+fs.writeFileSync(path.join(e,'wrapper-final-launch.json'),JSON.stringify(launch,null,2)+'\n');
+console.log(JSON.stringify({starting:true,label,freezeLabel,sourceFiles:609,toolFiles:tools.length,argv}));
+const status=await new Promise((resolve,reject)=>{const child=spawn(process.execPath,argv,{cwd:root,stdio:'inherit',windowsHide:true});child.once('error',reject);child.once('close',(status,signal)=>resolve({status,signal}));});
+run(process.execPath,[path.join(t04,'freeze-runtime.mjs'),'verify',freezeLabel]);
+const folders=fs.readdirSync(e).filter(n=>n.startsWith(label+'-'));assert.equal(folders.length,1);const folder=path.join(e,folders[0]);
+const summary=json(path.join(folder,'summary.json')),results=json(path.join(folder,'results.json'));
+const binding={created:new Date().toISOString(),status,folder,head:git('rev-parse','HEAD').trim(),headSame:git('rev-parse','HEAD').trim()===launch.head,gitStatus:git('status','--porcelain=v1','-z'),sourceComparison:json(path.join(t04,'evidence/runtime-'+freezeLabel+'-comparison.json')),toolsSame:tools.every(x=>sha(path.join(root,x.file))===x.sha256),preservedT04TopLevelFiles:t04Files.every(x=>sha(path.join(root,x.file))===x.sha256),summary,resultsSha256:sha(path.join(folder,'results.json')),rawLogs:results.map(r=>({file:r.log,sha256:sha(r.log)})),totals:results.map(r=>r.totals)};
+fs.writeFileSync(path.join(e,'wrapper-final-binding.json'),JSON.stringify(binding,null,2)+'\n');
+assert.equal(binding.headSame,true);assert.equal(binding.toolsSame,true);assert.equal(binding.preservedT04TopLevelFiles,true);assert.equal(binding.sourceComparison.verified,true);
+if(status.status===0&&summary.valid===true){run(process.execPath,[path.join(here,'verify-final.mjs'),folder,'final',freezeLabel]);console.log(JSON.stringify({valid:true,folder,summary,final:json(path.join(e,'final-views/manifest.json')).goalMet}));}
+else{process.exitCode=1;console.log(JSON.stringify({valid:false,folder,status,summary,totals:binding.totals,stopped:true}));}

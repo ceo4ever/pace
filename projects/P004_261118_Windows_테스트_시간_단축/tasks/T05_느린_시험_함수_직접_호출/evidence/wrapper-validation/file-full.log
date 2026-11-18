@@ -1,0 +1,18 @@
+✔ Windows 설치는 Git Bash 래퍼를 만들고 재설치와 제거에서 관리한다 (1764.4661ms)
+✔ Windows 관리 래퍼 재설치와 dry-run, 사용자 충돌 보존 (2287.069ms)
+✔ Windows 래퍼 위치의 폴더와 정션은 대상과 함께 보존한다 (2206.3072ms)
+✔ Windows 래퍼 위치의 파일 링크는 대상과 함께 보존한다 (1129.8666ms)
+✔ Antigravity 사용자 훅 참조가 남으면 Windows 래퍼와 설치본을 보존한다 (1246.1552ms)
+✔ Antigravity 훅 설정을 읽을 수 없으면 Windows 래퍼와 설치본을 보존한다 (1272.295ms)
+✔ 실제 Windows Git Bash에서 래퍼와 커밋 훅이 동작한다 (2822.1323ms)
+✔ PowerShell 5.1 격리 설치·재설치·제거는 한 줄로 보고하고 사용자 래퍼를 보존한다 (8397.6028ms)
+✔ 원격 설치 입구 get.ps1은 ASCII·BOM 없이 두고 README가 그것을 가리킨다 (irm | iex는 BOM이 붙은 install.ps1을 해석하지 못한다) (0.9298ms)
+✔ get.ps1을 iex로 실행하면 BOM 있는 install.ps1을 받아 설치하고 사용자 셸은 살아 있다 (2690.4527ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24697.5742

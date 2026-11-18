@@ -1,0 +1,23 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../..'),owned=fs.mkdtempSync(path.join(os.tmpdir(),'pace-p004-t05-lock-')),copy=path.join(owned,'source');fs.mkdirSync(copy);
+const trace=process.argv.includes('--trace'),limit=trace?20:5;
+const preloadFile=path.join(owned,'lock-trace-preload.mjs');if(trace)fs.copyFileSync(path.join(here,'lock-trace-preload.mjs'),preloadFile);
+for(const name of ['bin','src','test','scripts','templates','skills','docs','package.json','tsconfig.json','README.md','AGENTS.md'])fs.cpSync(path.join(root,name),path.join(copy,name),{recursive:true});
+const file=path.join(copy,'test/backlog-dashboard.test.ts'),original=fs.readFileSync(file,'utf8'),start=original.indexOf("test('simultaneous stale-lock recovery"),end=original.indexOf('\ntest(',start+1);assert.ok(start>0&&end>start);let block=original.slice(start,end);
+block=block.replace('const runs = Array.from','const observations: unknown[] = [];\n  const runs = Array.from').replace("{ stdio: 'ignore' }","{ stdio: ['ignore', 'pipe', 'pipe'] }").replace("child.on('close', done);",`let stdout='', stderr=''; child.stdout!.on('data',d=>{stdout+=d;}); child.stderr!.on('data',d=>{stderr+=d;}); child.on('close',(code,signal)=>{observations.push({pid:child.pid,code,signal,stdout,stderr});done(code);});`);
+block=block.replace('assert.deepEqual(await Promise.all(runs), Array(8).fill(0));',`const results=await Promise.all(runs); console.log('DIAG_CHILDREN '+JSON.stringify({root,observations,files:await readdir(join(root,'backlogs/dashboard'))})); assert.deepEqual(results, Array(8).fill(0));`);
+assert.ok(block.includes("DIAG_CHILDREN"));const modified=original.slice(0,start)+block+original.slice(end);fs.writeFileSync(file,modified);
+const traced=trace?modified.replace("['--input-type=module', '-e'","['--import', process.env.P004_LOCK_PRELOAD!, '--input-type=module', '-e'"):modified;if(trace){assert.notEqual(traced,modified);fs.writeFileSync(file,traced);}
+const output=path.join(here,'evidence',(trace?'dashboard-trace-':'dashboard-diagnostic-')+new Date().toISOString().replace(/[:.]/g,'-'));fs.mkdirSync(output);const sha=b=>createHash('sha256').update(b).digest('hex'),records=[];
+for(let run=1;run<=limit;run++){
+ const temp=path.join(owned,'run-'+run);fs.mkdirSync(temp);const env={...process.env,TMP:temp,TEMP:temp,TMPDIR:temp,PACE_HOME:path.join(temp,'pace')};delete env.NODE_TEST_CONTEXT;
+ if(trace)env.P004_LOCK_PRELOAD=preloadFile;
+ const argv=['--test','--test-name-pattern=simultaneous stale-lock recovery',file],r=spawnSync(process.execPath,argv,{cwd:copy,env,encoding:'utf8',windowsHide:true,timeout:60000,maxBuffer:16*1024*1024}),raw=(r.stdout??'')+(r.stderr??'');fs.writeFileSync(path.join(output,'run-'+run+'.log'),raw);const line=raw.split(/\r?\n/).find(s=>s.startsWith('DIAG_CHILDREN '));const observation=line?JSON.parse(line.slice('DIAG_CHILDREN '.length)):null;records.push({run,status:r.status,signal:r.signal,error:r.error?.message,argv,observation});console.log('diagnostic',run,r.status);if(r.status!==0)break;
+}
+fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({owned,copy,trace,limit,preloadSha256:trace?sha(fs.readFileSync(preloadFile)):null,originalTestSha256:sha(original),diagnosticTestSha256:sha(traced),productSourceSha256:sha(fs.readFileSync(path.join(copy,'src/project/dashboard.ts'))),worktreeTestUnchanged:sha(fs.readFileSync(path.join(root,'test/backlog-dashboard.test.ts')))==sha(original),records,limits:['Only child stdio capture, optional bounded in-memory fs observation, and pre-assertion observation were added to the owned test copy. Eight concurrent children and all original assertions were preserved. Output collection and hooks can affect scheduling. This is not a full timing sample or historical-cause proof. No actual user settings were touched.']},null,2)+'\n');fs.copyFileSync(fileURLToPath(import.meta.url),path.join(output,'executed-diagnostic.mjs.txt'));fs.writeFileSync(path.join(output,'diagnostic-test-block.txt'),trace?block.replace("['--input-type=module', '-e'","['--import', process.env.P004_LOCK_PRELOAD!, '--input-type=module', '-e'"):block);if(trace)fs.copyFileSync(preloadFile,path.join(output,'executed-preload.mjs.txt'));console.log(output);

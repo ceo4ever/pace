@@ -1,0 +1,55 @@
+{
+  "verified": true,
+  "mode": "final",
+  "originalFolder": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\t05-wrapper-final-2026-11-18T22-44-36-407Z",
+  "originalResultsSha256": "5b4bc9c21b3d494669d1a8dffa152d5dbd220cceea3a38fd4fa95bd3105421cf",
+  "originalEnvironmentSha256": "99f84c23eb6d7f39255d3ec4f96bb0d46d3e14ea129bea1908bc214e1c1b050a",
+  "originalSummarySha256": "c6e89c18fdb812864b509b64a2d50509fa87835b120a1d01a99f1f5d034e8e3c",
+  "sharedEnvironment": true,
+  "verifierSha256": "bb7ed2c20b796aeaacf636005fc6efa1e530357d03efc981340f28298dffe20a",
+  "records": [
+    {
+      "originalRun": 1,
+      "originalLog": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\t05-wrapper-final-2026-11-18T22-44-36-407Z\\run-1.log",
+      "originalLogSha256": "461d547852f777df02149de132d04bb32611e6dcb11f4ac056d460ef34b87f82",
+      "view": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\final-v2-views\\run-1",
+      "viewResultsSha256": "e5e0c40aac5be749e98a8a95146612d61778ed36a15afc983b9f175233098097",
+      "environmentSha256": "99f84c23eb6d7f39255d3ec4f96bb0d46d3e14ea129bea1908bc214e1c1b050a",
+      "caseSourceSha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c",
+      "comparison": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\final-v2-views\\comparison-run-1.json",
+      "comparisonSha256": "3519e64a8c46d7ed37ff9a5100d2763822587fb7752bf85f6e4868a4ae6ac6d4"
+    },
+    {
+      "originalRun": 2,
+      "originalLog": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\t05-wrapper-final-2026-11-18T22-44-36-407Z\\run-2.log",
+      "originalLogSha256": "27b1b71f62abbed15b1d76a31fd5dafba81db5e7e1d6dac6324d4348c27ace2c",
+      "view": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\final-v2-views\\run-2",
+      "viewResultsSha256": "d20308d22cc706e4a2c14d6018c99d558b9ecd0640a2e5ea296a3513ef2586a6",
+      "environmentSha256": "99f84c23eb6d7f39255d3ec4f96bb0d46d3e14ea129bea1908bc214e1c1b050a",
+      "caseSourceSha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c",
+      "comparison": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\final-v2-views\\comparison-run-2.json",
+      "comparisonSha256": "79a6b15bec1b5808e17ebf0557e381086b22cde94cdb7000ab500889fc0d60fb"
+    },
+    {
+      "originalRun": 3,
+      "originalLog": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\t05-wrapper-final-2026-11-18T22-44-36-407Z\\run-3.log",
+      "originalLogSha256": "d5601673a7362b04a555d5f5b3d46e2bffd8ac1d006cd679d0b4eb18965fe881",
+      "view": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\final-v2-views\\run-3",
+      "viewResultsSha256": "8e0d669f1c1577ed71ee515494b9965f22d3885a43dfc68a61b3fbbc1819fcc0",
+      "environmentSha256": "99f84c23eb6d7f39255d3ec4f96bb0d46d3e14ea129bea1908bc214e1c1b050a",
+      "caseSourceSha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c",
+      "comparison": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\final-v2-views\\comparison-run-3.json",
+      "comparisonSha256": "259e930d4005ee1c4f92051ac685a088410f555fdef33a72dd09ec375a0d1317"
+    }
+  ],
+  "freezeComparisonSha256": "07d0dc2ef288b134399fb44000f08a3ec59c5297141c293c9f0863a8cc9113e8",
+  "freezeLabel": "t05-wrapper",
+  "baseline": {
+    "file": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T01_기준_측정\\evidence\\baseline-2026-11-18T08-56-17-364Z\\summary.json",
+    "sha256": "911114d2a392599347e6f85e1b033046e2bfed029b005c97a957850eb18aa696",
+    "medianMs": 1425464.3326999997
+  },
+  "medianMs": 705472.9278,
+  "percentOfBaseline": 49.4907456901254,
+  "goalMet": true
+}

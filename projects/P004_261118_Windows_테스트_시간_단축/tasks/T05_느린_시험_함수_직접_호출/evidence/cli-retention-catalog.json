@@ -1,0 +1,741 @@
+{
+  "allOriginalBlocks": 73,
+  "retained": [
+    {
+      "line": 73,
+      "header": "test(\"git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다\", () => {\r",
+      "commands": [],
+      "sha256": "219956536e6e89f921042ca42f8ad87c8ca3b95b81715c323d2b8d9e400c5ba9"
+    },
+    {
+      "line": 98,
+      "header": "test(\"CRLF 설치본: BL 프로젝트 생성·예정/추가 태스크·check/done은 줄바꿈과 번호를 보존한다\", () => {\r",
+      "commands": [],
+      "sha256": "fd87e33a17f23fbcfc250bf650cd9de8d7db5bed60331624cbd6de8b4cbe2867"
+    },
+    {
+      "line": 145,
+      "header": "test(\"CRLF 기존 5칸 태스크 표도 예정 번호·상태·열 위치를 보존한다\", () => {\r",
+      "commands": [
+        "new",
+        "task",
+        "task",
+        "done"
+      ],
+      "sha256": "783f73d72f87a2e41d74c861b3abeb365498bb6f7c7930e19021be50d6bf658a"
+    },
+    {
+      "line": 175,
+      "header": "test(\"테스트 도우미는 세션 환경 변수를 물려주지 않는다\", () => {\r",
+      "commands": [],
+      "sha256": "5835d91d0d45e71d0c0e6bfbcc152d4cdbad0a84d001a3f84e23a702fcb3fd22"
+    },
+    {
+      "line": 189,
+      "header": "test(\"프로젝트 전 과정: new → start → task → check → finish → merge\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "start",
+        "finish",
+        "merge",
+        "task",
+        "check",
+        "check",
+        "finish",
+        "finish",
+        "finish",
+        "finish",
+        "finish",
+        "finish",
+        "merge",
+        "merge",
+        "merge",
+        "list"
+      ],
+      "sha256": "f0b7f4087900065f90f11c6cbc2c6af4dd47eb20b1fc427af232018f8bd07be4"
+    },
+    {
+      "line": 436,
+      "header": "test(\"list는 진행 중 프로젝트의 브랜치 상태와 진행 태스크를 보여 준다\", () => {\r",
+      "commands": [
+        "new",
+        "list",
+        "start",
+        "task",
+        "list",
+        "new"
+      ],
+      "sha256": "8de9dd40f12d301e18d3a28c3bf636a36746f888239c1842fc9c258f52bb5b60"
+    },
+    {
+      "line": 450,
+      "header": "test(\"등록된 worktree가 사라져도 기존 경로를 안내한다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "start"
+      ],
+      "sha256": "720860b4929fd5d7917c3c38e0ba85627b3806f6b3ef6858270c306c2fd9ab74"
+    },
+    {
+      "line": 462,
+      "header": "test(\"task: 표에 계획된 대기 행은 그 번호로 열고, 새 태스크는 계획 번호와 겹치지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "task",
+        "task",
+        "task",
+        "task",
+        "task"
+      ],
+      "sha256": "6d9e73cc6e1426602d3140c47f0f558fe88e408129275c39b002c2033f5ef8ec"
+    },
+    {
+      "line": 497,
+      "header": "test(\"check: 템플릿 주석이 남아도 통과하고, 빠진 기준·판정 실패는 잡는다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "task",
+        "check",
+        "check",
+        "check",
+        "check",
+        "check",
+        "check",
+        "task"
+      ],
+      "sha256": "d515449fc7c0c39b0726d9e430320b10cd330c6d738861a62230c686d6508f40"
+    },
+    {
+      "line": 718,
+      "header": "test(\"도움말에 project done이 있다\", () => {\r",
+      "commands": [],
+      "sha256": "cde0d11122956632528b30977b3ba661178de7f11228f58b02ec3c2e8dc2a348"
+    },
+    {
+      "line": 723,
+      "header": "test(\"new·start·merge 위치와 상태 규칙: 브랜치 번호, 하위 폴더, 준비 명령, ff 불가·더러운 작업 트리\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "new",
+        "list",
+        "merge",
+        "merge",
+        "merge"
+      ],
+      "sha256": "b1b8bd2e43abfbf0b5b608fc689696df32054e87de4331425cad3668d52360f9"
+    },
+    {
+      "line": 768,
+      "header": "test(\"비밀 노출 탐지: JSON·Bearer·JWT는 잡고, 환경 변수 이름 참조와 바이너리는 넘긴다\", () => {\r",
+      "commands": [],
+      "sha256": "9a7f2ebcedd30fde3b1e5862aa97cd02ec99dfa62f3a375f6476730bcec2a861"
+    },
+    {
+      "line": 800,
+      "header": "test(\"Orca 안이면 start가 작업자 세션을 띄우고, 다시 start·--no-launch·Orca 밖에서는 띄우지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "new",
+        "new"
+      ],
+      "sha256": "04d1398c96e75651ad955297e798ad4f894076fb3302d9e8901430aee632999f"
+    },
+    {
+      "line": 851,
+      "header": "test(\"Orca 채팅 세션에서도 작업자를 띄우고, 현재 run(runId)이 있으면 새로 만들지 않는다\", () => {\r",
+      "commands": [
+        "new"
+      ],
+      "sha256": "d3754fd92936660347e4dae161b99e10046454d58d325f572c9db38cde941d5c"
+    },
+    {
+      "line": 862,
+      "header": "test(\"작업자 설정 CLI와 실행별 우선순위 및 사전 오류\", () => {\r",
+      "commands": [
+        "new",
+        "new",
+        "new",
+        "new"
+      ],
+      "sha256": "7c1f2599ff866a5df81e1f0a89149420a4eb952a10a07108bf279c3de7cbb083"
+    },
+    {
+      "line": 915,
+      "header": "test(\"작업자 세션을 띄우지 못해도 start는 성공하고 직접 여는 방법을 알려 준다\", () => {\r",
+      "commands": [
+        "new"
+      ],
+      "sha256": "44d4ff27f284f79eaebd156acf2e6de539d4f542fa66d67f1d0332cbaa42c071"
+    },
+    {
+      "line": 926,
+      "header": "test(\"테스트 도우미는 TERM_PROGRAM도 물려주지 않는다 (테스트가 실제 Orca를 부르지 않게)\", () => {\r",
+      "commands": [],
+      "sha256": "c8dd3b966b9a333784341e3bca5abb857155f62f0bb3ef9c4b0c5df1820b128f"
+    },
+    {
+      "line": 937,
+      "header": "test(\"Orca 실행 파일과 작업자 도구를 고른다\", async () => {\r",
+      "commands": [],
+      "sha256": "4473f88355c0bcb858639a8b8d5a79862aefccc72a8e44a28eef36b32fbe8c45"
+    },
+    {
+      "line": 954,
+      "header": "test(\"declaredCommand: 표 칸·목록 항목 맨 앞의 라벨만 읽고, 설명 문장 속 라벨은 무시한다\", () => {\r",
+      "commands": [],
+      "sha256": "8401f9afaa5a5322316da51c02935f782984e6c83f661b7c3e7ba5b2a76b6e20"
+    },
+    {
+      "line": 981,
+      "header": "test(\"작업자 도구: --agent > PROJECT.md `- 작업자:` > 정의서 `작업자 도구:` > 지금 세션, 오타는 worktree 전에 거부\", () => {\r",
+      "commands": [
+        "new",
+        "new",
+        "new",
+        "new",
+        "new",
+        "new"
+      ],
+      "sha256": "e1294d54a9291b7827abda70db4cfeaf35e44cc1c4a41ed2ad4298ebdb84b325"
+    },
+    {
+      "line": 1048,
+      "header": "test(\"브레인 활용: new는 관련 페이지 후보를 재료에 넣고, finish는 PROJECT-CLOSE 브레인 행을 확인한다\", async () => {\r",
+      "commands": [
+        "new",
+        "new",
+        "new",
+        "new",
+        "new"
+      ],
+      "sha256": "e5ccf810ed9089f3807c35e4a050bc74b21ec2d0977494929c1afcaa02373880"
+    },
+    {
+      "line": 1092,
+      "header": "test(\"정본 반영 표: 템플릿 브레인 행만 남은 표는 비었다고 본다, main 직접 프로젝트도 브레인 행을 확인한다\", () => {\r",
+      "commands": [
+        "new",
+        "finish",
+        "finish"
+      ],
+      "sha256": "526b87718a413ab5c76f04ced46df19c5d425b21510ec7c3d265722059edccc9"
+    },
+    {
+      "line": 1119,
+      "header": "test(\"finish: changed sources produce candidate notes and every waived page must be mentioned\", async () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "finish"
+      ],
+      "sha256": "47ae7413f5fd59f3e096392ab0e53fea17893e37c97ed2ca3f0490f1e58d8380"
+    },
+    {
+      "line": 1150,
+      "header": "test(\"start: 긴 백로그·대화 출처도 착수 결정을 남기고 전체 근거는 PROJECT.md로 가리킨다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "8084a5373951e02d6405d7ae1707f97a9aaa98068d9901741018e3955bd35af9"
+    },
+    {
+      "line": 1170,
+      "header": "test(\"start: 기존 브랜치가 바꾼 worktree 준비 대신 base 선언을 실행한다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "93e21db56daf5e7c27c2a0ae331215c109985acd1657872231d77f06547c55eb"
+    },
+    {
+      "line": 1188,
+      "header": "test(\"finish: 의존성 감사는 잠금 파일이 base 대비 바뀐 브랜치에서만 실행한다\", async () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "finish"
+      ],
+      "sha256": "469b53d861a19fac1f9cc5cdd0e5947bb7b1a914f01fbb0f6e2dc1fc8a6f1a08"
+    },
+    {
+      "line": 1217,
+      "header": "test(\"finish: base에 선언이 없으면 worktree 명령을 실행하고 실패를 보존한다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "finish"
+      ],
+      "sha256": "0a2b68c912f6ad89150730fc2e235133e10a19dd47b5a6a118691220e54e4cb6"
+    },
+    {
+      "line": 1240,
+      "header": "test(\"start: base에 준비 선언이 없으면 worktree 선언을 실행하고 실패를 보존한다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "517dc3dfc1bff8fc9f102e8a8c5963c41210c1171f2c88e17b599301eddf4b43"
+    },
+    {
+      "line": 1257,
+      "header": "test(\"선언 명령: base 조회 오류는 선언 부재로 취급하지 않고 실행 전에 중단한다\", () => {\r",
+      "commands": [
+        "new"
+      ],
+      "sha256": "ff6406a2b8cd30ceba03e0a4104402d73f5f403c7383ae38c7319efa49cf1bef"
+    },
+    {
+      "line": 1272,
+      "header": "test(\"commit gate: start 설치·갱신, check 실패/성공, 무관 커밋과 복수 태그\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "start",
+        "task"
+      ],
+      "sha256": "7fc0d2c1cdd5d9e8ba1d7be093bd75862b1d8c0027f32c5ebb7ee224adb3cf3b"
+    },
+    {
+      "line": 1304,
+      "header": "test(\"commit gate: 사용자 훅·링크·외부 hooksPath 보존, PACE 훅만 갱신\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "50637e9760c44ac5820cf7dc9cd8422d5d9d790c74c90951bff44ddb3536e321"
+    },
+    {
+      "line": 1344,
+      "header": "test(\"commit gate: pace 부재는 경고 후 커밋 허용\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "26708861b06f9d027fcbe13a3160672cf31f2ce267fa1c938f946a18cddde6c5"
+    },
+    {
+      "line": 1373,
+      "header": "test(\"finish: 완료 태스크의 태그 커밋 누락 차단, 태그 커밋 후 통과\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "task",
+        "done",
+        "finish",
+        "finish",
+        "finish"
+      ],
+      "sha256": "bbef8fb5c742736c87d78020937dead5fd2aff37d04809c7c62ad51935612144"
+    },
+    {
+      "line": 1400,
+      "header": "test(\"finish: main에 선반영된 HEAD 조상의 태스크 커밋을 인정한다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "task",
+        "done",
+        "finish"
+      ],
+      "sha256": "cff56434d3e079a8b7eadbeceec6628adc7168c667b593c5b6f3ba84087dcee0"
+    },
+    {
+      "line": 1420,
+      "header": "test(\"start는 비활성 대시보드의 미리 스테이징된 초안을 커밋하지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "073e070399feae458938ddafc7447941f64aa2b4729f65deda4f34e340113810"
+    },
+    {
+      "line": 1433,
+      "header": "test(\"P025 실패 복구: index에만 있는 BACKLOG 초안을 보존한다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "db24457da4cffb330553cfe1a6b8821d9526a540818645a71f78eb4f4c3a02dc"
+    },
+    {
+      "line": 1446,
+      "header": "test(\"P025 실패 복구: 활성 dashboard 경로 오류는 start 성공을 막는다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "666d442ce1856be7a1a82ba7a43478b9b46503e2612797b19dcb6e491c211354"
+    },
+    {
+      "line": 1461,
+      "header": "test(\"P025 실패 복구: 동기화 커밋 실패 후 start 재시도는 양쪽 상태를 맞춘다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "start"
+      ],
+      "sha256": "aee82b6398838bb73e92a0265478cc7f232c4e4371fd0e1bf9878cb195b84c2b"
+    },
+    {
+      "line": 1477,
+      "header": "test(\"P025 실패 복구: 직접 finish 최종 커밋 실패는 거짓 완료를 남기지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "finish"
+      ],
+      "sha256": "053c358926fbf610b0819999104d8a1c406e9759b6fb42b4aec342fc01649a90"
+    },
+    {
+      "line": 1496,
+      "header": "test(\"P025 실패 복구: main 직접 finish는 범위 밖 초안을 거부한다\", () => {\r",
+      "commands": [
+        "new",
+        "finish"
+      ],
+      "sha256": "7db889d44d84e4c5e0c64a50f37633ebe8740ffc1920ace204add845d7e877fe"
+    },
+    {
+      "line": 1508,
+      "header": "test(\"P025 실패 복구: 준비 실패 후 고친 설정으로 재시도한다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "start"
+      ],
+      "sha256": "11999f4cc50250d90ac54c4a9249504ae22481c05324624a4cdaa5d3b3ba5ed2"
+    },
+    {
+      "line": 1527,
+      "header": "test(\"P025 실패 복구: fast-forward 실패를 알리고 재시도한다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "85dee6a87353b0a49864b891e3540814949e85cf52a47e1205f2d5205466bc3c"
+    },
+    {
+      "line": 1544,
+      "header": "test(\"P025 실패 복구: 다른 백로그의 staged 초안은 대시보드에 넣지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "1a9969b1c6bdde54bf08368a70c2c9cf4fae1cb3a506100755ce0fef6ef214da"
+    },
+    {
+      "line": 1560,
+      "header": "test(\"P025 실패 복구: 보류 백로그는 시작과 완료에서 유지된다\", () => {\r",
+      "commands": [
+        "new"
+      ],
+      "sha256": "2255eb1199cc1ccec526104be1143cb395bd89bc626c31e995e51f558b4b4248"
+    },
+    {
+      "line": 1573,
+      "header": "test(\"P025 실패 복구: BL 기존 브랜치는 안전한 조상인 경우 복구한다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "start"
+      ],
+      "sha256": "e62a7ba285e32228535904c51f0b0176f67d15a019e8b6d34ba32d4807496497"
+    },
+    {
+      "line": 1590,
+      "header": "test(\"P025 실패 복구: 비main 브랜치 직접 finish는 거부한다\", () => {\r",
+      "commands": [
+        "new",
+        "finish"
+      ],
+      "sha256": "f7310ce3581584de22ec464a5d98df6409b016bee30338407a1bacff2fb670fa"
+    },
+    {
+      "line": 1605,
+      "header": "test(\"P025 실패 복구: 동기화된 기존 BL worktree의 추가 커밋을 보존한다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "start"
+      ],
+      "sha256": "0aa350279199a890be88f47a2bdb176c7be620d327cfee3208bb4e4dc048370c"
+    },
+    {
+      "line": 1619,
+      "header": "test(\"P025 실패 복구: 활성 dashboard 오류면 직접 finish도 완료하지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "finish"
+      ],
+      "sha256": "7e061a835370aced1d811934d4831ade217e84b1c3dbb61931f92a5e768969e4"
+    },
+    {
+      "line": 1637,
+      "header": "test(\"P025 실패 복구: 보류 태스크의 BR은 전체 완료에서도 보류로 남는다\", () => {\r",
+      "commands": [
+        "new",
+        "finish",
+        "finish",
+        "finish"
+      ],
+      "sha256": "ec4a8aa83ae5a7e51e04dc8323a8d85fe609b2410aa35544f4478c836b34c28a"
+    },
+    {
+      "line": 1666,
+      "header": "test(\"P025 실패 복구: 병합 최종 커밋 거부는 FF 뒤 진행 상태를 복원한다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "finish",
+        "merge",
+        "start",
+        "finish",
+        "merge"
+      ],
+      "sha256": "8e85b8480500a196d8af13c95eb40d05d6bb62d990ff923e425a1035629dfa01"
+    },
+    {
+      "line": 1710,
+      "header": "test(\"P025 실패 복구: BL 브리프를 프로젝트 출처로 위장하면 시작하지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "7f0bc901bbb1ca1a2bf5231e06ce3199b6943d39a4abe6ef79436f164317d9c2"
+    },
+    {
+      "line": 1724,
+      "header": "test(\"P025 실패 복구: 시작 시 프로젝트 부분 스테이징 초안을 보존한다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "cd3bb89a2e967c3748421a6ef7f7a7e177a4d3886d94a935803a23d1ae0b8de9"
+    },
+    {
+      "line": 1739,
+      "header": "test(\"P025 실패 복구: 직접 finish 첫 커밋 실패도 프로젝트 인덱스를 복원한다\", () => {\r",
+      "commands": [
+        "new",
+        "finish"
+      ],
+      "sha256": "f9b11a8086af68c0fed3c5636aa4a66095058818d60560552872459873c7905d"
+    },
+    {
+      "line": 1753,
+      "header": "test(\"P025 실패 복구: 프로젝트 바이너리와 파일 권한을 정확히 보존한다\", () => {\r",
+      "commands": [
+        "new",
+        "finish"
+      ],
+      "sha256": "97418d68f0acaf9562a1f07dd6a708a7e078a90adf019027a0a84b8c89a96c4b"
+    },
+    {
+      "line": 1768,
+      "header": "test(\"P025 실패 복구: start 첫 커밋 실패도 프로젝트 상태와 인덱스를 복원한다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "815f142c629bd3da3cb715894265272151850d3536af03a354964aba65dfc6b2"
+    },
+    {
+      "line": 1781,
+      "header": "test(\"P025 v2: 분기된 동기화 worktree는 start와 launch로 재개한다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "6298ae7edc4db45b59618bc2f350b3995850054618341693e2e0ec6d8de6f4da"
+    },
+    {
+      "line": 1798,
+      "header": "test(\"P025 v2: 직접 finish 중간 커밋 뒤 최종 실패는 삭제 staged 없이 재시도한다\", () => {\r",
+      "commands": [
+        "new",
+        "finish",
+        "finish"
+      ],
+      "sha256": "c7c15f8106fc9e422662337054635af8b1da54d6157fd6a50f031b300a2a5bed"
+    },
+    {
+      "line": 1815,
+      "header": "test(\"P025 v2: 다른 BR이 있어도 누락된 BR은 완료를 막는다\", () => {\r",
+      "commands": [
+        "new",
+        "finish"
+      ],
+      "sha256": "da1f5a0f3545e3b852e5822b05e26e62815ffd09018c8c47975cb4e42f3426f9"
+    },
+    {
+      "line": 1867,
+      "header": "test(\"P025 v2: BR·태스크·현황의 중복 번호를 거부한다\", () => {\r",
+      "commands": [
+        "new",
+        "finish"
+      ],
+      "sha256": "8d7d9dbd3a671ad9cdfe695ebf80123d2bd6f005cf29f932bc45ca83006bd177"
+    },
+    {
+      "line": 1890,
+      "header": "test(\"BL 생명주기 start는 전체 상태를 진행으로 기록한다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "a900fd64f7a5da9fa17b1280543fb330ef59fa18478b8bc9e8772b763a3f91e9"
+    },
+    {
+      "line": 1903,
+      "header": "test(\"BL 출처는 슬래시로 기록하고 기존 Windows 백슬래시 링크도 읽는다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "291a78ba9240278794726c27c6946096f8273036af97f020065937febb0ca36c"
+    },
+    {
+      "line": 1954,
+      "header": "test(\"BL 생명주기: 잘못된 상태와 시작 준비 실패는 원본 상태를 바꾸지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "start"
+      ],
+      "sha256": "6e56ffa87d5762847581393c0a4cd4e92bb907f9e4c67c517f624c841cea9a65"
+    },
+    {
+      "line": 1969,
+      "header": "test(\"BL 출처: 같은 번호 태스크 생성·done BR/BACKLOG 동기화와 실패 무변경\", () => {\r",
+      "commands": [
+        "new",
+        "new",
+        "new",
+        "new",
+        "start",
+        "task",
+        "done",
+        "done",
+        "done",
+        "done",
+        "done",
+        "done"
+      ],
+      "sha256": "31726a622f91e2d118f7be97616598972d2f1fb6e93c889e18f9c531339291dd"
+    },
+    {
+      "line": 2047,
+      "header": "test(\"새 태스크 이름의 백로그 단계 문구를 옛 표 헤더로 오인하지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "task",
+        "list",
+        "task",
+        "done"
+      ],
+      "sha256": "7fc1cde8e102264a656c9251eb1df1304110513a8ad52633872d270c499f0978"
+    },
+    {
+      "line": 2059,
+      "header": "test(\"정본 반영: 바뀐 파일 대조 — 같은 파일·폴더 접두·glob\", () => {\r",
+      "commands": [],
+      "sha256": "e8c1516c630c098d955f36b40b51aa5702f7effeb5b330d40a4d790002763afa"
+    },
+    {
+      "line": 2072,
+      "header": "test('동시 프로젝트: 한쪽 병합 후 다른 쪽 finish는 생성 자료만 재생성하고 미추적 초안을 커밋하지 않는다', () => {\r",
+      "commands": [],
+      "sha256": "4304933591cfb194d75f22a37e75755a2c35cf4ad125c3acbe8a74de6b8dc7f6"
+    },
+    {
+      "line": 2113,
+      "header": "test('start 준비 명령 실패 시 대시보드는 쓰거나 커밋하지 않는다', () => {\r",
+      "commands": [],
+      "sha256": "9996a33043076e47e1938af3f1d646e682632af792eb3636e1987cefdc0aa465"
+    },
+    {
+      "line": 2127,
+      "header": "test('start 자동 커밋 자료는 작업본에서만 삭제된 인덱스 문서를 포함한다', () => {\r",
+      "commands": [],
+      "sha256": "6eecc0fabf7cb1408d1991948f4bfe22041a20d04075303199947db88940e411"
+    },
+    {
+      "line": 2142,
+      "header": "test('신규 태스크 사전 검토 게이트는 check와 done을 막고 기록 뒤 통과한다', async () => {\r",
+      "commands": [],
+      "sha256": "28b95133cf825bdbfb607af54bef268e4f9d35ff5634f35c59ce5fbf7ee86038"
+    },
+    {
+      "line": 2203,
+      "header": "test(\"start --launch: worktree에서 done이 백로그 현황 표를 고치고 main이 앞서 나가도 다시 띄운다\", () => {\r",
+      "commands": [
+        "new"
+      ],
+      "sha256": "ce9908ea952e98aab41d1f6a7deb22a7c913802ec2feeb1ca58938fff5112d2f"
+    }
+  ],
+  "converted": [
+    {
+      "line": 557,
+      "header": "test(\"done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "task",
+        "done",
+        "done",
+        "done",
+        "task",
+        "done",
+        "done",
+        "task",
+        "list",
+        "finish",
+        "done",
+        "task",
+        "done",
+        "done",
+        "done",
+        "new",
+        "start",
+        "task",
+        "done",
+        "done",
+        "done",
+        "done",
+        "done"
+      ],
+      "sha256": "4df5b1b4e43f05e4b2387e21e410921f0044755f961f98a8ea7622b61631320d"
+    },
+    {
+      "line": 1834,
+      "header": "test(\"P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "finish",
+        "start",
+        "finish",
+        "merge"
+      ],
+      "sha256": "38b73d22209911d4701f83bff80e313722c35d55fec04a2739d424e0940b8cba"
+    },
+    {
+      "line": 1919,
+      "header": "test(\"BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다\", () => {\r",
+      "commands": [
+        "new",
+        "start",
+        "finish",
+        "merge",
+        "merge"
+      ],
+      "sha256": "72e00d408ea1d3b50d4cd1bb902e09c496c40e3d8e2a664bb7b17e31523d40f7"
+    }
+  ],
+  "countsAreLiteralNotDynamic": true
+}

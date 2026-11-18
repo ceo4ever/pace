@@ -1,0 +1,48 @@
+{
+  "verifiedFromPreservedRuns": true,
+  "newTestExecutions": 0,
+  "audit": {
+    "beforeSha256": "3662b08e03855d6aa84afcea2a05afdfd7d61d78649ec2face67cdd77b96e658",
+    "afterSha256": "253993658e31df3e2681c07773781b32769597b303e35d69f565069cf3e0f175",
+    "exactExpectedTransformation": true,
+    "outsideTargetAndTwoImportsByteIdentical": true,
+    "caseNamesAndSkipUnchanged": true,
+    "retainedVersionHookAndArgumentAssertions": true,
+    "regularFileAndBinParent": true,
+    "nativeAndBigintIdentity": true,
+    "rawLookupStderr": true,
+    "explicitFailurePropagation": true
+  },
+  "records": [
+    {
+      "mode": "file-full",
+      "status": 0,
+      "sourceSha256": "253993658e31df3e2681c07773781b32769597b303e35d69f565069cf3e0f175",
+      "logSha256": "c157a4d31198a7ea9c5f7f464fb11a867bf53452798cfb780f68551f9b5b9d5f",
+      "elapsedMs": 24766.7214
+    },
+    {
+      "mode": "wrong-file",
+      "status": 1,
+      "sourceSha256": "8ac57843576811e6e7271617438e8b01d8847958518c5ab7da4e61167d85d3c0",
+      "logSha256": "07e27474bdaa890aa6de39f64c351f7f3e41d1d496bfb8a6ec82e85ecaec7cc3",
+      "elapsedMs": 1754.283800000001,
+      "failedAssertion": {
+        "line": 124,
+        "expression": "assert.equal(realpathSync.native(dirname(resolvedWrapper)), realpathSync.native(bin), version.stderr);"
+      },
+      "failedBeforeInodeComparison": true
+    }
+  ],
+  "originalValidator": {
+    "exitCode": 1,
+    "sha256": "63be983a4e2db0f4ff8ca60e8919e6c59fd0bfdf97f98da18714c9f9ac953c7e",
+    "toolError": "Expected the source expression in an assertion message. A custom stderr message suppresses that expression (generatedMessage:false). Both requested test executions had already completed and were saved.",
+    "correctedBy": "Read-only exact executed source SHA and stack line comparison; no test rerun."
+  },
+  "limits": [
+    "Wrong-file fails at the bin-parent path assertion, before native file/inode checks; it does not independently test inode-only rejection.",
+    "Historical full-failure cause remains unknown.",
+    "Focused fixture results are not new full-project/P6 measurements."
+  ]
+}

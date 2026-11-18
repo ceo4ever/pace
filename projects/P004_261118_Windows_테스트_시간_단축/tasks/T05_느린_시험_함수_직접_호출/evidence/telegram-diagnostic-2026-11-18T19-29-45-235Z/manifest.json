@@ -1,0 +1,47 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-7CPmdk",
+  "copy": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-7CPmdk\\source",
+  "originalSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+  "worktreeUnchanged": true,
+  "records": [
+    {
+      "mode": "original",
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-7CPmdk\\source\\test\\telegram-flow.test.ts"
+      ],
+      "originalSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "diagnosticSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4"
+    },
+    {
+      "mode": "delayed-bind",
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-7CPmdk\\source\\test\\telegram-flow.test.ts"
+      ],
+      "originalSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "diagnosticSourceSha256": "19e4e7881d7c98dad3aaf9bc909a99d24c5d43c196b47e82180a2f6392466905"
+    },
+    {
+      "mode": "delayed-bind-semantic",
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-7CPmdk\\source\\test\\telegram-flow.test.ts"
+      ],
+      "originalSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "diagnosticSourceSha256": "e4e38c878e769b35c0668c7f5022ff08c4467b617fc3c38678123e4cbf247f86"
+    }
+  ],
+  "limits": [
+    "Only copied source and local mock server were used. This is a controlled ordering diagnostic, not proof that the historical full failure had that exact schedule. No full load was repeated."
+  ]
+}

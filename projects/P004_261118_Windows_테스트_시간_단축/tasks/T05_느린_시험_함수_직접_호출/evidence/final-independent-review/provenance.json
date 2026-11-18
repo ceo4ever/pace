@@ -1,0 +1,40 @@
+{
+  "reviewerProvider": "anthropic",
+  "reviewerModel": "Claude Opus 5.5",
+  "reviewerContinuity": "same independent post-review context; not a fresh blind final review",
+  "testerProvider": "openai",
+  "testerModel": "Codex",
+  "testerContinuity": "same independent tester via main",
+  "reviewer": {
+    "status": "pass",
+    "blocking": 0,
+    "should_fix": 0
+  },
+  "tester": {
+    "status": "pass",
+    "blocking": 0
+  },
+  "newTestExecutions": false,
+  "records": [
+    {
+      "name": "reviewer-stage1.md",
+      "source": "C:/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-t05-post-review-u7vdbs7f/review-final-stage1.md",
+      "sha256": "a0465b8eee3accddbf1c47d3a06e62ea42a3ec7bed89b40c311370b90b8611da"
+    },
+    {
+      "name": "reviewer-stage2.md",
+      "source": "C:/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-t05-post-review-u7vdbs7f/review-final-stage2.md",
+      "sha256": "d290671a30a3e0cb30b76e20a82f273cb2558759b581eadba8072783f48bfec0"
+    },
+    {
+      "name": "tester-stage1.md",
+      "source": "C:/Users/root-user/AppData/Local/Temp/pace-p004-t05-final-tester-d27d556b7ae14d9b8bf5dfc2a94cbbac/stage-1.md",
+      "sha256": "82dae21b8323a71043045201e3f65b213707ab27a5ade1490e5d17d7410745cd"
+    },
+    {
+      "name": "tester-stage2.md",
+      "source": "C:/Users/root-user/AppData/Local/Temp/pace-p004-t05-final-tester-d27d556b7ae14d9b8bf5dfc2a94cbbac/stage-2.md",
+      "sha256": "1b543848cd7afc8893d5c644bba89f8e0b754df36415a3635c889725c0fbc8c3"
+    }
+  ]
+}

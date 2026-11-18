@@ -1,0 +1,37 @@
+{
+  "head": "46fdf682990d8002ce1116114f2913ca168c6840",
+  "headSame": true,
+  "gitStatus": " M .pace/brain/log.md\u0000 M .pace/brain/pages/concept/brain-at-project-gates.md\u0000 M .pace/brain/pages/concept/brain-pull-not-push.md\u0000 M .pace/brain/pages/concept/install-and-launch-pitfalls.md\u0000 M .pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md\u0000 M .pace/brain/pages/concept/session-boot-via-hooks.md\u0000 M .pace/brain/pages/concept/작업-하네스-실측-함정.md\u0000 M .pace/brain/pages/flow/작업-하네스-흐름.md\u0000 M .pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md\u0000 M .pace/memory/status.md\u0000 M backlogs/dashboard/data.js\u0000 M projects/P004_261118_Windows_테스트_시간_단축/PROJECT.md\u0000 M projects/P004_261118_Windows_테스트_시간_단축/log.jsonl\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-after-full.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-before-full.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-comparison.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T05_느린_시험_함수_직접_호출/\u0000",
+  "preservedT04TopLevelFiles": true,
+  "summary": {
+    "kind": "baseline-summary",
+    "scope": "baseline-only; auxiliary result is separate",
+    "valid": false,
+    "runs": 2,
+    "medianMs": 711892.66375,
+    "minMs": 709959.8766,
+    "maxMs": 713825.4508999999
+  },
+  "sourceComparison": {
+    "verified": true,
+    "checks": {
+      "files": true,
+      "node": true,
+      "verifier": true
+    },
+    "fileCount": 607,
+    "fullyEqual": false,
+    "metadataDifferences": [
+      {
+        "key": "captured",
+        "before": "2026-11-18T19:03:09.478Z",
+        "after": "2026-11-18T19:27:07.767Z"
+      }
+    ],
+    "sourceTreeSha256": "6dfb8bc6fa7cf2ccab6a5ac7d47f14d6908a9dc790d360ab9e7f5056447b6b12"
+  },
+  "resultsSha256": "3f778b6425c5583674ec4ddde2d8932bee4bd3ff601d2f660eb1a905d14f8746",
+  "log1Sha256": "b90d0e01786127f019eee24d3fd5c2fc4e60d708b1d91da6cc77cb7e7572d13f",
+  "log2Sha256": "80aa3a41f84c34493730f297266b6a35cbba43b94e8e6660f8204322338bbd27",
+  "verifierUnchanged": true
+}

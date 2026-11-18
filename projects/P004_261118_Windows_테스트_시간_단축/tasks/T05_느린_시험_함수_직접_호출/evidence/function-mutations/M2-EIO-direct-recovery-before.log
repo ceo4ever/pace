@@ -1,0 +1,36 @@
+ORIGINAL_PROJECT_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\source\\bin\\pace.ts","project","new","EIO","--from","BL261108_01"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\run\\pace-test-run-B0qVxC\\pace-harness-Mf57j9\\app","status":0}
+ORIGINAL_PROJECT_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\source\\bin\\pace.ts","project","start","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\run\\pace-test-run-B0qVxC\\pace-harness-Mf57j9\\app","status":0}
+ORIGINAL_PROJECT_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\source\\bin\\pace.ts","project","finish","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\run\\pace-test-run-B0qVxC\\pace-harness-Mf57j9\\app.wt\\P001","status":0}
+RETAINED_EIO_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\source\\bin\\pace.ts","project","merge","P001","--yes"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\run\\pace-test-run-B0qVxC\\pace-harness-Mf57j9\\app","mode":"metrics","branchOnly":false,"status":1}
+ORIGINAL_PROJECT_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\source\\bin\\pace.ts","project","finish","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\run\\pace-test-run-B0qVxC\\pace-harness-Mf57j9\\app.wt\\P001","status":0}
+ORIGINAL_PROJECT_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\source\\bin\\pace.ts","project","merge","P001","--yes"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\run\\pace-test-run-B0qVxC\\pace-harness-Mf57j9\\app","status":0}
+✖ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (15974.5731ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16195.4791
+
+✖ failing tests:
+
+test at test\project-harness.test.ts:1835:1
+✖ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (15974.5731ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /상태: 완료/. Input:
+  
+  '# 백로그\n- 상태: 진행\n'
+  
+      at TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-ao0uLv/source/test/project-harness.test.ts:1865:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '# 백로그\n- 상태: 진행\n',
+    expected: /상태: 완료/,
+    operator: 'match',
+    diff: 'simple'
+  }

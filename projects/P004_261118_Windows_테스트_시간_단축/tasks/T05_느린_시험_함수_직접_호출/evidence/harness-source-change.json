@@ -1,0 +1,10 @@
+{
+  "beforeSha256": "449c3fd82452416a05421d4d54033de5111148d6e78378e8e968aeffaa50732a",
+  "afterSha256": "9bf6a6422ee9fb68e1810a685717769c36dda17219fc2f569eeb9d4f8dcdeb1c",
+  "convertedBlocks": 3,
+  "retainedBlocks": 70,
+  "addedCases": 1,
+  "assertionsPreserved": true,
+  "negativeAssertionChangeRejected": true,
+  "negativeOtherBlockChangeRejected": true
+}

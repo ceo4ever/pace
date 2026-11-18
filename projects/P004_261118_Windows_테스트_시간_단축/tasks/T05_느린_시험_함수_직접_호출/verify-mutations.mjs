@@ -1,0 +1,43 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {readHarnessBefore} from './source-fixture.mjs';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../..'),e=path.join(here,'evidence'),output=path.join(e,'function-mutations');assert.equal(fs.existsSync(output),false,'Do not replace mutation results');fs.mkdirSync(output);
+const sha=b=>createHash('sha256').update(b).digest('hex'),oldHarness=readHarnessBefore(),newHarness=fs.readFileSync(path.join(root,'test/project-harness.test.ts'),'utf8'),candidates=JSON.parse(fs.readFileSync(path.join(e,'function-candidate-analysis.json'))).candidates;
+const git=(cwd,...args)=>{const r=spawnSync('git',args,{cwd,encoding:'utf8',windowsHide:true,maxBuffer:32*1024*1024});assert.equal(r.status,0,r.stderr);return r.stdout;};
+const runtime=[];const walk=f=>{if(fs.lstatSync(f).isDirectory()){for(const n of fs.readdirSync(f))walk(path.join(f,n));}else runtime.push(path.relative(root,f));};for(const part of ['bin','src','scripts','test','templates','skills','docs','package.json','package-lock.json','tsconfig.json','README.md','AGENTS.md','.pace/test-map.json'])walk(path.join(root,part));assert.equal(runtime.length,609);
+const specs=[{id:'M1-done',mutation:'M1',candidate:1,anchor:lines=>lines.find(l=>l.includes('assert.equal(bad.status, 1)'))},{id:'M2-lifecycle',mutation:'M2',candidate:2,anchor:lines=>lines.find(l=>l.includes('assert.match(readFileSync(join(bl, "BACKLOG.md")'))},{id:'M2-EIO-direct-recovery',mutation:'M2',candidate:0,anchor:lines=>lines.filter(l=>l.includes('assert.match(readFileSync(bl, "utf8"), /')).at(-1)},{id:'M3-retained-EIO',mutation:'M3',candidate:0,anchor:lines=>lines.find(l=>l.includes('assert.deepEqual(readdirSync(projectDir(main))'))}];
+const records=[];
+for(const spec of specs){
+ const name=candidates[spec.candidate].name,start=oldHarness.indexOf('test('+JSON.stringify(name)),end=oldHarness.indexOf('\ntest(',start+1),oldBlock=oldHarness.slice(start,end),oldLines=oldBlock.split(/\r?\n/),expectedAssertion=spec.anchor(oldLines)?.trim();assert.ok(expectedAssertion,spec.id);const originalLine=oldHarness.slice(0,start).split('\n').length+oldLines.findIndex(l=>l.trim()===expectedAssertion);
+ for(const phase of ['before','after']){
+  const owned=fs.mkdtempSync(path.join(os.tmpdir(),'pace-p004-mutation-')),copy=path.join(owned,'source');git(owned,'clone','--no-hardlinks','--no-checkout','--quiet',root,copy);git(copy,'read-tree','HEAD');git(copy,'update-ref','refs/heads/main',git(root,'rev-parse','main').trim());
+  for(const rel of runtime){const to=path.join(copy,rel);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(path.join(root,rel),to);}
+  let testSource=phase==='before'?oldHarness:newHarness;
+  // Call-path observation is only in the owned mutation copy, never a timing sample.
+  const runLine='const result = runPace(["project", ...args], { home, cwd, timeout: 60_000 });';assert.ok(testSource.includes(runLine));testSource=testSource.replace(runLine,runLine+'\n  if (process.env.PACE_PROJECT_CALL_TRACE === "1") console.log("ORIGINAL_PROJECT_CLI "+JSON.stringify({argv:[process.execPath,PACE_BIN,"project",...args],cwd,status:result.status}));');
+  const failedLine=testSource.split('\n').find(l=>l.includes('const failed = runPace(["project", "merge", "P001", "--yes"]'));assert.ok(failedLine);testSource=testSource.replace(failedLine,failedLine+'\n    if (process.env.PACE_PROJECT_CALL_TRACE === "1") console.log("RETAINED_EIO_CLI "+JSON.stringify({argv:[process.execPath,PACE_BIN,"project","merge","P001","--yes"],cwd:main,mode,branchOnly,status:failed.status}));');
+  fs.writeFileSync(path.join(copy,'test/project-harness.test.ts'),testSource);
+  const relative=spec.mutation==='M3'?'src/core/fsutil.ts':'src/project/harness.ts',productFile=path.join(copy,relative),before=fs.readFileSync(productFile,'utf8');let product=before;
+  if(spec.mutation==='M1'){const i=product.indexOf('function doneTaskRaw('),at=product.indexOf('if (!report.ok) return report;',i);assert.ok(i>0&&at>i);product=product.slice(0,at)+'/* M1: bypass the failed-check gate */'+product.slice(at+'if (!report.ok) return report;'.length);}
+  if(spec.mutation==='M2'){const i=product.indexOf('function applyMergeRaw('),needle='writeBacklogState(repo, backlogChange);',at=product.indexOf(needle,i);assert.ok(i>0&&at>i);product=product.slice(0,at)+'/* M2: omit final backlog completion write */'+product.slice(at+needle.length);}
+  if(spec.mutation==='M3'){const needle='try { unlinkSync(tmp); } catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }';assert.ok(product.includes(needle));product=product.replace(needle,'/* M3: omit owned atomic temporary cleanup */');}
+  assert.notEqual(product,before);fs.writeFileSync(productFile,product);
+  const temp=path.join(owned,'run');fs.mkdirSync(temp);const env={...process.env,TMP:temp,TEMP:temp,TMPDIR:temp,PACE_HOME:path.join(temp,'pace'),PACE_PROJECT_CALL_TRACE:'1'};delete env.NODE_TEST_CONTEXT;
+  const escape=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),argv=['--test','--test-name-pattern=^'+escape(name)+'$','test/project-harness.test.ts'],r=spawnSync(process.execPath,argv,{cwd:copy,env,encoding:'utf8',windowsHide:true,timeout:180000,maxBuffer:16*1024*1024}),raw=(r.stdout??'')+(r.stderr??''),prefix=spec.id+'-'+phase;fs.writeFileSync(path.join(output,prefix+'.log'),raw);
+  const stack=raw.split(/\r?\n/).find(l=>l.includes('at TestContext.')&&l.includes('project-harness.test.ts:')),match=stack?.match(/project-harness\.test\.ts:(\d+):(\d+)/),actualLine=match?Number(match[1]):null,actualAssertion=actualLine?testSource.split(/\r?\n/)[actualLine-1]?.trim():null;
+  const directCalls=raw.split(/\r?\n/).filter(l=>l.startsWith('DIRECT_PROJECT_CALL ')).map(l=>JSON.parse(l.slice('DIRECT_PROJECT_CALL '.length))),originalCalls=raw.split(/\r?\n/).filter(l=>l.startsWith('ORIGINAL_PROJECT_CLI ')).map(l=>JSON.parse(l.slice('ORIGINAL_PROJECT_CLI '.length)));
+  const record={id:spec.id,phase,expectedFailure:true,owned,copy,argv,status:r.status,signal:r.signal,error:r.error?.message,mutationFile:relative,originalProductSha256:sha(before),mutatedProductSha256:sha(product),testSourceSha256:sha(testSource),expectedAssertion,originalLine,actualLine,actualAssertion,stack,directCalls,originalCalls,role:spec.mutation==='M3'?'retained CLI coverage':'converted function coverage'};records.push(record);fs.writeFileSync(path.join(output,'records.json'),JSON.stringify(records,null,2)+'\n');fs.writeFileSync(path.join(output,prefix+'-product-before.txt'),before);fs.writeFileSync(path.join(output,prefix+'-product-after.txt'),product);fs.writeFileSync(path.join(output,prefix+'-test.ts.txt'),JSON.stringify({kind:'source-reference',rawPath:path.join(copy,'test/project-harness.test.ts'),sha256:sha(testSource)},null,2)+'\n');
+  console.log(spec.id,phase,r.status,actualAssertion);
+  assert.equal(r.status,1,raw);assert.match(raw,/ERR_ASSERTION/);assert.match(raw,/tests 1\r?\n/);assert.match(raw,/fail 1\r?\n/);assert.equal(actualAssertion,expectedAssertion,'Wrong assertion; do not treat a setup failure as detection');
+  if(phase==='after'){
+   assert.ok(directCalls.length>0);for(const call of directCalls){const rel=path.relative(fs.realpathSync.native(copy),fs.realpathSync.native(fileURLToPath(call.cliUrl)));assert.equal(rel.replaceAll('\\','/'),'src/cli.ts');}
+   if(spec.id==='M2-EIO-direct-recovery')assert.equal(directCalls.at(-1).argv.join(' '),'project merge P001 --yes');
+  }else assert.ok(originalCalls.length>0);
+ }
+}
+fs.writeFileSync(path.join(output,'summary.json'),JSON.stringify({verified:true,variants:records.length,beforeAfterSameOriginalAssertions:true,originalProductNeverModified:true,limits:['Mutation runs have call-path observation and are not timing samples.','Raw stack line numbers differ; unchanged assertion text and original block line link the failures.','M3 checks retained actual CLI fault coverage, not direct-call coverage.']},null,2)+'\n');console.log('All mutation pairs detected at the same original assertions');

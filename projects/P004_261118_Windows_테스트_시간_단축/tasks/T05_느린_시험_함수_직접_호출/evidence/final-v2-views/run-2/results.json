@@ -1,0 +1,5014 @@
+[
+  {
+    "status": 0,
+    "signal": null,
+    "elapsedMs": 707019.9272000002,
+    "started": "2026-11-18T22:56:19.284Z",
+    "ended": "2026-11-18T23:08:06.307Z",
+    "log": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\t05-wrapper-final-2026-11-18T22-44-36-407Z\\run-2.log",
+    "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-run-2-1Qu0Eu",
+    "totals": {
+      "tests": 996,
+      "suites": 0,
+      "pass": 987,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 9,
+      "todo": 0,
+      "duration_ms": 705232.2846
+    },
+    "inventory": [
+      {
+        "name": "S-3 README의 OPAL에서 넘어올 때 절은 여섯 단계를 순서대로 담는다",
+        "result": "pass",
+        "durationMs": 1.725
+      },
+      {
+        "name": "S-3 이름 대응표·멈춤 대처·참조 목록 사용법이 있다",
+        "result": "pass",
+        "durationMs": 0.454
+      },
+      {
+        "name": "S-3 정의서는 상세 절차를 중복하지 않고 README로 연결하며 adopt 모듈 행이 있다",
+        "result": "pass",
+        "durationMs": 0.6093
+      },
+      {
+        "name": "S-4 문서의 pace adopt opal 사용 예가 실제 CLI 인자와 일치한다",
+        "result": "pass",
+        "durationMs": 297.716
+      },
+      {
+        "name": "S-1 가져오기 전에는 표본 맥락이 안 보이고, 가져온 뒤 부트·메모리·브레인에 살아난다",
+        "result": "pass",
+        "durationMs": 5006.9487
+      },
+      {
+        "name": "S-2 가져온 저장소의 실제 git commit — 교체된 훅이 pace project check를 호출하고 실패를 전달한다",
+        "result": "skip",
+        "durationMs": 3.0534
+      },
+      {
+        "name": "회수: .pace에 메모리만 있으면 .opal에 먼저 합친 뒤 옮기고 목차를 다시 만든다",
+        "result": "pass",
+        "durationMs": 3553.1935
+      },
+      {
+        "name": "회수: .opal 쪽 진행 상황 커밋이 더 최신이면 .opal 것을 남긴다",
+        "result": "pass",
+        "durationMs": 2286.758
+      },
+      {
+        "name": "회수 멈춤: 메모리 밖 항목·같은 이름의 다른 메모리·커밋 안 한 변경·추적 안 되는 파일",
+        "result": "pass",
+        "durationMs": 3563.1785
+      },
+      {
+        "name": "회수 뒤 단계가 실패하면 .opal·.pace 모두 적용 전으로 되돌린다",
+        "result": "pass",
+        "durationMs": 6782.9187
+      },
+      {
+        "name": "S-1 미리보기는 아무것도 바꾸지 않고 목록을 보여 준다",
+        "result": "pass",
+        "durationMs": 1220.7309
+      },
+      {
+        "name": "S-2 apply는 git mv로 옮기고 표지를 바꾸며 ID를 이어받아 등록한다 — 커밋 없음",
+        "result": "pass",
+        "durationMs": 1642.7252
+      },
+      {
+        "name": "S-3 재실행은 변경 없이 성공하고 빠진 등록만 복구한다",
+        "result": "pass",
+        "durationMs": 3060.2639
+      },
+      {
+        "name": "S-4 멈춤: .pace와 .opal이 함께 있다",
+        "result": "pass",
+        "durationMs": 823.1895
+      },
+      {
+        "name": "S-4 멈춤: .opal에 커밋 안 한 변경",
+        "result": "pass",
+        "durationMs": 888.2041
+      },
+      {
+        "name": "S-4 멈춤: v1(MEMORY.json)",
+        "result": "pass",
+        "durationMs": 816.5396
+      },
+      {
+        "name": "S-4 멈춤: 버전 없는 AGENT",
+        "result": "pass",
+        "durationMs": 801.2174
+      },
+      {
+        "name": "S-4 멈춤: AGENT에 필수 절 없음",
+        "result": "pass",
+        "durationMs": 807.516
+      },
+      {
+        "name": "S-4 멈춤: git 저장소가 아님",
+        "result": "pass",
+        "durationMs": 318.1239
+      },
+      {
+        "name": "S-4 멈춤: 다른 경로에 같은 ID가 등록됨",
+        "result": "pass",
+        "durationMs": 2451.1117
+      },
+      {
+        "name": "S-4 멈춤: .opal 안의 링크",
+        "result": "pass",
+        "durationMs": 495.64
+      },
+      {
+        "name": "S-5 단계별 실패는 인덱스·무관한 변경까지 적용 전으로 되돌린다",
+        "result": "pass",
+        "durationMs": 3155.9518
+      },
+      {
+        "name": "S-5 AGENT를 반쯤 쓴 뒤 실패하거나 등록 시작 전에 실패해도 바이트 단위로 되돌린다",
+        "result": "pass",
+        "durationMs": 2926.2043
+      },
+      {
+        "name": "S-6 AGENT만 바뀌면 커밋 안 한 변경으로 멈춘다",
+        "result": "pass",
+        "durationMs": 1019.455
+      },
+      {
+        "name": "S-1 무시된 파일을 함께 옮긴다고 경고한다",
+        "result": "pass",
+        "durationMs": 692.2161
+      },
+      {
+        "name": "S-5 복구까지 실패하면 실패한 항목을 보고한다",
+        "result": "pass",
+        "durationMs": 1205.7371
+      },
+      {
+        "name": "S-6 미리보기 뒤 등록부가 바뀌면 멈춘다",
+        "result": "pass",
+        "durationMs": 1318.8338
+      },
+      {
+        "name": "S-2 맥락 보존: AGENT 외 파일은 그대로, AGENT는 허용한 치환뿐",
+        "result": "pass",
+        "durationMs": 1488.8595
+      },
+      {
+        "name": "S-3 같은 경로·다른 ID는 거부한다",
+        "result": "pass",
+        "durationMs": 1820.8942
+      },
+      {
+        "name": "S-4 멈춤: staged 변경·untracked 파일·하위 폴더 실행·무효 .pace",
+        "result": "pass",
+        "durationMs": 1718.2491
+      },
+      {
+        "name": "S-7 복구는 그 사이 다른 작업이 등록한 항목을 지우지 않는다",
+        "result": "pass",
+        "durationMs": 1215.3206
+      },
+      {
+        "name": "S-6 계획 뒤 .opal의 staged·untracked 변경도 멈춘다",
+        "result": "pass",
+        "durationMs": 2122.6731
+      },
+      {
+        "name": "S-5 git mv 실패는 이동 전·이동 뒤 모두 적용 전 상태로 돌린다",
+        "result": "pass",
+        "durationMs": 2845.9144
+      },
+      {
+        "name": "S-7 등록 직전에 경쟁 실행이 같은 ID를 먼저 등록한 뒤 이번이 실패해도 그 항목은 그대로다",
+        "result": "pass",
+        "durationMs": 1229.36
+      },
+      {
+        "name": "T02-S-1 OPAL 커밋 게이트 훅을 PACE 훅으로 바꾸고 원본을 백업한다",
+        "result": "pass",
+        "durationMs": 2874.564
+      },
+      {
+        "name": "T02-S-2 사용자 훅과 수정된 OPAL 훅은 보존한다",
+        "result": "pass",
+        "durationMs": 2854.4136
+      },
+      {
+        "name": "T02-S-3 OPAL 공용 대시보드 진입점은 PACE 공용 참조로 바꾸고 다른 파일은 보존한다",
+        "result": "pass",
+        "durationMs": 1890.8082
+      },
+      {
+        "name": "T02-S-3 수정된 OPAL 진입점·이미 PACE인 진입점은 건드리지 않는다",
+        "result": "pass",
+        "durationMs": 2863.38
+      },
+      {
+        "name": "T02-S-4 지침·문서의 opal 명령·스킬 참조는 파일:줄로 보고만 하고 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 1462.8769
+      },
+      {
+        "name": "T02-S-5 등록 실패 시 훅·백업·진입점도 되돌린다",
+        "result": "pass",
+        "durationMs": 1478.1893
+      },
+      {
+        "name": "T02-S-5 훅 쓰기가 실패하면 만든 백업을 지우고 이동을 되돌린다",
+        "result": "pass",
+        "durationMs": 1444.4438
+      },
+      {
+        "name": "T02-S-6 미리보기 뒤 훅이 바뀌면 멈춘다",
+        "result": "pass",
+        "durationMs": 1224.7484
+      },
+      {
+        "name": "T02-S-3 역사적 OPAL 진입점 원문 두 판 모두 PACE 참조로 바꾼다",
+        "result": "pass",
+        "durationMs": 2917.3403
+      },
+      {
+        "name": "T02-S-3 진입점이 링크면 따라가지 않는다",
+        "result": "pass",
+        "durationMs": 1453.0928
+      },
+      {
+        "name": "T02-S-4 같은 줄의 .opal/ 경로와 opal 명령은 명령만 보고하고, 읽지 못한 파일은 알린다",
+        "result": "pass",
+        "durationMs": 989.6072
+      },
+      {
+        "name": "T02-S-1 기존 백업은 덮어쓰지 않고 새 이름을 고른다",
+        "result": "pass",
+        "durationMs": 1452.3951
+      },
+      {
+        "name": "T02-S-2 상대 hooksPath면 훅을 건드리지 않고 알린다",
+        "result": "pass",
+        "durationMs": 1252.0695
+      },
+      {
+        "name": "T02-S-6 계획 뒤 진입점이 바뀌면 멈추고 변경본을 보존한다",
+        "result": "pass",
+        "durationMs": 1121.6211
+      },
+      {
+        "name": "T02-S-5 진입점 쓰기가 실패하면 훅·백업·진입점·이동이 모두 적용 전으로 돌아간다",
+        "result": "pass",
+        "durationMs": 1424.951
+      },
+      {
+        "name": "T02-S-1 교체된 훅이 실제로 게이트로 동작한다(차단 조건에서 실패 종료)",
+        "result": "skip",
+        "durationMs": 1518.1367
+      },
+      {
+        "name": "T02-S-1 교체된 훅의 조건 분기: 대상 브랜치·태그가 있을 때만 검사하고 실패·성공·조건 밖을 구분한다",
+        "result": "skip",
+        "durationMs": 1467.2614
+      },
+      {
+        "name": "T01-S-4 status.showUntrackedFiles=no여도 .opal의 새 파일을 놓치지 않고 멈춘다",
+        "result": "pass",
+        "durationMs": 916.4297
+      },
+      {
+        "name": "T01-S-3 같은 경로에 정상 ID 항목과 다른 ID 항목이 함께 있으면 순서와 무관하게 멈춘다",
+        "result": "pass",
+        "durationMs": 1017.5612
+      },
+      {
+        "name": "T01-S-2 .opal/ 치환은 본문에만 적용하고 frontmatter의 다른 값은 보존한다",
+        "result": "pass",
+        "durationMs": 1677.2492
+      },
+      {
+        "name": "T01-S-4 assume-unchanged·skip-worktree가 걸린 파일이 .opal에 있으면 변경을 확인할 수 없어 멈춘다",
+        "result": "pass",
+        "durationMs": 1885.1135
+      },
+      {
+        "name": "T01-S-5 복구까지 실패하면 출력이 무변경을 단정하지 않는다",
+        "result": "pass",
+        "durationMs": 1169.68
+      },
+      {
+        "name": "T02-S-3 backlogs 디렉터리가 링크면 그 안의 진입점을 따라가 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 1455.0095
+      },
+      {
+        "name": "T02-S-5 교체는 끝났는데 뒤 단계(chmod 등)가 실패해도 훅 원문과 백업 상태를 되돌린다",
+        "result": "pass",
+        "durationMs": 2659.1932
+      },
+      {
+        "name": "T02-S-5 진입점을 쓴 뒤 실패해도 원문으로 되돌린다",
+        "result": "pass",
+        "durationMs": 2906.9229
+      },
+      {
+        "name": "T02-S-4 docs의 확장자와 무관하게 검색하고, 바이너리는 알리며, 참조는 개수와 무관하게 모두 출력한다",
+        "result": "pass",
+        "durationMs": 1157.7155
+      },
+      {
+        "name": "T02-S-3 사용자 지정 리소스 참조가 섞인 진입점은 OPAL 원문으로 보지 않는다",
+        "result": "pass",
+        "durationMs": 1689.6796
+      },
+      {
+        "name": "T02-S-1 끊어진 링크인 기존 백업도 충돌로 보고 덮어쓰지 않는다",
+        "result": "pass",
+        "durationMs": 1615.704
+      },
+      {
+        "name": "T02-S-5 훅 복원이 실패하면 이번에 만든 백업을 지우지 않는다",
+        "result": "pass",
+        "durationMs": 3394.1186
+      },
+      {
+        "name": "T02-S-4 docs가 링크면 따라가지 않고 알린다",
+        "result": "pass",
+        "durationMs": 1730.0334
+      },
+      {
+        "name": "T02-S-3 리소스 URL을 정규화 표지(@@res:...)로 위조한 진입점은 원문으로 보지 않는다",
+        "result": "pass",
+        "durationMs": 1531.688
+      },
+      {
+        "name": "T02-S-5 백업이 중간까지 쓰인 채 실패해도 이번에 만든 백업 파일을 정리한다",
+        "result": "pass",
+        "durationMs": 1495.4194
+      },
+      {
+        "name": "T02-S-2 이미 PACE 훅이면 그대로 두고 알린다",
+        "result": "pass",
+        "durationMs": 1599.3847
+      },
+      {
+        "name": "보안-1 참조 보고는 본문을 출력하지 않고 위치만 알린다(비밀 탐지가 놓치는 표현 포함)",
+        "result": "pass",
+        "durationMs": 930.6301
+      },
+      {
+        "name": "보안-3 AGENT.md가 너무 크면 읽지 않고 멈춘다",
+        "result": "pass",
+        "durationMs": 762.802
+      },
+      {
+        "name": "S-8 paceMcp: 요청의 cwd·access로 mcpServers를 만들어 session/new에 싣고, 훅이 없으면 빈 배열",
+        "result": "pass",
+        "durationMs": 2269.1999
+      },
+      {
+        "name": "S-8 결정표: 읽기 전용은 읽기 MCP 도구만 허용, 변경·편집·실행은 강제 거절",
+        "result": "pass",
+        "durationMs": 7511.7517
+      },
+      {
+        "name": "S-8a 식별 실패·목록 밖은 결정표대로 — 강제 거절은 콜백을 부르지 않는다",
+        "result": "pass",
+        "durationMs": 8877.0425
+      },
+      {
+        "name": "S-9 콜백: 기본 허용은 낮출 수만, 읽기 전용은 허용을 만들 수 없고, 쓰기의 기본 거절은 올릴 수 있다",
+        "result": "pass",
+        "durationMs": 7553.7503
+      },
+      {
+        "name": "S-9 취소 뒤 늦게 도착한 콜백 allow는 응답으로 나가지 않는다",
+        "result": "pass",
+        "durationMs": 2202.3499
+      },
+      {
+        "name": "S-10 이벤트: plan·tool_call·메시지·모르는 종류가 순서대로 전달되고 원본 저장과 일치한다",
+        "result": "pass",
+        "durationMs": 1475.8063
+      },
+      {
+        "name": "S-10b 던지는·멈춘·느린 콜백이 실행을 막지 않고 집계가 맞는다",
+        "result": "pass",
+        "durationMs": 2314.8937
+      },
+      {
+        "name": "S-10b 콜백이 받은 이벤트를 바꿔도 실행기의 본문·집계는 영향받지 않는다",
+        "result": "pass",
+        "durationMs": 744.8545
+      },
+      {
+        "name": "S-10c 원본 기록이 상한에서 멈추고 잘림 표지를 남기되 이벤트 전달·종료는 정상",
+        "result": "pass",
+        "durationMs": 731.208
+      },
+      {
+        "name": "S-11 정체성 맥락·요약은 새 세션의 첫 프롬프트 앞에만 붙고 resume에는 붙지 않는다",
+        "result": "pass",
+        "durationMs": 2180.3391
+      },
+      {
+        "name": "S-12 resume: session/resume으로 같은 세션을 잇고 읽기 전용은 모드를 다시 설정한다",
+        "result": "pass",
+        "durationMs": 1535.9919
+      },
+      {
+        "name": "S-12 resume 진입점: 저장 기록 없음·다른 세션 ID·불일치는 session_mismatch이고 어떤 ACP 메시지도 보내지 않는다",
+        "result": "pass",
+        "durationMs": 3.6377
+      },
+      {
+        "name": "S-12 resume 미지원 어댑터(codex)와 -p 실행기는 unsupported_option",
+        "result": "pass",
+        "durationMs": 1.9148
+      },
+      {
+        "name": "S-12b resume 재적용을 확인하지 못하면 프롬프트를 보내지 않는다 — 읽기 전용은 전부, 쓰기는 resume 오류만 중단",
+        "result": "pass",
+        "durationMs": 3823.2318
+      },
+      {
+        "name": "S-12c enforcement 문구가 콜백을 안전장치(실측 조합)와 정책 위임(강제 미확인)으로 구분한다",
+        "result": "pass",
+        "durationMs": 3697.7075
+      },
+      {
+        "name": "체인은 훅을 ACP 단계에만 넘긴다",
+        "result": "pass",
+        "durationMs": 2.1507
+      },
+      {
+        "name": "ACP 정상 흐름: 청크를 모으고 읽기 전용 모드를 확인한 뒤 종료한다",
+        "result": "pass",
+        "durationMs": 783.9079
+      },
+      {
+        "name": "검증하지 않은 어댑터 버전은 읽기 전용 요청 거부, 쓰기는 진행",
+        "result": "pass",
+        "durationMs": 1495.3623
+      },
+      {
+        "name": "읽기 전용 모드를 확인 못 한 어댑터는 거부",
+        "result": "pass",
+        "durationMs": 1461.0871
+      },
+      {
+        "name": "권한 요청은 기본 거절(execute는 write여도 거절)",
+        "result": "pass",
+        "durationMs": 1477.0898
+      },
+      {
+        "name": "쓰기 허용 권한: kind·_meta가 충돌하면 거절, 일치하고 허용 도구면 한 번 허용",
+        "result": "pass",
+        "durationMs": 2958.4371
+      },
+      {
+        "name": "무출력이 idle 기한을 넘기면 취소한다",
+        "result": "pass",
+        "durationMs": 1135.8173
+      },
+      {
+        "name": "timeout: 초기화가 늦어도 요청 기한은 지키고 프로세스를 회수한다",
+        "result": "pass",
+        "durationMs": 1600.1362
+      },
+      {
+        "name": "준비 완료 뒤 취소: cancel → EOF → 그룹 종료, 말 안 듣는 어댑터와 자손도 회수",
+        "result": "pass",
+        "durationMs": 2679.7324
+      },
+      {
+        "name": "미지원 옵션과 없는 어댑터는 오류",
+        "result": "pass",
+        "durationMs": 2250.3509
+      },
+      {
+        "name": "시작 전 표지(started:false)는 프로세스를 띄우기 전 거부에만 붙는다 — 띄운 뒤의 거부(버전·모드)는 시작된 것으로 본다",
+        "result": "pass",
+        "durationMs": 1444.8544
+      },
+      {
+        "name": "S-16 ACP effort: 광고된 값은 set_config_option으로 지정하고, 광고 없거나 없는 값·effort 미지원 어댑터는 오류",
+        "result": "pass",
+        "durationMs": 2210.8241
+      },
+      {
+        "name": "실측으로 강제를 확인하지 못한 어댑터(codex-acp)는 읽기 전용 요청을 실행 전에 거부",
+        "result": "pass",
+        "durationMs": 745.8629
+      },
+      {
+        "name": "본문이 빈 정상 종료는 계약 위반 — 거절한 권한 요청 수와 함께 오류",
+        "result": "pass",
+        "durationMs": 757.4619
+      },
+      {
+        "name": "독립 감시자는 요청마다 정확히 한 번만 만든다(메시지 수와 무관)",
+        "result": "pass",
+        "durationMs": 0.1989
+      },
+      {
+        "name": "Windows ACP: 회수 완료 뒤 감시자 종료 통지가 늦어도 성공한다",
+        "result": "pass",
+        "durationMs": 1313.2571
+      },
+      {
+        "name": "ACP: 실행 중 abort하면 cancelled로 끝나고 오래 걸리지 않는다",
+        "result": "pass",
+        "durationMs": 714.5273
+      },
+      {
+        "name": "ACP: 시작 전에 이미 abort된 신호는 시작하지 않는다",
+        "result": "pass",
+        "durationMs": 0.9269
+      },
+      {
+        "name": "-p: signal만 있는 훅은 허용되고 abort하면 프로세스 그룹을 회수한다",
+        "result": "pass",
+        "durationMs": 665.1757
+      },
+      {
+        "name": "-p: signal 외 훅은 여전히 unsupported_option",
+        "result": "pass",
+        "durationMs": 2.2453
+      },
+      {
+        "name": "체인: abort는 폴백하지 않고 cancelled(종료 15)로 끝난다",
+        "result": "pass",
+        "durationMs": 666.3719
+      },
+      {
+        "name": "S-1 체인 정의: 정상 읽기, 잘못된 정의는 오류, 경고와 effort 정규화",
+        "result": "pass",
+        "durationMs": 3.8613
+      },
+      {
+        "name": "S-1 정의 검사: 읽기 전용 미확인 단계 경고, 지원하지 않는 옵션은 오류, observed 경고",
+        "result": "pass",
+        "durationMs": 0.2922
+      },
+      {
+        "name": "분류: 한도·인증·작업 실패·원문 reset 파싱",
+        "result": "pass",
+        "durationMs": 1.0067
+      },
+      {
+        "name": "S-2 한도면 다음 단계로 폴백하고 attempts에 원문을 남긴다(모사 입력)",
+        "result": "pass",
+        "durationMs": 1629.876
+      },
+      {
+        "name": "S-3 인증 실패·실행기 없음도 다음 단계로",
+        "result": "pass",
+        "durationMs": 2975.2023
+      },
+      {
+        "name": "S-4 작업 실패·protocol_error는 폴백하지 않는다",
+        "result": "pass",
+        "durationMs": 2037.7763
+      },
+      {
+        "name": "S-5 is_error 성공 반환도 한도면 폴백, 아니면 중단",
+        "result": "pass",
+        "durationMs": 2046.6118
+      },
+      {
+        "name": "S-15 timeout은 기본 중단, 설정하면 폴백(변경 없을 때만)",
+        "result": "pass",
+        "durationMs": 1850.6576
+      },
+      {
+        "name": "S-6 쿨다운: 재실행에서 한도 단계를 건너뛰고 시각이 지나면 다시 시도, 파일에 원자적으로 저장",
+        "result": "pass",
+        "durationMs": 4644.7957
+      },
+      {
+        "name": "S-7 읽기 전용이면 강제 미확인 단계를 건너뛰고 쓰기 요청은 실행",
+        "result": "pass",
+        "durationMs": 1407.9849
+      },
+      {
+        "name": "S-8·S-13 새 파일을 만든 뒤 한도 → handoff_required, 2단계 미실행, 요약 포함",
+        "result": "pass",
+        "durationMs": 1036.2302
+      },
+      {
+        "name": "S-9 실행 전부터 M인 파일·이미 ??인 파일을 추가 수정해도 감지한다",
+        "result": "pass",
+        "durationMs": 2369.1531
+      },
+      {
+        "name": "S-10 변경 없이 한도면(observed) 자동 폴백",
+        "result": "pass",
+        "durationMs": 1362.4737
+      },
+      {
+        "name": "S-11 스테이징·커밋·삭제·.pace 변경을 각각 감지한다",
+        "result": "pass",
+        "durationMs": 4512.2424
+      },
+      {
+        "name": "S-12 판정이 불확실하면 폴백하지 않는다 — 비 git·스냅샷 실패·종료 확인 실패(표지)",
+        "result": "pass",
+        "durationMs": 2786.1364
+      },
+      {
+        "name": "S-14 읽기 전용: 변경 없으면 폴백, 선언과 달리 파일을 쓰면 read_only_violation",
+        "result": "pass",
+        "durationMs": 3091.4476
+      },
+      {
+        "name": "S-20 폴백 사유 × 변경 교차: 어떤 사유든 변경 뒤에는 다음 단계를 시작하지 않는다",
+        "result": "pass",
+        "durationMs": 4433.8339
+      },
+      {
+        "name": "S-21 write_fallback 기본(never)·observed, 무시 경로 변경, 시작 전 실패",
+        "result": "pass",
+        "durationMs": 3691.7621
+      },
+      {
+        "name": "S-12 읽기 전용도 관찰이 불확실하면(비 git·스냅샷 실패) 폴백하지 않는다",
+        "result": "pass",
+        "durationMs": 84.9439
+      },
+      {
+        "name": "시작 전 실패 표지(started:false)와 시작 후 read_only_unenforceable(sandbox 재확인)을 구분한다",
+        "result": "pass",
+        "durationMs": 2003.5937
+      },
+      {
+        "name": "실제 ACP 실행기: 세션 생성 중 파일을 쓰고 읽기 전용 모드를 못 찾아 실패해도 시작된 것으로 보아 폴백하지 않는다",
+        "result": "pass",
+        "durationMs": 1822.2357
+      },
+      {
+        "name": "하위 폴더를 cwd로 실행해도 무시 경로 지문이 저장소 루트 기준으로 계산된다",
+        "result": "pass",
+        "durationMs": 1152.3402
+      },
+      {
+        "name": "쓰기 요청의 작업 실패(폴백 안 함)도 남긴 변경 요약을 함께 낸다",
+        "result": "pass",
+        "durationMs": 1182.6913
+      },
+      {
+        "name": "S-23 소진·종료 코드 구분",
+        "result": "pass",
+        "durationMs": 2097.2489
+      },
+      {
+        "name": "옵션 전달: 단계 모델·정규화한 effort가 실행기에 간다",
+        "result": "pass",
+        "durationMs": 665.2683
+      },
+      {
+        "name": "S-22 timeout 뒤 자손의 지연 쓰기가 일어나지 않는다(회수 확인) — 폴백은 그 뒤에만",
+        "result": "pass",
+        "durationMs": 6581.3073
+      },
+      {
+        "name": "S-17 CLI: --chain 혼용·없는 체인·정의 오류는 사용법/정의 오류, 읽기 전용 미확인 단계만 있으면 소진(13)",
+        "result": "pass",
+        "durationMs": 3188.1513
+      },
+      {
+        "name": "두 방식·두 에이전트가 같은 결과 형태를 낸다",
+        "result": "pass",
+        "durationMs": 1.4269
+      },
+      {
+        "name": "모델 출처: 보고 > 요청 > 알 수 없음",
+        "result": "pass",
+        "durationMs": 0.7089
+      },
+      {
+        "name": "미지원 옵션은 조용히 무시하지 않고 오류",
+        "result": "pass",
+        "durationMs": 0.7898
+      },
+      {
+        "name": "요청 검증: 빈 프롬프트·timeout 상한·잘못된 이름",
+        "result": "pass",
+        "durationMs": 0.285
+      },
+      {
+        "name": "이어가기는 같은 에이전트·cwd·접근에서만",
+        "result": "pass",
+        "durationMs": 0.2409
+      },
+      {
+        "name": "오류 코드는 서로 다른 종료 코드를 가진다",
+        "result": "pass",
+        "durationMs": 0.2156
+      },
+      {
+        "name": "pace agent run: 미지원 옵션은 JSON 오류와 종료 코드 3(프로세스 실행 전), 프롬프트 없으면 2",
+        "result": "pass",
+        "durationMs": 559.545
+      },
+      {
+        "name": "BOM과 길이 초과는 수정 가능한 진단을 제공한다",
+        "result": "pass",
+        "durationMs": 1.8946
+      },
+      {
+        "name": "v2 정의는 버전·ID·역할·필수 절을 검사한다",
+        "result": "pass",
+        "durationMs": 1.105
+      },
+      {
+        "name": "중복 표지·비밀·길이 초과는 원문을 반환하지 않고 거부한다",
+        "result": "pass",
+        "durationMs": 0.2457
+      },
+      {
+        "name": "프로젝트의 .pace 심볼릭 링크는 정의로 읽지 않는다",
+        "result": "pass",
+        "durationMs": 5.0943
+      },
+      {
+        "name": "들여쓴 버전 표지는 v1로 오판해 이동하지 않는다",
+        "result": "pass",
+        "durationMs": 1.9643
+      },
+      {
+        "name": "지나치게 큰 정의는 v1로 오판하지 않고 분류 단계에서 거부한다",
+        "result": "pass",
+        "durationMs": 1.8034
+      },
+      {
+        "name": "claude -p: 프롬프트는 stdin, 읽기 전용은 도구 제한, env 허용 목록, 결과 정규화",
+        "result": "pass",
+        "durationMs": 735.2709
+      },
+      {
+        "name": "codex exec: 텍스트 모드 머리글에서 모델·제공자·sandbox를 보고값으로 읽고, 미지원 옵션은 오류",
+        "result": "pass",
+        "durationMs": 806.0383
+      },
+      {
+        "name": "codex: 머리글 sandbox가 read-only가 아니거나 완료 표지가 없으면 실패",
+        "result": "pass",
+        "durationMs": 2158.401
+      },
+      {
+        "name": "codex: 프롬프트에 완료 로그 예시가 인용돼도 정상 응답은 통과(끝 블록으로 판별)",
+        "result": "pass",
+        "durationMs": 735.0105
+      },
+      {
+        "name": "제공자와 모델 보고가 충돌하면 오류(교차 인정 불가)",
+        "result": "pass",
+        "durationMs": 717.6425
+      },
+      {
+        "name": "-p 무출력 기한: 아무 출력 없이 멈추면 idle로 회수",
+        "result": "pass",
+        "durationMs": 1175.6716
+      },
+      {
+        "name": "세션 저장소: 느슨한 권한은 보정하고 심볼릭 링크는 거부",
+        "result": "pass",
+        "durationMs": 2301.6247
+      },
+      {
+        "name": "제공자 출처: 에이전트가 다른 제공자를 보고하면 오류",
+        "result": "pass",
+        "durationMs": 713.1604
+      },
+      {
+        "name": "env: 대상 에이전트의 자격 증명만 넘긴다",
+        "result": "pass",
+        "durationMs": 0.3496
+      },
+      {
+        "name": "이어가기: pace agent가 만든 세션만, 같은 cwd·접근에서만 재사용",
+        "result": "pass",
+        "durationMs": 1461.058
+      },
+      {
+        "name": "시스템 프롬프트는 argv가 아닌 파일로 전달하고 끝나면 지운다",
+        "result": "pass",
+        "durationMs": 730.9352
+      },
+      {
+        "name": "상대 cwd는 절대 경로로 정규화되어 중복 적용되지 않는다",
+        "result": "pass",
+        "durationMs": 749.4699
+      },
+      {
+        "name": "호출 프로세스가 강제 종료돼도 독립 감시자가 자식 그룹을 회수한다",
+        "result": "pass",
+        "durationMs": 1018.6208
+      },
+      {
+        "name": "읽기 전용을 강제할 수 없는 어댑터는 실행 전에 거부",
+        "result": "pass",
+        "durationMs": 1.811
+      },
+      {
+        "name": "실패·형식 오류 분류",
+        "result": "pass",
+        "durationMs": 1488.3514
+      },
+      {
+        "name": "timeout: 프로세스 그룹 전체(자손 포함)를 회수한다",
+        "result": "pass",
+        "durationMs": 1675.0764
+      },
+      {
+        "name": "rawDir를 주면 원본을 0600으로 보관하고 기본은 저장하지 않는다",
+        "result": "pass",
+        "durationMs": 1465.1216
+      },
+      {
+        "name": "자식 부트 차단: PACE_AGENT_CHILD=1이면 종료 0과 유효한 훅 JSON, 부트 맥락 없음",
+        "result": "pass",
+        "durationMs": 1390.484
+      },
+      {
+        "name": "codex: Windows에서는 unelevated sandbox를 지정해 read-only에서도 파일을 읽게 한다(없으면 셸이 모두 blocked by policy)",
+        "result": "pass",
+        "durationMs": 0.2575
+      },
+      {
+        "name": "회수 확인 사이에 자손이 끝나면 최종 상태를 다시 확인한다",
+        "result": "pass",
+        "durationMs": 0.7753
+      },
+      {
+        "name": "이미 회수됐으면 신호 없이 추적을 끝낸다",
+        "result": "pass",
+        "durationMs": 0.1499
+      },
+      {
+        "name": "살아 있는 자손은 종료하고 최종 회수를 확인한다",
+        "result": "pass",
+        "durationMs": 0.7061
+      },
+      {
+        "name": "POSIX: 그룹 신호와 존재 확인은 음수 pid로",
+        "result": "pass",
+        "durationMs": 0.2771
+      },
+      {
+        "name": "Windows PID 전용 fallback은 조회·종료 없이 안전하게 실패한다",
+        "result": "pass",
+        "durationMs": 0.1799
+      },
+      {
+        "name": "S-13 continueSession: 같은 권한이고 resume 가능하면 resume + 저장 기록",
+        "result": "pass",
+        "durationMs": 1.9999
+      },
+      {
+        "name": "S-13 읽기→쓰기 전환은 새 세션 + 요약 인계(같은 세션 권한 상승 없음), 쓰기→읽기도 새 세션",
+        "result": "pass",
+        "durationMs": 1.0789
+      },
+      {
+        "name": "S-13 resume 미지원(codex)이면 요약, cwd·agent 불일치는 session_mismatch",
+        "result": "pass",
+        "durationMs": 1.5552
+      },
+      {
+        "name": "S-11 buildIdentityContext: 프로필 이름·프로젝트 정의를 담고 인사 지시는 뺀다",
+        "result": "pass",
+        "durationMs": 22.1822
+      },
+      {
+        "name": "S-10 감지: CLI·로그인·어댑터 상태 표, 확인 못 한 것은 미로그인으로 본다",
+        "result": "pass",
+        "durationMs": 3.1672
+      },
+      {
+        "name": "S-11 미로그인 claude: 대화형 yes면 공식 로그인을 상속 입출력으로 실행·재확인해 체인에 포함, no면 뺀다",
+        "result": "pass",
+        "durationMs": 5.4247
+      },
+      {
+        "name": "S-12 어댑터: claude CLI만 있고 어댑터 없음 — 동의 없으면 설치 0·p 단계, --install-adapters면 고정 버전을 설치하고 acp 단계",
+        "result": "pass",
+        "durationMs": 6.5114
+      },
+      {
+        "name": "S-12b 로그인 명령이 성공 종료여도 재확인이 미로그인이면 체인에서 뺀다",
+        "result": "pass",
+        "durationMs": 1.8847
+      },
+      {
+        "name": "S-13 체인 파일이 없으면 default = [claude/acp, codex/p]를 만들고 parseChainConfig를 통과한다",
+        "result": "pass",
+        "durationMs": 1.7584
+      },
+      {
+        "name": "S-14 기존 파일: --yes면 default만 바뀌고 다른 체인·limit_patterns·알 수 없는 키가 보존되며 .bak이 생긴다 / 대화형 no면 그대로 / 같으면 변경 없음",
+        "result": "pass",
+        "durationMs": 7.7919
+      },
+      {
+        "name": "S-15 깨진 JSON·chains 없는 객체는 건드리지 않고 이유와 함께 거절한다",
+        "result": "pass",
+        "durationMs": 2.9115
+      },
+      {
+        "name": "S-16 비대화형 확인: 풀리지 않으면 상태 조회만 하고 변경 0·종료 4, 플래그로 풀면 진행",
+        "result": "pass",
+        "durationMs": 4.0873
+      },
+      {
+        "name": "S-16 로그인이 필요한 변경에서 플래그가 풀리지 않으면 로그인·설치 호출 0",
+        "result": "pass",
+        "durationMs": 1.5736
+      },
+      {
+        "name": "S-16 --agents: 순서대로 체인, 로그인 허락 없는 미로그인은 제외, 모르는 이름은 사용 오류",
+        "result": "pass",
+        "durationMs": 4.9719
+      },
+      {
+        "name": "S-17 프로필이 없으면 변경 0, pace onboard를 안내하고 종료 2",
+        "result": "pass",
+        "durationMs": 0.4329
+      },
+      {
+        "name": "대화형: 에이전트 선택 질문의 기본값은 설치된 에이전트이고, 잘못된 입력은 거절한다",
+        "result": "pass",
+        "durationMs": 1.9982
+      },
+      {
+        "name": "S-23b 자격증명 파일은 읽거나 복사하지 않는다 — 생성물은 체인 파일뿐이고 표지 문자열이 어디에도 없다",
+        "result": "pass",
+        "durationMs": 3.5823
+      },
+      {
+        "name": "승인은 부작용 전에: 어댑터 설치가 실패하면 달라질 수 있는 기존 default는 --yes 없이 설치도 하지 않는다",
+        "result": "pass",
+        "durationMs": 1.872
+      },
+      {
+        "name": "승인은 본 체인 한 가지에 묶인다: 설치 실패로 결과가 달라지면 다시 묻고, 거절하면 파일을 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 5.454
+      },
+      {
+        "name": "체인 파일이 질문·설치 중 바뀌었거나 새로 생기면 덮어쓰지 않고 종료 3",
+        "result": "pass",
+        "durationMs": 3.9419
+      },
+      {
+        "name": "설치된 어댑터 버전이 읽기 전용 강제를 확인한 버전이 아니면 ACP로 고르지 않고, 설치를 허락하면 고정 버전으로 바꾼다",
+        "result": "pass",
+        "durationMs": 4.5326
+      },
+      {
+        "name": "UTF-8 BOM이 있는 기존 체인 파일은 원인을 알려 주며 거절하고, 두 번째 덮어쓰기는 첫 백업을 지우지 않는다",
+        "result": "pass",
+        "durationMs": 10.9724
+      },
+      {
+        "name": "다른 제공자 에이전트를 읽기 전용으로 골라 교차 검증한다",
+        "result": "pass",
+        "durationMs": 2.4646
+      },
+      {
+        "name": "상위 목적이 산출물보다 먼저, 네 질문 포함",
+        "result": "pass",
+        "durationMs": 0.2232
+      },
+      {
+        "name": "목표 대조는 작업 문서 전 1단계이며 결과 달성과 상향 수정을 별도로 묻는다",
+        "result": "pass",
+        "durationMs": 0.1973
+      },
+      {
+        "name": "다른 제공자를 쓸 수 없으면 같은 제공자로 몰래 대체하지 않고 미실행·질문",
+        "result": "pass",
+        "durationMs": 0.3004
+      },
+      {
+        "name": "제공자를 확인하지 못한 결과(고정표뿐)는 교차로 인정하지 않고 미실행",
+        "result": "pass",
+        "durationMs": 0.1867
+      },
+      {
+        "name": "단일 제공자 사용자: 허용하면 같은 제공자 새 맥락 검토를 '교차 아님'으로 기록",
+        "result": "pass",
+        "durationMs": 0.4431
+      },
+      {
+        "name": "결과의 보고 모델이 작성자 제공자이면 교차로 인정하지 않는다",
+        "result": "pass",
+        "durationMs": 0.3024
+      },
+      {
+        "name": "CLI: 검증자가 없으면 종료 10과 질문 문구(작성자 codex, claude도 PATH에 없음)",
+        "result": "pass",
+        "durationMs": 289.7611
+      },
+      {
+        "name": "구현 전 TASK 사전 검토(kind task)는 TASK.md를 결과물로 읽게 하고 작업 문서 열람 금지 문구를 넣지 않는다",
+        "result": "pass",
+        "durationMs": 0.2781
+      },
+      {
+        "name": "판정은 등급으로 정한다 — blocking 없으면 pass, revise 같은 중간 단어를 쓰지 않게 한다",
+        "result": "pass",
+        "durationMs": 0.2455
+      },
+      {
+        "name": "dashboard snapshot collects allowed documents, skips symlinks and sensitive paths, and escapes script data",
+        "result": "pass",
+        "durationMs": 265.1806
+      },
+      {
+        "name": "dashboard rendering, project evidence and broken activity stay safe",
+        "result": "pass",
+        "durationMs": 13.7695
+      },
+      {
+        "name": "dashboard opens generated data without a directory input",
+        "result": "pass",
+        "durationMs": 1.9924
+      },
+      {
+        "name": "CLI refresh targets the current repository and successful backlog changes refresh only active dashboards",
+        "result": "pass",
+        "durationMs": 5830.0847
+      },
+      {
+        "name": "unsafe output link leaves external data intact and reports automatic refresh failure",
+        "result": "pass",
+        "durationMs": 1697.9636
+      },
+      {
+        "name": "automatic refresh reports partial installation and preserves existing files",
+        "result": "pass",
+        "durationMs": 742.6619
+      },
+      {
+        "name": "concurrent refreshes publish complete parseable snapshots and leave no temporary files",
+        "result": "pass",
+        "durationMs": 982.7848
+      },
+      {
+        "name": "a slow earlier writer cannot publish stale content after a later refresh",
+        "result": "pass",
+        "durationMs": 3629.6535
+      },
+      {
+        "name": "legacy script remains usable from its own checkout",
+        "result": "pass",
+        "durationMs": 299.0173
+      },
+      {
+        "name": "a terminated writer leaves the previous snapshot and the next writer recovers its lock",
+        "result": "pass",
+        "durationMs": 2777.4676
+      },
+      {
+        "name": "indexed snapshot uses index modes and blobs, skips large files, and ignores working-tree deletions",
+        "result": "pass",
+        "durationMs": 825.2568
+      },
+      {
+        "name": "simultaneous stale-lock recovery serializes writers without leaving generated files",
+        "result": "pass",
+        "durationMs": 1187.4636
+      },
+      {
+        "name": "legacy ownerless lock is reported promptly with a safe recovery instruction",
+        "result": "pass",
+        "durationMs": 76.8773
+      },
+      {
+        "name": "termination before publishing a lock leaves no lock and a later writer removes the candidate",
+        "result": "pass",
+        "durationMs": 2769.8889
+      },
+      {
+        "name": "internal lock files do not change skipped counts or cause repeated output changes",
+        "result": "pass",
+        "durationMs": 600.6865
+      },
+      {
+        "name": "backlog-specific project roots survive backlog and project archival",
+        "result": "pass",
+        "durationMs": 2.647
+      },
+      {
+        "name": "shared screen reports missing project data without discarding recovery guidance",
+        "result": "pass",
+        "durationMs": 1.641
+      },
+      {
+        "name": "dashboard implementation status stays compact for multiple linked tasks",
+        "result": "pass",
+        "durationMs": 1.2528
+      },
+      {
+        "name": "백로그 일자별 번호·이름 정리·템플릿과 브리프 다음 번호",
+        "result": "pass",
+        "durationMs": 20.8287
+      },
+      {
+        "name": "완료 백로그·모호한 앞부분·파일·외부 심볼릭 링크를 무변경 거부",
+        "result": "pass",
+        "durationMs": 13.2728
+      },
+      {
+        "name": "CLI backlog new·brief·오류 — 임시 저장소와 PACE_HOME",
+        "result": "pass",
+        "durationMs": 1899.685
+      },
+      {
+        "name": "backlog new 도움말은 저장소 밖에서도 파일을 만들지 않는다",
+        "result": "pass",
+        "durationMs": 579.4419
+      },
+      {
+        "name": "brief는 backlogs 루트가 외부 링크이면 외부 파일을 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 4.5659
+      },
+      {
+        "name": "CRLF BACKLOG.md에서도 브리프·현황 행을 만든다",
+        "result": "pass",
+        "durationMs": 7.3805
+      },
+      {
+        "name": "BL 절대 별칭은 검증한 실제 백로그를 반환한다",
+        "result": "pass",
+        "durationMs": 8.3225
+      },
+      {
+        "name": "부트는 활성 등록된 유효 정의만 한 번 주입하고 무효 정의는 진단한다",
+        "result": "pass",
+        "durationMs": 27.249
+      },
+      {
+        "name": "다른 프로필은 자동 생성 역할 표제만 현재 이름으로 전달하고 원본은 보존한다",
+        "result": "pass",
+        "durationMs": 30.8826
+      },
+      {
+        "name": "부트 예산 초과 시 프로젝트 정의를 자르지 않고 제외하며 진단한다",
+        "result": "pass",
+        "durationMs": 23.2991
+      },
+      {
+        "name": "하네스 소유 worktree는 활성 원본과 역할 ID가 일치할 때만 현재 정의를 전달한다",
+        "result": "pass",
+        "durationMs": 10961.7792
+      },
+      {
+        "name": "지연된 git은 합산 부트 예산 안에서 유효한 훅 출력으로 열화한다",
+        "result": "skip",
+        "durationMs": 0.1125
+      },
+      {
+        "name": "git 상태 조회가 시간 초과되면 변경 0개로 오인하지 않는다",
+        "result": "skip",
+        "durationMs": 0.087
+      },
+      {
+        "name": "프로필이 없으면 생성 안내만 한다",
+        "result": "pass",
+        "durationMs": 0.8741
+      },
+      {
+        "name": "부트 맥락에 SOUL·USER·RULES·프로필 메모리(규칙은 제목·요약만)가 들어간다",
+        "result": "pass",
+        "durationMs": 282.8386
+      },
+      {
+        "name": "상황별 첫 응답 지침과 프로젝트 정보",
+        "result": "pass",
+        "durationMs": 34.7373
+      },
+      {
+        "name": "플랫폼별 출력 형식",
+        "result": "pass",
+        "durationMs": 1.3097
+      },
+      {
+        "name": "화면 인사: 프로필 없음 / 상황별 / 반말 말투 / 실패",
+        "result": "pass",
+        "durationMs": 18.1194
+      },
+      {
+        "name": "훅 입력에서 cwd를 읽는다 (Claude·Codex·Gemini의 cwd, Cursor의 workspace_roots)",
+        "result": "pass",
+        "durationMs": 0.3529
+      },
+      {
+        "name": "Antigravity 훅 입력과 오류는 injectSteps 형식을 유지한다",
+        "result": "pass",
+        "durationMs": 637.191
+      },
+      {
+        "name": "Antigravity 다중·알 수 없는 입력은 작업 디렉터리의 프로젝트 역할을 추측하지 않는다",
+        "result": "pass",
+        "durationMs": 1118.8799
+      },
+      {
+        "name": "Cursor 대체 규칙용 텍스트 부트는 호스트와 역할을 표시하고 오류에도 종료 0을 유지한다",
+        "result": "pass",
+        "durationMs": 571.8279
+      },
+      {
+        "name": "CLI: 훅 입력의 cwd를 써서 해당 프로젝트 브레인을 찾는다",
+        "result": "pass",
+        "durationMs": 298.6868
+      },
+      {
+        "name": "CLI: 오류가 나도 종료 코드 0과 유효한 형식으로 경고를 낸다",
+        "result": "pass",
+        "durationMs": 275.6496
+      },
+      {
+        "name": "CLI: 표준입력이 닫히지 않아도 부트가 끝난다",
+        "result": "pass",
+        "durationMs": 1473.1505
+      },
+      {
+        "name": "하네스 프로젝트: 진행·병합 대기만 한 줄씩, worktree면 지금 여기, 깨지면 조용히 빠진다",
+        "result": "pass",
+        "durationMs": 2344.4802
+      },
+      {
+        "name": "부트 순서: 머리말 → 지침 → SOUL → USER → 현재 위치 → 프로젝트 메모리 → 프로필 메모리 → RULES",
+        "result": "pass",
+        "durationMs": 21.9127
+      },
+      {
+        "name": "부트 예산: 메모리가 많아도 예산 이하로 목록을 줄이고 SOUL·지침·RULES는 온전하다",
+        "result": "pass",
+        "durationMs": 6380.6868
+      },
+      {
+        "name": "부트는 확인된 호스트만 표시하고 plain은 미확인으로 남긴다",
+        "result": "pass",
+        "durationMs": 13.0489
+      },
+      {
+        "name": "부트의 잘못된 옵션도 종료 코드 0과 유효한 plain 출력을 낸다",
+        "result": "pass",
+        "durationMs": 529.2922
+      },
+      {
+        "name": "잘못된 옵션에서도 확인된 호스트의 훅 출력 형식을 보존한다",
+        "result": "pass",
+        "durationMs": 1685.8362
+      },
+      {
+        "name": "중복 호스트 옵션의 오류는 마지막 호스트의 출력 형식을 따른다",
+        "result": "pass",
+        "durationMs": 914.7653
+      },
+      {
+        "name": "실제 CLI는 프로필 유무와 무관하게 호스트를 부트 맥락에 전달한다",
+        "result": "pass",
+        "durationMs": 3079.2556
+      },
+      {
+        "name": "옵션 끝 뒤 위치 인자를 호스트 지정으로 오인하지 않는다",
+        "result": "pass",
+        "durationMs": 913.5106
+      },
+      {
+        "name": "init: SCHEMA·목차·기록·분류 폴더(term 포함), 두 번째는 건드리지 않음, 하위 폴더에서도 루트 찾기",
+        "result": "pass",
+        "durationMs": 11.5324
+      },
+      {
+        "name": "v1 페이지 호환: 알 수 없는 폴더도 분류, 들여쓰기 없는 태그, summary 없으면 첫 문단",
+        "result": "pass",
+        "durationMs": 13.9291
+      },
+      {
+        "name": "네이티브 페이지 경로: 파일 ID·제목 기본값·폴더 및 기존 링크를 유지하며 추가·수정한다",
+        "result": "pass",
+        "durationMs": 33.6096
+      },
+      {
+        "name": "검색: 관련 절을 모아 출처와 함께, 페이지당 2절, 상한, 목록 모드",
+        "result": "pass",
+        "durationMs": 13.4487
+      },
+      {
+        "name": "검색: 공백 무시(자동 취소 = 자동취소), type·tag 필터, 초안 용어 기본 제외, 낡은 페이지 감점",
+        "result": "pass",
+        "durationMs": 14.3762
+      },
+      {
+        "name": "lint: 오류(frontmatter·끊어진 링크·미실체)와 경고(고아·빠진 링크·근거 없음·summary 없음·낡음), --fix는 형식만",
+        "result": "pass",
+        "durationMs": 14.7309
+      },
+      {
+        "name": "lint: 제목 정규화와 기존 링크, 자기 자신과 같은 파일명의 페이지를 구분한다",
+        "result": "pass",
+        "durationMs": 15.8711
+      },
+      {
+        "name": "lint: 긴 본문의 큰 브레인에서 반복 정규화 성능 회귀를 막는다",
+        "result": "pass",
+        "durationMs": 524.2825
+      },
+      {
+        "name": "add: 검사를 통과해야 쓰고, 쓴 뒤 lint·목차·기록 — 미실체는 --force --note로만",
+        "result": "pass",
+        "durationMs": 51.1657
+      },
+      {
+        "name": "update: created 보존, updated·sources 갱신, 수정도 검사",
+        "result": "pass",
+        "durationMs": 14.5795
+      },
+      {
+        "name": "쓰기 부분 검사는 전체 lint의 새 이슈·바뀐 페이지·양방향 링크와 일치한다",
+        "result": "pass",
+        "durationMs": 344.4023
+      },
+      {
+        "name": "쓰기 오류는 페이지·목차·기록을 보존하고 각 쓰기는 목록을 한 번 읽는다",
+        "result": "pass",
+        "durationMs": 24.0957
+      },
+      {
+        "name": "CLI 쓰기 결과는 부분 점검과 전체 lint 안내를 보여준다",
+        "result": "pass",
+        "durationMs": 570.462
+      },
+      {
+        "name": "쓰기 후 목차 순서는 확장자를 포함해 전체 목록을 다시 읽은 순서와 같다",
+        "result": "pass",
+        "durationMs": 16.5903
+      },
+      {
+        "name": "쓰기 성능: 긴 본문을 가진 많은 페이지에서도 부분 검사만 한다",
+        "result": "pass",
+        "durationMs": 500.3157
+      },
+      {
+        "name": "ingest-scan: docs·skills·backlogs 후보, sources에 있으면 이미 담음",
+        "result": "pass",
+        "durationMs": 56.1337
+      },
+      {
+        "name": "sources: repository paths and line references, opaque or escaping provenance excluded",
+        "result": "pass",
+        "durationMs": 0.2421
+      },
+      {
+        "name": "stale-source: missing and author date changes warn, same/older dates do not, writes succeed",
+        "result": "pass",
+        "durationMs": 461.1731
+      },
+      {
+        "name": "stale-source: without git history, existing files are skipped and missing files still warn",
+        "result": "pass",
+        "durationMs": 40.9024
+      },
+      {
+        "name": "stale-source: one history walk keeps the latest date per file and directory, not the newest repository date",
+        "result": "pass",
+        "durationMs": 694.0616
+      },
+      {
+        "name": "stale-source: nested wiki paths are relative to the brain root",
+        "result": "pass",
+        "durationMs": 366.6765
+      },
+      {
+        "name": "stale-source: git failures are visible but non-repositories remain quiet, missing checks continue",
+        "result": "pass",
+        "durationMs": 42.8862
+      },
+      {
+        "name": "저장소 묶음은 manifest(2.0.1)와 파일 목록·해시가 정확히 같다",
+        "result": "pass",
+        "durationMs": 24.5348
+      },
+      {
+        "name": "설치: app에 묶음 통째, 도구 폴더에는 두 입구만 — 정본 경로를 가리키고 본문은 복제하지 않는다",
+        "result": "pass",
+        "durationMs": 1416.0091
+      },
+      {
+        "name": "옛 묶음 설치를 새 이름으로 전환하고 사용자 스킬은 제거까지 보존한다",
+        "result": "pass",
+        "durationMs": 168.7466
+      },
+      {
+        "name": "묶음 manifest의 누락·손상·형식 변경과 중복 스킬은 설치 전 거부한다",
+        "result": "pass",
+        "durationMs": 92.8183
+      },
+      {
+        "name": "중단된 app 교체의 이전 설치본을 보존하고 수동 복구를 요구한다",
+        "result": "pass",
+        "durationMs": 54.2143
+      },
+      {
+        "name": "app 교체 실패는 이전 설치본을 복원하고 교체 후 정리 실패는 입구 갱신을 계속한다",
+        "result": "pass",
+        "durationMs": 279.2531
+      },
+      {
+        "name": "재설치: 바뀐 것이 없으면 복사하지 않고, 묶음이 바뀌면 app을 통째 교체해 낡은 파일이 남지 않는다",
+        "result": "pass",
+        "durationMs": 123.6481
+      },
+      {
+        "name": "manifest와 다른 묶음(바뀐·남는·빠진 파일)은 아무것도 바꾸기 전에 설치를 거부해 기존 설치를 지킨다",
+        "result": "pass",
+        "durationMs": 99.2587
+      },
+      {
+        "name": "병존: 다른 도구 스킬과 같은 이름의 사용자 스킬도 원래 위치에 보존한다",
+        "result": "pass",
+        "durationMs": 65.4866
+      },
+      {
+        "name": "changed CLI uses the installed app and the external repository map",
+        "result": "pass",
+        "durationMs": 4113.1928
+      },
+      {
+        "name": "changed includes staged, unstaged and nested untracked files once per unit",
+        "result": "pass",
+        "durationMs": 2849.9771
+      },
+      {
+        "name": "changed runs every related unit and preserves a related failure over a successful full command",
+        "result": "pass",
+        "durationMs": 2489.1423
+      },
+      {
+        "name": "changed test files select the entire unit with overlapping test globs deduplicated",
+        "result": "pass",
+        "durationMs": 3865.1301
+      },
+      {
+        "name": "changed stops remaining files inside the same unit after an actual failure",
+        "result": "pass",
+        "durationMs": 2378.1737
+      },
+      {
+        "name": "changed common, unknown, deleted, renamed and control paths execute the committed full declaration",
+        "result": "pass",
+        "durationMs": 13627.5746
+      },
+      {
+        "name": "changed conflict, executable mode and gitlink states cannot become a partial success",
+        "result": "pass",
+        "durationMs": 7297.4497
+      },
+      {
+        "name": "changed preserves staged deletion when the same working path remains untracked",
+        "result": "pass",
+        "durationMs": 2478.4147
+      },
+      {
+        "name": "changed treats assume-unchanged and skip-worktree as uncertain without mutating flags",
+        "result": "pass",
+        "durationMs": 6496.8826
+      },
+      {
+        "name": "changed sparse checkout and sparse-index policies execute full without rewriting the index",
+        "result": "pass",
+        "durationMs": 6477.3177
+      },
+      {
+        "name": "changed converts a post-check selected-path exception to unavailable without a success retry",
+        "result": "pass",
+        "durationMs": 2352.8044
+      },
+      {
+        "name": "changed supports master and HEAD fallbacks while legacy all keeps its main boundary",
+        "result": "pass",
+        "durationMs": 6900.8252
+      },
+      {
+        "name": "changed never adopts committed feature-branch checks over the selected main map",
+        "result": "pass",
+        "durationMs": 2921.0673
+      },
+      {
+        "name": "changed distinguishes no changes, unborn, outside Git, missing Git and damaged refs",
+        "result": "pass",
+        "durationMs": 5967.7051
+      },
+      {
+        "name": "changed missing or unsupported map/checks falls back and full absence/failure remains distinct",
+        "result": "pass",
+        "durationMs": 26507.9378
+      },
+      {
+        "name": "changed shell checks use the declared cwd and Git sh syntax and stop on failure",
+        "result": "pass",
+        "durationMs": 10092.4161
+      },
+      {
+        "name": "changed rejects escaping cwd/tests and handles special paths without shell interpolation",
+        "result": "pass",
+        "durationMs": 15425.524
+      },
+      {
+        "name": "changed Windows matching is conservative across case while POSIX stays case sensitive",
+        "result": "pass",
+        "durationMs": 2440.6051
+      },
+      {
+        "name": "changed does not read an escaping working definition during full fallback",
+        "result": "pass",
+        "durationMs": 1683.0208
+      },
+      {
+        "name": "changed empty/all-skip tests fail and unknown Python results trigger the actual full check",
+        "result": "pass",
+        "durationMs": 8991.1447
+      },
+      {
+        "name": "Windows changed missing Python start falls back while legacy unit keeps its failure",
+        "result": "pass",
+        "durationMs": 3376.8705
+      },
+      {
+        "name": "shell execution state distinguishes real timeout/overflow and missing executables",
+        "result": "pass",
+        "durationMs": 894.5335
+      },
+      {
+        "name": "changed check timeout and parent OS termination never continue into tests or full fallback",
+        "result": "pass",
+        "durationMs": 4892.7439
+      },
+      {
+        "name": "installed Windows entry and copied real Node/Python drivers execute outside the checkout",
+        "result": "pass",
+        "durationMs": 6241.2561
+      },
+      {
+        "name": "the user README map example runs unchanged through the installed CLI",
+        "result": "pass",
+        "durationMs": 3227.7193
+      },
+      {
+        "name": "잘못된 작업자 명령은 PACE 사용법을 안내한다",
+        "result": "pass",
+        "durationMs": 364.9869
+      },
+      {
+        "name": "설치 → 프로필 생성 → 메모리 → 부트 → 브레인 흐름",
+        "result": "pass",
+        "durationMs": 3845.3211
+      },
+      {
+        "name": "사용법 오류는 종료 코드 2",
+        "result": "pass",
+        "durationMs": 573.4067
+      },
+      {
+        "name": "query → file back: every search mode guides reuse, explicit query logging appends without search writes",
+        "result": "pass",
+        "durationMs": 2506.0437
+      },
+      {
+        "name": "CLI memory 가드: 위반은 종료 1·이유·대안·파일 없음, --force면 저장(add·update)",
+        "result": "pass",
+        "durationMs": 2733.8349
+      },
+      {
+        "name": "CLI memory 보안: 잘못된 slug·비밀은 종료 1, stderr에 원문 없음, --force로도 저장하지 않음",
+        "result": "pass",
+        "durationMs": 3018.7712
+      },
+      {
+        "name": "S-1 cp949 바이트는 코드 페이지 949로 해독하면 한글이 깨지지 않는다",
+        "result": "pass",
+        "durationMs": 1.0164
+      },
+      {
+        "name": "S-1 코드 페이지를 모르거나 지원하지 않으면 죽지 않고 대체 문자로 해독한다",
+        "result": "pass",
+        "durationMs": 0.3126
+      },
+      {
+        "name": "S-1 다른 코드 페이지(932·936·1252)도 해독한다",
+        "result": "pass",
+        "durationMs": 0.8328
+      },
+      {
+        "name": "기본 실행자 runCommand는 자식의 UTF-8 한글 출력과 종료 코드를 그대로 돌려준다",
+        "result": "pass",
+        "durationMs": 95.1684
+      },
+      {
+        "name": "기본 실행자는 없는 명령을 notFound로 알리고 시간 초과를 표시한다",
+        "result": "pass",
+        "durationMs": 316.8813
+      },
+      {
+        "name": "S-7 쓰기는 승인 전 시작하지 않고 승인 뒤 실행된다",
+        "result": "pass",
+        "durationMs": 74.3613
+      },
+      {
+        "name": "S-7b 읽기 전용은 승인 없이 실행된다",
+        "result": "pass",
+        "durationMs": 8.533
+      },
+      {
+        "name": "S-7c 거부는 denied로 미실행, 만료는 expired로 미실행",
+        "result": "pass",
+        "durationMs": 1311.8952
+      },
+      {
+        "name": "S-8 중복·다른 사용자·다른 대화·이전 기동·만료 뒤 응답은 거부되고 상태가 변하지 않는다",
+        "result": "pass",
+        "durationMs": 38.7493
+      },
+      {
+        "name": "S-8b 관리자(Gateway)는 다른 대화의 승인을 처리할 수 있다",
+        "result": "pass",
+        "durationMs": 23.9212
+      },
+      {
+        "name": "S-9 도구 승인은 콜백 결과로, 기한 초과는 거부+작업 취소, handoff 승인은 기록만",
+        "result": "pass",
+        "durationMs": 1074.9227
+      },
+      {
+        "name": "S-22 승인·취소·정지가 겹쳐도 먼저 처리된 것이 이기고 취소된 작업은 시작하지 않는다",
+        "result": "pass",
+        "durationMs": 117.5433
+      },
+      {
+        "name": "S-22b 저장 실패면 쓰기 작업을 시작하지 않는다",
+        "result": "pass",
+        "durationMs": 48.2388
+      },
+      {
+        "name": "S-32 실행 중 도구 승인 대기와 취소·정지가 겹쳐도 처리기가 막히지 않는다",
+        "result": "pass",
+        "durationMs": 51.9806
+      },
+      {
+        "name": "S-8c 다른 기동 ID로 발급된(무효화 표시가 안 된) 승인도 결정 시점에 거부한다",
+        "result": "pass",
+        "durationMs": 7.4151
+      },
+      {
+        "name": "S-2 등록이 액세스 거부로 실패하면 cp949 오류가 깨지지 않은 한글로 나오고 종료 1",
+        "result": "pass",
+        "durationMs": 7.0972
+      },
+      {
+        "name": "S-3 Windows 등록: HKCU Run 값 한 개 + UTF-16 숨김 VBS 런처, 작업 스케줄러 생성 없음",
+        "result": "pass",
+        "durationMs": 11.4403
+      },
+      {
+        "name": "S-3 런처는 데이터 폴더가 기본 폴더면 PACE_HOME을 설정하지 않고 경로의 큰따옴표를 이스케이프한다",
+        "result": "pass",
+        "durationMs": 0.2245
+      },
+      {
+        "name": "S-4 같은 install을 두 번 해도 항목 하나, uninstall은 값·런처를 지우고 두 번째는 이미 없음·종료 0",
+        "result": "pass",
+        "durationMs": 9.142
+      },
+      {
+        "name": "S-5 기존 작업 스케줄러 항목을 건드리지 않고 등록한다",
+        "result": "pass",
+        "durationMs": 4.7484
+      },
+      {
+        "name": "S-6 macOS: plist를 쓰고 launchctl load, 해제는 unload 뒤 plist 삭제",
+        "result": "pass",
+        "durationMs": 6.0283
+      },
+      {
+        "name": "S-7 재설치: worktree 경로로 등록한 런처가 새 설치본 경로로 바뀌고 한 줄 결과, 레지스트리 값은 그대로",
+        "result": "pass",
+        "durationMs": 8.8828
+      },
+      {
+        "name": "S-8 등록이 없으면 갱신은 아무것도 하지 않고 레지스트리도 묻지 않는다",
+        "result": "pass",
+        "durationMs": 3.3788
+      },
+      {
+        "name": "S-7m macOS 재설치: 옛 경로 plist는 새 경로로, plist가 없거나 다른 PACE_HOME이면 변경 0·launchctl 호출 0",
+        "result": "pass",
+        "durationMs": 3.3229
+      },
+      {
+        "name": "지원하지 않는 플랫폼은 등록하지 않고 직접 실행을 안내한다",
+        "result": "pass",
+        "durationMs": 2.13
+      },
+      {
+        "name": "해제는 다른 PACE_HOME의 등록(값이 다른 런처)을 지우지 않고, 값이 런처 경로를 포함하기만 해도 소유로 보지 않는다",
+        "result": "pass",
+        "durationMs": 3.1305
+      },
+      {
+        "name": "macOS 갱신: 줄바꿈·공백이 있는 plist도 PACE_HOME을 해석하고, 실행 인자만 바꾸며 다른 launchd 설정은 남긴다",
+        "result": "pass",
+        "durationMs": 3.5555
+      },
+      {
+        "name": "macOS 재실행: 이미 있는 항목은 unload 뒤 load, 해제는 unload가 실패해도 plist를 지운다",
+        "result": "pass",
+        "durationMs": 9.6422
+      },
+      {
+        "name": "다른 데이터 폴더의 기존 시작 항목은 보존한다",
+        "result": "pass",
+        "durationMs": 2.0255
+      },
+      {
+        "name": "--agents에 모르는 이름이면 --yes 없이도 사용 오류",
+        "result": "pass",
+        "durationMs": 1.1774
+      },
+      {
+        "name": "S-2 서로 다른 워크트리는 병렬로 실행된다",
+        "result": "pass",
+        "durationMs": 32.781
+      },
+      {
+        "name": "S-3 같은 워크트리·조상/자손 경로는 직렬화되고 막힌 작업이 뒤의 풀린 작업을 막지 않는다",
+        "result": "pass",
+        "durationMs": 150.2493
+      },
+      {
+        "name": "lockKeyOf·pathsRelated: 조상·자손·같은 경로",
+        "result": "pass",
+        "durationMs": 0.2891
+      },
+      {
+        "name": "S-3b 동시 실행 상한을 지킨다",
+        "result": "pass",
+        "durationMs": 75.8132
+      },
+      {
+        "name": "S-4 대기 중 선택 변경은 이미 받은 작업 대상에 영향 없다",
+        "result": "pass",
+        "durationMs": 39.13
+      },
+      {
+        "name": "S-5 같은 수신 ID는 한 번만 실행되고 재시작 뒤에도 유지된다",
+        "result": "pass",
+        "durationMs": 17.6554
+      },
+      {
+        "name": "S-6 미허용 사용자·미등록 대상은 작업을 만들지 않는다",
+        "result": "pass",
+        "durationMs": 10.8036
+      },
+      {
+        "name": "S-10 대기·실행 중 취소와 회수 미확인 표시·격리",
+        "result": "pass",
+        "durationMs": 92.1254
+      },
+      {
+        "name": "S-17 결정적 명령은 실행자를 부르지 않고 자유 텍스트만 부른다",
+        "result": "pass",
+        "durationMs": 21.3773
+      },
+      {
+        "name": "S-17b 이벤트 사상과 느린 소비자 격리",
+        "result": "pass",
+        "durationMs": 23.5009
+      },
+      {
+        "name": "S-24 다른 대화·사용자의 작업은 조회·취소할 수 없다(관리자는 가능)",
+        "result": "pass",
+        "durationMs": 18.1193
+      },
+      {
+        "name": "S-25·S-30 경로가 대기 중 같은 이름의 다른 디렉터리로 교체되면 target_changed로 거부한다",
+        "result": "pass",
+        "durationMs": 130.91
+      },
+      {
+        "name": "허용 경로는 기동 때 확정한다 — 기동 뒤 설정 경로가 다른 디렉터리를 가리키면 거부한다",
+        "result": "pass",
+        "durationMs": 15.7531
+      },
+      {
+        "name": "읽기→쓰기 전환: 코어는 같은 워크트리·체인의 보관 세션(직전 응답 포함)을 access가 달라도 실행자에 넘긴다",
+        "result": "pass",
+        "durationMs": 32.1425
+      },
+      {
+        "name": "Gateway: 읽지 않는 구독자의 송신 버퍼가 상한을 넘으면 서버가 그 연결을 닫는다(느린 소비자 격리)",
+        "result": "pass",
+        "durationMs": 590.7653
+      },
+      {
+        "name": "Conn: ping 응답도 송신 상한을 거치고, 이번 프레임으로 상한을 넘으면 즉시 닫는다",
+        "result": "pass",
+        "durationMs": 0.8223
+      },
+      {
+        "name": "Gateway: 모든 수신자가 송신을 거부하면 알림 전달은 실패(던짐)해 outbox가 남는다",
+        "result": "pass",
+        "durationMs": 232.1077
+      },
+      {
+        "name": "S-18 체인이 없으면 setup을 이어서 실행한 뒤 등록한다(호출 순서: 감지·체인 쓰기 → reg add)",
+        "result": "pass",
+        "durationMs": 15.453
+      },
+      {
+        "name": "S-18 준비된 에이전트가 없어 체인을 못 만들면 등록 0·실패",
+        "result": "pass",
+        "durationMs": 2.7111
+      },
+      {
+        "name": "S-18 체인이 이미 있으면 setup을 건너뛰고 바로 등록한다",
+        "result": "pass",
+        "durationMs": 4.6925
+      },
+      {
+        "name": "S-19 비대화형이면 Telegram을 묻지 않고 안내 한 줄만 낸다",
+        "result": "pass",
+        "durationMs": 5.5061
+      },
+      {
+        "name": "S-20 --yes 없이 비대화형이면 어떤 변경도 호출도 없이 계획만 출력한다(체인 있음·없음 모두)",
+        "result": "pass",
+        "durationMs": 4.5945
+      },
+      {
+        "name": "--agents·--login·--install-adapters는 setup에 전달된다",
+        "result": "pass",
+        "durationMs": 6.4079
+      },
+      {
+        "name": "S-21 setup 직후 daemon runner가 default 체인을 해석·실행한다(체인 설정 파일이 없다 오류 없음)",
+        "result": "pass",
+        "durationMs": 853.3718
+      },
+      {
+        "name": "S-22 이 파일의 시험은 실제 레지스트리를 쓰지 않았다 — 등록은 가짜 실행자 상태에만 있다",
+        "result": "pass",
+        "durationMs": 5.3993
+      },
+      {
+        "name": "IP-1 후보 포트는 기본 해시 포트에서 시작하고 서로 멀리 떨어져 있으며 모두 임시 포트 범위 안이다",
+        "result": "pass",
+        "durationMs": 5.9453
+      },
+      {
+        "name": "IP-2 실행 중 daemon의 포트는 정보 파일에서 읽고, 없으면 기본 후보를 쓴다",
+        "result": "pass",
+        "durationMs": 3.5781
+      },
+      {
+        "name": "S-14·S-26 두 번째 `pace daemon run`은 실패(종료 2)하고, 소유자가 죽으면 즉시 기동된다",
+        "result": "pass",
+        "durationMs": 1214.514
+      },
+      {
+        "name": "S-29 동시에 여러 번 기동해도 정확히 하나만 남는다",
+        "result": "pass",
+        "durationMs": 6270.7848
+      },
+      {
+        "name": "S-16 Gateway: 토큰 인증, 메시지 송신·이벤트 구독·승인·취소 왕복",
+        "result": "pass",
+        "durationMs": 1097.2213
+      },
+      {
+        "name": "Gateway: 인증 시간 초과·미인증 연결 상한",
+        "result": "pass",
+        "durationMs": 5670.0826
+      },
+      {
+        "name": "S-27 Gateway: 마스킹 없음·분할·잘못된 opcode·비 UTF-8·과대 프레임은 닫는다",
+        "result": "pass",
+        "durationMs": 713.8322
+      },
+      {
+        "name": "S-12·S-11·S-31 강제 종료 복구(실제 프로세스): 읽기→interrupted, 쓰기→needs_review, 승인 대기→expired, 재실행 없음, 중복 제거 유지, 자손 회수(POSIX)",
+        "result": "pass",
+        "durationMs": 1212.5945
+      },
+      {
+        "name": "S-13 `pace daemon stop`: drain — 실행 중 작업이 끝난 뒤 정지하고 대기는 표시된다",
+        "result": "pass",
+        "durationMs": 4452.6242
+      },
+      {
+        "name": "`pace daemon status`·`logs`는 실행 중 daemon을 보여 주고 시크릿을 노출하지 않는다",
+        "result": "pass",
+        "durationMs": 1032.8594
+      },
+      {
+        "name": "S-12 강제 종료 복구: 읽기→interrupted, 쓰기→needs_review+격리, 승인 대기→expired, 이전 승인 무효, 재실행 없음",
+        "result": "pass",
+        "durationMs": 145.1254
+      },
+      {
+        "name": "S-33 복구 도중 다시 죽어도 격리는 남는다(회수 확인 못 하면 release까지)",
+        "result": "pass",
+        "durationMs": 54.5201
+      },
+      {
+        "name": "S-31 알림은 outbox에 먼저 적재되어 전송이 실패해도 유실되지 않고 다음 기동에서 전송된다(최소 한 번)",
+        "result": "pass",
+        "durationMs": 89.6722
+      },
+      {
+        "name": "S-13 drain 정지: 실행 중 작업 완료·대기 작업 표시·새 수신 거부",
+        "result": "pass",
+        "durationMs": 43.2853
+      },
+      {
+        "name": "S-13b drain 시간 초과: 읽기는 interrupted, 쓰기는 needs_review",
+        "result": "pass",
+        "durationMs": 123.3762
+      },
+      {
+        "name": "S-23 회수 미확인 격리는 재시작 뒤에도 조상·자손 경로를 막고 release 뒤 풀린다",
+        "result": "pass",
+        "durationMs": 148.041
+      },
+      {
+        "name": "실행자 예외는 failed+회수 미확인(안전 쪽)으로 격리한다",
+        "result": "pass",
+        "durationMs": 59.7355
+      },
+      {
+        "name": "S-18 체인·ACP 훅 결선: 이벤트가 전달되고 ACP 세션이 보관 정보로 돌아온다",
+        "result": "pass",
+        "durationMs": 901.1774
+      },
+      {
+        "name": "S-18 기본 거절 도구만 사용자 승인을 묻고, 거부하면 거절된다(쓰기)",
+        "result": "pass",
+        "durationMs": 2346.1861
+      },
+      {
+        "name": "S-28 보관 세션은 대화·워크트리·agent·cwd·access·체인이 모두 같을 때만 resume한다",
+        "result": "pass",
+        "durationMs": 1549.228
+      },
+      {
+        "name": "취소 신호: ACP 단계가 취소되면 cancelled로 끝난다",
+        "result": "pass",
+        "durationMs": 784.4225
+      },
+      {
+        "name": "체인 설정 오류는 failed(시작 전)로 돌아온다",
+        "result": "pass",
+        "durationMs": 2.1204
+      },
+      {
+        "name": "S-12 처리 단계 표시(via)와 도구 권한 요청에 kind가 담긴다",
+        "result": "pass",
+        "durationMs": 1608.8149
+      },
+      {
+        "name": "S-2l 런너의 오류 문자열은 자르기 전에 비밀을 제거한다(300자 경계에 걸친 토큰)",
+        "result": "pass",
+        "durationMs": 3.0277
+      },
+      {
+        "name": "ST-1 정지하면 승인 대기 작업의 만료 안내를 어댑터 종료 전에 보낸다",
+        "result": "pass",
+        "durationMs": 21.298
+      },
+      {
+        "name": "ST-2 정지 중 전송이 실패해도 안내는 outbox에 남아 다음 기동에서 전달된다",
+        "result": "pass",
+        "durationMs": 13.8592
+      },
+      {
+        "name": "ST-3 정지 때 대기열(시작 전) 작업도 중단 안내를 받는다",
+        "result": "pass",
+        "durationMs": 136.7662
+      },
+      {
+        "name": "S-15 상태는 원자적으로 저장되고 임시 파일이 남지 않는다",
+        "result": "pass",
+        "durationMs": 3.588
+      },
+      {
+        "name": "S-15 손상·잘못된 상태 파일은 기동을 거부하고 보존한다(빈 상태로 시작하지 않음)",
+        "result": "pass",
+        "durationMs": 40.7563
+      },
+      {
+        "name": "S-15 설정 검증: 알 수 없는 키·쓰기 기본값·rerun·중복 이름 거부",
+        "result": "pass",
+        "durationMs": 2.8773
+      },
+      {
+        "name": "게이트웨이 토큰은 랜덤으로 만들어 재사용하고 로그·상태에 쓰지 않는다",
+        "result": "pass",
+        "durationMs": 1.7625
+      },
+      {
+        "name": "install 계획 함수는 경로를 따옴표·XML 이스케이프한다",
+        "result": "pass",
+        "durationMs": 0.5995
+      },
+      {
+        "name": "기존 Gateway 토큰 파일이 비었거나 형식이 틀리면 거부한다(빈 토큰 인증 불가)",
+        "result": "pass",
+        "durationMs": 13.265
+      },
+      {
+        "name": "offline release는 인스턴스 소유 구간 안에서만 상태를 고친다(소유를 못 잡으면 상태 파일을 직접 고치지 않는다)",
+        "result": "pass",
+        "durationMs": 11.6155
+      },
+      {
+        "name": "손상 표식 쓰기 전에 죽어 보존 파일만 남은 상태도 기동을 거부한다",
+        "result": "pass",
+        "durationMs": 4.3456
+      },
+      {
+        "name": "S-20 bindWorkspace: 없는 대상 거부·결속 변경 시 main·세션 초기화·같은 워크스페이스는 /use 선택 보존·받은 작업 대상 불변",
+        "result": "pass",
+        "durationMs": 58.8676
+      },
+      {
+        "name": "S-4c(코어) /use 저장 실패는 rejected(command 아님)·변경 롤백, 이후 저장이 성공해도 실패한 선택이 영속되지 않는다",
+        "result": "pass",
+        "durationMs": 7.9243
+      },
+      {
+        "name": "S-14d 쓰기 시작 거부 저장 실패는 prompt·상태를 복원하고 재승인하면 원래 요청으로 실행된다",
+        "result": "pass",
+        "durationMs": 20.7775
+      },
+      {
+        "name": "S-14e 대기 작업 취소 저장 실패는 prompt·무효화한 승인을 복원한다",
+        "result": "pass",
+        "durationMs": 14.9299
+      },
+      {
+        "name": "S-4e(실제) pruneSeen 보호 기간",
+        "result": "pass",
+        "durationMs": 17.5167
+      },
+      {
+        "name": "S-4i 포화: 새 요청은 rejected·기록 보존, 통제 명령·승인은 포화 중에도 처리되고 seen을 늘리지 않는다",
+        "result": "pass",
+        "durationMs": 43.0373
+      },
+      {
+        "name": "S-4j 수신이 직렬 큐에서 대기하는 동안 stop()이 시작되면 작업을 수락하지 않고 stopping",
+        "result": "pass",
+        "durationMs": 4.7239
+      },
+      {
+        "name": "S-2c·S-2g·S-2i 상태 파일에는 최초 저장부터 비밀이 없다(열거되지 않은 필드·객체 키 포함, 잘림 경계 포함)",
+        "result": "pass",
+        "durationMs": 58.5636
+      },
+      {
+        "name": "S-2h 기동 복구(makeSummary·예외)에서 저장되는 상태에도 토큰이 없다(redactor가 생성자에 주입됨)",
+        "result": "pass",
+        "durationMs": 30.6592
+      },
+      {
+        "name": "S-2k 이벤트 스트림은 받은 조각을 순서대로 그대로 전달한다(스트림 비밀 제거는 범위 밖 — 사용자 결정)",
+        "result": "pass",
+        "durationMs": 42.9587
+      },
+      {
+        "name": "S-7b 경로에 토큰 형태가 든 설정은 거부된다(설정 로드·실경로 별칭)",
+        "result": "pass",
+        "durationMs": 4.2478
+      },
+      {
+        "name": "S-20c addWorkspace는 파일 시스템을 호출하지 않고(선해결 인수), 같은 이름·같은 경로는 멱등, 다른 경로·토큰형 경로는 거부",
+        "result": "pass",
+        "durationMs": 3.1867
+      },
+      {
+        "name": "S-19 대화형 수동 입력 — 시크릿·허용 사용자를 저장하고(토큰은 출력·질문에 없다), 거절하면 건너뛰고, 형식이 틀리면 API 없이 건너뛴다",
+        "result": "pass",
+        "durationMs": 33.6517
+      },
+      {
+        "name": "S-19b 자동 찾기 — getMe로 봇을 보이고 getUpdates에서 포럼 그룹·보낸 사람을 찾아 확인받고 저장한다",
+        "result": "pass",
+        "durationMs": 16.4277
+      },
+      {
+        "name": "S-19c webhook이 걸린 봇은 원인을 안내하고 직접 입력으로 이어 가며 getUpdates를 부르지 않는다(URL 경로는 표시하지 않는다)",
+        "result": "pass",
+        "durationMs": 9.4321
+      },
+      {
+        "name": "S-19d getUpdates 실패(409)·메시지 없음이면 직접 입력으로 이어 가고 오류에 토큰이 없다",
+        "result": "pass",
+        "durationMs": 14.1621
+      },
+      {
+        "name": "S-19e getMe 실패(토큰이 틀림)면 아무것도 저장하지 않는다",
+        "result": "pass",
+        "durationMs": 5.8157
+      },
+      {
+        "name": "터미널이면 --yes 없이도 계획을 보인 뒤 [y/N] 확인을 받는다 — 거절하면 아무것도 바꾸지 않고, 승인하면 진행한다",
+        "result": "pass",
+        "durationMs": 8.5544
+      },
+      {
+        "name": "--start 없이 비대화형이면 시작하지 않고 `pace daemon start` 안내만 낸다",
+        "result": "pass",
+        "durationMs": 2.8212
+      },
+      {
+        "name": "--start는 등록 뒤 wscript로 숨김 기동하고 응답을 확인한다(이미 실행 중이면 다시 시작하지 않는다)",
+        "result": "pass",
+        "durationMs": 6.0292
+      },
+      {
+        "name": "대화형: 등록 뒤 시작할지 묻고, 이미 실행 중이고 설정이 바뀌었으면 재시작을 안내한다(자동 중지 없음)",
+        "result": "pass",
+        "durationMs": 9.4969
+      },
+      {
+        "name": "pace daemon start — 떠 있으면 건너뛰고, 아니면 wscript로 시작하고, 실패·무응답은 1",
+        "result": "pass",
+        "durationMs": 11.6754
+      },
+      {
+        "name": "기기 이름 — 컴퓨터 이름을 형식에 맞게 정규화해 기본으로 묻고 저장한다(이미 있으면 묻지 않는다)",
+        "result": "pass",
+        "durationMs": 33.5439
+      },
+      {
+        "name": "워크스페이스 — git 저장소 폴더면 기본 제안하고 이름·경로를 확인받아 등록한다(이미 등록된 것은 건드리지 않는다)",
+        "result": "pass",
+        "durationMs": 24.4731
+      },
+      {
+        "name": "관리자 권한 안내 문구는 한 번만 나온다",
+        "result": "pass",
+        "durationMs": 2.5954
+      },
+      {
+        "name": "init generates target snapshot and preserves an existing dashboard",
+        "result": "pass",
+        "durationMs": 1562.8251
+      },
+      {
+        "name": "끝 마침표 경로와 정션은 안전하게 처리한다",
+        "result": "pass",
+        "durationMs": 1470.2404
+      },
+      {
+        "name": "Git이 같은 저장소를 가리키는 정상 정션과 경로 별칭은 허용한다",
+        "result": "pass",
+        "durationMs": 3023.5676
+      },
+      {
+        "name": "상위 정션 아래 모호한 cwd도 형제 저장소를 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 1242.5801
+      },
+      {
+        "name": "user README and app in a partial dashboard fail without modifying any path",
+        "result": "pass",
+        "durationMs": 905.9114
+      },
+      {
+        "name": "empty repository and held initialization lock report correct results",
+        "result": "pass",
+        "durationMs": 1510.7064
+      },
+      {
+        "name": "missing installation asset fails and rolls back only newly created files",
+        "result": "pass",
+        "durationMs": 545.388
+      },
+      {
+        "name": "existing but empty dashboard data is rejected and preserved byte-for-byte",
+        "result": "pass",
+        "durationMs": 1341.4685
+      },
+      {
+        "name": "all expected dashboard paths with malformed data are rejected without edits",
+        "result": "pass",
+        "durationMs": 1377.2921
+      },
+      {
+        "name": "nested consumer fields must match the supported JSON types",
+        "result": "pass",
+        "durationMs": 2555.5319
+      },
+      {
+        "name": "older JSON assignment without the generated comment is accepted without execution",
+        "result": "pass",
+        "durationMs": 1793.5942
+      },
+      {
+        "name": "recognized partial install restores missing snapshot only",
+        "result": "pass",
+        "durationMs": 2283.5014
+      },
+      {
+        "name": "concurrent init never overwrites user paths and leaves a valid dashboard",
+        "result": "pass",
+        "durationMs": 1859.5285
+      },
+      {
+        "name": "existing data symlink is rejected before reading or repairing its target",
+        "result": "pass",
+        "durationMs": 1404.1863
+      },
+      {
+        "name": "init creates Git in a plain folder without commit or remote and refreshes data",
+        "result": "pass",
+        "durationMs": 2071.0522
+      },
+      {
+        "name": "init uses parent worktree root and Git ignore and info-exclude",
+        "result": "pass",
+        "durationMs": 1119.2966
+      },
+      {
+        "name": "refresh without Git skips without creating Git or dashboard",
+        "result": "pass",
+        "durationMs": 364.6046
+      },
+      {
+        "name": "Git executable missing, broken Git marker, and query failure do not trigger git init",
+        "result": "pass",
+        "durationMs": 1024.3876
+      },
+      {
+        "name": "refresh fails closed on partial dashboard and preserves user files in Git repository",
+        "result": "pass",
+        "durationMs": 446.2929
+      },
+      {
+        "name": "trailing-space Git root init stays on exact target and leaves its sibling tree byte-identical",
+        "result": "pass",
+        "durationMs": 776.1444
+      },
+      {
+        "name": "trailing-space Git root refresh updates exact target and leaves its sibling tree byte-identical",
+        "result": "pass",
+        "durationMs": 773.1211
+      },
+      {
+        "name": "Git ls-files warning with success status fails refresh and preserves the previous snapshot",
+        "result": "pass",
+        "durationMs": 2800.346
+      },
+      {
+        "name": "init failure after Git creation reports actual root and safe retry while preserving the new Git repo",
+        "result": "pass",
+        "durationMs": 591.4805
+      },
+      {
+        "name": "new Git initialization rejects the HOME and filesystem root boundaries before writing",
+        "result": "pass",
+        "durationMs": 365.3882
+      },
+      {
+        "name": "shared dashboard init keeps only project entry and data, and shares one runtime",
+        "result": "pass",
+        "durationMs": 2120.9419
+      },
+      {
+        "name": "unknown dashboard UI copy is preserved and not replaced",
+        "result": "pass",
+        "durationMs": 478.0414
+      },
+      {
+        "name": "installed runtime URLs escape special paths and can rebind without touching project data",
+        "result": "pass",
+        "durationMs": 2574.8621
+      },
+      {
+        "name": "P-2: 다른 설치본(PC)에서 init해도 커밋된 대시보드에 Git 변경이 없다",
+        "result": "pass",
+        "durationMs": 2409.41
+      },
+      {
+        "name": "P-3: 수정하지 않은 v1 진입점은 v2로 바꾸고, 고친 v1 진입점은 보존한다",
+        "result": "pass",
+        "durationMs": 4755.4884
+      },
+      {
+        "name": "리뷰 B1: 추적 중이거나 제외가 실제로 안 되는 local.js는 쓰지 않는다",
+        "result": "pass",
+        "durationMs": 7102.8993
+      },
+      {
+        "name": "리뷰 B2: PACE가 만들지 않은 local.js가 있으면 init은 실패하고 아무것도 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 4988.1916
+      },
+      {
+        "name": "리뷰 B3: local.js 쓰기가 실패하면 .gitignore 생성까지 되돌린다",
+        "result": "pass",
+        "durationMs": 897.5502
+      },
+      {
+        "name": "P-4: 새 clone처럼 local.js가 없으면 refresh가 만든다",
+        "result": "pass",
+        "durationMs": 2354.2011
+      },
+      {
+        "name": "스칼라·인라인 목록·블록 목록·주석을 읽는다",
+        "result": "pass",
+        "durationMs": 2.4958
+      },
+      {
+        "name": "frontmatter가 없으면 본문 전체를 돌려준다",
+        "result": "pass",
+        "durationMs": 0.274
+      },
+      {
+        "name": "stringify 결과를 다시 읽으면 값이 같다",
+        "result": "pass",
+        "durationMs": 0.488
+      },
+      {
+        "name": "들여쓰기 없는 블록 목록과 따옴표 날짜(v1 브레인 형식)를 읽는다",
+        "result": "pass",
+        "durationMs": 0.2391
+      },
+      {
+        "name": "원자적 파일 교체는 Windows의 일시적 공유 위반을 기다리고 내용을 보존한다",
+        "result": "pass",
+        "durationMs": 553.2986
+      },
+      {
+        "name": "원자적 파일 교체가 계속 실패하면 이전 내용을 보존하고 멈춘다",
+        "result": "pass",
+        "durationMs": 1613.0248
+      },
+      {
+        "name": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다",
+        "result": "pass",
+        "durationMs": 1034.5636
+      },
+      {
+        "name": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다",
+        "result": "pass",
+        "durationMs": 344.6998
+      },
+      {
+        "name": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다",
+        "result": "pass",
+        "durationMs": 411.7701
+      },
+      {
+        "name": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다",
+        "result": "pass",
+        "durationMs": 689.4157
+      },
+      {
+        "name": "S-9 daemon을 등록하지 않은 기기에서 pace install(실제 CLI 프로세스)은 daemon 문구도 등록 파일도 만들지 않는다",
+        "result": "pass",
+        "durationMs": 1116.117
+      },
+      {
+        "name": "S-9b 설치 진입점이 갱신을 실제로 호출한다: 등록된 런처가 설치본 경로로 바뀌고 설치기 출력에 한 줄",
+        "result": "pass",
+        "durationMs": 847.2341
+      },
+      {
+        "name": "S-9b 등록이 없으면 같은 진입점이 한 줄도 내지 않고 가짜 레지스트리도 묻지 않는다",
+        "result": "pass",
+        "durationMs": 816.2941
+      },
+      {
+        "name": "신규 설치: 훅 등록, pace 링크, PATH를 zshrc에 한 번만 추가",
+        "result": "skip",
+        "durationMs": 0.6752
+      },
+      {
+        "name": "미리보기는 아무것도 바꾸지 않는다",
+        "result": "skip",
+        "durationMs": 0.1333
+      },
+      {
+        "name": "Windows 설치는 Git Bash 래퍼를 만들고 재설치와 제거에서 관리한다",
+        "result": "pass",
+        "durationMs": 1697.6605
+      },
+      {
+        "name": "Windows 관리 래퍼 재설치와 dry-run, 사용자 충돌 보존",
+        "result": "pass",
+        "durationMs": 2314.6912
+      },
+      {
+        "name": "Windows 래퍼 위치의 폴더와 정션은 대상과 함께 보존한다",
+        "result": "pass",
+        "durationMs": 2848.8014
+      },
+      {
+        "name": "Windows 래퍼 위치의 파일 링크는 대상과 함께 보존한다",
+        "result": "pass",
+        "durationMs": 1298.5506
+      },
+      {
+        "name": "Antigravity 사용자 훅 참조가 남으면 Windows 래퍼와 설치본을 보존한다",
+        "result": "pass",
+        "durationMs": 1460.9614
+      },
+      {
+        "name": "Antigravity 훅 설정을 읽을 수 없으면 Windows 래퍼와 설치본을 보존한다",
+        "result": "pass",
+        "durationMs": 1476.3962
+      },
+      {
+        "name": "실제 Windows Git Bash에서 래퍼와 커밋 훅이 동작한다",
+        "result": "pass",
+        "durationMs": 4081.4643
+      },
+      {
+        "name": "PowerShell 5.1 격리 설치·재설치·제거는 한 줄로 보고하고 사용자 래퍼를 보존한다",
+        "result": "pass",
+        "durationMs": 9479.6142
+      },
+      {
+        "name": "원격 설치 입구 get.ps1은 ASCII·BOM 없이 두고 README가 그것을 가리킨다 (irm | iex는 BOM이 붙은 install.ps1을 해석하지 못한다)",
+        "result": "pass",
+        "durationMs": 5.1149
+      },
+      {
+        "name": "get.ps1을 iex로 실행하면 BOM 있는 install.ps1을 받아 설치하고 사용자 셸은 살아 있다",
+        "result": "pass",
+        "durationMs": 2858.7935
+      },
+      {
+        "name": "다른 도구 설정과 병존하며 PACE 훅과 스킬을 설치한다",
+        "result": "pass",
+        "durationMs": 2353.9585
+      },
+      {
+        "name": "오래된 PACE 스킬만 정리하고 다른 도구·사용자 스킬은 보존한다",
+        "result": "pass",
+        "durationMs": 3375.2779
+      },
+      {
+        "name": "다른 도구의 스킬 링크는 보존하고 PACE 관리 스킬은 재설치로 갱신한다",
+        "result": "pass",
+        "durationMs": 1982.8823
+      },
+      {
+        "name": "계정별 폴더에 PACE를 등록하고 다른 도구 설정은 보존한다",
+        "result": "pass",
+        "durationMs": 2317.2435
+      },
+      {
+        "name": "두 번 설치해도 결과가 같다",
+        "result": "pass",
+        "durationMs": 3141.4287
+      },
+      {
+        "name": "미리보기는 아무것도 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 39.9364
+      },
+      {
+        "name": "Windows: PACE 훅과 규칙은 슬래시 경로 node를 부르고 다른 도구 훅을 보존한다",
+        "result": "pass",
+        "durationMs": 2834.2293
+      },
+      {
+        "name": "경로에 공백이 있으면 훅 명령을 따옴표로 감싸고, 재설치·제거에서도 알아본다",
+        "result": "pass",
+        "durationMs": 2312.0489
+      },
+      {
+        "name": "Windows의 다른 도구 훅을 보존하면서 PACE 훅을 추가한다",
+        "result": "pass",
+        "durationMs": 1130.4839
+      },
+      {
+        "name": "같은 그룹의 다른 도구 훅과 사용자 훅은 PACE 설치·제거 뒤에도 보존한다",
+        "result": "pass",
+        "durationMs": 1623.6414
+      },
+      {
+        "name": "제거는 PACE가 등록한 것만 되돌리고 다른 도구 항목은 남긴다",
+        "result": "pass",
+        "durationMs": 3044.2677
+      },
+      {
+        "name": "수정된 설치본과 사용자 공통 작업자 설정을 보존한다",
+        "result": "pass",
+        "durationMs": 1131.7646
+      },
+      {
+        "name": "Windows: 다른 도구 훅은 재설치에서도 보존한다",
+        "result": "pass",
+        "durationMs": 1104.6157
+      },
+      {
+        "name": "별도 PACE_HOME 등록부는 설치·미리보기·재설치·제거에서 보존된다",
+        "result": "pass",
+        "durationMs": 2416.101
+      },
+      {
+        "name": "Antigravity 공유 훅은 미리보기에 CLI 영향을 표시하고 타 훅을 보존하며 중복 설치하지 않는다",
+        "result": "pass",
+        "durationMs": 3152.1273
+      },
+      {
+        "name": "Cursor 설치는 다른 도구 시작 훅을 보존하고 PACE 규칙을 추가한다",
+        "result": "pass",
+        "durationMs": 1743.3002
+      },
+      {
+        "name": "PACE 실행 파일 이름의 접두어만 같은 사용자 훅은 보존한다",
+        "result": "pass",
+        "durationMs": 1103.6461
+      },
+      {
+        "name": "Antigravity 공유 훅 이름이 사용 중이면 설치·제거가 사용자 원문을 보존한다",
+        "result": "pass",
+        "durationMs": 1659.8231
+      },
+      {
+        "name": "Antigravity 공유 훅의 알 수 없는 형식은 설치·제거를 막지 않고 원문을 보존한다",
+        "result": "pass",
+        "durationMs": 5627.6101
+      },
+      {
+        "name": "Antigravity 공유 훅의 심볼릭 링크는 변경하지 않는다",
+        "result": "pass",
+        "durationMs": 1306.1378
+      },
+      {
+        "name": "제거 시 확인할 수 없는 공유 훅이 남으면 부트 실행 파일을 보존한다",
+        "result": "pass",
+        "durationMs": 963.4119
+      },
+      {
+        "name": "사용자가 확장한 공유 훅에 PACE 참조가 남으면 제거 시 실행 파일도 보존한다",
+        "result": "pass",
+        "durationMs": 14281.6073
+      },
+      {
+        "name": "Gemini 설정 루트가 링크면 공유 설정과 기존 Gemini 설정을 모두 보존한다",
+        "result": "pass",
+        "durationMs": 3902.9359
+      },
+      {
+        "name": "Cursor 설정 루트 링크는 설치·제거에서 보존한다",
+        "result": "pass",
+        "durationMs": 1859.5997
+      },
+      {
+        "name": "Gemini 스킬 하위 경로 링크는 설치·제거에서 보존하고 알린다",
+        "result": "pass",
+        "durationMs": 2825.154
+      },
+      {
+        "name": "Gemini skills 자체의 링크는 대상 스킬을 건드리지 않고 알린다",
+        "result": "pass",
+        "durationMs": 3773.4278
+      },
+      {
+        "name": "임시 설치된 Antigravity 훅은 단일 workspacePaths의 활성 역할을 반환한다",
+        "result": "skip",
+        "durationMs": 0.0735
+      },
+      {
+        "name": "설치본과 등록부가 겹치면 별칭 경로도 변경 전에 거부한다",
+        "result": "pass",
+        "durationMs": 10.9919
+      },
+      {
+        "name": "기본 등록부는 재설치와 제거 뒤에도 보존된다",
+        "result": "pass",
+        "durationMs": 3365.6435
+      },
+      {
+        "name": "일곱 템플릿마다 네 파일이 있고 example.html 데이터가 schema.json을 통과하며 example은 최신이다",
+        "result": "pass",
+        "durationMs": 310.7704
+      },
+      {
+        "name": "시험용 템플릿 폴더를 더하면 공통 코드 수정 없이 탭·목차·ID 경로에 나타난다",
+        "result": "pass",
+        "durationMs": 78.396
+      },
+      {
+        "name": "깊이에 맞는 문서만: 흐름·시퀀스·와이어프레임 데이터가 없으면 그 문서를 만들지 않는다",
+        "result": "pass",
+        "durationMs": 10.7811
+      },
+      {
+        "name": "Canvas 입력은 기본 렌더에서 구 HTML을 보존하고 명시적으로만 호환 렌더한다",
+        "result": "pass",
+        "durationMs": 680.5199
+      },
+      {
+        "name": "Canvas 입력의 중복·잘못된 경로·목적지와 참조를 검출한다",
+        "result": "pass",
+        "durationMs": 13.6615
+      },
+      {
+        "name": "증명 검사는 맞는 예시를 통과시키고, 검사마다 일부러 틀린 데이터에서 그 검사만 실패한다",
+        "result": "pass",
+        "durationMs": 19.9787
+      },
+      {
+        "name": "기존·변경 화면은 제품 저장소의 실제 경로:줄이 있으면 통과하고, 근거가 없거나 저장소 밖이면 실패한다",
+        "result": "pass",
+        "durationMs": 9.8853
+      },
+      {
+        "name": "데이터 속 <script>는 실행 경로 없이 글자로만 들어간다",
+        "result": "pass",
+        "durationMs": 33.5956
+      },
+      {
+        "name": "CLI: render는 문서와 검사 요약을, verify는 실패 시 종료 1을, 어긋난 plan.json은 칸 경로와 함께 실패한다",
+        "result": "pass",
+        "durationMs": 1500.6969
+      },
+      {
+        "name": "schema 검사기는 상속 키·모르는 키워드로 우회되지 않는다",
+        "result": "pass",
+        "durationMs": 4.2649
+      },
+      {
+        "name": "템플릿 메타데이터: 접두어 겹침·잘못된 접두어·없는 칸은 거절하고, 깊이를 줄여 다시 만들면 예전 문서를 지운다",
+        "result": "pass",
+        "durationMs": 276.4254
+      },
+      {
+        "name": "wrong-nonce",
+        "result": "pass",
+        "durationMs": 101.2233
+      },
+      {
+        "name": "monitor-exit",
+        "result": "pass",
+        "durationMs": 86.4856
+      },
+      {
+        "name": "child-exit",
+        "result": "pass",
+        "durationMs": 74.9103
+      },
+      {
+        "name": "timeout",
+        "result": "pass",
+        "durationMs": 82.0785
+      },
+      {
+        "name": "Chrome observer READY gate rejects invalid nonce, early exits and timeout before rendering",
+        "result": "pass",
+        "durationMs": 346.3027
+      },
+      {
+        "name": "생성·검증·stale 재생성은 연결과 미연결 및 두 배율 경계를 보존한다",
+        "result": "pass",
+        "durationMs": 329.201
+      },
+      {
+        "name": "기존 화면 근거는 출력 폴더가 아닌 지정한 제품 저장소에서 확인한다",
+        "result": "pass",
+        "durationMs": 94.6832
+      },
+      {
+        "name": "preview CLI는 --root를 계획 근거 검사에 전달한다",
+        "result": "pass",
+        "durationMs": 1015.6033
+      },
+      {
+        "name": "잠금 생성의 권한 오류는 기존 잠금으로 오인하지 않고 원인을 보존한다",
+        "result": "pass",
+        "durationMs": 5.5986
+      },
+      {
+        "name": "CSP 스크립트 해시는 브라우저의 HTML 줄바꿈 정규화와 일치한다",
+        "result": "pass",
+        "durationMs": 61.2771
+      },
+      {
+        "name": "CRLF 템플릿 사본도 브라우저가 계산할 CSP 해시로 미리보기를 생성한다",
+        "result": "pass",
+        "durationMs": 333.0011
+      },
+      {
+        "name": "사용자 파일·부분 결과·변조는 보존하고 충돌로 실패한다",
+        "result": "pass",
+        "durationMs": 73.0671
+      },
+      {
+        "name": "누락 요소·회전·불완전 출력·렌더 실패는 기존 결과를 보존한다",
+        "result": "pass",
+        "durationMs": 347.1531
+      },
+      {
+        "name": "clip 없는 프레임 밖 요소는 이미지 확장 영역 안에 있어도 거부한다",
+        "result": "pass",
+        "durationMs": 33.7567
+      },
+      {
+        "name": "설명 레이어가 직속인 보드는 제품 프레임으로 렌더하지 않는다",
+        "result": "pass",
+        "durationMs": 35.8208
+      },
+      {
+        "name": "글꼴 대체 경고만 보존하고 나머지 렌더 경고를 거부한다",
+        "result": "pass",
+        "durationMs": 770.345
+      },
+      {
+        "name": "이미지·HTML 변경, 사용자 충돌과 원본 생성 중 변경을 구분해 보존한다",
+        "result": "pass",
+        "durationMs": 99.0358
+      },
+      {
+        "name": "Canvas 문자열은 실행되지 않고 템플릿 표지를 다시 치환하지 않는다",
+        "result": "pass",
+        "durationMs": 85.7576
+      },
+      {
+        "name": "화면을 줄였다가 다시 늘려도 이전 소유 이미지를 보존하고 재사용한다",
+        "result": "pass",
+        "durationMs": 245.8137
+      },
+      {
+        "name": "경로 링크와 사용자 이름 충돌은 외부 파일을 변경하지 않는다",
+        "result": "pass",
+        "durationMs": 30.461
+      },
+      {
+        "name": "Windows에서 열려 있는 기존 결과가 교체를 막으면 이전 결과를 보존한다",
+        "result": "pass",
+        "durationMs": 300.0002
+      },
+      {
+        "name": "잠긴 map은 오류 코드와 원인을 보존하고 CLI에서 경로를 노출하지 않는다",
+        "result": "pass",
+        "durationMs": 559.8564
+      },
+      {
+        "name": "잠긴 HTML과 PNG 읽기 오류도 코드와 원인을 보존하며 경로를 숨긴다",
+        "result": "pass",
+        "durationMs": 1103.2808
+      },
+      {
+        "name": "잠긴 plan과 Canvas는 생성·검증에서 경로 없이 코드와 원인을 전달한다",
+        "result": "pass",
+        "durationMs": 1187.8253
+      },
+      {
+        "name": "Chrome 경로 오류는 도구 사유를 요약하고 입력 경로를 노출하지 않는다",
+        "result": "pass",
+        "durationMs": 719.266
+      },
+      {
+        "name": "교체 중 실패는 역순 복원하고 사용자가 둔 추가 이미지를 보존한다",
+        "result": "pass",
+        "durationMs": 152.138
+      },
+      {
+        "name": "교체와 복원이 모두 실패하면 양쪽 원인과 복구 자료를 보존한다",
+        "result": "pass",
+        "durationMs": 135.0295
+      },
+      {
+        "name": "실제 Canvas 도구로 프레임을 렌더하고 소유 Chrome과 프로필을 회수한다",
+        "result": "pass",
+        "durationMs": 4459.6711
+      },
+      {
+        "name": "SKILL.md는 영어 본문·언어 규칙·일곱 절·순서 ①~⑨를 갖는다",
+        "result": "pass",
+        "durationMs": 2.7011
+      },
+      {
+        "name": "SKILL.md는 수집 요약을 질문보다 먼저, 질문은 한 번에 하나로 지시한다",
+        "result": "pass",
+        "durationMs": 0.2195
+      },
+      {
+        "name": "저장소 렌즈는 모두 형식 검사를 통과하고 INDEX.md가 머리말에서 생성된 그대로다",
+        "result": "pass",
+        "durationMs": 16.7746
+      },
+      {
+        "name": "예시 렌즈는 형식의 모든 절을 채운다",
+        "result": "pass",
+        "durationMs": 0.6593
+      },
+      {
+        "name": "깨진 렌즈는 이유와 함께 실패하고 INDEX를 쓰지 않는다",
+        "result": "pass",
+        "durationMs": 80.2768
+      },
+      {
+        "name": "CLI: 새 렌즈를 더하면 index --check가 실패하고 index가 행을 더한다",
+        "result": "pass",
+        "durationMs": 1824.9836
+      },
+      {
+        "name": "렌즈 폴더가 심볼릭 링크면 읽지 않고 거부한다",
+        "result": "pass",
+        "durationMs": 69.1251
+      },
+      {
+        "name": "그룹 안의 링크·폴더·중복 id·중복 절은 문제로 잡고, 펜스 안 ## 는 절로 보지 않는다",
+        "result": "pass",
+        "durationMs": 672.7456
+      },
+      {
+        "name": "의도·문서 작성·검수 렌즈가 깊이 태그와 함께 INDEX에 있고, 원문 각색은 SOURCES·라이선스에 적힌다",
+        "result": "pass",
+        "durationMs": 6.0767
+      },
+      {
+        "name": "모든 렌즈는 D15 모양 질문 예를 갖고, 긴장 절이 가리키는 이름은 모두 있는 렌즈나 진행 모드다",
+        "result": "pass",
+        "durationMs": 11.8231
+      },
+      {
+        "name": "서비스·실행 렌즈 8개가 INDEX에 있고, 서로 가리키는 긴장 쌍이 둘 이상이며 질문 예가 있다",
+        "result": "pass",
+        "durationMs": 12.8982
+      },
+      {
+        "name": "인계 매핑 표는 모든 렌즈 id를 A·B·C 칸과 함께 갖고, 작업 지시서는 prompt-master 출처를 적는다",
+        "result": "pass",
+        "durationMs": 6.6758
+      },
+      {
+        "name": "인계 문서 검사: 빈 칸·주석뿐인 절·없는 절·자리 표시를 잡고, 비고·커밋 빈 칸과 머리말 주석은 둔다",
+        "result": "pass",
+        "durationMs": 816.032
+      },
+      {
+        "name": "예시마다 요청·렌즈·드러날 빈틈·좋은/나쁜 질문·기대 경로·판정·기록이 있고, 발동 경계 표는 세 스킬과 해당 없음을 모두 덮는다",
+        "result": "pass",
+        "durationMs": 2.7777
+      },
+      {
+        "name": "L3 렌즈는 L3 예시가 쓴 것만 있고 L3 태그로 INDEX에 나타나며, 쓰지 않은 후보는 만들지 않는다(D9)",
+        "result": "pass",
+        "durationMs": 5.2414
+      },
+      {
+        "name": "기억과 학습: 선호는 먼저 읽고 확인 뒤에만 저장하며, 개선 후보는 원인 레이어와 횟수로 기존 항목을 갱신한다",
+        "result": "pass",
+        "durationMs": 0.6373
+      },
+      {
+        "name": "S-7 실제 pace mcp 프로세스가 stdio JSON-RPC를 왕복하고 stdout에는 프로토콜만 나온다",
+        "result": "pass",
+        "durationMs": 341.9161
+      },
+      {
+        "name": "S-7 잘못된 인자·없는 워크스페이스·access 누락은 종료 코드 2",
+        "result": "pass",
+        "durationMs": 1958.1298
+      },
+      {
+        "name": "S-7b 깨진 JSON·알 수 없는 메서드·인자 타입 오류·초과 줄 뒤에도 서버가 계속 동작한다",
+        "result": "pass",
+        "durationMs": 396.0573
+      },
+      {
+        "name": "S-7b 개행 없는 1MB 초과 입력도 버퍼가 상한 안에서 유지되고 뒤따르는 정상 줄이 처리된다",
+        "result": "pass",
+        "durationMs": 8.2047
+      },
+      {
+        "name": "S-7b 개행 없이 끝난 초과 입력도 EOF에서 오류를 정확히 한 번 응답한다",
+        "result": "pass",
+        "durationMs": 5.4922
+      },
+      {
+        "name": "S-7 부모 폴더 이름만 다른 워크스페이스 인자도 실경로로 고정한다",
+        "result": "pass",
+        "durationMs": 305.9102
+      },
+      {
+        "name": "S-7b 출력이 막히면 역압을 기다리고(메모리 증가 방지), 출력이 닫히면 정리하고 끝난다",
+        "result": "pass",
+        "durationMs": 324.9297
+      },
+      {
+        "name": "S-7b 요청 하나의 이상한 입력(toString이 깨진 객체 이름)이 서버를 멈추지 않고, 한 청크의 많은 줄도 순차 처리한다",
+        "result": "pass",
+        "durationMs": 16.2969
+      },
+      {
+        "name": "S-1 initialize·ping·tools/list·도구 조회가 워크스페이스 데이터를 돌려준다",
+        "result": "pass",
+        "durationMs": 61.7711
+      },
+      {
+        "name": "S-2 읽기 전용: 목록에서 숨기고, 직접 호출해도 서버가 거부하며 파일이 변하지 않는다",
+        "result": "pass",
+        "durationMs": 34.0442
+      },
+      {
+        "name": "S-3 다른 워크스페이스(다른 경로·부모·형제)를 지정하면 모든 도구가 거부한다",
+        "result": "pass",
+        "durationMs": 45.537
+      },
+      {
+        "name": "S-4 경로성 인자(slug·백로그 이름·브리프)로 밖을 읽지 못한다",
+        "result": "pass",
+        "durationMs": 48.3977
+      },
+      {
+        "name": "S-5 쓰기 세션: memory_add 성공·가드 위반 거부·force 거부·중복 거부",
+        "result": "pass",
+        "durationMs": 54.9023
+      },
+      {
+        "name": "S-6 상위 폴더에만 브레인이 있으면 올라가 읽지 않는다",
+        "result": "pass",
+        "durationMs": 31.8842
+      },
+      {
+        "name": "S-6b 경계 밖을 가리키는 링크는 거부한다 — .pace/memory가 밖을 가리키는 junction",
+        "result": "pass",
+        "durationMs": 33.1775
+      },
+      {
+        "name": "S-6b 경계 밖을 가리키는 링크는 거부한다 — .pace/brain이 밖을 가리키는 junction",
+        "result": "pass",
+        "durationMs": 31.9087
+      },
+      {
+        "name": "S-6b 경계 밖을 가리키는 링크는 거부한다 — backlogs 안 백로그 폴더가 밖을 가리키는 junction",
+        "result": "pass",
+        "durationMs": 30.3961
+      },
+      {
+        "name": "S-6b 경계 밖을 가리키는 링크는 거부한다 — 중첩 파일 링크(폴더는 정상, .md 하나가 링크)",
+        "result": "pass",
+        "durationMs": 32.6599
+      },
+      {
+        "name": "S-6b 경계 밖을 가리키는 링크는 거부한다 — projects/P001 폴더가 밖을 가리키는 junction",
+        "result": "pass",
+        "durationMs": 34.5189
+      },
+      {
+        "name": "S-6b 경계 밖을 가리키는 링크는 거부한다 — PROJECT.md가 밖 파일의 링크",
+        "result": "pass",
+        "durationMs": 29.7377
+      },
+      {
+        "name": "S-6b 부모 .pace이 링크이면 memory_add가 밖에 만들지 않는다",
+        "result": "pass",
+        "durationMs": 33.4854
+      },
+      {
+        "name": "S-6b 링크가 안쪽을 가리켜도 링크는 거부한다(예외 없음)",
+        "result": "pass",
+        "durationMs": 30.8044
+      },
+      {
+        "name": "S-6c 프로필 메모리는 변경 도구로 바꿀 수 없고, brief는 이탈하지 못한다",
+        "result": "pass",
+        "durationMs": 32.2489
+      },
+      {
+        "name": "S-6d 프로필 메모리 루트의 링크는 거부하고, worktree처럼 main이 밖에 있어도 워크스페이스 안 projects만 읽는다",
+        "result": "pass",
+        "durationMs": 61.1406
+      },
+      {
+        "name": "S-6e 프로필 정상 읽기, 호출 사이 새 링크, 항목·깊이 상한, 길이 가드와 재조회",
+        "result": "pass",
+        "durationMs": 176.2694
+      },
+      {
+        "name": "S-6f 파일 크기·총량·탐색 시간 상한을 넘으면 부분 결과 없이 거부한다",
+        "result": "pass",
+        "durationMs": 33.1743
+      },
+      {
+        "name": "S-6g 모듈 호출 중 파일이 링크로 바뀌면 사후 scan이 잡아 결과를 버린다",
+        "result": "pass",
+        "durationMs": 60.7646
+      },
+      {
+        "name": "S-6h memory_add: 없는 .pace/memory에서 최초 성공, 호출 중 끼어든 링크, 교체된 루트, 하드링크, 총량 상한",
+        "result": "pass",
+        "durationMs": 105.8772
+      },
+      {
+        "name": "프로필: 추가·수정·삭제마다 목차가 다시 만들어진다",
+        "result": "pass",
+        "durationMs": 22.8885
+      },
+      {
+        "name": "범위별 종류를 지킨다: 이슈는 프로젝트에만, user는 프로필에만",
+        "result": "pass",
+        "durationMs": 11.4484
+      },
+      {
+        "name": "진행 상황은 하나만 유지되고 덮어쓴다",
+        "result": "pass",
+        "durationMs": 5.8651
+      },
+      {
+        "name": "done은 이슈·할 일·아이디어만 닫고 이력에 결과를 남긴다",
+        "result": "pass",
+        "durationMs": 17.0671
+      },
+      {
+        "name": "부트 요약: 상태·규칙 제목·요약(본문 없음), 열린 이슈·할 일(오래된 것 표시), 메모는 제목, 아이디어는 개수, 최근 완료",
+        "result": "pass",
+        "durationMs": 32.7447
+      },
+      {
+        "name": "여러 프로세스가 동시에 기억을 추가해도 모두 남는다",
+        "result": "pass",
+        "durationMs": 561.3155
+      },
+      {
+        "name": "부트 요약 축약: maxItems면 목록 절마다 앞에서 N개와 '외 N건' 줄",
+        "result": "pass",
+        "durationMs": 78.3619
+      },
+      {
+        "name": "가드 ①: 가변값(term_ 핸들·UUID·40자 해시)은 거부, 짧은 커밋 해시는 허용",
+        "result": "pass",
+        "durationMs": 30.8618
+      },
+      {
+        "name": "가드 ②: 같은 범위·종류의 같은 제목·거의 같은 요약은 거부하고 update를 알린다",
+        "result": "pass",
+        "durationMs": 72.1331
+      },
+      {
+        "name": "가드 ③: 프로필에 프로젝트 범위 내용(P###·BL######·BR##·file:line)은 거부, 프로젝트는 허용",
+        "result": "pass",
+        "durationMs": 34.8586
+      },
+      {
+        "name": "가드 ④: 요약 160자·본문 400자 초과는 거부, status와 바꾸지 않는 필드는 검사하지 않는다",
+        "result": "pass",
+        "durationMs": 20.913
+      },
+      {
+        "name": "부트 축약 때 진행 상황은 600자로 자르고 열린 코드 블록을 닫는다",
+        "result": "pass",
+        "durationMs": 5.8008
+      },
+      {
+        "name": "slug 검증: 경로·대문자·빈 값·예약어 slug는 파일에 닿기 전에 거부, 폴더 밖 파일은 그대로",
+        "result": "pass",
+        "durationMs": 18.052
+      },
+      {
+        "name": "slug 검증: 이름이 예약어(History·Index)인 항목은 만들지 않는다 — 목차·이력 파일을 덮지 않는다",
+        "result": "pass",
+        "durationMs": 4.7282
+      },
+      {
+        "name": "slug 검증: 정상 slug(한글)·status는 그대로 동작하고 slugify는 멱등이다",
+        "result": "pass",
+        "durationMs": 21.9684
+      },
+      {
+        "name": "비밀 가드: add·update·status·done 결과의 비밀은 --force로도 거부, 파일·이력·메시지에 원문 없음",
+        "result": "pass",
+        "durationMs": 9.3271
+      },
+      {
+        "name": "보안 후속: 대소문자 접기로 예약 파일에 닿는 slug(hiſtory·ſtatus·ındex)는 거부한다",
+        "result": "pass",
+        "durationMs": 10.234
+      },
+      {
+        "name": "보안 후속: read·remove는 NFC로 맞춘 이름이 정확히 같은 파일만 — 대소문자 접기(ſ→s)로 다른 파일에 닿지 않고, NFD 한글 파일은 다룰 수 있다",
+        "result": "pass",
+        "durationMs": 14.4213
+      },
+      {
+        "name": "보안 후속: 메모리 폴더의 심볼릭 링크는 읽지 않고, 목록·부트에서 빠지며, 깨진 링크도 부트를 막지 않는다",
+        "result": "pass",
+        "durationMs": 13.3705
+      },
+      {
+        "name": "보안 후속: history.md가 심볼릭 링크면 done은 폴더 밖에 덧붙이지 않고 부트 최근 완료에도 쓰지 않는다",
+        "result": "pass",
+        "durationMs": 5.2271
+      },
+      {
+        "name": "보안 후속: 마감(due)은 YYYY-MM-DD만 받는다 — 자유 문자열로 비밀·지시를 넣지 못한다",
+        "result": "pass",
+        "durationMs": 5.1132
+      },
+      {
+        "name": "도구별 시작 프롬프트 형식 (--help로 확인한 방식)",
+        "result": "pass",
+        "durationMs": 1.4292
+      },
+      {
+        "name": "PATH에서 처음 찾은 도구를 고른다",
+        "result": "pass",
+        "durationMs": 0.1814
+      },
+      {
+        "name": "객관식 번호·기본값·직접 입력을 받아 프로필 값을 만든다 (역할은 묻지 않음)",
+        "result": "pass",
+        "durationMs": 1.9126
+      },
+      {
+        "name": "잘못된 번호는 다시 묻고, 확인에서 n이면 처음부터 다시 묻는다",
+        "result": "pass",
+        "durationMs": 0.4357
+      },
+      {
+        "name": "세션 인터뷰용 질문 목록은 6문항, 역할 질문이 없고 객관식에는 기타가 있다",
+        "result": "pass",
+        "durationMs": 0.2182
+      },
+      {
+        "name": "설정이 없는 홈에서 제거하면 빈 호스트 설정을 만들지 않는다",
+        "result": "pass",
+        "durationMs": 7.8636
+      },
+      {
+        "name": "PACE 설치와 제거는 다른 도구의 훅과 공유 스킬을 보존한다",
+        "result": "pass",
+        "durationMs": 1805.8927
+      },
+      {
+        "name": "미소유 app은 설치와 제거 때 보존된다",
+        "result": "pass",
+        "durationMs": 33.3045
+      },
+      {
+        "name": "관리 설치본에 사용자가 추가하거나 고친 파일은 재설치와 제거에서 보존한다",
+        "result": "pass",
+        "durationMs": 1354.8376
+      },
+      {
+        "name": "관리 설치본의 빈 사용자 디렉터리도 보존한다",
+        "result": "pass",
+        "durationMs": 3115.6505
+      },
+      {
+        "name": "빈 기존 설정도 덮어쓰기 전에 백업한다",
+        "result": "pass",
+        "durationMs": 2446.9111
+      },
+      {
+        "name": "설정과 스킬 디렉터리 링크는 대상 파일을 건드리지 않는다",
+        "result": "pass",
+        "durationMs": 4216.5229
+      },
+      {
+        "name": "스킬 관리 표지 링크는 소유권으로 인정하지 않는다",
+        "result": "pass",
+        "durationMs": 1849.3615
+      },
+      {
+        "name": "PACE home defaults to ~/.pace",
+        "result": "pass",
+        "durationMs": 0.8992
+      },
+      {
+        "name": "PACE CLI reports the product version",
+        "result": "pass",
+        "durationMs": 289.9393
+      },
+      {
+        "name": "설치: pace-playbook-maker가 도구째 설치본·도구 폴더에 들어가고 설치본에서 생성기·코어가 돈다",
+        "result": "pass",
+        "durationMs": 1511.0914
+      },
+      {
+        "name": "playbook-maker .mjs 테스트가 실제로 실행되고 모두 통과한다",
+        "result": "pass",
+        "durationMs": 191838.6153
+      },
+      {
+        "name": "T06 측정 도구 단위 시험이 실제로 실행되고 모두 통과한다",
+        "result": "pass",
+        "durationMs": 256.8875
+      },
+      {
+        "name": "사전 검토 해시는 CRLF만 정규화하고 기존 LF 기록·기록 명령과 일치한다",
+        "result": "pass",
+        "durationMs": 87.5531
+      },
+      {
+        "name": "Git autocrlf로 다시 체크아웃한 태스크는 기존 LF 검토 기록을 유지한다",
+        "result": "pass",
+        "durationMs": 321.7448
+      },
+      {
+        "name": "사전 검토 이력: 최신 대상·판정과 대체·안전한 증거를 검사한다",
+        "result": "pass",
+        "durationMs": 33.1427
+      },
+      {
+        "name": "사용자 게이트 예외: 실행된 검토가 pass에 못 미쳐도 사용자 결정·현재 해시·근거에 묶이면 통과, 이력은 그대로",
+        "result": "pass",
+        "durationMs": 14.9584
+      },
+      {
+        "name": "소유 프로세스가 남거나 프로필이 교체되면 재귀 정리를 거부한다",
+        "result": "pass",
+        "durationMs": 10.2501
+      },
+      {
+        "name": "루트 밖이나 소유 프로필 내부 링크는 거부하고 대상은 보존한다",
+        "result": "pass",
+        "durationMs": 9.6883
+      },
+      {
+        "name": "정확히 식별한 소유 프로필만 제한된 정리로 회수한다",
+        "result": "pass",
+        "durationMs": 522.0846
+      },
+      {
+        "name": "일반 임시 파일은 종류와 시각을 기록하고 자연 소멸을 기다린다",
+        "result": "pass",
+        "durationMs": 245.5526
+      },
+      {
+        "name": "감시 경로의 알 수 없는 폴더·링크와 교체된 프로필은 거부한다",
+        "result": "pass",
+        "durationMs": 30.0852
+      },
+      {
+        "name": "프로필을 만들면 SOUL·USER·config와 빈 메모리 목차가 생기고 첫 프로필이 기본이 된다",
+        "result": "pass",
+        "durationMs": 21.1458
+      },
+      {
+        "name": "두 번째 프로필은 기본을 바꾸지 않고, use로 바꾼다",
+        "result": "pass",
+        "durationMs": 24.5919
+      },
+      {
+        "name": "복제는 정체성·규칙만 가져오고 메모리와 USER는 새로 시작한다",
+        "result": "pass",
+        "durationMs": 49.6993
+      },
+      {
+        "name": "PACE_PROFILE 환경변수가 기본 프로필보다 우선한다",
+        "result": "pass",
+        "durationMs": 11.6184
+      },
+      {
+        "name": "잘못된 이름과 중복 생성을 거부한다",
+        "result": "pass",
+        "durationMs": 12.1325
+      },
+      {
+        "name": "SKILL.md는 크기 상한 이하다 (불릴 때마다 맥락에 올라간다)",
+        "result": "pass",
+        "durationMs": 0.8497
+      },
+      {
+        "name": "다른 스킬·테스트가 번호로 가리키는 절이 있다 (§1 규모, §5 기준 문서, §6 멈춤)",
+        "result": "pass",
+        "durationMs": 0.4597
+      },
+      {
+        "name": "SKILL.md가 가리키는 references 파일이 모두 있고, references의 문서는 모두 SKILL.md가 가리킨다",
+        "result": "pass",
+        "durationMs": 1.8902
+      },
+      {
+        "name": "description은 쓰는 때와 단계별 경계를 함께 적는다",
+        "result": "pass",
+        "durationMs": 0.1533
+      },
+      {
+        "name": "사용자 교정 규칙이 작업자가 읽는 §4 본문에 있다 (병합 대기 중 main 커밋 금지, 자체 판단 대조)",
+        "result": "pass",
+        "durationMs": 0.2126
+      },
+      {
+        "name": "시나리오 문서에 필수 시나리오 S1~S6이 있다",
+        "result": "pass",
+        "durationMs": 0.5322
+      },
+      {
+        "name": "SKILL.md와 references 문서의 상대 링크가 모두 실제 파일을 가리킨다",
+        "result": "pass",
+        "durationMs": 6.7339
+      },
+      {
+        "name": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다",
+        "result": "pass",
+        "durationMs": 3644.6984
+      },
+      {
+        "name": "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+        "result": "pass",
+        "durationMs": 8361.9292
+      },
+      {
+        "name": "CRLF 설치본: BL 프로젝트 생성·예정/추가 태스크·check/done은 줄바꿈과 번호를 보존한다",
+        "result": "pass",
+        "durationMs": 4058.3468
+      },
+      {
+        "name": "CRLF 기존 5칸 태스크 표도 예정 번호·상태·열 위치를 보존한다",
+        "result": "pass",
+        "durationMs": 3003.8459
+      },
+      {
+        "name": "테스트 도우미는 세션 환경 변수를 물려주지 않는다",
+        "result": "pass",
+        "durationMs": 0.8863
+      },
+      {
+        "name": "프로젝트 전 과정: new → start → task → check → finish → merge",
+        "result": "pass",
+        "durationMs": 36041.8012
+      },
+      {
+        "name": "list는 진행 중 프로젝트의 브랜치 상태와 진행 태스크를 보여 준다",
+        "result": "pass",
+        "durationMs": 6013.6344
+      },
+      {
+        "name": "등록된 worktree가 사라져도 기존 경로를 안내한다",
+        "result": "pass",
+        "durationMs": 3356.1842
+      },
+      {
+        "name": "task: 표에 계획된 대기 행은 그 번호로 열고, 새 태스크는 계획 번호와 겹치지 않는다",
+        "result": "pass",
+        "durationMs": 5477.0784
+      },
+      {
+        "name": "check: 템플릿 주석이 남아도 통과하고, 빠진 기준·판정 실패는 잡는다",
+        "result": "pass",
+        "durationMs": 7390.1963
+      },
+      {
+        "name": "done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 20319.0974
+      },
+      {
+        "name": "도움말에 project done이 있다",
+        "result": "pass",
+        "durationMs": 258.592
+      },
+      {
+        "name": "new·start·merge 위치와 상태 규칙: 브랜치 번호, 하위 폴더, 준비 명령, ff 불가·더러운 작업 트리",
+        "result": "pass",
+        "durationMs": 6761.9693
+      },
+      {
+        "name": "비밀 노출 탐지: JSON·Bearer·JWT는 잡고, 환경 변수 이름 참조와 바이너리는 넘긴다",
+        "result": "pass",
+        "durationMs": 5.6421
+      },
+      {
+        "name": "Orca 안이면 start가 작업자 세션을 띄우고, 다시 start·--no-launch·Orca 밖에서는 띄우지 않는다",
+        "result": "pass",
+        "durationMs": 8897.0675
+      },
+      {
+        "name": "Orca 채팅 세션에서도 작업자를 띄우고, 현재 run(runId)이 있으면 새로 만들지 않는다",
+        "result": "pass",
+        "durationMs": 2471.6605
+      },
+      {
+        "name": "작업자 설정 CLI와 실행별 우선순위 및 사전 오류",
+        "result": "pass",
+        "durationMs": 12095.6845
+      },
+      {
+        "name": "작업자 세션을 띄우지 못해도 start는 성공하고 직접 여는 방법을 알려 준다",
+        "result": "pass",
+        "durationMs": 2561.2057
+      },
+      {
+        "name": "테스트 도우미는 TERM_PROGRAM도 물려주지 않는다 (테스트가 실제 Orca를 부르지 않게)",
+        "result": "pass",
+        "durationMs": 1.0392
+      },
+      {
+        "name": "Orca 실행 파일과 작업자 도구를 고른다",
+        "result": "pass",
+        "durationMs": 1.3544
+      },
+      {
+        "name": "declaredCommand: 표 칸·목록 항목 맨 앞의 라벨만 읽고, 설명 문장 속 라벨은 무시한다",
+        "result": "pass",
+        "durationMs": 2.5887
+      },
+      {
+        "name": "작업자 도구: --agent > PROJECT.md `- 작업자:` > 정의서 `작업자 도구:` > 지금 세션, 오타는 worktree 전에 거부",
+        "result": "pass",
+        "durationMs": 16956.0045
+      },
+      {
+        "name": "브레인 활용: new는 관련 페이지 후보를 재료에 넣고, finish는 PROJECT-CLOSE 브레인 행을 확인한다",
+        "result": "pass",
+        "durationMs": 4795.5666
+      },
+      {
+        "name": "정본 반영 표: 템플릿 브레인 행만 남은 표는 비었다고 본다, main 직접 프로젝트도 브레인 행을 확인한다",
+        "result": "pass",
+        "durationMs": 2939.3912
+      },
+      {
+        "name": "finish: changed sources produce candidate notes and every waived page must be mentioned",
+        "result": "pass",
+        "durationMs": 4629.83
+      },
+      {
+        "name": "start: 긴 백로그·대화 출처도 착수 결정을 남기고 전체 근거는 PROJECT.md로 가리킨다",
+        "result": "pass",
+        "durationMs": 7478.2648
+      },
+      {
+        "name": "start: 기존 브랜치가 바꾼 worktree 준비 대신 base 선언을 실행한다",
+        "result": "pass",
+        "durationMs": 2868.4863
+      },
+      {
+        "name": "finish: 의존성 감사는 잠금 파일이 base 대비 바뀐 브랜치에서만 실행한다",
+        "result": "pass",
+        "durationMs": 9119.7531
+      },
+      {
+        "name": "finish: base에 선언이 없으면 worktree 명령을 실행하고 실패를 보존한다",
+        "result": "pass",
+        "durationMs": 8087.5406
+      },
+      {
+        "name": "start: base에 준비 선언이 없으면 worktree 선언을 실행하고 실패를 보존한다",
+        "result": "pass",
+        "durationMs": 2699.7316
+      },
+      {
+        "name": "선언 명령: base 조회 오류는 선언 부재로 취급하지 않고 실행 전에 중단한다",
+        "result": "pass",
+        "durationMs": 2276.4612
+      },
+      {
+        "name": "commit gate: start 설치·갱신, check 실패/성공, 무관 커밋과 복수 태그",
+        "result": "pass",
+        "durationMs": 7981.5144
+      },
+      {
+        "name": "commit gate: 사용자 훅·링크·외부 hooksPath 보존, PACE 훅만 갱신",
+        "result": "pass",
+        "durationMs": 15852.9041
+      },
+      {
+        "name": "commit gate: pace 부재는 경고 후 커밋 허용",
+        "result": "pass",
+        "durationMs": 2680.0981
+      },
+      {
+        "name": "finish: 완료 태스크의 태그 커밋 누락 차단, 태그 커밋 후 통과",
+        "result": "pass",
+        "durationMs": 9234.8022
+      },
+      {
+        "name": "finish: main에 선반영된 HEAD 조상의 태스크 커밋을 인정한다",
+        "result": "pass",
+        "durationMs": 7103.7252
+      },
+      {
+        "name": "start는 비활성 대시보드의 미리 스테이징된 초안을 커밋하지 않는다",
+        "result": "pass",
+        "durationMs": 2605.448
+      },
+      {
+        "name": "P025 실패 복구: index에만 있는 BACKLOG 초안을 보존한다",
+        "result": "pass",
+        "durationMs": 1745.8212
+      },
+      {
+        "name": "P025 실패 복구: 활성 dashboard 경로 오류는 start 성공을 막는다",
+        "result": "pass",
+        "durationMs": 2690.5237
+      },
+      {
+        "name": "P025 실패 복구: 동기화 커밋 실패 후 start 재시도는 양쪽 상태를 맞춘다",
+        "result": "pass",
+        "durationMs": 4491.6801
+      },
+      {
+        "name": "P025 실패 복구: 직접 finish 최종 커밋 실패는 거짓 완료를 남기지 않는다",
+        "result": "pass",
+        "durationMs": 4407.5048
+      },
+      {
+        "name": "P025 실패 복구: main 직접 finish는 범위 밖 초안을 거부한다",
+        "result": "pass",
+        "durationMs": 1502.3445
+      },
+      {
+        "name": "P025 실패 복구: 준비 실패 후 고친 설정으로 재시도한다",
+        "result": "pass",
+        "durationMs": 4763.0074
+      },
+      {
+        "name": "P025 실패 복구: fast-forward 실패를 알리고 재시도한다",
+        "result": "pass",
+        "durationMs": 4323.7039
+      },
+      {
+        "name": "P025 실패 복구: 다른 백로그의 staged 초안은 대시보드에 넣지 않는다",
+        "result": "pass",
+        "durationMs": 2079.3422
+      },
+      {
+        "name": "P025 실패 복구: 보류 백로그는 시작과 완료에서 유지된다",
+        "result": "pass",
+        "durationMs": 3062.6277
+      },
+      {
+        "name": "P025 실패 복구: BL 기존 브랜치는 안전한 조상인 경우 복구한다",
+        "result": "pass",
+        "durationMs": 4643.513
+      },
+      {
+        "name": "P025 실패 복구: 비main 브랜치 직접 finish는 거부한다",
+        "result": "pass",
+        "durationMs": 1761.3806
+      },
+      {
+        "name": "P025 실패 복구: 동기화된 기존 BL worktree의 추가 커밋을 보존한다",
+        "result": "pass",
+        "durationMs": 4058.0939
+      },
+      {
+        "name": "P025 실패 복구: 활성 dashboard 오류면 직접 finish도 완료하지 않는다",
+        "result": "pass",
+        "durationMs": 2206.398
+      },
+      {
+        "name": "P025 실패 복구: 보류 태스크의 BR은 전체 완료에서도 보류로 남는다",
+        "result": "pass",
+        "durationMs": 5974.4974
+      },
+      {
+        "name": "P025 실패 복구: 병합 최종 커밋 거부는 FF 뒤 진행 상태를 복원한다",
+        "result": "pass",
+        "durationMs": 35202.3338
+      },
+      {
+        "name": "P025 실패 복구: BL 브리프를 프로젝트 출처로 위장하면 시작하지 않는다",
+        "result": "pass",
+        "durationMs": 1514.3164
+      },
+      {
+        "name": "P025 실패 복구: 시작 시 프로젝트 부분 스테이징 초안을 보존한다",
+        "result": "pass",
+        "durationMs": 1749.672
+      },
+      {
+        "name": "P025 실패 복구: 직접 finish 첫 커밋 실패도 프로젝트 인덱스를 복원한다",
+        "result": "pass",
+        "durationMs": 2691.9317
+      },
+      {
+        "name": "P025 실패 복구: 프로젝트 바이너리와 파일 권한을 정확히 보존한다",
+        "result": "pass",
+        "durationMs": 2740.2539
+      },
+      {
+        "name": "P025 실패 복구: start 첫 커밋 실패도 프로젝트 상태와 인덱스를 복원한다",
+        "result": "pass",
+        "durationMs": 2078.0683
+      },
+      {
+        "name": "P025 v2: 분기된 동기화 worktree는 start와 launch로 재개한다",
+        "result": "pass",
+        "durationMs": 5079.3285
+      },
+      {
+        "name": "P025 v2: 직접 finish 중간 커밋 뒤 최종 실패는 삭제 staged 없이 재시도한다",
+        "result": "pass",
+        "durationMs": 8909.942
+      },
+      {
+        "name": "P025 v2: 다른 BR이 있어도 누락된 BR은 완료를 막는다",
+        "result": "pass",
+        "durationMs": 2045.2885
+      },
+      {
+        "name": "P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다",
+        "result": "pass",
+        "durationMs": 64554.0602
+      },
+      {
+        "name": "P025 v2: BR·태스크·현황의 중복 번호를 거부한다",
+        "result": "pass",
+        "durationMs": 5948.0335
+      },
+      {
+        "name": "BL 생명주기 start는 전체 상태를 진행으로 기록한다",
+        "result": "pass",
+        "durationMs": 3013.0016
+      },
+      {
+        "name": "BL 출처는 슬래시로 기록하고 기존 Windows 백슬래시 링크도 읽는다",
+        "result": "pass",
+        "durationMs": 3023.4516
+      },
+      {
+        "name": "BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다",
+        "result": "pass",
+        "durationMs": 25765.4212
+      },
+      {
+        "name": "BL 생명주기: 잘못된 상태와 시작 준비 실패는 원본 상태를 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 4186.6524
+      },
+      {
+        "name": "BL 출처: 같은 번호 태스크 생성·done BR/BACKLOG 동기화와 실패 무변경",
+        "result": "pass",
+        "durationMs": 8129.3439
+      },
+      {
+        "name": "새 태스크 이름의 백로그 단계 문구를 옛 표 헤더로 오인하지 않는다",
+        "result": "pass",
+        "durationMs": 3108.8334
+      },
+      {
+        "name": "정본 반영: 바뀐 파일 대조 — 같은 파일·폴더 접두·glob",
+        "result": "pass",
+        "durationMs": 0.4662
+      },
+      {
+        "name": "동시 프로젝트: 한쪽 병합 후 다른 쪽 finish는 생성 자료만 재생성하고 미추적 초안을 커밋하지 않는다",
+        "result": "pass",
+        "durationMs": 26730.1114
+      },
+      {
+        "name": "start 준비 명령 실패 시 대시보드는 쓰거나 커밋하지 않는다",
+        "result": "pass",
+        "durationMs": 2788.4684
+      },
+      {
+        "name": "start 자동 커밋 자료는 작업본에서만 삭제된 인덱스 문서를 포함한다",
+        "result": "pass",
+        "durationMs": 3801.814
+      },
+      {
+        "name": "신규 태스크 사전 검토 게이트는 check와 done을 막고 기록 뒤 통과한다",
+        "result": "pass",
+        "durationMs": 15869.4512
+      },
+      {
+        "name": "start --launch: worktree에서 done이 백로그 현황 표를 고치고 main이 앞서 나가도 다시 띄운다",
+        "result": "pass",
+        "durationMs": 4557.3414
+      },
+      {
+        "name": "project log: 다른 기록자가 최초 생성한 파일에도 현재 사건을 남긴다",
+        "result": "pass",
+        "durationMs": 112.2851
+      },
+      {
+        "name": "project log: 최초 생성 경합 뒤 일반 파일이 아니면 쓰지 않는다",
+        "result": "pass",
+        "durationMs": 120.4943
+      },
+      {
+        "name": "project log: 최초 생성 충돌이 반복되면 제한된 횟수 뒤 실패한다",
+        "result": "pass",
+        "durationMs": 128.7291
+      },
+      {
+        "name": "사용자 결정과 기존 루카스 결정 출처를 모두 허용한다",
+        "result": "pass",
+        "durationMs": 8.7086
+      },
+      {
+        "name": "project log: CLI decision/change synchronizes table once and review preserves verdict counts",
+        "result": "pass",
+        "durationMs": 5830.7145
+      },
+      {
+        "name": "project log: wait intervals union, task scope, unfinished question and merge approval wait",
+        "result": "pass",
+        "durationMs": 56.4163
+      },
+      {
+        "name": "project log: rejects secrets, paths, unknown actors/types, nonnumeric data and unstructured reviews",
+        "result": "pass",
+        "durationMs": 2.8356
+      },
+      {
+        "name": "project log: symlink write fails without decision table mutation",
+        "result": "pass",
+        "durationMs": 3.6372
+      },
+      {
+        "name": "project log: reopening after finish measures through now until a new finish",
+        "result": "pass",
+        "durationMs": 180.9966
+      },
+      {
+        "name": "project log: task-scoped reads reject linked or FIFO PROJECT before reading",
+        "result": "pass",
+        "durationMs": 4.6308
+      },
+      {
+        "name": "project log: automatic gate logging survives a missing contract",
+        "result": "pass",
+        "durationMs": 2.8888
+      },
+      {
+        "name": "metrics index: sorted project snapshots, per tool output, unknown values and deterministic rebuild",
+        "result": "pass",
+        "durationMs": 12.3111
+      },
+      {
+        "name": "metrics report: section replacement preserves neighbors and removes duplicate generated sections",
+        "result": "pass",
+        "durationMs": 1.0888
+      },
+      {
+        "name": "metrics report: repeated gate categories and review rounds, nonempty handoff links without raw text",
+        "result": "pass",
+        "durationMs": 670.7163
+      },
+      {
+        "name": "metrics report: finishing snapshot extends previous finish cutoff",
+        "result": "pass",
+        "durationMs": 590.7871
+      },
+      {
+        "name": "metrics report: linked close document is rejected without copying external text",
+        "result": "pass",
+        "durationMs": 3.6725
+      },
+      {
+        "name": "metrics report: linked project directory components are rejected",
+        "result": "pass",
+        "durationMs": 7.5506
+      },
+      {
+        "name": "metrics report: close summary requires local link and one to three lines",
+        "result": "pass",
+        "durationMs": 0.5202
+      },
+      {
+        "name": "metrics report: outside task, proportions, empty tools, counts and total elapsed",
+        "result": "pass",
+        "durationMs": 837.893
+      },
+      {
+        "name": "metrics report: generated metrics symlink is rejected without replacing it",
+        "result": "pass",
+        "durationMs": 3.5361
+      },
+      {
+        "name": "metrics: exact intervals, retries, gate counts and malformed lines",
+        "result": "pass",
+        "durationMs": 13.3616
+      },
+      {
+        "name": "metrics: fixed reasons, failed writes and symlinks never escape",
+        "result": "pass",
+        "durationMs": 7.7858
+      },
+      {
+        "name": "metrics: old project uses git timestamps and unknown times remain null",
+        "result": "pass",
+        "durationMs": 873.0228
+      },
+      {
+        "name": "metrics: CLI boundaries, fixed failure reason, blocked logging preserves gate result",
+        "result": "pass",
+        "durationMs": 6920.9863
+      },
+      {
+        "name": "metrics: dangling symlink does not create outside target",
+        "result": "pass",
+        "durationMs": 3.1909
+      },
+      {
+        "name": "metrics: FIFO recording returns instead of blocking",
+        "result": "pass",
+        "durationMs": 0.1586
+      },
+      {
+        "name": "metrics: git fallback uses first task commit through last, project finish through merge",
+        "result": "pass",
+        "durationMs": 1082.3631
+      },
+      {
+        "name": "선언 셸: 공백 경로와 인용·환경 변수·한글 및 종료 오류를 보존한다",
+        "result": "pass",
+        "durationMs": 290.998
+      },
+      {
+        "name": "대량 출력 뒤의 오류 원문과 종료 코드를 보존한다",
+        "result": "pass",
+        "durationMs": 207.9843
+      },
+      {
+        "name": "시간 초과와 신호 종료는 이용 가능한 원인을 표시한다",
+        "result": "pass",
+        "durationMs": 287.5705
+      },
+      {
+        "name": "복원만 실패해도 성공으로 처리하지 않는다",
+        "result": "pass",
+        "durationMs": 0.6412
+      },
+      {
+        "name": "Git 셸 경로가 없거나 설치 경계 밖이면 거부한다",
+        "result": "pass",
+        "durationMs": 3.1545
+      },
+      {
+        "name": "오염된 Git 실행 경로와 작업 디렉터리 sh를 셸로 쓰지 않는다",
+        "result": "pass",
+        "durationMs": 132.7293
+      },
+      {
+        "name": "Windows에서 따옴표로 감싼 Git PATH 항목도 찾는다",
+        "result": "pass",
+        "durationMs": 148.489
+      },
+      {
+        "name": "셸 부재는 오류 원인을 표시한다",
+        "result": "pass",
+        "durationMs": 1.3445
+      },
+      {
+        "name": "복원 실패는 원래 실패와 함께 보존한다",
+        "result": "pass",
+        "durationMs": 0.3156
+      },
+      {
+        "name": "중첩 경로의 파일과 Git 인덱스를 정확히 복원한다",
+        "result": "pass",
+        "durationMs": 335.475
+      },
+      {
+        "name": "인덱스 읽기 실패: git 오류 원문을 메시지에 남긴다",
+        "result": "pass",
+        "durationMs": 44.8724
+      },
+      {
+        "name": "git 실패 원인: stderr·실행 오류·신호·종료 코드를 한 줄로",
+        "result": "pass",
+        "durationMs": 0.189
+      },
+      {
+        "name": "프로젝트 템플릿 5종이 필수 절을 모두 가진다",
+        "result": "pass",
+        "durationMs": 1.446
+      },
+      {
+        "name": "표준 값으로 채우면 자리표시가 남지 않는다",
+        "result": "pass",
+        "durationMs": 0.9444
+      },
+      {
+        "name": "TASK-CLOSE는 커밋 해시를 쓰지 않는다고 안내한다 (자기 커밋 해시는 같은 커밋에 넣을 수 없음)",
+        "result": "pass",
+        "durationMs": 0.2581
+      },
+      {
+        "name": "tokens: Claude main/subagent, streaming duplicates, cwd filtering and time boundaries",
+        "result": "pass",
+        "durationMs": 61.1527
+      },
+      {
+        "name": "tokens: Codex final cumulative subtraction, decreases never restart billing, session dedup and other cwd",
+        "result": "pass",
+        "durationMs": 53.8947
+      },
+      {
+        "name": "tokens: Orca Codex home and explicit CODEX_HOME are discovered once",
+        "result": "pass",
+        "durationMs": 54.0116
+      },
+      {
+        "name": "tokens: Gemini marker, message counts, dedup, tool/thought fields and malformed chats",
+        "result": "pass",
+        "durationMs": 51.1844
+      },
+      {
+        "name": "tokens: missing histories, malformed lines, invalid counts, symlinks and read-only sources",
+        "result": "pass",
+        "durationMs": 140.7601
+      },
+      {
+        "name": "tokens: damaged cumulative sample never resets the baseline",
+        "result": "pass",
+        "durationMs": 50.2184
+      },
+      {
+        "name": "tokens: Gemini project symlink is not followed and FIFO marker does not block",
+        "result": "pass",
+        "durationMs": 53.2335
+      },
+      {
+        "name": "tokens: merging later does not extend the project work interval beyond finish",
+        "result": "pass",
+        "durationMs": 58.494
+      },
+      {
+        "name": "tokens: rollout identity survives inherited parent metadata in all Codex homes",
+        "result": "pass",
+        "durationMs": 62.5243
+      },
+      {
+        "name": "tokens: Codex inclusive start and end subtract only the last sample strictly before start",
+        "result": "pass",
+        "durationMs": 55.183
+      },
+      {
+        "name": "tokens: removed worktree retains worker tokens and task rows, main tokens are separate",
+        "result": "pass",
+        "durationMs": 54.4223
+      },
+      {
+        "name": "tokens: coordinator includes merge wait but stops at merge",
+        "result": "pass",
+        "durationMs": 10.4248
+      },
+      {
+        "name": "RULES는 1,700자 이하이고 핵심(메모리·쓰기 원칙·브레인 검색·사고 원칙·일의 성격 4가지·사실과 근거)을 지킨다",
+        "result": "pass",
+        "durationMs": 0.9957
+      },
+      {
+        "name": "RULES에서 옮긴 상세는 영어 스킬에 있고, pace-memory 정리 기준이 RULES 쓰기 원칙과 같다",
+        "result": "pass",
+        "durationMs": 0.5906
+      },
+      {
+        "name": "가드 문구 일치: 스킬·RULES·도움말이 구현(한도·검출 목록·--force·status 제외)과 같다",
+        "result": "pass",
+        "durationMs": 0.6596
+      },
+      {
+        "name": "프로젝트 계획에서 R7에 따라 현재 호스트 기능의 필요성과 적합성을 판단한다",
+        "result": "pass",
+        "durationMs": 0.3057
+      },
+      {
+        "name": "툴박스 — 파일·INDEX 행이 있고 SKILL·INDEX의 링크가 모두 열린다",
+        "result": "pass",
+        "durationMs": 3.9082
+      },
+      {
+        "name": "examples — 루카스가 만족한 보고서와 좋았던 이유, 데이터는 schema·검사 ②~⑥ 통과",
+        "result": "pass",
+        "durationMs": 7.7045
+      },
+      {
+        "name": "평가 기준표 — 6개 기준마다 1·3·5점 정의, 가중치 합 100, 예시 criteria와 같다",
+        "result": "pass",
+        "durationMs": 1.031
+      },
+      {
+        "name": "아이디어 카드 — 혼자 읽히는 칸과 근거 출처 펼침, 추천이 아니면 실험 미정",
+        "result": "pass",
+        "durationMs": 3.1034
+      },
+      {
+        "name": "CLI scout card — idea-{n}.md를 쓰고 없는 후보·schema 오류·링크는 거부",
+        "result": "pass",
+        "durationMs": 1615.5135
+      },
+      {
+        "name": "예시 report.json은 schema를 통과하고 CLI render가 D5 섹션의 report.html을 만든다",
+        "result": "pass",
+        "durationMs": 811.3344
+      },
+      {
+        "name": "가중 합계 — 가중 평균, 가중치 0이면 단순 평균",
+        "result": "pass",
+        "durationMs": 0.5309
+      },
+      {
+        "name": "schema에 어긋나면 칸 경로를 모두 알리고 렌더하지 않는다",
+        "result": "pass",
+        "durationMs": 1937.3486
+      },
+      {
+        "name": "데이터 문자열은 모두 글자 — <script>·속성 탈출·javascript: 링크가 실행되지 않는다",
+        "result": "pass",
+        "durationMs": 4.3139
+      },
+      {
+        "name": "내부 주소·리다이렉트·비밀 든 URL 거부",
+        "result": "pass",
+        "durationMs": 6.9156
+      },
+      {
+        "name": "extractArticle — og·meta·JSON-LD·time 순으로 메타, 스크립트·nav·footer 뺀 본문",
+        "result": "pass",
+        "durationMs": 17.0256
+      },
+      {
+        "name": "scout fetch — 기사·블로그 저장 형식, 실패 이유와 계속, 중복·형식 거부, 비밀 제거·.gitignore",
+        "result": "pass",
+        "durationMs": 1779.1529
+      },
+      {
+        "name": "유튜브 — 설명란만 저장(method description), add로 자막 붙여넣기·메타만 보정",
+        "result": "pass",
+        "durationMs": 2836.7376
+      },
+      {
+        "name": "유튜브 자막 — ① 공개 자막 주소(수동 먼저) ② yt-dlp, 못 얻으면 설명란",
+        "result": "pass",
+        "durationMs": 456.12
+      },
+      {
+        "name": "저장 형식 왕복·sources 심볼릭 링크 거부·자막 정리·비밀 제거",
+        "result": "pass",
+        "durationMs": 563.862
+      },
+      {
+        "name": "redactSecrets: END 줄 없는 개인 키는 텍스트 끝까지 지워 본문이 남지 않는다",
+        "result": "pass",
+        "durationMs": 0.2187
+      },
+      {
+        "name": "cleanPanel·orcaBin·checkCdp — 탭 이름 떼기, Orca 터미널 안에서만(규칙 순서), --cdp는 이 기기 포트만",
+        "result": "pass",
+        "durationMs": 1.2921
+      },
+      {
+        "name": "readTranscript — 버튼이 늦게 나타나도 기다렸다 누르고, 세 번 실패하면 이유와 함께 멈추며 늘 닫는다",
+        "result": "pass",
+        "durationMs": 1.043
+      },
+      {
+        "name": "transcriptFromBrowser — Orca 경로로 저장(method browser, [mm:ss]), 실패하면 다음 수단·붙여넣기 안내",
+        "result": "pass",
+        "durationMs": 1395.3703
+      },
+      {
+        "name": "transcriptFromBrowser — agent-browser는 --cdp로 붙고 같은 세션으로 열기·eval·닫기",
+        "result": "pass",
+        "durationMs": 660.8125
+      },
+      {
+        "name": "CLI scout transcript — --via 검사",
+        "result": "pass",
+        "durationMs": 539.8956
+      },
+      {
+        "name": "agent-browser + 가짜 Chrome — 빈 임시 프로필로 띄우고(위장 옵션 없음) 포트로 연결, 끝나면 Chrome 종료·프로필 삭제",
+        "result": "pass",
+        "durationMs": 1380.3652
+      },
+      {
+        "name": "agent-browser — 연결이 실패하면 open하지 않는다(자기 자동화 브라우저로 넘어가지 않음)",
+        "result": "pass",
+        "durationMs": 1315.196
+      },
+      {
+        "name": "auto — Orca가 세 번 실패하면 알리고 agent-browser로 넘어가 저장한다, 한 시도의 명령 오류 뒤 다시 시도한다",
+        "result": "pass",
+        "durationMs": 2105.6633
+      },
+      {
+        "name": "패널 판정 — 시간 줄이 둘 이상이고 다 그려졌을 때(직전과 같을 때)만, 짧은 영상도",
+        "result": "pass",
+        "durationMs": 0.2709
+      },
+      {
+        "name": "수치 덩어리·크기 수치 뽑기",
+        "result": "pass",
+        "durationMs": 4.1031
+      },
+      {
+        "name": "맞는 예시(원문 포함)는 검사 6종 모두 통과",
+        "result": "pass",
+        "durationMs": 289.7014
+      },
+      {
+        "name": "검사마다 일부러 틀린 데이터는 그 검사에서 실패한다",
+        "result": "pass",
+        "durationMs": 308.5494
+      },
+      {
+        "name": "원문이 없으면 ①은 확인 못 함, 링크는 오프라인·연결 실패면 확인 못 함·4xx면 실패",
+        "result": "pass",
+        "durationMs": 47.5057
+      },
+      {
+        "name": "CLI verify — 기록·재렌더·종료 코드, 첫 실행 실패 3개 안내",
+        "result": "pass",
+        "durationMs": 4366.1226
+      },
+      {
+        "name": "pace-scout SKILL.md — 머리말과 일곱 절, 순서 ①~⑨",
+        "result": "pass",
+        "durationMs": 1.2799
+      },
+      {
+        "name": "scout new — main 체크아웃이면 backlogs/에 BL 규칙대로",
+        "result": "pass",
+        "durationMs": 3620.0788
+      },
+      {
+        "name": "scout new — git 아님·main 아님은 $PACE_HOME/scout/에 이유와 함께, --out은 그 아래",
+        "result": "pass",
+        "durationMs": 2683.0689
+      },
+      {
+        "name": "scout new — 실패 경로: 대체 위치 심볼릭 링크 거부, 커밋 없는 저장소는 한 줄 이유",
+        "result": "pass",
+        "durationMs": 1026.6417
+      },
+      {
+        "name": "디자인 토큰: 경계가 닫힌 data-token 경로만 보존한다",
+        "result": "pass",
+        "durationMs": 2.5123
+      },
+      {
+        "name": "디자인 토큰: 유사 속성·잘못된 경계·자격증명은 탐지와 마스킹을 유지한다",
+        "result": "pass",
+        "durationMs": 1.0448
+      },
+      {
+        "name": "secret-scan: GUIDE 디자인 토큰은 통과하고 같은 파일의 비밀은 차단한다",
+        "result": "pass",
+        "durationMs": 468.4117
+      },
+      {
+        "name": "hasSecret: 비밀 이름에 따옴표 문자열 리터럴이 대입·지정되면 계속 잡는다",
+        "result": "pass",
+        "durationMs": 0.3958
+      },
+      {
+        "name": "hasSecret: 코드 파일에서는 함수 호출·식별자·타입 표기·멤버 접근을 오탐으로 보지 않는다",
+        "result": "pass",
+        "durationMs": 0.5311
+      },
+      {
+        "name": "secret-scan: 같은 문장도 마크다운·설정에서는 잡고 코드 파일에서는 표현식이면 통과, 코드 파일의 리터럴은 잡는다",
+        "result": "pass",
+        "durationMs": 3272.3103
+      },
+      {
+        "name": "secret-scan: daemon 4개 파일 원문은 통과하고, 가짜 리터럴 토큰을 넣으면 잡는다",
+        "result": "pass",
+        "durationMs": 1265.8334
+      },
+      {
+        "name": "secret-scan: 대시보드 data.js는 파일째 제외하지 않고 JSON을 풀어 검사한다",
+        "result": "pass",
+        "durationMs": 2307.4875
+      },
+      {
+        "name": "secret-scan: 커밋될 파일(추적 + 무시되지 않는 새 파일)의 비밀 원문은 실패, 제외·무시·바이너리·환경 변수 이름은 통과",
+        "result": "pass",
+        "durationMs": 746.432
+      },
+      {
+        "name": "secret-scan: git 저장소가 아니면 한 줄 오류와 종료 코드 1",
+        "result": "pass",
+        "durationMs": 203.8466
+      },
+      {
+        "name": "secret-scan: 봉인 JS 오탐은 정확한 경로와 바이트만 제외한다",
+        "result": "pass",
+        "durationMs": 3452.2493
+      },
+      {
+        "name": "홈 폴더와 그 위는 프로젝트가 아니다 (~/.pace가 있어도)",
+        "result": "pass",
+        "durationMs": 2.4327
+      },
+      {
+        "name": "상황 판별: 새 프로젝트 / 정의 없음 / PACE 프로젝트",
+        "result": "pass",
+        "durationMs": 1108.3367
+      },
+      {
+        "name": "AGENT 정의만 있는 저장소도 하위 폴더에서 루트를 찾는다",
+        "result": "pass",
+        "durationMs": 4.895
+      },
+      {
+        "name": "S-7 두 토픽이 각각 자기 워크스페이스에서 실행되고 응답이 각 토픽으로 간다",
+        "result": "pass",
+        "durationMs": 107.5082
+      },
+      {
+        "name": "S-6 경계: 다른 chat·봇·편집·비텍스트·미허용 사용자·미등록 토픽·General 자유 대화는 실행하지 않는다",
+        "result": "pass",
+        "durationMs": 55.1974
+      },
+      {
+        "name": "S-8 한 토픽에서 워크트리를 번갈아 지시하고 대기 중 /use는 받은 작업에 영향이 없다",
+        "result": "pass",
+        "durationMs": 214.6264
+      },
+      {
+        "name": "S-13·S-14 승인 버튼: ✅/❌, callback_data는 승인 ID뿐, 두 번 누름·다른 토픽·미허용 사용자는 거부",
+        "result": "pass",
+        "durationMs": 887.8365
+      },
+      {
+        "name": "S-15 명령은 실행자를 부르지 않고 /write·/read가 대화 access를 바꾼다",
+        "result": "pass",
+        "durationMs": 51.2939
+      },
+      {
+        "name": "S-16 연결하면 setMyCommands와 General 기기 알림을 보낸다",
+        "result": "pass",
+        "durationMs": 37.5428
+      },
+      {
+        "name": "S-1 429는 retry_after만큼 기다린 뒤 재시도해 성공하고, 계속 429면 상한 뒤 오류",
+        "result": "pass",
+        "durationMs": 53.2427
+      },
+      {
+        "name": "S-2 오류·로그에 토큰이 없다(설명·연결 실패·다른 봇 형태)",
+        "result": "pass",
+        "durationMs": 10.8465
+      },
+      {
+        "name": "S-4m 응답하지 않는 호출은 마감 안에 포기하고(결과 불명), 정지하면 즉시 abort",
+        "result": "pass",
+        "durationMs": 254.3162
+      },
+      {
+        "name": "S-4o retry_after가 남은 마감보다 길면 기다리지 않고 포기, 대기 중 정지는 즉시 abort",
+        "result": "pass",
+        "durationMs": 120.7849
+      },
+      {
+        "name": "S-3 offset은 처리 뒤 저장되고 재시작은 저장된 offset부터 이어간다",
+        "result": "pass",
+        "durationMs": 143.0955
+      },
+      {
+        "name": "S-4 같은 update 재전달(offset 저장 전 크래시)은 새 Daemon·새 어댑터에서도 한 번만 실행된다",
+        "result": "pass",
+        "durationMs": 225.1863
+      },
+      {
+        "name": "S-4b 저장 실패는 offset 유지·재시도로 복구 뒤 정확히 1회 수락, 5회 연속 실패는 메타데이터만 보류(본문·토큰 미저장)",
+        "result": "pass",
+        "durationMs": 658.0076
+      },
+      {
+        "name": "S-4c stopping은 offset 유지·폴링 중단(재기동 뒤 다시 수락)",
+        "result": "pass",
+        "durationMs": 26.9211
+      },
+      {
+        "name": "S-4d 7일보다 오래된 메시지는 코어로 보내지 않는다",
+        "result": "pass",
+        "durationMs": 32.2904
+      },
+      {
+        "name": "S-4e 장기 무수신 뒤 update_id가 작아져도 새 update를 잃지 않는다(offset 생략), 1일 전이면 offset으로 확인돼 사라진다(대조군)",
+        "result": "pass",
+        "durationMs": 1402.6337
+      },
+      {
+        "name": "S-4f offset 파일 손상·유실·표식 조합에 따른 시작 거부/허용",
+        "result": "pass",
+        "durationMs": 16.0232
+      },
+      {
+        "name": "S-4g trimHeld: 통지 완료 우선 삭제, 전부 미통지면 영속 요약으로 합쳐 안내 의무 유지",
+        "result": "pass",
+        "durationMs": 0.4329
+      },
+      {
+        "name": "S-4i 포화: 새 요청은 보류(saturated)·안내·offset 진행(폴링 안 멈춤), 승인 콜백·/status는 포화 중에도 처리된다",
+        "result": "pass",
+        "durationMs": 563.3525
+      },
+      {
+        "name": "S-4k 장기 단절 뒤 재연결: 만료된 승인은 거부, 밀린 update는 1회 처리, 재연결 안내 없음",
+        "result": "pass",
+        "durationMs": 1828.1061
+      },
+      {
+        "name": "S-4l 수락 뒤 offset 저장 실패·안내 전송 실패에도 작업은 1개이고 보류·재전송 안내가 없다",
+        "result": "pass",
+        "durationMs": 62.2444
+      },
+      {
+        "name": "S-4n 복구 알림(outbox) 전송 실패 시 보존되고 연결 회복 뒤 전달·삭제된다",
+        "result": "pass",
+        "durationMs": 87.2454
+      },
+      {
+        "name": "S-4q 보류 안내 전송 실패는 notified:false로 보존되고 재기동·송신 복구 뒤 전달된다(최소 한 번)",
+        "result": "pass",
+        "durationMs": 274.0479
+      },
+      {
+        "name": "S-5 409 세 번 연속은 폴링 중단(conflict), 401은 unauthorized, 네트워크 오류는 알림 없이 백오프 뒤 복구",
+        "result": "pass",
+        "durationMs": 211.5864
+      },
+      {
+        "name": "S-6b 어댑터가 만드는 모든 Inbound·콜백 Actor에는 admin이 없다(위조 필드 무시)",
+        "result": "pass",
+        "durationMs": 30.8532
+      },
+      {
+        "name": "S-9b 미허용 사용자의 자체 명령·미등록 토픽·버튼은 설정·파일·Telegram 호출을 만들지 않는다",
+        "result": "pass",
+        "durationMs": 177.397
+      },
+      {
+        "name": "S-9 /new: 검증·설정 기록·코어 등록·토픽 생성·표 등록, 재전달은 중복 토픽 없음, 이후 그 토픽에서 실행",
+        "result": "pass",
+        "durationMs": 558.5425
+      },
+      {
+        "name": "S-9j 토픽 생성 확정 실패는 의도를 지우고 재시도되며, 결과 불명은 의도를 유지해 /bind로 복구한다(다른 이름의 /new와 무관)",
+        "result": "pass",
+        "durationMs": 894.8265
+      },
+      {
+        "name": "S-9g /new: 설정 기록 뒤 코어 등록 실패는 안내만 하고 update를 소비하며, 같은 /new 재입력이 복구한다",
+        "result": "pass",
+        "durationMs": 242.4499
+      },
+      {
+        "name": "S-9k /new 경로 검증 워커가 반환하지 않아도 마감 안에 거부되고 승인 콜백·명령이 계속 처리된다",
+        "result": "pass",
+        "durationMs": 334.9571
+      },
+      {
+        "name": "S-9h·S-9l /backlog는 40줄·/memory는 한도에서 잘려 안내되고 경계에 걸친 토큰은 송신되지 않는다",
+        "result": "pass",
+        "durationMs": 366.948
+      },
+      {
+        "name": "S-9c·S-9f 링크로 밖을 가리키는 파일·열기와 확인 사이 교체·루트 교체는 거부된다",
+        "result": "pass",
+        "durationMs": 76.3097
+      },
+      {
+        "name": "S-9i 파일 작업이 반환하지 않아도 다른 update·콜백이 계속 처리되고 막힌 동안 새 조회는 거절되며 stop()이 기한 안에 끝난다",
+        "result": "pass",
+        "durationMs": 503.6933
+      },
+      {
+        "name": "S-9e General /status는 두 토픽의 작업을 합친 전체 현황, 토픽 /status는 자기 작업만",
+        "result": "pass",
+        "durationMs": 199.0669
+      },
+      {
+        "name": "S-10b 실제 Daemon 경로로 8000자 초과 결과가 잘리지 않고 파일로 전달된다",
+        "result": "pass",
+        "durationMs": 58.8585
+      },
+      {
+        "name": "S-11 진행 메시지를 보내거나 고치지 않는다 — 도구 이벤트가 와도 입력 중 표시만 있고 최종 답변이 새 메시지로 한 번 온다",
+        "result": "pass",
+        "durationMs": 548.2424
+      },
+      {
+        "name": "S-14c 승인 저장 실패는 offset 유지·버튼 유지, 복구 뒤 승인이 정확히 1회 효과",
+        "result": "pass",
+        "durationMs": 502.3931
+      },
+      {
+        "name": "S-14f 승인 수락 뒤 answerCallbackQuery·버튼 편집 실패는 재시도·보류·재요청 안내 없이 작업은 실행된다",
+        "result": "pass",
+        "durationMs": 577.7771
+      },
+      {
+        "name": "S-14e(Telegram) /pending은 전송에 실패했던 승인 버튼을 같은 승인 ID로 다시 보낸다",
+        "result": "pass",
+        "durationMs": 349.2508
+      },
+      {
+        "name": "S-2b 송신 본문(최종 결과·승인 detail·편집)과 수신 텍스트에 토큰이 없다(자기 토큰·다른 봇 형태)",
+        "result": "pass",
+        "durationMs": 44.9664
+      },
+      {
+        "name": "S-21 기본 자유 대화는 read-only, /write 뒤에는 승인을 거친 뒤에만 write로 시작한다",
+        "result": "pass",
+        "durationMs": 533.1972
+      },
+      {
+        "name": "S-9f 열기와 확인 사이에 파일이 밖을 가리키는 링크로 교체되면 거부된다(fd 동일성 불일치)",
+        "result": "pass",
+        "durationMs": 852.6215
+      },
+      {
+        "name": "S-9c(루트) 기동 뒤 워크스페이스 루트가 교체되면 조회가 거부된다",
+        "result": "pass",
+        "durationMs": 75.4885
+      },
+      {
+        "name": "구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다",
+        "result": "pass",
+        "durationMs": 229.5379
+      },
+      {
+        "name": "구현 후 리뷰 1차: 조회 도중 루트가 통째로 바뀌면 거부된다(열기 뒤 루트 식별자 재확인)",
+        "result": "skip",
+        "durationMs": 1235.8776
+      },
+      {
+        "name": "구현 후 리뷰 2차: /held clear·/new 확정 실패 정리의 저장 실패도 메모리를 되돌려 이후 저장에 섞이지 않는다",
+        "result": "pass",
+        "durationMs": 244.5395
+      },
+      {
+        "name": "구현 후 리뷰 3차: 보류 요약 객체 롤백·워크스페이스 이름 'constructor'·워커 동시 1개",
+        "result": "pass",
+        "durationMs": 378.6997
+      },
+      {
+        "name": "구현 후 리뷰 4차: 긴 승인 상세는 4096 안으로 잘려 버튼이 전달되고, 손상된 상태 파일(held 항목·토픽 값)은 시작을 거부한다",
+        "result": "pass",
+        "durationMs": 8.6847
+      },
+      {
+        "name": "tester D1: 슬래시 뒤 공백(\"/ approve\", \"/ use b/main\")으로 텍스트 승인 차단·워크트리 교차 거부를 우회하지 못한다",
+        "result": "pass",
+        "durationMs": 359.3083
+      },
+      {
+        "name": "tester T-3: 실제 Daemon의 allowedUsers.telegram이 비어 있으면(admin도 없음) 모든 사용자가 차단된다",
+        "result": "pass",
+        "durationMs": 29.7541
+      },
+      {
+        "name": "F-1 제목·굵게·기울임·취소선·코드·링크·인용·구분선",
+        "result": "pass",
+        "durationMs": 2.5836
+      },
+      {
+        "name": "F-2 목록(중첩·번호·체크)과 코드 블록·표",
+        "result": "pass",
+        "durationMs": 1.4161
+      },
+      {
+        "name": "F-3 모든 텍스트는 이스케이프되고 허용 밖 태그·위험 링크는 만들어지지 않는다",
+        "result": "pass",
+        "durationMs": 0.4989
+      },
+      {
+        "name": "F-4 겹침·짝이 안 맞는 강조는 평문으로 돌아가고 태그 균형은 항상 지켜진다",
+        "result": "pass",
+        "durationMs": 0.3606
+      },
+      {
+        "name": "F-5 분할 — 긴 본문·긴 한 줄·긴 코드·긴 목록·인용 모두 4096 이하이고 조각마다 태그가 닫힌다",
+        "result": "pass",
+        "durationMs": 27.9822
+      },
+      {
+        "name": "F-6 renderBlocks — 텍스트는 마크다운, 긴 출력은 파일, 비밀은 변환 전에 제거, 메시지 경계는 4096",
+        "result": "pass",
+        "durationMs": 15.362
+      },
+      {
+        "name": "F-7 승인 요청 본문도 한 줄에 하나씩이고 상세는 이스케이프된다",
+        "result": "pass",
+        "durationMs": 0.2562
+      },
+      {
+        "name": "F-8 명령 안내·사용법·미등록 토픽 안내는 명령 한 줄에 하나(HTML 서식, 인자는 code, 마지막 문장 안내)",
+        "result": "pass",
+        "durationMs": 117.1412
+      },
+      {
+        "name": "F-9 서버가 HTML을 거절(can't parse entities)하면 태그를 지운 평문으로 다시 보낸다 — 답변이 사라지지 않는다",
+        "result": "pass",
+        "durationMs": 197.5632
+      },
+      {
+        "name": "F-10 에이전트 답변(마크다운)이 완료 메시지에서 HTML로 보인다",
+        "result": "pass",
+        "durationMs": 44.5586
+      },
+      {
+        "name": "M-1 /명령@이 봇 이름은 @를 떼고 General·토픽 모두에서 명령으로 처리한다(대소문자 무시, 인자 보존)",
+        "result": "pass",
+        "durationMs": 106.5295
+      },
+      {
+        "name": "M-2 다른 봇을 가리킨 명령은 응답하지 않고 실행도 하지 않는다(General·토픽 모두)",
+        "result": "pass",
+        "durationMs": 301.447
+      },
+      {
+        "name": "M-3 getMe로 username을 확인하지 못하면 @가 붙은 명령은 실행하지 않고(안전 쪽), @ 없는 명령은 처리하며, 확인이 복구되면 처리한다",
+        "result": "pass",
+        "durationMs": 199.1447
+      },
+      {
+        "name": "Q-1 /queue가 비면 한 줄로 답하고(빈 표 없음), 있으면 한 작업 한 줄 — 작업 ID는 code",
+        "result": "pass",
+        "durationMs": 228.9638
+      },
+      {
+        "name": "Q-2 목록형 응답은 비어 있을 때 한 줄로 답한다(/pending·/held·/workspaces·/status)",
+        "result": "pass",
+        "durationMs": 44.5975
+      },
+      {
+        "name": "S-17 실제 daemon 프로세스: 작업 수락 뒤 offset 저장 전 강제 종료 → 재기동·같은 update 재전달에도 재실행 없음, 중단 안내가 해당 토픽에 도착",
+        "result": "pass",
+        "durationMs": 1084.9643
+      },
+      {
+        "name": "S-18 `pace daemon telegram init`은 토큰을 표준 입력으로만 받아 0600 시크릿으로 저장하고 출력·기록에 노출하지 않는다",
+        "result": "pass",
+        "durationMs": 213.5461
+      },
+      {
+        "name": "S-18 runDaemon은 시크릿이 있으면 Telegram 어댑터를 연결하고 없으면 건너뛰며, status·logs·출력에 토큰이 없다",
+        "result": "pass",
+        "durationMs": 2487.5989
+      },
+      {
+        "name": "S-10 이스케이프·조각마다 닫힌 태그·4096 이하·긴 출력은 파일",
+        "result": "pass",
+        "durationMs": 16.448
+      },
+      {
+        "name": "S-10 diff·table·card·chart·file 블록 렌더와 splitRaw의 코드 포인트 보존",
+        "result": "pass",
+        "durationMs": 2.0328
+      },
+      {
+        "name": "S-13 승인 본문에 종류·상세(도구 이름)·범위가 있고 버튼 데이터는 승인 ID뿐이다",
+        "result": "pass",
+        "durationMs": 0.7532
+      },
+      {
+        "name": "TY-1 실행 중에만 그 토픽에 입력 중 표시를 주기적으로 보내고 종료하면 멈춘다 — 완료 메시지는 1회",
+        "result": "pass",
+        "durationMs": 549.4696
+      },
+      {
+        "name": "TY-2 실패·취소로 끝나도 입력 중 표시를 멈추고, 실패 안내에는 작업 ID가 있다",
+        "result": "pass",
+        "durationMs": 712.1814
+      },
+      {
+        "name": "TY-3 대기열에서 기다리는 동안은 대기 한 줄만 보내고, 실행이 시작되면 입력 중 표시를 시작한다",
+        "result": "pass",
+        "durationMs": 382.5519
+      },
+      {
+        "name": "TY-4 도구 승인을 기다리는 동안 입력 중 표시를 멈추고 승인 뒤 다시 켠다",
+        "result": "pass",
+        "durationMs": 363.0482
+      },
+      {
+        "name": "TY-5 입력 중 표시가 실패하거나 429여도 작업은 그대로 끝난다(429는 쉰 뒤 재개)",
+        "result": "pass",
+        "durationMs": 1217.0661
+      },
+      {
+        "name": "TY-6 /status는 진행 중·대기 작업의 ID를 보여 준다(/cancel 대상 찾기)",
+        "result": "pass",
+        "durationMs": 46.4633
+      },
+      {
+        "name": "U-1 토픽의 /use는 <워크트리>와 <이 워크스페이스>/<워크트리> 모두 받는다",
+        "result": "pass",
+        "durationMs": 107.0565
+      },
+      {
+        "name": "U-2 다른 워크스페이스·없는 워크트리·인자 없음은 이 토픽의 워크트리 목록만 보여 주며 서로 모순되지 않는다",
+        "result": "pass",
+        "durationMs": 42.7935
+      },
+      {
+        "name": "U-3 모르는 명령은 토픽 도움말로 답하고(코어의 다른 도움말이 아니다), 도움말의 /use 표기가 동작과 같다",
+        "result": "pass",
+        "durationMs": 30.902
+      },
+      {
+        "name": "N-1 /new의 토픽 권한 부족·포럼 꺼짐은 원문 오류 대신 해결 방법을 안내한다(같은 /new로 이어 간다)",
+        "result": "pass",
+        "durationMs": 571.8456
+      },
+      {
+        "name": "test helper isolates inherited product homes",
+        "result": "pass",
+        "durationMs": 108.4436
+      },
+      {
+        "name": "temporary directory lifecycle: pass",
+        "result": "pass",
+        "durationMs": 105.3085
+      },
+      {
+        "name": "temporary directory lifecycle: fail",
+        "result": "pass",
+        "durationMs": 107.2519
+      },
+      {
+        "name": "temporary directory lifecycle: keep",
+        "result": "pass",
+        "durationMs": 112.009
+      },
+      {
+        "name": "prefixes cannot escape the owned root",
+        "result": "pass",
+        "durationMs": 0.391
+      },
+      {
+        "name": "a replaced root is not followed or deleted",
+        "result": "pass",
+        "durationMs": 103.9628
+      },
+      {
+        "name": "links inside an owned root do not delete their targets",
+        "result": "pass",
+        "durationMs": 103.4704
+      },
+      {
+        "name": "one test process cannot clean another process root",
+        "result": "pass",
+        "durationMs": 205.6259
+      },
+      {
+        "name": "overlapping test processes keep their own roots",
+        "result": "pass",
+        "durationMs": 209.2349
+      },
+      {
+        "name": "a different directory substituted for the root is preserved",
+        "result": "pass",
+        "durationMs": 107.5452
+      },
+      {
+        "name": "a surviving child owns its temporary root independently of its parent",
+        "result": "pass",
+        "durationMs": 236.6692
+      },
+      {
+        "name": "dashboard diagnostic files survive an explicit keep run",
+        "result": "pass",
+        "durationMs": 458.2776
+      },
+      {
+        "name": "a surviving ordinary child keeps inherited temporary files until it exits",
+        "result": "pass",
+        "durationMs": 196.6582
+      },
+      {
+        "name": "a timed out registered child leaves its temporary root intact",
+        "result": "pass",
+        "durationMs": 657.9696
+      },
+      {
+        "name": "active registered child is protected on evaluation exception",
+        "result": "pass",
+        "durationMs": 258.0136
+      },
+      {
+        "name": "active registered child is protected on explicit exit",
+        "result": "pass",
+        "durationMs": 260.236
+      },
+      {
+        "name": "기본 테스트 명령의 Windows 동시성과 추가 옵션·파일 전달을 보존한다",
+        "result": "pass",
+        "durationMs": 1.2834
+      },
+      {
+        "name": "runner options: mixed files, split values, separator and unique concurrency override",
+        "result": "pass",
+        "durationMs": 0.5466
+      },
+      {
+        "name": "runner npm: actual overlap is RED at one, GREEN at two, with filter and failure forwarding",
+        "result": "pass",
+        "durationMs": 9561.3404
+      },
+      {
+        "name": "기본 테스트 실행기는 실제 테스트의 성공과 실패를 전달한다",
+        "result": "pass",
+        "durationMs": 851.0636
+      },
+      {
+        "name": "테스트 러너가 신호로 종료되면 실행기는 실패와 신호를 전달한다",
+        "result": "pass",
+        "durationMs": 101.908
+      },
+      {
+        "name": "테스트 러너 실행 오류만 발생해도 실행기는 실패한다",
+        "result": "pass",
+        "durationMs": 94.2039
+      },
+      {
+        "name": "테스트 자식을 띄우는 중 받은 신호도 자식에 전달한다",
+        "result": "pass",
+        "durationMs": 99.0757
+      },
+      {
+        "name": "signal forwarding: 실행기가 신호를 받으면 테스트 자식에도 전달한다",
+        "result": "pass",
+        "durationMs": 95.1259
+      },
+      {
+        "name": "실제 Node·Python 테스트의 성공, 빈 파일, 전체 skip 및 실패를 구분한다",
+        "result": "pass",
+        "durationMs": 3152.878
+      },
+      {
+        "name": "공통·미분류·전제와 잘못된 패턴 및 외부 경로를 오인하지 않는다",
+        "result": "pass",
+        "durationMs": 2138.0634
+      },
+      {
+        "name": "전체 검사는 base 선언을 사용하고 CLI는 결과를 전달한다",
+        "result": "pass",
+        "durationMs": 1935.1997
+      },
+      {
+        "name": "미지원 구성과 여러 소속의 실패 우선 및 테스트·소스 겹침을 구분한다",
+        "result": "pass",
+        "durationMs": 2387.4795
+      },
+      {
+        "name": "실제 외부 파일과 밖을 가리키는 구성 경로는 실경로에서 거부한다",
+        "result": "pass",
+        "durationMs": 911.4526
+      },
+      {
+        "name": "Python 0건과 실패, Node 시그널 및 타임아웃은 실패한다",
+        "result": "pass",
+        "durationMs": 1630.8921
+      },
+      {
+        "name": "전체 검사 선언 부재와 base 조회 실패는 작업본 선언으로 성공하지 않는다",
+        "result": "pass",
+        "durationMs": 1902.923
+      },
+      {
+        "name": "T02 다중 패키지 시범 구성은 스키마로 읽고 미지원 Vitest를 확인 불가로 처리한다",
+        "result": "pass",
+        "durationMs": 881.6251
+      },
+      {
+        "name": "외부 SIGTERM으로 중단해도 선택 테스트 자식이 남지 않는다",
+        "result": "pass",
+        "durationMs": 0.2907
+      },
+      {
+        "name": "공통은 등록된 단위보다 우선하고 파일 선택은 지정된 테스트만 실행하며 실행 정보가 나온다",
+        "result": "pass",
+        "durationMs": 1529.1203
+      },
+      {
+        "name": "미지원 러너 설정과 결과를 읽지 못하는 실행은 확인 불가다",
+        "result": "pass",
+        "durationMs": 595.5609
+      },
+      {
+        "name": "Windows 명령은 표준 npm shim만 절대 Node와 경계 안 스크립트로 해석한다",
+        "result": "pass",
+        "durationMs": 14.045
+      },
+      {
+        "name": "Windows PATH의 현재 폴더와 상대 항목에 심은 실행 파일을 무시한다",
+        "result": "pass",
+        "durationMs": 5.2918
+      },
+      {
+        "name": "npm node_modules 자체가 경계 밖 정션이면 거부한다",
+        "result": "pass",
+        "durationMs": 3.0068
+      },
+      {
+        "name": "Windows 실행 파일 링크는 실제 실행 경로로 해석한다",
+        "result": "pass",
+        "durationMs": 1.5099
+      },
+      {
+        "name": "exe 링크로 배치 shim을 가리키면 확장자 우회를 거부한다",
+        "result": "pass",
+        "durationMs": 2.3411
+      },
+      {
+        "name": "Windows 동시 부하에서도 소유 잡 회수를 5초 안에 확인한다",
+        "result": "pass",
+        "durationMs": 1651.9484
+      },
+      {
+        "name": "Windows 부모 신원은 PID와 생성 순서가 모두 맞을 때만 통과한다",
+        "result": "pass",
+        "durationMs": 704.1244
+      },
+      {
+        "name": "Windows 부모 강제 종료 뒤 감시자가 자손을 회수하고 무관 프로세스를 보존한다",
+        "result": "pass",
+        "durationMs": 13446.0645
+      },
+      {
+        "name": "Windows 감시자 준비 실패는 에이전트 생성 전에 종료한다",
+        "result": "pass",
+        "durationMs": 626.5559
+      },
+      {
+        "name": "Windows 감시자 자체가 죽어도 잡 자손만 종료한다",
+        "result": "pass",
+        "durationMs": 13375.2432
+      },
+      {
+        "name": "Windows 부모가 정상 종료해도 독립 감시자가 자손을 회수한다",
+        "result": "pass",
+        "durationMs": 13357.7049
+      },
+      {
+        "name": "Windows ACP 부모 종료와 시간 초과는 자손을 회수하고 무관 프로세스를 보존한다",
+        "result": "pass",
+        "durationMs": 42856.6029
+      },
+      {
+        "name": "작업자 설정 우선순위와 초기화",
+        "result": "pass",
+        "durationMs": 9.1425
+      },
+      {
+        "name": "설정 심볼릭 링크는 읽기와 쓰기를 거부하고 대상과 링크를 보존한다",
+        "result": "pass",
+        "durationMs": 2.5617
+      },
+      {
+        "name": "프로필의 다른 이름을 새 프로젝트 역할에 사용한다",
+        "result": "pass",
+        "durationMs": 17.274
+      },
+      {
+        "name": "후보 두 개를 조회하고 명시적으로 경로를 옮기며 중복을 거부한다",
+        "result": "pass",
+        "durationMs": 21.3552
+      },
+      {
+        "name": "경로 탈출 ID와 심볼릭 링크 등록부·항목을 거부한다",
+        "result": "pass",
+        "durationMs": 5.7498
+      },
+      {
+        "name": "비밀로 보이는 요약은 원문을 표시하거나 저장하지 않는다",
+        "result": "pass",
+        "durationMs": 0.8985
+      },
+      {
+        "name": "존재하지 않는 비밀 경로는 파일 접근 전 거부하고 오류에 노출하지 않는다",
+        "result": "pass",
+        "durationMs": 2.8613
+      },
+      {
+        "name": "잘못된 위치와 경로 별칭 중복을 거부해 기존 후보를 보존한다",
+        "result": "pass",
+        "durationMs": 8.3648
+      },
+      {
+        "name": "AGENT 없는 후보는 부트에 활성 등록 정보로 노출되지 않는다",
+        "result": "pass",
+        "durationMs": 551.7965
+      },
+      {
+        "name": "후보는 일치하는 유효 정의가 있을 때만 활성화된다",
+        "result": "pass",
+        "durationMs": 7.1268
+      },
+      {
+        "name": "기존 v2 정의의 ID로 후보를 연결하며 같은 ID는 덮어쓰지 않는다",
+        "result": "pass",
+        "durationMs": 4.3275
+      },
+      {
+        "name": "등록은 새 정의 또는 기존 유효 정의와 같은 ID를 활성 상태로 연결한다",
+        "result": "pass",
+        "durationMs": 8.1604
+      },
+      {
+        "name": "등록 실패 시 정의 원본과 등록부를 변경하지 않는다",
+        "result": "pass",
+        "durationMs": 3.0403
+      },
+      {
+        "name": "활성 목록은 삭제·변경된 정의를 더 이상 활성으로 반환하지 않는다",
+        "result": "pass",
+        "durationMs": 5.4564
+      },
+      {
+        "name": "부트용 정의 조회는 현재 활성 등록과 검증된 ID가 일치할 때만 원문을 돌려준다",
+        "result": "pass",
+        "durationMs": 9.662
+      },
+      {
+        "name": "부트용 정의 조회는 교체된 링크와 큰 파일을 거부하고 손상 레코드 원문을 노출하지 않는다",
+        "result": "pass",
+        "durationMs": 8.5336
+      },
+      {
+        "name": "기존 대소문자 별칭 레코드는 같은 실제 디렉터리의 중복 등록을 막는다",
+        "result": "pass",
+        "durationMs": 7.1676
+      },
+      {
+        "name": "workspace CLI는 새 정의와 일치하는 활성 등록을 만들고 조회한다",
+        "result": "pass",
+        "durationMs": 573.2856
+      },
+      {
+        "name": "활성 워크스페이스 위치 변경은 새 위치의 같은 정의를 확인한다",
+        "result": "pass",
+        "durationMs": 12.4772
+      },
+      {
+        "name": "git에서 정의가 무시되면 등록 후 추적 경고를 출력한다",
+        "result": "pass",
+        "durationMs": 378.8776
+      },
+      {
+        "name": "등록 검증 실패는 새 정의·활성 레코드를 남기지 않고 기존 항목을 보존한다",
+        "result": "pass",
+        "durationMs": 6.3178
+      },
+      {
+        "name": "활성화는 외부 심볼릭 링크 정의를 거부하고 레코드를 보존한다",
+        "result": "pass",
+        "durationMs": 4.1462
+      },
+      {
+        "name": "같은 ID를 가진 기존 정의의 등록 충돌은 양쪽 원문을 보존한다",
+        "result": "pass",
+        "durationMs": 8.3197
+      },
+      {
+        "name": "내부 후보 등록은 기존 후보 ID로 정의를 만들고 활성화한다",
+        "result": "pass",
+        "durationMs": 6.6405
+      },
+      {
+        "name": "무효 버전의 활성 항목을 목록에서 조용히 누락하지 않고 진단한다",
+        "result": "pass",
+        "durationMs": 1122.9579
+      },
+      {
+        "name": "등록 레코드 확정 뒤 임시 파일 정리 오류가 나도 정의와 활성 레코드는 일관된다",
+        "result": "pass",
+        "durationMs": 4.9266
+      },
+      {
+        "name": "정의 생성 후 등록 레코드 쓰기가 실패하면 생성한 정의를 되돌린다",
+        "result": "pass",
+        "durationMs": 4.414
+      },
+      {
+        "name": "workspace CLI는 BR02 비활성 후보를 동일 ID로 활성화한다",
+        "result": "pass",
+        "durationMs": 315.0017
+      }
+    ],
+    "complete": true,
+    "problems": [],
+    "observed": {
+      "tests": 996,
+      "suites": 0,
+      "pass": 987,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 9,
+      "todo": 0
+    }
+  }
+]

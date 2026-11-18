@@ -1,0 +1,172 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT",
+  "copy": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+  "trace": true,
+  "limit": 1,
+  "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+  "preloadSha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd",
+  "originalTestSha256": "e2524ec1948d8b99b950df6d30ed217240ff937706a603c921da8257fc780160",
+  "diagnosticTestSha256": "46c7f448a4e11fadb41b1b4455ae01f4bbdaf35c5c5954706bd781d5362b0420",
+  "productSourceSha256": "014668d0c7c2d1c77a0d88e7a73afe7298b17b3889bf77ed788a613fd265b95c",
+  "worktreeTestUnchanged": true,
+  "records": [
+    {
+      "run": 1,
+      "status": 1,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=simultaneous stale-lock recovery",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source\\test\\backlog-dashboard.test.ts"
+      ],
+      "observation": {
+        "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP",
+        "observations": [
+          {
+            "pid": 19660,
+            "argv": [
+              "C:\\nvm4w\\nodejs\\node.exe",
+              "--import",
+              "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+              "--input-type=module",
+              "-e",
+              "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+              "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP"
+            ],
+            "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+            "code": 1,
+            "signal": null,
+            "stdout": "",
+            "stderr": "LOCK_TRACE_READY {\"pid\":19660,\"preloadUrl\":\"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs\",\"sha256\":\"8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd\"}\nLOCK_TRACE {\"pid\":19660,\"origin\":\"unhandledRejection\",\"error\":{\"message\":\"realpathSync.native is not a function\",\"stack\":\"TypeError: realpathSync.native is not a function\\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\\n    at async node:internal/modules/esm/loader:223:26\\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"},\"events\":[]}\nfile:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38\r\n  inspect(realpathSync.native(input));\r\n                       ^\r\n\r\nTypeError: realpathSync.native is not a function\r\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\r\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\r\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:223:26\r\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.22.3\r\n"
+          },
+          {
+            "pid": 71268,
+            "argv": [
+              "C:\\nvm4w\\nodejs\\node.exe",
+              "--import",
+              "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+              "--input-type=module",
+              "-e",
+              "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+              "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP"
+            ],
+            "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+            "code": 1,
+            "signal": null,
+            "stdout": "",
+            "stderr": "LOCK_TRACE_READY {\"pid\":71268,\"preloadUrl\":\"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs\",\"sha256\":\"8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd\"}\nLOCK_TRACE {\"pid\":71268,\"origin\":\"unhandledRejection\",\"error\":{\"message\":\"realpathSync.native is not a function\",\"stack\":\"TypeError: realpathSync.native is not a function\\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\\n    at async node:internal/modules/esm/loader:223:26\\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"},\"events\":[]}\nfile:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38\r\n  inspect(realpathSync.native(input));\r\n                       ^\r\n\r\nTypeError: realpathSync.native is not a function\r\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\r\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\r\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:223:26\r\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.22.3\r\n"
+          },
+          {
+            "pid": 78620,
+            "argv": [
+              "C:\\nvm4w\\nodejs\\node.exe",
+              "--import",
+              "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+              "--input-type=module",
+              "-e",
+              "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+              "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP"
+            ],
+            "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+            "code": 1,
+            "signal": null,
+            "stdout": "",
+            "stderr": "LOCK_TRACE_READY {\"pid\":78620,\"preloadUrl\":\"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs\",\"sha256\":\"8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd\"}\nLOCK_TRACE {\"pid\":78620,\"origin\":\"unhandledRejection\",\"error\":{\"message\":\"realpathSync.native is not a function\",\"stack\":\"TypeError: realpathSync.native is not a function\\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\\n    at async node:internal/modules/esm/loader:223:26\\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"},\"events\":[]}\nfile:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38\r\n  inspect(realpathSync.native(input));\r\n                       ^\r\n\r\nTypeError: realpathSync.native is not a function\r\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\r\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\r\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:223:26\r\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.22.3\r\n"
+          },
+          {
+            "pid": 33460,
+            "argv": [
+              "C:\\nvm4w\\nodejs\\node.exe",
+              "--import",
+              "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+              "--input-type=module",
+              "-e",
+              "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+              "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP"
+            ],
+            "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+            "code": 1,
+            "signal": null,
+            "stdout": "",
+            "stderr": "LOCK_TRACE_READY {\"pid\":33460,\"preloadUrl\":\"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs\",\"sha256\":\"8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd\"}\nLOCK_TRACE {\"pid\":33460,\"origin\":\"unhandledRejection\",\"error\":{\"message\":\"realpathSync.native is not a function\",\"stack\":\"TypeError: realpathSync.native is not a function\\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\\n    at async node:internal/modules/esm/loader:223:26\\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"},\"events\":[]}\nfile:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38\r\n  inspect(realpathSync.native(input));\r\n                       ^\r\n\r\nTypeError: realpathSync.native is not a function\r\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\r\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\r\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:223:26\r\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.22.3\r\n"
+          },
+          {
+            "pid": 28096,
+            "argv": [
+              "C:\\nvm4w\\nodejs\\node.exe",
+              "--import",
+              "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+              "--input-type=module",
+              "-e",
+              "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+              "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP"
+            ],
+            "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+            "code": 1,
+            "signal": null,
+            "stdout": "",
+            "stderr": "LOCK_TRACE_READY {\"pid\":28096,\"preloadUrl\":\"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs\",\"sha256\":\"8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd\"}\nLOCK_TRACE {\"pid\":28096,\"origin\":\"unhandledRejection\",\"error\":{\"message\":\"realpathSync.native is not a function\",\"stack\":\"TypeError: realpathSync.native is not a function\\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\\n    at async node:internal/modules/esm/loader:223:26\\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"},\"events\":[]}\nfile:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38\r\n  inspect(realpathSync.native(input));\r\n                       ^\r\n\r\nTypeError: realpathSync.native is not a function\r\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\r\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\r\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:223:26\r\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.22.3\r\n"
+          },
+          {
+            "pid": 80708,
+            "argv": [
+              "C:\\nvm4w\\nodejs\\node.exe",
+              "--import",
+              "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+              "--input-type=module",
+              "-e",
+              "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+              "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP"
+            ],
+            "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+            "code": 1,
+            "signal": null,
+            "stdout": "",
+            "stderr": "LOCK_TRACE_READY {\"pid\":80708,\"preloadUrl\":\"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs\",\"sha256\":\"8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd\"}\nLOCK_TRACE {\"pid\":80708,\"origin\":\"unhandledRejection\",\"error\":{\"message\":\"realpathSync.native is not a function\",\"stack\":\"TypeError: realpathSync.native is not a function\\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\\n    at async node:internal/modules/esm/loader:223:26\\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"},\"events\":[]}\nfile:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38\r\n  inspect(realpathSync.native(input));\r\n                       ^\r\n\r\nTypeError: realpathSync.native is not a function\r\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\r\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\r\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:223:26\r\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.22.3\r\n"
+          },
+          {
+            "pid": 73044,
+            "argv": [
+              "C:\\nvm4w\\nodejs\\node.exe",
+              "--import",
+              "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+              "--input-type=module",
+              "-e",
+              "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+              "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP"
+            ],
+            "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+            "code": 1,
+            "signal": null,
+            "stdout": "",
+            "stderr": "LOCK_TRACE_READY {\"pid\":73044,\"preloadUrl\":\"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs\",\"sha256\":\"8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd\"}\nLOCK_TRACE {\"pid\":73044,\"origin\":\"unhandledRejection\",\"error\":{\"message\":\"realpathSync.native is not a function\",\"stack\":\"TypeError: realpathSync.native is not a function\\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\\n    at async node:internal/modules/esm/loader:223:26\\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"},\"events\":[]}\nfile:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38\r\n  inspect(realpathSync.native(input));\r\n                       ^\r\n\r\nTypeError: realpathSync.native is not a function\r\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\r\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\r\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:223:26\r\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.22.3\r\n"
+          },
+          {
+            "pid": 67744,
+            "argv": [
+              "C:\\nvm4w\\nodejs\\node.exe",
+              "--import",
+              "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+              "--input-type=module",
+              "-e",
+              "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+              "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\run-1\\pace-test-run-VcctrK\\pace-dashboard-recovery-31JMKP"
+            ],
+            "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-aqGLeT\\source",
+            "code": 1,
+            "signal": null,
+            "stdout": "",
+            "stderr": "LOCK_TRACE_READY {\"pid\":67744,\"preloadUrl\":\"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs\",\"sha256\":\"8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd\"}\nLOCK_TRACE {\"pid\":67744,\"origin\":\"unhandledRejection\",\"error\":{\"message\":\"realpathSync.native is not a function\",\"stack\":\"TypeError: realpathSync.native is not a function\\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\\n    at async node:internal/modules/esm/loader:223:26\\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\"},\"events\":[]}\nfile:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38\r\n  inspect(realpathSync.native(input));\r\n                       ^\r\n\r\nTypeError: realpathSync.native is not a function\r\n    at assertSafeGitPath (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/core/paths.ts:38:24)\r\n    at generateDashboard (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/src/project/dashboard.ts:9:1)\r\n    at file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/source/[eval1]:1:143\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:223:26\r\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\r\n\r\nNode.js v24.22.3\r\n"
+          }
+        ],
+        "files": [
+          ".pace-refresh-lock",
+          "data.js"
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "Only child stdio capture, optional bounded in-memory fs observation, and pre-assertion observation were added to the owned test copy. Eight concurrent children and all original assertions were preserved. Output collection and hooks can affect scheduling. This is not a full timing sample or historical-cause proof. No actual user settings were touched."
+  ]
+}

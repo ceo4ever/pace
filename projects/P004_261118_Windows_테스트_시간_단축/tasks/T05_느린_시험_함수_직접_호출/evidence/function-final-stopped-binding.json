@@ -1,0 +1,108 @@
+{
+  "head": "46fdf682990d8002ce1116114f2913ca168c6840",
+  "headSame": true,
+  "sourceComparison": {
+    "verified": true,
+    "checks": {
+      "files": true,
+      "node": true,
+      "verifier": true
+    },
+    "fileCount": 609,
+    "fullyEqual": false,
+    "metadataDifferences": [
+      {
+        "key": "captured",
+        "before": "2026-11-18T21:44:58.429Z",
+        "after": "2026-11-18T22:21:11.912Z"
+      }
+    ],
+    "sourceTreeSha256": "3b52d82138b8499d9b1cb640251a871e5fa48c90c0670d63578425126762cbb5"
+  },
+  "toolsSame": true,
+  "preservedT04TopLevelFiles": true,
+  "summary": {
+    "kind": "baseline-summary",
+    "scope": "baseline-only; auxiliary result is separate",
+    "valid": false,
+    "runs": 3,
+    "medianMs": 704630.4685,
+    "minMs": 700394.1875000002,
+    "maxMs": 704920.2361999999
+  },
+  "resultsSha256": "0bcb7f5e90e6f34cc90a5ed26c02a0e1f5d71182740fdb597ae80337538349f3",
+  "rawLogSha256": [
+    "5f065ac6f7db68f2ca1393ac17a8bbfa560df10387a2f6dca1b76ec7ec26c202",
+    "d005d2ba2da71e7c3ee8763f5b18db0a99806558f1e8b2c4c0b9c359b18201f0",
+    "ffd45c026f6115b6e0424f98c43c8889bfe1eaf7ed0280734c9caee9b5692c12"
+  ],
+  "selectedCasesAllPassed": [
+    [
+      {
+        "name": "P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다",
+        "result": "pass",
+        "durationMs": 64347.8437
+      },
+      {
+        "name": "done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 20255.7627
+      },
+      {
+        "name": "BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다",
+        "result": "pass",
+        "durationMs": 25826.8321
+      },
+      {
+        "name": "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+        "result": "pass",
+        "durationMs": 7196.3373
+      }
+    ],
+    [
+      {
+        "name": "P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다",
+        "result": "pass",
+        "durationMs": 64654.6004
+      },
+      {
+        "name": "done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 20420.4146
+      },
+      {
+        "name": "BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다",
+        "result": "pass",
+        "durationMs": 25739.3646
+      },
+      {
+        "name": "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+        "result": "pass",
+        "durationMs": 6941.4383
+      }
+    ],
+    [
+      {
+        "name": "P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다",
+        "result": "pass",
+        "durationMs": 64386.4825
+      },
+      {
+        "name": "done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다",
+        "result": "pass",
+        "durationMs": 20221.3164
+      },
+      {
+        "name": "BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다",
+        "result": "pass",
+        "durationMs": 25894.0368
+      },
+      {
+        "name": "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+        "result": "pass",
+        "durationMs": 7711.6877
+      }
+    ]
+  ],
+  "finalViewsNotCreated": true
+}

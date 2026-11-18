@@ -1,0 +1,61 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8",
+  "copy": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\source",
+  "argv": [
+    "--test",
+    "--test-name-pattern=Windows Git Bash",
+    "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\source\\test\\install-windows-wrapper.test.ts"
+  ],
+  "status": 0,
+  "signal": null,
+  "originalSourceSha256": "3662b08e03855d6aa84afcea2a05afdfd7d61d78649ec2face67cdd77b96e658",
+  "diagnosticSourceSha256": "d2bad2bd38cd20413d6be8d1a8570b2937f009b371276208a60fa22ad532b0e5",
+  "originalPathAssertionPreserved": true,
+  "observation": {
+    "firstStatus": 0,
+    "secondStatus": 0,
+    "firstRaw": "/tmp/pace-test-Wfy6g0/한글 space '$&()/.pace/bin/pace\n0.1.0\n",
+    "firstStderr": "P004_FIRST_WIN=C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\\pace\nP004_FIRST_CWD=/tmp/pace-test-Wfy6g0/한글 space '$&()\nP004_FIRST_HOME=/tmp/pace-test-Wfy6g0/한글 space '$&()\nP004_FIRST_TMP=/tmp\nP004_FIRST_TEMP=/tmp\nP004_FIRST_TMPDIR=/tmp\nP004_FIRST_BIN=C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\n",
+    "secondRaw": "/tmp/pace-test-Wfy6g0/한글 space '$&()/.pace/bin\n",
+    "secondStderr": "P004_SECOND_WIN=C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\\pace\nP004_SECOND_CWD=/tmp/pace-test-Wfy6g0/한글 space '$&()\nP004_SECOND_HOME=/tmp/pace-test-Wfy6g0/한글 space '$&()\nP004_SECOND_TMP=/tmp\nP004_SECOND_TEMP=/tmp\nP004_SECOND_TMPDIR=/tmp\nP004_SECOND_BIN=C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\n",
+    "nodeEnv": {
+      "home": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()",
+      "bin": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin",
+      "TMP": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8",
+      "TEMP": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8",
+      "TMPDIR": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8"
+    },
+    "first": {
+      "input": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\\pace",
+      "native": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\\pace",
+      "dev": "346249331",
+      "ino": "15762598696625277",
+      "isFile": true
+    },
+    "second": {
+      "input": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\\pace",
+      "native": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\\pace",
+      "dev": "346249331",
+      "ino": "15762598696625277",
+      "isFile": true
+    },
+    "expected": {
+      "input": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\\pace",
+      "native": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\run\\pace-test-run-6vCfL8\\pace-test-Wfy6g0\\한글 space '$&()\\.pace\\bin\\pace",
+      "dev": "346249331",
+      "ino": "15762598696625277",
+      "isFile": true
+    }
+  },
+  "hookStageReached": true,
+  "sourceReference": {
+    "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-path-kXR1p8\\source\\test\\install-windows-wrapper.test.ts",
+    "sha256": "d2bad2bd38cd20413d6be8d1a8570b2937f009b371276208a60fa22ad532b0e5"
+  },
+  "limits": [
+    "Exactly one owned fixture diagnostic; original assertions retained.",
+    "Extra cygpath calls and observation change scheduling. Both conversions are made inside their own Bash process context.",
+    "No actual user install, install script, global settings, product or real test source was modified.",
+    "A passing narrow result does not identify the historical failure cause."
+  ]
+}

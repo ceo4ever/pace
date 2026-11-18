@@ -1,0 +1,3058 @@
+{
+  "verified": true,
+  "mode": "worktree",
+  "head": "46fdf682990d8002ce1116114f2913ca168c6840",
+  "measuredRuntimeFiles": 609,
+  "currentWorkingBytesMatchMeasured": true,
+  "records": [
+    {
+      "file": ".pace/test-map.json",
+      "sha256": "e0a7d4241753e6bfe606207c567642662b3779cfc1795670cb6ef3ff7e4bf7ff",
+      "gitNormalizedBlobId": "9bf579972d30c45b65b7e40e55943d26569a6ae7"
+    },
+    {
+      "file": "AGENTS.md",
+      "sha256": "6d03eab8ca575758c7584b6346e613c6e4ee3cba324a535a8d4624195a15d671",
+      "gitNormalizedBlobId": "35a4827b758b92688ad932e4093355b3c4cb2f2b"
+    },
+    {
+      "file": "bin/pace.ts",
+      "sha256": "92112876727b414cf917c4bb0cf69b8d2d6ed67fc34ed5fe5b8c30a4f91d3ca3",
+      "gitNormalizedBlobId": "3d4d1d1f64a75b0538331a15aeda869a4a16956b"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "sha256": "73ae03787d132a6dbf9891f7031cddc07924a3787b89dfe72ee1a8533bdf78cb",
+      "gitNormalizedBlobId": "2f8d1b3f57f0cc6452e715fe721b76a70c81588e"
+    },
+    {
+      "file": "docs/README.md",
+      "sha256": "a6a77f0b241289624f3740cb0cfbbc821e85da64d3443ce4cea40b414154e00b",
+      "gitNormalizedBlobId": "e6fa0e760006ad52d2342854f9cc093df4a69b30"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "965ea6e2682747f3aed5d02503c5c121fc627cc476439168db86a5b8a95d63dd",
+      "gitNormalizedBlobId": "b59b7342d06a172f71ae1a38ef65c50824a257e8"
+    },
+    {
+      "file": "package.json",
+      "sha256": "b6ce9bb44bfc8ad6b6c7abda480043e1482db62a2e72c706c5256de3d17afceb",
+      "gitNormalizedBlobId": "b4d822d3e8166537aeb003f33e69658a417b573d"
+    },
+    {
+      "file": "README.md",
+      "sha256": "ace3dc3d106974caab40426b507092201a3dc03bdf0bbb79c4da6a005b34eef8",
+      "gitNormalizedBlobId": "3bffc6978bd3a18b7ce1cad562147706e1afb821"
+    },
+    {
+      "file": "scripts/backlog-dashboard.ts",
+      "sha256": "ceccf58973a8814203af1a6573fe73df26c3690e596d31de8feb8281df7c7fe8",
+      "gitNormalizedBlobId": "3e79c87ae56a56b74dc986d3ab3688d1fba07c90"
+    },
+    {
+      "file": "scripts/benchmark-boot.ts",
+      "sha256": "32d878d2f1d3345b7905c3537f1f47b9102d221adeaa12e63c66c47df4050f70",
+      "gitNormalizedBlobId": "fe413b41ad912c10e62cca716ab4aee1a9772eb0"
+    },
+    {
+      "file": "scripts/get.ps1",
+      "sha256": "08e40c2bcbbf261ee0b3ccfdb09a385bd169dc4a4986ab4d069364b8656e0e03",
+      "gitNormalizedBlobId": "7a24c9ee003d856dec847de4be043c5d3800e29d"
+    },
+    {
+      "file": "scripts/install.cmd",
+      "sha256": "b14dab0e0edca73b154124f9c4eff83f8e397ffe2078ec090d48c6a7daf3b4ed",
+      "gitNormalizedBlobId": "95d266cd525341773bf1a2bb00f5c1c5a95e4f45"
+    },
+    {
+      "file": "scripts/install.ps1",
+      "sha256": "c1832bffa19dc8e77bfe143968a1a06e1891c450e9719d97a2f9823a2cbf8334",
+      "gitNormalizedBlobId": "be4dd48a09c0d3914021a9e4c415071ed7d40cd1"
+    },
+    {
+      "file": "scripts/install.sh",
+      "sha256": "72a77200b6935a978e7425a8bdbcb87da210f68e09e1c2fde42244df7107ca9c",
+      "gitNormalizedBlobId": "50a5b4941f58ae81a1fccb6094e60ef442097986"
+    },
+    {
+      "file": "scripts/secret-scan.ts",
+      "sha256": "534e41835f25598344c8d4b0b1aa9e20cfb0fe89359db45ca71c3e034f2fc499",
+      "gitNormalizedBlobId": "06f4cff0725ccb6b29edf20569195d0b2adddb21"
+    },
+    {
+      "file": "scripts/test.ts",
+      "sha256": "0627c1826c9452bdd94b18b0df2a8f08c5036aade5f5ba89183231fbfaa7ec66",
+      "gitNormalizedBlobId": "7cd17e3b4244e6ac21f3a6ff672a213c06aa80d4"
+    },
+    {
+      "file": "skills/html-plan/examples/scheduled-send.html",
+      "sha256": "a7205a988c71510993f87a28348aa9bfcd16e2f8b990ea12f37c8cc15db72271",
+      "gitNormalizedBlobId": "b05fddaa0f13b512c519cc9d2891cc8eb67011e3"
+    },
+    {
+      "file": "skills/html-plan/LICENSE",
+      "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+      "gitNormalizedBlobId": "d645695673349e3947e8e5ae42332d0ac3164cd7"
+    },
+    {
+      "file": "skills/html-plan/references/blocks.md",
+      "sha256": "608674926999216d5fba9b9c1adece70ef5c5a4bac1e614430fae54d1ad0c9b6",
+      "gitNormalizedBlobId": "65f514b3af56fe1195e9cd95bb5ac8adc9b58250"
+    },
+    {
+      "file": "skills/html-plan/runtime/htmlplan.css",
+      "sha256": "111b2ebffba26fd932182e51d003e45080b4f624f53cbbe5c75fd18037079e2b",
+      "gitNormalizedBlobId": "c2414ee57a3210cee237336d9ddf9344789bd5bd"
+    },
+    {
+      "file": "skills/html-plan/runtime/htmlplan.js",
+      "sha256": "1d54a1110007eb01cce04f22f1e28faea2cc30233077208ddb56172efe7f80c6",
+      "gitNormalizedBlobId": "e8696b30c123e8cedae8d874c78cd07fa2537b1c"
+    },
+    {
+      "file": "skills/html-plan/runtime/pack.mjs",
+      "sha256": "e73cc55eb8182557b0ef6b31448c2fe6431558d3564be100a188491ee48775f2",
+      "gitNormalizedBlobId": "710a96c43747139bb1c85f46eccea05b61c6c9ec"
+    },
+    {
+      "file": "skills/html-plan/SKILL.md",
+      "sha256": "84470832b90a3f5c8c457c963cad7115914b50db28fdffa5990fd5671c2149be",
+      "gitNormalizedBlobId": "d4d22fc2a209fa5ac9cec652d55766f9f745b7f3"
+    },
+    {
+      "file": "skills/html-plan/SOURCES.md",
+      "sha256": "914ea1eacf88b2d775c9ed94eb66bccc28690e20bddb4b6a441a3cf2b10d5dee",
+      "gitNormalizedBlobId": "bf667ab8d968fbc9ab387699b4555c29f2583aa8"
+    },
+    {
+      "file": "skills/pace-brain/SKILL.md",
+      "sha256": "f26e9b530b5a81887f5d6baf60b961d2d2367b1fd004ba256aff73e3aaa9f7f5",
+      "gitNormalizedBlobId": "91a9d9ac9a6f46fabf100a0d5ce686062ca55366"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-read/SKILL.md",
+      "sha256": "a8689a8e60b056006919cea0b8a8d4b48c9719a65ac58ff055daeae99528ec44",
+      "gitNormalizedBlobId": "6c7abf7164f4c26d9145c1625d9e7c0a3641f41e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-read/tools/read.mjs",
+      "sha256": "3a9a04135d4a35c573308d8e6b2aa897bc8aaf9ed53bce642a0d044b4e444ade",
+      "gitNormalizedBlobId": "71dcd571ff335e888a700f53f5d072906e32911e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-read/tools/render.mjs",
+      "sha256": "4f9b6e405e7920dc67954ba95d772e224d7ba7bc4f0e821970f4a064a99b6f1b",
+      "gitNormalizedBlobId": "beb0658601f7fd0d2b409b036d3f781800b469f7"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/SKILL.md",
+      "sha256": "22509c31f0cceeb07346091d0f78f88b797c55b1adc3580ae4867e1ff5491a4f",
+      "gitNormalizedBlobId": "b39120382c6efd6196871dc319859d87fb5e23d5"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/apply-edits.mjs",
+      "sha256": "ff037980e18c626b87e0a0ca2ec4d069bb4dbb8a905f6862dc26ee504a83b3e6",
+      "gitNormalizedBlobId": "2a29f913c5e2c224762e58a427ccc7bdc5fa2fa8"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/check.mjs",
+      "sha256": "8fbcedb587e579db521dd4c169493a2dd7dd85323ab06cca63b1bf4ee589a982",
+      "gitNormalizedBlobId": "4da1fd15ea3e01f8585f090838df80d37fe28235"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/components.mjs",
+      "sha256": "02cd621edf0f755a583f17e202473b3fbddd6e5e79b729e7c8471f2cf257d012",
+      "gitNormalizedBlobId": "aade14264f64ad6c17c6257eaa18ba4303ca3365"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/edit.mjs",
+      "sha256": "921db7ad12e939753466561861eb2c1b3e3e2fab80fcfe630767581ac49153ef",
+      "gitNormalizedBlobId": "51773660f02643bf2959d95cd517f0b994bc2dca"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/normalize.mjs",
+      "sha256": "5a849bfbaccd4152971bf247c83cd049006c5d09aaa1e6541e1cb7c06493f418",
+      "gitNormalizedBlobId": "bee0f247bf503be91df72b1360f640413d8272ae"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/validate-spec.mjs",
+      "sha256": "ccd794a8d0da13a6fc07a42c621f752b25175c745280e717a0edec3aa303f032",
+      "gitNormalizedBlobId": "654748e5e826bb5a41624610149006eaea945457"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/wireframe.mjs",
+      "sha256": "ad945e739e7827688d050f256e15b3b79ffc4e990759cd753adbe8ad43bc21a1",
+      "gitNormalizedBlobId": "affcb08fd64046bec0af4460c7fe43f2592b4635"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/capabilities.json",
+      "sha256": "75cd06778093e05a17a157659bb5f69056e6ddbcf38c0fe42d5caf1099a34b1c",
+      "gitNormalizedBlobId": "0086c083c6b060f14b218a931cc28bb0b8ac5df2"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/basic-kit.canvas.json",
+      "sha256": "855e9e906fc9e820d4fe0f266eb73232d5798b43fd6c95fe1e89a09ce9f12d8c",
+      "gitNormalizedBlobId": "737127f19d78a43329064f47c00d93b93723f237"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/image.canvas.json",
+      "sha256": "fe3eee9f998d2f27aca086520497a6b2a36819e3b69f135869feb3c2fbe7dccc",
+      "gitNormalizedBlobId": "32d3d3ebab0125fbc0cc4c3cb45fa8bfb81870e5"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-component.canvas.json",
+      "sha256": "49932148cc7b71331cd6e0b470095972658c93db6ec2f441e4a41b6813f2b8a7",
+      "gitNormalizedBlobId": "2851492fc81ebd205aa5bc724868f34699591717"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-gradient.canvas.json",
+      "sha256": "8465d4726f49152bae8b3ee96adbca5e4096790095df65804c6e3e04e46bf96d",
+      "gitNormalizedBlobId": "da5dc061ed0f0b08f86f2b57df4824eb768a2314"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-grid.canvas.json",
+      "sha256": "cb3193e45b3d2eb083927bec84a6e2cdbe1ca1defa8983ea1b3f8bef5b3c38f3",
+      "gitNormalizedBlobId": "ed13c922349b9384f23b6da74cb741c9efe25472"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-image.canvas.json",
+      "sha256": "5f377428ef90b76161afbbd6279b6cdbc77292e1e8d1c67632a1ed0b011423fc",
+      "gitNormalizedBlobId": "909564c94907c32c6b4d1c36161d379fa850e469"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-missing-page.canvas.json",
+      "sha256": "a0d90e0b5c671938e68b854f08842e9f738e6c56116d1feb05680f60e758b68a",
+      "gitNormalizedBlobId": "cc4798e92e217298b858021468f729573e24702d"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-reference.canvas.json",
+      "sha256": "8edf34229293cdea1e533b1fcf9a10c16d5dbd3fb7dad1bb3ae9cc31c853e513",
+      "gitNormalizedBlobId": "3acf430a4a76ac39a9e2806e4f61ff3e781f5826"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-variable.canvas.json",
+      "sha256": "a2f28a9b27f7e77dd4ac31865d343670400ea5778a5fe5a8d2052e03a579b76e",
+      "gitNormalizedBlobId": "2cee8a5c7ab7a6bd2cebf5900545928c54193f89"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/minimal.canvas.json",
+      "sha256": "a2ae9158f6e80f2bb6de1c7bee1e0a8f87a57636008d69cb80716d784d0e5b3d",
+      "gitNormalizedBlobId": "3e5eb8f145dcd2545c4145c3909ed5e6abdd009e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/opal-backoffice-kit.canvas.json",
+      "sha256": "90116f577cd3c64bb258f77591147a667948e2e274a586f825910df21647aebb",
+      "gitNormalizedBlobId": "2332b1c75d8961bbf0950a25db627169fc476189"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/two-screens.canvas.json",
+      "sha256": "7cc82f2919094060eb08cf8f9e3375eb7b5671f4bab1cf9a48bae654158439ee",
+      "gitNormalizedBlobId": "e5c863d9620a3226ad9ebdb75a790b52a9164b8e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/GUIDE.md",
+      "sha256": "97bb1e64b340d833aa777b01e0abff5f22da7d03bbc3170fbadc674a7c471c64",
+      "gitNormalizedBlobId": "bec4d1e9195ccc9621a59a4e4b1ffa2dd8795d88"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/ICONS-LICENSE.txt",
+      "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+      "gitNormalizedBlobId": "718bb3f0e44153809972abed31839375804bf652"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/kit-catalog.json",
+      "sha256": "5ae603e6f810a86aac1ce386eaf5624cde97c33d7fae57293c4515f4280344ee",
+      "gitNormalizedBlobId": "e6e3b8c538091db3953e3d6f028651aba4094dc2"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/kits/opal-backoffice/kit-catalog.json",
+      "sha256": "2430b952780f2051cf05bb271476adb5077082c7878494b3ab9605a8fd4e2e98",
+      "gitNormalizedBlobId": "4ae4b20410c5b42549fa5cef3e7a63d1e4c0de70"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/MODEL.ts",
+      "sha256": "254081428af3bf6b8c3ede6e62ac45433c04a7ee24f6c7df1b6750f039b0946a",
+      "gitNormalizedBlobId": "755e03d749af38405eab4d50414e2e4d76b5654b"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/parser.mjs",
+      "sha256": "d85be5f8a1890d1e0517a1f418b345e9ca4309f64b507a3c15271238e941a5fe",
+      "gitNormalizedBlobId": "3e5ed0663f8328b279f18092c32f576e7ec1c3a8"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/schema.json",
+      "sha256": "bead9b6387efc22e90d10f82af886d181f7847a0b815bb9c90438913d235f81b",
+      "gitNormalizedBlobId": "4f406fede5590a28cddc138950d7a2e4e0e6bfd3"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/validate.mjs",
+      "sha256": "16ccb24f64fae29bef60c8b64652ce626d7829b613847670d4987d499e6163bc",
+      "gitNormalizedBlobId": "5c21551da737b77032c65a39c2b686a82479eab9"
+    },
+    {
+      "file": "skills/pace-canvas-skills/GUIDE.md",
+      "sha256": "5b3f4f32ef1017a84042e5e3638d4f6ca248e47bb0f0f4b23ac7aa7053c359f0",
+      "gitNormalizedBlobId": "e368dbc5536f208199a81cc7f8fccf6e092c56cc"
+    },
+    {
+      "file": "skills/pace-canvas-skills/manifest.json",
+      "sha256": "f2e7818955d80c78d759d4c39c25f57438238be7afb43d037d4682e97654a43a",
+      "gitNormalizedBlobId": "be0324bd58bb5e61dc4e391f3e86519d01be8199"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/canvas-skills/_buildManifest.js",
+      "sha256": "3857ca444b81498f357bac7b1001f263053364eb94d7c53a9c8105f148b726b3",
+      "gitNormalizedBlobId": "540bbb7063da2935b882181ff9e9fdf46a084213"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/canvas-skills/_ssgManifest.js",
+      "sha256": "678f6ce2cb80b1fe72fc67e7412be6e2ab6ada083111b64f7c40d35e3cba5e00",
+      "gitNormalizedBlobId": "5b3ff592fd46c8736892a12864fdf3fed8775202"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/1329d575.ceb5da0a165e9642.js",
+      "sha256": "513da1a6833aef274b1194774ee0f9c8bb9edb1858044f8e6eb33c16d0c88b46",
+      "gitNormalizedBlobId": "c8218872f07f4ba9f589e0ca0eda82de1dee22fc"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/255-92f80bf2a2a857fc.js",
+      "sha256": "dff1e7c6b91cf50c9a3118b8340a14d47ea6db261a1b9fcb76ffeb2b21322057",
+      "gitNormalizedBlobId": "31438c00c33d9b87899d0dc569c17a1fba0f1af5"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/333.ac19fc793d43ab54.js",
+      "sha256": "774bc218e00dd9b4086e0dd4febf089d2070b4c1c6b0514b7762a216a04e1485",
+      "gitNormalizedBlobId": "cd18816f83b62c24c8feb865c3abeba161fd76ae"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/38.80f58c91800c3def.js",
+      "sha256": "1e576b83cfa50f013451fa3052e70b99a77911a173f0c8e85a01e32d154afe5d",
+      "gitNormalizedBlobId": "b051491b64c2f6cb3e1b77a68e05b2ad19a624e9"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/4bd1b696-5baba7b99ef0a4e0.js",
+      "sha256": "3a62bfff9472046cfae6911a20444b2a705f2c1983f651876fa76703eee88bda",
+      "gitNormalizedBlobId": "e4b122dc10adff03baff8d769a8b7d2ee0b2bf7c"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/885.29ad3d1e1fc59b65.js",
+      "sha256": "09bb0ee4c9bcc42853bf0e8656b5fe40c959ee994a4feeb5f699779750b534c4",
+      "gitNormalizedBlobId": "4dde08ccb234810ac1fab59d9f665818f1bc1356"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/911.0483a88f2a46fed4.js",
+      "sha256": "bc2dce6cea7f225fdb3fda155d37d0dde9cb1e41c41175f32968eb609ac56394",
+      "gitNormalizedBlobId": "ab7c7a9d2c3f531a2ea39e2442fded7c9e674b4b"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/985.c156f701f79f13d9.js",
+      "sha256": "a565a0f3615b119b8b7adb38bf1774e8ce768e2c081b4dc01a23c1ea5e2e31e1",
+      "gitNormalizedBlobId": "f846d7e30cc60179567f716e3cc6d4a63164ac5f"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/app/_not-found/page-09ea9ad758ff8034.js",
+      "sha256": "94967479d79434b44fb392bd72c893656a969a160e798221ed985f3a7042a768",
+      "gitNormalizedBlobId": "22ea7a6d23f787bcd505f09abe3e8caaa3645a09"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/app/layout-7647415aa37e50b2.js",
+      "sha256": "de132b578a0d5bf46b14a71762f086a38722f5d99069f6caff5d8144a34e993a",
+      "gitNormalizedBlobId": "80daf384dadd85b9306a6078d06838ace6570545"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/app/page-e188ca67a9578dd8.js",
+      "sha256": "1d5b3c08d57c0ac6a42189721959b75088efe263e2587426ebea7e3f0f8cfe0a",
+      "gitNormalizedBlobId": "756ecdaa3428e6a354da4682f4765dae9cd053aa"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/framework-319ad94eef5a05ff.js",
+      "sha256": "ff49e81eb02dd0ada4fee63e6776fec738f1a411d5372430384f575375a140ea",
+      "gitNormalizedBlobId": "d9f5a5c064cfbecc130bce57a658a5b388debd5b"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/main-app-4fb44f340fbf32ef.js",
+      "sha256": "f59f49407da1e74196ce0552254523a587edf60c422c0ae03e19bc394815922e",
+      "gitNormalizedBlobId": "eb3434d9d7baa9d8f75ecef81067b540c045daef"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/main-e86246805588bea2.js",
+      "sha256": "7c4f9e1fb6ac5f4b4a9f679fb681e0a1b4682a68f33946af62b7832a48bd2597",
+      "gitNormalizedBlobId": "cf2c7820c23537fb31335b591c8a26761e44f5c1"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/pages/_app-e877ad6c25e0fcfe.js",
+      "sha256": "bab6cb41dfb1fa524aeb1c2c59beb62eb4ca69a1c68914cd8e9f8d4806ac0b29",
+      "gitNormalizedBlobId": "7607a6ee387011fabcea44cd35deeea05ddc1332"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/pages/_error-504d81f0fa3c429b.js",
+      "sha256": "569214736a3e90684977dedee243d063c092b4e2fcef5f1497b6ae6dcdfeca35",
+      "gitNormalizedBlobId": "ac0973857fe5e57ad5ead972e5ad3a3fd07754e5"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "gitNormalizedBlobId": "ab422b94a4fbe76275d31c0bf7ef334768b39cae"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/webpack-06b3f14394b78faa.js",
+      "sha256": "4c75b6e5070cb6cc03fb838c1551f74ed5283fbbe89ae049231fd029b4604f76",
+      "gitNormalizedBlobId": "90ee106e022c17aebf02999fc062378ad8867601"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/css/867b2424fa8d0c9c.css",
+      "sha256": "c3ea5d308dea89efdfa1e2c86eb00b2b272603eec4871aa67ce2c5b40fd27840",
+      "gitNormalizedBlobId": "99853a03b7d5a96a7203034a0e59b85ff9f8737c"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/404.html",
+      "sha256": "b445c84993184efcf079b295ff42790f1e778cb3691361919c0ba1b362aab0ee",
+      "gitNormalizedBlobId": "8c6fda1ee5c519ed710d2ec92ead9ff893767d9e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/favicon.ico",
+      "sha256": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932",
+      "gitNormalizedBlobId": "718d6fea4835ec2d246af9800eddb7ffb276240c"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/index.html",
+      "sha256": "e556f8d2208d16de0b6d0075ad4267bfef3955bdb0f14a602fffdf6d5de37c8a",
+      "gitNormalizedBlobId": "cd857d4837cc4897123af337a03e21781b916488"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/index.txt",
+      "sha256": "08652cb01b308f8e090aea1dd0251585c4208157262818aabf4eb4f707f3de9e",
+      "gitNormalizedBlobId": "398fce3e4f3b6f763fdad43df3d500d5e399e471"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/chrome.mjs",
+      "sha256": "730f50e8c142079a693071155ed15f626e074cf9a2cd8b0fd48a044fd01593c4",
+      "gitNormalizedBlobId": "06fbdfbb97fc79f0ecccc4a91708b8e0f22006ba"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/core.mjs",
+      "sha256": "73b2d882fba7641f5666ca327a676748e35abf6739815f6aaf04877abf1f18e4",
+      "gitNormalizedBlobId": "e3aa487a85d2182c6bb8c11e2cfa53bdfcf679b5"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/editor-session.mjs",
+      "sha256": "b65a0e91cb7250eb0fbdfcadd5bd0f46d16d345d10b8be409bc1e12c7d362abb",
+      "gitNormalizedBlobId": "eeedb3d710345e08cff7da0c4380fa840b10689e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/io.mjs",
+      "sha256": "019cc2bb3a26e771729b10275934a02c2445d5f6adda0bb671071fe132142ba2",
+      "gitNormalizedBlobId": "54018a0efb701bfec3f0a36dac13cf92347dc61f"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/normalize.mjs",
+      "sha256": "b91f2f4ed074c96980f7b6babe6e703078e01a7210107db9425541cd829e5328",
+      "gitNormalizedBlobId": "b86c637f5061f8b815135e1fef7bacea41c919c1"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/card-banchan.md",
+      "sha256": "83e759ec7f112b455cecc4606e9848d8563b4b176a33394ad07af675ccef04ed",
+      "gitNormalizedBlobId": "6d817b04421a1292e659d784d58fe3772120d68c"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/l0-weekly-report.md",
+      "sha256": "ed2a4aed21d76bac712bb81c85b6d90c18bf873aecbdbd1c2f9206dff33be104",
+      "gitNormalizedBlobId": "1c0e4d03ffa4a32ae1b282ad421d26e135999d78"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/l1-restock-alert.md",
+      "sha256": "ce1d35c26f4d34987bb6c60862b4c49143fabcc7272bb8ba618e6c4cc824e659",
+      "gitNormalizedBlobId": "84bb3521c6f4458b2068f8d005e71622bc5e232f"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/l2-shorts.md",
+      "sha256": "55ad8c33b2a74d1223cb733a4cf14356fbc1b7468a052bdf652e67076649d732",
+      "gitNormalizedBlobId": "751cb4f3a9e2a25c457120a0c578408b3c299412"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/opalwrite-review.md",
+      "sha256": "95d498a1979a2b8fd7af8c8b185b906f810d14ca41be9a9e0ffea38718027e8f",
+      "gitNormalizedBlobId": "7f46601203b4e69fe8d5964b91993a1e4f233a8c"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/README.md",
+      "sha256": "902541a08d94f3a86f121298b4598d7666d65d265e128c81bc7934197467bbb4",
+      "gitNormalizedBlobId": "9c98a6ee7fd2845bd8f9d153bb83a52c0c20bf0e"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/routing.md",
+      "sha256": "696bf5b47d9649eed32ab9ea4f426483b73d2a3a281e93e8344af90c65b8724f",
+      "gitNormalizedBlobId": "6320a968a2d3fa5da2abd26a813233680a22d476"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/security-pasted.md",
+      "sha256": "8d407d7f6377b3ea3749fe87dab363dc8b2938274aff0ddd872b1626071bf415",
+      "gitNormalizedBlobId": "426335c6368f5703fe424f7ff38b99a49f2d4077"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/decision-record.md",
+      "sha256": "4b913bfee51de828b30fedff61c5895053a4986f699b7343c59acccd3a1a3657",
+      "gitNormalizedBlobId": "17f56a4c7e4019bd181c0f11a6628140a6181329"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/gwt.md",
+      "sha256": "5639e70cee8d6a5ecefa884f541e3ee56437b89b43be4f0f9b576ccd6476e236",
+      "gitNormalizedBlobId": "7f2dcf0db8efc400388f8b085733eb129fe43651"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/north-star-okr.md",
+      "sha256": "88f323f239e156dd0a0d28035311e242f370b3822cbb32f1a5da00843829ef5f",
+      "gitNormalizedBlobId": "4b3010276594577c519d58558137e7ac925194e9"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/now-next-later.md",
+      "sha256": "c3c8fd61210b3de3d688bcc3c3a85738e91378d59bd34d742c33454336dfb267",
+      "gitNormalizedBlobId": "1131f0da2da4a3919020994cd75857d307edc344"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/pre-mortem.md",
+      "sha256": "f0de55c794708fb528b51b730821defe0e4381ec6f1abb3a26d28debea1edacd",
+      "gitNormalizedBlobId": "9a3db831677e97c2170ee3eac7872f91273bd92f"
+    },
+    {
+      "file": "skills/pace-intent/references/feedback.md",
+      "sha256": "40eab69f4d7bdf5acb467727ba56cbd62eaa7b078c3902862f4bbbd930468779",
+      "gitNormalizedBlobId": "2040e49ae6e3944153123ddadd7485c0ae00d095"
+    },
+    {
+      "file": "skills/pace-intent/references/handoff.md",
+      "sha256": "df16b6daf41affcdceb54dff3204f30b85ae3d5423c3911e959c601ec49833af",
+      "gitNormalizedBlobId": "a3151c369b4cefb0d6711435e89d48d1d6cb60eb"
+    },
+    {
+      "file": "skills/pace-intent/references/handoff/work-brief.md",
+      "sha256": "ab75ea225c1273fd9222be42e01a34af99b9541cfd458f794b5ff1f1c0700353",
+      "gitNormalizedBlobId": "6e047a244ff36e86880d0080deff992a78a91019"
+    },
+    {
+      "file": "skills/pace-intent/references/INDEX.md",
+      "sha256": "f02a7ea2190b387fb9935981cf485291ccedc28f02587116b7253f7a5c86e51e",
+      "gitNormalizedBlobId": "f2aa179787fba79995961c35450025dc59bf94e3"
+    },
+    {
+      "file": "skills/pace-intent/references/intent/assumption-map.md",
+      "sha256": "b3ae4cf6dd6eba94db0be1405c28df7e45b153d20a4621d7bc12e8b018461292",
+      "gitNormalizedBlobId": "4142410e0bd9f361e5f65ed1324568f523273e52"
+    },
+    {
+      "file": "skills/pace-intent/references/intent/jtbd.md",
+      "sha256": "d3694285a3787681aeaf3278fc312e0018b5b91ca4799b79cf1a7eb43c78cf02",
+      "gitNormalizedBlobId": "1782162131baa90245702e454a7972e6231e0a1c"
+    },
+    {
+      "file": "skills/pace-intent/references/intent/purpose-ladder.md",
+      "sha256": "82ecc1a46a914d8bfc18db729a717bf1ee8f6822c5b6f10d8eaa692f4a66667a",
+      "gitNormalizedBlobId": "0ee55f60e218e96f185abc60ff62b437f9972a90"
+    },
+    {
+      "file": "skills/pace-intent/references/LENS-FORMAT.md",
+      "sha256": "0e25cab029effbf63618dc3f468e300aea63bf98728a9a221a82d5c4639165a9",
+      "gitNormalizedBlobId": "2b0713f69a0e39f965c4970efe3e62871ed60ed3"
+    },
+    {
+      "file": "skills/pace-intent/references/licenses/prompt-master-MIT.txt",
+      "sha256": "0e1cb4fc0f3b84b7e0180246a2966cfedf5eaa84158d620f9bc0ceb8fa96431b",
+      "gitNormalizedBlobId": "03fd69c267451c91f3e02715247c3e9e91af41d6"
+    },
+    {
+      "file": "skills/pace-intent/references/platform/multi-sided-market.md",
+      "sha256": "25cd69bd1232248ffaae26b8c27e6be480edf52abc4a74097d6a16238a70cda7",
+      "gitNormalizedBlobId": "adf992467615c086baf0f166c9122c0c6847197e"
+    },
+    {
+      "file": "skills/pace-intent/references/platform/network-effects.md",
+      "sha256": "04f6810242f751989ad279b778477721919b2656537993816457274056f4e4b2",
+      "gitNormalizedBlobId": "c1ec05b5398a3fd49f6650a98ff3398be7680750"
+    },
+    {
+      "file": "skills/pace-intent/references/preview.md",
+      "sha256": "75f16ccab8f42a1a88e48f0e3a24f53069952e17c91acd805b9ac29c19a7484c",
+      "gitNormalizedBlobId": "b61866b11dbd25d445e185cc6502c7fc3a50d7fd"
+    },
+    {
+      "file": "skills/pace-intent/references/review/diagnostic-checklist.md",
+      "sha256": "942c11899ded4cf6999c957a03ee3ce23565aaa89e6c1322abe20b2000602e97",
+      "gitNormalizedBlobId": "ec84ec5976a1fa107ce3221fef21f009d754c2ab"
+    },
+    {
+      "file": "skills/pace-intent/references/service/journey-map.md",
+      "sha256": "ec0910048b76a4e58971cafb403ca4be776672187afa01d657d9404b95ebfc0e",
+      "gitNormalizedBlobId": "699942569bc0ea7a7f78dca6fa99a8d9e4b60bea"
+    },
+    {
+      "file": "skills/pace-intent/references/service/moscow.md",
+      "sha256": "73094f601dd3e94fd4ac6f44b44744b56f3e3fa3e3c1f500f5f5badf9f0e9852",
+      "gitNormalizedBlobId": "5d9e8649cffc60039695946d7912f598b57af824"
+    },
+    {
+      "file": "skills/pace-intent/references/service/story-map.md",
+      "sha256": "196f5675a7f812e702d5a64a490ad1c486e42fe41a8ad92b5a65483ea2ffeee1",
+      "gitNormalizedBlobId": "b6640eb9c07359533284b76bade64b240163b1d0"
+    },
+    {
+      "file": "skills/pace-intent/references/SOURCES.md",
+      "sha256": "6033810c99bf932fb10d17b6b3db669acd2eb6f68882a589e4228106dfe55fa3",
+      "gitNormalizedBlobId": "b1680ec7cf2b7a1ab9ad68bafe681cda30dbd840"
+    },
+    {
+      "file": "skills/pace-intent/references/strategy/alternatives.md",
+      "sha256": "d5b177697e990285cfab8ead5a351d2b6f9692df4461849af14071fb779fec30",
+      "gitNormalizedBlobId": "eb4a7c9bea49771ba16d5aa96da95946bb707d50"
+    },
+    {
+      "file": "skills/pace-intent/references/strategy/lean-canvas.md",
+      "sha256": "9dd0c477f5288acc7086eb9d6f99a3e97aa54c5e92a71b4592020643594151ea",
+      "gitNormalizedBlobId": "6cf542f78a3585229f397d72276982107d2975f2"
+    },
+    {
+      "file": "skills/pace-intent/references/strategy/unit-economics.md",
+      "sha256": "8a4390e665cf2e31c94dcc0e42f04d753bc2339099ec3b99c3d78b69a2c7970a",
+      "gitNormalizedBlobId": "10228eb340df208086704d9be3410071822b41ab"
+    },
+    {
+      "file": "skills/pace-intent/references/writing/audience.md",
+      "sha256": "d4287717affaad1b1742fb398a80baedfd01f09337cf25d7b8322819cca3fe23",
+      "gitNormalizedBlobId": "e8a58d4f466058a843e324db2bffaf7147397e13"
+    },
+    {
+      "file": "skills/pace-intent/references/writing/doc-skeletons.md",
+      "sha256": "ea6facae2697f461be737c310c994ba677d1af6be8c3e1457b6a4b15ed0d8270",
+      "gitNormalizedBlobId": "9abc4c69e7514f0679ccec03b67e978ba94f5983"
+    },
+    {
+      "file": "skills/pace-intent/references/writing/pyramid-scqa.md",
+      "sha256": "02133d09a27eeb1b71521ecbd7f30fa26fcc592e4959102e4a619a0d3e63ea78",
+      "gitNormalizedBlobId": "c964d6bd78ddce0730f03aac00bb6fcf4ddbf221"
+    },
+    {
+      "file": "skills/pace-intent/SKILL.md",
+      "sha256": "6edb49d6a8a750f5b851e2209e1df98a289a7771403df0b336b9d62ce99464cd",
+      "gitNormalizedBlobId": "301caa944c856acc23ac3b263d2053ac2ce44a22"
+    },
+    {
+      "file": "skills/pace-intent/templates/_base/base.css",
+      "sha256": "8b1cf5d6fc13617be93693bd1ed574388dc22a02a969c85bfac438fe6b0b9aaf",
+      "gitNormalizedBlobId": "8fd942d9831936dec174538b1d1b9222bdf1718e"
+    },
+    {
+      "file": "skills/pace-intent/templates/_base/base.js",
+      "sha256": "17bc7e3b29d1063eeeb40e0a9f247d908023052f469b2bd004f2294125ac752d",
+      "gitNormalizedBlobId": "b69a06d19358d202488632ebae07e070996c65eb"
+    },
+    {
+      "file": "skills/pace-intent/templates/_base/plan.schema.json",
+      "sha256": "4134015254caa5845889d2026450ddaca4d847c4b67a297c8191a7c8a9462fb8",
+      "gitNormalizedBlobId": "2b1191254b0e6ad09b3bac814bc0a57e6e3aebfb"
+    },
+    {
+      "file": "skills/pace-intent/templates/_base/README.md",
+      "sha256": "be80719b95932c52565bcf062e25ffda8ea8304c237a3613516abd197f5678a8",
+      "gitNormalizedBlobId": "f0d402039395b2cde839787c4ba8b20adb23affc"
+    },
+    {
+      "file": "skills/pace-intent/templates/_example/canvas-plan.json",
+      "sha256": "9d05bbe20e3b3c9674f1730ec2ff5033458eaef21e0debd20fa1f2a0b1a889fa",
+      "gitNormalizedBlobId": "a8dbc0152acf88ed32205bf4bc5e2faaf860f8fa"
+    },
+    {
+      "file": "skills/pace-intent/templates/_example/plan.json",
+      "sha256": "4fd4a0f87f62364eb1dc80d8c093971381a1f9611e3a894a23349f31bd48dc57",
+      "gitNormalizedBlobId": "d507d48ad4b1e70abf311acd7ce6610b3dd74390"
+    },
+    {
+      "file": "skills/pace-intent/templates/flow/example.html",
+      "sha256": "960b6b564d13e141ffa188eea31ba0b67d24ac58435e3c5936698374f4e1097e",
+      "gitNormalizedBlobId": "aad74167c64d0285342ce41627105afe19f88620"
+    },
+    {
+      "file": "skills/pace-intent/templates/flow/GUIDE.md",
+      "sha256": "0568fcccaf581b91cc030fe49388e34e0547533cb3fc30febc1ffc327ac02574",
+      "gitNormalizedBlobId": "f4f3280e1bedc7bee04f4aabec2abbd0738867f4"
+    },
+    {
+      "file": "skills/pace-intent/templates/flow/schema.json",
+      "sha256": "dc0932cfd81336c88dcb8f9a4ffa60873c519adfcb8cb35d5eaf5b0881bf2fc4",
+      "gitNormalizedBlobId": "9d24602695126858b328f6f175c703f8e94b5eb3"
+    },
+    {
+      "file": "skills/pace-intent/templates/flow/template.html",
+      "sha256": "c88b2bcd40598710225f9a51be265dfdc16a9d104f51878563541530a3df5e03",
+      "gitNormalizedBlobId": "d99d3c95d61a049b4305f761e6f32364d89b0262"
+    },
+    {
+      "file": "skills/pace-intent/templates/ia/example.html",
+      "sha256": "f62256ed403d8efb57faf8cfa3c862250f0269e4870a5b6c79675db5baa80ee1",
+      "gitNormalizedBlobId": "4daa324a205dd8f2e62396c87dfa3fd389262c0f"
+    },
+    {
+      "file": "skills/pace-intent/templates/ia/GUIDE.md",
+      "sha256": "e1ca37bc6f098fdbd1922a4a762ec2aa1c4e58c9f9a2b46ed0d6d5bdf44b3f5f",
+      "gitNormalizedBlobId": "8cb96fe478cc0b3d35aa85937bb00fbfd8fdd30d"
+    },
+    {
+      "file": "skills/pace-intent/templates/ia/schema.json",
+      "sha256": "1342cfcdea0d6070b56d675f3f5e4825e9a036b8e3bbe1f913d2e09775f38527",
+      "gitNormalizedBlobId": "ee756ce4a744e41095d3645f66d0238ba46eea64"
+    },
+    {
+      "file": "skills/pace-intent/templates/ia/template.html",
+      "sha256": "e74c32f636242def7ff1a940d102c1b0da61c22c6f786f682453504350243305",
+      "gitNormalizedBlobId": "c728e92a350750ba11503eb18d992ce6ba850f3d"
+    },
+    {
+      "file": "skills/pace-intent/templates/index/example.html",
+      "sha256": "dc8622364b70cddfcaf4debb3e84f0c8b9bb291c6dee7987f804bb191527d620",
+      "gitNormalizedBlobId": "48c68ee78f0f0dd8bd21cfc02f7abc78a12534b5"
+    },
+    {
+      "file": "skills/pace-intent/templates/index/GUIDE.md",
+      "sha256": "ea5f3d58f647ee412fd6e7ed4646417cfeff56c6e4ae74664b81f05834a92258",
+      "gitNormalizedBlobId": "7e3f609ee7419b6123fdf9cfa2c3d14a4a75ca56"
+    },
+    {
+      "file": "skills/pace-intent/templates/index/schema.json",
+      "sha256": "17640e3beb6b399fae756b2f18954288838795979bd392cb85699700430cefd6",
+      "gitNormalizedBlobId": "1c4beff2d5d718a85839794ea54787a5e1e32626"
+    },
+    {
+      "file": "skills/pace-intent/templates/index/template.html",
+      "sha256": "d9f03dd23a159baa2497c79415b5e23aed5f7b28e26079b6f39519555dadea4c",
+      "gitNormalizedBlobId": "ee061e6365abe85de340142c133a59f2fb364b3e"
+    },
+    {
+      "file": "skills/pace-intent/templates/sequence/example.html",
+      "sha256": "476dc08f820ed1682a3ac7a0bd5fe164f653ed60bd98ce924a7fdb22a0dec780",
+      "gitNormalizedBlobId": "20426a7166329a68f3a0b1b023bfe5d7e395ca0b"
+    },
+    {
+      "file": "skills/pace-intent/templates/sequence/GUIDE.md",
+      "sha256": "b259a243605f970ff6cc64ed428794ab05a626c24bc46477ee11f36ee9df0c75",
+      "gitNormalizedBlobId": "aa4af97d76d8c6f95a83d5b22e6ce6ae604f9d2e"
+    },
+    {
+      "file": "skills/pace-intent/templates/sequence/schema.json",
+      "sha256": "78ff757f1cb5020ed8fd3d0857c56380c9d93ae9083177bbbf1909c2e42fedc5",
+      "gitNormalizedBlobId": "4dd22cf2fc418940eb4221d91cc12f30d895d8cd"
+    },
+    {
+      "file": "skills/pace-intent/templates/sequence/template.html",
+      "sha256": "709b58e499ee8c0806c8bba3dac05490397158d82a0e2026a28ced4b97f06d7b",
+      "gitNormalizedBlobId": "d0d25fff5de9b1d1fbccee76f3d729b8e99a1ba5"
+    },
+    {
+      "file": "skills/pace-intent/templates/spec/example.html",
+      "sha256": "9abf063a3586782e5b43c0b9ae9a57f0eb0c7ed551b62e8199683705595f1d61",
+      "gitNormalizedBlobId": "f3bc6641ce2f09c47f83b7e246c9c1da9dc61be1"
+    },
+    {
+      "file": "skills/pace-intent/templates/spec/GUIDE.md",
+      "sha256": "ad01725fbcdf94bf10b0ba7a6e95c46fca0a4b74f0f6db7eece3fdcb425e39aa",
+      "gitNormalizedBlobId": "30c7a1c3e131e23c7720bb3f509ac3ceede476c6"
+    },
+    {
+      "file": "skills/pace-intent/templates/spec/schema.json",
+      "sha256": "9e9fb193018227b5b96d2333fffc700c284742d6f180cf93f847e09b2fa8be48",
+      "gitNormalizedBlobId": "41403446a3497ebceb1444dff0a240da92114ef0"
+    },
+    {
+      "file": "skills/pace-intent/templates/spec/template.html",
+      "sha256": "7019b461e8dd1b692351648dc4bd1abed6e5e721aa33e78cbb92936d5efb5993",
+      "gitNormalizedBlobId": "a034806d0555d99e0dde890d61a5365aa7f4c689"
+    },
+    {
+      "file": "skills/pace-intent/templates/usecase/example.html",
+      "sha256": "8256cfbdaa560a97513cdcf9cf431e197fb087f61e7a4cd0d3fbb79454a9859d",
+      "gitNormalizedBlobId": "7f192dffca1dabb7dc41e2915a0d7d98a1563732"
+    },
+    {
+      "file": "skills/pace-intent/templates/usecase/GUIDE.md",
+      "sha256": "7562df8151659de0b1f463e466e9fd05c1451bc7543f519a9265c558a3da98cc",
+      "gitNormalizedBlobId": "80627e28955038c22d1fefea949b6c92b2203d1f"
+    },
+    {
+      "file": "skills/pace-intent/templates/usecase/schema.json",
+      "sha256": "a290d75f01657e91a076e591235db46f89680a6da43f1db468ebf34cf971d1cd",
+      "gitNormalizedBlobId": "d1ec18aa6bfb988d24f48a73a4ec415f16d04987"
+    },
+    {
+      "file": "skills/pace-intent/templates/usecase/template.html",
+      "sha256": "f78afbc034c1655fdd460872084c3eebf23a4d7e02067ab0225234673116193c",
+      "gitNormalizedBlobId": "83f7333ce7b35d4253678fab55b3bac69f2854e8"
+    },
+    {
+      "file": "skills/pace-intent/templates/wireframe/example.html",
+      "sha256": "480e814878945780078cd4bc5e9931e144ec93bbd9d9f422dc1f5d2b20a54b91",
+      "gitNormalizedBlobId": "5bf3c49b3932fadd2b500403c9eff86e8fedc473"
+    },
+    {
+      "file": "skills/pace-intent/templates/wireframe/GUIDE.md",
+      "sha256": "fbb1980716037c6149173e5c874f707394ba3d8c0d9b2d5161f61a911fadb5b7",
+      "gitNormalizedBlobId": "aff346e153a46d3be0dd40c03b36911f604a5f8f"
+    },
+    {
+      "file": "skills/pace-intent/templates/wireframe/schema.json",
+      "sha256": "d6ca246d769e4f47be54de3d7868cc10ac036bd1dca681f5d3fc8ac1efaa914b",
+      "gitNormalizedBlobId": "e6041e48e1454539676c194d6073bda65ca399dc"
+    },
+    {
+      "file": "skills/pace-intent/templates/wireframe/template.html",
+      "sha256": "6e06dd6ccedd0c68d11ff14a32ab792e66a23e10dbb8985fa099e90bdc31469c",
+      "gitNormalizedBlobId": "7932ffb91481da9433ec905d699d291113a4850c"
+    },
+    {
+      "file": "skills/pace-memory/SKILL.md",
+      "sha256": "cf71a65d46dc6afc3509aea04e81c88540305612c95be8ccd391de71dbc7c4c3",
+      "gitNormalizedBlobId": "c7b2dfa61ea47a4d7e372b3d8a1274e3bc7d85ed"
+    },
+    {
+      "file": "skills/pace-onboarding/SKILL.md",
+      "sha256": "1f8d4c057bd961515a54d4554fd1d94454629580afd6f0c7143026612f6ea70b",
+      "gitNormalizedBlobId": "2edae7894a7673ee9ed33f146c0e970114ec5f04"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/adapter.md",
+      "sha256": "3027c1638160a9d55be57d26bd377c11679c60277470b2b54880ef479b538b5a",
+      "gitNormalizedBlobId": "0ef163c133c44ad1e1005b6b46f830ac437d52f1"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/driving.md",
+      "sha256": "67eaed1327280baeab3ff8e1f103f903c54d9ea726d6b00ddcca2add1a0ce6cc",
+      "gitNormalizedBlobId": "b0f8b3ea267382c6bcb0e673d7d9530b2f667f3d"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/healing.md",
+      "sha256": "b42ee0d79811246f12fbe6125968263978df5558d3faa510ae0c59a72ebbd29d",
+      "gitNormalizedBlobId": "a19a2ef9cdebf68d19f07901685461f556e5b112"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/playbook-making.md",
+      "sha256": "fe7d9f6f9f860d86983078e12f63ff9f38a3fdf92028abff3b8775e8c4f87813",
+      "gitNormalizedBlobId": "55de2a125ed6e70585e35593f6e0b3a575b2817b"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/schema.md",
+      "sha256": "ada74d59dde30f1c4e14474dbbe20cbc04261c0f2c319527796f9604acad52e8",
+      "gitNormalizedBlobId": "669e048c23388fd5bc48b5fb218ee4f06caa0238"
+    },
+    {
+      "file": "skills/pace-playbook-maker/SKILL.md",
+      "sha256": "ce4edaf63a72c87397511a63967f5d9011edc803e5a9079ed39576598f17bbf4",
+      "gitNormalizedBlobId": "1e3a0cae8cbef08fa927d5bdcf9ae44831b678ed"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/agent-map.mjs",
+      "sha256": "60e307de2b8983f9e520106b31e54ea83234e8ed07f09d921d3e63396fff36a6",
+      "gitNormalizedBlobId": "9f96cb25720f95c51436c8f3fcd17ebdb1995332"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/build.mjs",
+      "sha256": "106b536e24bb4f62fc5e7ef65c0f21092855c9a131d0f50357bfdf857de45f0d",
+      "gitNormalizedBlobId": "09e9adb2857fb48c4af204140190ace3a136ed1d"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/capture-core.mjs",
+      "sha256": "492b2290511a260a2086eb556a80518ff0f3abe1ead5de9cc2ab7f9c5267f8f1",
+      "gitNormalizedBlobId": "a0ae0fdce9bee2f975b0c4ce36020c35647c757c"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/driver.mjs",
+      "sha256": "fea44ec68ec782120b3f2707bb9be98f18bc53d5f7a6171f3b9dc1614e045e0f",
+      "gitNormalizedBlobId": "ad83fd43fb1d33ddfa4071a3275511227957b057"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/heal-web.mjs",
+      "sha256": "c188edf0c5a973cb992ff89f82048f9869ea9d670664868cc6cce8e534ab94f7",
+      "gitNormalizedBlobId": "9e521dff4248c5e722e72911efcaf212f43e17b8"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/healer.mjs",
+      "sha256": "ffa2b17d8e47d229a08af257dedecd032b5737253f360d568d092bc5004ab1bb",
+      "gitNormalizedBlobId": "abce6e9603ea3f766786e131567ceb0a97ed6829"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/interview.mjs",
+      "sha256": "01fc9827423fd83c30b9c4dc8de74f6b36dd9615c82e7807e8d127238ed113b4",
+      "gitNormalizedBlobId": "b8ac874f65398a39dc65db80a805b58eb0cbc83b"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/orca-adapter.mjs",
+      "sha256": "0a56aa092c4c50849d4f5ba5db28a6195fe93f5d7a17a8d090994daa9764d634",
+      "gitNormalizedBlobId": "953eabeb4b5b6ae34200828053ff203bc9fdceb2"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/playbook.mjs",
+      "sha256": "080036953155344e7f5a02ce3a8b0c7eaf05176509d633c75d81ebab489bd876",
+      "gitNormalizedBlobId": "1d05a6d847ba947e98102be0317771e15dfd4927"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/scaffold.mjs",
+      "sha256": "9635ad09ffed912f5396f8bcfee6f54e3de394d87bf3bcbd8af59fff51e87a13",
+      "gitNormalizedBlobId": "2a41403b4a5e42c65011629fc2ebda635a9f34f0"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/sensitive.mjs",
+      "sha256": "7694840c3438cb1c9926e930a2698e747bc40c2c63bcd34917ade15cafb2038c",
+      "gitNormalizedBlobId": "04373ea8f39d71c8c9825ca3bc25cec38cd23016"
+    },
+    {
+      "file": "skills/pace-project-dev/evals/scenarios.md",
+      "sha256": "65474b6c5f2e24e4b49d3b43cc92910b1c646927334ea1fb4a8938cdd4cf5f0a",
+      "gitNormalizedBlobId": "3768cd6659d8bfce0db50e7db5574ff640074ff4"
+    },
+    {
+      "file": "skills/pace-project-dev/references/backlog.md",
+      "sha256": "780ca9e182d781c22acfb2dfea6fc5e0a3e936dd8f2f0afe6dabb022a0958416",
+      "gitNormalizedBlobId": "982ef2bef08550b782bfb8de7c9770ff97c90919"
+    },
+    {
+      "file": "skills/pace-project-dev/references/commands.md",
+      "sha256": "62e951cb5ad00fa3f556f19b38cdad300e8cbc39ed61084988763d5077573ab7",
+      "gitNormalizedBlobId": "1fa745f8690f7fd8f7ac95c68dcfad3e9adb1180"
+    },
+    {
+      "file": "skills/pace-project-dev/references/coordinator.md",
+      "sha256": "cf53df5272f53c234a4a1f996abd866d4d6ad16520a9ae94805d38aa5949088a",
+      "gitNormalizedBlobId": "1eb880f09c6118f523a270a68445fbe666232800"
+    },
+    {
+      "file": "skills/pace-project-dev/references/cross-verify.md",
+      "sha256": "080488db3007ab7172d7b9f139ebb712abb7a060954f42f6e74c8adc1df4846c",
+      "gitNormalizedBlobId": "3cd9aa114ddf1c42df82b37125a52ac809672633"
+    },
+    {
+      "file": "skills/pace-project-dev/references/document-shape.md",
+      "sha256": "d2f95f1a9e3280fb062acff7e7dc4300c2874364a725076612e8a5ce1af7ad7f",
+      "gitNormalizedBlobId": "2ba1f8dad87e46edf15ac6c5dc37105b493a6939"
+    },
+    {
+      "file": "skills/pace-project-dev/references/e2e.md",
+      "sha256": "9abdc6fecfdf3e4fdd58a1b59fa3e4909991bbabf8d5820680f02a39819490d9",
+      "gitNormalizedBlobId": "8896d6bd5e46d50c76d39c0663065d3abcf57e6e"
+    },
+    {
+      "file": "skills/pace-project-dev/references/finish.md",
+      "sha256": "eca9389684ed8583d5dcd0ae3f0d4487712182f658cd2a71306f0d60f73f6e23",
+      "gitNormalizedBlobId": "967481bb07da9287719c99254523c34c6901bf50"
+    },
+    {
+      "file": "skills/pace-project-dev/references/goal-review.md",
+      "sha256": "6c26c425a761d8f1758247179df40d6c034da8e1e24dd633ad2c2061ad06a51b",
+      "gitNormalizedBlobId": "3c8b3507efd59c2d814e634c10234ed041c32d05"
+    },
+    {
+      "file": "skills/pace-project-dev/references/html-plan.md",
+      "sha256": "5b981f6951bf01d2751add74fd8e6b234a0f2bca37d8f37c7b19716ec1dd4264",
+      "gitNormalizedBlobId": "574cea3818a1489da5e18a90b2c33ee2a7c564ee"
+    },
+    {
+      "file": "skills/pace-project-dev/references/project-define.md",
+      "sha256": "d23da46d4184ab4101544516831ed3c22ce740633241ca2a4b97b94388cffe54",
+      "gitNormalizedBlobId": "4d6f11f019395b17b5fcd47ab1d372835eb46330"
+    },
+    {
+      "file": "skills/pace-project-dev/references/recovery.md",
+      "sha256": "23ddbbfb8ade70075d7885ca0f72d75089fe598746f325115597f67fb3254ffe",
+      "gitNormalizedBlobId": "a397378c7efabf1a3bddc72def991617916f7752"
+    },
+    {
+      "file": "skills/pace-project-dev/references/reviewer.md",
+      "sha256": "8021ba12059ee7cbf09b94355311c736f566a6f81983c9c0bb822931f1b266de",
+      "gitNormalizedBlobId": "ab76c3536dec0f7dbb868898c3fe8f1e8ffd6887"
+    },
+    {
+      "file": "skills/pace-project-dev/references/security.md",
+      "sha256": "8c4d42ed6e539dac9af85ddab6fde5a8e84edcd60098b09895337349611541ee",
+      "gitNormalizedBlobId": "4e2e4418ba56fc261711ce7560047c0dff2cae58"
+    },
+    {
+      "file": "skills/pace-project-dev/references/standards.md",
+      "sha256": "ed7e32d421fbfc4dcde3a4691669447f7fe4f142183cdf6bce5a262a4d723552",
+      "gitNormalizedBlobId": "cf14d006a816f2acd9939cae1c5c589c0df74fb8"
+    },
+    {
+      "file": "skills/pace-project-dev/references/task-steps.md",
+      "sha256": "a3856bbd8757324205b8c897ee4b0fa1049d4facb0d2c98521a6f3268a0f7122",
+      "gitNormalizedBlobId": "6f7389a2224f01f09870515e82943919d3a03784"
+    },
+    {
+      "file": "skills/pace-project-dev/references/tester.md",
+      "sha256": "17686ba603841f0a90a16bad988279891410607e0abedc472f2f670527445c05",
+      "gitNormalizedBlobId": "61fd790cbd887c2037ff84236488ca8e54312909"
+    },
+    {
+      "file": "skills/pace-project-dev/references/testing.md",
+      "sha256": "286d3404cb4ac63793c87315634369ed38160bfb4fc1e0098bd9ac8457cdb0ef",
+      "gitNormalizedBlobId": "ed4f593a4358308f9733d81f7055fe717c3ab311"
+    },
+    {
+      "file": "skills/pace-project-dev/references/tools.md",
+      "sha256": "d6a8ffacc3cb0b9cd4d4416b60a6da235ba201a11e1ac1b31829b89fbf6c4896",
+      "gitNormalizedBlobId": "de6805dec066addad3c0c6cfdfa945905c758833"
+    },
+    {
+      "file": "skills/pace-project-dev/references/verification.md",
+      "sha256": "033faa2913c202ad72228919ddb3f6a3ccd4bed1404df3f8cbcc80c65bdfb084",
+      "gitNormalizedBlobId": "42ccfa64a0cb236a9e0fe2396e25857487ffeb7b"
+    },
+    {
+      "file": "skills/pace-project-dev/SKILL.md",
+      "sha256": "dabbf5b056f61a6358f90e2d857aae7adffeaf737145e147c5527b7fc2ded548",
+      "gitNormalizedBlobId": "6d90a1ede122ae6e1ffcf7862fa8b233824a407d"
+    },
+    {
+      "file": "skills/pace-project-init/references/analysis.md",
+      "sha256": "f2d829afc2cda545ba79b5ee89af47767a2ce8e50b1ac387d14db044768269c4",
+      "gitNormalizedBlobId": "e097eaa7c12e7b44342a0acfff8cbc0509fd99d7"
+    },
+    {
+      "file": "skills/pace-project-init/references/backlog-format.md",
+      "sha256": "f5c7d9731f106c80638cff23b014f7ab55e4c08f317643b918c636e128c26aaa",
+      "gitNormalizedBlobId": "b95890b7eb983a806bf6f6dd473f00dd952e72db"
+    },
+    {
+      "file": "skills/pace-project-init/references/project-docs.md",
+      "sha256": "52530deef47a26999d05a935c3fa9b58b13efbea3fab40c04b554ae9f2458ec4",
+      "gitNormalizedBlobId": "933c9b45165883b53d9c09e898ab6bd9d55b5af3"
+    },
+    {
+      "file": "skills/pace-project-init/references/test-map.md",
+      "sha256": "4829355861b6ff7f629aff895d205fe52a09d43ff4f711c37d97f787509a1971",
+      "gitNormalizedBlobId": "b5fae0209f0142197d68229c5df05d81bfec9b8d"
+    },
+    {
+      "file": "skills/pace-project-init/SKILL.md",
+      "sha256": "cd1700fea139a75bed80a9bfe623c0b4fe2ca740de71c07600658ce719e39c23",
+      "gitNormalizedBlobId": "b879603535ebead61f4070f7be33d8ee457d2c2c"
+    },
+    {
+      "file": "skills/pace-prompt/SKILL.md",
+      "sha256": "0d993d06cca83b74ba63b516fcdec7b08f72b635dc847e11b9b2ba2bee6d0554",
+      "gitNormalizedBlobId": "239bdaf0e8e7c9eda237de71413f48cd87ecc712"
+    },
+    {
+      "file": "skills/pace-scout/examples/소상공인_AI_지원사업/idea-3.md",
+      "sha256": "f9bd9e8f16881a0fb5422aa498efaeba88776dd1f120932c9bea080c0e69e26b",
+      "gitNormalizedBlobId": "2703839adc9f67a7bd2de9b19208cf28ee0a773f"
+    },
+    {
+      "file": "skills/pace-scout/examples/소상공인_AI_지원사업/README.md",
+      "sha256": "7f483b0832ea1f9a39c7346a70f9836abf7f920432e570043492c7f0417b0595",
+      "gitNormalizedBlobId": "f9ca2415d040323fa9e18b4af05f65857db56244"
+    },
+    {
+      "file": "skills/pace-scout/examples/소상공인_AI_지원사업/report.html",
+      "sha256": "15ad257f58c1874b2f1906e505267de2e9ae1e083c1f1363b71df18f78ae845f",
+      "gitNormalizedBlobId": "dbf65cb9f1d39ebbcef0a2831476c1a803ceca61"
+    },
+    {
+      "file": "skills/pace-scout/examples/소상공인_AI_지원사업/report.json",
+      "sha256": "168645fdf27920c2a744e98e7c427298393f064bf78cce1ae3707a5241c3b79f",
+      "gitNormalizedBlobId": "0eaa5ae39c719b22cca2456956bddb567a3ba91b"
+    },
+    {
+      "file": "skills/pace-scout/files/INDEX.md",
+      "sha256": "5d23809fae1d01bfda28b2b50fbb81378494e12d4385a36e08b76243a2a774e2",
+      "gitNormalizedBlobId": "468e1ee5c1cebe68ba4ccfe525ec4e01eb9df8e7"
+    },
+    {
+      "file": "skills/pace-scout/files/prompts/critique-ideas.md",
+      "sha256": "d5f0ff53de9601ab0a7e55e9bf5576dea48d50434df1f3133d1a54a0b4c6a3a1",
+      "gitNormalizedBlobId": "6fdc9a14a94ec22bdb9eb33c1fecdd3a79a75935"
+    },
+    {
+      "file": "skills/pace-scout/files/prompts/extract-claims.md",
+      "sha256": "8afb792d538fa261be157a18c7ddb918337ee1e4dc75f9673e08a578a18c759c",
+      "gitNormalizedBlobId": "b83ed8a0fe47037d81708aac4d2e64b2f6512e75"
+    },
+    {
+      "file": "skills/pace-scout/files/prompts/generate-ideas.md",
+      "sha256": "7be1cc169b192d03e3e9409fa192f458268fe9b92a07e7f913579e91c020dc3d",
+      "gitNormalizedBlobId": "833d915186c730b7489e57100be9642da5558db3"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/idea-patterns.md",
+      "sha256": "ba0f63899ce4c799d917f67238a7cc5f1532c0e65efc006d6c4ed123a0a481dd",
+      "gitNormalizedBlobId": "6297d31f61ff021c562f2ab9803b4343239ca681"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/scoring-rubric.md",
+      "sha256": "3d62bfda4de5e5082cb1f772af7b6b0d830a34d01152add0c06c4e4bec0fed4e",
+      "gitNormalizedBlobId": "727a7c47975f1aa532ff7e75c532fba78b3af447"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/signal-taxonomy.md",
+      "sha256": "d9d0f9ccca9de050bdbfb0af7fc96473e774b16a8bf5b9afd9db019974927630",
+      "gitNormalizedBlobId": "ea0150db893d5dee689cca16299bfe3178f81329"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/source-collection.md",
+      "sha256": "d2a80f0754a13bd8491fd009543b3dd69557e063b90484907d250892671a8826",
+      "gitNormalizedBlobId": "adf9fb2553e7f41a30eec786a5a145c1701bfcca"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/source-credibility.md",
+      "sha256": "071665f0238501b7f1f465e98a69cb41535d4cbc2054ac0f8a427a39acf49914",
+      "gitNormalizedBlobId": "f378e633e855b2e7cf648e4c64ba47c18a9cf92a"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/writing-rules.md",
+      "sha256": "82f7fba995e0ad1dea32ac087c9ce365f26cad27859973cae7ad2b65451b0ac9",
+      "gitNormalizedBlobId": "9bcbc5efd56e2eace7116ce0c0fb2905bff60c7d"
+    },
+    {
+      "file": "skills/pace-scout/SKILL.md",
+      "sha256": "2f4dd6347c3e0e479dc32876801489f2c8182d7c8b78583b4a88e8028eed0884",
+      "gitNormalizedBlobId": "e7b1ca8a6e8993f546de9bf7654df301e56e2564"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/common/api-design/GUIDE.md",
+      "sha256": "bfe62ae236c61a29b6c7f299a60c5c8dbe554b353ac263a4a8173bb3ebf84b13",
+      "gitNormalizedBlobId": "655d730e64492b997bded91038c52f75398c5563"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/common/coding-standards/GUIDE.md",
+      "sha256": "a035188c4ca8c82f11ad0680e81f8bf55a1d9baac68fd4507d7163940800a2e9",
+      "gitNormalizedBlobId": "051cccec47d1191129207aeadaf2a749c0b7c4e4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/common/INDEX.md",
+      "sha256": "57a667d58f2abb4a7e3b30da97e5dd331b701185af8ecfbe8840f0b1f83a41e9",
+      "gitNormalizedBlobId": "9bab151b251333ed453d69273a513d5f0616165f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/common/tdd-workflow/GUIDE.md",
+      "sha256": "772453ed87d5e40e6e7a1818d55470ec953c45671432fb2b32068e8e58848de2",
+      "gitNormalizedBlobId": "ad6517386574e623d954c5e9fec74a3f0e36803a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/INDEX.md",
+      "sha256": "5c0785ec035ddb1d4e52bf985fa6260ec1f97de5372c22aed204829d46c94ae2",
+      "gitNormalizedBlobId": "8edf604b4dacc573cb99de483234751af5700cc3"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/java/INDEX.md",
+      "sha256": "5afddb8b46578536aaf608f1928daa4afbc35261f6b168e15b876bda5d5f801a",
+      "gitNormalizedBlobId": "37d89185c640888ae8f5937fa6bb514e335f4d24"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/java/springboot-patterns/GUIDE.md",
+      "sha256": "956f1b7d3aef24e039d8d75da4de492f433db2b58629e44ee5cc73ca63ac61fa",
+      "gitNormalizedBlobId": "dc0b5f2a1f5e03ad66d774cd1bef3b92e3807cc2"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/java/springboot-tdd/GUIDE.md",
+      "sha256": "98e0e05d13deeb3e6e78967e7659670a6e78cddd3cb29804c0e2b81e69db68dd",
+      "gitNormalizedBlobId": "fc07f24face95ac19568ae338760a8e73d18b01e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/java/springboot-verification/GUIDE.md",
+      "sha256": "0a37825183741b9da602520d322454ea1fa95fc044c21a58afb2f8c659c07f01",
+      "gitNormalizedBlobId": "4abd92b1c7a9b11fa02668843aba0dc7c4cda07e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/hexagonal-architecture/GUIDE.md",
+      "sha256": "c31c2d3ceea8fa3ec49aae3be7473662de8624592d942fa24d9f1bbeb6cc4a0b",
+      "gitNormalizedBlobId": "54943754db2e7e993bb6428a789cbb3915322d7c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/INDEX.md",
+      "sha256": "17ec46bed22545f9a74fa3ed5ae553ef00f46be9e5df1131418e71522d982d09",
+      "gitNormalizedBlobId": "68345b2c2953c86b398151de507596a1c2563aee"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/kotlin-coroutines-flows/GUIDE.md",
+      "sha256": "e952e6add70238e81ae403968aed19336c1331d34068e748378691d6e418297d",
+      "gitNormalizedBlobId": "7bbb13c9a62cfe630362b9d0a4779171ec5a342c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/kotlin-patterns/GUIDE.md",
+      "sha256": "327681473b0e4aaa44150fca6b1641393f54bc9b3d258118247637919d5e54b9",
+      "gitNormalizedBlobId": "7b6baba881698144a3af501b64445a3ce7079710"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/kotlin-testing/GUIDE.md",
+      "sha256": "b2379c008927384b67c98c71202fdb1ef390756409c0acbf51078e45f2a93c89",
+      "gitNormalizedBlobId": "18df9b22c6d06f03af588c8a1e6515c9346b30c1"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/coding-style.md",
+      "sha256": "01b69ada108bcb9db88415ccca19b301914a14ae828aef7727f05d2b5da0bee6",
+      "gitNormalizedBlobId": "5c5ee30cde8115d550301b2e196a421c1f6dbf6f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/hooks.md",
+      "sha256": "c26b33df7dd5360fd401233c1756cf4db5e1b9e61dece0df22eab65625a28581",
+      "gitNormalizedBlobId": "28bb02fc275568f4d3750ecbf0053f72f620a050"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/patterns.md",
+      "sha256": "d69aa661a32b8c3b107830852d1e1d0c9bcb9e4b9ae555fb96d7b740094b194e",
+      "gitNormalizedBlobId": "1a09e6b7d7030f0b0d52412138d48ce9ffba00fc"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/security.md",
+      "sha256": "a68676c2547e0932a529f1768e27b630f2680a4103f86a5f5e0fd2ba57dad857",
+      "gitNormalizedBlobId": "a212211d20a975b2e6bfb483361a9621b6c48c1b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/testing.md",
+      "sha256": "489384a179b239195d976d9887df8ca1233e4c200428139302f201f98cdcf2e7",
+      "gitNormalizedBlobId": "cdf973345691388d6a20e710f4bc1353da1cc038"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/licenses/ECC-MIT.txt",
+      "sha256": "35a01099b433925db7c9c17b10bcb873f8eba7bcab9858a7f74daeab84aa412a",
+      "gitNormalizedBlobId": "b832b6f642312312367c07688dc7426db40a82ed"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/licenses/trailofbits-skills-CC-BY-SA-4.0.md",
+      "sha256": "257ae046f74d5d0237a9d1d234d7e13237aa200206f2ed49db282c829beb0705",
+      "gitNormalizedBlobId": "72f77386f4e4ef2bcdcc30ff423d4263e67f64bd"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/licenses/vercel-agent-skills-MIT.txt",
+      "sha256": "12cfd65c446abbb7490e48d3dbb447f414bd317a719d6714f90d016019f1eeb2",
+      "gitNormalizedBlobId": "e7236cc86f08754a643c1b510152e5239f8cbfd4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/fastapi-patterns/GUIDE.md",
+      "sha256": "0d030727903e32998ad0629745132c417af9842c74edb568d0f655bfdd64e529",
+      "gitNormalizedBlobId": "6cff4479d19d22d850ada13a3155cd2313358db8"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/INDEX.md",
+      "sha256": "05614490769755e12def0f362e1949a5e52997de3becf7fa6df7a1ab334c31a5",
+      "gitNormalizedBlobId": "2b466b00e53c06939c7b7032970d32ba40c1e43e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/GUIDE.md",
+      "sha256": "7e41e5f434ce30f512b64fafb23b5bd04f0bc064868641e6fb3773732fdb65a5",
+      "gitNormalizedBlobId": "cf5e416095b166547d383e96515377695827defd"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/dependabot.md",
+      "sha256": "b9dd0267a36e30f73799d31ab3a74beddeba42fb323098cdbaa2e63da8c188e7",
+      "gitNormalizedBlobId": "1d8785f250b817d9691f87a34ade3c3aa50eeb4e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/migration-checklist.md",
+      "sha256": "3bf920050966a312adf03e1bb8cb6f7e60def7dae3b3857d49355fd0f46e5fe3",
+      "gitNormalizedBlobId": "24b8b478506c48e5266660e70dace65ebd159f03"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/pep723-scripts.md",
+      "sha256": "b779b1668aeee64dac4fd00310d1e63a4ad3699a4be495249438732b9856c489",
+      "gitNormalizedBlobId": "a5c3675430f86b68b3a6999c6e83570554d1913e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/prek.md",
+      "sha256": "147813943b3b77c1d5f065326a6bff066381aa5fc2e0daddb0ea1dea313d72c8",
+      "gitNormalizedBlobId": "c5c1d5e626486578badc576c78e704390ece614a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/pyproject.md",
+      "sha256": "7a0f44e5384e6a84ec4c334820c4a740d904e117ad4bb6faa41495c8c6392b17",
+      "gitNormalizedBlobId": "231ab8f908966013975ce0449071b0249df88fff"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/ruff-config.md",
+      "sha256": "7db18772f9ca136367bb917ba89d9021b154c828ca89ceec000691ca239748e3",
+      "gitNormalizedBlobId": "4c93a7d55d2b5288d1fcc5e58dbd51d367931c37"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/security-setup.md",
+      "sha256": "06cc283a8c8a7b7b1436872963e589980e9aea9061575cf254bf5142012eb41d",
+      "gitNormalizedBlobId": "fd2571f390608618e33618c46d1c035aafac8f67"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/testing.md",
+      "sha256": "a09fb4c1f01931fef919f24be0cd8555b022f3565655f62bc4f096dad7e89f2e",
+      "gitNormalizedBlobId": "26c0f1b169426401def46920f2dce2939662725b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/uv-commands.md",
+      "sha256": "24c4f9380e6185739147705769a9cc16954028f6e6c642107c2aca18d6ced971",
+      "gitNormalizedBlobId": "d60b398e51a93f330675c1be1141b0d6f6b2be82"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/templates/dependabot.yml",
+      "sha256": "4b8fde8e1bc4eacf15f3e8d0d2c1c8429cb3efc795de1061447ed59ddffe0d98",
+      "gitNormalizedBlobId": "205294f75e5b0222d14d4733661c213a2a924275"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/templates/pre-commit-config.yaml",
+      "sha256": "b3e42a92c58b9c28c49dc71c9eac1f2f84ee191ac4628fb3d0c7e81bb2174cac",
+      "gitNormalizedBlobId": "8a163a21f459359c0d72441a092d39daed23aa8d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/python-patterns/GUIDE.md",
+      "sha256": "6c315f8a2c8127e2bf036bc43889b59830a9d1af8caa2d9a4f687790468a49fc",
+      "gitNormalizedBlobId": "ced3d588d816fb6880dfef4d67f30cab9d1b82df"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/python-testing/GUIDE.md",
+      "sha256": "ad121584fa51f82b942e7b91002bc8b1a3e61a21134e1bd3d4313b99c8633ab1",
+      "gitNormalizedBlobId": "ddfcc0abc566994a35df68337476c2a401201e57"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/SOURCES.md",
+      "sha256": "4cbdcf6a36802e49c8508eb74a6e2738d65d7d673c7de30572eba78063dfde31",
+      "gitNormalizedBlobId": "cf06549f3ec658e5018194e717f7c0761232c240"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/sql/database-migrations/GUIDE.md",
+      "sha256": "7095948295210280a9ac47ed344d3c367d9ba8b1665ad1c89a082d055aa5fa2a",
+      "gitNormalizedBlobId": "92d6d693066783cb00c225244a690e851fdab8c1"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/sql/INDEX.md",
+      "sha256": "d55dc44c75cd4884d556fa9bb12818ee2622e8addc8fd51260dedb530c1af4a3",
+      "gitNormalizedBlobId": "5eddaf6898c6fcd49e252da463b88904649da89f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/sql/postgres-patterns/GUIDE.md",
+      "sha256": "22279d6d1f85bf48e3383cca311ce4852a8934e64edef4ec41725bd82a8bd7e1",
+      "gitNormalizedBlobId": "12a3a4a05c2278c7fe1316d9403b5ca037dadf69"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/backend-patterns/GUIDE.md",
+      "sha256": "fd1a7378b5bcd42ed21279b2b724758ade6e49e762df47b4c67729e5696656a6",
+      "gitNormalizedBlobId": "1142d0a51de34808f8493bac40b68aa745dcd80e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/AGENTS.md",
+      "sha256": "ad5b5de8eef5c67b7fa370ea8f9ca79e9e17e3c1727e71af612b699fc90c9c90",
+      "gitNormalizedBlobId": "558bf9aa1e36db2161f1633c9bfae14a819f0508"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/GUIDE.md",
+      "sha256": "fb8f849b4d46c0c4d364ae6fb398a5cb693b54f9a4c31765a1ec0689c7cb93d5",
+      "gitNormalizedBlobId": "d07025bf943345bc1cf15eb923594f889ff881f0"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/metadata.json",
+      "sha256": "ace7d193472295f0f224948554406dfd6fe378b7f1f000d00020daa4d96f7ea5",
+      "gitNormalizedBlobId": "3470b744190af044373abbfe80d94630c0cc6041"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/README.md",
+      "sha256": "d6dc98821fb02558c54faf6cd39e5af15837b808c25c0fb4f16e4ec66b9f595c",
+      "gitNormalizedBlobId": "01f359b0e79ce544d1463057be54946e50d62bcd"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/_sections.md",
+      "sha256": "738f4d5a8f96e939d5a2d38e59b53613074a173c2b9207ab813fd72f417f4f9f",
+      "gitNormalizedBlobId": "f921dd41b53e4d847f25a6b3eca25a4e8857db44"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/_template.md",
+      "sha256": "d688f7c382511d1354bbaf05accdf0c93b5c2ce1d2ab60ab4cc217120fc29f8f",
+      "gitNormalizedBlobId": "119a30167f162c439f05e73c63044c590dff645c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/architecture-avoid-boolean-props.md",
+      "sha256": "bf497b4166c70efca0328558ff3b30cf16bccd94bdc321adf5fa690d759739cb",
+      "gitNormalizedBlobId": "ccee19ce495b9d7fdf08867db3c6b6282006312e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/architecture-compound-components.md",
+      "sha256": "dfad1d28de90868a8b8311a3974f5b89648a2a8208caa316ff63ead0b6194914",
+      "gitNormalizedBlobId": "e5e3043cb5a81b83dce0389848b828455f00854f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/patterns-children-over-render-props.md",
+      "sha256": "6e44da5931fcb09f2d631a462324035fb4d42d0a4ddbf4064ae1bddd2cbe387c",
+      "gitNormalizedBlobId": "d4345ee30aea5f1b11815251edca7ebd0aefe2e2"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/patterns-explicit-variants.md",
+      "sha256": "b741d51cefc5bad25ae725a3e8791b47198cdb576aa5f34e609e13b4e910d2d9",
+      "gitNormalizedBlobId": "56e32e8bee5e5768f747db4e9718a6c2b54bfce5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/react19-no-forwardref.md",
+      "sha256": "10ab8f9b640133f371c327ebbdde0169d94fdf9684c6798f135d5f0f5efd2b21",
+      "gitNormalizedBlobId": "e0d8f8a76f14888f2fafc8cccd3d9395e4711d0d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/state-context-interface.md",
+      "sha256": "1d6923baa2726aa2fd8f3d75b7e820e895f89efc4c42d9f71cff229cbe21cb41",
+      "gitNormalizedBlobId": "d961bede0c6c6e318f6ba3aca9b5dfcdb768d8f9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/state-decouple-implementation.md",
+      "sha256": "1b8757b07e62d869c4019f40cf75545516cc86386896b429090b2a54b13f301f",
+      "gitNormalizedBlobId": "71a5afaa7d7078c262c92d32c3b97723de62f99f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/state-lift-state.md",
+      "sha256": "2c70589fc7c8e2104269d1fda424f005daa470d38e1efe3feef32e0dd01d2ead",
+      "gitNormalizedBlobId": "d7fe27b54933135f9050365b6c2001c101029d51"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/frontend-patterns/GUIDE.md",
+      "sha256": "46e2290989d0c6abc7d9f12e8f6940d18ce0435b3b961d0de570998707d2a4ac",
+      "gitNormalizedBlobId": "a63977a8b0a8896217a884cdf9e6d49fc8771be6"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/INDEX.md",
+      "sha256": "0bac02020b7a3618c6bdb5a9ddeb19949ffd3595b46520601d3d2f5e4141cf9e",
+      "gitNormalizedBlobId": "55a19d5aeedf579513e184b1738e68607268cd80"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/nextjs-turbopack/GUIDE.md",
+      "sha256": "d8104b5b0733a5a817c4f1bf6e6d6f73e8d7b960840340e339609f4109b6da97",
+      "gitNormalizedBlobId": "43e1e60ee22d274259d3f0e8f12afeaffc799bec"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/AGENTS.md",
+      "sha256": "abd31099ee343f309e25d963e74c485f90357ff47c4898da543ca3dfedbe65c7",
+      "gitNormalizedBlobId": "94c3c84413c11e51a87cafac9091337d6fa4eac4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/GUIDE.md",
+      "sha256": "4e7e83ce84bdec9f20b59adc533d7edf2ad23a73bc6cccad2d8ef18152b2a567",
+      "gitNormalizedBlobId": "7e887d4eef55cc0fcfe7ffc46df97d6a6746bc73"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/metadata.json",
+      "sha256": "1874ee16ee8ec9be9058dd31e0be60f9117ae1ac33986b258bac3923b5dd395f",
+      "gitNormalizedBlobId": "3bec38b176cc71d105895ec4678bbe79305dcb4c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/README.md",
+      "sha256": "2e7e6cbe3952689bf9c00b9a7032f1bffb263cde2d01635f0aa49d3375c33ff5",
+      "gitNormalizedBlobId": "f283e1c0c21c5b13c848452528c3949ff544846c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/_sections.md",
+      "sha256": "f352f75b84d6c6ee644c3fade99eaf2186bdfdc1d9e5b598bae436f32b3bce4f",
+      "gitNormalizedBlobId": "4d20c144bc3b9265fc5976c704a8dd60ed3a806a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/_template.md",
+      "sha256": "21231af1b4c70cfe6f07625830d982934295c735f91fddd9741b3a8e3688d735",
+      "gitNormalizedBlobId": "1e9e70703485021e0b969f5731f38c8b9f8694db"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/advanced-event-handler-refs.md",
+      "sha256": "029f0c929c665fb9263b8c72a44e50610caf94a6e22a8142821a84482eda825d",
+      "gitNormalizedBlobId": "97e7ade243aa6dae50d6faa5111dea0d04778ead"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/advanced-init-once.md",
+      "sha256": "3d209bc4b17c2a503fdbb53b39261bc5ee824703a8b387daef3f53bad1f32ce4",
+      "gitNormalizedBlobId": "73ee38e5e74c0afa28cb730afe3275479432092a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/advanced-use-latest.md",
+      "sha256": "84b3504ef0dc85f171c6aa0c5d15ac6d252ba72e38fc4e87872c0a3b1728345f",
+      "gitNormalizedBlobId": "9c7cb501693d4a9521697f13dbd5906dd99f0257"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-api-routes.md",
+      "sha256": "adf38ea4f34fa74b275b908e49aa20de20af9d9935b4a656314a49217b182663",
+      "gitNormalizedBlobId": "6feda1ef0ac06b57b33c7b5bd6a19ca88d6c8a34"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-defer-await.md",
+      "sha256": "6a2b9e19555a17662755e01d129fa21b8c6a659731d860b7cc918ba47be2a942",
+      "gitNormalizedBlobId": "ea7082a3623e3d6439111d86c89b064f22b64447"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-dependencies.md",
+      "sha256": "4901341bd7f7b7036eb8d98b243515ce294e6e4079370b3187c1514c3e597ec6",
+      "gitNormalizedBlobId": "0484ebab993f3db78277e8731872473d02475e6d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-parallel.md",
+      "sha256": "ff95abbb67b62a889d7ef71f1d06834238c47ecd3d49483f7823b4cd17d92680",
+      "gitNormalizedBlobId": "64133f6c31fec81eaaabd712586337d20122e09f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-suspense-boundaries.md",
+      "sha256": "8a6e88c6e5190e10d3e3ebca89a1bc4fefc4bdb0cbc9c6f406ce02452a5759df",
+      "gitNormalizedBlobId": "1fbc05b04ed2474637b12014a77688750e78f931"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-barrel-imports.md",
+      "sha256": "f3a0d74c71aaa98547d970901d73d1bc4c082762e891244e9103def40846eecb",
+      "gitNormalizedBlobId": "ee48f3273c8631f41dda416ce12cd65fb47e2c1d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-conditional.md",
+      "sha256": "16992beeaf9bdd1e7ff20989b8672cfffc8b918deb0783c058560c7a233dd37c",
+      "gitNormalizedBlobId": "99d6fc90e31d683d2b6b71353b92d620b484b644"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-defer-third-party.md",
+      "sha256": "64de0f01dfe58b4d3a3865baa623f743ef1b8c363106c7dfaf2b2867f69b96d4",
+      "gitNormalizedBlobId": "db041d1510e51defeade05926ba4e6bbad1068b5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-dynamic-imports.md",
+      "sha256": "0fb947cdfec5ce0e95a894c6b68220f88983eff73ce65b98e4f00c885ebd9b36",
+      "gitNormalizedBlobId": "60b62695e7a080e2020ff2242d8d841c5e3ecbc4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-preload.md",
+      "sha256": "b673a49f4cf4bf385ddf6956ca704139ec2915802bade1925134f8cfabb2278c",
+      "gitNormalizedBlobId": "7000504065472628ae614786a3faadd23b0435a7"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/client-event-listeners.md",
+      "sha256": "e2229c8e121dfdd6bad8063ba6c41213ff612e19e077f17ba805b70d48151775",
+      "gitNormalizedBlobId": "aad4ae91605d715aad8e92b76bd7fb85c91d7cdf"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/client-localstorage-schema.md",
+      "sha256": "f9d177a557f4bd4bd1a81f30f841f75041821dd88f706a6b8c4eac86c7472e05",
+      "gitNormalizedBlobId": "d30a1a7d4f85b0d50a0808eaa1b382c6deb595f4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/client-passive-event-listeners.md",
+      "sha256": "277118e32363381459bc7439fa942966da668d2c128d93968f9a289f0bb32861",
+      "gitNormalizedBlobId": "ce39a889efb4452ec4c044555ff818301dcf7ece"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/client-swr-dedup.md",
+      "sha256": "866e6cc267f06df39129c44c68c5e6a2e62faa554bc8cdb6ada1f58afe4bcbbe",
+      "gitNormalizedBlobId": "2a430f27fd6abdc1b1b2f809b7a60114ff506790"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-batch-dom-css.md",
+      "sha256": "d7343005afc6a9c7e86368e22318f49b88492973e673f7b0ba2eb65697597143",
+      "gitNormalizedBlobId": "a62d84ed8149b6d4f173debc7043af03f8f8dd06"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-cache-function-results.md",
+      "sha256": "bbef6423ad250227e8c73a5d9be6fd687707dd187ef50236fd5b6883a41d49b6",
+      "gitNormalizedBlobId": "180f8ac8fffd7e6ee320242d59d06565d40a12f8"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-cache-property-access.md",
+      "sha256": "bbecc553a5b51caab2ddc90423a23d4c3245669439ff91e5204e48d62aaf1c5e",
+      "gitNormalizedBlobId": "39eec9061b4ca820150cc8183fb73f9e0c91ce85"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-cache-storage.md",
+      "sha256": "7710a2ceb421d9b6d3828d7f38ec8a093af4a372c2b3b4ea2299d5df2518f770",
+      "gitNormalizedBlobId": "aa4a30c08176aabd27b41fa44d5c1981457b675f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-combine-iterations.md",
+      "sha256": "c43a02979586d39f341fa6da7fc61bdd6a6917fa0c4f9c926091fa540cdf8022",
+      "gitNormalizedBlobId": "044d017ec3b24b53e46d638acd1d936a22ac6323"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-early-exit.md",
+      "sha256": "b6b967ab80d2a5fc19851d9db9464cf8e4d0e57dccb607a474b8f7818015951d",
+      "gitNormalizedBlobId": "f46cb89c6cbe06e481aba0136848e3b17263ba96"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-hoist-regexp.md",
+      "sha256": "86f4772c5d732c1f5f0656412713c6dc919360f0f3ea32bb1a45937eaaa5866e",
+      "gitNormalizedBlobId": "dae3fefdc0a1db66badcd4875489715edcdb038b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-index-maps.md",
+      "sha256": "752dd0803a7394a70e8d437b7eb025d1e085566e30ad733e75b9d2e04cc6c4d9",
+      "gitNormalizedBlobId": "9d357a00b15ac67cdd638886f5197a13173a637d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-length-check-first.md",
+      "sha256": "9e57362d76e57ea6a2ff8cd137cf2a87b094aaff152eac61758305acb450a25c",
+      "gitNormalizedBlobId": "8b89573630fdc3aa10564273f390ecc7e2b1cd3e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-min-max-loop.md",
+      "sha256": "f0054bcd1c3168ea8a6474df33c398bc0066eb1e813d59ae57fe36806ec900b6",
+      "gitNormalizedBlobId": "4b6656e96aecf3ae6ade52974090ae8b3e3f2bb5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-set-map-lookups.md",
+      "sha256": "7143f8d7b71cdbc77a171fc801bdcf5e7a209e0f471ff17bb669acc986a6b064",
+      "gitNormalizedBlobId": "680a4892ee291c432bf8e769a44d0f1eb102b74b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-tosorted-immutable.md",
+      "sha256": "2722514cac46990f3361fa35ee20d499a12da2539362e7871b670978664d158a",
+      "gitNormalizedBlobId": "eae8b3f8aed2c7a893ceaae4cab55fa1c444b309"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-activity.md",
+      "sha256": "e23dd494d955db99d376b5bf62a59ce7df9f14576d94094f2e53cfdc388453a0",
+      "gitNormalizedBlobId": "c957a490b7c2688542766150741e85e066539251"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-animate-svg-wrapper.md",
+      "sha256": "dca7f0251244489b3bbb6f5aaf7d70f280d91dc13de8ebd24403286f382ec0f4",
+      "gitNormalizedBlobId": "646744cbe53b213c6fa5ead54ef107510e5be89d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-conditional-render.md",
+      "sha256": "6db58f36c8b080c35e91f6504281f85ea2dbd133030610c860e60181d6d9556a",
+      "gitNormalizedBlobId": "7e866f5852dac80e0822e7f7c33476f5c9fc22f1"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-content-visibility.md",
+      "sha256": "45437e9594857ee1066ee061e946ed129731cf2e80f7e08f3cc621fa0554c567",
+      "gitNormalizedBlobId": "aa6656362b2c0dad9ffea788b5850843d6c0629e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-hoist-jsx.md",
+      "sha256": "c5fa7274f067ce3760107196a9416df333a7b4187254ef66c547fad7c45cd8d3",
+      "gitNormalizedBlobId": "32d2f3fcea53dadcf847231ee20c60fa2c5c3049"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "sha256": "bfedc3a73f9687c7836acf915165fb845880453b6dfcf2fa6475dfec96b23027",
+      "gitNormalizedBlobId": "5cf0e79b69afd7564b965c09435a2c7ee79eb2bd"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-hydration-suppress-warning.md",
+      "sha256": "7ec1623c69e1a82b09b8b5a6028005e3eb8485741898447af1bcaed8ff8c0139",
+      "gitNormalizedBlobId": "24ba2513a29f5259b3184695d2d4da25e03e42ac"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-svg-precision.md",
+      "sha256": "d57cdfaaaf660a28a9a5d6d10e97202a5eb13e1bc1675e024cb1ccbfa8bb2c32",
+      "gitNormalizedBlobId": "6d7712860365294936a1b736d29d3eb970b91da7"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-usetransition-loading.md",
+      "sha256": "c2186f944b60630c67d42222f60ecb12b5a85395e7f31f193982f85983165720",
+      "gitNormalizedBlobId": "0c1b0b98e884d2c77bdec66df754693bd48c7777"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-defer-reads.md",
+      "sha256": "bb98d9b7c7622641887df6407406a8c4f61510af9cc1bd275574ebee71bac8c8",
+      "gitNormalizedBlobId": "e867c95f02fe6ed6ac2f91fdf1c0922304e0423a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-dependencies.md",
+      "sha256": "4f0a1806694c2391c0b5b79bb4dee89fdf2c02ee322acf308509c17542240446",
+      "gitNormalizedBlobId": "47a4d92685702e3a3b07073c62a61800fa0a6d7d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-derived-state-no-effect.md",
+      "sha256": "1d50f7b1b86d24f987c557415590f79b06250e3ec1ca552da981e31a31f9edb9",
+      "gitNormalizedBlobId": "3d9fe4050794ea6655add6bee50cfbc104e5dc31"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-derived-state.md",
+      "sha256": "6a501211aa53036905df7531deaf25fdb8582697366fd071d4c2607828662dcb",
+      "gitNormalizedBlobId": "e5c899f6c073338bbd1b73c0275bc3e5e7d9ae7b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-functional-setstate.md",
+      "sha256": "e46096d4c2c8fc89ab717bd7e56b8a884b612a88013a99b0c63e7dfc45d8cf25",
+      "gitNormalizedBlobId": "b004ef45e347503947fee397b6c3d163b0a317fb"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-lazy-state-init.md",
+      "sha256": "b8b9e6b6001a1e94979776e744eb38a98432858dd2369995731c9a095ecd1d2e",
+      "gitNormalizedBlobId": "4ecb350fbadff3db805b72429276e672d42736dc"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-memo-with-default-value.md",
+      "sha256": "e69d637687b85967554df7d5fcfd83cc6fbb89237e9b80d10fbea7916244aa8b",
+      "gitNormalizedBlobId": "63570491848cb42c2bc7073bceb754893a6a4cfa"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-memo.md",
+      "sha256": "8cc2d062f22ae762f7f5f93baf2bfc374c917079131896559721f9dfbd402a7c",
+      "gitNormalizedBlobId": "f8982ab612105a3b7faee1292b797338e7fb5271"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-move-effect-to-event.md",
+      "sha256": "00f5eaf8d4380c736c9177b67583f6b33f6b1f84addc252653cd6dea9551ad8d",
+      "gitNormalizedBlobId": "dd58a1af091b3cf5cb271d25904af4feb836d1aa"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-simple-expression-in-memo.md",
+      "sha256": "1e41299336d72ce42ffe0b4d397496e520eae13ea544b1412b83761555f4e631",
+      "gitNormalizedBlobId": "59dfab0f3b048097627e0ca6e4c8da36629a5268"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-transitions.md",
+      "sha256": "b51a82fb6b223d13c585dfddaeb753c79d7da0524da87b708f61fd6939600ab6",
+      "gitNormalizedBlobId": "d99f43f764232e994a49a1df89ec9d624552f439"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-use-ref-transient-values.md",
+      "sha256": "26ddded1d59cc04cddf7c1412ffb05315dd1f358510edcce3c3474d5acb63f32",
+      "gitNormalizedBlobId": "cf04b81f8a531eacd07a32e8917fb3ed3c1bbecb"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-after-nonblocking.md",
+      "sha256": "86c8670ad8e6285753645c2cebd164c56baf6f0fa74f914c0ca496d0a0156bcc",
+      "gitNormalizedBlobId": "e8f5b260f5fc6d58141bc61e0a091569adb81e7e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-auth-actions.md",
+      "sha256": "a413aba63b73f7f82cf2482646c8c1598eaa75753c8f73f33055b8508de99fea",
+      "gitNormalizedBlobId": "ee82c0442bc69ffae7bf20c07709d57893da1123"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-cache-lru.md",
+      "sha256": "19d844eebd1fb7ef5f43f4d1e85baf1fc0160547400ab838ba4d40226eb891b9",
+      "gitNormalizedBlobId": "ef6938aa53c55dc3c0035bd6c66838810d870260"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-cache-react.md",
+      "sha256": "7448470adc9f0066455f9cf45b658f5c3f1884a7990c89f880fbb272a4028b05",
+      "gitNormalizedBlobId": "87c9ca33168a321a59fbaaa84843e2f48c99751a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-dedup-props.md",
+      "sha256": "5c4d4c9930812d3ab98e28ad97ca2f5af778effbf9b50b6a7558c18abf2e98b5",
+      "gitNormalizedBlobId": "fb24a2562c73fadbb9a11a79897c2cf93ea3c69a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-hoist-static-io.md",
+      "sha256": "a30574079b57e726075adae656735d0adcbeebebd18dae1b0c0de40a910ff0ce",
+      "gitNormalizedBlobId": "5b642b69bcb84b3c9cd845a2af892d19396446e0"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-parallel-fetching.md",
+      "sha256": "f8f275fea2378e7707a50f2df4af6a2f65fe1fa84edb3ffc4720af805ebabe42",
+      "gitNormalizedBlobId": "1affc835a601a894fd02de08e6c9cdfd76d34b64"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-serialization.md",
+      "sha256": "567ce457f775d4e03e2a6ef7bf67213fee35c6c3b9d1bcfa783007d1df414d4b",
+      "gitNormalizedBlobId": "39c5c4164c31be7f171ea2f4b3b32fe47709a651"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-patterns/GUIDE.md",
+      "sha256": "9934efdae21cfe2e3e949d12c3faba5ff6decec1ccba803d4b7369b137ab9a36",
+      "gitNormalizedBlobId": "66acd2a6c84eb0bbcf72eaeb43ba4be37e8dddff"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-testing/GUIDE.md",
+      "sha256": "7795b44ad41de7ab49ec5a6f9b1629ed34bf9f3f92ce0d9842da29a0b1e1d5a8",
+      "gitNormalizedBlobId": "babaf6ebef80f1e6ba66ef5242372dd175870a40"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/vite-patterns/GUIDE.md",
+      "sha256": "a42161d71f09d609b138c9a9cbde0c60466751e6ea6c56e27b3685575f00c559",
+      "gitNormalizedBlobId": "98db326bd2e4f1d38fa539b84c0c0ab059848ea4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/ai-regression-testing/GUIDE.md",
+      "sha256": "dd1d4f1ac1b695f8fb006b7e06ddd6cf6b5ea2c2090bacb1e8e157ed4026b769",
+      "gitNormalizedBlobId": "e8dac65b1792ead1289090e3db0326ec00c26fbf"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/e2e-testing/GUIDE.md",
+      "sha256": "93048185f3a3e464eda58e1d5ba956f16cb949d3b4b88db451fd1640c27bb94b",
+      "gitNormalizedBlobId": "f9ca797a1badc3a85352e14d31e6262dfde535bc"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/INDEX.md",
+      "sha256": "33a25c64abf8a1de0c48913a09d16fe3d48381d816afceb98516bb4619249183",
+      "gitNormalizedBlobId": "afff08c44b76381470e639bfd990c81f193612c2"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/licenses/ECC-MIT.txt",
+      "sha256": "35a01099b433925db7c9c17b10bcb873f8eba7bcab9858a7f74daeab84aa412a",
+      "gitNormalizedBlobId": "b832b6f642312312367c07688dc7426db40a82ed"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/SOURCES.md",
+      "sha256": "b6456bd6210fa127524e54c98595da98aaadd8d11e537cb71228d78c1372f0db",
+      "gitNormalizedBlobId": "7e5a5b5fcdd3f8b6582686b3a4e9495b87f205b9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/SKILL.md",
+      "sha256": "cf5260990ea6aa1dd6b41da62fdc615361a3a39827847253865c6e373948c8f0",
+      "gitNormalizedBlobId": "c76366704971c98d959a72e7903649ff6c110fad"
+    },
+    {
+      "file": "src/agent/acp-executor.ts",
+      "sha256": "4fcab64278cfdfdbb20fe09a5567cdd283657c1201a7f0bdcaf0faafc8be5d70",
+      "gitNormalizedBlobId": "d133dd2f5190467621cdad149dd0ae15e03190b8"
+    },
+    {
+      "file": "src/agent/chain.ts",
+      "sha256": "8eb3009151d1bb646d663de0ffb41e5b3ba7fc89f212d687a5f5399154a82b50",
+      "gitNormalizedBlobId": "1ecfeca8ee20c77f6c51b261544830638412c642"
+    },
+    {
+      "file": "src/agent/contract.ts",
+      "sha256": "3c77b9eae82c4cf8e37f369247eec0626af1666bf5b9ce0c10bfaa5ff863d768",
+      "gitNormalizedBlobId": "c652a4b8d557b9d3a93cdd3f237af602d25bca12"
+    },
+    {
+      "file": "src/agent/hooks.ts",
+      "sha256": "ecf7aa820a8884c2ba02fbd62164415fca1470841910fb4ef8c1a65e0fb3adc4",
+      "gitNormalizedBlobId": "b51c84c103fc2c789551d243f94d74de56cbe6ab"
+    },
+    {
+      "file": "src/agent/limits.ts",
+      "sha256": "18cd3725601b902b3f1bb98f2b672c28562dc8b398f3fb9fe0c1358a48bf66a3",
+      "gitNormalizedBlobId": "77525d6126e5a1b2385fc76dbbc6859e2a49b904"
+    },
+    {
+      "file": "src/agent/p-executor.ts",
+      "sha256": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75",
+      "gitNormalizedBlobId": "b1477dc8a0d3096b066d64695ad5f40fe1fbf571"
+    },
+    {
+      "file": "src/agent/proc-group.ts",
+      "sha256": "a2fdfe2154bc86be361ffa07b22cd52531ee84188e5eed6205b770f76b89ac7d",
+      "gitNormalizedBlobId": "6e119eb528a25396d84dce51ed066c28330fc169"
+    },
+    {
+      "file": "src/agent/process.ts",
+      "sha256": "79188ddb12d7c8e0fdd96015648162133f69952084af5dea26d7dff518f72588",
+      "gitNormalizedBlobId": "2a9741addb452f9d52f32f751bbd24809f41cfd6"
+    },
+    {
+      "file": "src/agent/registry.ts",
+      "sha256": "323ff91fed9d933e06b02c555498a12e1e34ac48b343b9ae008233a6242465c7",
+      "gitNormalizedBlobId": "4f168efaffb3d3975275ac39324ef7d0a7ec48c5"
+    },
+    {
+      "file": "src/agent/setup-cli.ts",
+      "sha256": "d2490ac01d13e38bb238fe3d7d1ce37a21fe4d1f79e191f837860ae32ceb6623",
+      "gitNormalizedBlobId": "8e7de77f82aa46ed66c617822a6a5480f4ee12e7"
+    },
+    {
+      "file": "src/agent/setup.ts",
+      "sha256": "ee7f233fbddeab5e96b056300293c23ff7c287839c28b79c6aaa5c77f963ad84",
+      "gitNormalizedBlobId": "14e990f5e97d8cf7c2de896586822579e40d6c24"
+    },
+    {
+      "file": "src/agent/snapshot.ts",
+      "sha256": "071dce9d2ca3006d4a2b833de730e9ec53d522fe454a7f021c84342ee1101fb1",
+      "gitNormalizedBlobId": "10087969ecb4fd7b7e8fefbf0d47209ade58191a"
+    },
+    {
+      "file": "src/agent/verify.ts",
+      "sha256": "d368970bdcd1c1ddb6d0ac8cc4ce171e3c7918b5ec6db45581d9c71abd676bd3",
+      "gitNormalizedBlobId": "fe3f1117468ad18ec21f670135904943ea1e10c4"
+    },
+    {
+      "file": "src/agent/win-command.ts",
+      "sha256": "64a9cf48435de8be9888e865fdfafaa51b150059ff0e5a6302ecf0dd28e6da19",
+      "gitNormalizedBlobId": "a05e730a6d0c8883788168fb86c22cd7492e4f41"
+    },
+    {
+      "file": "src/agent/windows-job.cs",
+      "sha256": "3f67829f996e3238f19106a17581f51972931931106580d4b98a6d0b5d69d2d3",
+      "gitNormalizedBlobId": "752a594134874690f4d138b3d5b2b010ee77e546"
+    },
+    {
+      "file": "src/agent/windows-job.ps1",
+      "sha256": "17e705dc95b9c94625433563bb7d9788bdf4845006d03184640c65fbe307d9ae",
+      "gitNormalizedBlobId": "e15c6f4a1271484d2f285aca67226ebfbb9106a1"
+    },
+    {
+      "file": "src/agent/windows-job.ts",
+      "sha256": "fd29973107b15e756072f57ef33ebe1f167e1d6ee805909aad27dc41faa10d76",
+      "gitNormalizedBlobId": "d454d9bdba2e9e7c7ac436a10a24f00ead1e0ef1"
+    },
+    {
+      "file": "src/agent/windows-supervisor.ts",
+      "sha256": "f3f222b5fbfa34b3802c498a9b342bfd739c53bb8211c88283cf79a7ff7a8825",
+      "gitNormalizedBlobId": "6c35506e8ac393ab3ff6898946e1dffac2e9267e"
+    },
+    {
+      "file": "src/boot.ts",
+      "sha256": "f1da1099d9b0f9ee29913935b563969fe1dc08b8f21071d98435a8c36edcae8a",
+      "gitNormalizedBlobId": "d469bfaee650b629d3c85eb0c8e9b2e97aa64229"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "020040e969db51731463a2a45c191a1e107e33d9538757864aae1c2c411d0386",
+      "gitNormalizedBlobId": "8766b651d63785715eca80236f3645db65f8d7e1"
+    },
+    {
+      "file": "src/core/console-decode.ts",
+      "sha256": "f7b8d524c54c716b64056fbcd93ef71c9b250d7a674a9c282f5203f1c49bb29c",
+      "gitNormalizedBlobId": "1c1e125ad7280ecc057e0cc05852d548b1b19af3"
+    },
+    {
+      "file": "src/core/frontmatter.ts",
+      "sha256": "dcb9d6e6294b808b030c5908251e75e716954f4ca1e41a9c7efb8080654b6dde",
+      "gitNormalizedBlobId": "ff1bca2dffb2c95c386a9448260d9d19b86ec6b9"
+    },
+    {
+      "file": "src/core/fsutil.ts",
+      "sha256": "4b6ffce7172d71060a1855e017b3b075b02daffbf76dd90e3a81dbeba00395af",
+      "gitNormalizedBlobId": "0848a4c800c139870b86446153fdfafd7fc338c9"
+    },
+    {
+      "file": "src/core/paths.ts",
+      "sha256": "a9d11c9482c1e3f44f4dda494a10414c278616451d82e8ecc5ac7e8d1779301c",
+      "gitNormalizedBlobId": "99af512372846c94d60e7f75745de442d280320b"
+    },
+    {
+      "file": "src/core/prompt.ts",
+      "sha256": "b2b6570819514657aa5ad4d7238338c30f0738e5936bb5556656f929aca87d4f",
+      "gitNormalizedBlobId": "2e000b815186c417f4cdd50f7ddfb1f2063f688d"
+    },
+    {
+      "file": "src/core/worker-settings.ts",
+      "sha256": "66f14195874ef2d18a98f3daf6d5361e474210f251adf2df800f24097acd39f0",
+      "gitNormalizedBlobId": "8e26159f326c02bfdbbeaa0b43715d813f6daf62"
+    },
+    {
+      "file": "src/daemon/autostart.ts",
+      "sha256": "f8951599cbda27d22317a129ec78f1f45a86f247f4ed77909967bf2d26cafd5c",
+      "gitNormalizedBlobId": "50f0d473e93d1f813a07a2cc6f4c3855f7a35794"
+    },
+    {
+      "file": "src/daemon/cli.ts",
+      "sha256": "700a4a5ccae6b124443fc3dfc69c3d4b97ac4374aae4ed5749b8d0d983e271f8",
+      "gitNormalizedBlobId": "c0a0608f637a627168401383b5d0dd707f010537"
+    },
+    {
+      "file": "src/daemon/config.ts",
+      "sha256": "56879c50bcc4eb7afa643c195c1afab10174bd3ec734b61de06072f31834772d",
+      "gitNormalizedBlobId": "461bee1e8a2af01347cc5f368d94e131d0f80011"
+    },
+    {
+      "file": "src/daemon/core.ts",
+      "sha256": "ea076871210f0eb3b834553d3b03a737d1d865362dee349974b88aa3b992758c",
+      "gitNormalizedBlobId": "aa21004e7194cd85c173f10f95d82617681bb357"
+    },
+    {
+      "file": "src/daemon/gateway.ts",
+      "sha256": "e95ed9f14af791f0beecba40c10eaefe686d3e72272a8375f99569a6a4b5c539",
+      "gitNormalizedBlobId": "177c5d1f1dce2aed94d0c6d4c71d9108b14d5ac4"
+    },
+    {
+      "file": "src/daemon/index.ts",
+      "sha256": "4d56a00d69a9694e1d5d8f4e0efe43eb3bf9832d8b4b986db62763be385be957",
+      "gitNormalizedBlobId": "7be3f46f476a86ca3e4b6ff55c0891be69f72119"
+    },
+    {
+      "file": "src/daemon/install-wizard.ts",
+      "sha256": "3875eee8cb8155998a2f5744015a410bb52afc7df270f6a40c393478c967c73e",
+      "gitNormalizedBlobId": "265ab33df119593c64aceb37f3ea86e9e141da58"
+    },
+    {
+      "file": "src/daemon/instance.ts",
+      "sha256": "28cdba28d2ab920ac38400257c23b0f5ac47b550f63753521e276f5355c466ca",
+      "gitNormalizedBlobId": "4be74fa746062666d589c4f076557ae9b1ef2178"
+    },
+    {
+      "file": "src/daemon/runner.ts",
+      "sha256": "0f5bae4e859c9ed0cd4ed8691d9812c191106dc2189fcfab2260ef6919ab11af",
+      "gitNormalizedBlobId": "f313b3fe9c5d710ad5ae87deef692c0fc0a0afe5"
+    },
+    {
+      "file": "src/daemon/secrets.ts",
+      "sha256": "4c74e12a12e9481729333b8a8fb11ebe39a047bcd8e749d29ae8160cb43b200d",
+      "gitNormalizedBlobId": "c1b1bcc8e6e49eac0515b332094b2e999d02bfae"
+    },
+    {
+      "file": "src/daemon/store.ts",
+      "sha256": "4099ec70c9861fa758a5b3073307bd3d7589e0051cfdada5f75d93980520c22b",
+      "gitNormalizedBlobId": "9b6c22b8defceebca9cc5e2b309538285464733f"
+    },
+    {
+      "file": "src/daemon/telegram/adapter.ts",
+      "sha256": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80",
+      "gitNormalizedBlobId": "917f745cbc725ccda7c383c9f41412304285014d"
+    },
+    {
+      "file": "src/daemon/telegram/api.ts",
+      "sha256": "f73681174e8274ee1da59eab32ab694acf1c112c6c49ef8be24c46941fb2f9fd",
+      "gitNormalizedBlobId": "4932cc4b35f723c06d430ccc8bc2424a74ce8850"
+    },
+    {
+      "file": "src/daemon/telegram/fsworker-thread.ts",
+      "sha256": "b875a1e7d6ac51659ce9e4f0fdc8e5595fe0d45a98ce3c76b266ebb5fd1fc132",
+      "gitNormalizedBlobId": "cda40eacd02f9070d2c8315239d0f1cb7a79a557"
+    },
+    {
+      "file": "src/daemon/telegram/fsworker.ts",
+      "sha256": "622ec0fc2512860886bce6f3d617488e3cf6adc88d361d765e41ea8c6d96a3af",
+      "gitNormalizedBlobId": "a2b92ea1493cdf63ae7caf00bdce95052be31009"
+    },
+    {
+      "file": "src/daemon/telegram/index.ts",
+      "sha256": "bb98e3bd5c0710571213c4e55412f584388ba694577323114db6dce465da505f",
+      "gitNormalizedBlobId": "f81cf0d2f955f954c09634e46e18a38ee3bc5d06"
+    },
+    {
+      "file": "src/daemon/telegram/markdown.ts",
+      "sha256": "9684722b5968b4bb38516b408bdb884d2b40068decdd96489148036adfab8407",
+      "gitNormalizedBlobId": "f3bef3ed4e8c3646fc917cc71d589395918fb817"
+    },
+    {
+      "file": "src/daemon/telegram/render.ts",
+      "sha256": "3b1f9e1e279bdcd19426dac4206cabf2e3bdbfee0bafa6ef3b0f69e60460daf2",
+      "gitNormalizedBlobId": "5bc85096bf57ed8690e4bf88cef729d60388ea88"
+    },
+    {
+      "file": "src/daemon/telegram/state.ts",
+      "sha256": "2924f67bc3b5c9c9b263c16aa7b2ba66cdc04747ee8f0f2a61017afbc60500ab",
+      "gitNormalizedBlobId": "a064dfb3611991679a85a27f6a1803bd969794a6"
+    },
+    {
+      "file": "src/daemon/types.ts",
+      "sha256": "bcc24aba3fc8a8d70f4992e655b77755d36415ef301547534295b17d4f8b5930",
+      "gitNormalizedBlobId": "476069e84bf779a7cf55aded66d2997edfb1beab"
+    },
+    {
+      "file": "src/dashboard/backlog/app.js",
+      "sha256": "85c166061840c17a7fc4459cb338ea5aad5ee9d0437c64f34f6be8263272b9b1",
+      "gitNormalizedBlobId": "1804545529caaef80c43d3eacdcc8362baa1cac8"
+    },
+    {
+      "file": "src/dashboard/backlog/core.js",
+      "sha256": "57ae746c1d859798a6ad0c9608193badb1898998a359074d35d3f3bcec03a0af",
+      "gitNormalizedBlobId": "0295c232229dd98e37b8867584817f1abe11410e"
+    },
+    {
+      "file": "src/dashboard/backlog/page.html",
+      "sha256": "6d3bb241fe9fbedb9f60e7b0a36698f1b894561b4e07b70fb53499fddbb644da",
+      "gitNormalizedBlobId": "29054df6ad0cd6382342eb3290aaaaebf3d905a0"
+    },
+    {
+      "file": "src/dashboard/backlog/style.css",
+      "sha256": "74329256b63e943dc07b1d68f2e1bc4f1a6fd88ba59570176a1e46ecc5b7caf2",
+      "gitNormalizedBlobId": "2826de730f5622234e3616de07540815e8621531"
+    },
+    {
+      "file": "src/intent/handoff.ts",
+      "sha256": "0ea8640ba1db38fa68f8d61138c09a06068bf6343471ae4d8c18a08edaf07b1a",
+      "gitNormalizedBlobId": "573c75599a504f41afd739e05f59fd2180e4ae49"
+    },
+    {
+      "file": "src/intent/lens.ts",
+      "sha256": "78775a0e3b2f638e6e4f502d77376f89fc2dd5cf5e28026df4cdfb3bf7496129",
+      "gitNormalizedBlobId": "27ab6d41e3a0d14bf2cb1499ceeb1933e0968a18"
+    },
+    {
+      "file": "src/intent/plan.ts",
+      "sha256": "fd8b4af78acee88c3465b01e959b20642f65f4120669cdfb0c922641fe3e8268",
+      "gitNormalizedBlobId": "c465482d4b352ee571f13bbb263648e1f9df4270"
+    },
+    {
+      "file": "src/intent/preview.ts",
+      "sha256": "feed002d5f450711ff7a8ee9c6415035e4d226dc1abd5b6c874f4c1f267db02d",
+      "gitNormalizedBlobId": "61aa4f155350987f04fb342bea933807a11e0db5"
+    },
+    {
+      "file": "src/intent/schema.ts",
+      "sha256": "bd677f82a146511bf8d4c6e0e7391010319c89d044700fabaa57031d3d9abee9",
+      "gitNormalizedBlobId": "24012248898d592801659494abc37d7c34ed88f2"
+    },
+    {
+      "file": "src/mcp/names.ts",
+      "sha256": "aa1406c72709bdc122ba7c838778928a53e9567b85b2a487036c0cd31e8ae1ab",
+      "gitNormalizedBlobId": "d97850bf7d4278259ed7e5b41678f48a1bd3353a"
+    },
+    {
+      "file": "src/mcp/safefs.ts",
+      "sha256": "3a3b69808762867d1093d9d80a174b4f1ac263a3a00d8aa19dbfc0dd133d697e",
+      "gitNormalizedBlobId": "ab63ef7b190bf907142064b8b5de254dc6c2cfd4"
+    },
+    {
+      "file": "src/mcp/server.ts",
+      "sha256": "df510c01e6c6c8d262a0005200dff1aea38584d9dcbec92c1489830150b1ac9c",
+      "gitNormalizedBlobId": "05eb77aa621c5f7b82d5667d13e160abc35d52a5"
+    },
+    {
+      "file": "src/mcp/stdio.ts",
+      "sha256": "e0c939143bb5279390546a60e828e509c9e723fe297a4fef191fd5fdfcab67ce",
+      "gitNormalizedBlobId": "4bd055476ceec89667282505b50e1e06e71c1d2d"
+    },
+    {
+      "file": "src/memory/memory.ts",
+      "sha256": "c61ddccbb8aeb477230bc7ed3f662ef8850e3d8b05650d3c7918f9d6ae8b099d",
+      "gitNormalizedBlobId": "41f076ed7c4bba839551656d6ebbac71ac3006dd"
+    },
+    {
+      "file": "src/profile/onboarding.ts",
+      "sha256": "3dee0b2bba6306b32997f8475400c606351560e5d986b1b0bebe86cf407defe7",
+      "gitNormalizedBlobId": "8e547532afdd6d1709ad80cc0e4de0780d3bf7ec"
+    },
+    {
+      "file": "src/profile/profile.ts",
+      "sha256": "37f9fc8c9a96e668410c6bc859326b69ea5b5b4e1de56378b7d1c468bf5b622c",
+      "gitNormalizedBlobId": "61d719c49495c4afc4d5c2fa48640c60ed7504f2"
+    },
+    {
+      "file": "src/project/adopt-opal.ts",
+      "sha256": "535e5c42ed90ce2d96fdf6f3731d03c0094b7b4157e8fa3510ab53ca25727e1f",
+      "gitNormalizedBlobId": "e99f894b994b17b8ca56d5b267a1745d4d325741"
+    },
+    {
+      "file": "src/project/agent-definition.ts",
+      "sha256": "88e968ca0afc83c949c9becda431e32e0d4fba8a9896e6228356de33a5f429ac",
+      "gitNormalizedBlobId": "f1c6f4066b7a2a013217b86bf018de6dbe1996bb"
+    },
+    {
+      "file": "src/project/backlog.ts",
+      "sha256": "4bff5818b32ead78481be5becd53e68690f10f3e24865074c17631e6110e053d",
+      "gitNormalizedBlobId": "41227225bad4f23fdb5cfd68a9607ed15f665579"
+    },
+    {
+      "file": "src/project/brain.ts",
+      "sha256": "027329378cdbd8342fc7971f796e1d2bb6ce899b5e6895946c3ddd69d682e62a",
+      "gitNormalizedBlobId": "a67ad82fba713f299492b030cd7a987b767fe4b9"
+    },
+    {
+      "file": "src/project/dashboard-init.ts",
+      "sha256": "be5451fc959e8916e86491a8122212c1bd51368d41925b706600af3ae845415b",
+      "gitNormalizedBlobId": "e0dd0d46148a021f68c723e9a8cb4db93fb1d5d2"
+    },
+    {
+      "file": "src/project/dashboard-layout.ts",
+      "sha256": "c8c4042dfc59e5be8b1a8d623eb548dd1a3f1c31f86848eebf07bcf6c2e002d7",
+      "gitNormalizedBlobId": "4ae4a9ad06865fdcd8e53b7dfee105cd7e2ed78a"
+    },
+    {
+      "file": "src/project/dashboard.ts",
+      "sha256": "014668d0c7c2d1c77a0d88e7a73afe7298b17b3889bf77ed788a613fd265b95c",
+      "gitNormalizedBlobId": "38171b0ab436dc36f871d242f6286dde3dd97507"
+    },
+    {
+      "file": "src/project/event-log.ts",
+      "sha256": "9332a7b54094ce93a80fc31e06fba8fe1db4dee28256e68310ed251c617c7627",
+      "gitNormalizedBlobId": "09c2d05bdb4527ad646453e7033e98d84c988195"
+    },
+    {
+      "file": "src/project/harness.ts",
+      "sha256": "18bbb1090b7878ff395db9e4aaca6886b222874ba530a872ddae09d7a640d913",
+      "gitNormalizedBlobId": "b8ab4f306353a743126809141a22bade1422f30c"
+    },
+    {
+      "file": "src/project/metrics-document.ts",
+      "sha256": "ac9950e22d2c292e0be4010b3b7d7895fb74aa0133e29cd2a6c74bf9e43769e4",
+      "gitNormalizedBlobId": "73adf1f7374f7acdc7eb1b4ba9e93a3bf22fba28"
+    },
+    {
+      "file": "src/project/metrics-index.ts",
+      "sha256": "3b5bb388db0b8f702db7beda11664696983cdc897a1841511dedbd0bc701185e",
+      "gitNormalizedBlobId": "33f191ebdc374c0efec2a3ab603e77f3612124df"
+    },
+    {
+      "file": "src/project/metrics-report.ts",
+      "sha256": "3a571de9b540df437e8e261a455c68b263950a0391acc5894360488659ef576d",
+      "gitNormalizedBlobId": "6e81260add33b43a9e2965173da054d9b9e79e62"
+    },
+    {
+      "file": "src/project/metrics.ts",
+      "sha256": "d91e2a84e6e405e7f4b1e8e343b55ef323d5681e5e2e973280311354ca178857",
+      "gitNormalizedBlobId": "bcb1fe2aaaff94a0d9d65153c9682839a7cb2877"
+    },
+    {
+      "file": "src/project/pre-review.ts",
+      "sha256": "7a8a27bc749def8df7a4ab7a838427ead41bb7b2fa9e55317989a76870fbba60",
+      "gitNormalizedBlobId": "5af76cb2e3dcc4f2784667fd418394bb2be88061"
+    },
+    {
+      "file": "src/project/secrets.ts",
+      "sha256": "9778f4d8170bf1eac70b5ecc242fdda1a6a2df0098de40e8179e884858ddadd9",
+      "gitNormalizedBlobId": "ab54a8ed5f331988579203372d2c9421131090a4"
+    },
+    {
+      "file": "src/project/shell-result.ts",
+      "sha256": "9360011be9f3669e361452a885ff67aefaecff76bbee65a5d69dc3f5e8bfb3b2",
+      "gitNormalizedBlobId": "584a2b93e78330f08c3f3f6d50f29cf124349f28"
+    },
+    {
+      "file": "src/project/situation.ts",
+      "sha256": "e92651adfefd9f8507a942f27e373351b50c2fe20e73b749aeb3bd1908e902e4",
+      "gitNormalizedBlobId": "66e13d64221f5e56019f6b8f924c570831ec5e0e"
+    },
+    {
+      "file": "src/project/tokens.ts",
+      "sha256": "811540b6730c8f5e50b04dca4f0e01c5b63d0500609ae5060b2fa4a7c42cd642",
+      "gitNormalizedBlobId": "2ffb9f8b232aef1f50010454224e191c577b8645"
+    },
+    {
+      "file": "src/project/workspace-registry.ts",
+      "sha256": "045705c94866e3a5468b18f51ea5d9ef5a15df3a7cc781a5a14a94681a06a45e",
+      "gitNormalizedBlobId": "658a060737a8d1d78268428b1c2120442f007f27"
+    },
+    {
+      "file": "src/scout/card.ts",
+      "sha256": "59affb02da0d909994253bf6aa0f2f282207939ea6498438746b0300f18f4bd0",
+      "gitNormalizedBlobId": "81bccdff2cd60663259ed3d533d9b848f52b1a3b"
+    },
+    {
+      "file": "src/scout/report.ts",
+      "sha256": "ab572bf031e9713147227174d321f5aa8488a6fd852a2299d3c9c97f651d0d98",
+      "gitNormalizedBlobId": "da79f6cc5096cc86b36621f5a98dff5e86883952"
+    },
+    {
+      "file": "src/scout/run.ts",
+      "sha256": "001a49bbfa5e361b14999f7d4a617bcd3fc97465474b329764db4b5b13068f59",
+      "gitNormalizedBlobId": "f2fed3862f8b12217baf36d66e3e16ad1f5f489b"
+    },
+    {
+      "file": "src/scout/schema.ts",
+      "sha256": "3c1fe4de85a44c42c713d226203fd08fd74ca922ba669aa4df6d6479750363f4",
+      "gitNormalizedBlobId": "b999af301b45484ec87006b8def968d2ce3a2917"
+    },
+    {
+      "file": "src/scout/source.ts",
+      "sha256": "eee767bd7fdc73df815c2782833e2e8db49e990630c292ab05c1c0d12a1691fe",
+      "gitNormalizedBlobId": "cedc373808504d821e84e754455c37ed6eec5471"
+    },
+    {
+      "file": "src/scout/transcript.ts",
+      "sha256": "f4ec861b92b72653911b3ebc88a0faf40088cc1f850637663aad899d6f886f5a",
+      "gitNormalizedBlobId": "52d2057f67263976201f28e00297889bb124ecfb"
+    },
+    {
+      "file": "src/scout/verify.ts",
+      "sha256": "83b910dac54600d0107155a099105a546a0b8d17e7522d612e33780d61938297",
+      "gitNormalizedBlobId": "fcec920f8fed9886582f832e16aae693d22abc6b"
+    },
+    {
+      "file": "src/setup/install.ts",
+      "sha256": "db9f7a83023ca2e49dff510dcbe1b8e2969ef12c119c6f62ca914f206873d6e5",
+      "gitNormalizedBlobId": "b3db4d5cab8db0cf90e670d500b31d21e17478a8"
+    },
+    {
+      "file": "src/setup/onboard.ts",
+      "sha256": "5b771f6acc87216fe87990608e04dd6a12756d05e78b4a99ef63098e7e6385f9",
+      "gitNormalizedBlobId": "9740bd20086f92d521a7874dc7d23cac139b60a8"
+    },
+    {
+      "file": "src/test-runner/changed.ts",
+      "sha256": "bf86c9364baede4faf1cefc6894ccde7690f9773b13c8e06a5f267c3f7e03cda",
+      "gitNormalizedBlobId": "4defc029405594ef2edd8645ec0d5b2f3fdac356"
+    },
+    {
+      "file": "src/test-runner/execute.ts",
+      "sha256": "b0bcd38e1c3d8add3da6e862a84985ecc759889ae1fc00d237b2a2acc818898b",
+      "gitNormalizedBlobId": "35b40db9e0e3b72a86b34ee815069bbbdae4f031"
+    },
+    {
+      "file": "src/test-runner/map.ts",
+      "sha256": "03e73074b562f74d04db4ae2a11aee56711dbc5841c0f7671e07cf1f0686a3ea",
+      "gitNormalizedBlobId": "c5a800d029211170d1aa50470f01d24c9475efe0"
+    },
+    {
+      "file": "src/test-runner/node-driver.mjs",
+      "sha256": "bf918c93ab9f479856d8c18fe402500b2143a4549aee157e95c69b75f063d3ef",
+      "gitNormalizedBlobId": "2ce2c8504de8a7538a0eb903a8c4927f378139ff"
+    },
+    {
+      "file": "src/test-runner/python-driver.py",
+      "sha256": "dc0e069f584e32184404f138580e68c2444d3e577e0d996f5bfe75e3fa0ffce0",
+      "gitNormalizedBlobId": "2e412bfb4f78264175699abe05396bba4d206c40"
+    },
+    {
+      "file": "src/test-runner/runner.ts",
+      "sha256": "a494a161a50498d96d0b08d19f3c39052bd5e5a25cf815045bb5dbd73a3a42d4",
+      "gitNormalizedBlobId": "d9c99c02b9ede83c293ffac1287e398bb36c388b"
+    },
+    {
+      "file": "templates/backlog/BACKLOG.md",
+      "sha256": "dfe52133dcb12a1e7b9aa850343985c1b7fd429771e320909e5325905f878456",
+      "gitNormalizedBlobId": "21e88a8c76b0da607dd648464a80a0d668c3e3c4"
+    },
+    {
+      "file": "templates/backlog/BRIEF.md",
+      "sha256": "5d86150b28e2f141de337f53f7b1e58627a0cb6c101c8ae6a1737428d7e5cd03",
+      "gitNormalizedBlobId": "986c7f516407bc3b94c7a5bd3b6a179423b72c77"
+    },
+    {
+      "file": "templates/brain/SCHEMA.md",
+      "sha256": "99ade50eca8fb33474781e34fdf9b1e3a001e83072b21ad722003597408f902f",
+      "gitNormalizedBlobId": "eec706263776ebd27bc8dcb271a8ff0a4fe15796"
+    },
+    {
+      "file": "templates/intent-preview/preview.html",
+      "sha256": "e5608b23d9bc1fbd772c99de1838d2de48c0ba6c675f18d6173be714cea4f1d1",
+      "gitNormalizedBlobId": "88f83bda14bdf83ab8e1ac6a513363747e7f2f61"
+    },
+    {
+      "file": "templates/intent-preview/preview.js",
+      "sha256": "33087a8653353157115558cd20bdaa69e2acce35f9391497c86f617a2530a972",
+      "gitNormalizedBlobId": "451b268bbc894df7f6a08aaa4aef104cb753dfae"
+    },
+    {
+      "file": "templates/profile/config.yaml",
+      "sha256": "b59d5cfcfadb7adfcc9626a774b2369c1700d5077f7de9b1634e4c13d265a1eb",
+      "gitNormalizedBlobId": "10674299475ff789f12101bd8ff2f1de5ccc48f7"
+    },
+    {
+      "file": "templates/profile/SOUL.md",
+      "sha256": "94a28f5b5dc172660b364c764d05c5d3b0d09f26040e151323b3f3132a8820bc",
+      "gitNormalizedBlobId": "ec5b4e5de28ab55604030f5e542310e87dce7dcc"
+    },
+    {
+      "file": "templates/profile/USER.md",
+      "sha256": "908a3a377d34a24481da5e42d959166ab2a32e04c5672ce3ad2fec28cd369beb",
+      "gitNormalizedBlobId": "5e41782853654ec466d58ea39f9a82a409d4d4f8"
+    },
+    {
+      "file": "templates/project/E2E-SCENARIO.md",
+      "sha256": "5af64ac805f79399f1e42921ce1d1d9ae17f1a6d435fb92f76132bda47de4c1d",
+      "gitNormalizedBlobId": "82975f636a487cb74d61e33a4f115bbf12c87ea0"
+    },
+    {
+      "file": "templates/project/PROJECT-CLOSE.md",
+      "sha256": "aeb2be5c29b1c3ce3e7f90a5fe863b90a1d05844aa8755046a68c61fb8178ae1",
+      "gitNormalizedBlobId": "80243bfa1c016b527850cfbadab6ccf676b96674"
+    },
+    {
+      "file": "templates/project/PROJECT.md",
+      "sha256": "10203db4c1850b864bb02b028aa20a4c912564264eb1435a2bc66306e076c8ed",
+      "gitNormalizedBlobId": "88bf501fb7ed479fd71c1f712f01ff40f6887776"
+    },
+    {
+      "file": "templates/project/TASK-CLOSE.md",
+      "sha256": "ecf8625e67f0f7df7218aa37c22362f37e86f7b2afb7aa2a5dbb57fc91d4549b",
+      "gitNormalizedBlobId": "e6d538c0cb405c7abc83567d512bdf4f8e069ad0"
+    },
+    {
+      "file": "templates/project/TASK.md",
+      "sha256": "70e95804abaaef5eff1b2d016cd1ebd3c9792ca542d6c9e86df963531cc8ad92",
+      "gitNormalizedBlobId": "1b20d47a721ef8115bfed6645a41d4e49c1da6b5"
+    },
+    {
+      "file": "templates/RULES.md",
+      "sha256": "29cc14efa8903ae4e4dea82e210055081b9165dd23b1dce07e62cd154c468d11",
+      "gitNormalizedBlobId": "e592075d1c9e6370d6e8d7cbb54d0ad02ee85579"
+    },
+    {
+      "file": "templates/scout/example-report.json",
+      "sha256": "486a06eea7f987fcb86e5f3689123f3b0b728685439c36de642f2da8572bbce0",
+      "gitNormalizedBlobId": "45f892914db6180dc24a658be060418f25c59b16"
+    },
+    {
+      "file": "templates/scout/idea-card.md",
+      "sha256": "7592f1dc4600d2612165c3faf76f438424b5e6ad7d6123704a5296a2ed6bf1aa",
+      "gitNormalizedBlobId": "d2528fe5f9702414a7e3cb251651cd98a1776de7"
+    },
+    {
+      "file": "templates/scout/report-template.html",
+      "sha256": "d95ace601e4060a3e8b6958c931bd0b648c1e83b75d37342e776bc77243d0ed3",
+      "gitNormalizedBlobId": "c9b2a22870e8469e60bbe0661af606fbc8e32c71"
+    },
+    {
+      "file": "templates/scout/report.schema.json",
+      "sha256": "181f23c12a5b1252eb495b324de5620bde7f7b80ed22c892f75913c2f3d8b2f5",
+      "gitNormalizedBlobId": "6fca729429ec0225e5b969cc9af7c13cb334c68d"
+    },
+    {
+      "file": "templates/workspace/AGENT.md",
+      "sha256": "a13d3a9f34a4b59fd876641d4e8335f4d0268b9adfe43ea58694a8ee3613ac49",
+      "gitNormalizedBlobId": "74dd3ea7563ecd03fef4cd8f93b3ab5fc1972c37"
+    },
+    {
+      "file": "test/adopt-opal-docs.test.ts",
+      "sha256": "70617b4195416ca77135dc0d50592b5b89f52fafc95c3e7c2fbf8002b0ecbd71",
+      "gitNormalizedBlobId": "3fd3f390e4d8039e8b77a90bc5897ec6e3cfe527"
+    },
+    {
+      "file": "test/adopt-opal-e2e.test.ts",
+      "sha256": "7831a06c555861f281ee7fcde18e34c3bbdb61f49c3dd3d0a73cf6c08d57912d",
+      "gitNormalizedBlobId": "a52d144984fc6aca60c5623e5902906dd9f84859"
+    },
+    {
+      "file": "test/adopt-opal-recover.test.ts",
+      "sha256": "495d743e4036a7502d4ac03c5f562767dae09d8df17a79773464ddbb51a36df7",
+      "gitNormalizedBlobId": "28e530986c1ec886a2fdb7e7385a03e84ec9713f"
+    },
+    {
+      "file": "test/adopt-opal.test.ts",
+      "sha256": "b10561672c9c867d14e1ebbc109e4a2d5c0fe702494acc8ee5a41c7c8e7affb5",
+      "gitNormalizedBlobId": "4d5008faee492a597f50d042d2c808e77f4297fc"
+    },
+    {
+      "file": "test/agent-acp-hooks.test.ts",
+      "sha256": "08bf54331897196a9d37d76fc9c5d3e81044033824cf26591be61b112e646b70",
+      "gitNormalizedBlobId": "1902762228da39243b3cb3030c7e7c231177feea"
+    },
+    {
+      "file": "test/agent-acp.test.ts",
+      "sha256": "b1842e5c67f0b622b803fd9b2406108b1b455e61f7a8292754398bd511b0a827",
+      "gitNormalizedBlobId": "e8e184add9c8cf354f402527b8feb71d6b8e921d"
+    },
+    {
+      "file": "test/agent-cancel.test.ts",
+      "sha256": "efdc56106c7fd088a4dce4d3f39fa51cf55bdddac8401facb6e91c70c96394b6",
+      "gitNormalizedBlobId": "4492bd4c4372ba1f180b504b98574a21d2fa5221"
+    },
+    {
+      "file": "test/agent-chain.test.ts",
+      "sha256": "5f122a55aa4d06897c182a0ec8ac018868dced426ede4df340c2859d49e53e95",
+      "gitNormalizedBlobId": "f6bf589db060d3ba5bc37d9b7e88640066ee7b38"
+    },
+    {
+      "file": "test/agent-contract.test.ts",
+      "sha256": "d5840518e45b60a19694794b8a0f39a41db121279af5da428cedad17b718daac",
+      "gitNormalizedBlobId": "4b9d8bd1ac920320b7078785c09e786b64a8d70f"
+    },
+    {
+      "file": "test/agent-definition.test.ts",
+      "sha256": "1742c4b1095709cbd1623756e66f9e57221c551d2299c7be577ba98b22058f7f",
+      "gitNormalizedBlobId": "062b9057f6241648a09252ec5b60b3986fa5017f"
+    },
+    {
+      "file": "test/agent-p.test.ts",
+      "sha256": "aea9be2d1c6afcb7f4a2299d6fc1fce7943f962cf8da4cd96be7b2bcc4543c6a",
+      "gitNormalizedBlobId": "38cdbc513f2e8fa1169f12a807833fbe62d74450"
+    },
+    {
+      "file": "test/agent-proc-group.test.ts",
+      "sha256": "bd18f5f78007919136edd1598a249fc03ca3367d6c0a904cc9afed1d38e2eec7",
+      "gitNormalizedBlobId": "1b3175c38d7f5ee9e9ccc3132529aec19571e39f"
+    },
+    {
+      "file": "test/agent-session.test.ts",
+      "sha256": "d4e779855de4c103da61327e744adcd76e211039623346c54295d67e7be6138d",
+      "gitNormalizedBlobId": "acdbd2bc36a69ad35b0b9206f0ec129bc51b4752"
+    },
+    {
+      "file": "test/agent-setup.test.ts",
+      "sha256": "9aff7ed062b16fe0f105eb674286b159c2bd7977249b75986e4b258352442340",
+      "gitNormalizedBlobId": "64397cce0ec61f05351468abf94380632a3e385c"
+    },
+    {
+      "file": "test/agent-verify.test.ts",
+      "sha256": "a257461a6ed21020a77469f473360d46097167617c443391c9e703f94e66f85d",
+      "gitNormalizedBlobId": "d11b2e4c65c1ba7cbacdae56f4fbe242e9810877"
+    },
+    {
+      "file": "test/backlog-dashboard.test.ts",
+      "sha256": "e2524ec1948d8b99b950df6d30ed217240ff937706a603c921da8257fc780160",
+      "gitNormalizedBlobId": "dad90fb8fc0ad6579aee38df069b2bb0b8a56a23"
+    },
+    {
+      "file": "test/backlog.test.ts",
+      "sha256": "b897ce23b546cfe8943ea0af746edbffbda255a51dd9eff2de38141485c16297",
+      "gitNormalizedBlobId": "2f765e1ff2be2e60eb734fc397417ce4e05cd409"
+    },
+    {
+      "file": "test/boot.test.ts",
+      "sha256": "c9835f2f02afa78b3f7334a3a2eeaa236b4b74c9d372cee2ba7f8e48f6e9a4cd",
+      "gitNormalizedBlobId": "027f89d2a36ed39cdd620bea0800f8fc73b63adc"
+    },
+    {
+      "file": "test/brain.test.ts",
+      "sha256": "81082a0c0efa7492c1def96799406744d2aba9f3775416aa8597b85b59ccb892",
+      "gitNormalizedBlobId": "bfa22144c5762b7cff51ecb6274f2966aeb86386"
+    },
+    {
+      "file": "test/canvas-skills.test.ts",
+      "sha256": "6239c3391adb60487d8f52fec30caa681c50b49df12eb46de81aa959b7db708b",
+      "gitNormalizedBlobId": "0ec73f4c031934c296dc74c29660ef2ef75bd741"
+    },
+    {
+      "file": "test/changed-test.test.ts",
+      "sha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c",
+      "gitNormalizedBlobId": "bb26d3f6d75f0f55d8f0b818c7fe1a6760445f2b"
+    },
+    {
+      "file": "test/cli.test.ts",
+      "sha256": "3498d90499aa154c710e463d5ce4e3cb94e9dd5e89acdccbdb17105b8576f3c8",
+      "gitNormalizedBlobId": "ad08ba4467fa83923221be6bbd5dc747d8ea68ba"
+    },
+    {
+      "file": "test/console-decode.test.ts",
+      "sha256": "46c9f5111d13cee0c9c2ec4414fe24d986d5fc7291f654c31f20a4cdc912c9ce",
+      "gitNormalizedBlobId": "c1d38e75d1f7e444f8f6321f0bf2637d6df5052e"
+    },
+    {
+      "file": "test/daemon-approval.test.ts",
+      "sha256": "380b85662d8a4f1362373d9ec30ddb5d259bb66c0060ebe3ace0b95e147ee966",
+      "gitNormalizedBlobId": "a948bc58b52bf2bafcfe7e08a9d6ea711c344996"
+    },
+    {
+      "file": "test/daemon-autostart.test.ts",
+      "sha256": "5a35f7b0e9f693a72dc37b7f8f75ad8c8605489b404143d7c3dcc98334e1ceeb",
+      "gitNormalizedBlobId": "1fbc9c0e4b3d8eb1ba87e67f2da7a60fdf2855b3"
+    },
+    {
+      "file": "test/daemon-core.test.ts",
+      "sha256": "12799d9260a5bb9428af381ff683e0259481e97d85f58b469cb9262b14c7cea4",
+      "gitNormalizedBlobId": "4e2449e3d57354dea0c2e4480a951641097c5464"
+    },
+    {
+      "file": "test/daemon-gateway.test.ts",
+      "sha256": "19491b403c1df6abb66a805d0533dc7692e5fc204ac9c07887c90443e73b25cf",
+      "gitNormalizedBlobId": "58a42b8685172230a1c97de2a034f160f3e1adc2"
+    },
+    {
+      "file": "test/daemon-helpers.ts",
+      "sha256": "45f6978fd8d1f02eb5b09d7f6dd3983e863e7fd7f4ae3b82b45010aab79585c6",
+      "gitNormalizedBlobId": "6b5855e246cd387a5cb79b423044c51a55c2baae"
+    },
+    {
+      "file": "test/daemon-install-wizard.test.ts",
+      "sha256": "184efe37268e5bf82a7f6b17cfd5eb68dc8e62666a667ee5914918112ad07873",
+      "gitNormalizedBlobId": "572b23320e8f2073200112d13c608cea3d79318c"
+    },
+    {
+      "file": "test/daemon-instance-port.test.ts",
+      "sha256": "11de2601d494db451eb490231d00169414ff209bc2c7549cac1a82c9a8dfd727",
+      "gitNormalizedBlobId": "431160bea917bea5343a5f9357a1de9ccaa4e73b"
+    },
+    {
+      "file": "test/daemon-proc-helpers.ts",
+      "sha256": "e0fbec006d7c0c7a2202ecf985021cfcf8ccad2cb2588edee783789688afd105",
+      "gitNormalizedBlobId": "fb7959584e8d78b3100b5537b3e30cd14e7df697"
+    },
+    {
+      "file": "test/daemon-process.test.ts",
+      "sha256": "c5f0eeaddefe6cebc3057b60b30faa6e55464cb14a964a1f7dc35820e0278a34",
+      "gitNormalizedBlobId": "f5189efd4d254415b8192617b63b79244da1078e"
+    },
+    {
+      "file": "test/daemon-recovery.test.ts",
+      "sha256": "03cc1a5dd994e7f4bae63d588c7cba871f44e8779b1b21737306c36d8490e407",
+      "gitNormalizedBlobId": "9e5229f6ae647c9fe97bcb76b7d9d15d7d592909"
+    },
+    {
+      "file": "test/daemon-runner.test.ts",
+      "sha256": "930825e04fc304d3f21e80b8d91ab49186fad72082d5c0588e55b76979d658f0",
+      "gitNormalizedBlobId": "d904ba74f834f61e36b88560fe7eb256ab192b22"
+    },
+    {
+      "file": "test/daemon-stop-notice.test.ts",
+      "sha256": "ec82e1964a55f6d072e304494fa3ba10f207b673dd04a04c353b8183f82f877c",
+      "gitNormalizedBlobId": "f9e877994f47b0184f2b8989ae71aa148c550418"
+    },
+    {
+      "file": "test/daemon-store.test.ts",
+      "sha256": "e259ae702d19b54bc63367206b641883c2cdff9ccfe8b06772b2c0a30e182010",
+      "gitNormalizedBlobId": "d0e1e857b814bc602edd8893f08ca69cb80b25d2"
+    },
+    {
+      "file": "test/daemon-t05.test.ts",
+      "sha256": "1b4778b3740afe0bf753359a38227939c58cf71d0c420c6e3914011c0f90b6e5",
+      "gitNormalizedBlobId": "fe7ee690921c1f1380e155c86c13e3b387033072"
+    },
+    {
+      "file": "test/daemon-wizard-follow.test.ts",
+      "sha256": "0285b963b11c74b061c5ec685e8681c7b59f1335aac781b931cd0f4311067cb3",
+      "gitNormalizedBlobId": "23b88317889f7b464542bb76cc3d86234054c4d4"
+    },
+    {
+      "file": "test/dashboard-init.test.ts",
+      "sha256": "c9bcb622b28d4993a80acd27541bc7665a4ca5e168715eab6fdee8a927aa76e1",
+      "gitNormalizedBlobId": "d0e6cf9bf87f849d32c5e47d85fbbb07b8a3970d"
+    },
+    {
+      "file": "test/fake-acp-agent.mjs",
+      "sha256": "2153cf035e5aa0dc408d5e5ed1390d7804c7a7e6d0b0eadff96309a19450bb00",
+      "gitNormalizedBlobId": "e53e20251851ee9b56cc47fde763d041fc9e5503"
+    },
+    {
+      "file": "test/fake-system.ts",
+      "sha256": "bff9da6c7c226a980fc0dd7a8a5f4b6f5713ea6c184716bf781543856f2b14f8",
+      "gitNormalizedBlobId": "1d239aaabff7db49d1b22753f51006643fccff25"
+    },
+    {
+      "file": "test/fixtures/backlog-dashboard-copy.json",
+      "sha256": "cd808dbb3c360b1c40c6cab330d24d5ad0ff124be312f782aea897a967d2a9a3",
+      "gitNormalizedBlobId": "7fe85f3b0a07c3987179e93306467fc192288107"
+    },
+    {
+      "file": "test/fixtures/daemon-main.ts",
+      "sha256": "cd1b939bdd6ba327dd82ec05f393fb40c25f3306d36c0b07156607701b9e95cd",
+      "gitNormalizedBlobId": "44b29015459c10c7a0af4fbfb1ec66844dc9a551"
+    },
+    {
+      "file": "test/fixtures/playbook/driver-page.html",
+      "sha256": "68f3539152ca6f7bc6d982618695b9589fbf6cdb77180a87da0278063c2d6282",
+      "gitNormalizedBlobId": "1296b2a5dd2ceb638345696d11a83ff43c7937ea"
+    },
+    {
+      "file": "test/fixtures/playbook/heal-page-menu.html",
+      "sha256": "b3dec22a728267ac7afda0e3331b08b2ea9aa5e7091de4c62b3b82d995209186",
+      "gitNormalizedBlobId": "1348b26a2a51eff34369998cd836d14dd848292c"
+    },
+    {
+      "file": "test/fixtures/playbook/heal-page.html",
+      "sha256": "b3dec22a728267ac7afda0e3331b08b2ea9aa5e7091de4c62b3b82d995209186",
+      "gitNormalizedBlobId": "1348b26a2a51eff34369998cd836d14dd848292c"
+    },
+    {
+      "file": "test/fixtures/playbook/position-page.html",
+      "sha256": "9e7ba1cb53bfe9749a12ceb7c826682dca1a12d9208463a1ade45acead7e51cb",
+      "gitNormalizedBlobId": "523c4b551e790bba9b02330a5819e4ac8f5f9931"
+    },
+    {
+      "file": "test/fixtures/playbook/sample-flow/shots/S02.jpg",
+      "sha256": "f486d4acb372e8f04ec8505e4e31aa4ac83a804646892e39bda7a50f6a83fec7",
+      "gitNormalizedBlobId": "aa59281634da13ef33dc153566822afb1a632b6f"
+    },
+    {
+      "file": "test/fixtures/playbook/sample-flow/shots/S03.jpg",
+      "sha256": "a4c83ce9f28988c7051cc3c2c90786727643d3e4a015f40a9cce6936a0165111",
+      "gitNormalizedBlobId": "5aadeba1c372cae0fd3f32b754c48e4346dbde35"
+    },
+    {
+      "file": "test/fixtures/playbook/sample-flow/steps.json",
+      "sha256": "20bcc60bb8fe7c7b4ce9015249dc4586c48fc7802d88f76eff3363a723fa2a3c",
+      "gitNormalizedBlobId": "f5fc00c5534ee96786aa267a43ab7d03024e98e1"
+    },
+    {
+      "file": "test/fixtures/playbook/service-page.html",
+      "sha256": "f2789fc3578ec144139a62168adc74bb5522b60b36090e96262b470ccd7f5a8e",
+      "gitNormalizedBlobId": "2405f4f24e1a790bec8459818d961ac6a75706b8"
+    },
+    {
+      "file": "test/fixtures/sample-test-map.json",
+      "sha256": "a69d1118e0a0205a7561ec156653f61e93ce413d977b5aa4c469655af8d5ef11",
+      "gitNormalizedBlobId": "8516648fb20b0da90c15abe35cc5f6c5e1501345"
+    },
+    {
+      "file": "test/frontmatter.test.ts",
+      "sha256": "01ce884a97bfe2d88fc9ff3562029d3ef3f9e32643a4cd4c549718d279952cfc",
+      "gitNormalizedBlobId": "7470a984b3e933ad3c2177e67d8993564bf25156"
+    },
+    {
+      "file": "test/fsutil-windows.test.ts",
+      "sha256": "9e32e4c3878c90410a2ef55eec22a767f35f30a04dcee6e6c0ff5a241d145725",
+      "gitNormalizedBlobId": "516941d68e09f65c1ad7f3ced640585493ac6c97"
+    },
+    {
+      "file": "test/git-fixture.test.ts",
+      "sha256": "cac302dc05d05eb2334c6a79e4f156257e77bbe53fbd24b5117d62c0daeeeb78",
+      "gitNormalizedBlobId": "2d40a029ea3a7a6166fb497a36983f32f9bf0a52"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7793bc888cf0552fe3242e9447c27a73db9c680158571a1dd4bfcfc3c5e16a03",
+      "gitNormalizedBlobId": "27d2e39409c8b79c1ca43453fcc9bf1a7a9ff9db"
+    },
+    {
+      "file": "test/install-autostart.test.ts",
+      "sha256": "bdb5b03caf4edad48b69c963f83729a67c253f5d288be866b86e8d1fb1f5064f",
+      "gitNormalizedBlobId": "2e50bdaa822b9221b4eb637b137655bab6367ebd"
+    },
+    {
+      "file": "test/install-script.test.ts",
+      "sha256": "3038237a33a57a49364ac3f1cf6c1fefc41eb3453a3f4fd4ad5818cbf1648763",
+      "gitNormalizedBlobId": "0449769734edbcae56e16f4ad17748af1b94d8db"
+    },
+    {
+      "file": "test/install-windows-wrapper.test.ts",
+      "sha256": "253993658e31df3e2681c07773781b32769597b303e35d69f565069cf3e0f175",
+      "gitNormalizedBlobId": "bcc3cabbfebcd59f88c5408e4a7370cc53fa0163"
+    },
+    {
+      "file": "test/install.test.ts",
+      "sha256": "f969d88ffa369d6946e421e14823fb322b8f65faba783dd4180c8f6f38080208",
+      "gitNormalizedBlobId": "cde8698e931efc71a082a8706e144052a6a1dc1b"
+    },
+    {
+      "file": "test/intent-plan.test.ts",
+      "sha256": "48db0861334150c6e5751cbe22b81cf4cbb03aae96ea96a2b4f54a318d648d3f",
+      "gitNormalizedBlobId": "dc2b4420d128b95ab9ad3da70b313977d402fa13"
+    },
+    {
+      "file": "test/intent-preview.test.ts",
+      "sha256": "f1273e14e2cd951a67bb0c1c6cef36d63c06099f4588aeec1225fb2e14e1eb76",
+      "gitNormalizedBlobId": "5cc697f9349a05675eaf1810b93d660e84a640ec"
+    },
+    {
+      "file": "test/intent.test.ts",
+      "sha256": "e686c3ee0461788f6881208299059f28b36449a4197275633457f22dedd53cc8",
+      "gitNormalizedBlobId": "10b5c057add289171cf5c2e5120fef5d256861e4"
+    },
+    {
+      "file": "test/mcp-cli.test.ts",
+      "sha256": "9fdf189552d9ac57db54f3d4b1a37127b1d79553c072967482e9dfb131afc01e",
+      "gitNormalizedBlobId": "9b8c79e0a471feae763acab3282d6694f8cbe176"
+    },
+    {
+      "file": "test/mcp-server.test.ts",
+      "sha256": "972b56775c33b5d28b18f16bd3faac9b85ea65174a5f8d0ee42b1a35cf79ba0f",
+      "gitNormalizedBlobId": "9588d92664c747e02f45dd244529e5d9e62b82e4"
+    },
+    {
+      "file": "test/memory.test.ts",
+      "sha256": "3a0d077d95ba32aa73bab92e8cf9eefd641283b9b5d02d9d90b4a18c7591bd6a",
+      "gitNormalizedBlobId": "39e4ba1ec7f3ce813c5dacc52c5bafd785a01c68"
+    },
+    {
+      "file": "test/onboard.test.ts",
+      "sha256": "cd3a93c30e4f41751a15dd446c32a2f84050b31353a9f72e683d8b96fb18ddae",
+      "gitNormalizedBlobId": "7bc005c2f3a7ca8bd3aecf8f5603e1dacd6a5e44"
+    },
+    {
+      "file": "test/onboarding.test.ts",
+      "sha256": "2cf51016bc33cd45e19b9be35c777e5e7442426095faddbca6d7b9c8bcc011e0",
+      "gitNormalizedBlobId": "46cb1bcd8aab1848f89f010d62e437e91b0ec5fb"
+    },
+    {
+      "file": "test/pace-install-ownership.test.ts",
+      "sha256": "07c4b4d6fab7491a36c7950599ce50b37fd3f90a4c0a53da8a530666d9efd0b4",
+      "gitNormalizedBlobId": "b740847a137779633438fcc756639af8572f8e44"
+    },
+    {
+      "file": "test/pace-paths.test.ts",
+      "sha256": "6476517ee42bd9a2ee66335f555d9b96ab3728020741a8529d7a332dc827fef5",
+      "gitNormalizedBlobId": "78e452a39680a357308c7cd6d480a5d68521f755"
+    },
+    {
+      "file": "test/playbook-install.test.ts",
+      "sha256": "8c8cbbfcfc50b31faba1034ce0113cc912d52d64453ef5b475354dc686f188d6",
+      "gitNormalizedBlobId": "59a499cf4a935165d4de225ad887435c0a393d88"
+    },
+    {
+      "file": "test/playbook-maker.test.ts",
+      "sha256": "eb1753cc90fe865987c0ed89362c8d5a422ec54b060b79cf5b1f33e09f2017fb",
+      "gitNormalizedBlobId": "999ce7ed51f5e00bb25788ed4a49bd53315aaca5"
+    },
+    {
+      "file": "test/playbook-pilot-harness.test.ts",
+      "sha256": "0f9de815da3e4dcb8c36d403c2f9258b92a7aa92ffebd4fbda24a0b0bc7dad39",
+      "gitNormalizedBlobId": "48ff57c4ad9db265896bb5216f9b30c8a9fb8c9d"
+    },
+    {
+      "file": "test/playbook/agent-core.test.mjs",
+      "sha256": "2970022e5401d6c4f35de2a290bc7c59006a07e50367555634921388cf286f8b",
+      "gitNormalizedBlobId": "8a37e20669984cf8ceabe2ee8f7141e64dada5be"
+    },
+    {
+      "file": "test/playbook/agent-map.test.mjs",
+      "sha256": "051b990135a8f92d6144a5bc7f2d8d54af1d48f0f9c493102837df89f04e56a3",
+      "gitNormalizedBlobId": "db76d92b29b794274e39aa5af74bce3649d082aa"
+    },
+    {
+      "file": "test/playbook/agent-strict.test.mjs",
+      "sha256": "823149db96ea96afeac8ebed8124c78c6beaa1e8e83c761d3b775492472977b8",
+      "gitNormalizedBlobId": "ca3f3ec6d23e7b5ce3a32902847abe26786fdced"
+    },
+    {
+      "file": "test/playbook/build.test.mjs",
+      "sha256": "883d0e1c3cedb3d01e66866d3d65fb0a31328ac8f23af76f0af6782503b4ff9a",
+      "gitNormalizedBlobId": "61d01ff08b0ee07ab5979f3c9f27a6b3c766ecde"
+    },
+    {
+      "file": "test/playbook/capture-core.test.mjs",
+      "sha256": "8b26d42f471568266642492ee8f9ae67a9c204eab2a8a3764b7e1d57fd7e4278",
+      "gitNormalizedBlobId": "818d9a19628bb3085bc58b479aef9a1075e14004"
+    },
+    {
+      "file": "test/playbook/dom-stub.mjs",
+      "sha256": "2fa5316b8a924f5a4008ac293608d291183e1423bf10cdf532f438d4e1201aa8",
+      "gitNormalizedBlobId": "84011310375a58511980ec7196967295c8e975ab"
+    },
+    {
+      "file": "test/playbook/driver-e2e.test.mjs",
+      "sha256": "418119f0466ee0f176fe954e12b93060453fba4787eea34878c1a53b10f021c5",
+      "gitNormalizedBlobId": "86c849b1318331690a7dc588a9e724cb4dd898bb"
+    },
+    {
+      "file": "test/playbook/driver-runtime.test.mjs",
+      "sha256": "cb9b84bfed4e892078e9e0abbb66d11e9083a888ab89eda1931928aa5ae547af",
+      "gitNormalizedBlobId": "9f319ee80553cd5abebb21be88c0c4d992526a49"
+    },
+    {
+      "file": "test/playbook/driver.test.mjs",
+      "sha256": "449c3b965bcdf97b419e1a885badc566649e546fb8f19974d9659a523a753d8c",
+      "gitNormalizedBlobId": "d6b9762a2151977a42651c9b0cc7fd926f3e02dd"
+    },
+    {
+      "file": "test/playbook/heal-web.test.mjs",
+      "sha256": "d4bfe0a10bf63b16482a05da7aa1867977b2042cdeb18576e308ba9e33c0fdf3",
+      "gitNormalizedBlobId": "914cf8e966d40514d1549526babf7e26724433b0"
+    },
+    {
+      "file": "test/playbook/healer-e2e.test.mjs",
+      "sha256": "31d92203c0de0b24f3e3680c5622e792a4abf44b59b6798e86cd9afe9b16c85c",
+      "gitNormalizedBlobId": "24ca45ed7442890bd87263bd4903dc41c50e6dc6"
+    },
+    {
+      "file": "test/playbook/healer.test.mjs",
+      "sha256": "b9ae8ff23e1e056ada5ae7d4c92101bd9b5b07719b5a20f9519efc76348f928c",
+      "gitNormalizedBlobId": "84cad939e7e3ba91ae0b30d6a259cc75e4af4d2c"
+    },
+    {
+      "file": "test/playbook/interview.test.mjs",
+      "sha256": "80fcd8e1311adbc11d284d0d25a36a570130fd9225ca1da0c8d31e133a4e0089",
+      "gitNormalizedBlobId": "9ea4cdee8080142a2366a59c58e0c701763cd7c6"
+    },
+    {
+      "file": "test/playbook/orca-adapter.test.mjs",
+      "sha256": "5e9e4e6cb2304a5f7c2ba1b8c4195a883cca2884254c5b29b72a1b974e1de1d8",
+      "gitNormalizedBlobId": "4ea96956416fb300f228e3711b0a00f81380c9f7"
+    },
+    {
+      "file": "test/playbook/playbook-e2e.test.mjs",
+      "sha256": "129477f24c5943ff8c8eca5f5cd0aa6d87f5b48f8dd782e917d86315a2ee4456",
+      "gitNormalizedBlobId": "a67f48a041e16a39fd8469eb0c38782225fc3223"
+    },
+    {
+      "file": "test/playbook/playbook-guard.test.mjs",
+      "sha256": "1fbd09c7ab8aa571e5d90c8fb17f08e6f883bb58be649bcb1dc5716968db89ac",
+      "gitNormalizedBlobId": "291b0dd2b63a241352f89a83d1823d3a3939aa82"
+    },
+    {
+      "file": "test/playbook/playbook.test.mjs",
+      "sha256": "f8fd9998bb2c04853ea7df79f7411951202e2df18f92fe70c632033de9386dfc",
+      "gitNormalizedBlobId": "1497401b5239ae755544a055df5cec66351db2c1"
+    },
+    {
+      "file": "test/playbook/position-e2e.test.mjs",
+      "sha256": "e145b56ff8f7a3a6e1b5013afe100ebf5c4f04a95497b4d728f24211adbc1e19",
+      "gitNormalizedBlobId": "faac0c781681bb0dd1f3506289415cb73e3771e3"
+    },
+    {
+      "file": "test/playbook/private-banned.mjs",
+      "sha256": "5c615c712b84817a683947d985e05e008465486cad58ee597a30922bcc3818e1",
+      "gitNormalizedBlobId": "07a24016ada8b77f6be22bf671c100dec71dfce5"
+    },
+    {
+      "file": "test/playbook/scaffold.test.mjs",
+      "sha256": "285b22f1a2f38c2b85f47484d4d3f0fe922475ba848c122c305489917e21b52b",
+      "gitNormalizedBlobId": "1a7444ce658fd697953758c4d96349a9e49a9878"
+    },
+    {
+      "file": "test/playbook/skill-doc.test.mjs",
+      "sha256": "93b97cca185efaaf36555fbd54e99552cb9c0e46743687628a1188b96cd4996d",
+      "gitNormalizedBlobId": "4de4003c628d3c05677afd416f8f62dee300df68"
+    },
+    {
+      "file": "test/playbook/t03-helpers.mjs",
+      "sha256": "244f970c06f5baad41ee3dc4b33c443ec80cb1ae572670622a6afbdbac2fa3f3",
+      "gitNormalizedBlobId": "e79f6d6b00ee870626ad042b93bff12378ec80ad"
+    },
+    {
+      "file": "test/pre-review.test.ts",
+      "sha256": "6d725cb8ae85d73e1084faef842e1a0cfec4e0cf4d22ea50d480823ac1cc671e",
+      "gitNormalizedBlobId": "0360c8653edd99968a5b6ede2c83ec4b35c865ac"
+    },
+    {
+      "file": "test/preview-owned.test.ts",
+      "sha256": "05728032b87395f64b274a00536e64601a64a9f3f18004ccf8dc567148c5edd3",
+      "gitNormalizedBlobId": "429a56e3fbc430362bd2e68fe9bd1a563d37716e"
+    },
+    {
+      "file": "test/preview-owned.ts",
+      "sha256": "0d4cf5609cc2231a760645722c14405587595e6e9d105822717bd4e9f01575f8",
+      "gitNormalizedBlobId": "c2bf21a59b0d4d21064a230c519aef55d145e2c5"
+    },
+    {
+      "file": "test/profile.test.ts",
+      "sha256": "97d529264fafb001276186c32f8e801c15febb9759c3b29ce8a3cf1d131d0394",
+      "gitNormalizedBlobId": "668ea636bef80aae503141a6934e64676f9bbf5e"
+    },
+    {
+      "file": "test/project-call-process.ts",
+      "sha256": "d35474e4a22520b23a2706168dba3e42f659cc69394cee3788d8ac76337561ee",
+      "gitNormalizedBlobId": "b63f4ce508cd343aba918b4a539fcbedd332953d"
+    },
+    {
+      "file": "test/project-call.ts",
+      "sha256": "54441ef724886b642cc1aa37413801de2b076e0c3607661c9c91b2d8fd5de1eb",
+      "gitNormalizedBlobId": "e0c94cad765e5b2d19ee4573b47ab5814f15bb98"
+    },
+    {
+      "file": "test/project-dev-skill.test.ts",
+      "sha256": "3cfcabfab6db2784dc1c9efba35c4671f10a6c039bfa8764737eb32d05e619f4",
+      "gitNormalizedBlobId": "760ce64b02bce79c7d99ca2654896152b2566e57"
+    },
+    {
+      "file": "test/project-harness.test.ts",
+      "sha256": "9bf6a6422ee9fb68e1810a685717769c36dda17219fc2f569eeb9d4f8dcdeb1c",
+      "gitNormalizedBlobId": "b86ccba2aac6712d645655089c8d831bcc3ac6ce"
+    },
+    {
+      "file": "test/project-log.test.ts",
+      "sha256": "113a5d3e3719d7d5da38983aae5e749d8c854b7c00cc3318466c65fc34567a25",
+      "gitNormalizedBlobId": "a5082338366c63e24624baadf206ab50afd716d4"
+    },
+    {
+      "file": "test/project-metrics-index.test.ts",
+      "sha256": "0b6e3de68eb70be54d4bf393193e85f4b1aa72fa173997ace5d5ef7a6d146530",
+      "gitNormalizedBlobId": "0e61f294ba7fd8ec68929e516a22614fa35257a4"
+    },
+    {
+      "file": "test/project-metrics-report.test.ts",
+      "sha256": "47f75c8dd58ccee129c8d6e1c20ef52df79df7e0a462ea4eb79ac386a2567cd8",
+      "gitNormalizedBlobId": "92b025bc5a9b7d2d92e113220612c31656e7192f"
+    },
+    {
+      "file": "test/project-metrics.test.ts",
+      "sha256": "5b19a3dcee86d452f34a97d47b69a1ddacb63eeac9b0e22f39236137fa967b9a",
+      "gitNormalizedBlobId": "60707665652b89cd18516cd72e4f66f8b86fe75b"
+    },
+    {
+      "file": "test/project-shell.test.ts",
+      "sha256": "32ceb96e82fd409ac5619896910ff76acb3c6e65b0b19a1c496250c754a6eadf",
+      "gitNormalizedBlobId": "fc794d627ca6b7f9a485b1b28f018de6efbbf99d"
+    },
+    {
+      "file": "test/project-templates.test.ts",
+      "sha256": "79b39a76a64717c5487842544d10bbb23c742f172653540e5e57c2ea609af903",
+      "gitNormalizedBlobId": "4dfe7d474450e24b2d5bb302f66cac1b23269882"
+    },
+    {
+      "file": "test/project-tokens.test.ts",
+      "sha256": "339cca166f24307a3120ccd3c280975f0bddbe8b9892c8231a05a94fc47339c6",
+      "gitNormalizedBlobId": "568534336d33bc41a77b21e2ba69ef34d74a41c9"
+    },
+    {
+      "file": "test/rules.test.ts",
+      "sha256": "fb7d5c27a618fd129bff5b70199c8572086b959cb32fd7ed72391dd189807e73",
+      "gitNormalizedBlobId": "8d73e96b3c44c3b689e96609b00542fe2ec408b5"
+    },
+    {
+      "file": "test/scout-ideas.test.ts",
+      "sha256": "733572672ffecfd5dbe7bd0d5c4e10b16a366b49c44aaf68b9c2f1c9760d4509",
+      "gitNormalizedBlobId": "64fba79ba2fca55ac8b1973f2904394edc6c4ee4"
+    },
+    {
+      "file": "test/scout-report.test.ts",
+      "sha256": "ba5dfb452f793ae4f20f370333c4a5fc1bcb8434ca1d01b7486229eed6fee38f",
+      "gitNormalizedBlobId": "e9f1b4d83b71b668049116416431baf2856f4f3b"
+    },
+    {
+      "file": "test/scout-source.test.ts",
+      "sha256": "dbcd05c956c24d774123d764b3d551982c68c964c6c5b98613be4fa5836d1043",
+      "gitNormalizedBlobId": "ca4a37c732b003a80f4c8a62d44379ed6333732f"
+    },
+    {
+      "file": "test/scout-transcript.test.ts",
+      "sha256": "c6fbd14a9618f41bb67bd978ecb0746f0d62b48c71082faa36cc51faa2ed962a",
+      "gitNormalizedBlobId": "4a2f971221326beceae32663b9995eb7de3e8831"
+    },
+    {
+      "file": "test/scout-verify.test.ts",
+      "sha256": "05e7579b88137bec903b0d7f8eae7bd2ffa6ee1d823903c06406a48e8259fd59",
+      "gitNormalizedBlobId": "1d4d383472a9babcf8ff958069d5e464a258cf23"
+    },
+    {
+      "file": "test/scout.test.ts",
+      "sha256": "246a2c31d74e87c9cf90c9c20d61185e5d6d42eb462c2a5e0b08f4aa950571b0",
+      "gitNormalizedBlobId": "6f7be3abb73ba89d5a64926160051a7a121a272a"
+    },
+    {
+      "file": "test/secret-precision.test.ts",
+      "sha256": "e451c05efaac8197cd78af95ab227474391d66c73a069165a336afeca8526252",
+      "gitNormalizedBlobId": "f59fd475aadd851e6e6258ffb8378e9195e3a8b9"
+    },
+    {
+      "file": "test/secret-scan.test.ts",
+      "sha256": "8a7457d57d577e75e3e893df08e6080745919833b7b98fea20428e2f27800c34",
+      "gitNormalizedBlobId": "dbbc5a624a7976806500329342e5bfd7ceaf6f11"
+    },
+    {
+      "file": "test/situation.test.ts",
+      "sha256": "b88563022e87f0180233115aa9daa030887bfdd2b830b3f75fbe682b2565b9d1",
+      "gitNormalizedBlobId": "9b513352c6dd93a29df39a06ee15aa0dc51483e4"
+    },
+    {
+      "file": "test/telegram-adapter.test.ts",
+      "sha256": "84e3142b42d5f99e29593519680e3d735727247cbbd098a082647dcd1634ae73",
+      "gitNormalizedBlobId": "664f068814e28954112b6e9ce267a31fad4f03f5"
+    },
+    {
+      "file": "test/telegram-api.test.ts",
+      "sha256": "84778048fc0775a626ba05e806223e77a6bd0aafeb5dd46408bb941e9b79f45e",
+      "gitNormalizedBlobId": "feb99a0e178b4694f2862261af4da321b69868e6"
+    },
+    {
+      "file": "test/telegram-flow.test.ts",
+      "sha256": "0b0cd169ab0dad57b94cb557c998155474ba527233da694d853493a5690136c1",
+      "gitNormalizedBlobId": "f038f674d4b1765f06a34067893ac2ea08bf14a4"
+    },
+    {
+      "file": "test/telegram-format.test.ts",
+      "sha256": "d398855e74e586ce0181b8952e3d8e998a6f73364bedee4fbd615faa1943aa0e",
+      "gitNormalizedBlobId": "f77cd4ed0e0ce505af2a89e815b58bea737aeaf4"
+    },
+    {
+      "file": "test/telegram-helpers.ts",
+      "sha256": "ad106bd4b79759f0c81ed368b01f4dc30a7e5e41c26cfe41fca8df9d1cfbee89",
+      "gitNormalizedBlobId": "3e6304e2a077f06009cac5d892b8db95864bca74"
+    },
+    {
+      "file": "test/telegram-mention.test.ts",
+      "sha256": "feecc249139643fe652c6bcf7bdccdd01598bcbb56983e0da5a007dc3497b340",
+      "gitNormalizedBlobId": "2f21e9fb598b8a0f66e03bbe0be13fa442a8113f"
+    },
+    {
+      "file": "test/telegram-mock.ts",
+      "sha256": "d00d20a0093ca48db34ee5829d076b7b534fc449131bde51417f32099706584a",
+      "gitNormalizedBlobId": "bb75caadab5015281301b0c9f427fbca1d5843d3"
+    },
+    {
+      "file": "test/telegram-process.test.ts",
+      "sha256": "8477a0d281a6f0fb0b28537d8d7f5c4cf9de9ffe94680fcf2c15ea5541c0b27b",
+      "gitNormalizedBlobId": "9772521db42fa2ee318913c1771b3c68d49f9978"
+    },
+    {
+      "file": "test/telegram-render.test.ts",
+      "sha256": "73fb960ed2f9dda7e4fa8c6a12b2af1433d3941664fdef6f9e1bd4f7ddddb47a",
+      "gitNormalizedBlobId": "08245072103a69e09445f283371ff2148135c05c"
+    },
+    {
+      "file": "test/telegram-typing.test.ts",
+      "sha256": "c7b91e4e61bad2080f3e7c8f1178fb8c6f149438a414e64d19c6e1b5da67ad88",
+      "gitNormalizedBlobId": "3ae9e63c32392f1e2d423b83819169aa3c73574c"
+    },
+    {
+      "file": "test/telegram-use.test.ts",
+      "sha256": "83040702d4e9938fcd4b63ab3f08583de82c66ae88ecb006676c7946ef3089d6",
+      "gitNormalizedBlobId": "b06934bde862c7d4f95f2525c284bbf2d9c35449"
+    },
+    {
+      "file": "test/temp-lifecycle.test.ts",
+      "sha256": "de9782fdbc660afe39e49dedaa4322c6e95e8bb96c53892b6855fd90f3c86499",
+      "gitNormalizedBlobId": "5ab59a0b3262ea948f9fcf88a4483c9e5db8e48e"
+    },
+    {
+      "file": "test/test-command.test.ts",
+      "sha256": "070799e06b3bfbce8767c1770d02063894a37565cf8712393f9211f8df80bc32",
+      "gitNormalizedBlobId": "19e0ab84c2630dd0d1be64f85b9954ef62899be7"
+    },
+    {
+      "file": "test/test-runner.test.ts",
+      "sha256": "2795dc0bd5982652fca24088652a2a32212890bb5eb6a36315a48a42ecbaa375",
+      "gitNormalizedBlobId": "5a90c230490a154c50a95e34a8784050cc39a42c"
+    },
+    {
+      "file": "test/windows-agent-command.test.ts",
+      "sha256": "cf784e19aba2a381ccbf7b5d53e247c472314f69db55d70fcd65a967829391aa",
+      "gitNormalizedBlobId": "349e2a14355dcb1bf4aa0e99be44760e73d7681e"
+    },
+    {
+      "file": "test/windows-job-stress.test.ts",
+      "sha256": "6a6f268be65fb6c63809ca7f06f212f7dec91d08340daa51c567e0e7a168b295",
+      "gitNormalizedBlobId": "bff19f4b6f6e867c3de72d837b5338a10d707785"
+    },
+    {
+      "file": "test/windows-watchdog.test.ts",
+      "sha256": "c3eae60ce06054c97e23c309c380c37ecfb7b1ff0dce7a1837759548eac5a310",
+      "gitNormalizedBlobId": "dc9ac4434c302e873f26e3fdc36e71b41c475826"
+    },
+    {
+      "file": "test/worker-settings.test.ts",
+      "sha256": "6948053b3487d08af28602a1ca251d4af831dc97087d0922e2758a1a860a8861",
+      "gitNormalizedBlobId": "0c3ec881384769e87022d5ea1c101b90fc7f9c3b"
+    },
+    {
+      "file": "test/workspace-registry.test.ts",
+      "sha256": "1c88f0d734b450bf33dd349df7ba148ba8ae1e64ed424e9e7a0daeddd3f1755c",
+      "gitNormalizedBlobId": "2b8123c5350c6c1bf4abe25130dd7479e8f785f2"
+    },
+    {
+      "file": "tsconfig.json",
+      "sha256": "3b4801f1885855264585c5ed66e90dc471d83c8e471948281c112bcc578d33fe",
+      "gitNormalizedBlobId": "a595b56d1f31b06a55b02647365839085de345a6"
+    }
+  ],
+  "limits": [
+    "Runtime SHA-256 records actual measured Windows bytes. Git-normalized blob IDs account for repository line-ending attributes.",
+    "This verifies content identity; it does not rerun tests or continuously monitor the worktree."
+  ]
+}

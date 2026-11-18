@@ -1,0 +1,26 @@
+{
+  "readOnly": true,
+  "newTests": false,
+  "records": [
+    {
+      "name": "reviewer-stage1.md",
+      "source": "C:/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-t05-post-review-u7vdbs7f/review-stage1.md",
+      "sha256": "8f74946e61c55955ab20cfcc9e1e856f871d8217ac16629cb99f561f9fcff9b0"
+    },
+    {
+      "name": "reviewer-stage2.md",
+      "source": "C:/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-t05-post-review-u7vdbs7f/review-stage2.md",
+      "sha256": "b4e366c884d09384fca21c930889b72c8a5e3e548b813bb5c308cd8208316c37"
+    },
+    {
+      "name": "tester-phase1.md",
+      "source": "C:/Users/root-user/AppData/Local/Temp/pace-p004-t05-independent-tester-acbbec98ceae48d0a1cdbffa62ad326b/phase-1.md",
+      "sha256": "b07403c61e68621482a0578456aeb44354cf9a685c359966ad1b631b05f36494"
+    },
+    {
+      "name": "tester-phase2.md",
+      "source": "C:/Users/root-user/AppData/Local/Temp/pace-p004-t05-independent-tester-acbbec98ceae48d0a1cdbffa62ad326b/phase-2.md",
+      "sha256": "2053e4fb2fb7a709d0f0eb5747cea6357e575f5d22e248a94a86695b167a77cc"
+    }
+  ]
+}

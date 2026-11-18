@@ -1,0 +1,35 @@
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","new","EIO","--from","BL261108_01"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-harness-tA3IZX\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-home-n3Mqte","pid":66712,"generation":"6aef650b-f936-423d-95c0-e059579a3f5b","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-5CNvgR/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","start","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-harness-tA3IZX\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-home-n3Mqte","pid":66712,"generation":"6aef650b-f936-423d-95c0-e059579a3f5b","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-5CNvgR/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","finish","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-harness-tA3IZX\\app.wt\\P001","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-home-n3Mqte","pid":66712,"generation":"6aef650b-f936-423d-95c0-e059579a3f5b","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-5CNvgR/source/src/cli.ts","status":0}
+RETAINED_EIO_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\source\\bin\\pace.ts","project","merge","P001","--yes"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-harness-tA3IZX\\app","mode":"metrics","branchOnly":false,"status":1}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","finish","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-harness-tA3IZX\\app.wt\\P001","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-home-n3Mqte","pid":66712,"generation":"6aef650b-f936-423d-95c0-e059579a3f5b","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-5CNvgR/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","merge","P001","--yes"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-harness-tA3IZX\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\run\\pace-test-run-FXGkJk\\pace-home-n3Mqte","pid":66712,"generation":"6aef650b-f936-423d-95c0-e059579a3f5b","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-5CNvgR/source/src/cli.ts","status":0}
+✖ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (15257.4657ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15472.9724
+
+✖ failing tests:
+
+test at test\project-harness.test.ts:1885:1
+✖ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (15257.4657ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /상태: 완료/. Input:
+  
+  '# 백로그\n- 상태: 진행\n'
+  
+      at TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-5CNvgR/source/test/project-harness.test.ts:1918:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '# 백로그\n- 상태: 진행\n',
+    expected: /상태: 완료/,
+    operator: 'match',
+    diff: 'simple'
+  }

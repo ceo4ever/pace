@@ -677,12 +677,23 @@ test("구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 
     // /new — createForumTopic 성공 뒤 저장 실패 → 결과 불명 경로(의도 유지, 표 미등록)
     a.save = real;
     const dir = join(t.home, "ws", "n3"); mkdirSync(dir, { recursive: true });
-    let fail2 = 0;
-    a.save = () => { if (fail2++ === 1) throw new Error("디스크"); real(); }; // ③ 의도 저장은 성공, ⑤ 표 저장은 실패
+    let injected = 0;
+    a.save = () => {
+      // 앞선 /bind의 offset 저장과 순서가 겹쳐도 ⑤ 표 저장에서만 한 번 실패한다.
+      if (injected === 0 && Object.values(t.adapter.state.topics).includes("n3")) {
+        assert.equal(loadTelegramState(stateFile(t.home))!.provisioning.n3, true, "생성 의도가 디스크에 먼저 저장됐다");
+        assert.equal(t.adapter.state.provisioning.n3, undefined, "표 저장 단계에서는 의도를 지운다");
+        injected++;
+        throw new Error("디스크");
+      }
+      real();
+    };
     mock.text(CHAT, undefined, U1, `/new n3 ${dir}`);
     await until(() => mock.texts().some((x) => x.includes("저장하지 못했다") && x.includes("/bind n3")), 6000, "/new 저장 실패");
     assert.equal(Object.values(t.adapter.state.topics).includes("n3"), false, "메모리에서만 등록된 채 남지 않는다");
     assert.equal(t.adapter.state.provisioning.n3, true);
+    assert.equal(injected, 1, "토픽 표 저장에 한 번 실패를 주입했다");
+    assert.equal(mock.sent("createForumTopic").length, 1, "실제 토픽 생성 뒤 저장 실패를 확인했다");
   } finally { await t.stop(); }
 });
 

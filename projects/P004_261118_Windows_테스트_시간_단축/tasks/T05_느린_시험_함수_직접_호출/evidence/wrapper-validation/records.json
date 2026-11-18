@@ -1,0 +1,33 @@
+[
+  {
+    "mode": "file-full",
+    "argv": [
+      "--test",
+      "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-validation-wT7P1d\\source\\test\\install-windows-wrapper.test.ts"
+    ],
+    "status": 0,
+    "signal": null,
+    "elapsedMs": 24766.7214,
+    "sourceSha256": "253993658e31df3e2681c07773781b32769597b303e35d69f565069cf3e0f175",
+    "sourceReference": {
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-validation-wT7P1d\\source\\test\\install-windows-wrapper.test.ts",
+      "sha256": "253993658e31df3e2681c07773781b32769597b303e35d69f565069cf3e0f175"
+    }
+  },
+  {
+    "mode": "wrong-file",
+    "argv": [
+      "--test",
+      "--test-name-pattern=Windows Git Bash",
+      "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-validation-wT7P1d\\source\\test\\install-windows-wrapper.test.ts"
+    ],
+    "status": 1,
+    "signal": null,
+    "elapsedMs": 1754.283800000001,
+    "sourceSha256": "8ac57843576811e6e7271617438e8b01d8847958518c5ab7da4e61167d85d3c0",
+    "sourceReference": {
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-validation-wT7P1d\\source\\test\\install-windows-wrapper.test.ts",
+      "sha256": "8ac57843576811e6e7271617438e8b01d8847958518c5ab7da4e61167d85d3c0"
+    }
+  }
+]

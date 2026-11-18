@@ -1,0 +1,7 @@
+{
+  "kind": "source-reference",
+  "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+  "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\1-M1-done-before-test.ts.txt",
+  "sha256": "da9cf7b7dd6fa00c2fb37b8b6bb27b1d9cdc008310b5e7716d0963eb504a865c",
+  "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-O6CqXs\\source\\test\\project-harness.test.ts"
+}

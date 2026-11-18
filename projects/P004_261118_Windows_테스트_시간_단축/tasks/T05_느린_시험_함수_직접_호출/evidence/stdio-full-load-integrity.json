@@ -1,0 +1,11 @@
+{
+  "verified": true,
+  "diagnosticOnly": true,
+  "sourceFiles": 607,
+  "sourceCopyBeforeAfterSame": true,
+  "currentRuntimeStillMatches": true,
+  "headAndMainMatched": true,
+  "onlyTargetOutputCollectionAdded": true,
+  "childExit0": 8,
+  "resultsSha256": "b1f1eb1844fb2584717f04dc672c3fb1c46eaa348ef1e47b6bbac656cb93e667"
+}

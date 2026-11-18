@@ -1,0 +1,2438 @@
+{
+  "captured": "2026-11-18T19:03:09.478Z",
+  "node": "v24.22.3",
+  "files": [
+    {
+      "file": ".pace/test-map.json",
+      "sha256": "e0a7d4241753e6bfe606207c567642662b3779cfc1795670cb6ef3ff7e4bf7ff"
+    },
+    {
+      "file": "AGENTS.md",
+      "sha256": "6d03eab8ca575758c7584b6346e613c6e4ee3cba324a535a8d4624195a15d671"
+    },
+    {
+      "file": "bin/pace.ts",
+      "sha256": "92112876727b414cf917c4bb0cf69b8d2d6ed67fc34ed5fe5b8c30a4f91d3ca3"
+    },
+    {
+      "file": "docs/ARCHITECTURE.md",
+      "sha256": "73ae03787d132a6dbf9891f7031cddc07924a3787b89dfe72ee1a8533bdf78cb"
+    },
+    {
+      "file": "docs/README.md",
+      "sha256": "a6a77f0b241289624f3740cb0cfbbc821e85da64d3443ce4cea40b414154e00b"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "965ea6e2682747f3aed5d02503c5c121fc627cc476439168db86a5b8a95d63dd"
+    },
+    {
+      "file": "package.json",
+      "sha256": "b6ce9bb44bfc8ad6b6c7abda480043e1482db62a2e72c706c5256de3d17afceb"
+    },
+    {
+      "file": "README.md",
+      "sha256": "ace3dc3d106974caab40426b507092201a3dc03bdf0bbb79c4da6a005b34eef8"
+    },
+    {
+      "file": "scripts/backlog-dashboard.ts",
+      "sha256": "ceccf58973a8814203af1a6573fe73df26c3690e596d31de8feb8281df7c7fe8"
+    },
+    {
+      "file": "scripts/benchmark-boot.ts",
+      "sha256": "32d878d2f1d3345b7905c3537f1f47b9102d221adeaa12e63c66c47df4050f70"
+    },
+    {
+      "file": "scripts/get.ps1",
+      "sha256": "08e40c2bcbbf261ee0b3ccfdb09a385bd169dc4a4986ab4d069364b8656e0e03"
+    },
+    {
+      "file": "scripts/install.cmd",
+      "sha256": "b14dab0e0edca73b154124f9c4eff83f8e397ffe2078ec090d48c6a7daf3b4ed"
+    },
+    {
+      "file": "scripts/install.ps1",
+      "sha256": "c1832bffa19dc8e77bfe143968a1a06e1891c450e9719d97a2f9823a2cbf8334"
+    },
+    {
+      "file": "scripts/install.sh",
+      "sha256": "72a77200b6935a978e7425a8bdbcb87da210f68e09e1c2fde42244df7107ca9c"
+    },
+    {
+      "file": "scripts/secret-scan.ts",
+      "sha256": "534e41835f25598344c8d4b0b1aa9e20cfb0fe89359db45ca71c3e034f2fc499"
+    },
+    {
+      "file": "scripts/test.ts",
+      "sha256": "0627c1826c9452bdd94b18b0df2a8f08c5036aade5f5ba89183231fbfaa7ec66"
+    },
+    {
+      "file": "skills/html-plan/examples/scheduled-send.html",
+      "sha256": "a7205a988c71510993f87a28348aa9bfcd16e2f8b990ea12f37c8cc15db72271"
+    },
+    {
+      "file": "skills/html-plan/LICENSE",
+      "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5"
+    },
+    {
+      "file": "skills/html-plan/references/blocks.md",
+      "sha256": "608674926999216d5fba9b9c1adece70ef5c5a4bac1e614430fae54d1ad0c9b6"
+    },
+    {
+      "file": "skills/html-plan/runtime/htmlplan.css",
+      "sha256": "111b2ebffba26fd932182e51d003e45080b4f624f53cbbe5c75fd18037079e2b"
+    },
+    {
+      "file": "skills/html-plan/runtime/htmlplan.js",
+      "sha256": "1d54a1110007eb01cce04f22f1e28faea2cc30233077208ddb56172efe7f80c6"
+    },
+    {
+      "file": "skills/html-plan/runtime/pack.mjs",
+      "sha256": "e73cc55eb8182557b0ef6b31448c2fe6431558d3564be100a188491ee48775f2"
+    },
+    {
+      "file": "skills/html-plan/SKILL.md",
+      "sha256": "84470832b90a3f5c8c457c963cad7115914b50db28fdffa5990fd5671c2149be"
+    },
+    {
+      "file": "skills/html-plan/SOURCES.md",
+      "sha256": "914ea1eacf88b2d775c9ed94eb66bccc28690e20bddb4b6a441a3cf2b10d5dee"
+    },
+    {
+      "file": "skills/pace-brain/SKILL.md",
+      "sha256": "f26e9b530b5a81887f5d6baf60b961d2d2367b1fd004ba256aff73e3aaa9f7f5"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-read/SKILL.md",
+      "sha256": "a8689a8e60b056006919cea0b8a8d4b48c9719a65ac58ff055daeae99528ec44"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-read/tools/read.mjs",
+      "sha256": "3a9a04135d4a35c573308d8e6b2aa897bc8aaf9ed53bce642a0d044b4e444ade"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-read/tools/render.mjs",
+      "sha256": "4f9b6e405e7920dc67954ba95d772e224d7ba7bc4f0e821970f4a064a99b6f1b"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/SKILL.md",
+      "sha256": "22509c31f0cceeb07346091d0f78f88b797c55b1adc3580ae4867e1ff5491a4f"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/apply-edits.mjs",
+      "sha256": "ff037980e18c626b87e0a0ca2ec4d069bb4dbb8a905f6862dc26ee504a83b3e6"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/check.mjs",
+      "sha256": "8fbcedb587e579db521dd4c169493a2dd7dd85323ab06cca63b1bf4ee589a982"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/components.mjs",
+      "sha256": "02cd621edf0f755a583f17e202473b3fbddd6e5e79b729e7c8471f2cf257d012"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/edit.mjs",
+      "sha256": "921db7ad12e939753466561861eb2c1b3e3e2fab80fcfe630767581ac49153ef"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/normalize.mjs",
+      "sha256": "5a849bfbaccd4152971bf247c83cd049006c5d09aaa1e6541e1cb7c06493f418"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/validate-spec.mjs",
+      "sha256": "ccd794a8d0da13a6fc07a42c621f752b25175c745280e717a0edec3aa303f032"
+    },
+    {
+      "file": "skills/pace-canvas-skills/canvas-wireframe/tools/wireframe.mjs",
+      "sha256": "ad945e739e7827688d050f256e15b3b79ffc4e990759cd753adbe8ad43bc21a1"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/capabilities.json",
+      "sha256": "75cd06778093e05a17a157659bb5f69056e6ddbcf38c0fe42d5caf1099a34b1c"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/basic-kit.canvas.json",
+      "sha256": "855e9e906fc9e820d4fe0f266eb73232d5798b43fd6c95fe1e89a09ce9f12d8c"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/image.canvas.json",
+      "sha256": "fe3eee9f998d2f27aca086520497a6b2a36819e3b69f135869feb3c2fbe7dccc"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-component.canvas.json",
+      "sha256": "49932148cc7b71331cd6e0b470095972658c93db6ec2f441e4a41b6813f2b8a7"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-gradient.canvas.json",
+      "sha256": "8465d4726f49152bae8b3ee96adbca5e4096790095df65804c6e3e04e46bf96d"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-grid.canvas.json",
+      "sha256": "cb3193e45b3d2eb083927bec84a6e2cdbe1ca1defa8983ea1b3f8bef5b3c38f3"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-image.canvas.json",
+      "sha256": "5f377428ef90b76161afbbd6279b6cdbc77292e1e8d1c67632a1ed0b011423fc"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-missing-page.canvas.json",
+      "sha256": "a0d90e0b5c671938e68b854f08842e9f738e6c56116d1feb05680f60e758b68a"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-reference.canvas.json",
+      "sha256": "8edf34229293cdea1e533b1fcf9a10c16d5dbd3fb7dad1bb3ae9cc31c853e513"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/invalid-variable.canvas.json",
+      "sha256": "a2f28a9b27f7e77dd4ac31865d343670400ea5778a5fe5a8d2052e03a579b76e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/minimal.canvas.json",
+      "sha256": "a2ae9158f6e80f2bb6de1c7bee1e0a8f87a57636008d69cb80716d784d0e5b3d"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/opal-backoffice-kit.canvas.json",
+      "sha256": "90116f577cd3c64bb258f77591147a667948e2e274a586f825910df21647aebb"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/examples/two-screens.canvas.json",
+      "sha256": "7cc82f2919094060eb08cf8f9e3375eb7b5671f4bab1cf9a48bae654158439ee"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/GUIDE.md",
+      "sha256": "97bb1e64b340d833aa777b01e0abff5f22da7d03bbc3170fbadc674a7c471c64"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/ICONS-LICENSE.txt",
+      "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/kit-catalog.json",
+      "sha256": "5ae603e6f810a86aac1ce386eaf5624cde97c33d7fae57293c4515f4280344ee"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/kits/opal-backoffice/kit-catalog.json",
+      "sha256": "2430b952780f2051cf05bb271476adb5077082c7878494b3ab9605a8fd4e2e98"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/MODEL.ts",
+      "sha256": "254081428af3bf6b8c3ede6e62ac45433c04a7ee24f6c7df1b6750f039b0946a"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/parser.mjs",
+      "sha256": "d85be5f8a1890d1e0517a1f418b345e9ca4309f64b507a3c15271238e941a5fe"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/schema.json",
+      "sha256": "bead9b6387efc22e90d10f82af886d181f7847a0b815bb9c90438913d235f81b"
+    },
+    {
+      "file": "skills/pace-canvas-skills/document/validate.mjs",
+      "sha256": "16ccb24f64fae29bef60c8b64652ce626d7829b613847670d4987d499e6163bc"
+    },
+    {
+      "file": "skills/pace-canvas-skills/GUIDE.md",
+      "sha256": "5b3f4f32ef1017a84042e5e3638d4f6ca248e47bb0f0f4b23ac7aa7053c359f0"
+    },
+    {
+      "file": "skills/pace-canvas-skills/manifest.json",
+      "sha256": "f2e7818955d80c78d759d4c39c25f57438238be7afb43d037d4682e97654a43a"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/canvas-skills/_buildManifest.js",
+      "sha256": "3857ca444b81498f357bac7b1001f263053364eb94d7c53a9c8105f148b726b3"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/canvas-skills/_ssgManifest.js",
+      "sha256": "678f6ce2cb80b1fe72fc67e7412be6e2ab6ada083111b64f7c40d35e3cba5e00"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/1329d575.ceb5da0a165e9642.js",
+      "sha256": "513da1a6833aef274b1194774ee0f9c8bb9edb1858044f8e6eb33c16d0c88b46"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/255-92f80bf2a2a857fc.js",
+      "sha256": "dff1e7c6b91cf50c9a3118b8340a14d47ea6db261a1b9fcb76ffeb2b21322057"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/333.ac19fc793d43ab54.js",
+      "sha256": "774bc218e00dd9b4086e0dd4febf089d2070b4c1c6b0514b7762a216a04e1485"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/38.80f58c91800c3def.js",
+      "sha256": "1e576b83cfa50f013451fa3052e70b99a77911a173f0c8e85a01e32d154afe5d"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/4bd1b696-5baba7b99ef0a4e0.js",
+      "sha256": "3a62bfff9472046cfae6911a20444b2a705f2c1983f651876fa76703eee88bda"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/885.29ad3d1e1fc59b65.js",
+      "sha256": "09bb0ee4c9bcc42853bf0e8656b5fe40c959ee994a4feeb5f699779750b534c4"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/911.0483a88f2a46fed4.js",
+      "sha256": "bc2dce6cea7f225fdb3fda155d37d0dde9cb1e41c41175f32968eb609ac56394"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/985.c156f701f79f13d9.js",
+      "sha256": "a565a0f3615b119b8b7adb38bf1774e8ce768e2c081b4dc01a23c1ea5e2e31e1"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/app/_not-found/page-09ea9ad758ff8034.js",
+      "sha256": "94967479d79434b44fb392bd72c893656a969a160e798221ed985f3a7042a768"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/app/layout-7647415aa37e50b2.js",
+      "sha256": "de132b578a0d5bf46b14a71762f086a38722f5d99069f6caff5d8144a34e993a"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/app/page-e188ca67a9578dd8.js",
+      "sha256": "1d5b3c08d57c0ac6a42189721959b75088efe263e2587426ebea7e3f0f8cfe0a"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/framework-319ad94eef5a05ff.js",
+      "sha256": "ff49e81eb02dd0ada4fee63e6776fec738f1a411d5372430384f575375a140ea"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/main-app-4fb44f340fbf32ef.js",
+      "sha256": "f59f49407da1e74196ce0552254523a587edf60c422c0ae03e19bc394815922e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/main-e86246805588bea2.js",
+      "sha256": "7c4f9e1fb6ac5f4b4a9f679fb681e0a1b4682a68f33946af62b7832a48bd2597"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/pages/_app-e877ad6c25e0fcfe.js",
+      "sha256": "bab6cb41dfb1fa524aeb1c2c59beb62eb4ca69a1c68914cd8e9f8d4806ac0b29"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/pages/_error-504d81f0fa3c429b.js",
+      "sha256": "569214736a3e90684977dedee243d063c092b4e2fcef5f1497b6ae6dcdfeca35"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/polyfills-42372ed130431b0a.js",
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/chunks/webpack-06b3f14394b78faa.js",
+      "sha256": "4c75b6e5070cb6cc03fb838c1551f74ed5283fbbe89ae049231fd029b4604f76"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/_next/static/css/867b2424fa8d0c9c.css",
+      "sha256": "c3ea5d308dea89efdfa1e2c86eb00b2b272603eec4871aa67ce2c5b40fd27840"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/404.html",
+      "sha256": "b445c84993184efcf079b295ff42790f1e778cb3691361919c0ba1b362aab0ee"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/favicon.ico",
+      "sha256": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/index.html",
+      "sha256": "e556f8d2208d16de0b6d0075ad4267bfef3955bdb0f14a602fffdf6d5de37c8a"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/app/index.txt",
+      "sha256": "08652cb01b308f8e090aea1dd0251585c4208157262818aabf4eb4f707f3de9e"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/chrome.mjs",
+      "sha256": "730f50e8c142079a693071155ed15f626e074cf9a2cd8b0fd48a044fd01593c4"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/core.mjs",
+      "sha256": "73b2d882fba7641f5666ca327a676748e35abf6739815f6aaf04877abf1f18e4"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/editor-session.mjs",
+      "sha256": "b65a0e91cb7250eb0fbdfcadd5bd0f46d16d345d10b8be409bc1e12c7d362abb"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/io.mjs",
+      "sha256": "019cc2bb3a26e771729b10275934a02c2445d5f6adda0bb671071fe132142ba2"
+    },
+    {
+      "file": "skills/pace-canvas-skills/runtime/normalize.mjs",
+      "sha256": "b91f2f4ed074c96980f7b6babe6e703078e01a7210107db9425541cd829e5328"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/card-banchan.md",
+      "sha256": "83e759ec7f112b455cecc4606e9848d8563b4b176a33394ad07af675ccef04ed"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/l0-weekly-report.md",
+      "sha256": "ed2a4aed21d76bac712bb81c85b6d90c18bf873aecbdbd1c2f9206dff33be104"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/l1-restock-alert.md",
+      "sha256": "ce1d35c26f4d34987bb6c60862b4c49143fabcc7272bb8ba618e6c4cc824e659"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/l2-shorts.md",
+      "sha256": "55ad8c33b2a74d1223cb733a4cf14356fbc1b7468a052bdf652e67076649d732"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/opalwrite-review.md",
+      "sha256": "95d498a1979a2b8fd7af8c8b185b906f810d14ca41be9a9e0ffea38718027e8f"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/README.md",
+      "sha256": "902541a08d94f3a86f121298b4598d7666d65d265e128c81bc7934197467bbb4"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/routing.md",
+      "sha256": "696bf5b47d9649eed32ab9ea4f426483b73d2a3a281e93e8344af90c65b8724f"
+    },
+    {
+      "file": "skills/pace-intent/references/examples/security-pasted.md",
+      "sha256": "8d407d7f6377b3ea3749fe87dab363dc8b2938274aff0ddd872b1626071bf415"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/decision-record.md",
+      "sha256": "4b913bfee51de828b30fedff61c5895053a4986f699b7343c59acccd3a1a3657"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/gwt.md",
+      "sha256": "5639e70cee8d6a5ecefa884f541e3ee56437b89b43be4f0f9b576ccd6476e236"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/north-star-okr.md",
+      "sha256": "88f323f239e156dd0a0d28035311e242f370b3822cbb32f1a5da00843829ef5f"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/now-next-later.md",
+      "sha256": "c3c8fd61210b3de3d688bcc3c3a85738e91378d59bd34d742c33454336dfb267"
+    },
+    {
+      "file": "skills/pace-intent/references/execution/pre-mortem.md",
+      "sha256": "f0de55c794708fb528b51b730821defe0e4381ec6f1abb3a26d28debea1edacd"
+    },
+    {
+      "file": "skills/pace-intent/references/feedback.md",
+      "sha256": "40eab69f4d7bdf5acb467727ba56cbd62eaa7b078c3902862f4bbbd930468779"
+    },
+    {
+      "file": "skills/pace-intent/references/handoff.md",
+      "sha256": "df16b6daf41affcdceb54dff3204f30b85ae3d5423c3911e959c601ec49833af"
+    },
+    {
+      "file": "skills/pace-intent/references/handoff/work-brief.md",
+      "sha256": "ab75ea225c1273fd9222be42e01a34af99b9541cfd458f794b5ff1f1c0700353"
+    },
+    {
+      "file": "skills/pace-intent/references/INDEX.md",
+      "sha256": "f02a7ea2190b387fb9935981cf485291ccedc28f02587116b7253f7a5c86e51e"
+    },
+    {
+      "file": "skills/pace-intent/references/intent/assumption-map.md",
+      "sha256": "b3ae4cf6dd6eba94db0be1405c28df7e45b153d20a4621d7bc12e8b018461292"
+    },
+    {
+      "file": "skills/pace-intent/references/intent/jtbd.md",
+      "sha256": "d3694285a3787681aeaf3278fc312e0018b5b91ca4799b79cf1a7eb43c78cf02"
+    },
+    {
+      "file": "skills/pace-intent/references/intent/purpose-ladder.md",
+      "sha256": "82ecc1a46a914d8bfc18db729a717bf1ee8f6822c5b6f10d8eaa692f4a66667a"
+    },
+    {
+      "file": "skills/pace-intent/references/LENS-FORMAT.md",
+      "sha256": "0e25cab029effbf63618dc3f468e300aea63bf98728a9a221a82d5c4639165a9"
+    },
+    {
+      "file": "skills/pace-intent/references/licenses/prompt-master-MIT.txt",
+      "sha256": "0e1cb4fc0f3b84b7e0180246a2966cfedf5eaa84158d620f9bc0ceb8fa96431b"
+    },
+    {
+      "file": "skills/pace-intent/references/platform/multi-sided-market.md",
+      "sha256": "25cd69bd1232248ffaae26b8c27e6be480edf52abc4a74097d6a16238a70cda7"
+    },
+    {
+      "file": "skills/pace-intent/references/platform/network-effects.md",
+      "sha256": "04f6810242f751989ad279b778477721919b2656537993816457274056f4e4b2"
+    },
+    {
+      "file": "skills/pace-intent/references/preview.md",
+      "sha256": "75f16ccab8f42a1a88e48f0e3a24f53069952e17c91acd805b9ac29c19a7484c"
+    },
+    {
+      "file": "skills/pace-intent/references/review/diagnostic-checklist.md",
+      "sha256": "942c11899ded4cf6999c957a03ee3ce23565aaa89e6c1322abe20b2000602e97"
+    },
+    {
+      "file": "skills/pace-intent/references/service/journey-map.md",
+      "sha256": "ec0910048b76a4e58971cafb403ca4be776672187afa01d657d9404b95ebfc0e"
+    },
+    {
+      "file": "skills/pace-intent/references/service/moscow.md",
+      "sha256": "73094f601dd3e94fd4ac6f44b44744b56f3e3fa3e3c1f500f5f5badf9f0e9852"
+    },
+    {
+      "file": "skills/pace-intent/references/service/story-map.md",
+      "sha256": "196f5675a7f812e702d5a64a490ad1c486e42fe41a8ad92b5a65483ea2ffeee1"
+    },
+    {
+      "file": "skills/pace-intent/references/SOURCES.md",
+      "sha256": "6033810c99bf932fb10d17b6b3db669acd2eb6f68882a589e4228106dfe55fa3"
+    },
+    {
+      "file": "skills/pace-intent/references/strategy/alternatives.md",
+      "sha256": "d5b177697e990285cfab8ead5a351d2b6f9692df4461849af14071fb779fec30"
+    },
+    {
+      "file": "skills/pace-intent/references/strategy/lean-canvas.md",
+      "sha256": "9dd0c477f5288acc7086eb9d6f99a3e97aa54c5e92a71b4592020643594151ea"
+    },
+    {
+      "file": "skills/pace-intent/references/strategy/unit-economics.md",
+      "sha256": "8a4390e665cf2e31c94dcc0e42f04d753bc2339099ec3b99c3d78b69a2c7970a"
+    },
+    {
+      "file": "skills/pace-intent/references/writing/audience.md",
+      "sha256": "d4287717affaad1b1742fb398a80baedfd01f09337cf25d7b8322819cca3fe23"
+    },
+    {
+      "file": "skills/pace-intent/references/writing/doc-skeletons.md",
+      "sha256": "ea6facae2697f461be737c310c994ba677d1af6be8c3e1457b6a4b15ed0d8270"
+    },
+    {
+      "file": "skills/pace-intent/references/writing/pyramid-scqa.md",
+      "sha256": "02133d09a27eeb1b71521ecbd7f30fa26fcc592e4959102e4a619a0d3e63ea78"
+    },
+    {
+      "file": "skills/pace-intent/SKILL.md",
+      "sha256": "6edb49d6a8a750f5b851e2209e1df98a289a7771403df0b336b9d62ce99464cd"
+    },
+    {
+      "file": "skills/pace-intent/templates/_base/base.css",
+      "sha256": "8b1cf5d6fc13617be93693bd1ed574388dc22a02a969c85bfac438fe6b0b9aaf"
+    },
+    {
+      "file": "skills/pace-intent/templates/_base/base.js",
+      "sha256": "17bc7e3b29d1063eeeb40e0a9f247d908023052f469b2bd004f2294125ac752d"
+    },
+    {
+      "file": "skills/pace-intent/templates/_base/plan.schema.json",
+      "sha256": "4134015254caa5845889d2026450ddaca4d847c4b67a297c8191a7c8a9462fb8"
+    },
+    {
+      "file": "skills/pace-intent/templates/_base/README.md",
+      "sha256": "be80719b95932c52565bcf062e25ffda8ea8304c237a3613516abd197f5678a8"
+    },
+    {
+      "file": "skills/pace-intent/templates/_example/canvas-plan.json",
+      "sha256": "9d05bbe20e3b3c9674f1730ec2ff5033458eaef21e0debd20fa1f2a0b1a889fa"
+    },
+    {
+      "file": "skills/pace-intent/templates/_example/plan.json",
+      "sha256": "4fd4a0f87f62364eb1dc80d8c093971381a1f9611e3a894a23349f31bd48dc57"
+    },
+    {
+      "file": "skills/pace-intent/templates/flow/example.html",
+      "sha256": "960b6b564d13e141ffa188eea31ba0b67d24ac58435e3c5936698374f4e1097e"
+    },
+    {
+      "file": "skills/pace-intent/templates/flow/GUIDE.md",
+      "sha256": "0568fcccaf581b91cc030fe49388e34e0547533cb3fc30febc1ffc327ac02574"
+    },
+    {
+      "file": "skills/pace-intent/templates/flow/schema.json",
+      "sha256": "dc0932cfd81336c88dcb8f9a4ffa60873c519adfcb8cb35d5eaf5b0881bf2fc4"
+    },
+    {
+      "file": "skills/pace-intent/templates/flow/template.html",
+      "sha256": "c88b2bcd40598710225f9a51be265dfdc16a9d104f51878563541530a3df5e03"
+    },
+    {
+      "file": "skills/pace-intent/templates/ia/example.html",
+      "sha256": "f62256ed403d8efb57faf8cfa3c862250f0269e4870a5b6c79675db5baa80ee1"
+    },
+    {
+      "file": "skills/pace-intent/templates/ia/GUIDE.md",
+      "sha256": "e1ca37bc6f098fdbd1922a4a762ec2aa1c4e58c9f9a2b46ed0d6d5bdf44b3f5f"
+    },
+    {
+      "file": "skills/pace-intent/templates/ia/schema.json",
+      "sha256": "1342cfcdea0d6070b56d675f3f5e4825e9a036b8e3bbe1f913d2e09775f38527"
+    },
+    {
+      "file": "skills/pace-intent/templates/ia/template.html",
+      "sha256": "e74c32f636242def7ff1a940d102c1b0da61c22c6f786f682453504350243305"
+    },
+    {
+      "file": "skills/pace-intent/templates/index/example.html",
+      "sha256": "dc8622364b70cddfcaf4debb3e84f0c8b9bb291c6dee7987f804bb191527d620"
+    },
+    {
+      "file": "skills/pace-intent/templates/index/GUIDE.md",
+      "sha256": "ea5f3d58f647ee412fd6e7ed4646417cfeff56c6e4ae74664b81f05834a92258"
+    },
+    {
+      "file": "skills/pace-intent/templates/index/schema.json",
+      "sha256": "17640e3beb6b399fae756b2f18954288838795979bd392cb85699700430cefd6"
+    },
+    {
+      "file": "skills/pace-intent/templates/index/template.html",
+      "sha256": "d9f03dd23a159baa2497c79415b5e23aed5f7b28e26079b6f39519555dadea4c"
+    },
+    {
+      "file": "skills/pace-intent/templates/sequence/example.html",
+      "sha256": "476dc08f820ed1682a3ac7a0bd5fe164f653ed60bd98ce924a7fdb22a0dec780"
+    },
+    {
+      "file": "skills/pace-intent/templates/sequence/GUIDE.md",
+      "sha256": "b259a243605f970ff6cc64ed428794ab05a626c24bc46477ee11f36ee9df0c75"
+    },
+    {
+      "file": "skills/pace-intent/templates/sequence/schema.json",
+      "sha256": "78ff757f1cb5020ed8fd3d0857c56380c9d93ae9083177bbbf1909c2e42fedc5"
+    },
+    {
+      "file": "skills/pace-intent/templates/sequence/template.html",
+      "sha256": "709b58e499ee8c0806c8bba3dac05490397158d82a0e2026a28ced4b97f06d7b"
+    },
+    {
+      "file": "skills/pace-intent/templates/spec/example.html",
+      "sha256": "9abf063a3586782e5b43c0b9ae9a57f0eb0c7ed551b62e8199683705595f1d61"
+    },
+    {
+      "file": "skills/pace-intent/templates/spec/GUIDE.md",
+      "sha256": "ad01725fbcdf94bf10b0ba7a6e95c46fca0a4b74f0f6db7eece3fdcb425e39aa"
+    },
+    {
+      "file": "skills/pace-intent/templates/spec/schema.json",
+      "sha256": "9e9fb193018227b5b96d2333fffc700c284742d6f180cf93f847e09b2fa8be48"
+    },
+    {
+      "file": "skills/pace-intent/templates/spec/template.html",
+      "sha256": "7019b461e8dd1b692351648dc4bd1abed6e5e721aa33e78cbb92936d5efb5993"
+    },
+    {
+      "file": "skills/pace-intent/templates/usecase/example.html",
+      "sha256": "8256cfbdaa560a97513cdcf9cf431e197fb087f61e7a4cd0d3fbb79454a9859d"
+    },
+    {
+      "file": "skills/pace-intent/templates/usecase/GUIDE.md",
+      "sha256": "7562df8151659de0b1f463e466e9fd05c1451bc7543f519a9265c558a3da98cc"
+    },
+    {
+      "file": "skills/pace-intent/templates/usecase/schema.json",
+      "sha256": "a290d75f01657e91a076e591235db46f89680a6da43f1db468ebf34cf971d1cd"
+    },
+    {
+      "file": "skills/pace-intent/templates/usecase/template.html",
+      "sha256": "f78afbc034c1655fdd460872084c3eebf23a4d7e02067ab0225234673116193c"
+    },
+    {
+      "file": "skills/pace-intent/templates/wireframe/example.html",
+      "sha256": "480e814878945780078cd4bc5e9931e144ec93bbd9d9f422dc1f5d2b20a54b91"
+    },
+    {
+      "file": "skills/pace-intent/templates/wireframe/GUIDE.md",
+      "sha256": "fbb1980716037c6149173e5c874f707394ba3d8c0d9b2d5161f61a911fadb5b7"
+    },
+    {
+      "file": "skills/pace-intent/templates/wireframe/schema.json",
+      "sha256": "d6ca246d769e4f47be54de3d7868cc10ac036bd1dca681f5d3fc8ac1efaa914b"
+    },
+    {
+      "file": "skills/pace-intent/templates/wireframe/template.html",
+      "sha256": "6e06dd6ccedd0c68d11ff14a32ab792e66a23e10dbb8985fa099e90bdc31469c"
+    },
+    {
+      "file": "skills/pace-memory/SKILL.md",
+      "sha256": "cf71a65d46dc6afc3509aea04e81c88540305612c95be8ccd391de71dbc7c4c3"
+    },
+    {
+      "file": "skills/pace-onboarding/SKILL.md",
+      "sha256": "1f8d4c057bd961515a54d4554fd1d94454629580afd6f0c7143026612f6ea70b"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/adapter.md",
+      "sha256": "3027c1638160a9d55be57d26bd377c11679c60277470b2b54880ef479b538b5a"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/driving.md",
+      "sha256": "67eaed1327280baeab3ff8e1f103f903c54d9ea726d6b00ddcca2add1a0ce6cc"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/healing.md",
+      "sha256": "b42ee0d79811246f12fbe6125968263978df5558d3faa510ae0c59a72ebbd29d"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/playbook-making.md",
+      "sha256": "fe7d9f6f9f860d86983078e12f63ff9f38a3fdf92028abff3b8775e8c4f87813"
+    },
+    {
+      "file": "skills/pace-playbook-maker/references/schema.md",
+      "sha256": "ada74d59dde30f1c4e14474dbbe20cbc04261c0f2c319527796f9604acad52e8"
+    },
+    {
+      "file": "skills/pace-playbook-maker/SKILL.md",
+      "sha256": "ce4edaf63a72c87397511a63967f5d9011edc803e5a9079ed39576598f17bbf4"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/agent-map.mjs",
+      "sha256": "60e307de2b8983f9e520106b31e54ea83234e8ed07f09d921d3e63396fff36a6"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/build.mjs",
+      "sha256": "106b536e24bb4f62fc5e7ef65c0f21092855c9a131d0f50357bfdf857de45f0d"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/capture-core.mjs",
+      "sha256": "492b2290511a260a2086eb556a80518ff0f3abe1ead5de9cc2ab7f9c5267f8f1"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/driver.mjs",
+      "sha256": "fea44ec68ec782120b3f2707bb9be98f18bc53d5f7a6171f3b9dc1614e045e0f"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/heal-web.mjs",
+      "sha256": "c188edf0c5a973cb992ff89f82048f9869ea9d670664868cc6cce8e534ab94f7"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/healer.mjs",
+      "sha256": "ffa2b17d8e47d229a08af257dedecd032b5737253f360d568d092bc5004ab1bb"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/interview.mjs",
+      "sha256": "01fc9827423fd83c30b9c4dc8de74f6b36dd9615c82e7807e8d127238ed113b4"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/orca-adapter.mjs",
+      "sha256": "0a56aa092c4c50849d4f5ba5db28a6195fe93f5d7a17a8d090994daa9764d634"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/playbook.mjs",
+      "sha256": "080036953155344e7f5a02ce3a8b0c7eaf05176509d633c75d81ebab489bd876"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/scaffold.mjs",
+      "sha256": "9635ad09ffed912f5396f8bcfee6f54e3de394d87bf3bcbd8af59fff51e87a13"
+    },
+    {
+      "file": "skills/pace-playbook-maker/tools/sensitive.mjs",
+      "sha256": "7694840c3438cb1c9926e930a2698e747bc40c2c63bcd34917ade15cafb2038c"
+    },
+    {
+      "file": "skills/pace-project-dev/evals/scenarios.md",
+      "sha256": "65474b6c5f2e24e4b49d3b43cc92910b1c646927334ea1fb4a8938cdd4cf5f0a"
+    },
+    {
+      "file": "skills/pace-project-dev/references/backlog.md",
+      "sha256": "780ca9e182d781c22acfb2dfea6fc5e0a3e936dd8f2f0afe6dabb022a0958416"
+    },
+    {
+      "file": "skills/pace-project-dev/references/commands.md",
+      "sha256": "62e951cb5ad00fa3f556f19b38cdad300e8cbc39ed61084988763d5077573ab7"
+    },
+    {
+      "file": "skills/pace-project-dev/references/coordinator.md",
+      "sha256": "cf53df5272f53c234a4a1f996abd866d4d6ad16520a9ae94805d38aa5949088a"
+    },
+    {
+      "file": "skills/pace-project-dev/references/cross-verify.md",
+      "sha256": "080488db3007ab7172d7b9f139ebb712abb7a060954f42f6e74c8adc1df4846c"
+    },
+    {
+      "file": "skills/pace-project-dev/references/document-shape.md",
+      "sha256": "d2f95f1a9e3280fb062acff7e7dc4300c2874364a725076612e8a5ce1af7ad7f"
+    },
+    {
+      "file": "skills/pace-project-dev/references/e2e.md",
+      "sha256": "9abdc6fecfdf3e4fdd58a1b59fa3e4909991bbabf8d5820680f02a39819490d9"
+    },
+    {
+      "file": "skills/pace-project-dev/references/finish.md",
+      "sha256": "eca9389684ed8583d5dcd0ae3f0d4487712182f658cd2a71306f0d60f73f6e23"
+    },
+    {
+      "file": "skills/pace-project-dev/references/goal-review.md",
+      "sha256": "6c26c425a761d8f1758247179df40d6c034da8e1e24dd633ad2c2061ad06a51b"
+    },
+    {
+      "file": "skills/pace-project-dev/references/html-plan.md",
+      "sha256": "5b981f6951bf01d2751add74fd8e6b234a0f2bca37d8f37c7b19716ec1dd4264"
+    },
+    {
+      "file": "skills/pace-project-dev/references/project-define.md",
+      "sha256": "d23da46d4184ab4101544516831ed3c22ce740633241ca2a4b97b94388cffe54"
+    },
+    {
+      "file": "skills/pace-project-dev/references/recovery.md",
+      "sha256": "23ddbbfb8ade70075d7885ca0f72d75089fe598746f325115597f67fb3254ffe"
+    },
+    {
+      "file": "skills/pace-project-dev/references/reviewer.md",
+      "sha256": "8021ba12059ee7cbf09b94355311c736f566a6f81983c9c0bb822931f1b266de"
+    },
+    {
+      "file": "skills/pace-project-dev/references/security.md",
+      "sha256": "8c4d42ed6e539dac9af85ddab6fde5a8e84edcd60098b09895337349611541ee"
+    },
+    {
+      "file": "skills/pace-project-dev/references/standards.md",
+      "sha256": "ed7e32d421fbfc4dcde3a4691669447f7fe4f142183cdf6bce5a262a4d723552"
+    },
+    {
+      "file": "skills/pace-project-dev/references/task-steps.md",
+      "sha256": "a3856bbd8757324205b8c897ee4b0fa1049d4facb0d2c98521a6f3268a0f7122"
+    },
+    {
+      "file": "skills/pace-project-dev/references/tester.md",
+      "sha256": "17686ba603841f0a90a16bad988279891410607e0abedc472f2f670527445c05"
+    },
+    {
+      "file": "skills/pace-project-dev/references/testing.md",
+      "sha256": "286d3404cb4ac63793c87315634369ed38160bfb4fc1e0098bd9ac8457cdb0ef"
+    },
+    {
+      "file": "skills/pace-project-dev/references/tools.md",
+      "sha256": "d6a8ffacc3cb0b9cd4d4416b60a6da235ba201a11e1ac1b31829b89fbf6c4896"
+    },
+    {
+      "file": "skills/pace-project-dev/references/verification.md",
+      "sha256": "033faa2913c202ad72228919ddb3f6a3ccd4bed1404df3f8cbcc80c65bdfb084"
+    },
+    {
+      "file": "skills/pace-project-dev/SKILL.md",
+      "sha256": "dabbf5b056f61a6358f90e2d857aae7adffeaf737145e147c5527b7fc2ded548"
+    },
+    {
+      "file": "skills/pace-project-init/references/analysis.md",
+      "sha256": "f2d829afc2cda545ba79b5ee89af47767a2ce8e50b1ac387d14db044768269c4"
+    },
+    {
+      "file": "skills/pace-project-init/references/backlog-format.md",
+      "sha256": "f5c7d9731f106c80638cff23b014f7ab55e4c08f317643b918c636e128c26aaa"
+    },
+    {
+      "file": "skills/pace-project-init/references/project-docs.md",
+      "sha256": "52530deef47a26999d05a935c3fa9b58b13efbea3fab40c04b554ae9f2458ec4"
+    },
+    {
+      "file": "skills/pace-project-init/references/test-map.md",
+      "sha256": "4829355861b6ff7f629aff895d205fe52a09d43ff4f711c37d97f787509a1971"
+    },
+    {
+      "file": "skills/pace-project-init/SKILL.md",
+      "sha256": "cd1700fea139a75bed80a9bfe623c0b4fe2ca740de71c07600658ce719e39c23"
+    },
+    {
+      "file": "skills/pace-prompt/SKILL.md",
+      "sha256": "0d993d06cca83b74ba63b516fcdec7b08f72b635dc847e11b9b2ba2bee6d0554"
+    },
+    {
+      "file": "skills/pace-scout/examples/소상공인_AI_지원사업/idea-3.md",
+      "sha256": "f9bd9e8f16881a0fb5422aa498efaeba88776dd1f120932c9bea080c0e69e26b"
+    },
+    {
+      "file": "skills/pace-scout/examples/소상공인_AI_지원사업/README.md",
+      "sha256": "7f483b0832ea1f9a39c7346a70f9836abf7f920432e570043492c7f0417b0595"
+    },
+    {
+      "file": "skills/pace-scout/examples/소상공인_AI_지원사업/report.html",
+      "sha256": "15ad257f58c1874b2f1906e505267de2e9ae1e083c1f1363b71df18f78ae845f"
+    },
+    {
+      "file": "skills/pace-scout/examples/소상공인_AI_지원사업/report.json",
+      "sha256": "168645fdf27920c2a744e98e7c427298393f064bf78cce1ae3707a5241c3b79f"
+    },
+    {
+      "file": "skills/pace-scout/files/INDEX.md",
+      "sha256": "5d23809fae1d01bfda28b2b50fbb81378494e12d4385a36e08b76243a2a774e2"
+    },
+    {
+      "file": "skills/pace-scout/files/prompts/critique-ideas.md",
+      "sha256": "d5f0ff53de9601ab0a7e55e9bf5576dea48d50434df1f3133d1a54a0b4c6a3a1"
+    },
+    {
+      "file": "skills/pace-scout/files/prompts/extract-claims.md",
+      "sha256": "8afb792d538fa261be157a18c7ddb918337ee1e4dc75f9673e08a578a18c759c"
+    },
+    {
+      "file": "skills/pace-scout/files/prompts/generate-ideas.md",
+      "sha256": "7be1cc169b192d03e3e9409fa192f458268fe9b92a07e7f913579e91c020dc3d"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/idea-patterns.md",
+      "sha256": "ba0f63899ce4c799d917f67238a7cc5f1532c0e65efc006d6c4ed123a0a481dd"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/scoring-rubric.md",
+      "sha256": "3d62bfda4de5e5082cb1f772af7b6b0d830a34d01152add0c06c4e4bec0fed4e"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/signal-taxonomy.md",
+      "sha256": "d9d0f9ccca9de050bdbfb0af7fc96473e774b16a8bf5b9afd9db019974927630"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/source-collection.md",
+      "sha256": "d2a80f0754a13bd8491fd009543b3dd69557e063b90484907d250892671a8826"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/source-credibility.md",
+      "sha256": "071665f0238501b7f1f465e98a69cb41535d4cbc2054ac0f8a427a39acf49914"
+    },
+    {
+      "file": "skills/pace-scout/files/rules/writing-rules.md",
+      "sha256": "82f7fba995e0ad1dea32ac087c9ce365f26cad27859973cae7ad2b65451b0ac9"
+    },
+    {
+      "file": "skills/pace-scout/SKILL.md",
+      "sha256": "2f4dd6347c3e0e479dc32876801489f2c8182d7c8b78583b4a88e8028eed0884"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/common/api-design/GUIDE.md",
+      "sha256": "bfe62ae236c61a29b6c7f299a60c5c8dbe554b353ac263a4a8173bb3ebf84b13"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/common/coding-standards/GUIDE.md",
+      "sha256": "a035188c4ca8c82f11ad0680e81f8bf55a1d9baac68fd4507d7163940800a2e9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/common/INDEX.md",
+      "sha256": "57a667d58f2abb4a7e3b30da97e5dd331b701185af8ecfbe8840f0b1f83a41e9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/common/tdd-workflow/GUIDE.md",
+      "sha256": "772453ed87d5e40e6e7a1818d55470ec953c45671432fb2b32068e8e58848de2"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/INDEX.md",
+      "sha256": "5c0785ec035ddb1d4e52bf985fa6260ec1f97de5372c22aed204829d46c94ae2"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/java/INDEX.md",
+      "sha256": "5afddb8b46578536aaf608f1928daa4afbc35261f6b168e15b876bda5d5f801a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/java/springboot-patterns/GUIDE.md",
+      "sha256": "956f1b7d3aef24e039d8d75da4de492f433db2b58629e44ee5cc73ca63ac61fa"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/java/springboot-tdd/GUIDE.md",
+      "sha256": "98e0e05d13deeb3e6e78967e7659670a6e78cddd3cb29804c0e2b81e69db68dd"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/java/springboot-verification/GUIDE.md",
+      "sha256": "0a37825183741b9da602520d322454ea1fa95fc044c21a58afb2f8c659c07f01"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/hexagonal-architecture/GUIDE.md",
+      "sha256": "c31c2d3ceea8fa3ec49aae3be7473662de8624592d942fa24d9f1bbeb6cc4a0b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/INDEX.md",
+      "sha256": "17ec46bed22545f9a74fa3ed5ae553ef00f46be9e5df1131418e71522d982d09"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/kotlin-coroutines-flows/GUIDE.md",
+      "sha256": "e952e6add70238e81ae403968aed19336c1331d34068e748378691d6e418297d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/kotlin-patterns/GUIDE.md",
+      "sha256": "327681473b0e4aaa44150fca6b1641393f54bc9b3d258118247637919d5e54b9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/kotlin-testing/GUIDE.md",
+      "sha256": "b2379c008927384b67c98c71202fdb1ef390756409c0acbf51078e45f2a93c89"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/coding-style.md",
+      "sha256": "01b69ada108bcb9db88415ccca19b301914a14ae828aef7727f05d2b5da0bee6"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/hooks.md",
+      "sha256": "c26b33df7dd5360fd401233c1756cf4db5e1b9e61dece0df22eab65625a28581"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/patterns.md",
+      "sha256": "d69aa661a32b8c3b107830852d1e1d0c9bcb9e4b9ae555fb96d7b740094b194e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/security.md",
+      "sha256": "a68676c2547e0932a529f1768e27b630f2680a4103f86a5f5e0fd2ba57dad857"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/kotlin/rules-kotlin/testing.md",
+      "sha256": "489384a179b239195d976d9887df8ca1233e4c200428139302f201f98cdcf2e7"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/licenses/ECC-MIT.txt",
+      "sha256": "35a01099b433925db7c9c17b10bcb873f8eba7bcab9858a7f74daeab84aa412a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/licenses/trailofbits-skills-CC-BY-SA-4.0.md",
+      "sha256": "257ae046f74d5d0237a9d1d234d7e13237aa200206f2ed49db282c829beb0705"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/licenses/vercel-agent-skills-MIT.txt",
+      "sha256": "12cfd65c446abbb7490e48d3dbb447f414bd317a719d6714f90d016019f1eeb2"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/fastapi-patterns/GUIDE.md",
+      "sha256": "0d030727903e32998ad0629745132c417af9842c74edb568d0f655bfdd64e529"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/INDEX.md",
+      "sha256": "05614490769755e12def0f362e1949a5e52997de3becf7fa6df7a1ab334c31a5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/GUIDE.md",
+      "sha256": "7e41e5f434ce30f512b64fafb23b5bd04f0bc064868641e6fb3773732fdb65a5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/dependabot.md",
+      "sha256": "b9dd0267a36e30f73799d31ab3a74beddeba42fb323098cdbaa2e63da8c188e7"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/migration-checklist.md",
+      "sha256": "3bf920050966a312adf03e1bb8cb6f7e60def7dae3b3857d49355fd0f46e5fe3"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/pep723-scripts.md",
+      "sha256": "b779b1668aeee64dac4fd00310d1e63a4ad3699a4be495249438732b9856c489"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/prek.md",
+      "sha256": "147813943b3b77c1d5f065326a6bff066381aa5fc2e0daddb0ea1dea313d72c8"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/pyproject.md",
+      "sha256": "7a0f44e5384e6a84ec4c334820c4a740d904e117ad4bb6faa41495c8c6392b17"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/ruff-config.md",
+      "sha256": "7db18772f9ca136367bb917ba89d9021b154c828ca89ceec000691ca239748e3"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/security-setup.md",
+      "sha256": "06cc283a8c8a7b7b1436872963e589980e9aea9061575cf254bf5142012eb41d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/testing.md",
+      "sha256": "a09fb4c1f01931fef919f24be0cd8555b022f3565655f62bc4f096dad7e89f2e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/references/uv-commands.md",
+      "sha256": "24c4f9380e6185739147705769a9cc16954028f6e6c642107c2aca18d6ced971"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/templates/dependabot.yml",
+      "sha256": "4b8fde8e1bc4eacf15f3e8d0d2c1c8429cb3efc795de1061447ed59ddffe0d98"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/modern-python/templates/pre-commit-config.yaml",
+      "sha256": "b3e42a92c58b9c28c49dc71c9eac1f2f84ee191ac4628fb3d0c7e81bb2174cac"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/python-patterns/GUIDE.md",
+      "sha256": "6c315f8a2c8127e2bf036bc43889b59830a9d1af8caa2d9a4f687790468a49fc"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/python/python-testing/GUIDE.md",
+      "sha256": "ad121584fa51f82b942e7b91002bc8b1a3e61a21134e1bd3d4313b99c8633ab1"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/SOURCES.md",
+      "sha256": "4cbdcf6a36802e49c8508eb74a6e2738d65d7d673c7de30572eba78063dfde31"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/sql/database-migrations/GUIDE.md",
+      "sha256": "7095948295210280a9ac47ed344d3c367d9ba8b1665ad1c89a082d055aa5fa2a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/sql/INDEX.md",
+      "sha256": "d55dc44c75cd4884d556fa9bb12818ee2622e8addc8fd51260dedb530c1af4a3"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/sql/postgres-patterns/GUIDE.md",
+      "sha256": "22279d6d1f85bf48e3383cca311ce4852a8934e64edef4ec41725bd82a8bd7e1"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/backend-patterns/GUIDE.md",
+      "sha256": "fd1a7378b5bcd42ed21279b2b724758ade6e49e762df47b4c67729e5696656a6"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/AGENTS.md",
+      "sha256": "ad5b5de8eef5c67b7fa370ea8f9ca79e9e17e3c1727e71af612b699fc90c9c90"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/GUIDE.md",
+      "sha256": "fb8f849b4d46c0c4d364ae6fb398a5cb693b54f9a4c31765a1ec0689c7cb93d5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/metadata.json",
+      "sha256": "ace7d193472295f0f224948554406dfd6fe378b7f1f000d00020daa4d96f7ea5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/README.md",
+      "sha256": "d6dc98821fb02558c54faf6cd39e5af15837b808c25c0fb4f16e4ec66b9f595c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/_sections.md",
+      "sha256": "738f4d5a8f96e939d5a2d38e59b53613074a173c2b9207ab813fd72f417f4f9f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/_template.md",
+      "sha256": "d688f7c382511d1354bbaf05accdf0c93b5c2ce1d2ab60ab4cc217120fc29f8f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/architecture-avoid-boolean-props.md",
+      "sha256": "bf497b4166c70efca0328558ff3b30cf16bccd94bdc321adf5fa690d759739cb"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/architecture-compound-components.md",
+      "sha256": "dfad1d28de90868a8b8311a3974f5b89648a2a8208caa316ff63ead0b6194914"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/patterns-children-over-render-props.md",
+      "sha256": "6e44da5931fcb09f2d631a462324035fb4d42d0a4ddbf4064ae1bddd2cbe387c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/patterns-explicit-variants.md",
+      "sha256": "b741d51cefc5bad25ae725a3e8791b47198cdb576aa5f34e609e13b4e910d2d9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/react19-no-forwardref.md",
+      "sha256": "10ab8f9b640133f371c327ebbdde0169d94fdf9684c6798f135d5f0f5efd2b21"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/state-context-interface.md",
+      "sha256": "1d6923baa2726aa2fd8f3d75b7e820e895f89efc4c42d9f71cff229cbe21cb41"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/state-decouple-implementation.md",
+      "sha256": "1b8757b07e62d869c4019f40cf75545516cc86386896b429090b2a54b13f301f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/composition-patterns/rules/state-lift-state.md",
+      "sha256": "2c70589fc7c8e2104269d1fda424f005daa470d38e1efe3feef32e0dd01d2ead"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/frontend-patterns/GUIDE.md",
+      "sha256": "46e2290989d0c6abc7d9f12e8f6940d18ce0435b3b961d0de570998707d2a4ac"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/INDEX.md",
+      "sha256": "0bac02020b7a3618c6bdb5a9ddeb19949ffd3595b46520601d3d2f5e4141cf9e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/nextjs-turbopack/GUIDE.md",
+      "sha256": "d8104b5b0733a5a817c4f1bf6e6d6f73e8d7b960840340e339609f4109b6da97"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/AGENTS.md",
+      "sha256": "abd31099ee343f309e25d963e74c485f90357ff47c4898da543ca3dfedbe65c7"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/GUIDE.md",
+      "sha256": "4e7e83ce84bdec9f20b59adc533d7edf2ad23a73bc6cccad2d8ef18152b2a567"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/metadata.json",
+      "sha256": "1874ee16ee8ec9be9058dd31e0be60f9117ae1ac33986b258bac3923b5dd395f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/README.md",
+      "sha256": "2e7e6cbe3952689bf9c00b9a7032f1bffb263cde2d01635f0aa49d3375c33ff5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/_sections.md",
+      "sha256": "f352f75b84d6c6ee644c3fade99eaf2186bdfdc1d9e5b598bae436f32b3bce4f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/_template.md",
+      "sha256": "21231af1b4c70cfe6f07625830d982934295c735f91fddd9741b3a8e3688d735"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/advanced-event-handler-refs.md",
+      "sha256": "029f0c929c665fb9263b8c72a44e50610caf94a6e22a8142821a84482eda825d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/advanced-init-once.md",
+      "sha256": "3d209bc4b17c2a503fdbb53b39261bc5ee824703a8b387daef3f53bad1f32ce4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/advanced-use-latest.md",
+      "sha256": "84b3504ef0dc85f171c6aa0c5d15ac6d252ba72e38fc4e87872c0a3b1728345f"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-api-routes.md",
+      "sha256": "adf38ea4f34fa74b275b908e49aa20de20af9d9935b4a656314a49217b182663"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-defer-await.md",
+      "sha256": "6a2b9e19555a17662755e01d129fa21b8c6a659731d860b7cc918ba47be2a942"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-dependencies.md",
+      "sha256": "4901341bd7f7b7036eb8d98b243515ce294e6e4079370b3187c1514c3e597ec6"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-parallel.md",
+      "sha256": "ff95abbb67b62a889d7ef71f1d06834238c47ecd3d49483f7823b4cd17d92680"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/async-suspense-boundaries.md",
+      "sha256": "8a6e88c6e5190e10d3e3ebca89a1bc4fefc4bdb0cbc9c6f406ce02452a5759df"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-barrel-imports.md",
+      "sha256": "f3a0d74c71aaa98547d970901d73d1bc4c082762e891244e9103def40846eecb"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-conditional.md",
+      "sha256": "16992beeaf9bdd1e7ff20989b8672cfffc8b918deb0783c058560c7a233dd37c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-defer-third-party.md",
+      "sha256": "64de0f01dfe58b4d3a3865baa623f743ef1b8c363106c7dfaf2b2867f69b96d4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-dynamic-imports.md",
+      "sha256": "0fb947cdfec5ce0e95a894c6b68220f88983eff73ce65b98e4f00c885ebd9b36"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/bundle-preload.md",
+      "sha256": "b673a49f4cf4bf385ddf6956ca704139ec2915802bade1925134f8cfabb2278c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/client-event-listeners.md",
+      "sha256": "e2229c8e121dfdd6bad8063ba6c41213ff612e19e077f17ba805b70d48151775"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/client-localstorage-schema.md",
+      "sha256": "f9d177a557f4bd4bd1a81f30f841f75041821dd88f706a6b8c4eac86c7472e05"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/client-passive-event-listeners.md",
+      "sha256": "277118e32363381459bc7439fa942966da668d2c128d93968f9a289f0bb32861"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/client-swr-dedup.md",
+      "sha256": "866e6cc267f06df39129c44c68c5e6a2e62faa554bc8cdb6ada1f58afe4bcbbe"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-batch-dom-css.md",
+      "sha256": "d7343005afc6a9c7e86368e22318f49b88492973e673f7b0ba2eb65697597143"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-cache-function-results.md",
+      "sha256": "bbef6423ad250227e8c73a5d9be6fd687707dd187ef50236fd5b6883a41d49b6"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-cache-property-access.md",
+      "sha256": "bbecc553a5b51caab2ddc90423a23d4c3245669439ff91e5204e48d62aaf1c5e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-cache-storage.md",
+      "sha256": "7710a2ceb421d9b6d3828d7f38ec8a093af4a372c2b3b4ea2299d5df2518f770"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-combine-iterations.md",
+      "sha256": "c43a02979586d39f341fa6da7fc61bdd6a6917fa0c4f9c926091fa540cdf8022"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-early-exit.md",
+      "sha256": "b6b967ab80d2a5fc19851d9db9464cf8e4d0e57dccb607a474b8f7818015951d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-hoist-regexp.md",
+      "sha256": "86f4772c5d732c1f5f0656412713c6dc919360f0f3ea32bb1a45937eaaa5866e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-index-maps.md",
+      "sha256": "752dd0803a7394a70e8d437b7eb025d1e085566e30ad733e75b9d2e04cc6c4d9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-length-check-first.md",
+      "sha256": "9e57362d76e57ea6a2ff8cd137cf2a87b094aaff152eac61758305acb450a25c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-min-max-loop.md",
+      "sha256": "f0054bcd1c3168ea8a6474df33c398bc0066eb1e813d59ae57fe36806ec900b6"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-set-map-lookups.md",
+      "sha256": "7143f8d7b71cdbc77a171fc801bdcf5e7a209e0f471ff17bb669acc986a6b064"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/js-tosorted-immutable.md",
+      "sha256": "2722514cac46990f3361fa35ee20d499a12da2539362e7871b670978664d158a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-activity.md",
+      "sha256": "e23dd494d955db99d376b5bf62a59ce7df9f14576d94094f2e53cfdc388453a0"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-animate-svg-wrapper.md",
+      "sha256": "dca7f0251244489b3bbb6f5aaf7d70f280d91dc13de8ebd24403286f382ec0f4"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-conditional-render.md",
+      "sha256": "6db58f36c8b080c35e91f6504281f85ea2dbd133030610c860e60181d6d9556a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-content-visibility.md",
+      "sha256": "45437e9594857ee1066ee061e946ed129731cf2e80f7e08f3cc621fa0554c567"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-hoist-jsx.md",
+      "sha256": "c5fa7274f067ce3760107196a9416df333a7b4187254ef66c547fad7c45cd8d3"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "sha256": "bfedc3a73f9687c7836acf915165fb845880453b6dfcf2fa6475dfec96b23027"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-hydration-suppress-warning.md",
+      "sha256": "7ec1623c69e1a82b09b8b5a6028005e3eb8485741898447af1bcaed8ff8c0139"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-svg-precision.md",
+      "sha256": "d57cdfaaaf660a28a9a5d6d10e97202a5eb13e1bc1675e024cb1ccbfa8bb2c32"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rendering-usetransition-loading.md",
+      "sha256": "c2186f944b60630c67d42222f60ecb12b5a85395e7f31f193982f85983165720"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-defer-reads.md",
+      "sha256": "bb98d9b7c7622641887df6407406a8c4f61510af9cc1bd275574ebee71bac8c8"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-dependencies.md",
+      "sha256": "4f0a1806694c2391c0b5b79bb4dee89fdf2c02ee322acf308509c17542240446"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-derived-state-no-effect.md",
+      "sha256": "1d50f7b1b86d24f987c557415590f79b06250e3ec1ca552da981e31a31f9edb9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-derived-state.md",
+      "sha256": "6a501211aa53036905df7531deaf25fdb8582697366fd071d4c2607828662dcb"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-functional-setstate.md",
+      "sha256": "e46096d4c2c8fc89ab717bd7e56b8a884b612a88013a99b0c63e7dfc45d8cf25"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-lazy-state-init.md",
+      "sha256": "b8b9e6b6001a1e94979776e744eb38a98432858dd2369995731c9a095ecd1d2e"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-memo-with-default-value.md",
+      "sha256": "e69d637687b85967554df7d5fcfd83cc6fbb89237e9b80d10fbea7916244aa8b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-memo.md",
+      "sha256": "8cc2d062f22ae762f7f5f93baf2bfc374c917079131896559721f9dfbd402a7c"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-move-effect-to-event.md",
+      "sha256": "00f5eaf8d4380c736c9177b67583f6b33f6b1f84addc252653cd6dea9551ad8d"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-simple-expression-in-memo.md",
+      "sha256": "1e41299336d72ce42ffe0b4d397496e520eae13ea544b1412b83761555f4e631"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-transitions.md",
+      "sha256": "b51a82fb6b223d13c585dfddaeb753c79d7da0524da87b708f61fd6939600ab6"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/rerender-use-ref-transient-values.md",
+      "sha256": "26ddded1d59cc04cddf7c1412ffb05315dd1f358510edcce3c3474d5acb63f32"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-after-nonblocking.md",
+      "sha256": "86c8670ad8e6285753645c2cebd164c56baf6f0fa74f914c0ca496d0a0156bcc"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-auth-actions.md",
+      "sha256": "a413aba63b73f7f82cf2482646c8c1598eaa75753c8f73f33055b8508de99fea"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-cache-lru.md",
+      "sha256": "19d844eebd1fb7ef5f43f4d1e85baf1fc0160547400ab838ba4d40226eb891b9"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-cache-react.md",
+      "sha256": "7448470adc9f0066455f9cf45b658f5c3f1884a7990c89f880fbb272a4028b05"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-dedup-props.md",
+      "sha256": "5c4d4c9930812d3ab98e28ad97ca2f5af778effbf9b50b6a7558c18abf2e98b5"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-hoist-static-io.md",
+      "sha256": "a30574079b57e726075adae656735d0adcbeebebd18dae1b0c0de40a910ff0ce"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-parallel-fetching.md",
+      "sha256": "f8f275fea2378e7707a50f2df4af6a2f65fe1fa84edb3ffc4720af805ebabe42"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-best-practices/rules/server-serialization.md",
+      "sha256": "567ce457f775d4e03e2a6ef7bf67213fee35c6c3b9d1bcfa783007d1df414d4b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-patterns/GUIDE.md",
+      "sha256": "9934efdae21cfe2e3e949d12c3faba5ff6decec1ccba803d4b7369b137ab9a36"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/react-testing/GUIDE.md",
+      "sha256": "7795b44ad41de7ab49ec5a6f9b1629ed34bf9f3f92ce0d9842da29a0b1e1d5a8"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/typescript/vite-patterns/GUIDE.md",
+      "sha256": "a42161d71f09d609b138c9a9cbde0c60466751e6ea6c56e27b3685575f00c559"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/ai-regression-testing/GUIDE.md",
+      "sha256": "dd1d4f1ac1b695f8fb006b7e06ddd6cf6b5ea2c2090bacb1e8e157ed4026b769"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/e2e-testing/GUIDE.md",
+      "sha256": "93048185f3a3e464eda58e1d5ba956f16cb949d3b4b88db451fd1640c27bb94b"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/INDEX.md",
+      "sha256": "33a25c64abf8a1de0c48913a09d16fe3d48381d816afceb98516bb4619249183"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/licenses/ECC-MIT.txt",
+      "sha256": "35a01099b433925db7c9c17b10bcb873f8eba7bcab9858a7f74daeab84aa412a"
+    },
+    {
+      "file": "skills/pace-tech-handbook/references/verification/SOURCES.md",
+      "sha256": "b6456bd6210fa127524e54c98595da98aaadd8d11e537cb71228d78c1372f0db"
+    },
+    {
+      "file": "skills/pace-tech-handbook/SKILL.md",
+      "sha256": "cf5260990ea6aa1dd6b41da62fdc615361a3a39827847253865c6e373948c8f0"
+    },
+    {
+      "file": "src/agent/acp-executor.ts",
+      "sha256": "4fcab64278cfdfdbb20fe09a5567cdd283657c1201a7f0bdcaf0faafc8be5d70"
+    },
+    {
+      "file": "src/agent/chain.ts",
+      "sha256": "8eb3009151d1bb646d663de0ffb41e5b3ba7fc89f212d687a5f5399154a82b50"
+    },
+    {
+      "file": "src/agent/contract.ts",
+      "sha256": "3c77b9eae82c4cf8e37f369247eec0626af1666bf5b9ce0c10bfaa5ff863d768"
+    },
+    {
+      "file": "src/agent/hooks.ts",
+      "sha256": "ecf7aa820a8884c2ba02fbd62164415fca1470841910fb4ef8c1a65e0fb3adc4"
+    },
+    {
+      "file": "src/agent/limits.ts",
+      "sha256": "18cd3725601b902b3f1bb98f2b672c28562dc8b398f3fb9fe0c1358a48bf66a3"
+    },
+    {
+      "file": "src/agent/p-executor.ts",
+      "sha256": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75"
+    },
+    {
+      "file": "src/agent/proc-group.ts",
+      "sha256": "a2fdfe2154bc86be361ffa07b22cd52531ee84188e5eed6205b770f76b89ac7d"
+    },
+    {
+      "file": "src/agent/process.ts",
+      "sha256": "79188ddb12d7c8e0fdd96015648162133f69952084af5dea26d7dff518f72588"
+    },
+    {
+      "file": "src/agent/registry.ts",
+      "sha256": "323ff91fed9d933e06b02c555498a12e1e34ac48b343b9ae008233a6242465c7"
+    },
+    {
+      "file": "src/agent/setup-cli.ts",
+      "sha256": "d2490ac01d13e38bb238fe3d7d1ce37a21fe4d1f79e191f837860ae32ceb6623"
+    },
+    {
+      "file": "src/agent/setup.ts",
+      "sha256": "ee7f233fbddeab5e96b056300293c23ff7c287839c28b79c6aaa5c77f963ad84"
+    },
+    {
+      "file": "src/agent/snapshot.ts",
+      "sha256": "071dce9d2ca3006d4a2b833de730e9ec53d522fe454a7f021c84342ee1101fb1"
+    },
+    {
+      "file": "src/agent/verify.ts",
+      "sha256": "d368970bdcd1c1ddb6d0ac8cc4ce171e3c7918b5ec6db45581d9c71abd676bd3"
+    },
+    {
+      "file": "src/agent/win-command.ts",
+      "sha256": "64a9cf48435de8be9888e865fdfafaa51b150059ff0e5a6302ecf0dd28e6da19"
+    },
+    {
+      "file": "src/agent/windows-job.cs",
+      "sha256": "3f67829f996e3238f19106a17581f51972931931106580d4b98a6d0b5d69d2d3"
+    },
+    {
+      "file": "src/agent/windows-job.ps1",
+      "sha256": "17e705dc95b9c94625433563bb7d9788bdf4845006d03184640c65fbe307d9ae"
+    },
+    {
+      "file": "src/agent/windows-job.ts",
+      "sha256": "fd29973107b15e756072f57ef33ebe1f167e1d6ee805909aad27dc41faa10d76"
+    },
+    {
+      "file": "src/agent/windows-supervisor.ts",
+      "sha256": "f3f222b5fbfa34b3802c498a9b342bfd739c53bb8211c88283cf79a7ff7a8825"
+    },
+    {
+      "file": "src/boot.ts",
+      "sha256": "f1da1099d9b0f9ee29913935b563969fe1dc08b8f21071d98435a8c36edcae8a"
+    },
+    {
+      "file": "src/cli.ts",
+      "sha256": "020040e969db51731463a2a45c191a1e107e33d9538757864aae1c2c411d0386"
+    },
+    {
+      "file": "src/core/console-decode.ts",
+      "sha256": "f7b8d524c54c716b64056fbcd93ef71c9b250d7a674a9c282f5203f1c49bb29c"
+    },
+    {
+      "file": "src/core/frontmatter.ts",
+      "sha256": "dcb9d6e6294b808b030c5908251e75e716954f4ca1e41a9c7efb8080654b6dde"
+    },
+    {
+      "file": "src/core/fsutil.ts",
+      "sha256": "4b6ffce7172d71060a1855e017b3b075b02daffbf76dd90e3a81dbeba00395af"
+    },
+    {
+      "file": "src/core/paths.ts",
+      "sha256": "a9d11c9482c1e3f44f4dda494a10414c278616451d82e8ecc5ac7e8d1779301c"
+    },
+    {
+      "file": "src/core/prompt.ts",
+      "sha256": "b2b6570819514657aa5ad4d7238338c30f0738e5936bb5556656f929aca87d4f"
+    },
+    {
+      "file": "src/core/worker-settings.ts",
+      "sha256": "66f14195874ef2d18a98f3daf6d5361e474210f251adf2df800f24097acd39f0"
+    },
+    {
+      "file": "src/daemon/autostart.ts",
+      "sha256": "f8951599cbda27d22317a129ec78f1f45a86f247f4ed77909967bf2d26cafd5c"
+    },
+    {
+      "file": "src/daemon/cli.ts",
+      "sha256": "700a4a5ccae6b124443fc3dfc69c3d4b97ac4374aae4ed5749b8d0d983e271f8"
+    },
+    {
+      "file": "src/daemon/config.ts",
+      "sha256": "56879c50bcc4eb7afa643c195c1afab10174bd3ec734b61de06072f31834772d"
+    },
+    {
+      "file": "src/daemon/core.ts",
+      "sha256": "ea076871210f0eb3b834553d3b03a737d1d865362dee349974b88aa3b992758c"
+    },
+    {
+      "file": "src/daemon/gateway.ts",
+      "sha256": "e95ed9f14af791f0beecba40c10eaefe686d3e72272a8375f99569a6a4b5c539"
+    },
+    {
+      "file": "src/daemon/index.ts",
+      "sha256": "4d56a00d69a9694e1d5d8f4e0efe43eb3bf9832d8b4b986db62763be385be957"
+    },
+    {
+      "file": "src/daemon/install-wizard.ts",
+      "sha256": "3875eee8cb8155998a2f5744015a410bb52afc7df270f6a40c393478c967c73e"
+    },
+    {
+      "file": "src/daemon/instance.ts",
+      "sha256": "28cdba28d2ab920ac38400257c23b0f5ac47b550f63753521e276f5355c466ca"
+    },
+    {
+      "file": "src/daemon/runner.ts",
+      "sha256": "0f5bae4e859c9ed0cd4ed8691d9812c191106dc2189fcfab2260ef6919ab11af"
+    },
+    {
+      "file": "src/daemon/secrets.ts",
+      "sha256": "4c74e12a12e9481729333b8a8fb11ebe39a047bcd8e749d29ae8160cb43b200d"
+    },
+    {
+      "file": "src/daemon/store.ts",
+      "sha256": "4099ec70c9861fa758a5b3073307bd3d7589e0051cfdada5f75d93980520c22b"
+    },
+    {
+      "file": "src/daemon/telegram/adapter.ts",
+      "sha256": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80"
+    },
+    {
+      "file": "src/daemon/telegram/api.ts",
+      "sha256": "f73681174e8274ee1da59eab32ab694acf1c112c6c49ef8be24c46941fb2f9fd"
+    },
+    {
+      "file": "src/daemon/telegram/fsworker-thread.ts",
+      "sha256": "b875a1e7d6ac51659ce9e4f0fdc8e5595fe0d45a98ce3c76b266ebb5fd1fc132"
+    },
+    {
+      "file": "src/daemon/telegram/fsworker.ts",
+      "sha256": "622ec0fc2512860886bce6f3d617488e3cf6adc88d361d765e41ea8c6d96a3af"
+    },
+    {
+      "file": "src/daemon/telegram/index.ts",
+      "sha256": "bb98e3bd5c0710571213c4e55412f584388ba694577323114db6dce465da505f"
+    },
+    {
+      "file": "src/daemon/telegram/markdown.ts",
+      "sha256": "9684722b5968b4bb38516b408bdb884d2b40068decdd96489148036adfab8407"
+    },
+    {
+      "file": "src/daemon/telegram/render.ts",
+      "sha256": "3b1f9e1e279bdcd19426dac4206cabf2e3bdbfee0bafa6ef3b0f69e60460daf2"
+    },
+    {
+      "file": "src/daemon/telegram/state.ts",
+      "sha256": "2924f67bc3b5c9c9b263c16aa7b2ba66cdc04747ee8f0f2a61017afbc60500ab"
+    },
+    {
+      "file": "src/daemon/types.ts",
+      "sha256": "bcc24aba3fc8a8d70f4992e655b77755d36415ef301547534295b17d4f8b5930"
+    },
+    {
+      "file": "src/dashboard/backlog/app.js",
+      "sha256": "85c166061840c17a7fc4459cb338ea5aad5ee9d0437c64f34f6be8263272b9b1"
+    },
+    {
+      "file": "src/dashboard/backlog/core.js",
+      "sha256": "57ae746c1d859798a6ad0c9608193badb1898998a359074d35d3f3bcec03a0af"
+    },
+    {
+      "file": "src/dashboard/backlog/page.html",
+      "sha256": "6d3bb241fe9fbedb9f60e7b0a36698f1b894561b4e07b70fb53499fddbb644da"
+    },
+    {
+      "file": "src/dashboard/backlog/style.css",
+      "sha256": "74329256b63e943dc07b1d68f2e1bc4f1a6fd88ba59570176a1e46ecc5b7caf2"
+    },
+    {
+      "file": "src/intent/handoff.ts",
+      "sha256": "0ea8640ba1db38fa68f8d61138c09a06068bf6343471ae4d8c18a08edaf07b1a"
+    },
+    {
+      "file": "src/intent/lens.ts",
+      "sha256": "78775a0e3b2f638e6e4f502d77376f89fc2dd5cf5e28026df4cdfb3bf7496129"
+    },
+    {
+      "file": "src/intent/plan.ts",
+      "sha256": "fd8b4af78acee88c3465b01e959b20642f65f4120669cdfb0c922641fe3e8268"
+    },
+    {
+      "file": "src/intent/preview.ts",
+      "sha256": "feed002d5f450711ff7a8ee9c6415035e4d226dc1abd5b6c874f4c1f267db02d"
+    },
+    {
+      "file": "src/intent/schema.ts",
+      "sha256": "bd677f82a146511bf8d4c6e0e7391010319c89d044700fabaa57031d3d9abee9"
+    },
+    {
+      "file": "src/mcp/names.ts",
+      "sha256": "aa1406c72709bdc122ba7c838778928a53e9567b85b2a487036c0cd31e8ae1ab"
+    },
+    {
+      "file": "src/mcp/safefs.ts",
+      "sha256": "3a3b69808762867d1093d9d80a174b4f1ac263a3a00d8aa19dbfc0dd133d697e"
+    },
+    {
+      "file": "src/mcp/server.ts",
+      "sha256": "df510c01e6c6c8d262a0005200dff1aea38584d9dcbec92c1489830150b1ac9c"
+    },
+    {
+      "file": "src/mcp/stdio.ts",
+      "sha256": "e0c939143bb5279390546a60e828e509c9e723fe297a4fef191fd5fdfcab67ce"
+    },
+    {
+      "file": "src/memory/memory.ts",
+      "sha256": "c61ddccbb8aeb477230bc7ed3f662ef8850e3d8b05650d3c7918f9d6ae8b099d"
+    },
+    {
+      "file": "src/profile/onboarding.ts",
+      "sha256": "3dee0b2bba6306b32997f8475400c606351560e5d986b1b0bebe86cf407defe7"
+    },
+    {
+      "file": "src/profile/profile.ts",
+      "sha256": "37f9fc8c9a96e668410c6bc859326b69ea5b5b4e1de56378b7d1c468bf5b622c"
+    },
+    {
+      "file": "src/project/adopt-opal.ts",
+      "sha256": "535e5c42ed90ce2d96fdf6f3731d03c0094b7b4157e8fa3510ab53ca25727e1f"
+    },
+    {
+      "file": "src/project/agent-definition.ts",
+      "sha256": "88e968ca0afc83c949c9becda431e32e0d4fba8a9896e6228356de33a5f429ac"
+    },
+    {
+      "file": "src/project/backlog.ts",
+      "sha256": "4bff5818b32ead78481be5becd53e68690f10f3e24865074c17631e6110e053d"
+    },
+    {
+      "file": "src/project/brain.ts",
+      "sha256": "027329378cdbd8342fc7971f796e1d2bb6ce899b5e6895946c3ddd69d682e62a"
+    },
+    {
+      "file": "src/project/dashboard-init.ts",
+      "sha256": "be5451fc959e8916e86491a8122212c1bd51368d41925b706600af3ae845415b"
+    },
+    {
+      "file": "src/project/dashboard-layout.ts",
+      "sha256": "c8c4042dfc59e5be8b1a8d623eb548dd1a3f1c31f86848eebf07bcf6c2e002d7"
+    },
+    {
+      "file": "src/project/dashboard.ts",
+      "sha256": "014668d0c7c2d1c77a0d88e7a73afe7298b17b3889bf77ed788a613fd265b95c"
+    },
+    {
+      "file": "src/project/event-log.ts",
+      "sha256": "9332a7b54094ce93a80fc31e06fba8fe1db4dee28256e68310ed251c617c7627"
+    },
+    {
+      "file": "src/project/harness.ts",
+      "sha256": "18bbb1090b7878ff395db9e4aaca6886b222874ba530a872ddae09d7a640d913"
+    },
+    {
+      "file": "src/project/metrics-document.ts",
+      "sha256": "ac9950e22d2c292e0be4010b3b7d7895fb74aa0133e29cd2a6c74bf9e43769e4"
+    },
+    {
+      "file": "src/project/metrics-index.ts",
+      "sha256": "3b5bb388db0b8f702db7beda11664696983cdc897a1841511dedbd0bc701185e"
+    },
+    {
+      "file": "src/project/metrics-report.ts",
+      "sha256": "3a571de9b540df437e8e261a455c68b263950a0391acc5894360488659ef576d"
+    },
+    {
+      "file": "src/project/metrics.ts",
+      "sha256": "d91e2a84e6e405e7f4b1e8e343b55ef323d5681e5e2e973280311354ca178857"
+    },
+    {
+      "file": "src/project/pre-review.ts",
+      "sha256": "7a8a27bc749def8df7a4ab7a838427ead41bb7b2fa9e55317989a76870fbba60"
+    },
+    {
+      "file": "src/project/secrets.ts",
+      "sha256": "9778f4d8170bf1eac70b5ecc242fdda1a6a2df0098de40e8179e884858ddadd9"
+    },
+    {
+      "file": "src/project/shell-result.ts",
+      "sha256": "9360011be9f3669e361452a885ff67aefaecff76bbee65a5d69dc3f5e8bfb3b2"
+    },
+    {
+      "file": "src/project/situation.ts",
+      "sha256": "e92651adfefd9f8507a942f27e373351b50c2fe20e73b749aeb3bd1908e902e4"
+    },
+    {
+      "file": "src/project/tokens.ts",
+      "sha256": "811540b6730c8f5e50b04dca4f0e01c5b63d0500609ae5060b2fa4a7c42cd642"
+    },
+    {
+      "file": "src/project/workspace-registry.ts",
+      "sha256": "045705c94866e3a5468b18f51ea5d9ef5a15df3a7cc781a5a14a94681a06a45e"
+    },
+    {
+      "file": "src/scout/card.ts",
+      "sha256": "59affb02da0d909994253bf6aa0f2f282207939ea6498438746b0300f18f4bd0"
+    },
+    {
+      "file": "src/scout/report.ts",
+      "sha256": "ab572bf031e9713147227174d321f5aa8488a6fd852a2299d3c9c97f651d0d98"
+    },
+    {
+      "file": "src/scout/run.ts",
+      "sha256": "001a49bbfa5e361b14999f7d4a617bcd3fc97465474b329764db4b5b13068f59"
+    },
+    {
+      "file": "src/scout/schema.ts",
+      "sha256": "3c1fe4de85a44c42c713d226203fd08fd74ca922ba669aa4df6d6479750363f4"
+    },
+    {
+      "file": "src/scout/source.ts",
+      "sha256": "eee767bd7fdc73df815c2782833e2e8db49e990630c292ab05c1c0d12a1691fe"
+    },
+    {
+      "file": "src/scout/transcript.ts",
+      "sha256": "f4ec861b92b72653911b3ebc88a0faf40088cc1f850637663aad899d6f886f5a"
+    },
+    {
+      "file": "src/scout/verify.ts",
+      "sha256": "83b910dac54600d0107155a099105a546a0b8d17e7522d612e33780d61938297"
+    },
+    {
+      "file": "src/setup/install.ts",
+      "sha256": "db9f7a83023ca2e49dff510dcbe1b8e2969ef12c119c6f62ca914f206873d6e5"
+    },
+    {
+      "file": "src/setup/onboard.ts",
+      "sha256": "5b771f6acc87216fe87990608e04dd6a12756d05e78b4a99ef63098e7e6385f9"
+    },
+    {
+      "file": "src/test-runner/changed.ts",
+      "sha256": "bf86c9364baede4faf1cefc6894ccde7690f9773b13c8e06a5f267c3f7e03cda"
+    },
+    {
+      "file": "src/test-runner/execute.ts",
+      "sha256": "b0bcd38e1c3d8add3da6e862a84985ecc759889ae1fc00d237b2a2acc818898b"
+    },
+    {
+      "file": "src/test-runner/map.ts",
+      "sha256": "03e73074b562f74d04db4ae2a11aee56711dbc5841c0f7671e07cf1f0686a3ea"
+    },
+    {
+      "file": "src/test-runner/node-driver.mjs",
+      "sha256": "bf918c93ab9f479856d8c18fe402500b2143a4549aee157e95c69b75f063d3ef"
+    },
+    {
+      "file": "src/test-runner/python-driver.py",
+      "sha256": "dc0e069f584e32184404f138580e68c2444d3e577e0d996f5bfe75e3fa0ffce0"
+    },
+    {
+      "file": "src/test-runner/runner.ts",
+      "sha256": "a494a161a50498d96d0b08d19f3c39052bd5e5a25cf815045bb5dbd73a3a42d4"
+    },
+    {
+      "file": "templates/backlog/BACKLOG.md",
+      "sha256": "dfe52133dcb12a1e7b9aa850343985c1b7fd429771e320909e5325905f878456"
+    },
+    {
+      "file": "templates/backlog/BRIEF.md",
+      "sha256": "5d86150b28e2f141de337f53f7b1e58627a0cb6c101c8ae6a1737428d7e5cd03"
+    },
+    {
+      "file": "templates/brain/SCHEMA.md",
+      "sha256": "99ade50eca8fb33474781e34fdf9b1e3a001e83072b21ad722003597408f902f"
+    },
+    {
+      "file": "templates/intent-preview/preview.html",
+      "sha256": "e5608b23d9bc1fbd772c99de1838d2de48c0ba6c675f18d6173be714cea4f1d1"
+    },
+    {
+      "file": "templates/intent-preview/preview.js",
+      "sha256": "33087a8653353157115558cd20bdaa69e2acce35f9391497c86f617a2530a972"
+    },
+    {
+      "file": "templates/profile/config.yaml",
+      "sha256": "b59d5cfcfadb7adfcc9626a774b2369c1700d5077f7de9b1634e4c13d265a1eb"
+    },
+    {
+      "file": "templates/profile/SOUL.md",
+      "sha256": "94a28f5b5dc172660b364c764d05c5d3b0d09f26040e151323b3f3132a8820bc"
+    },
+    {
+      "file": "templates/profile/USER.md",
+      "sha256": "908a3a377d34a24481da5e42d959166ab2a32e04c5672ce3ad2fec28cd369beb"
+    },
+    {
+      "file": "templates/project/E2E-SCENARIO.md",
+      "sha256": "5af64ac805f79399f1e42921ce1d1d9ae17f1a6d435fb92f76132bda47de4c1d"
+    },
+    {
+      "file": "templates/project/PROJECT-CLOSE.md",
+      "sha256": "aeb2be5c29b1c3ce3e7f90a5fe863b90a1d05844aa8755046a68c61fb8178ae1"
+    },
+    {
+      "file": "templates/project/PROJECT.md",
+      "sha256": "10203db4c1850b864bb02b028aa20a4c912564264eb1435a2bc66306e076c8ed"
+    },
+    {
+      "file": "templates/project/TASK-CLOSE.md",
+      "sha256": "ecf8625e67f0f7df7218aa37c22362f37e86f7b2afb7aa2a5dbb57fc91d4549b"
+    },
+    {
+      "file": "templates/project/TASK.md",
+      "sha256": "70e95804abaaef5eff1b2d016cd1ebd3c9792ca542d6c9e86df963531cc8ad92"
+    },
+    {
+      "file": "templates/RULES.md",
+      "sha256": "29cc14efa8903ae4e4dea82e210055081b9165dd23b1dce07e62cd154c468d11"
+    },
+    {
+      "file": "templates/scout/example-report.json",
+      "sha256": "486a06eea7f987fcb86e5f3689123f3b0b728685439c36de642f2da8572bbce0"
+    },
+    {
+      "file": "templates/scout/idea-card.md",
+      "sha256": "7592f1dc4600d2612165c3faf76f438424b5e6ad7d6123704a5296a2ed6bf1aa"
+    },
+    {
+      "file": "templates/scout/report-template.html",
+      "sha256": "d95ace601e4060a3e8b6958c931bd0b648c1e83b75d37342e776bc77243d0ed3"
+    },
+    {
+      "file": "templates/scout/report.schema.json",
+      "sha256": "181f23c12a5b1252eb495b324de5620bde7f7b80ed22c892f75913c2f3d8b2f5"
+    },
+    {
+      "file": "templates/workspace/AGENT.md",
+      "sha256": "a13d3a9f34a4b59fd876641d4e8335f4d0268b9adfe43ea58694a8ee3613ac49"
+    },
+    {
+      "file": "test/adopt-opal-docs.test.ts",
+      "sha256": "70617b4195416ca77135dc0d50592b5b89f52fafc95c3e7c2fbf8002b0ecbd71"
+    },
+    {
+      "file": "test/adopt-opal-e2e.test.ts",
+      "sha256": "7831a06c555861f281ee7fcde18e34c3bbdb61f49c3dd3d0a73cf6c08d57912d"
+    },
+    {
+      "file": "test/adopt-opal-recover.test.ts",
+      "sha256": "495d743e4036a7502d4ac03c5f562767dae09d8df17a79773464ddbb51a36df7"
+    },
+    {
+      "file": "test/adopt-opal.test.ts",
+      "sha256": "b10561672c9c867d14e1ebbc109e4a2d5c0fe702494acc8ee5a41c7c8e7affb5"
+    },
+    {
+      "file": "test/agent-acp-hooks.test.ts",
+      "sha256": "08bf54331897196a9d37d76fc9c5d3e81044033824cf26591be61b112e646b70"
+    },
+    {
+      "file": "test/agent-acp.test.ts",
+      "sha256": "b1842e5c67f0b622b803fd9b2406108b1b455e61f7a8292754398bd511b0a827"
+    },
+    {
+      "file": "test/agent-cancel.test.ts",
+      "sha256": "efdc56106c7fd088a4dce4d3f39fa51cf55bdddac8401facb6e91c70c96394b6"
+    },
+    {
+      "file": "test/agent-chain.test.ts",
+      "sha256": "5f122a55aa4d06897c182a0ec8ac018868dced426ede4df340c2859d49e53e95"
+    },
+    {
+      "file": "test/agent-contract.test.ts",
+      "sha256": "d5840518e45b60a19694794b8a0f39a41db121279af5da428cedad17b718daac"
+    },
+    {
+      "file": "test/agent-definition.test.ts",
+      "sha256": "1742c4b1095709cbd1623756e66f9e57221c551d2299c7be577ba98b22058f7f"
+    },
+    {
+      "file": "test/agent-p.test.ts",
+      "sha256": "aea9be2d1c6afcb7f4a2299d6fc1fce7943f962cf8da4cd96be7b2bcc4543c6a"
+    },
+    {
+      "file": "test/agent-proc-group.test.ts",
+      "sha256": "bd18f5f78007919136edd1598a249fc03ca3367d6c0a904cc9afed1d38e2eec7"
+    },
+    {
+      "file": "test/agent-session.test.ts",
+      "sha256": "d4e779855de4c103da61327e744adcd76e211039623346c54295d67e7be6138d"
+    },
+    {
+      "file": "test/agent-setup.test.ts",
+      "sha256": "9aff7ed062b16fe0f105eb674286b159c2bd7977249b75986e4b258352442340"
+    },
+    {
+      "file": "test/agent-verify.test.ts",
+      "sha256": "a257461a6ed21020a77469f473360d46097167617c443391c9e703f94e66f85d"
+    },
+    {
+      "file": "test/backlog-dashboard.test.ts",
+      "sha256": "e2524ec1948d8b99b950df6d30ed217240ff937706a603c921da8257fc780160"
+    },
+    {
+      "file": "test/backlog.test.ts",
+      "sha256": "b897ce23b546cfe8943ea0af746edbffbda255a51dd9eff2de38141485c16297"
+    },
+    {
+      "file": "test/boot.test.ts",
+      "sha256": "c9835f2f02afa78b3f7334a3a2eeaa236b4b74c9d372cee2ba7f8e48f6e9a4cd"
+    },
+    {
+      "file": "test/brain.test.ts",
+      "sha256": "81082a0c0efa7492c1def96799406744d2aba9f3775416aa8597b85b59ccb892"
+    },
+    {
+      "file": "test/canvas-skills.test.ts",
+      "sha256": "6239c3391adb60487d8f52fec30caa681c50b49df12eb46de81aa959b7db708b"
+    },
+    {
+      "file": "test/changed-test.test.ts",
+      "sha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c"
+    },
+    {
+      "file": "test/cli.test.ts",
+      "sha256": "3498d90499aa154c710e463d5ce4e3cb94e9dd5e89acdccbdb17105b8576f3c8"
+    },
+    {
+      "file": "test/console-decode.test.ts",
+      "sha256": "46c9f5111d13cee0c9c2ec4414fe24d986d5fc7291f654c31f20a4cdc912c9ce"
+    },
+    {
+      "file": "test/daemon-approval.test.ts",
+      "sha256": "380b85662d8a4f1362373d9ec30ddb5d259bb66c0060ebe3ace0b95e147ee966"
+    },
+    {
+      "file": "test/daemon-autostart.test.ts",
+      "sha256": "5a35f7b0e9f693a72dc37b7f8f75ad8c8605489b404143d7c3dcc98334e1ceeb"
+    },
+    {
+      "file": "test/daemon-core.test.ts",
+      "sha256": "12799d9260a5bb9428af381ff683e0259481e97d85f58b469cb9262b14c7cea4"
+    },
+    {
+      "file": "test/daemon-gateway.test.ts",
+      "sha256": "19491b403c1df6abb66a805d0533dc7692e5fc204ac9c07887c90443e73b25cf"
+    },
+    {
+      "file": "test/daemon-helpers.ts",
+      "sha256": "45f6978fd8d1f02eb5b09d7f6dd3983e863e7fd7f4ae3b82b45010aab79585c6"
+    },
+    {
+      "file": "test/daemon-install-wizard.test.ts",
+      "sha256": "184efe37268e5bf82a7f6b17cfd5eb68dc8e62666a667ee5914918112ad07873"
+    },
+    {
+      "file": "test/daemon-instance-port.test.ts",
+      "sha256": "11de2601d494db451eb490231d00169414ff209bc2c7549cac1a82c9a8dfd727"
+    },
+    {
+      "file": "test/daemon-proc-helpers.ts",
+      "sha256": "e0fbec006d7c0c7a2202ecf985021cfcf8ccad2cb2588edee783789688afd105"
+    },
+    {
+      "file": "test/daemon-process.test.ts",
+      "sha256": "c5f0eeaddefe6cebc3057b60b30faa6e55464cb14a964a1f7dc35820e0278a34"
+    },
+    {
+      "file": "test/daemon-recovery.test.ts",
+      "sha256": "03cc1a5dd994e7f4bae63d588c7cba871f44e8779b1b21737306c36d8490e407"
+    },
+    {
+      "file": "test/daemon-runner.test.ts",
+      "sha256": "930825e04fc304d3f21e80b8d91ab49186fad72082d5c0588e55b76979d658f0"
+    },
+    {
+      "file": "test/daemon-stop-notice.test.ts",
+      "sha256": "ec82e1964a55f6d072e304494fa3ba10f207b673dd04a04c353b8183f82f877c"
+    },
+    {
+      "file": "test/daemon-store.test.ts",
+      "sha256": "e259ae702d19b54bc63367206b641883c2cdff9ccfe8b06772b2c0a30e182010"
+    },
+    {
+      "file": "test/daemon-t05.test.ts",
+      "sha256": "1b4778b3740afe0bf753359a38227939c58cf71d0c420c6e3914011c0f90b6e5"
+    },
+    {
+      "file": "test/daemon-wizard-follow.test.ts",
+      "sha256": "0285b963b11c74b061c5ec685e8681c7b59f1335aac781b931cd0f4311067cb3"
+    },
+    {
+      "file": "test/dashboard-init.test.ts",
+      "sha256": "c9bcb622b28d4993a80acd27541bc7665a4ca5e168715eab6fdee8a927aa76e1"
+    },
+    {
+      "file": "test/fake-acp-agent.mjs",
+      "sha256": "2153cf035e5aa0dc408d5e5ed1390d7804c7a7e6d0b0eadff96309a19450bb00"
+    },
+    {
+      "file": "test/fake-system.ts",
+      "sha256": "bff9da6c7c226a980fc0dd7a8a5f4b6f5713ea6c184716bf781543856f2b14f8"
+    },
+    {
+      "file": "test/fixtures/backlog-dashboard-copy.json",
+      "sha256": "cd808dbb3c360b1c40c6cab330d24d5ad0ff124be312f782aea897a967d2a9a3"
+    },
+    {
+      "file": "test/fixtures/daemon-main.ts",
+      "sha256": "cd1b939bdd6ba327dd82ec05f393fb40c25f3306d36c0b07156607701b9e95cd"
+    },
+    {
+      "file": "test/fixtures/playbook/driver-page.html",
+      "sha256": "68f3539152ca6f7bc6d982618695b9589fbf6cdb77180a87da0278063c2d6282"
+    },
+    {
+      "file": "test/fixtures/playbook/heal-page-menu.html",
+      "sha256": "b3dec22a728267ac7afda0e3331b08b2ea9aa5e7091de4c62b3b82d995209186"
+    },
+    {
+      "file": "test/fixtures/playbook/heal-page.html",
+      "sha256": "b3dec22a728267ac7afda0e3331b08b2ea9aa5e7091de4c62b3b82d995209186"
+    },
+    {
+      "file": "test/fixtures/playbook/position-page.html",
+      "sha256": "9e7ba1cb53bfe9749a12ceb7c826682dca1a12d9208463a1ade45acead7e51cb"
+    },
+    {
+      "file": "test/fixtures/playbook/sample-flow/shots/S02.jpg",
+      "sha256": "f486d4acb372e8f04ec8505e4e31aa4ac83a804646892e39bda7a50f6a83fec7"
+    },
+    {
+      "file": "test/fixtures/playbook/sample-flow/shots/S03.jpg",
+      "sha256": "a4c83ce9f28988c7051cc3c2c90786727643d3e4a015f40a9cce6936a0165111"
+    },
+    {
+      "file": "test/fixtures/playbook/sample-flow/steps.json",
+      "sha256": "20bcc60bb8fe7c7b4ce9015249dc4586c48fc7802d88f76eff3363a723fa2a3c"
+    },
+    {
+      "file": "test/fixtures/playbook/service-page.html",
+      "sha256": "f2789fc3578ec144139a62168adc74bb5522b60b36090e96262b470ccd7f5a8e"
+    },
+    {
+      "file": "test/fixtures/sample-test-map.json",
+      "sha256": "a69d1118e0a0205a7561ec156653f61e93ce413d977b5aa4c469655af8d5ef11"
+    },
+    {
+      "file": "test/frontmatter.test.ts",
+      "sha256": "01ce884a97bfe2d88fc9ff3562029d3ef3f9e32643a4cd4c549718d279952cfc"
+    },
+    {
+      "file": "test/fsutil-windows.test.ts",
+      "sha256": "9e32e4c3878c90410a2ef55eec22a767f35f30a04dcee6e6c0ff5a241d145725"
+    },
+    {
+      "file": "test/git-fixture.test.ts",
+      "sha256": "cac302dc05d05eb2334c6a79e4f156257e77bbe53fbd24b5117d62c0daeeeb78"
+    },
+    {
+      "file": "test/helpers.ts",
+      "sha256": "7793bc888cf0552fe3242e9447c27a73db9c680158571a1dd4bfcfc3c5e16a03"
+    },
+    {
+      "file": "test/install-autostart.test.ts",
+      "sha256": "bdb5b03caf4edad48b69c963f83729a67c253f5d288be866b86e8d1fb1f5064f"
+    },
+    {
+      "file": "test/install-script.test.ts",
+      "sha256": "3038237a33a57a49364ac3f1cf6c1fefc41eb3453a3f4fd4ad5818cbf1648763"
+    },
+    {
+      "file": "test/install-windows-wrapper.test.ts",
+      "sha256": "3662b08e03855d6aa84afcea2a05afdfd7d61d78649ec2face67cdd77b96e658"
+    },
+    {
+      "file": "test/install.test.ts",
+      "sha256": "f969d88ffa369d6946e421e14823fb322b8f65faba783dd4180c8f6f38080208"
+    },
+    {
+      "file": "test/intent-plan.test.ts",
+      "sha256": "48db0861334150c6e5751cbe22b81cf4cbb03aae96ea96a2b4f54a318d648d3f"
+    },
+    {
+      "file": "test/intent-preview.test.ts",
+      "sha256": "f1273e14e2cd951a67bb0c1c6cef36d63c06099f4588aeec1225fb2e14e1eb76"
+    },
+    {
+      "file": "test/intent.test.ts",
+      "sha256": "e686c3ee0461788f6881208299059f28b36449a4197275633457f22dedd53cc8"
+    },
+    {
+      "file": "test/mcp-cli.test.ts",
+      "sha256": "9fdf189552d9ac57db54f3d4b1a37127b1d79553c072967482e9dfb131afc01e"
+    },
+    {
+      "file": "test/mcp-server.test.ts",
+      "sha256": "972b56775c33b5d28b18f16bd3faac9b85ea65174a5f8d0ee42b1a35cf79ba0f"
+    },
+    {
+      "file": "test/memory.test.ts",
+      "sha256": "3a0d077d95ba32aa73bab92e8cf9eefd641283b9b5d02d9d90b4a18c7591bd6a"
+    },
+    {
+      "file": "test/onboard.test.ts",
+      "sha256": "cd3a93c30e4f41751a15dd446c32a2f84050b31353a9f72e683d8b96fb18ddae"
+    },
+    {
+      "file": "test/onboarding.test.ts",
+      "sha256": "2cf51016bc33cd45e19b9be35c777e5e7442426095faddbca6d7b9c8bcc011e0"
+    },
+    {
+      "file": "test/pace-install-ownership.test.ts",
+      "sha256": "07c4b4d6fab7491a36c7950599ce50b37fd3f90a4c0a53da8a530666d9efd0b4"
+    },
+    {
+      "file": "test/pace-paths.test.ts",
+      "sha256": "6476517ee42bd9a2ee66335f555d9b96ab3728020741a8529d7a332dc827fef5"
+    },
+    {
+      "file": "test/playbook-install.test.ts",
+      "sha256": "8c8cbbfcfc50b31faba1034ce0113cc912d52d64453ef5b475354dc686f188d6"
+    },
+    {
+      "file": "test/playbook-maker.test.ts",
+      "sha256": "eb1753cc90fe865987c0ed89362c8d5a422ec54b060b79cf5b1f33e09f2017fb"
+    },
+    {
+      "file": "test/playbook-pilot-harness.test.ts",
+      "sha256": "0f9de815da3e4dcb8c36d403c2f9258b92a7aa92ffebd4fbda24a0b0bc7dad39"
+    },
+    {
+      "file": "test/playbook/agent-core.test.mjs",
+      "sha256": "2970022e5401d6c4f35de2a290bc7c59006a07e50367555634921388cf286f8b"
+    },
+    {
+      "file": "test/playbook/agent-map.test.mjs",
+      "sha256": "051b990135a8f92d6144a5bc7f2d8d54af1d48f0f9c493102837df89f04e56a3"
+    },
+    {
+      "file": "test/playbook/agent-strict.test.mjs",
+      "sha256": "823149db96ea96afeac8ebed8124c78c6beaa1e8e83c761d3b775492472977b8"
+    },
+    {
+      "file": "test/playbook/build.test.mjs",
+      "sha256": "883d0e1c3cedb3d01e66866d3d65fb0a31328ac8f23af76f0af6782503b4ff9a"
+    },
+    {
+      "file": "test/playbook/capture-core.test.mjs",
+      "sha256": "8b26d42f471568266642492ee8f9ae67a9c204eab2a8a3764b7e1d57fd7e4278"
+    },
+    {
+      "file": "test/playbook/dom-stub.mjs",
+      "sha256": "2fa5316b8a924f5a4008ac293608d291183e1423bf10cdf532f438d4e1201aa8"
+    },
+    {
+      "file": "test/playbook/driver-e2e.test.mjs",
+      "sha256": "418119f0466ee0f176fe954e12b93060453fba4787eea34878c1a53b10f021c5"
+    },
+    {
+      "file": "test/playbook/driver-runtime.test.mjs",
+      "sha256": "cb9b84bfed4e892078e9e0abbb66d11e9083a888ab89eda1931928aa5ae547af"
+    },
+    {
+      "file": "test/playbook/driver.test.mjs",
+      "sha256": "449c3b965bcdf97b419e1a885badc566649e546fb8f19974d9659a523a753d8c"
+    },
+    {
+      "file": "test/playbook/heal-web.test.mjs",
+      "sha256": "d4bfe0a10bf63b16482a05da7aa1867977b2042cdeb18576e308ba9e33c0fdf3"
+    },
+    {
+      "file": "test/playbook/healer-e2e.test.mjs",
+      "sha256": "31d92203c0de0b24f3e3680c5622e792a4abf44b59b6798e86cd9afe9b16c85c"
+    },
+    {
+      "file": "test/playbook/healer.test.mjs",
+      "sha256": "b9ae8ff23e1e056ada5ae7d4c92101bd9b5b07719b5a20f9519efc76348f928c"
+    },
+    {
+      "file": "test/playbook/interview.test.mjs",
+      "sha256": "80fcd8e1311adbc11d284d0d25a36a570130fd9225ca1da0c8d31e133a4e0089"
+    },
+    {
+      "file": "test/playbook/orca-adapter.test.mjs",
+      "sha256": "5e9e4e6cb2304a5f7c2ba1b8c4195a883cca2884254c5b29b72a1b974e1de1d8"
+    },
+    {
+      "file": "test/playbook/playbook-e2e.test.mjs",
+      "sha256": "129477f24c5943ff8c8eca5f5cd0aa6d87f5b48f8dd782e917d86315a2ee4456"
+    },
+    {
+      "file": "test/playbook/playbook-guard.test.mjs",
+      "sha256": "1fbd09c7ab8aa571e5d90c8fb17f08e6f883bb58be649bcb1dc5716968db89ac"
+    },
+    {
+      "file": "test/playbook/playbook.test.mjs",
+      "sha256": "f8fd9998bb2c04853ea7df79f7411951202e2df18f92fe70c632033de9386dfc"
+    },
+    {
+      "file": "test/playbook/position-e2e.test.mjs",
+      "sha256": "e145b56ff8f7a3a6e1b5013afe100ebf5c4f04a95497b4d728f24211adbc1e19"
+    },
+    {
+      "file": "test/playbook/private-banned.mjs",
+      "sha256": "5c615c712b84817a683947d985e05e008465486cad58ee597a30922bcc3818e1"
+    },
+    {
+      "file": "test/playbook/scaffold.test.mjs",
+      "sha256": "285b22f1a2f38c2b85f47484d4d3f0fe922475ba848c122c305489917e21b52b"
+    },
+    {
+      "file": "test/playbook/skill-doc.test.mjs",
+      "sha256": "93b97cca185efaaf36555fbd54e99552cb9c0e46743687628a1188b96cd4996d"
+    },
+    {
+      "file": "test/playbook/t03-helpers.mjs",
+      "sha256": "244f970c06f5baad41ee3dc4b33c443ec80cb1ae572670622a6afbdbac2fa3f3"
+    },
+    {
+      "file": "test/pre-review.test.ts",
+      "sha256": "6d725cb8ae85d73e1084faef842e1a0cfec4e0cf4d22ea50d480823ac1cc671e"
+    },
+    {
+      "file": "test/preview-owned.test.ts",
+      "sha256": "05728032b87395f64b274a00536e64601a64a9f3f18004ccf8dc567148c5edd3"
+    },
+    {
+      "file": "test/preview-owned.ts",
+      "sha256": "0d4cf5609cc2231a760645722c14405587595e6e9d105822717bd4e9f01575f8"
+    },
+    {
+      "file": "test/profile.test.ts",
+      "sha256": "97d529264fafb001276186c32f8e801c15febb9759c3b29ce8a3cf1d131d0394"
+    },
+    {
+      "file": "test/project-dev-skill.test.ts",
+      "sha256": "3cfcabfab6db2784dc1c9efba35c4671f10a6c039bfa8764737eb32d05e619f4"
+    },
+    {
+      "file": "test/project-harness.test.ts",
+      "sha256": "449c3fd82452416a05421d4d54033de5111148d6e78378e8e968aeffaa50732a"
+    },
+    {
+      "file": "test/project-log.test.ts",
+      "sha256": "113a5d3e3719d7d5da38983aae5e749d8c854b7c00cc3318466c65fc34567a25"
+    },
+    {
+      "file": "test/project-metrics-index.test.ts",
+      "sha256": "0b6e3de68eb70be54d4bf393193e85f4b1aa72fa173997ace5d5ef7a6d146530"
+    },
+    {
+      "file": "test/project-metrics-report.test.ts",
+      "sha256": "47f75c8dd58ccee129c8d6e1c20ef52df79df7e0a462ea4eb79ac386a2567cd8"
+    },
+    {
+      "file": "test/project-metrics.test.ts",
+      "sha256": "5b19a3dcee86d452f34a97d47b69a1ddacb63eeac9b0e22f39236137fa967b9a"
+    },
+    {
+      "file": "test/project-shell.test.ts",
+      "sha256": "32ceb96e82fd409ac5619896910ff76acb3c6e65b0b19a1c496250c754a6eadf"
+    },
+    {
+      "file": "test/project-templates.test.ts",
+      "sha256": "79b39a76a64717c5487842544d10bbb23c742f172653540e5e57c2ea609af903"
+    },
+    {
+      "file": "test/project-tokens.test.ts",
+      "sha256": "339cca166f24307a3120ccd3c280975f0bddbe8b9892c8231a05a94fc47339c6"
+    },
+    {
+      "file": "test/rules.test.ts",
+      "sha256": "fb7d5c27a618fd129bff5b70199c8572086b959cb32fd7ed72391dd189807e73"
+    },
+    {
+      "file": "test/scout-ideas.test.ts",
+      "sha256": "733572672ffecfd5dbe7bd0d5c4e10b16a366b49c44aaf68b9c2f1c9760d4509"
+    },
+    {
+      "file": "test/scout-report.test.ts",
+      "sha256": "ba5dfb452f793ae4f20f370333c4a5fc1bcb8434ca1d01b7486229eed6fee38f"
+    },
+    {
+      "file": "test/scout-source.test.ts",
+      "sha256": "dbcd05c956c24d774123d764b3d551982c68c964c6c5b98613be4fa5836d1043"
+    },
+    {
+      "file": "test/scout-transcript.test.ts",
+      "sha256": "c6fbd14a9618f41bb67bd978ecb0746f0d62b48c71082faa36cc51faa2ed962a"
+    },
+    {
+      "file": "test/scout-verify.test.ts",
+      "sha256": "05e7579b88137bec903b0d7f8eae7bd2ffa6ee1d823903c06406a48e8259fd59"
+    },
+    {
+      "file": "test/scout.test.ts",
+      "sha256": "246a2c31d74e87c9cf90c9c20d61185e5d6d42eb462c2a5e0b08f4aa950571b0"
+    },
+    {
+      "file": "test/secret-precision.test.ts",
+      "sha256": "e451c05efaac8197cd78af95ab227474391d66c73a069165a336afeca8526252"
+    },
+    {
+      "file": "test/secret-scan.test.ts",
+      "sha256": "8a7457d57d577e75e3e893df08e6080745919833b7b98fea20428e2f27800c34"
+    },
+    {
+      "file": "test/situation.test.ts",
+      "sha256": "b88563022e87f0180233115aa9daa030887bfdd2b830b3f75fbe682b2565b9d1"
+    },
+    {
+      "file": "test/telegram-adapter.test.ts",
+      "sha256": "84e3142b42d5f99e29593519680e3d735727247cbbd098a082647dcd1634ae73"
+    },
+    {
+      "file": "test/telegram-api.test.ts",
+      "sha256": "84778048fc0775a626ba05e806223e77a6bd0aafeb5dd46408bb941e9b79f45e"
+    },
+    {
+      "file": "test/telegram-flow.test.ts",
+      "sha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4"
+    },
+    {
+      "file": "test/telegram-format.test.ts",
+      "sha256": "d398855e74e586ce0181b8952e3d8e998a6f73364bedee4fbd615faa1943aa0e"
+    },
+    {
+      "file": "test/telegram-helpers.ts",
+      "sha256": "ad106bd4b79759f0c81ed368b01f4dc30a7e5e41c26cfe41fca8df9d1cfbee89"
+    },
+    {
+      "file": "test/telegram-mention.test.ts",
+      "sha256": "feecc249139643fe652c6bcf7bdccdd01598bcbb56983e0da5a007dc3497b340"
+    },
+    {
+      "file": "test/telegram-mock.ts",
+      "sha256": "d00d20a0093ca48db34ee5829d076b7b534fc449131bde51417f32099706584a"
+    },
+    {
+      "file": "test/telegram-process.test.ts",
+      "sha256": "8477a0d281a6f0fb0b28537d8d7f5c4cf9de9ffe94680fcf2c15ea5541c0b27b"
+    },
+    {
+      "file": "test/telegram-render.test.ts",
+      "sha256": "73fb960ed2f9dda7e4fa8c6a12b2af1433d3941664fdef6f9e1bd4f7ddddb47a"
+    },
+    {
+      "file": "test/telegram-typing.test.ts",
+      "sha256": "c7b91e4e61bad2080f3e7c8f1178fb8c6f149438a414e64d19c6e1b5da67ad88"
+    },
+    {
+      "file": "test/telegram-use.test.ts",
+      "sha256": "83040702d4e9938fcd4b63ab3f08583de82c66ae88ecb006676c7946ef3089d6"
+    },
+    {
+      "file": "test/temp-lifecycle.test.ts",
+      "sha256": "de9782fdbc660afe39e49dedaa4322c6e95e8bb96c53892b6855fd90f3c86499"
+    },
+    {
+      "file": "test/test-command.test.ts",
+      "sha256": "070799e06b3bfbce8767c1770d02063894a37565cf8712393f9211f8df80bc32"
+    },
+    {
+      "file": "test/test-runner.test.ts",
+      "sha256": "2795dc0bd5982652fca24088652a2a32212890bb5eb6a36315a48a42ecbaa375"
+    },
+    {
+      "file": "test/windows-agent-command.test.ts",
+      "sha256": "cf784e19aba2a381ccbf7b5d53e247c472314f69db55d70fcd65a967829391aa"
+    },
+    {
+      "file": "test/windows-job-stress.test.ts",
+      "sha256": "6a6f268be65fb6c63809ca7f06f212f7dec91d08340daa51c567e0e7a168b295"
+    },
+    {
+      "file": "test/windows-watchdog.test.ts",
+      "sha256": "c3eae60ce06054c97e23c309c380c37ecfb7b1ff0dce7a1837759548eac5a310"
+    },
+    {
+      "file": "test/worker-settings.test.ts",
+      "sha256": "6948053b3487d08af28602a1ca251d4af831dc97087d0922e2758a1a860a8861"
+    },
+    {
+      "file": "test/workspace-registry.test.ts",
+      "sha256": "1c88f0d734b450bf33dd349df7ba148ba8ae1e64ed424e9e7a0daeddd3f1755c"
+    },
+    {
+      "file": "tsconfig.json",
+      "sha256": "3b4801f1885855264585c5ed66e90dc471d83c8e471948281c112bcc578d33fe"
+    }
+  ],
+  "verifierSha256": "39486a2edf785563c5d44a5a9a916244f5839417f53622af035ce29856b5dd79",
+  "limitations": [
+    "Before/after byte snapshots do not continuously monitor edits and reversions. Project evidence, backlog snapshots and brain/memory records are outside this runtime source manifest."
+  ]
+}

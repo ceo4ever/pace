@@ -1,0 +1,9 @@
+{
+  "kind": "baseline-summary",
+  "scope": "baseline-only; auxiliary result is separate",
+  "valid": false,
+  "runs": 3,
+  "medianMs": 704630.4685,
+  "minMs": 700394.1875000002,
+  "maxMs": 704920.2361999999
+}

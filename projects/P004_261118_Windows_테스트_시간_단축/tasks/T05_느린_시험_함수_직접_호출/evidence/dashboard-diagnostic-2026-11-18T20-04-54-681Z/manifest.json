@@ -1,0 +1,383 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE",
+  "copy": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\source",
+  "originalTestSha256": "e2524ec1948d8b99b950df6d30ed217240ff937706a603c921da8257fc780160",
+  "diagnosticTestSha256": "f0ed379e061d6149f8dc0464e603e2f4ee7213fc28dbb3376200ade75fb84136",
+  "productSourceSha256": "014668d0c7c2d1c77a0d88e7a73afe7298b17b3889bf77ed788a613fd265b95c",
+  "worktreeTestUnchanged": true,
+  "records": [
+    {
+      "run": 1,
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=simultaneous stale-lock recovery",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\source\\test\\backlog-dashboard.test.ts"
+      ],
+      "observation": {
+        "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\run-1\\pace-test-run-WkOoGO\\pace-dashboard-recovery-3Bhkl1",
+        "observations": [
+          {
+            "pid": 7568,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 75948,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 80332,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 20080,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 82708,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 84084,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 74640,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 16952,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          }
+        ],
+        "files": [
+          "data.js"
+        ]
+      }
+    },
+    {
+      "run": 2,
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=simultaneous stale-lock recovery",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\source\\test\\backlog-dashboard.test.ts"
+      ],
+      "observation": {
+        "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\run-2\\pace-test-run-epqUho\\pace-dashboard-recovery-3Gc3fs",
+        "observations": [
+          {
+            "pid": 30600,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 68336,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 72172,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 69728,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 78380,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 65008,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 79928,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 45064,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          }
+        ],
+        "files": [
+          "data.js"
+        ]
+      }
+    },
+    {
+      "run": 3,
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=simultaneous stale-lock recovery",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\source\\test\\backlog-dashboard.test.ts"
+      ],
+      "observation": {
+        "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\run-3\\pace-test-run-Sfsd1c\\pace-dashboard-recovery-l7ORVe",
+        "observations": [
+          {
+            "pid": 76792,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 86628,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 44624,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 68932,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 39508,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 72088,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 73484,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 25468,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          }
+        ],
+        "files": [
+          "data.js"
+        ]
+      }
+    },
+    {
+      "run": 4,
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=simultaneous stale-lock recovery",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\source\\test\\backlog-dashboard.test.ts"
+      ],
+      "observation": {
+        "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\run-4\\pace-test-run-7ZCnyL\\pace-dashboard-recovery-fApsyA",
+        "observations": [
+          {
+            "pid": 82164,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 77452,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 48460,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 65308,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 31628,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 71316,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 79940,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 73320,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          }
+        ],
+        "files": [
+          "data.js"
+        ]
+      }
+    },
+    {
+      "run": 5,
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=simultaneous stale-lock recovery",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\source\\test\\backlog-dashboard.test.ts"
+      ],
+      "observation": {
+        "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-awZzwE\\run-5\\pace-test-run-Yhd9XV\\pace-dashboard-recovery-GKvTmU",
+        "observations": [
+          {
+            "pid": 34596,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 63904,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 77592,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 56600,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 19452,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 63256,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 61152,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "pid": 73156,
+            "code": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          }
+        ],
+        "files": [
+          "data.js"
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "Only child stdio capture and pre-assertion observation were added to the owned test copy. Eight concurrent children and all original assertions were preserved. Output collection can affect scheduling. This is not a full timing sample or historical-cause proof. No actual user settings were touched."
+  ]
+}

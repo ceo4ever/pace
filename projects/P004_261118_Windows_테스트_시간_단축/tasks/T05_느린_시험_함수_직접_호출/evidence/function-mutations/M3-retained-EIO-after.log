@@ -1,0 +1,37 @@
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","new","EIO","--from","BL261108_01"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\run\\pace-test-run-UFdneI\\pace-harness-FCrA4x\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\run\\pace-test-run-UFdneI\\pace-home-oYAwBp","pid":37500,"generation":"29c06484-9133-4f6b-a2c0-80f6b3d86d4a","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-3JDohk/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","start","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\run\\pace-test-run-UFdneI\\pace-harness-FCrA4x\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\run\\pace-test-run-UFdneI\\pace-home-oYAwBp","pid":37500,"generation":"29c06484-9133-4f6b-a2c0-80f6b3d86d4a","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-3JDohk/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","finish","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\run\\pace-test-run-UFdneI\\pace-harness-FCrA4x\\app.wt\\P001","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\run\\pace-test-run-UFdneI\\pace-home-oYAwBp","pid":37500,"generation":"29c06484-9133-4f6b-a2c0-80f6b3d86d4a","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-3JDohk/source/src/cli.ts","status":0}
+RETAINED_EIO_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\source\\bin\\pace.ts","project","merge","P001","--yes"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\run\\pace-test-run-UFdneI\\pace-harness-FCrA4x\\app","mode":"metrics","branchOnly":false,"status":1}
+✖ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (9623.771ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9835.9583
+
+✖ failing tests:
+
+test at test\project-harness.test.ts:1885:1
+✖ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (9623.771ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   '.62aa1b939b83.tmp'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-3JDohk/source/test/project-harness.test.ts:1908:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '.62aa1b939b83.tmp' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

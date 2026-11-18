@@ -1,0 +1,23 @@
+{
+  "verified": true,
+  "mode": "smoke",
+  "originalFolder": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T04_빠른_검사_명령\\evidence\\t04-fixed-full-2026-11-18T18-29-13-627Z",
+  "originalResultsSha256": "1bfc12f8ebfc8d04ee652c69b8c39ef920eb1a574483ce63b3ce9a69f6963168",
+  "originalEnvironmentSha256": "0e4a4178ae284f028f4faec0d5c5d2aa9df20e2aef1e8d4cb2b9aa05cff113f3",
+  "originalSummarySha256": "559b778b8314bda51f9da51a61c7dbdb50c1b3260fe268fa1c35f817af5ab97e",
+  "sharedEnvironment": true,
+  "verifierSha256": "b7b35f6fd3b8b8f9ebf745388b7c65495ed52b1f89b66f743dbf2251fa2d88f3",
+  "records": [
+    {
+      "originalRun": 1,
+      "originalLog": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T04_빠른_검사_명령\\evidence\\t04-fixed-full-2026-11-18T18-29-13-627Z\\run-1.log",
+      "originalLogSha256": "3800b512fdced70930ac1d6b56e558bff80b780563c49b8b85d3353f86e7caef",
+      "view": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\smoke-views\\run-1",
+      "viewResultsSha256": "1bfc12f8ebfc8d04ee652c69b8c39ef920eb1a574483ce63b3ce9a69f6963168",
+      "environmentSha256": "0e4a4178ae284f028f4faec0d5c5d2aa9df20e2aef1e8d4cb2b9aa05cff113f3",
+      "caseSourceSha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c",
+      "comparison": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T05_느린_시험_함수_직접_호출\\evidence\\smoke-views\\comparison-run-1.json",
+      "comparisonSha256": "0b32d2e25c3530fec706d02cb9c37f1e8e32dd27ff13e5df7c90d20434f4b955"
+    }
+  ]
+}

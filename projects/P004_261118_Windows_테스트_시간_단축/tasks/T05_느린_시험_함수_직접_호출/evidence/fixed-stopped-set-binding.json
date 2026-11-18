@@ -1,0 +1,53 @@
+{
+  "head": "46fdf682990d8002ce1116114f2913ca168c6840",
+  "headSame": true,
+  "gitStatus": " M .pace/brain/log.md\u0000 M .pace/brain/pages/concept/brain-at-project-gates.md\u0000 M .pace/brain/pages/concept/brain-pull-not-push.md\u0000 M .pace/brain/pages/concept/install-and-launch-pitfalls.md\u0000 M .pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md\u0000 M .pace/brain/pages/concept/session-boot-via-hooks.md\u0000 M .pace/brain/pages/concept/작업-하네스-실측-함정.md\u0000 M .pace/brain/pages/flow/작업-하네스-흐름.md\u0000 M .pace/brain/pages/synthesis/telegram-어댑터-설계-함정.md\u0000 M .pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md\u0000 M .pace/memory/status.md\u0000 M backlogs/dashboard/data.js\u0000 M projects/P004_261118_Windows_테스트_시간_단축/PROJECT.md\u0000 M projects/P004_261118_Windows_테스트_시간_단축/log.jsonl\u0000 M test/telegram-flow.test.ts\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-after-full.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-before-full.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-comparison.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-fixed-after-full.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-fixed-before-full.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-fixed-comparison.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T05_느린_시험_함수_직접_호출/\u0000",
+  "preservedT04TopLevelFiles": true,
+  "toolsUnchanged": true,
+  "summary": {
+    "kind": "baseline-summary",
+    "scope": "baseline-only; auxiliary result is separate",
+    "valid": false,
+    "runs": 2,
+    "medianMs": 711588.40255,
+    "minMs": 709176.2479,
+    "maxMs": 714000.5572
+  },
+  "sourceComparison": {
+    "verified": true,
+    "checks": {
+      "files": true,
+      "node": true,
+      "verifier": true
+    },
+    "fileCount": 607,
+    "fullyEqual": false,
+    "metadataDifferences": [
+      {
+        "key": "captured",
+        "before": "2026-11-18T19:38:37.417Z",
+        "after": "2026-11-18T20:02:33.789Z"
+      }
+    ],
+    "sourceTreeSha256": "a3d9c5a0af1ce77114bd26456cd3d06b37ca6559b9c70a5995ce4169ecde759c"
+  },
+  "resultsSha256": "185a4a66dbcd9de65da2b64259915d61ea06e741a3254a3aab268eeb8590e338",
+  "log1Sha256": "0f14746f73ae7437c1c7d38a3363f6892930ed188cf6337e7ab3039e10328f6b",
+  "log2Sha256": "7926028762f8b2b1fa04a0404686a84cbeaef37edb6a51b559f33d84319361d3",
+  "fixedTelegramCase": [
+    [
+      {
+        "name": "구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다",
+        "result": "pass",
+        "durationMs": 242.9063
+      }
+    ],
+    [
+      {
+        "name": "구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다",
+        "result": "pass",
+        "durationMs": 243.1618
+      }
+    ]
+  ]
+}

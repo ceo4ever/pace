@@ -1,0 +1,27 @@
+test("구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다", async () => {
+  const mock = await new MockTelegram().start();
+  const t = await tgHarness({ mock });
+  try {
+    const a = t.adapter as unknown as { save: () => void };
+    const real = a.save.bind(a);
+    // /bind 저장 실패 — provisioning 복원
+    t.adapter.state.provisioning.a2 = true;
+    t.h.config.workspaces.push({ name: "a2", path: join(t.home, "ws", "a2"), worktrees: { main: join(t.home, "ws", "a2") } });
+    let fail = 1;
+    a.save = () => { if (fail-- > 0) throw new Error("디스크"); real(); };
+    mock.text(CHAT, 55, U1, "/bind a2");
+    await until(() => mock.texts().some((x) => x.includes("저장하지 못해 결속하지 않았다")), 4000, "/bind 실패");
+    assert.equal(t.adapter.state.topics["55"], undefined);
+    assert.equal(t.adapter.state.provisioning.a2, true, "생성 의도가 복원된다");
+    // /new — createForumTopic 성공 뒤 저장 실패 → 결과 불명 경로(의도 유지, 표 미등록)
+    a.save = real;
+    const dir = join(t.home, "ws", "n3"); mkdirSync(dir, { recursive: true });
+    let fail2 = 0;
+    a.save = () => { if (fail2++ === 1) throw new Error("디스크"); real(); }; // ③ 의도 저장은 성공, ⑤ 표 저장은 실패
+    mock.text(CHAT, undefined, U1, `/new n3 ${dir}`);
+    await until(() => mock.texts().some((x) => x.includes("저장하지 못했다") && x.includes("/bind n3")), 6000, "/new 저장 실패");
+    assert.equal(Object.values(t.adapter.state.topics).includes("n3"), false, "메모리에서만 등록된 채 남지 않는다");
+    assert.equal(t.adapter.state.provisioning.n3, true);
+  } finally { await t.stop(); }
+});
+

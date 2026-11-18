@@ -1,0 +1,95 @@
+{
+  "profilePath": "projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\t03-c4-profile-2026-11-18T16-21-51-780Z\\profile-analysis.json",
+  "profileAuxiliaryOnly": true,
+  "harnessFileMs": 521886.9579,
+  "sourceSha256": "449c3fd82452416a05421d4d54033de5111148d6e78378e8e968aeffaa50732a",
+  "candidates": [
+    {
+      "file": "test\\project-harness.test.ts",
+      "entryFile": "test\\project-harness.test.ts",
+      "line": 1834,
+      "column": 1,
+      "name": "P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다",
+      "kind": "test",
+      "result": "pass",
+      "durationMs": 68938.0958,
+      "runCliLiteralCalls": [
+        "new",
+        "start",
+        "finish",
+        "start",
+        "finish",
+        "merge"
+      ],
+      "existingAssertions": 14,
+      "runPaceLiteralCalls": 1,
+      "blockSha256": "38b73d22209911d4701f83bff80e313722c35d55fec04a2739d424e0940b8cba"
+    },
+    {
+      "file": "test\\project-harness.test.ts",
+      "entryFile": "test\\project-harness.test.ts",
+      "line": 557,
+      "column": 1,
+      "name": "done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다",
+      "kind": "test",
+      "result": "pass",
+      "durationMs": 26837.6225,
+      "runCliLiteralCalls": [
+        "new",
+        "start",
+        "task",
+        "done",
+        "done",
+        "done",
+        "task",
+        "done",
+        "done",
+        "task",
+        "list",
+        "finish",
+        "done",
+        "task",
+        "done",
+        "done",
+        "done",
+        "new",
+        "start",
+        "task",
+        "done",
+        "done",
+        "done",
+        "done",
+        "done"
+      ],
+      "existingAssertions": 57,
+      "runPaceLiteralCalls": 0,
+      "blockSha256": "4df5b1b4e43f05e4b2387e21e410921f0044755f961f98a8ea7622b61631320d"
+    },
+    {
+      "file": "test\\project-harness.test.ts",
+      "entryFile": "test\\project-harness.test.ts",
+      "line": 1919,
+      "column": 1,
+      "name": "BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다",
+      "kind": "test",
+      "result": "pass",
+      "durationMs": 27740.7553,
+      "runCliLiteralCalls": [
+        "new",
+        "start",
+        "finish",
+        "merge",
+        "merge"
+      ],
+      "existingAssertions": 9,
+      "runPaceLiteralCalls": 0,
+      "blockSha256": "72e00d408ea1d3b50d4cd1bb902e09c496c40e3d8e2a664bb7b17e31523d40f7"
+    }
+  ],
+  "limits": [
+    "Historical single auxiliary profile selects candidates, not a promise of whole-check savings.",
+    "Literal call counts are not dynamic counts under loops and branches.",
+    "EIO fault-injected runPace calls remain real CLI processes.",
+    "The complete project lifecycle case and all other process-boundary cases remain unchanged."
+  ]
+}

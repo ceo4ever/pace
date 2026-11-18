@@ -1,0 +1,33 @@
+✖ 실제 Windows Git Bash에서 래퍼와 커밋 훅이 동작한다 (1343.8566ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1684.0532
+
+✖ failing tests:
+
+test at test\install-windows-wrapper.test.ts:107:1
+✖ 실제 Windows Git Bash에서 래퍼와 커밋 훅이 동작한다 (1343.8566ms)
+  AssertionError [ERR_ASSERTION]: pace wrapper lookup: /tmp/pace-test-moq6g9/한글 space '$&()/.pace/bin/pace
+  
+  + actual - expected
+  
+  + "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-validation-wT7P1d\\wrong-file\\pace-test-run-V9iKa0\\pace-test-moq6g9\\한글 space '$&()\\.pace\\app\\bin"
+  - "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-validation-wT7P1d\\wrong-file\\pace-test-run-V9iKa0\\pace-test-moq6g9\\한글 space '$&()\\.pace\\bin"
+  
+      at TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-wrapper-validation-wT7P1d/source/test/install-windows-wrapper.test.ts:124:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-validation-wT7P1d\\wrong-file\\pace-test-run-V9iKa0\\pace-test-moq6g9\\한글 space '$&()\\.pace\\app\\bin",
+    expected: "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-validation-wT7P1d\\wrong-file\\pace-test-run-V9iKa0\\pace-test-moq6g9\\한글 space '$&()\\.pace\\bin",
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,89 @@
+{
+  "narrowPassed": true,
+  "allEightArgvAndReadyMatched": true,
+  "outsideTargetBlockByteSame": true,
+  "sourceSha256": "46c7f448a4e11fadb41b1b4455ae01f4bbdaf35c5c5954706bd781d5362b0420",
+  "preloadSha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b",
+  "proofs": [
+    {
+      "pid": 56696,
+      "ready": {
+        "pid": 56696,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-vjMOku/lock-trace-preload.mjs",
+        "sha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b"
+      },
+      "code": 0
+    },
+    {
+      "pid": 7704,
+      "ready": {
+        "pid": 7704,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-vjMOku/lock-trace-preload.mjs",
+        "sha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b"
+      },
+      "code": 0
+    },
+    {
+      "pid": 76116,
+      "ready": {
+        "pid": 76116,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-vjMOku/lock-trace-preload.mjs",
+        "sha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b"
+      },
+      "code": 0
+    },
+    {
+      "pid": 77096,
+      "ready": {
+        "pid": 77096,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-vjMOku/lock-trace-preload.mjs",
+        "sha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b"
+      },
+      "code": 0
+    },
+    {
+      "pid": 82120,
+      "ready": {
+        "pid": 82120,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-vjMOku/lock-trace-preload.mjs",
+        "sha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b"
+      },
+      "code": 0
+    },
+    {
+      "pid": 59744,
+      "ready": {
+        "pid": 59744,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-vjMOku/lock-trace-preload.mjs",
+        "sha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b"
+      },
+      "code": 0
+    },
+    {
+      "pid": 61988,
+      "ready": {
+        "pid": 61988,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-vjMOku/lock-trace-preload.mjs",
+        "sha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b"
+      },
+      "code": 0
+    },
+    {
+      "pid": 78660,
+      "ready": {
+        "pid": 78660,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-vjMOku/lock-trace-preload.mjs",
+        "sha256": "239c4640caaf4c0a853ca3572ca2806ac34e4d67de4f1088a5a40cc1d93d995b"
+      },
+      "code": 0
+    }
+  ],
+  "smallDeviceCheck": {
+    "status": 1,
+    "generic": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-lock-device-zYlfg0",
+    "native": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-lock-device-zYlfg0",
+    "sameDirectoryIdentity": true,
+    "reasonStringEqualityWasInvalid": "Windows short and long path aliases"
+  },
+  "fullRunStarted": false
+}

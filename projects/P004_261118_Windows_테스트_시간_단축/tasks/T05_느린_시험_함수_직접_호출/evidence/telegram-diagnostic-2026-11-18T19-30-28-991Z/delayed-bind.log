@@ -1,0 +1,23 @@
+DIAG_SAVE {"stage":"bind-offset","count":0,"inject":false,"offset":2}
+DIAG_SAVE {"stage":"intent","count":1,"inject":true,"offset":2}
+DIAG_SAVE {"stage":"bind-offset","count":2,"inject":false,"offset":3}
+DIAG_FINAL {"texts":["기기 LUCAS-2025 연결됨","저장하지 못해 결속하지 않았다","상태를 저장하지 못해 토픽을 만들지 않았다"],"methods":["setMyCommands","getMe","sendMessage","getUpdates","sendMessage","getUpdates","sendMessage","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates","getUpdates"],"offset":3,"topics":{"11":"a","12":"b"},"provisioning":{"a2":true}}
+✖ 구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다 (6088.653ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6377.9813
+
+✖ failing tests:
+
+test at test\telegram-flow.test.ts:662:1
+✖ 구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다 (6088.653ms)
+  Error: 시간 초과: /new 저장 실패
+      at until (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-diag-8hD56Y/source/test/telegram-helpers.ts:48:9)
+      at async TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-diag-8hD56Y/source/test/telegram-flow.test.ts:683:11)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

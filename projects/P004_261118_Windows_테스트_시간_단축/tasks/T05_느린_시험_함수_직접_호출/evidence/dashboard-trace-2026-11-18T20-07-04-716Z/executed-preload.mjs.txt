@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {syncBuiltinESMExports} from 'node:module';
+const events=[];let sequence=0;
+for(const method of ['lstatSync','realpathSync','readFileSync','writeFileSync','linkSync','unlinkSync','renameSync','readdirSync']){
+ const original=fs[method];
+ fs[method]=function(...args){
+  const paths=args.slice(0,method==='linkSync'||method==='renameSync'?2:1).map(v=>typeof v==='string'?v:'<non-string>');
+  const observed=paths.some(v=>/\.pace-(?:refresh|owner|data)|[\\/]data\.js$/.test(v));
+  const append=event=>{if(!observed)return;events.push({sequence:++sequence,at:Date.now(),method,paths:paths.map(v=>path.basename(v)),...event});if(events.length>256)events.shift();};
+  try{const value=Reflect.apply(original,this,args);append({ok:true,...(method==='lstatSync'?{dev:value.dev,ino:value.ino}:{}),...(method==='readFileSync'&&paths.some(p=>/\.pace-refresh-(lock|reaper)$/.test(p))?{owner:String(value)}:{})});return value;}
+  catch(error){append({ok:false,code:error.code,syscall:error.syscall});throw error;}
+ };
+}
+syncBuiltinESMExports();
+process.on('uncaughtExceptionMonitor',(error,origin)=>{
+ process.stderr.write('LOCK_TRACE '+JSON.stringify({pid:process.pid,origin,error:{code:error.code,syscall:error.syscall,message:error.message,path:error.path,dest:error.dest,stack:error.stack},events})+'\n');
+});

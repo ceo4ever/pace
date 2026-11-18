@@ -1,0 +1,38 @@
+ORIGINAL_PROJECT_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\source\\bin\\pace.ts","project","new","EIO","--from","BL261108_01"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\run\\pace-test-run-Z0lDF4\\pace-harness-jk0jJU\\app","status":0}
+ORIGINAL_PROJECT_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\source\\bin\\pace.ts","project","start","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\run\\pace-test-run-Z0lDF4\\pace-harness-jk0jJU\\app","status":0}
+ORIGINAL_PROJECT_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\source\\bin\\pace.ts","project","finish","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\run\\pace-test-run-Z0lDF4\\pace-harness-jk0jJU\\app.wt\\P001","status":0}
+RETAINED_EIO_CLI {"argv":["C:\\nvm4w\\nodejs\\node.exe","C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\source\\bin\\pace.ts","project","merge","P001","--yes"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\run\\pace-test-run-Z0lDF4\\pace-harness-jk0jJU\\app","mode":"metrics","branchOnly":false,"status":1}
+✖ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (10009.6109ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10222.8339
+
+✖ failing tests:
+
+test at test\project-harness.test.ts:1835:1
+✖ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (10009.6109ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   '.a4bb754654a3.tmp'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-fmz2gS/source/test/project-harness.test.ts:1855:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '.a4bb754654a3.tmp' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

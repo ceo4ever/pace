@@ -1,0 +1,34 @@
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","new","생명주기","--from","BL261108_01"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-harness-0OgjQS\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-home-EH328d","pid":61920,"generation":"91d1ada3-1a57-42d2-a402-877b5f9b5eb1","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-F3Bvrk/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","start","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-harness-0OgjQS\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-home-EH328d","pid":61920,"generation":"91d1ada3-1a57-42d2-a402-877b5f9b5eb1","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-F3Bvrk/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","finish","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-harness-0OgjQS\\app.wt\\P001","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-home-EH328d","pid":61920,"generation":"91d1ada3-1a57-42d2-a402-877b5f9b5eb1","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-F3Bvrk/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","merge","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-harness-0OgjQS\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-home-EH328d","pid":61920,"generation":"91d1ada3-1a57-42d2-a402-877b5f9b5eb1","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-F3Bvrk/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","merge","P001","--yes"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-harness-0OgjQS\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\run\\pace-test-run-1jjJff\\pace-home-EH328d","pid":61920,"generation":"91d1ada3-1a57-42d2-a402-877b5f9b5eb1","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-F3Bvrk/source/src/cli.ts","status":0}
+✖ BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다 (11191.2424ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11396.0634
+
+✖ failing tests:
+
+test at test\project-harness.test.ts:1974:1
+✖ BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다 (11191.2424ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /상태: 완료/. Input:
+  
+  '# 백로그\n- 상태: 진행\n'
+  
+      at TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-F3Bvrk/source/test/project-harness.test.ts:2004:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '# 백로그\n- 상태: 진행\n',
+    expected: /상태: 완료/,
+    operator: 'match',
+    diff: 'simple'
+  }

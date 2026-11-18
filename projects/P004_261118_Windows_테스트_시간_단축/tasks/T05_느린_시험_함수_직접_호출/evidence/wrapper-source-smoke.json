@@ -1,0 +1,39 @@
+{
+  "verified": true,
+  "oldCount": 95,
+  "unchanged": 92,
+  "audits": {
+    "telegram": {
+      "beforeSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "afterSha256": "0b0cd169ab0dad57b94cb557c998155474ba527233da694d853493a5690136c1",
+      "outsideBlockByteIdentical": true,
+      "originalAssertions": 4,
+      "originalAssertionsRetained": true
+    },
+    "harness": {
+      "beforeSha256": "449c3fd82452416a05421d4d54033de5111148d6e78378e8e968aeffaa50732a",
+      "afterSha256": "9bf6a6422ee9fb68e1810a685717769c36dda17219fc2f569eeb9d4f8dcdeb1c",
+      "convertedBlocks": 3,
+      "retainedBlocks": 70,
+      "addedCases": 1,
+      "assertionsPreserved": true
+    },
+    "wrapper": {
+      "beforeSha256": "3662b08e03855d6aa84afcea2a05afdfd7d61d78649ec2face67cdd77b96e658",
+      "afterSha256": "253993658e31df3e2681c07773781b32769597b303e35d69f565069cf3e0f175",
+      "exactExpectedTransformation": true,
+      "outsideTargetAndTwoImportsByteIdentical": true,
+      "caseNamesAndSkipUnchanged": true,
+      "retainedVersionHookAndArgumentAssertions": true,
+      "regularFileAndBinParent": true,
+      "nativeAndBigintIdentity": true,
+      "rawLookupStderr": true,
+      "explicitFailurePropagation": true
+    }
+  },
+  "unrelatedShaRejected": true,
+  "wrongWrapperShaRejected": true,
+  "limits": [
+    "Static byte audit only; it does not replace final run inventories or full-project acceptance."
+  ]
+}

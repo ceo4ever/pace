@@ -1,0 +1,79 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl",
+  "sourceCopiesReplacedWithReferences": [
+    {
+      "referenceFile": "project-harness-before.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\0-project-harness-before.ts.txt",
+      "sha256": "449c3fd82452416a05421d4d54033de5111148d6e78378e8e968aeffaa50732a",
+      "gitSourceReference": "harness-before-source-ref.json"
+    },
+    {
+      "referenceFile": "function-mutations/M1-done-before-test.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\1-M1-done-before-test.ts.txt",
+      "sha256": "da9cf7b7dd6fa00c2fb37b8b6bb27b1d9cdc008310b5e7716d0963eb504a865c",
+      "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-O6CqXs\\source\\test\\project-harness.test.ts"
+    },
+    {
+      "referenceFile": "function-mutations/M1-done-after-test.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\2-M1-done-after-test.ts.txt",
+      "sha256": "0210c46a71ea780163dc9efb825ed2a62abc308f833f639dd55b4f176a0056e5",
+      "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\source\\test\\project-harness.test.ts"
+    },
+    {
+      "referenceFile": "function-mutations/M2-lifecycle-before-test.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\3-M2-lifecycle-before-test.ts.txt",
+      "sha256": "da9cf7b7dd6fa00c2fb37b8b6bb27b1d9cdc008310b5e7716d0963eb504a865c",
+      "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-2d47P7\\source\\test\\project-harness.test.ts"
+    },
+    {
+      "referenceFile": "function-mutations/M2-lifecycle-after-test.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\4-M2-lifecycle-after-test.ts.txt",
+      "sha256": "0210c46a71ea780163dc9efb825ed2a62abc308f833f639dd55b4f176a0056e5",
+      "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-F3Bvrk\\source\\test\\project-harness.test.ts"
+    },
+    {
+      "referenceFile": "function-mutations/M2-EIO-direct-recovery-before-test.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\5-M2-EIO-direct-recovery-before-test.ts.txt",
+      "sha256": "da9cf7b7dd6fa00c2fb37b8b6bb27b1d9cdc008310b5e7716d0963eb504a865c",
+      "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-ao0uLv\\source\\test\\project-harness.test.ts"
+    },
+    {
+      "referenceFile": "function-mutations/M2-EIO-direct-recovery-after-test.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\6-M2-EIO-direct-recovery-after-test.ts.txt",
+      "sha256": "0210c46a71ea780163dc9efb825ed2a62abc308f833f639dd55b4f176a0056e5",
+      "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-5CNvgR\\source\\test\\project-harness.test.ts"
+    },
+    {
+      "referenceFile": "function-mutations/M3-retained-EIO-before-test.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\7-M3-retained-EIO-before-test.ts.txt",
+      "sha256": "da9cf7b7dd6fa00c2fb37b8b6bb27b1d9cdc008310b5e7716d0963eb504a865c",
+      "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-fmz2gS\\source\\test\\project-harness.test.ts"
+    },
+    {
+      "referenceFile": "function-mutations/M3-retained-EIO-after-test.ts.txt",
+      "kind": "source-reference",
+      "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\8-M3-retained-EIO-after-test.ts.txt",
+      "sha256": "0210c46a71ea780163dc9efb825ed2a62abc308f833f639dd55b4f176a0056e5",
+      "existingOwnedSource": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-mutation-3JDohk\\source\\test\\project-harness.test.ts"
+    }
+  ],
+  "rawTestLogsUnchanged": true,
+  "securityPolicyUnchanged": true
+}

@@ -1,0 +1,97 @@
+{
+  "allEightMarkersMatched": true,
+  "allEightArgvMatched": true,
+  "sourceSha256": "46c7f448a4e11fadb41b1b4455ae01f4bbdaf35c5c5954706bd781d5362b0420",
+  "preloadSha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd",
+  "proof": [
+    {
+      "pid": 19660,
+      "ready": {
+        "pid": 19660,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+        "sha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd"
+      },
+      "code": 1,
+      "error": "realpathSync.native is not a function",
+      "events": 0
+    },
+    {
+      "pid": 71268,
+      "ready": {
+        "pid": 71268,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+        "sha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd"
+      },
+      "code": 1,
+      "error": "realpathSync.native is not a function",
+      "events": 0
+    },
+    {
+      "pid": 78620,
+      "ready": {
+        "pid": 78620,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+        "sha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd"
+      },
+      "code": 1,
+      "error": "realpathSync.native is not a function",
+      "events": 0
+    },
+    {
+      "pid": 33460,
+      "ready": {
+        "pid": 33460,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+        "sha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd"
+      },
+      "code": 1,
+      "error": "realpathSync.native is not a function",
+      "events": 0
+    },
+    {
+      "pid": 28096,
+      "ready": {
+        "pid": 28096,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+        "sha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd"
+      },
+      "code": 1,
+      "error": "realpathSync.native is not a function",
+      "events": 0
+    },
+    {
+      "pid": 80708,
+      "ready": {
+        "pid": 80708,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+        "sha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd"
+      },
+      "code": 1,
+      "error": "realpathSync.native is not a function",
+      "events": 0
+    },
+    {
+      "pid": 73044,
+      "ready": {
+        "pid": 73044,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+        "sha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd"
+      },
+      "code": 1,
+      "error": "realpathSync.native is not a function",
+      "events": 0
+    },
+    {
+      "pid": 67744,
+      "ready": {
+        "pid": 67744,
+        "preloadUrl": "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-lock-aqGLeT/lock-trace-preload.mjs",
+        "sha256": "8d5ba8515de7763c0aba1f67ade8c38026536b2afd3f68ba621a91ba83cf3ddd"
+      },
+      "code": 1,
+      "error": "realpathSync.native is not a function",
+      "events": 0
+    }
+  ],
+  "fullRunStarted": false
+}

@@ -1,0 +1,13 @@
+DIAG_SAVE {"stage":"intent","count":0,"inject":false,"offset":2}
+DIAG_SAVE {"stage":"topic-table","count":1,"inject":true,"offset":2}
+DIAG_SAVE {"stage":"intent","count":2,"inject":false,"offset":3}
+DIAG_FINAL {"texts":["기기 LUCAS-2025 연결됨","저장하지 못해 결속하지 않았다","토픽은 만들었으나 저장하지 못했다 — 그 토픽에서 /bind n3"],"methods":["setMyCommands","getMe","sendMessage","getUpdates","sendMessage","getUpdates","createForumTopic","sendMessage","getUpdates"],"offset":3,"topics":{"11":"a","12":"b"},"provisioning":{"a2":true,"n3":true}}
+✔ 구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다 (283.2809ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 614.7521

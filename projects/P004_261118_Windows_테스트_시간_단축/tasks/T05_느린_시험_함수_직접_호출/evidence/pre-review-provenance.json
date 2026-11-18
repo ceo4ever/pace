@@ -1,0 +1,14 @@
+[
+  {
+    "source": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-pre-review-meag7916\\review-stage1.md",
+    "destination": "pre-review-stage1.md",
+    "sha256": "fd130fb4ebd449b8c55a43788cddde5654bb80dfbbb888384419d899c70ef869",
+    "sensitiveCheck": "passed"
+  },
+  {
+    "source": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-pre-review-meag7916\\review-stage2.md",
+    "destination": "pre-review-stage2.md",
+    "sha256": "097abc4892ea23eae04e34a2afa46e1a77d5449dd45aa30c57c9b6accdf34490",
+    "sensitiveCheck": "passed"
+  }
+]

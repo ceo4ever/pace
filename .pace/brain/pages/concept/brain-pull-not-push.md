@@ -6,7 +6,7 @@ tags: [brain, search, lint]
 sources: [code:src/project/brain.ts, code:skills/pace-brain/SKILL.md, 대화:2026-10-22, code:src/cli.ts]
 related: [session-boot-via-hooks, memory-two-scopes]
 created: 2026-10-22
-updated: 2026-11-16
+updated: 2026-11-19
 status: active
 ---
 
@@ -40,3 +40,9 @@ add·update·log·lint·ingest-scan을 두고 형식 검증은 lint에 합쳤다
 - 근거마다 git을 띄우면 페이지가 쌓일수록 add/update 비용이 늘었다. 전체 lint는 한 번의 NUL 구분 이력 조회로 날짜 맵을 만들고, 쓰기는 변경한 페이지의 근거만 조회한다. 하위 프로젝트의 브레인은 상대 경로 출력으로 맞춘다. 백로그 약칭·파일 뒤 단순 심볼은 파일명과 구분해 거짓 missing을 줄인다.
 - 검색 출력은 더 찾은 답의 file back을 안내하지만 검색 자체는 읽기 전용이다. 다시 물을 만한 답이나 여러 원본의 synthesis만 기존 페이지부터 갱신한다. query log는 질문·발견·페이지 참조의 짧은 기록이며, 페이지를 대신하지 않는다. 현재 상태·개인정보·코드에서 바로 보이는 사실을 되적립하지 않는다.
 - 질의 요약의 줄바꿈은 한 줄로 접고 공개 log op를 제한한다. 자유 텍스트가 별도 기록처럼 보이는 것을 막기 위함이다.
+
+## 변경 기반 검사 추가 뒤 근거 대조 (2026-11-19)
+
+P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움말이며 기존 부트·브레인·프로젝트 명령 분기는 그대로다. harness.ts는 정의서 목록 export, changed 전용 검증 commit 인자 및 셸의 구조화된 실행 상태를 추가했다. 인자를 생략한 기존 all/finish의 main 기준과 ok/output 계약은 유지하며, 설치·프로젝트 생명주기·지표·사건·부트 전달은 변경하지 않았다. README의 OPAL 채택 경로도 유지했다. 따라서 위 기존 주장과 실측의 역사적 한계를 유지한다. 원래 시험 본문과 최종995건의 범위/판정 보존은 T04 TASK-CLOSE 및 t03-regression-comparison에 연결되어 있다.
+
+변경 기반 검사는 별도 경계다. 현재 staged/unstaged/untracked 작업본만 대상으로, 기준 commit과 같은 map의 명시 checks를 먼저 실행한다. 숨김 index/sparse·삭제·미분류·불확실성은 실제 전체 검사로 전환하고, 시작 후 실제 실패1·예외 확인 불가3은 성공으로 숨기지 않는다. 커밋된 브랜치 차이는 빠른 범위에 포함하지 않으며 finish 전체 검사를 유지한다. 자세한 근거는 [[변경-기반-검사와-실행-선언-신뢰-경계]]다. Windows 관측을 실제 설치기·POSIX·다른 프로젝트 일반 성능 검증으로 확대하지 않는다.

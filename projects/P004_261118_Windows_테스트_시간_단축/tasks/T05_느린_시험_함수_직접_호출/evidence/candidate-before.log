@@ -1,0 +1,11 @@
+✔ done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다 (24798.149ms)
+✔ P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (68587.7123ms)
+✔ BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다 (27987.8752ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 121848.1519

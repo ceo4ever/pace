@@ -1,0 +1,9 @@
+✔ 함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다 (5634.9593ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5838.1106

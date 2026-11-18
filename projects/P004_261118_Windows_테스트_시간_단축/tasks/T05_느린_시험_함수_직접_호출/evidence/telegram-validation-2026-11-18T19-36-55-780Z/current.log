@@ -1,0 +1,15 @@
+DIAG_SAVE {"boundA2":true,"hasN3":false,"offset":0}
+DIAG_SAVE {"boundA2":false,"provisionA2":true,"hasN3":false,"offset":2}
+DIAG_SAVE {"boundA2":false,"provisionA2":true,"hasN3":false,"intentN3":true,"offset":2}
+DIAG_SAVE {"boundA2":false,"provisionA2":true,"hasN3":true,"offset":2}
+DIAG_INJECT {"injected":1,"persistedIntent":true,"hasN3":true}
+DIAG_SAVE {"boundA2":false,"provisionA2":true,"hasN3":false,"intentN3":true,"offset":3}
+✔ 구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다 (141.2381ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 456.5756

@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "6c39672af17b919b2e0bf81f2b7794ca55668e45965676a59df74b3af2741f7c",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "evidence/pre-review-stage2.md",
+      "continuity": "new"
+    },
+    {
+      "hash": "b6ccd55e492dc3413b7c75ed70eb41d1732c4c6a0a9da0406ad582732c11b294",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "evidence/pre-review-telegram-round2.md",
+      "continuity": "same"
+    },
+    {
+      "hash": "2e5ef1de6e96eb686b6b703e0e28ae29db3b1968bbbf7e8a758f534d11ca943b",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 2,
+      "evidence": "evidence/pre-review-function-round3.md",
+      "continuity": "same"
+    },
+    {
+      "hash": "9a5ffc8910e7b794b3930d1bd301e57e938d08e7eba917cc8dba6c2fff6e6b5c",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "evidence/pre-review-function-round4.md",
+      "continuity": "same"
+    },
+    {
+      "hash": "492ef2ab5b79e6bbeab52d3a9f7754d77cb098a9550325ccb4f92d786a794e02",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "evidence/pre-review-wrapper-round.md",
+      "continuity": "same"
+    }
+  ]
+}

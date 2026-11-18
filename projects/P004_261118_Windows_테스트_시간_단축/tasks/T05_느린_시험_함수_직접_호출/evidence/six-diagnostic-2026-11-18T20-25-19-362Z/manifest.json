@@ -1,0 +1,128 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc",
+  "copy": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source",
+  "sourceHasGit": false,
+  "status": 1,
+  "signal": null,
+  "argv": [
+    "--test",
+    "--test-name-pattern=concurrent refreshes publish complete",
+    "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source\\test\\backlog-dashboard.test.ts"
+  ],
+  "sourceOriginalSha256": "8e1ac114679599c0fa96f6e736f24b47ea54fff6aaafd4015fb9d40c07d830c8",
+  "diagnosticTestSha256": "fedffb0052e47a0f6e1447d409d2f468693e6f4bc37f5bd9865f7aef750d1ee5",
+  "observation": {
+    "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\run\\pace-test-run-NoueqY\\pace-dashboard-parallel-wThVjH",
+    "sourceCwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source",
+    "fixtureHasGit": true,
+    "observations": [
+      {
+        "pid": 78116,
+        "argv": [
+          "C:\\nvm4w\\nodejs\\node.exe",
+          "--import",
+          "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-full-load-8Foif6\\lock-trace-preload.mjs",
+          "--input-type=module",
+          "-e",
+          "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-six-7Au7Uc/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+          "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\run\\pace-test-run-NoueqY\\pace-dashboard-parallel-wThVjH"
+        ],
+        "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source",
+        "code": 1,
+        "signal": null,
+        "stdout": "",
+        "stderr": "node:internal/modules/esm/load:193\r\n    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);\r\n          ^\r\n\r\nError [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'\r\n    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:193:11)\r\n    at defaultLoadSync (node:internal/modules/esm/load:146:3)\r\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:806:12)\r\n    at #loadSync (node:internal/modules/esm/loader:838:53)\r\n    at ModuleLoader.load (node:internal/modules/esm/loader:787:26)\r\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:498:31)\r\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:564:36)\r\n    at afterResolve (node:internal/modules/esm/loader:611:52)\r\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:617:12)\r\n    at node:internal/modules/esm/loader:636:32 {\r\n  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'\r\n}\r\n\r\nNode.js v24.22.3\r\n"
+      },
+      {
+        "pid": 42272,
+        "argv": [
+          "C:\\nvm4w\\nodejs\\node.exe",
+          "--import",
+          "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-full-load-8Foif6\\lock-trace-preload.mjs",
+          "--input-type=module",
+          "-e",
+          "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-six-7Au7Uc/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+          "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\run\\pace-test-run-NoueqY\\pace-dashboard-parallel-wThVjH"
+        ],
+        "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source",
+        "code": 1,
+        "signal": null,
+        "stdout": "",
+        "stderr": "node:internal/modules/esm/load:193\r\n    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);\r\n          ^\r\n\r\nError [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'\r\n    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:193:11)\r\n    at defaultLoadSync (node:internal/modules/esm/load:146:3)\r\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:806:12)\r\n    at #loadSync (node:internal/modules/esm/loader:838:53)\r\n    at ModuleLoader.load (node:internal/modules/esm/loader:787:26)\r\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:498:31)\r\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:564:36)\r\n    at afterResolve (node:internal/modules/esm/loader:611:52)\r\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:617:12)\r\n    at node:internal/modules/esm/loader:636:32 {\r\n  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'\r\n}\r\n\r\nNode.js v24.22.3\r\n"
+      },
+      {
+        "pid": 24032,
+        "argv": [
+          "C:\\nvm4w\\nodejs\\node.exe",
+          "--import",
+          "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-full-load-8Foif6\\lock-trace-preload.mjs",
+          "--input-type=module",
+          "-e",
+          "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-six-7Au7Uc/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+          "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\run\\pace-test-run-NoueqY\\pace-dashboard-parallel-wThVjH"
+        ],
+        "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source",
+        "code": 1,
+        "signal": null,
+        "stdout": "",
+        "stderr": "node:internal/modules/esm/load:193\r\n    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);\r\n          ^\r\n\r\nError [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'\r\n    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:193:11)\r\n    at defaultLoadSync (node:internal/modules/esm/load:146:3)\r\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:806:12)\r\n    at #loadSync (node:internal/modules/esm/loader:838:53)\r\n    at ModuleLoader.load (node:internal/modules/esm/loader:787:26)\r\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:498:31)\r\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:564:36)\r\n    at afterResolve (node:internal/modules/esm/loader:611:52)\r\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:617:12)\r\n    at node:internal/modules/esm/loader:636:32 {\r\n  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'\r\n}\r\n\r\nNode.js v24.22.3\r\n"
+      },
+      {
+        "pid": 69916,
+        "argv": [
+          "C:\\nvm4w\\nodejs\\node.exe",
+          "--import",
+          "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-full-load-8Foif6\\lock-trace-preload.mjs",
+          "--input-type=module",
+          "-e",
+          "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-six-7Au7Uc/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+          "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\run\\pace-test-run-NoueqY\\pace-dashboard-parallel-wThVjH"
+        ],
+        "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source",
+        "code": 1,
+        "signal": null,
+        "stdout": "",
+        "stderr": "node:internal/modules/esm/load:193\r\n    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);\r\n          ^\r\n\r\nError [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'\r\n    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:193:11)\r\n    at defaultLoadSync (node:internal/modules/esm/load:146:3)\r\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:806:12)\r\n    at #loadSync (node:internal/modules/esm/loader:838:53)\r\n    at ModuleLoader.load (node:internal/modules/esm/loader:787:26)\r\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:498:31)\r\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:564:36)\r\n    at afterResolve (node:internal/modules/esm/loader:611:52)\r\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:617:12)\r\n    at node:internal/modules/esm/loader:636:32 {\r\n  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'\r\n}\r\n\r\nNode.js v24.22.3\r\n"
+      },
+      {
+        "pid": 59192,
+        "argv": [
+          "C:\\nvm4w\\nodejs\\node.exe",
+          "--import",
+          "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-full-load-8Foif6\\lock-trace-preload.mjs",
+          "--input-type=module",
+          "-e",
+          "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-six-7Au7Uc/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+          "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\run\\pace-test-run-NoueqY\\pace-dashboard-parallel-wThVjH"
+        ],
+        "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source",
+        "code": 1,
+        "signal": null,
+        "stdout": "",
+        "stderr": "node:internal/modules/esm/load:193\r\n    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);\r\n          ^\r\n\r\nError [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'\r\n    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:193:11)\r\n    at defaultLoadSync (node:internal/modules/esm/load:146:3)\r\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:806:12)\r\n    at #loadSync (node:internal/modules/esm/loader:838:53)\r\n    at ModuleLoader.load (node:internal/modules/esm/loader:787:26)\r\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:498:31)\r\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:564:36)\r\n    at afterResolve (node:internal/modules/esm/loader:611:52)\r\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:617:12)\r\n    at node:internal/modules/esm/loader:636:32 {\r\n  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'\r\n}\r\n\r\nNode.js v24.22.3\r\n"
+      },
+      {
+        "pid": 24000,
+        "argv": [
+          "C:\\nvm4w\\nodejs\\node.exe",
+          "--import",
+          "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-full-load-8Foif6\\lock-trace-preload.mjs",
+          "--input-type=module",
+          "-e",
+          "import { generateDashboard } from \"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-t05-six-7Au7Uc/source/src/project/dashboard.ts\"; generateDashboard(process.argv[1]);",
+          "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\run\\pace-test-run-NoueqY\\pace-dashboard-parallel-wThVjH"
+        ],
+        "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-six-7Au7Uc\\source",
+        "code": 1,
+        "signal": null,
+        "stdout": "",
+        "stderr": "node:internal/modules/esm/load:193\r\n    throw new ERR_UNSUPPORTED_ESM_URL_SCHEME(parsed, schemes);\r\n          ^\r\n\r\nError [ERR_UNSUPPORTED_ESM_URL_SCHEME]: Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. On Windows, absolute paths must be valid file:// URLs. Received protocol 'c:'\r\n    at throwIfUnsupportedURLScheme (node:internal/modules/esm/load:193:11)\r\n    at defaultLoadSync (node:internal/modules/esm/load:146:3)\r\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:806:12)\r\n    at #loadSync (node:internal/modules/esm/loader:838:53)\r\n    at ModuleLoader.load (node:internal/modules/esm/loader:787:26)\r\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:498:31)\r\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:564:36)\r\n    at afterResolve (node:internal/modules/esm/loader:611:52)\r\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:617:12)\r\n    at node:internal/modules/esm/loader:636:32 {\r\n  code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'\r\n}\r\n\r\nNode.js v24.22.3\r\n"
+      }
+    ]
+  },
+  "limits": [
+    "One authorized narrow diagnostic. Source copy has no Git metadata, matching the full-load diagnostic; the target fixture itself is a Git repo.",
+    "Only the six-child target block output collection differs from the full-load source copy. Existing eight-child instrumentation is present but its test is filtered out.",
+    "Capturing child output can affect scheduling. No product source or actual worktree test was changed."
+  ]
+}

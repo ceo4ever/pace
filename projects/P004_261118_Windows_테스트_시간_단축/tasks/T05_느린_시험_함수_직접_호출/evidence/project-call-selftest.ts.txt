@@ -1,0 +1,45 @@
+test("함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다", async (ctx) => {
+  const direct = createProjectCalls();
+  ctx.after(() => direct.close());
+  const a = repoFixture(), b = repoFixture();
+  const first = await direct.run(a.home, a.main, "new", "직접A");
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  const project = join(projectDir(a.main), "PROJECT.md");
+  writeFileSync(project, readFileSync(project, "utf8").replace(/\| P-1 \| <!--.*?--> \| <!--.*?--> \|/, "| P-1 | 결과 | CLI |"));
+  const started = await direct.run(a.home, a.main, "start", "P001", "--no-launch");
+  assert.equal(started.status, 0, started.stdout + started.stderr);
+  const wt = join(dirname(a.main), "app.wt/P001");
+  const inWorktree = await direct.run(a.home, wt, "list");
+  assert.equal(inWorktree.status, 0, inWorktree.stderr);
+  assert.equal(inWorktree.pid, first.pid);
+  assert.equal(inWorktree.generation, first.generation);
+  assert.equal(inWorktree.context.cwd, (await import("node:fs")).realpathSync.native(wt));
+  assert.equal(inWorktree.context.home, a.home);
+  assert.equal(inWorktree.context.paceHome, a.home);
+  assert.equal(inWorktree.restored, true);
+  for (const [args, expected] of [[['unknown-project-command'], 2], [['new', 'bad', '--unknown-option'], 1], [['done', 'P999', 'T01'], 1]] as const) {
+    const actualCli = runCli(a.home, a.main, ...args);
+    const actualFunction = await direct.run(a.home, a.main, ...args);
+    assert.equal(actualCli.status, expected, actualCli.stderr);
+    assert.equal(actualFunction.status, actualCli.status);
+    assert.equal(actualFunction.stdout, actualCli.stdout);
+    assert.equal(actualFunction.stderr, actualCli.stderr, "런타임 경고도 정규화하거나 버리지 않는다");
+    assert.equal(actualFunction.signal, null);
+    assert.equal(actualFunction.error, undefined);
+    assert.equal(actualFunction.restored, true);
+  }
+  const afterError = await direct.run(a.home, wt, "list");
+  assert.equal(afterError.status, 0, afterError.stderr);
+  assert.equal(afterError.generation, first.generation);
+  const other = await direct.run(b.home, b.main, "new", "직접B");
+  assert.equal(other.status, 0, other.stderr);
+  assert.notEqual(other.generation, first.generation);
+  assert.equal(other.context.home, b.home);
+  assert.match(readFileSync(join(projectDir(b.main), "PROJECT.md"), "utf8"), /직접B/);
+  const back = await direct.run(a.home, a.main, "list");
+  assert.equal(back.status, 0, back.stderr);
+  assert.notEqual(back.generation, first.generation);
+  assert.notEqual(back.generation, other.generation);
+  assert.match(back.stdout, /직접A/);
+  assert.doesNotMatch(back.stdout, /직접B/);
+});

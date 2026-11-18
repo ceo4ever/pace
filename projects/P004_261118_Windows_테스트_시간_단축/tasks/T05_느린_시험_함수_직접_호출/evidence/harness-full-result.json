@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "--test",
+    "test/project-harness.test.ts"
+  ],
+  "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-harness-full-BazO5G",
+  "started": "2026-11-18T21:31:38.858Z",
+  "ended": "2026-11-18T21:39:52.931Z",
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 494062.9057,
+  "sourceSha256": "9bf6a6422ee9fb68e1810a685717769c36dda17219fc2f569eeb9d4f8dcdeb1c",
+  "sourceUnchanged": true
+}

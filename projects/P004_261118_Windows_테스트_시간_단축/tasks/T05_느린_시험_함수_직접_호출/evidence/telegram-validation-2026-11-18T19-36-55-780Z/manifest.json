@@ -1,0 +1,82 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-validation-2kpGXy",
+  "copy": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-validation-2kpGXy\\source",
+  "audit": {
+    "beforeSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+    "afterSha256": "0b0cd169ab0dad57b94cb557c998155474ba527233da694d853493a5690136c1",
+    "outsideBlockByteIdentical": true,
+    "originalAssertions": 4,
+    "originalAssertionsRetained": true
+  },
+  "records": [
+    {
+      "mode": "current",
+      "expected": 0,
+      "status": 0,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-validation-2kpGXy\\source\\test\\telegram-flow.test.ts"
+      ],
+      "testSha256": "3834656455b83d2cdff3b49965146c089c2fd46d7aa3652aee707158a0cf79ac",
+      "adapterSha256": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80",
+      "mockSha256": "d00d20a0093ca48db34ee5829d076b7b534fc449131bde51417f32099706584a"
+    },
+    {
+      "mode": "delayed",
+      "expected": 0,
+      "status": 0,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-validation-2kpGXy\\source\\test\\telegram-flow.test.ts"
+      ],
+      "testSha256": "3834656455b83d2cdff3b49965146c089c2fd46d7aa3652aee707158a0cf79ac",
+      "adapterSha256": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80",
+      "mockSha256": "b174f3b6ecd724959a68df89e7faab28d6f9690c63e239b5bb164808f8c152b7"
+    },
+    {
+      "mode": "old-delayed",
+      "expected": 1,
+      "status": 1,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-validation-2kpGXy\\source\\test\\telegram-flow.test.ts"
+      ],
+      "testSha256": "b35bc302c0b4edf0a0b8899ef8122f1ed710977159bb8cb06938b6433afcd691",
+      "adapterSha256": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80",
+      "mockSha256": "b174f3b6ecd724959a68df89e7faab28d6f9690c63e239b5bb164808f8c152b7"
+    },
+    {
+      "mode": "bind-rollback-removed",
+      "expected": 1,
+      "status": 1,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-validation-2kpGXy\\source\\test\\telegram-flow.test.ts"
+      ],
+      "testSha256": "3834656455b83d2cdff3b49965146c089c2fd46d7aa3652aee707158a0cf79ac",
+      "adapterSha256": "377ed9436e67d08fc9955dcda52392a77ea46cae9f82fee193b168a416874801",
+      "mockSha256": "b174f3b6ecd724959a68df89e7faab28d6f9690c63e239b5bb164808f8c152b7"
+    },
+    {
+      "mode": "new-rollback-removed",
+      "expected": 1,
+      "status": 1,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-validation-2kpGXy\\source\\test\\telegram-flow.test.ts"
+      ],
+      "testSha256": "3834656455b83d2cdff3b49965146c089c2fd46d7aa3652aee707158a0cf79ac",
+      "adapterSha256": "91ba4e16e3d2d7dd3e41a8900f18b118c50767ef179cb2274cd10a186aedc752",
+      "mockSha256": "b174f3b6ecd724959a68df89e7faab28d6f9690c63e239b5bb164808f8c152b7"
+    }
+  ],
+  "verifierSha256": "cff86b9a92317cf4fe96e3189c9a01991bdcdbf4b0190b1091d8550dac75ea3f",
+  "limits": [
+    "Only owned source copies and loopback mock were mutated. Historical full-failure scheduling is unknown. These runs are not final timing samples."
+  ]
+}

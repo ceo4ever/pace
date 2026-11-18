@@ -1,0 +1,22 @@
+{
+  "verified": true,
+  "checks": {
+    "allFiveComparisons": true,
+    "old92AndThreeAuditedChangesMatch": true,
+    "oneNewTestFile": true,
+    "helperSame": true,
+    "runnerSame": true
+  },
+  "expectedNewCases": 26,
+  "totals": {
+    "tests": 996,
+    "suites": 0,
+    "pass": 987,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 9,
+    "todo": 0,
+    "duration_ms": 703631.085
+  },
+  "elapsedMs": 705472.9278
+}

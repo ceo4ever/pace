@@ -1,0 +1,1014 @@
+{
+  "sourceAudit": {
+    "telegram": {
+      "beforeSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "afterSha256": "0b0cd169ab0dad57b94cb557c998155474ba527233da694d853493a5690136c1",
+      "outsideBlockByteIdentical": true,
+      "originalAssertions": 4,
+      "originalAssertionsRetained": true
+    },
+    "harness": {
+      "beforeSha256": "449c3fd82452416a05421d4d54033de5111148d6e78378e8e968aeffaa50732a",
+      "afterSha256": "9bf6a6422ee9fb68e1810a685717769c36dda17219fc2f569eeb9d4f8dcdeb1c",
+      "convertedBlocks": 3,
+      "retainedBlocks": 70,
+      "addedCases": 1,
+      "assertionsPreserved": true
+    },
+    "wrapper": {
+      "beforeSha256": "3662b08e03855d6aa84afcea2a05afdfd7d61d78649ec2face67cdd77b96e658",
+      "afterSha256": "253993658e31df3e2681c07773781b32769597b303e35d69f565069cf3e0f175",
+      "exactExpectedTransformation": true,
+      "outsideTargetAndTwoImportsByteIdentical": true,
+      "caseNamesAndSkipUnchanged": true,
+      "retainedVersionHookAndArgumentAssertions": true,
+      "regularFileAndBinParent": true,
+      "nativeAndBigintIdentity": true,
+      "rawLookupStderr": true,
+      "explicitFailurePropagation": true
+    }
+  },
+  "verified": true,
+  "checks": {
+    "allFiveComparisons": true,
+    "old92AndThreeAuditedChangesMatch": true,
+    "oneNewTestFile": true,
+    "helperSame": true,
+    "runnerSame": true
+  },
+  "caseSource": {
+    "file": "D:\\LucasStudio\\pace.wt\\P004\\test\\changed-test.test.ts",
+    "sha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c"
+  },
+  "expectedNewCases": 26,
+  "addedFiles": [
+    "test/changed-test.test.ts"
+  ],
+  "totals": {
+    "tests": 996,
+    "suites": 0,
+    "pass": 987,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 9,
+    "todo": 0,
+    "duration_ms": 703631.085
+  },
+  "elapsedMs": 705472.9278,
+  "comparisons": [
+    {
+      "previousRun": 1,
+      "removed": [],
+      "added": [
+        {
+          "case": [
+            "changed CLI uses the installed app and the external repository map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed includes staged, unstaged and nested untracked files once per unit",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed runs every related unit and preserves a related failure over a successful full command",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed test files select the entire unit with overlapping test globs deduplicated",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed stops remaining files inside the same unit after an actual failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed common, unknown, deleted, renamed and control paths execute the committed full declaration",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed conflict, executable mode and gitlink states cannot become a partial success",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed preserves staged deletion when the same working path remains untracked",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed treats assume-unchanged and skip-worktree as uncertain without mutating flags",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed sparse checkout and sparse-index policies execute full without rewriting the index",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed converts a post-check selected-path exception to unavailable without a success retry",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed supports master and HEAD fallbacks while legacy all keeps its main boundary",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed never adopts committed feature-branch checks over the selected main map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed distinguishes no changes, unborn, outside Git, missing Git and damaged refs",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed missing or unsupported map/checks falls back and full absence/failure remains distinct",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed shell checks use the declared cwd and Git sh syntax and stop on failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed rejects escaping cwd/tests and handles special paths without shell interpolation",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed Windows matching is conservative across case while POSIX stays case sensitive",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed does not read an escaping working definition during full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed empty/all-skip tests fail and unknown Python results trigger the actual full check",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "Windows changed missing Python start falls back while legacy unit keeps its failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "shell execution state distinguishes real timeout/overflow and missing executables",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed check timeout and parent OS termination never continue into tests or full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "installed Windows entry and copied real Node/Python drivers execute outside the checkout",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "the user README map example runs unchanged through the installed CLI",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+            "pass"
+          ],
+          "count": 1
+        }
+      ],
+      "newCasesMatch": true,
+      "skipReasonsMatch": true
+    },
+    {
+      "previousRun": 2,
+      "removed": [],
+      "added": [
+        {
+          "case": [
+            "changed CLI uses the installed app and the external repository map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed includes staged, unstaged and nested untracked files once per unit",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed runs every related unit and preserves a related failure over a successful full command",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed test files select the entire unit with overlapping test globs deduplicated",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed stops remaining files inside the same unit after an actual failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed common, unknown, deleted, renamed and control paths execute the committed full declaration",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed conflict, executable mode and gitlink states cannot become a partial success",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed preserves staged deletion when the same working path remains untracked",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed treats assume-unchanged and skip-worktree as uncertain without mutating flags",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed sparse checkout and sparse-index policies execute full without rewriting the index",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed converts a post-check selected-path exception to unavailable without a success retry",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed supports master and HEAD fallbacks while legacy all keeps its main boundary",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed never adopts committed feature-branch checks over the selected main map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed distinguishes no changes, unborn, outside Git, missing Git and damaged refs",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed missing or unsupported map/checks falls back and full absence/failure remains distinct",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed shell checks use the declared cwd and Git sh syntax and stop on failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed rejects escaping cwd/tests and handles special paths without shell interpolation",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed Windows matching is conservative across case while POSIX stays case sensitive",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed does not read an escaping working definition during full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed empty/all-skip tests fail and unknown Python results trigger the actual full check",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "Windows changed missing Python start falls back while legacy unit keeps its failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "shell execution state distinguishes real timeout/overflow and missing executables",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed check timeout and parent OS termination never continue into tests or full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "installed Windows entry and copied real Node/Python drivers execute outside the checkout",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "the user README map example runs unchanged through the installed CLI",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+            "pass"
+          ],
+          "count": 1
+        }
+      ],
+      "newCasesMatch": true,
+      "skipReasonsMatch": true
+    },
+    {
+      "previousRun": 3,
+      "removed": [],
+      "added": [
+        {
+          "case": [
+            "changed CLI uses the installed app and the external repository map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed includes staged, unstaged and nested untracked files once per unit",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed runs every related unit and preserves a related failure over a successful full command",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed test files select the entire unit with overlapping test globs deduplicated",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed stops remaining files inside the same unit after an actual failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed common, unknown, deleted, renamed and control paths execute the committed full declaration",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed conflict, executable mode and gitlink states cannot become a partial success",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed preserves staged deletion when the same working path remains untracked",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed treats assume-unchanged and skip-worktree as uncertain without mutating flags",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed sparse checkout and sparse-index policies execute full without rewriting the index",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed converts a post-check selected-path exception to unavailable without a success retry",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed supports master and HEAD fallbacks while legacy all keeps its main boundary",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed never adopts committed feature-branch checks over the selected main map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed distinguishes no changes, unborn, outside Git, missing Git and damaged refs",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed missing or unsupported map/checks falls back and full absence/failure remains distinct",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed shell checks use the declared cwd and Git sh syntax and stop on failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed rejects escaping cwd/tests and handles special paths without shell interpolation",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed Windows matching is conservative across case while POSIX stays case sensitive",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed does not read an escaping working definition during full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed empty/all-skip tests fail and unknown Python results trigger the actual full check",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "Windows changed missing Python start falls back while legacy unit keeps its failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "shell execution state distinguishes real timeout/overflow and missing executables",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed check timeout and parent OS termination never continue into tests or full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "installed Windows entry and copied real Node/Python drivers execute outside the checkout",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "the user README map example runs unchanged through the installed CLI",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+            "pass"
+          ],
+          "count": 1
+        }
+      ],
+      "newCasesMatch": true,
+      "skipReasonsMatch": true
+    },
+    {
+      "previousRun": 4,
+      "removed": [],
+      "added": [
+        {
+          "case": [
+            "changed CLI uses the installed app and the external repository map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed includes staged, unstaged and nested untracked files once per unit",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed runs every related unit and preserves a related failure over a successful full command",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed test files select the entire unit with overlapping test globs deduplicated",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed stops remaining files inside the same unit after an actual failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed common, unknown, deleted, renamed and control paths execute the committed full declaration",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed conflict, executable mode and gitlink states cannot become a partial success",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed preserves staged deletion when the same working path remains untracked",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed treats assume-unchanged and skip-worktree as uncertain without mutating flags",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed sparse checkout and sparse-index policies execute full without rewriting the index",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed converts a post-check selected-path exception to unavailable without a success retry",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed supports master and HEAD fallbacks while legacy all keeps its main boundary",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed never adopts committed feature-branch checks over the selected main map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed distinguishes no changes, unborn, outside Git, missing Git and damaged refs",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed missing or unsupported map/checks falls back and full absence/failure remains distinct",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed shell checks use the declared cwd and Git sh syntax and stop on failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed rejects escaping cwd/tests and handles special paths without shell interpolation",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed Windows matching is conservative across case while POSIX stays case sensitive",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed does not read an escaping working definition during full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed empty/all-skip tests fail and unknown Python results trigger the actual full check",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "Windows changed missing Python start falls back while legacy unit keeps its failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "shell execution state distinguishes real timeout/overflow and missing executables",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed check timeout and parent OS termination never continue into tests or full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "installed Windows entry and copied real Node/Python drivers execute outside the checkout",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "the user README map example runs unchanged through the installed CLI",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+            "pass"
+          ],
+          "count": 1
+        }
+      ],
+      "newCasesMatch": true,
+      "skipReasonsMatch": true
+    },
+    {
+      "previousRun": 5,
+      "removed": [],
+      "added": [
+        {
+          "case": [
+            "changed CLI uses the installed app and the external repository map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed includes staged, unstaged and nested untracked files once per unit",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed runs every related unit and preserves a related failure over a successful full command",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed test files select the entire unit with overlapping test globs deduplicated",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed stops remaining files inside the same unit after an actual failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed common, unknown, deleted, renamed and control paths execute the committed full declaration",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed conflict, executable mode and gitlink states cannot become a partial success",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed preserves staged deletion when the same working path remains untracked",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed treats assume-unchanged and skip-worktree as uncertain without mutating flags",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed sparse checkout and sparse-index policies execute full without rewriting the index",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed converts a post-check selected-path exception to unavailable without a success retry",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed supports master and HEAD fallbacks while legacy all keeps its main boundary",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed never adopts committed feature-branch checks over the selected main map",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed distinguishes no changes, unborn, outside Git, missing Git and damaged refs",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed missing or unsupported map/checks falls back and full absence/failure remains distinct",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed shell checks use the declared cwd and Git sh syntax and stop on failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed rejects escaping cwd/tests and handles special paths without shell interpolation",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed Windows matching is conservative across case while POSIX stays case sensitive",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed does not read an escaping working definition during full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed empty/all-skip tests fail and unknown Python results trigger the actual full check",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "Windows changed missing Python start falls back while legacy unit keeps its failure",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "shell execution state distinguishes real timeout/overflow and missing executables",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "changed check timeout and parent OS termination never continue into tests or full fallback",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "installed Windows entry and copied real Node/Python drivers execute outside the checkout",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "the user README map example runs unchanged through the installed CLI",
+            "pass"
+          ],
+          "count": 1
+        },
+        {
+          "case": [
+            "함수 직접 호출: fixture 문맥·자식 세대·CLI 오류 계약과 예외 뒤 복원을 보존한다",
+            "pass"
+          ],
+          "count": 1
+        }
+      ],
+      "newCasesMatch": true,
+      "skipReasonsMatch": true
+    }
+  ],
+  "limitations": [
+    "Plain spec logs identify names/verdicts rather than per-case files. The unchanged old test byte hashes and the new file literal case names connect this inventory delta to its source.",
+    "A full pass preserves observed verdicts; independent code review and failure sentinels assess whether implementation changes weakened detection."
+  ]
+}

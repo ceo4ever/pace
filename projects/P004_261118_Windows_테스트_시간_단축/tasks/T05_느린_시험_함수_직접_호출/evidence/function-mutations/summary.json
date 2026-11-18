@@ -1,0 +1,11 @@
+{
+  "verified": true,
+  "variants": 8,
+  "beforeAfterSameOriginalAssertions": true,
+  "originalProductNeverModified": true,
+  "limits": [
+    "Mutation runs have call-path observation and are not timing samples.",
+    "Raw stack line numbers differ; unchanged assertion text and original block line link the failures.",
+    "M3 checks retained actual CLI fault coverage, not direct-call coverage."
+  ]
+}

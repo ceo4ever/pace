@@ -1,0 +1,18 @@
+{
+  "verified": true,
+  "checks": {
+    "files": true,
+    "node": true,
+    "verifier": true
+  },
+  "fileCount": 607,
+  "fullyEqual": false,
+  "metadataDifferences": [
+    {
+      "key": "captured",
+      "before": "2026-11-18T19:38:37.417Z",
+      "after": "2026-11-18T20:02:33.789Z"
+    }
+  ],
+  "sourceTreeSha256": "a3d9c5a0af1ce77114bd26456cd3d06b37ca6559b9c70a5995ce4169ecde759c"
+}

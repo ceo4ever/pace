@@ -1,0 +1,13 @@
+{
+  "beforeMs": 121918.04879999999,
+  "afterMs": 107391.3875,
+  "savedMs": 14526.661299999992,
+  "reductionPercent": 11.915103172156405,
+  "sameArgs": true,
+  "tests": 3,
+  "pass": 3,
+  "skip": 0,
+  "observationsEach": 1,
+  "additionalAdapterCaseExcluded": true,
+  "notFullScopeOrCausalAttribution": true
+}

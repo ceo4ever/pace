@@ -1,0 +1,10 @@
+DIAG_CHILDREN {"root":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-t05-lock-nATbhl\\run-12\\pace-test-run-xitkqT\\pace-dashboard-recovery-nMvvA7","observations":[{"pid":83868,"code":0,"signal":null,"stdout":"","stderr":""},{"pid":30156,"code":0,"signal":null,"stdout":"","stderr":""},{"pid":64224,"code":0,"signal":null,"stdout":"","stderr":""},{"pid":60636,"code":0,"signal":null,"stdout":"","stderr":""},{"pid":43228,"code":0,"signal":null,"stdout":"","stderr":""},{"pid":69260,"code":0,"signal":null,"stdout":"","stderr":""},{"pid":42316,"code":0,"signal":null,"stdout":"","stderr":""},{"pid":80888,"code":0,"signal":null,"stdout":"","stderr":""}],"files":["data.js"]}
+✔ simultaneous stale-lock recovery serializes writers without leaving generated files (1085.6887ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1227.593

@@ -1,0 +1,460 @@
+{
+  "node": "v24.22.3",
+  "npm": {
+    "status": 0,
+    "stdout": "11.19.1",
+    "stderr": ""
+  },
+  "git": {
+    "status": 0,
+    "stdout": "git version 2.56.0.windows.4",
+    "stderr": ""
+  },
+  "python": {
+    "status": 0,
+    "stdout": "Python 3.14.10",
+    "stderr": ""
+  },
+  "commit": {
+    "status": 0,
+    "stdout": "46fdf682990d8002ce1116114f2913ca168c6840",
+    "stderr": ""
+  },
+  "diff": {
+    "status": 0,
+    "stdout": ".pace/brain/log.md                                               | 9 +++++++++\n .pace/brain/pages/concept/brain-at-project-gates.md              | 8 +++++++-\n .pace/brain/pages/concept/brain-pull-not-push.md                 | 8 +++++++-\n .pace/brain/pages/concept/install-and-launch-pitfalls.md         | 9 ++++++++-\n ...\\262\\260\\354\\240\\225\\352\\263\\274-\\355\\225\\250\\354\\240\\225.md\" | 8 +++++++-\n .pace/brain/pages/concept/session-boot-via-hooks.md              | 8 +++++++-\n ...212\\244-\\354\\213\\244\\354\\270\\241-\\355\\225\\250\\354\\240\\225.md\" | 9 ++++++++-\n ...\\225\\230\\353\\204\\244\\354\\212\\244-\\355\\235\\220\\353\\246\\204.md\" | 9 ++++++++-\n ...205\\230-\\352\\270\\260\\353\\241\\235-\\355\\225\\250\\354\\240\\225.md\" | 9 ++++++++-\n .pace/memory/status.md                                           | 2 +-\n backlogs/dashboard/data.js                                       | 2 +-\n .../PROJECT.md\"                                                  | 4 +++-\n .../log.jsonl\"                                                   | 5 +++++\n 13 files changed, 79 insertions(+), 11 deletions(-)",
+    "stderr": "warning: in the working copy of '.pace/brain/log.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/brain/pages/concept/brain-at-project-gates.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/brain/pages/concept/brain-pull-not-push.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/brain/pages/concept/install-and-launch-pitfalls.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/brain/pages/concept/session-boot-via-hooks.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/brain/pages/concept/작업-하네스-실측-함정.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/brain/pages/flow/작업-하네스-흐름.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of '.pace/memory/status.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'backlogs/dashboard/data.js', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'projects/P004_261118_Windows_테스트_시간_단축/PROJECT.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'projects/P004_261118_Windows_테스트_시간_단축/log.jsonl', LF will be replaced by CRLF the next time Git touches it"
+  },
+  "gitStatus": {
+    "status": 0,
+    "stdout": "M .pace/brain/log.md\n M .pace/brain/pages/concept/brain-at-project-gates.md\n M .pace/brain/pages/concept/brain-pull-not-push.md\n M .pace/brain/pages/concept/install-and-launch-pitfalls.md\n M \".pace/brain/pages/concept/opal-\\352\\260\\200\\354\\240\\270\\354\\230\\244\\352\\270\\260-adopt-opal-\\352\\262\\260\\354\\240\\225\\352\\263\\274-\\355\\225\\250\\354\\240\\225.md\"\n M .pace/brain/pages/concept/session-boot-via-hooks.md\n M \".pace/brain/pages/concept/\\354\\236\\221\\354\\227\\205-\\355\\225\\230\\353\\204\\244\\354\\212\\244-\\354\\213\\244\\354\\270\\241-\\355\\225\\250\\354\\240\\225.md\"\n M \".pace/brain/pages/flow/\\354\\236\\221\\354\\227\\205-\\355\\225\\230\\353\\204\\244\\354\\212\\244-\\355\\235\\220\\353\\246\\204.md\"\n M \".pace/brain/pages/synthesis/\\355\\224\\204\\353\\241\\234\\354\\240\\235\\355\\212\\270-\\354\\247\\200\\355\\221\\234-\\355\\225\\264\\354\\204\\235\\352\\263\\274-\\354\\204\\270\\354\\205\\230-\\352\\270\\260\\353\\241\\235-\\355\\225\\250\\354\\240\\225.md\"\n M .pace/memory/status.md\n M backlogs/dashboard/data.js\n M \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/PROJECT.md\"\n M \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/log.jsonl\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T04_\\353\\271\\240\\353\\245\\270_\\352\\262\\200\\354\\202\\254_\\353\\252\\205\\353\\240\\271/evidence/runtime-t05-before-full.json\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/PRE-REVIEW.json\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/TASK.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-recheck-brain-at-project-gates.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-recheck-brain-pull-not-push.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-recheck-install-and-launch-pitfalls.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-recheck-opal-\\352\\260\\200\\354\\240\\270\\354\\230\\244\\352\\270\\260-adopt-opal-\\352\\262\\260\\354\\240\\225\\352\\263\\274-\\355\\225\\250\\354\\240\\225.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-recheck-session-boot-via-hooks.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-recheck-\\354\\236\\221\\354\\227\\205-\\355\\225\\230\\353\\204\\244\\354\\212\\244-\\354\\213\\244\\354\\270\\241-\\355\\225\\250\\354\\240\\225.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-recheck-\\354\\236\\221\\354\\227\\205-\\355\\225\\230\\353\\204\\244\\354\\212\\244-\\355\\235\\220\\353\\246\\204.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-recheck-\\355\\224\\204\\353\\241\\234\\354\\240\\235\\355\\212\\270-\\354\\247\\200\\355\\221\\234-\\355\\225\\264\\354\\204\\235\\352\\263\\274-\\354\\204\\270\\354\\205\\230-\\352\\270\\260\\353\\241\\235-\\355\\225\\250\\354\\240\\225.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/brain-source-review-note.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/launch.json\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/pre-review-disposition.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/pre-review-provenance.json\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/pre-review-stage1.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/pre-review-stage2.md\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/smoke-views/comparison-run-1.json\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/smoke-views/comparison-run-1.log\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/smoke-views/manifest.json\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/smoke-views/run-1/environment.json\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/evidence/smoke-views/run-1/results.json\"\n?? \"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T05_\\353\\212\\220\\353\\246\\260_\\354\\213\\234\\355\\227\\230_\\355\\225\\250\\354\\210\\230_\\354\\247\\201\\354\\240\\221_\\355\\230\\270\\354\\266\\234/verify-final.mjs\"",
+    "stderr": ""
+  },
+  "toolHashes": {
+    "projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T01_기준_측정\\measure.ts": "a11a678034248aa2e079e596989e723418a94c784e84092dfd721a68a9d42e83",
+    "projects\\P004_261118_Windows_테스트_시간_단축\\report.ts": "9968dcaa5497d23a942be012473ac4e7b59918ab53cf78b4b0c7ae51414641b6",
+    "projects\\P004_261118_Windows_테스트_시간_단축\\measurement-data.ts": "4e256e32e6e936a0e57eaad5ae23c3839e73c8818562868a5cf3aab195eac12c",
+    "projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T01_기준_측정\\reporter.ts": "f1e30f057a2432ee04ce781e3ddd6a5c9a78553d8aa35ea60a1922e2d119835a",
+    "projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T01_기준_측정\\diagnose-nested.ts": "c502b7f882d17710dab38f43718373fe932919fe06747302804884d1f141989c"
+  },
+  "os": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "cpu": "AMD Ryzen 7 5800X 8-Core Processor             ",
+    "cores": 16,
+    "totalMemory": 34282184704
+  },
+  "power": {
+    "status": 0,
+    "stdout": "���� ����ǥ GUID: 9570a19f-262f-495e-9481-772b2ff87523  (�ְ��� ����)",
+    "stderr": ""
+  },
+  "defender": {
+    "status": 0,
+    "stdout": "{\"AntivirusEnabled\":true,\"RealTimeProtectionEnabled\":true}",
+    "stderr": ""
+  },
+  "command": "npm run check",
+  "commandArgv": [
+    "/d",
+    "/s",
+    "/c",
+    "npm run check"
+  ],
+  "requestedConcurrency": "default",
+  "nodeArguments": [
+    "--test",
+    "--test-concurrency=4",
+    "test/**/*.test.ts"
+  ],
+  "testSources": [
+    {
+      "file": "test/adopt-opal-docs.test.ts",
+      "sha256": "70617b4195416ca77135dc0d50592b5b89f52fafc95c3e7c2fbf8002b0ecbd71"
+    },
+    {
+      "file": "test/adopt-opal-e2e.test.ts",
+      "sha256": "7831a06c555861f281ee7fcde18e34c3bbdb61f49c3dd3d0a73cf6c08d57912d"
+    },
+    {
+      "file": "test/adopt-opal-recover.test.ts",
+      "sha256": "495d743e4036a7502d4ac03c5f562767dae09d8df17a79773464ddbb51a36df7"
+    },
+    {
+      "file": "test/adopt-opal.test.ts",
+      "sha256": "b10561672c9c867d14e1ebbc109e4a2d5c0fe702494acc8ee5a41c7c8e7affb5"
+    },
+    {
+      "file": "test/agent-acp-hooks.test.ts",
+      "sha256": "08bf54331897196a9d37d76fc9c5d3e81044033824cf26591be61b112e646b70"
+    },
+    {
+      "file": "test/agent-acp.test.ts",
+      "sha256": "b1842e5c67f0b622b803fd9b2406108b1b455e61f7a8292754398bd511b0a827"
+    },
+    {
+      "file": "test/agent-cancel.test.ts",
+      "sha256": "efdc56106c7fd088a4dce4d3f39fa51cf55bdddac8401facb6e91c70c96394b6"
+    },
+    {
+      "file": "test/agent-chain.test.ts",
+      "sha256": "5f122a55aa4d06897c182a0ec8ac018868dced426ede4df340c2859d49e53e95"
+    },
+    {
+      "file": "test/agent-contract.test.ts",
+      "sha256": "d5840518e45b60a19694794b8a0f39a41db121279af5da428cedad17b718daac"
+    },
+    {
+      "file": "test/agent-definition.test.ts",
+      "sha256": "1742c4b1095709cbd1623756e66f9e57221c551d2299c7be577ba98b22058f7f"
+    },
+    {
+      "file": "test/agent-p.test.ts",
+      "sha256": "aea9be2d1c6afcb7f4a2299d6fc1fce7943f962cf8da4cd96be7b2bcc4543c6a"
+    },
+    {
+      "file": "test/agent-proc-group.test.ts",
+      "sha256": "bd18f5f78007919136edd1598a249fc03ca3367d6c0a904cc9afed1d38e2eec7"
+    },
+    {
+      "file": "test/agent-session.test.ts",
+      "sha256": "d4e779855de4c103da61327e744adcd76e211039623346c54295d67e7be6138d"
+    },
+    {
+      "file": "test/agent-setup.test.ts",
+      "sha256": "9aff7ed062b16fe0f105eb674286b159c2bd7977249b75986e4b258352442340"
+    },
+    {
+      "file": "test/agent-verify.test.ts",
+      "sha256": "a257461a6ed21020a77469f473360d46097167617c443391c9e703f94e66f85d"
+    },
+    {
+      "file": "test/backlog-dashboard.test.ts",
+      "sha256": "e2524ec1948d8b99b950df6d30ed217240ff937706a603c921da8257fc780160"
+    },
+    {
+      "file": "test/backlog.test.ts",
+      "sha256": "b897ce23b546cfe8943ea0af746edbffbda255a51dd9eff2de38141485c16297"
+    },
+    {
+      "file": "test/boot.test.ts",
+      "sha256": "c9835f2f02afa78b3f7334a3a2eeaa236b4b74c9d372cee2ba7f8e48f6e9a4cd"
+    },
+    {
+      "file": "test/brain.test.ts",
+      "sha256": "81082a0c0efa7492c1def96799406744d2aba9f3775416aa8597b85b59ccb892"
+    },
+    {
+      "file": "test/canvas-skills.test.ts",
+      "sha256": "6239c3391adb60487d8f52fec30caa681c50b49df12eb46de81aa959b7db708b"
+    },
+    {
+      "file": "test/changed-test.test.ts",
+      "sha256": "821092dd415b5cb84713f1d67a17d1b72a2ee887f06dfb7ef3511b333f99b75c"
+    },
+    {
+      "file": "test/cli.test.ts",
+      "sha256": "3498d90499aa154c710e463d5ce4e3cb94e9dd5e89acdccbdb17105b8576f3c8"
+    },
+    {
+      "file": "test/console-decode.test.ts",
+      "sha256": "46c9f5111d13cee0c9c2ec4414fe24d986d5fc7291f654c31f20a4cdc912c9ce"
+    },
+    {
+      "file": "test/daemon-approval.test.ts",
+      "sha256": "380b85662d8a4f1362373d9ec30ddb5d259bb66c0060ebe3ace0b95e147ee966"
+    },
+    {
+      "file": "test/daemon-autostart.test.ts",
+      "sha256": "5a35f7b0e9f693a72dc37b7f8f75ad8c8605489b404143d7c3dcc98334e1ceeb"
+    },
+    {
+      "file": "test/daemon-core.test.ts",
+      "sha256": "12799d9260a5bb9428af381ff683e0259481e97d85f58b469cb9262b14c7cea4"
+    },
+    {
+      "file": "test/daemon-gateway.test.ts",
+      "sha256": "19491b403c1df6abb66a805d0533dc7692e5fc204ac9c07887c90443e73b25cf"
+    },
+    {
+      "file": "test/daemon-install-wizard.test.ts",
+      "sha256": "184efe37268e5bf82a7f6b17cfd5eb68dc8e62666a667ee5914918112ad07873"
+    },
+    {
+      "file": "test/daemon-instance-port.test.ts",
+      "sha256": "11de2601d494db451eb490231d00169414ff209bc2c7549cac1a82c9a8dfd727"
+    },
+    {
+      "file": "test/daemon-process.test.ts",
+      "sha256": "c5f0eeaddefe6cebc3057b60b30faa6e55464cb14a964a1f7dc35820e0278a34"
+    },
+    {
+      "file": "test/daemon-recovery.test.ts",
+      "sha256": "03cc1a5dd994e7f4bae63d588c7cba871f44e8779b1b21737306c36d8490e407"
+    },
+    {
+      "file": "test/daemon-runner.test.ts",
+      "sha256": "930825e04fc304d3f21e80b8d91ab49186fad72082d5c0588e55b76979d658f0"
+    },
+    {
+      "file": "test/daemon-stop-notice.test.ts",
+      "sha256": "ec82e1964a55f6d072e304494fa3ba10f207b673dd04a04c353b8183f82f877c"
+    },
+    {
+      "file": "test/daemon-store.test.ts",
+      "sha256": "e259ae702d19b54bc63367206b641883c2cdff9ccfe8b06772b2c0a30e182010"
+    },
+    {
+      "file": "test/daemon-t05.test.ts",
+      "sha256": "1b4778b3740afe0bf753359a38227939c58cf71d0c420c6e3914011c0f90b6e5"
+    },
+    {
+      "file": "test/daemon-wizard-follow.test.ts",
+      "sha256": "0285b963b11c74b061c5ec685e8681c7b59f1335aac781b931cd0f4311067cb3"
+    },
+    {
+      "file": "test/dashboard-init.test.ts",
+      "sha256": "c9bcb622b28d4993a80acd27541bc7665a4ca5e168715eab6fdee8a927aa76e1"
+    },
+    {
+      "file": "test/frontmatter.test.ts",
+      "sha256": "01ce884a97bfe2d88fc9ff3562029d3ef3f9e32643a4cd4c549718d279952cfc"
+    },
+    {
+      "file": "test/fsutil-windows.test.ts",
+      "sha256": "9e32e4c3878c90410a2ef55eec22a767f35f30a04dcee6e6c0ff5a241d145725"
+    },
+    {
+      "file": "test/git-fixture.test.ts",
+      "sha256": "cac302dc05d05eb2334c6a79e4f156257e77bbe53fbd24b5117d62c0daeeeb78"
+    },
+    {
+      "file": "test/install-autostart.test.ts",
+      "sha256": "bdb5b03caf4edad48b69c963f83729a67c253f5d288be866b86e8d1fb1f5064f"
+    },
+    {
+      "file": "test/install-script.test.ts",
+      "sha256": "3038237a33a57a49364ac3f1cf6c1fefc41eb3453a3f4fd4ad5818cbf1648763"
+    },
+    {
+      "file": "test/install-windows-wrapper.test.ts",
+      "sha256": "3662b08e03855d6aa84afcea2a05afdfd7d61d78649ec2face67cdd77b96e658"
+    },
+    {
+      "file": "test/install.test.ts",
+      "sha256": "f969d88ffa369d6946e421e14823fb322b8f65faba783dd4180c8f6f38080208"
+    },
+    {
+      "file": "test/intent-plan.test.ts",
+      "sha256": "48db0861334150c6e5751cbe22b81cf4cbb03aae96ea96a2b4f54a318d648d3f"
+    },
+    {
+      "file": "test/intent-preview.test.ts",
+      "sha256": "f1273e14e2cd951a67bb0c1c6cef36d63c06099f4588aeec1225fb2e14e1eb76"
+    },
+    {
+      "file": "test/intent.test.ts",
+      "sha256": "e686c3ee0461788f6881208299059f28b36449a4197275633457f22dedd53cc8"
+    },
+    {
+      "file": "test/mcp-cli.test.ts",
+      "sha256": "9fdf189552d9ac57db54f3d4b1a37127b1d79553c072967482e9dfb131afc01e"
+    },
+    {
+      "file": "test/mcp-server.test.ts",
+      "sha256": "972b56775c33b5d28b18f16bd3faac9b85ea65174a5f8d0ee42b1a35cf79ba0f"
+    },
+    {
+      "file": "test/memory.test.ts",
+      "sha256": "3a0d077d95ba32aa73bab92e8cf9eefd641283b9b5d02d9d90b4a18c7591bd6a"
+    },
+    {
+      "file": "test/onboard.test.ts",
+      "sha256": "cd3a93c30e4f41751a15dd446c32a2f84050b31353a9f72e683d8b96fb18ddae"
+    },
+    {
+      "file": "test/onboarding.test.ts",
+      "sha256": "2cf51016bc33cd45e19b9be35c777e5e7442426095faddbca6d7b9c8bcc011e0"
+    },
+    {
+      "file": "test/pace-install-ownership.test.ts",
+      "sha256": "07c4b4d6fab7491a36c7950599ce50b37fd3f90a4c0a53da8a530666d9efd0b4"
+    },
+    {
+      "file": "test/pace-paths.test.ts",
+      "sha256": "6476517ee42bd9a2ee66335f555d9b96ab3728020741a8529d7a332dc827fef5"
+    },
+    {
+      "file": "test/playbook-install.test.ts",
+      "sha256": "8c8cbbfcfc50b31faba1034ce0113cc912d52d64453ef5b475354dc686f188d6"
+    },
+    {
+      "file": "test/playbook-maker.test.ts",
+      "sha256": "eb1753cc90fe865987c0ed89362c8d5a422ec54b060b79cf5b1f33e09f2017fb"
+    },
+    {
+      "file": "test/playbook-pilot-harness.test.ts",
+      "sha256": "0f9de815da3e4dcb8c36d403c2f9258b92a7aa92ffebd4fbda24a0b0bc7dad39"
+    },
+    {
+      "file": "test/pre-review.test.ts",
+      "sha256": "6d725cb8ae85d73e1084faef842e1a0cfec4e0cf4d22ea50d480823ac1cc671e"
+    },
+    {
+      "file": "test/preview-owned.test.ts",
+      "sha256": "05728032b87395f64b274a00536e64601a64a9f3f18004ccf8dc567148c5edd3"
+    },
+    {
+      "file": "test/profile.test.ts",
+      "sha256": "97d529264fafb001276186c32f8e801c15febb9759c3b29ce8a3cf1d131d0394"
+    },
+    {
+      "file": "test/project-dev-skill.test.ts",
+      "sha256": "3cfcabfab6db2784dc1c9efba35c4671f10a6c039bfa8764737eb32d05e619f4"
+    },
+    {
+      "file": "test/project-harness.test.ts",
+      "sha256": "449c3fd82452416a05421d4d54033de5111148d6e78378e8e968aeffaa50732a"
+    },
+    {
+      "file": "test/project-log.test.ts",
+      "sha256": "113a5d3e3719d7d5da38983aae5e749d8c854b7c00cc3318466c65fc34567a25"
+    },
+    {
+      "file": "test/project-metrics-index.test.ts",
+      "sha256": "0b6e3de68eb70be54d4bf393193e85f4b1aa72fa173997ace5d5ef7a6d146530"
+    },
+    {
+      "file": "test/project-metrics-report.test.ts",
+      "sha256": "47f75c8dd58ccee129c8d6e1c20ef52df79df7e0a462ea4eb79ac386a2567cd8"
+    },
+    {
+      "file": "test/project-metrics.test.ts",
+      "sha256": "5b19a3dcee86d452f34a97d47b69a1ddacb63eeac9b0e22f39236137fa967b9a"
+    },
+    {
+      "file": "test/project-shell.test.ts",
+      "sha256": "32ceb96e82fd409ac5619896910ff76acb3c6e65b0b19a1c496250c754a6eadf"
+    },
+    {
+      "file": "test/project-templates.test.ts",
+      "sha256": "79b39a76a64717c5487842544d10bbb23c742f172653540e5e57c2ea609af903"
+    },
+    {
+      "file": "test/project-tokens.test.ts",
+      "sha256": "339cca166f24307a3120ccd3c280975f0bddbe8b9892c8231a05a94fc47339c6"
+    },
+    {
+      "file": "test/rules.test.ts",
+      "sha256": "fb7d5c27a618fd129bff5b70199c8572086b959cb32fd7ed72391dd189807e73"
+    },
+    {
+      "file": "test/scout-ideas.test.ts",
+      "sha256": "733572672ffecfd5dbe7bd0d5c4e10b16a366b49c44aaf68b9c2f1c9760d4509"
+    },
+    {
+      "file": "test/scout-report.test.ts",
+      "sha256": "ba5dfb452f793ae4f20f370333c4a5fc1bcb8434ca1d01b7486229eed6fee38f"
+    },
+    {
+      "file": "test/scout-source.test.ts",
+      "sha256": "dbcd05c956c24d774123d764b3d551982c68c964c6c5b98613be4fa5836d1043"
+    },
+    {
+      "file": "test/scout-transcript.test.ts",
+      "sha256": "c6fbd14a9618f41bb67bd978ecb0746f0d62b48c71082faa36cc51faa2ed962a"
+    },
+    {
+      "file": "test/scout-verify.test.ts",
+      "sha256": "05e7579b88137bec903b0d7f8eae7bd2ffa6ee1d823903c06406a48e8259fd59"
+    },
+    {
+      "file": "test/scout.test.ts",
+      "sha256": "246a2c31d74e87c9cf90c9c20d61185e5d6d42eb462c2a5e0b08f4aa950571b0"
+    },
+    {
+      "file": "test/secret-precision.test.ts",
+      "sha256": "e451c05efaac8197cd78af95ab227474391d66c73a069165a336afeca8526252"
+    },
+    {
+      "file": "test/secret-scan.test.ts",
+      "sha256": "8a7457d57d577e75e3e893df08e6080745919833b7b98fea20428e2f27800c34"
+    },
+    {
+      "file": "test/situation.test.ts",
+      "sha256": "b88563022e87f0180233115aa9daa030887bfdd2b830b3f75fbe682b2565b9d1"
+    },
+    {
+      "file": "test/telegram-adapter.test.ts",
+      "sha256": "84e3142b42d5f99e29593519680e3d735727247cbbd098a082647dcd1634ae73"
+    },
+    {
+      "file": "test/telegram-api.test.ts",
+      "sha256": "84778048fc0775a626ba05e806223e77a6bd0aafeb5dd46408bb941e9b79f45e"
+    },
+    {
+      "file": "test/telegram-flow.test.ts",
+      "sha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4"
+    },
+    {
+      "file": "test/telegram-format.test.ts",
+      "sha256": "d398855e74e586ce0181b8952e3d8e998a6f73364bedee4fbd615faa1943aa0e"
+    },
+    {
+      "file": "test/telegram-mention.test.ts",
+      "sha256": "feecc249139643fe652c6bcf7bdccdd01598bcbb56983e0da5a007dc3497b340"
+    },
+    {
+      "file": "test/telegram-process.test.ts",
+      "sha256": "8477a0d281a6f0fb0b28537d8d7f5c4cf9de9ffe94680fcf2c15ea5541c0b27b"
+    },
+    {
+      "file": "test/telegram-render.test.ts",
+      "sha256": "73fb960ed2f9dda7e4fa8c6a12b2af1433d3941664fdef6f9e1bd4f7ddddb47a"
+    },
+    {
+      "file": "test/telegram-typing.test.ts",
+      "sha256": "c7b91e4e61bad2080f3e7c8f1178fb8c6f149438a414e64d19c6e1b5da67ad88"
+    },
+    {
+      "file": "test/telegram-use.test.ts",
+      "sha256": "83040702d4e9938fcd4b63ab3f08583de82c66ae88ecb006676c7946ef3089d6"
+    },
+    {
+      "file": "test/temp-lifecycle.test.ts",
+      "sha256": "de9782fdbc660afe39e49dedaa4322c6e95e8bb96c53892b6855fd90f3c86499"
+    },
+    {
+      "file": "test/test-command.test.ts",
+      "sha256": "070799e06b3bfbce8767c1770d02063894a37565cf8712393f9211f8df80bc32"
+    },
+    {
+      "file": "test/test-runner.test.ts",
+      "sha256": "2795dc0bd5982652fca24088652a2a32212890bb5eb6a36315a48a42ecbaa375"
+    },
+    {
+      "file": "test/windows-agent-command.test.ts",
+      "sha256": "cf784e19aba2a381ccbf7b5d53e247c472314f69db55d70fcd65a967829391aa"
+    },
+    {
+      "file": "test/windows-job-stress.test.ts",
+      "sha256": "6a6f268be65fb6c63809ca7f06f212f7dec91d08340daa51c567e0e7a168b295"
+    },
+    {
+      "file": "test/windows-watchdog.test.ts",
+      "sha256": "c3eae60ce06054c97e23c309c380c37ecfb7b1ff0dce7a1837759548eac5a310"
+    },
+    {
+      "file": "test/worker-settings.test.ts",
+      "sha256": "6948053b3487d08af28602a1ca251d4af831dc97087d0922e2758a1a860a8861"
+    },
+    {
+      "file": "test/workspace-registry.test.ts",
+      "sha256": "1c88f0d734b450bf33dd349df7ba148ba8ae1e64ed424e9e7a0daeddd3f1755c"
+    }
+  ],
+  "runnerSha256": "0627c1826c9452bdd94b18b0df2a8f08c5036aade5f5ba89183231fbfaa7ec66",
+  "helpersSha256": "7793bc888cf0552fe3242e9447c27a73db9c680158571a1dd4bfcfc3c5e16a03",
+  "instrumentation": "none in baseline; optional explicit-argv auxiliary profile",
+  "preflight": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-preflight-KLFDKH"
+}

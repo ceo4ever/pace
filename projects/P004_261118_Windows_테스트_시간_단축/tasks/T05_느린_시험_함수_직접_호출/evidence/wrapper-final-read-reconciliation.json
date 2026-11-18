@@ -1,0 +1,39 @@
+{
+  "verified": true,
+  "newMeasurementExecutions": 0,
+  "newTestExecutions": 0,
+  "measurementStatus": {
+    "status": 0,
+    "signal": null
+  },
+  "measurementSourceAndToolsUnchanged": true,
+  "measurementRawLogsUnchanged": true,
+  "currentRuntime609Unchanged": true,
+  "firstVerifierAttempt": {
+    "exitCode": 1,
+    "toolError": "Baseline lookup compared raw median 1425464.3326999997 strictly against the rounded documentation literal 1425464.3327, so no candidate was found.",
+    "partialViewsPreserved": "final-views",
+    "executedSource": "wrapper-final-first-attempt-verify-final.mjs.txt"
+  },
+  "toolChangesAfterMeasurement": [
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T05_느린_시험_함수_직접_호출/verify-final.mjs",
+      "beforeSha256": "15bfd0c2bc9efce848c478d1c59d69a1cdfecfdf9c6abd27a81fb8d850387586",
+      "afterSha256": "bb7ed2c20b796aeaacf636005fc6efa1e530357d03efc981340f28298dffe20a"
+    }
+  ],
+  "readVerificationOutput": "final-v2-views",
+  "baselineRawMedianMs": 1425464.3326999997,
+  "finalRawMedianMs": 705472.9278,
+  "finalTwiceMs": 1410945.8556,
+  "thresholdMs": 712732.1663499998,
+  "marginMs": 7259.238549999893,
+  "percentOfBaseline": 49.4907456901254,
+  "reductionPercent": 50.5092543098746,
+  "goalMet": true,
+  "limits": [
+    "The first verifier/launcher exit1 is retained separately from the three successful npm checks.",
+    "Only read verification was corrected after the end snapshot; no timing sample was repeated or replaced.",
+    "Original baseline raw stored numbers and logs were revalidated; the rounded documentation literal does not select or alter the baseline."
+  ]
+}

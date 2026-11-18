@@ -1,0 +1,32 @@
+import {actualAudit,actualHarnessAudit,sourcesMatch} from "./source-audit.mjs";
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../..'),tasks=path.dirname(here);
+const t03=path.join(tasks,fs.readdirSync(tasks).find(name=>name.startsWith('T03_')));
+const {readRuns,skipReasons}=await import(pathToFileURL(path.join(t03,'observations.ts')).href);
+if(!process.argv[2])throw Error('Usage: compare-regression.mjs <full evidence folder>');
+const folder=path.resolve(process.argv[2]),current=readRuns(folder),previous=readRuns(path.join(t03,'evidence/t03-c4-default-2026-11-18T15-24-37-446Z'));
+assert.equal(current.length,1);assert.equal(previous.length,5);
+const count=items=>{const map=new Map();for(const item of items){const key=JSON.stringify([item.name,item.result]);map.set(key,(map.get(key)||0)+1);}return map;};
+const caseSource=process.argv[3]?path.resolve(process.argv[3]):path.join(root,'test/changed-test.test.ts'),caseBytes=fs.readFileSync(caseSource),caseSha256=createHash('sha256').update(caseBytes).digest('hex');
+const expected=[...caseBytes.toString('utf8').matchAll(/^test\("([^"]+)"/gm)].map(match=>match[1]);
+const harnessAudit=actualHarnessAudit(),selfName=/^test\("([^"]+)"/m.exec(fs.readFileSync(path.join(here,'evidence/project-call-selftest.ts.txt'),'utf8'))[1];
+assert.ok(fs.readFileSync(path.join(root,'test/project-harness.test.ts'),'utf8').includes('test('+JSON.stringify(selfName)));expected.push(selfName);
+const comparisons=previous.map(({run,raw},index)=>{
+ const before=count(run.inventory),after=count(current[0].run.inventory),removed=[],added=[];
+ for(const key of new Set([...before.keys(),...after.keys()])){const delta=(after.get(key)||0)-(before.get(key)||0);if(delta<0)removed.push({case:JSON.parse(key),count:-delta});if(delta>0)added.push({case:JSON.parse(key),count:delta});}
+ const actual=added.map(item=>{assert.equal(item.count,1);assert.equal(item.case[1],'pass');return item.case[0];}).sort();
+ return {previousRun:index+1,removed,added,newCasesMatch:JSON.stringify(actual)===JSON.stringify([...expected].sort()),skipReasonsMatch:JSON.stringify(skipReasons(raw))===JSON.stringify(skipReasons(current[0].raw))};
+});
+const oldHost=JSON.parse(fs.readFileSync(path.join(t03,'evidence/t03-c4-default-2026-11-18T15-24-37-446Z/environment.json'),'utf8')),host=JSON.parse(fs.readFileSync(path.join(folder,'environment.json'),'utf8'));
+assert.equal(host.testSources.find(item=>item.file==='test/changed-test.test.ts').sha256,caseSha256,'Case-name source must be the source actually measured');
+const sourceAudit={telegram:actualAudit(),harness:harnessAudit}; const oldSourcesSame=sourcesMatch(oldHost.testSources,host.testSources,sourceAudit.telegram,sourceAudit.harness);
+assert.equal(host.testSources.find(item=>item.file==='test/project-harness.test.ts').sha256,harnessAudit.afterSha256);
+const addedFiles=host.testSources.filter(now=>!oldHost.testSources.some(old=>old.file===now.file)).map(item=>item.file);
+const checks={allFiveComparisons:comparisons.every(item=>!item.removed.length&&item.newCasesMatch&&item.skipReasonsMatch),old93AndTwoAuditedChangesMatch:oldSourcesSame,oneNewTestFile:JSON.stringify(addedFiles)===JSON.stringify(['test/changed-test.test.ts']),helperSame:host.helpersSha256===oldHost.helpersSha256,runnerSame:host.runnerSha256===oldHost.runnerSha256};
+const report={sourceAudit,verified:Object.values(checks).every(Boolean),checks,caseSource:{file:caseSource,sha256:caseSha256},expectedNewCases:expected.length,addedFiles,totals:current[0].run.totals,elapsedMs:current[0].run.elapsedMs,comparisons,limitations:['Plain spec logs identify names/verdicts rather than per-case files. The unchanged old test byte hashes and the new file literal case names connect this inventory delta to its source.','A full pass preserves observed verdicts; independent code review and failure sentinels assess whether implementation changes weakened detection.']};
+fs.writeFileSync(process.argv[4]?path.resolve(process.argv[4]):path.join(folder,'t03-regression-comparison.json'),JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify({verified:report.verified,checks,expectedNewCases:expected.length,totals:report.totals,elapsedMs:report.elapsedMs},null,2));assert.equal(report.verified,true);

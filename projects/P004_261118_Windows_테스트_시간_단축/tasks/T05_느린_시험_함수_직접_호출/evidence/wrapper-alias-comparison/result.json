@@ -1,0 +1,76 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC",
+  "bash": "C:\\Program Files\\Git\\bin\\bash.exe",
+  "cwd": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()",
+  "env": {
+    "HOME": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()",
+    "TMP": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC",
+    "TEMP": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC",
+    "TMPDIR": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC"
+  },
+  "calls": [
+    {
+      "argv": [
+        "-c",
+        "PATH=\"$(cygpath -u \"$1\"):$PATH\"; actual=\"$(command -v pace)\"; printf \"%s\\n\" \"$actual\"; cygpath -aw \"$actual\"",
+        "p004-alias",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "/tmp/한글 space '$&()/.pace/bin/pace\nC:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\pace\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "-c",
+        "printf \"%s\\n\" \"$1\"; cygpath -aw \"$1\"; printf \"%s\\n\" \"$2\"; cygpath -aw \"$2\"",
+        "p004-alias",
+        "/c/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-wrapper-alias-4vDlXC/한글 space '$&()/.pace/bin/pace",
+        "/c/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-wrapper-alias-4vDlXC/한글 space '$&()/.pace/bin/other"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "/c/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-wrapper-alias-4vDlXC/한글 space '$&()/.pace/bin/pace\nC:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\pace\n/c/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-wrapper-alias-4vDlXC/한글 space '$&()/.pace/bin/other\nC:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\other\n",
+      "stderr": ""
+    }
+  ],
+  "result": {
+    "status": "pass",
+    "firstAlias": "/tmp/한글 space '$&()/.pace/bin/pace",
+    "secondAlias": "/c/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-wrapper-alias-4vDlXC/한글 space '$&()/.pace/bin/pace",
+    "negativeAlias": "/c/Users/ROOT-U~1/AppData/Local/Temp/pace-p004-wrapper-alias-4vDlXC/한글 space '$&()/.pace/bin/other",
+    "expectedIdentity": {
+      "input": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\pace",
+      "native": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\pace",
+      "dev": "346249331",
+      "ino": "14355223813071394"
+    },
+    "firstIdentity": {
+      "input": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\pace",
+      "native": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\pace",
+      "dev": "346249331",
+      "ino": "14355223813071394"
+    },
+    "secondIdentity": {
+      "input": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\pace",
+      "native": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\pace",
+      "dev": "346249331",
+      "ino": "14355223813071394"
+    },
+    "negativeIdentity": {
+      "input": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\other",
+      "native": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-wrapper-alias-4vDlXC\\한글 space '$&()\\.pace\\bin\\other",
+      "dev": "346249331",
+      "ino": "13792273859650084"
+    },
+    "positiveMatches": true,
+    "negativeRejected": true
+  },
+  "scriptSha256": "f04aae6eed6eb57166475a2acc838efcb38dbda6db20cfd4291a4fb6f001ff4b",
+  "limits": [
+    "One owned fixture comparison; no install or settings changes.",
+    "Different aliases are deliberately selected, not a reproduction of the historical failing schedule.",
+    "Only the observed file identities are established; historical cause remains unknown."
+  ]
+}

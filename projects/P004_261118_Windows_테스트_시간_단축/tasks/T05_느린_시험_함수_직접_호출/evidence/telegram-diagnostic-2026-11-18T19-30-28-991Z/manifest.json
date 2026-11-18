@@ -1,0 +1,50 @@
+{
+  "owned": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-8hD56Y",
+  "copy": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-8hD56Y\\source",
+  "originalSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+  "worktreeUnchanged": true,
+  "records": [
+    {
+      "mode": "original",
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-8hD56Y\\source\\test\\telegram-flow.test.ts"
+      ],
+      "originalSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "diagnosticSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "mockSourceSha256": "d00d20a0093ca48db34ee5829d076b7b534fc449131bde51417f32099706584a"
+    },
+    {
+      "mode": "delayed-bind",
+      "status": 1,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-8hD56Y\\source\\test\\telegram-flow.test.ts"
+      ],
+      "originalSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "diagnosticSourceSha256": "24f0e42c9e9eb5a526b438779dd2b4f0bc9b8325ca860b86298c2ea795a9cd64",
+      "mockSourceSha256": "b174f3b6ecd724959a68df89e7faab28d6f9690c63e239b5bb164808f8c152b7"
+    },
+    {
+      "mode": "delayed-bind-semantic",
+      "status": 0,
+      "signal": null,
+      "argv": [
+        "--test",
+        "--test-name-pattern=/bind.*\\uC800\\uC7A5 \\uC2E4\\uD328\\uB294",
+        "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-t05-diag-8hD56Y\\source\\test\\telegram-flow.test.ts"
+      ],
+      "originalSourceSha256": "7736b97bd7283877071bd9410b2cf4178fb972caa4410a384e87bb0cfa1a67b4",
+      "diagnosticSourceSha256": "58b1e05be07b1627ad35487ab876a3f71d73e41974d373a80072a3fc64a6e6ad",
+      "mockSourceSha256": "b174f3b6ecd724959a68df89e7faab28d6f9690c63e239b5bb164808f8c152b7"
+    }
+  ],
+  "limits": [
+    "Only copied source and local mock server were used. This is a controlled ordering diagnostic, not proof that the historical full failure had that exact schedule. No full load was repeated."
+  ]
+}

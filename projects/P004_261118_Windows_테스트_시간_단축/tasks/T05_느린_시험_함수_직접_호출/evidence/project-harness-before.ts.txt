@@ -1,0 +1,7 @@
+{
+  "kind": "source-reference",
+  "reason": "Existing synthetic secret fixtures are not repeated in project artifacts; original bytes remain in the owned archive.",
+  "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-sources-ARnBFl\\0-project-harness-before.ts.txt",
+  "sha256": "449c3fd82452416a05421d4d54033de5111148d6e78378e8e968aeffaa50732a",
+  "gitSourceReference": "harness-before-source-ref.json"
+}

@@ -1,0 +1,33 @@
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","new","알림"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\run\\pace-test-run-El9ncG\\pace-harness-u9rZgR\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\run\\pace-test-run-El9ncG\\pace-home-dcO9uL","pid":85896,"generation":"13434841-9d9e-4272-87fe-d181eb2a986f","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-pLQSmu/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","start","P001"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\run\\pace-test-run-El9ncG\\pace-harness-u9rZgR\\app","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\run\\pace-test-run-El9ncG\\pace-home-dcO9uL","pid":85896,"generation":"13434841-9d9e-4272-87fe-d181eb2a986f","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-pLQSmu/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","task","P001","보내기"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\run\\pace-test-run-El9ncG\\pace-harness-u9rZgR\\app.wt\\P001","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\run\\pace-test-run-El9ncG\\pace-home-dcO9uL","pid":85896,"generation":"13434841-9d9e-4272-87fe-d181eb2a986f","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-pLQSmu/source/src/cli.ts","status":0}
+DIRECT_PROJECT_CALL {"method":"main","argv":["project","done","P001","T01"],"cwd":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\run\\pace-test-run-El9ncG\\pace-harness-u9rZgR\\app.wt\\P001","home":"C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-mutation-pLQSmu\\run\\pace-test-run-El9ncG\\pace-home-dcO9uL","pid":85896,"generation":"13434841-9d9e-4272-87fe-d181eb2a986f","cliUrl":"file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-pLQSmu/source/src/cli.ts","status":0}
+✖ done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다 (4716.1807ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4917.6921
+
+✖ failing tests:
+
+test at test\project-harness.test.ts:605:1
+✖ done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다 (4716.1807ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-mutation-pLQSmu/source/test/project-harness.test.ts:649:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../..'),phase=process.argv[2];assert.ok(['before','after'].includes(phase));
+const e=path.join(here,'evidence'),prefix='candidate-'+phase;assert.equal(fs.existsSync(path.join(e,prefix+'-result.json')),false,'Never replace a measurement');
+const names=JSON.parse(fs.readFileSync(path.join(e,'function-candidate-analysis.json'))).candidates.map(c=>c.name),escape=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),pattern='^(?:'+names.map(escape).join('|')+')$';
+const argv=['--test','--test-name-pattern='+pattern,'test/project-harness.test.ts'],temp=fs.mkdtempSync(path.join(os.tmpdir(),'pace-p004-candidate-'+phase+'-')),env={...process.env,TMP:temp,TEMP:temp,TMPDIR:temp,PACE_HOME:path.join(temp,'pace')};delete env.NODE_TEST_CONTEXT;
+const source=fs.readFileSync(path.join(root,'test/project-harness.test.ts')),started=new Date().toISOString();console.log(phase,'three candidates started',started);const begin=performance.now(),r=spawnSync(process.execPath,argv,{cwd:root,env,encoding:'utf8',windowsHide:true,timeout:600000,maxBuffer:16*1024*1024}),elapsedMs=performance.now()-begin,raw=(r.stdout??'')+(r.stderr??'');fs.writeFileSync(path.join(e,prefix+'.log'),raw);fs.writeFileSync(path.join(e,prefix+'-result.json'),JSON.stringify({phase,argv,temp,started,ended:new Date().toISOString(),status:r.status,signal:r.signal,error:r.error?.message,elapsedMs,sourceSha256:createHash('sha256').update(source).digest('hex'),sourceUnchanged:source.equals(fs.readFileSync(path.join(root,'test/project-harness.test.ts'))),limits:['Single focused before/after observation; not equivalent to the complete check or a causal estimate of total savings.']},null,2)+'\n');console.log(phase,r.status,elapsedMs);assert.equal(r.status,0,raw);assert.match(raw,/tests 3\r?\n/);assert.match(raw,/pass 3\r?\n/);assert.match(raw,/skipped 0\r?\n/);
