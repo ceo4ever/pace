@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, writeFileSync, symlinkSync, readFileSync, existsSync, chmodSync } from "node:fs";
+import { mkdirSync, writeFileSync, symlinkSync, readFileSync, existsSync, chmodSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { executeTest } from "../src/test-runner/runner.ts";
@@ -85,12 +85,12 @@ test("전체 검사 선언 부재와 base 조회 실패는 작업본 선언으�
   const missing=(await executeTest(f.root,["all"])); assert.equal(missing.code,1); assert.doesNotMatch(missing.text,/전체 검사 · 명령: true/);
 });
 
-test("T02 다중 패키지 시범 구성은 스키마로 읽고 미지원 Vitest를 확인 불가로 처리한다", async () => {
+test("T02 다중 패키지 시범 구성은 스키마로 읽고 로컬 vitest가 없으면 확인 불가로 처리한다", async () => {
   const f=fixture(); const sample=readFileSync(new URL("./fixtures/sample-test-map.json",import.meta.url),"utf8");
   for (const part of ["core","backend","frontend"]) { f.write(`workspace/${part}/src/sample.ts`,""); f.write(`workspace/${part}/test/sample.test.ts`,""); }
   f.write("workspace/desktop/src/sample.ts",""); f.write("workspace/desktop/test/sample.spec.ts",""); f.write("workspace/test/e2e/sample.spec.ts","");
   for (const file of ["workspace/package.json","workspace/pnpm-lock.yaml","workspace/vitest.config.ts","workspace/tsconfig.base.json","workspace/playwright.config.ts","workspace/desktop/playwright.config.ts"]) f.write(file,"");
-  f.write(".pace/test-map.json",sample); const result=(await executeTest(f.root,["unit","frontend"])); assert.equal(result.code,3,result.text); assert.match(result.text,/미지원/);
+  f.write(".pace/test-map.json",sample); const result=(await executeTest(f.root,["unit","frontend"])); assert.equal(result.code,3,result.text); assert.match(result.text,/로컬 vitest 없음/);
   f.write(".pace/test-map.json",sample.replace('workspace/frontend/test/**/*.test.ts','workspace/frontend/test/missing*.ts'));
   const invalid=(await executeTest(f.root,["unit","frontend"])); assert.equal(invalid.code,1); assert.match(invalid.text,/구성 오류.*일치 0건/);
 });
@@ -125,4 +125,65 @@ test("미지원 러너 설정과 결과를 읽지 못하는 실행은 확인 불
   const before=process.env.PATH; process.env.PATH=`${bin}:${before ?? ""}`;
   try { const unknown=await executeTest(f.root,["unit","py"]); assert.equal(unknown.code,3,unknown.text); assert.match(unknown.text,/확인 불가/); }
   finally { if (before===undefined) delete process.env.PATH; else process.env.PATH=before; }
+});
+
+// 가짜 로컬 vitest: 각 테스트 파일 본문의 JSON({tests, failed, skipped, todo, omit})으로 보고서를 쓰고, 호출 인자를 calls.log에 남긴다
+const FAKE_VITEST = String.raw`import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+const args = process.argv.slice(2); appendFileSync(resolve('calls.log'), JSON.stringify(args) + '\n');
+const out = args.find((a) => a.startsWith('--outputFile='))?.slice(13);
+const ci = args.indexOf('--config'); const files = args.filter((a, i) => i > 0 && !a.startsWith('--') && (ci < 0 || i !== ci + 1));
+if (files.some((f) => readFileSync(f, 'utf8').includes('noreport'))) process.exit(1);
+const results = []; const n = { tests: 0, failed: 0, skipped: 0, todo: 0 };
+for (const f of files) { const s = JSON.parse(readFileSync(f, 'utf8')); if (s.omit) continue; for (const k in n) n[k] += s[k] ?? 0;
+  const failed = Array.from({ length: s.failed ?? 0 }, (_, i) => ({ status: 'failed', fullName: 'bad case ' + i, failureMessages: ['\n  AssertionError: boom ' + i + '\n    at x'] }));
+  results.push({ name: resolve(f).split('\\').join('/'), status: s.failed || s.loadError ? 'failed' : 'passed', message: s.loadError, assertionResults: failed }); }
+writeFileSync(out, JSON.stringify({ numTotalTests: n.tests, numFailedTests: n.failed, numPendingTests: n.skipped, numTodoTests: n.todo, numFailedTestSuites: 0, success: n.failed === 0, testResults: results }));
+process.exit(n.failed ? 1 : 0);
+`;
+
+function vitestFixture() {
+  const f = fixture();
+  f.write("app/node_modules/vitest/package.json", JSON.stringify({ name: "vitest", bin: { vitest: "./vitest.mjs" } }));
+  f.write("app/node_modules/vitest/vitest.mjs", FAKE_VITEST);
+  f.write("app/vitest.config.mts", "export default {};\n");
+  const cases: Record<string, object> = { "a.test.ts": { tests: 2 }, "b.test.ts": { tests: 1 }, "fail.test.ts": { tests: 1, failed: 1 }, "skip.test.ts": { tests: 1, skipped: 1 }, "zero.test.ts": { tests: 0 }, "omit.test.ts": { omit: true }, "load.test.ts": { loadError: "SyntaxError: bad import\nstack" } };
+  for (const [name, body] of Object.entries(cases)) f.write(`app/src/${name}`, JSON.stringify(body));
+  f.write("app/src/noreport.test.ts", '"noreport"');
+  const vunit = (id: string, tests: string[]) => ({ id, sources: ["src/a.ts"], tests, runner: { kind: "vitest", cwd: "app", config: "app/vitest.config.mts" }, requires: [] as string[] });
+  f.map.units.push(vunit("vt", ["app/src/a.test.ts", "app/src/b.test.ts"]), vunit("vt-fail", ["app/src/a.test.ts", "app/src/fail.test.ts"]), vunit("vt-skip", ["app/src/skip.test.ts"]), vunit("vt-zero", ["app/src/zero.test.ts"]), vunit("vt-omit", ["app/src/a.test.ts", "app/src/omit.test.ts"]), vunit("vt-noreport", ["app/src/noreport.test.ts"]), vunit("vt-load", ["app/src/a.test.ts", "app/src/load.test.ts"]));
+  f.save();
+  const calls = () => existsSync(join(f.root, "app/calls.log")) ? readFileSync(join(f.root, "app/calls.log"), "utf8").trim().split("\n").map((l) => JSON.parse(l) as string[]) : [];
+  return { ...f, calls };
+}
+
+test("vitest: 단위의 파일을 한 번에 로컬 vitest로 돌리고 설정 파일을 넘긴다", async () => {
+  const f = vitestFixture();
+  const r = await executeTest(f.root, ["unit", "vt"]); assert.equal(r.code, 0, r.text); assert.match(r.text, /테스트 3 · skip 0 · 실패 0/);
+  const calls = f.calls(); assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0]!.slice(0, 2), ["run", "--reporter=json"]);
+  assert.match(calls[0]![calls[0]!.indexOf("--config") + 1]!, /vitest\.config\.mts$/);
+  assert.deepEqual(calls[0]!.slice(-2), ["src/a.test.ts", "src/b.test.ts"]);
+  const one = await executeTest(f.root, ["file", "app/src/b.test.ts"]); assert.equal(one.code, 0, one.text);
+  assert.deepEqual(f.calls()[1]!.slice(-1), ["src/b.test.ts"]); assert.equal(f.calls().length, 2);
+});
+
+test("vitest: 실패·전체 skip·0건·보고서에 빠진 파일은 실패, 보고서 없음·vitest 없음은 확인 불가", async () => {
+  const f = vitestFixture();
+  for (const id of ["vt-fail", "vt-skip", "vt-zero", "vt-omit"]) { const r = await executeTest(f.root, ["unit", id]); assert.equal(r.code, 1, `${id}: ${r.text}`); }
+  assert.match((await executeTest(f.root, ["unit", "vt-omit"])).text, /실행되지 않은 파일: src\/omit\.test\.ts/);
+  // 실패 테스트는 한 번만 세고(파일 실패와 이중으로 세지 않음) 파일 › 이름 — 첫 줄을 남긴다
+  const failed = await executeTest(f.root, ["unit", "vt-fail"]);
+  assert.match(failed.text, /실패 1\n/); assert.match(failed.text, /- src\/fail\.test\.ts › bad case 0 — AssertionError: boom 0\n/);
+  const load = await executeTest(f.root, ["unit", "vt-load"]); assert.equal(load.code, 1, load.text);
+  assert.match(load.text, /실패 1\n/); assert.match(load.text, /- src\/load\.test\.ts — 파일 실패: SyntaxError: bad import\n/);
+  const noreport = await executeTest(f.root, ["unit", "vt-noreport"]); assert.equal(noreport.code, 3, noreport.text); assert.match(noreport.text, /vitest 보고서 없음/);
+  rmSync(join(f.root, "app/node_modules"), { recursive: true, force: true });
+  const missing = await executeTest(f.root, ["unit", "vt"]); assert.equal(missing.code, 3, missing.text); assert.match(missing.text, /로컬 vitest 없음/);
+});
+
+test("설정 파일은 vitest만 받고 다른 러너는 확인 불가로 둔다", async () => {
+  const f = vitestFixture();
+  f.map.units[0]!.runner = { kind: "node-test", cwd: ".", config: "app/vitest.config.mts" } as never; f.save();
+  assert.equal((await executeTest(f.root, ["unit", "good"])).code, 3);
 });
