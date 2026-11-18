@@ -1,0 +1,15 @@
+{
+  "purpose": "Read-only checkout-filter reproduction of raw trace SHA drift, no user Git config changed",
+  "file": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/nested-isolation-2026-11-18T12-40-06-394Z/trace/enter-27092.json",
+  "sourceSha256": "7a9e50084bb10912c8cb1c0cdca8f7f5030e1ddc131e6671f4f2d64d184cec34",
+  "blob": {
+    "status": 0,
+    "sha256": "7a9e50084bb10912c8cb1c0cdca8f7f5030e1ddc131e6671f4f2d64d184cec34"
+  },
+  "autocrlfFiltered": {
+    "status": 0,
+    "sha256": "bb8cb92e716851c2878033fe1a5d193f686d8a4a4787c4e0b166cf8fb9b04c87"
+  },
+  "sourceEqualsBlob": true,
+  "checkoutChangesBytes": true
+}

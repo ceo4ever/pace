@@ -2,9 +2,33 @@ import { spawn, type ChildProcess } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-/** Node 기본 동시성은 그대로 두고 Windows에서만 테스트 파일을 순차 실행한다. */
+const windowsConcurrency = 4;
+const valueOptions = new Set(["--test-concurrency", "--test-name-pattern", "--test-skip-pattern", "--test-reporter", "--test-reporter-destination", "--test-timeout", "--test-shard", "--test-isolation", "--import", "--require", "-r"]);
+const booleanOptions = new Set(["--test-only", "--test-force-exit", "--experimental-test-coverage", "--test-update-snapshots", "--experimental-strip-types", "--no-warnings", "--trace-warnings"]);
+
+/** Keep options before files; an explicit concurrency replaces the Windows default. */
 export function testArguments(platform: NodeJS.Platform, extra: string[] = []): string[] {
-  return ["--test", ...(platform === "win32" ? ["--test-concurrency=1"] : []), "test/**/*.test.ts", ...extra];
+  const options: string[] = [], files: string[] = [];
+  let filesOnly = false, separator = false, concurrency = false;
+  for (let index = 0; index < extra.length; index++) {
+    const arg = extra[index]!;
+    if (!filesOnly && arg === "--") { filesOnly = true; separator = true; continue; }
+    if (filesOnly || !arg.startsWith("-")) { files.push(arg); continue; }
+    const equal = arg.indexOf("="), key = equal < 0 ? arg : arg.slice(0, equal);
+    if (key === "--test-concurrency") {
+      const value = equal < 0 ? extra[++index] : arg.slice(equal + 1);
+      if (concurrency || !value || !/^\d+$/.test(value) || !Number.isSafeInteger(Number(value)) || Number(value) < 1) throw new Error("test concurrency must be one positive integer value");
+      concurrency = true; options.push(`--test-concurrency=${Number(value)}`); continue;
+    }
+    if (equal >= 0 || booleanOptions.has(arg)) { options.push(arg); continue; }
+    if (valueOptions.has(arg)) {
+      const value = extra[++index];
+      if (value === undefined || value.startsWith("--")) throw new Error(`Missing option value: ${arg}; use ${arg}=value for a leading dash`);
+      options.push(arg, value); continue;
+    }
+    throw new Error(`Unsupported bare option ${arg}; use --option=value for value options`);
+  }
+  return ["--test", ...(platform === "win32" && !concurrency ? [`--test-concurrency=${windowsConcurrency}`] : []), ...options, ...(separator ? ["--"] : []), "test/**/*.test.ts", ...files];
 }
 
 /** 신호나 실행 오류도 성공으로 보고하지 않는다. */

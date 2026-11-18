@@ -1,0 +1,253 @@
+{
+  "verified": true,
+  "selected": 8,
+  "ranges": [
+    {
+      "concurrency": 4,
+      "samples": 2,
+      "minMs": 692948.1093,
+      "maxMs": 702170.3589
+    },
+    {
+      "concurrency": 8,
+      "samples": 2,
+      "minMs": 633831.0253999999,
+      "maxMs": 657638.7758000001
+    }
+  ],
+  "rows": [
+    {
+      "step": 1,
+      "concurrency": 4,
+      "elapsedMs": 692948.1093,
+      "invocation": [
+        "> node scripts/test.ts --test-concurrency=4"
+      ],
+      "invocationMatches": true,
+      "commit": "3ab9b9477ec0b5129b47eb2a798e0268008909e6",
+      "commitMatches": true,
+      "fingerprintMatches": true,
+      "runtimeStatusMatches": true,
+      "nonLogDiffStatsMatch": true,
+      "environmentMatches": true,
+      "environment": {
+        "node": "v24.22.3",
+        "npm": {
+          "status": 0,
+          "stdout": "11.19.1",
+          "stderr": ""
+        },
+        "git": {
+          "status": 0,
+          "stdout": "git version 2.56.0.windows.4",
+          "stderr": ""
+        },
+        "python": {
+          "status": 0,
+          "stdout": "Python 3.14.10",
+          "stderr": ""
+        },
+        "os": {
+          "platform": "win32",
+          "release": "10.0.26200",
+          "cpu": "AMD Ryzen 7 5800X 8-Core Processor             ",
+          "cores": 16,
+          "totalMemory": 34282184704
+        },
+        "power": {
+          "status": 0,
+          "stdout": "���� ����ǥ GUID: 9570a19f-262f-495e-9481-772b2ff87523  (�ְ��� ����)",
+          "stderr": ""
+        },
+        "defender": {
+          "status": 0,
+          "stdout": "{\"AntivirusEnabled\":true,\"RealTimeProtectionEnabled\":true}",
+          "stderr": ""
+        }
+      },
+      "outsideEvidenceStatusDifferences": [],
+      "outsideEvidenceDiffDifferences": [],
+      "commandStatusesValid": true
+    },
+    {
+      "step": 2,
+      "concurrency": 8,
+      "elapsedMs": 633831.0253999999,
+      "invocation": [
+        "> node scripts/test.ts --test-concurrency=8"
+      ],
+      "invocationMatches": true,
+      "commit": "3ab9b9477ec0b5129b47eb2a798e0268008909e6",
+      "commitMatches": true,
+      "fingerprintMatches": true,
+      "runtimeStatusMatches": true,
+      "nonLogDiffStatsMatch": true,
+      "environmentMatches": true,
+      "environment": {
+        "node": "v24.22.3",
+        "npm": {
+          "status": 0,
+          "stdout": "11.19.1",
+          "stderr": ""
+        },
+        "git": {
+          "status": 0,
+          "stdout": "git version 2.56.0.windows.4",
+          "stderr": ""
+        },
+        "python": {
+          "status": 0,
+          "stdout": "Python 3.14.10",
+          "stderr": ""
+        },
+        "os": {
+          "platform": "win32",
+          "release": "10.0.26200",
+          "cpu": "AMD Ryzen 7 5800X 8-Core Processor             ",
+          "cores": 16,
+          "totalMemory": 34282184704
+        },
+        "power": {
+          "status": 0,
+          "stdout": "���� ����ǥ GUID: 9570a19f-262f-495e-9481-772b2ff87523  (�ְ��� ����)",
+          "stderr": ""
+        },
+        "defender": {
+          "status": 0,
+          "stdout": "{\"AntivirusEnabled\":true,\"RealTimeProtectionEnabled\":true}",
+          "stderr": ""
+        }
+      },
+      "outsideEvidenceStatusDifferences": [],
+      "outsideEvidenceDiffDifferences": [
+        " .../log.jsonl\"                                     |  5 +++",
+        " 12 files changed, 151 insertions(+), 24 deletions(-)",
+        " .../log.jsonl\"                                     |  7 ++++",
+        " 12 files changed, 153 insertions(+), 24 deletions(-)"
+      ],
+      "commandStatusesValid": true
+    },
+    {
+      "step": 3,
+      "concurrency": 8,
+      "elapsedMs": 657638.7758000001,
+      "invocation": [
+        "> node scripts/test.ts --test-concurrency=8"
+      ],
+      "invocationMatches": true,
+      "commit": "3ab9b9477ec0b5129b47eb2a798e0268008909e6",
+      "commitMatches": true,
+      "fingerprintMatches": true,
+      "runtimeStatusMatches": true,
+      "nonLogDiffStatsMatch": true,
+      "environmentMatches": true,
+      "environment": {
+        "node": "v24.22.3",
+        "npm": {
+          "status": 0,
+          "stdout": "11.19.1",
+          "stderr": ""
+        },
+        "git": {
+          "status": 0,
+          "stdout": "git version 2.56.0.windows.4",
+          "stderr": ""
+        },
+        "python": {
+          "status": 0,
+          "stdout": "Python 3.14.10",
+          "stderr": ""
+        },
+        "os": {
+          "platform": "win32",
+          "release": "10.0.26200",
+          "cpu": "AMD Ryzen 7 5800X 8-Core Processor             ",
+          "cores": 16,
+          "totalMemory": 34282184704
+        },
+        "power": {
+          "status": 0,
+          "stdout": "���� ����ǥ GUID: 9570a19f-262f-495e-9481-772b2ff87523  (�ְ��� ����)",
+          "stderr": ""
+        },
+        "defender": {
+          "status": 0,
+          "stdout": "{\"AntivirusEnabled\":true,\"RealTimeProtectionEnabled\":true}",
+          "stderr": ""
+        }
+      },
+      "outsideEvidenceStatusDifferences": [],
+      "outsideEvidenceDiffDifferences": [
+        " .../log.jsonl\"                                     |  5 +++",
+        " 12 files changed, 151 insertions(+), 24 deletions(-)",
+        " .../log.jsonl\"                                     |  7 ++++",
+        " 12 files changed, 153 insertions(+), 24 deletions(-)"
+      ],
+      "commandStatusesValid": true
+    },
+    {
+      "step": 4,
+      "concurrency": 4,
+      "elapsedMs": 702170.3589,
+      "invocation": [
+        "> node scripts/test.ts --test-concurrency=4"
+      ],
+      "invocationMatches": true,
+      "commit": "3ab9b9477ec0b5129b47eb2a798e0268008909e6",
+      "commitMatches": true,
+      "fingerprintMatches": true,
+      "runtimeStatusMatches": true,
+      "nonLogDiffStatsMatch": true,
+      "environmentMatches": true,
+      "environment": {
+        "node": "v24.22.3",
+        "npm": {
+          "status": 0,
+          "stdout": "11.19.1",
+          "stderr": ""
+        },
+        "git": {
+          "status": 0,
+          "stdout": "git version 2.56.0.windows.4",
+          "stderr": ""
+        },
+        "python": {
+          "status": 0,
+          "stdout": "Python 3.14.10",
+          "stderr": ""
+        },
+        "os": {
+          "platform": "win32",
+          "release": "10.0.26200",
+          "cpu": "AMD Ryzen 7 5800X 8-Core Processor             ",
+          "cores": 16,
+          "totalMemory": 34282184704
+        },
+        "power": {
+          "status": 0,
+          "stdout": "���� ����ǥ GUID: 9570a19f-262f-495e-9481-772b2ff87523  (�ְ��� ����)",
+          "stderr": ""
+        },
+        "defender": {
+          "status": 0,
+          "stdout": "{\"AntivirusEnabled\":true,\"RealTimeProtectionEnabled\":true}",
+          "stderr": ""
+        }
+      },
+      "outsideEvidenceStatusDifferences": [],
+      "outsideEvidenceDiffDifferences": [
+        " .../log.jsonl\"                                     |  5 +++",
+        " 12 files changed, 151 insertions(+), 24 deletions(-)",
+        " .../log.jsonl\"                                     |  7 ++++",
+        " 12 files changed, 153 insertions(+), 24 deletions(-)"
+      ],
+      "commandStatusesValid": true
+    }
+  ],
+  "limitations": [
+    "Git status outside evidence and diff stat were compared and all differences are disclosed; these snapshots are not full historical file-content snapshots.",
+    "Project event log and progress memory were updated during collection; read-only source/metadata inspection and independent read review also overlapped. No additional test or performance diagnostic ran during collection.",
+    "Recorded source fingerprints cover all 95 test files, runner, helpers and five measurement tools. Tracked runtime source/config changes are additionally checked through unchanged commit and status/stat rows.",
+    "Cumulative process CPU snapshots do not prove a quiet host or quantify outside load. The 5% rule on two samples is operational, not statistical."
+  ]
+}

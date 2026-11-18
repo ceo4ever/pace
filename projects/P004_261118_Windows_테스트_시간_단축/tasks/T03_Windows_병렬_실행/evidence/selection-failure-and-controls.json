@@ -1,0 +1,79 @@
+{
+  "failedSeries": {
+    "folder": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T03_Windows_병렬_실행/evidence/t03-selected-2026-11-18T14-32-40-525Z",
+    "status": 1,
+    "elapsedMs": 682084.4649,
+    "totals": {
+      "tests": 970,
+      "suites": 0,
+      "pass": 960,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 9,
+      "todo": 0,
+      "duration_ms": 680263.6183
+    },
+    "completedRuns": 1,
+    "remainingRunsStarted": false,
+    "inner": {
+      "tests": 181,
+      "pass": 180,
+      "fail": 1,
+      "skipped": 0,
+      "file": "test/playbook/healer-e2e.test.mjs",
+      "line": 184,
+      "scenario": "popup",
+      "expected": "done",
+      "observed": "step-failed",
+      "heals": [],
+      "reason": "Not recorded by original assertion; cannot retrospectively identify RPC or driver error"
+    }
+  },
+  "sourceBoundary": {
+    "tests": true,
+    "runner": true,
+    "helpers": true,
+    "tools": true,
+    "commit": true,
+    "runtimeGitStatus": true,
+    "nonLogDiffStats": true,
+    "defaultArguments": true
+  },
+  "controls": [
+    {
+      "folder": "healer-diagnostic-2026-11-18T14-54-19-514Z",
+      "status": 0,
+      "passed": true,
+      "totals": {
+        "tests": 1,
+        "suites": 0,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 180064.527
+      },
+      "scope": "One original browser E2E only, diagnostic load hook adds safe error codes and failure status fields without changing actions/retries/assertions; not a full stability or performance observation",
+      "errorEvents": []
+    },
+    {
+      "folder": "healer-diagnostic-2026-11-18T14-58-45-572Z",
+      "status": 0,
+      "passed": true,
+      "totals": {
+        "tests": 181,
+        "suites": 0,
+        "pass": 181,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "duration_ms": 183576.4904
+      },
+      "scope": "Diagnostic load hook adds safe error codes and failure status fields without changing actions/retries/assertions; original skip conditions remain; not a full stability or performance observation",
+      "errorEvents": []
+    }
+  ],
+  "goalSatisfied": false
+}

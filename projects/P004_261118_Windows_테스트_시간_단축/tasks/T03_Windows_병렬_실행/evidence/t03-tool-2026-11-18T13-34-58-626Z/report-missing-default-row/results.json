@@ -1,0 +1,44 @@
+[
+  {
+    "status": 0,
+    "signal": null,
+    "elapsedMs": 142.57639999999992,
+    "started": "2026-11-18T13:35:00.931Z",
+    "ended": "2026-11-18T13:35:01.074Z",
+    "log": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\t03-tool-2026-11-18T13-34-58-626Z\\report-missing-default-row\\baseline.log",
+    "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-dhSv9j",
+    "totals": {
+      "tests": 2,
+      "suites": 0,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 75.065
+    },
+    "inventory": [
+      {
+        "name": "report sentinel a",
+        "result": "pass",
+        "durationMs": 0.5828
+      },
+      {
+        "name": "report sentinel b",
+        "result": "pass",
+        "durationMs": 0.1142
+      }
+    ],
+    "complete": true,
+    "problems": [],
+    "observed": {
+      "tests": 2,
+      "suites": 0,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  }
+]

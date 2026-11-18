@@ -1,0 +1,10 @@
+{
+  "kind": "baseline-summary",
+  "scope": "baseline-only; auxiliary result is separate",
+  "valid": true,
+  "runs": 5,
+  "medianMs": 680918.0485,
+  "minMs": 680447.8463000001,
+  "maxMs": 685688.7751000002,
+  "reusedBaseline": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\t03-c4-default-2026-11-18T15-24-37-446Z"
+}

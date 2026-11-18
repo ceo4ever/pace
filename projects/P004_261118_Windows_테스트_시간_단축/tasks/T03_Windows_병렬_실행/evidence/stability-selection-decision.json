@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "authority": "main 판단",
+  "status": "approved-for-validation",
+  "taskHash": "b8db38246827bdd04edc71ec5ecb3e262b76347112b29f7a000cba9dbff913c7",
+  "comparison": "comparison-2026-11-18T13-42-41-253Z/comparison.json",
+  "initialSpeedCandidate": 8,
+  "excludedCandidate": 8,
+  "excludedFailure": "t03-selected-2026-11-18T14-32-40-525Z",
+  "candidate": 4,
+  "reason": "Default 8 failed its stability series; prioritize stability and validate the other candidate that passed both original comparisons",
+  "requiredNewSuccessiveRuns": 5,
+  "requiredFailures": 0,
+  "requiredCancelled": 0,
+  "preserveAssertionsAndSkipPolicy": true,
+  "causeFixedClaim": false,
+  "ifCandidate4Fails": "Stop immediately, preserve the original and ask main; do not retry into success",
+  "overallDiagnosis8OrProductBehaviorChange": "not authorized by this decision",
+  "reviewEvidence": "evidence/pre-review-2-stability.md",
+  "appliedDefault": 4,
+  "appliedAtUtc": "2026-11-18T15:19:28.017Z"
+}

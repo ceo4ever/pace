@@ -1,0 +1,14 @@
+{
+  "purpose": "Npm argument forwarding preflight with lightweight isolated package, not a project full check or runner concurrency proof",
+  "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-npm-args-l311H8",
+  "argv": [
+    "/d",
+    "/s",
+    "/c",
+    "npm run check -- -- --test-concurrency=4"
+  ],
+  "status": 0,
+  "stdout": "\n> check\n> node typecheck.cjs && npm test -- --test-concurrency=4\n\nTYPECHECK_SENTINEL\n\n> test\n> node runner.cjs --test-concurrency=4\n\nARGUMENT_SENTINEL:[\"--test-concurrency=4\"]\n",
+  "stderr": "",
+  "verified": true
+}

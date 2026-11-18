@@ -1,0 +1,4 @@
+2026-11-18T14:15:54.299Z run-1: C:\WINDOWS\system32\cmd.exe /d /s /c npm run check -- -- --test-concurrency=4
+2026-11-18T14:27:36.471Z run-1: exit 0 702s
+Report: D:\LucasStudio\pace.wt\P004\projects\P004_261118_Windows_테스트_시간_단축\tasks\T03_Windows_병렬_실행\evidence\comparison-2026-11-18T13-42-41-253Z\evidence\c4-4-2026-11-18T14-15-52-246Z\report.md
+Measurement evidence: D:\LucasStudio\pace.wt\P004\projects\P004_261118_Windows_테스트_시간_단축\tasks\T03_Windows_병렬_실행\evidence\comparison-2026-11-18T13-42-41-253Z\evidence\c4-4-2026-11-18T14-15-52-246Z

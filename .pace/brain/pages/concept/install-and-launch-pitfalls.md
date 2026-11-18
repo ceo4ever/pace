@@ -3,10 +3,10 @@ type: concept
 title: 설치·실행 함정 모음
 summary: "< /dev/tty로 넘기면 Claude Code(Bun)가 kqueue EINVAL로 죽음, 처음 폴더는 신뢰 창 기본값이 종료, ps1은 BOM 필수, 자동 모드는 자기 설정 수정과 rm -rf를 막음"
 tags: [install, pitfalls, macos, windows]
-sources: [code:scripts/install.sh, code:scripts/install.ps1, code:src/setup/onboard.ts, 실측:2026-10-22, code:src/project/harness.ts, test:test/project-harness.test.ts, code:src/project/brain.ts, test:test/brain.test.ts, code:src/setup/install.ts, test:test/install-windows-wrapper.test.ts, test/intent-preview.test.ts]
+sources: [code:scripts/install.sh, code:scripts/install.ps1, code:src/setup/onboard.ts, 실측:2026-10-22, code:src/project/harness.ts, test:test/project-harness.test.ts, code:src/project/brain.ts, test:test/brain.test.ts, code:src/setup/install.ts, test:test/install-windows-wrapper.test.ts, test/intent-preview.test.ts, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/TASK-CLOSE.md, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/existing-test-body-audit.json]
 related: [llm-cannot-speak-first]
 created: 2026-10-22
-updated: 2026-11-17
+updated: 2026-11-18
 status: active
 ---
 
@@ -47,3 +47,7 @@ PowerShell과 cmd에서는 pace.cmd를 쓰고 Git Bash에서는 확장자 없는
 ## Windows 격리 홈과 Chrome DevTools (2026-11-15)
 
 Chrome 157은 임시 USERPROFILE과 별도 형제 AppData 경로를 쓰면 기본 사용자 데이터 경로를 판별하지 못해 별도 프로필에도 DevTools를 거부할 수 있다. 임시 홈 아래 AppData/Roaming, AppData/Local, AppData/LocalLow, Desktop, Documents, Downloads를 만들고 HOME·USERPROFILE·APPDATA·LOCALAPPDATA를 그 구조로 맞추면 사용자 홈을 쓰지 않고 실렌더 및 소유 Chrome 정리 시험이 통과했다. 일반 홈 단독 통과와 격리 실행은 구분한다. [근거: test/intent-preview.test.ts]
+
+## Git 준비 변경 뒤 근거 대조 (2026-11-18)
+
+P004 T02는 하네스 시험의 반복 Git 준비를 파일 프로세스별 원본의 독립 복사로 바꿨다. 기존 project-harness 72개·agent-chain 27개 시험 본문은 줄바꿈을 정규화한 해시 대조에서 동일하며 실제 Git/CLI 검증은 유지했다. 하네스·지표·설치 제품 코드는 이번 변경 대상이 아니므로 위 흐름과 함정의 계약을 바꾸지 않는다. Windows 새 전체 968건은 959 통과·실패 0·기존 skip 9 및 사유 동일이며 독립 tester가 기준 원시 3회와 대조했다. 이것은 기존 설치 미실기·범위 한계를 해소한 것으로 확대하지 않는다. 근거는 P004 T02 TASK-CLOSE와 existing-test-body-audit.json이다.

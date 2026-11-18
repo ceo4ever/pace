@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "--test",
+    "--test-reporter=tap",
+    "--test-name-pattern=runner options:|runner npm:",
+    "test/test-command.test.ts"
+  ],
+  "status": 1,
+  "signal": null
+}

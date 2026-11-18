@@ -1,0 +1,23 @@
+{
+  "stagedEvidence": 482,
+  "stagedByteMismatches": [],
+  "historicalUnstagedByteDifferences": [
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/evidence/baseline-2026-11-18T08-56-17-364Z/run-1.log",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/evidence/baseline-2026-11-18T08-56-17-364Z/run-2.log",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/evidence/baseline-2026-11-18T08-56-17-364Z/run-3.log",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/evidence/post-review-1-stage1.md",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/evidence/post-review-1-stage2.md",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/evidence/self-test-2026-11-18T08-55-46-303Z/fixture-profile.log",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/evidence/task-reviewed-snapshot.md",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/post-review-1-stage1.md",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/post-review-1-stage2.md",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/pre-review-1-stage1.md",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/pre-review-1-stage2.md",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/t02-2026-11-18T11-40-54-469Z/run-1.log",
+    "projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/t02-fixed-2026-11-18T12-44-08-858Z/run-1.log"
+  ],
+  "limitations": [
+    "Old evidence blobs are not rewritten by the new text attribute. Historical LF/CRLF index differences are outside this task staged evidence.",
+    "Source/document whitespace checks exclude byte-preserved evidence; raw log whitespace is retained."
+  ]
+}

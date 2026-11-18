@@ -1,0 +1,42 @@
+{
+  "verified": true,
+  "differences": [
+    {
+      "file": "scripts/test.ts",
+      "originalSnapshot": "t03-selected-2026-11-18T14-32-40-525Z\\runner-source-used.ts",
+      "originalEnvironmentSha256": "432b24a0aec680ab09e44c2baf1488ba3a50ec0a1a96448476d1373860b98c43",
+      "currentEnvironmentSha256": "0627c1826c9452bdd94b18b0df2a8f08c5036aade5f5ba89183231fbfaa7ec66",
+      "bytes": 4008,
+      "differences": [
+        {
+          "offset": 174,
+          "before": 56,
+          "after": 52
+        }
+      ]
+    },
+    {
+      "file": "test/test-command.test.ts",
+      "originalSnapshot": "t03-selected-2026-11-18T14-32-40-525Z\\runner-tests-used.ts",
+      "originalEnvironmentSha256": "95fb38f122312b992bb109522cc885701450c89bf4da5ac694619d7dee012dd6",
+      "currentEnvironmentSha256": "070799e06b3bfbce8767c1770d02063894a37565cf8712393f9211f8df80bc32",
+      "bytes": 13465,
+      "differences": [
+        {
+          "offset": 694,
+          "before": 56,
+          "after": 52
+        }
+      ]
+    }
+  ],
+  "other94TestHashesIdentical": true,
+  "helperAndFiveMeasurementToolsIdentical": true,
+  "launch": "candidate4-validation-launch.json",
+  "oldBoundary": "t03-selected-2026-11-18T14-32-40-525Z/source-boundary.json",
+  "currentBoundary": "t03-c4-default-2026-11-18T15-24-37-446Z/source-boundary.json",
+  "limits": [
+    "Byte comparison is tied to preserved source copies and measurement start hashes; start/end boundaries do not provide continuous monitoring."
+  ],
+  "verifierSha256": "9ef8ff1d0e966ff2c6b424ac38bf8287e1190306e4c25bd0b53efa61c4c3698d"
+}

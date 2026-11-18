@@ -1,0 +1,99 @@
+{
+  "auxiliaryOnly": true,
+  "valid": false,
+  "totals": {
+    "tests": 2,
+    "failed": 0,
+    "passed": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "topLevel": 2,
+    "suites": 0
+  },
+  "fileTimes": [
+    {
+      "file": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-M7vd51\\report-two.test.cjs",
+      "durationMs": 6.3128,
+      "counts": {
+        "tests": 2,
+        "failed": 0,
+        "passed": 2,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 2,
+        "suites": 0
+      }
+    }
+  ],
+  "inventory": [
+    {
+      "file": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-M7vd51\\report-two.test.cjs",
+      "entryFile": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-M7vd51\\report-two.test.cjs",
+      "line": 1,
+      "column": 35,
+      "name": "report sentinel a",
+      "kind": "test",
+      "result": "pass",
+      "durationMs": 0.5799
+    },
+    {
+      "file": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-M7vd51\\report-two.test.cjs",
+      "entryFile": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-M7vd51\\report-two.test.cjs",
+      "line": 1,
+      "column": 68,
+      "name": "report sentinel b",
+      "kind": "test",
+      "result": "pass",
+      "durationMs": 0.1071
+    }
+  ],
+  "comparisons": [
+    {
+      "run": 1,
+      "differences": [],
+      "totalsMatch": true,
+      "totalsDifferences": []
+    }
+  ],
+  "inventoryIntegrity": {
+    "complete": true,
+    "problems": [],
+    "observed": {
+      "tests": 2,
+      "suites": 0,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "fileIntegrity": [
+    {
+      "file": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-M7vd51\\report-two.test.cjs",
+      "complete": true,
+      "problems": [],
+      "observed": {
+        "tests": 2,
+        "suites": 0,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    }
+  ],
+  "filesCovered": true,
+  "rootSummaries": 1,
+  "timingsComplete": true,
+  "diagnostics": [
+    {
+      "line": 5,
+      "text": "{\"type\":\"test:pass\"",
+      "problem": "SyntaxError: Expected ',' or '}' after property value in JSON at position 19 (line 1 column 20)"
+    }
+  ]
+}

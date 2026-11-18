@@ -1,0 +1,5 @@
+{
+  "status": 1,
+  "sourceSha256": "f64d1062345e45bb246365238ce7b0d502193f4b6d36a1d571db595d615797a6",
+  "reason": "Verifier compared Git LF blobs to working-tree CRLF byte hashes; this is a verifier error, not a full-check failure."
+}

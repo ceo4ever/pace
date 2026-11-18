@@ -1,0 +1,33 @@
+import assert from "node:assert/strict";
+import { readFileSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { sourceFingerprint } from "./observations.ts";
+
+const group = resolve(process.argv[2] ?? "");
+if (!process.argv[2]) throw new Error("Usage: audit-comparison.ts <comparison group>");
+const result = JSON.parse(readFileSync(join(group, "comparison.json"), "utf8")) as { valid: boolean; observations: { step: number; concurrency: number; folder: string; elapsedMs: number }[]; selected: number };
+assert.equal(result.valid, true); assert.equal(result.observations.length, 4);
+type Command = { status: number; stdout: string; stderr: string };
+type Host = Record<string, unknown> & { commit: Command; gitStatus: Command; diff: Command; node: string; npm: Command; git: Command; python: Command; os: object; power: Command; defender: Command };
+const hosts = result.observations.map(item => JSON.parse(readFileSync(join(item.folder, "environment.json"), "utf8")) as Host);
+const statusRows = (host: Host) => host.gitStatus.stdout.split(/\r?\n/).filter(line => line && !line.includes("/evidence/")).map(line => line.trimStart()).sort();
+const codeRows = (host: Host) => statusRows(host).filter(line => /(?:^|[ "])(?:src\/|bin\/|scripts\/|test\/|package(?:-lock)?\.json|tsconfig\.json)/.test(line));
+const diffRows = (host: Host) => host.diff.stdout.split(/\r?\n/).filter(line => line.includes("|") && !line.includes("log.jsonl")).map(line => line.trim()).sort();
+const symmetric = (first: string[], later: string[]) => [...new Set([...first, ...later])].filter(line => first.includes(line) !== later.includes(line));
+const first = hosts[0]!;
+const rows = hosts.map((host, index) => {
+  const sample = result.observations[index]!;
+  const raw = readFileSync(join(sample.folder, "run-1.log"), "utf8");
+  const invocation = raw.split(/\r?\n/).filter(line => /^> node scripts\/test\.ts(?: |$)/.test(line));
+  const environment = { node: host.node, npm: host.npm, git: host.git, python: host.python, os: host.os, power: host.power, defender: host.defender };
+  const originalEnvironment = { node: first.node, npm: first.npm, git: first.git, python: first.python, os: first.os, power: first.power, defender: first.defender };
+  const outsideEvidenceStatusDifferences = symmetric(statusRows(first), statusRows(host));
+  const outsideEvidenceDiffDifferences = symmetric(first.diff.stdout.split(/\r?\n/), host.diff.stdout.split(/\r?\n/));
+  return { step: sample.step, concurrency: sample.concurrency, elapsedMs: sample.elapsedMs, invocation, invocationMatches: invocation.length === 1 && invocation[0] === `> node scripts/test.ts --test-concurrency=${sample.concurrency}`, commit: host.commit.stdout, commitMatches: JSON.stringify(host.commit) === JSON.stringify(first.commit), fingerprintMatches: sourceFingerprint(host) === sourceFingerprint(first), runtimeStatusMatches: JSON.stringify(codeRows(host)) === JSON.stringify(codeRows(first)), nonLogDiffStatsMatch: JSON.stringify(diffRows(host)) === JSON.stringify(diffRows(first)), environmentMatches: JSON.stringify(environment) === JSON.stringify(originalEnvironment), environment, outsideEvidenceStatusDifferences, outsideEvidenceDiffDifferences, commandStatusesValid: [host.commit, host.gitStatus, host.diff, host.npm, host.git, host.python, host.power, host.defender].every(command => command.status === 0) };
+});
+const ranges = [4, 8].map(concurrency => { const values = result.observations.filter(item => item.concurrency === concurrency).map(item => item.elapsedMs); return { concurrency, samples: values.length, minMs: Math.min(...values), maxMs: Math.max(...values) }; });
+const verified = rows.every(row => row.invocationMatches && row.commitMatches && row.fingerprintMatches && row.runtimeStatusMatches && row.nonLogDiffStatsMatch && row.environmentMatches && row.commandStatusesValid);
+const report = { verified, selected: result.selected, ranges, rows, limitations: ["Git status outside evidence and diff stat were compared and all differences are disclosed; these snapshots are not full historical file-content snapshots.", "Project event log and progress memory were updated during collection; read-only source/metadata inspection and independent read review also overlapped. No additional test or performance diagnostic ran during collection.", "Recorded source fingerprints cover all 95 test files, runner, helpers and five measurement tools. Tracked runtime source/config changes are additionally checked through unchanged commit and status/stat rows.", "Cumulative process CPU snapshots do not prove a quiet host or quantify outside load. The 5% rule on two samples is operational, not statistical."] };
+writeFileSync(join(group, "environment-and-invocation-audit.json"), JSON.stringify(report, null, 2) + "\n");
+console.log(JSON.stringify({ verified, selected: result.selected, ranges, rows: rows.map(row => ({ step: row.step, invocation: row.invocation, environmentMatches: row.environmentMatches, runtimeStatusMatches: row.runtimeStatusMatches, nonLogDiffStatsMatch: row.nonLogDiffStatsMatch, statusDifferences: row.outsideEvidenceStatusDifferences, diffDifferences: row.outsideEvidenceDiffDifferences })) }, null, 2));
+assert.ok(verified, "Source/environment/invocation discrepancy: preserve group and escalate before selecting default");

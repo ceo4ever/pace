@@ -1,0 +1,66 @@
+{
+  "order": [
+    4,
+    8,
+    8,
+    4
+  ],
+  "baseline": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T02_git_준비_재사용\\evidence\\t02-fixed-2026-11-18T12-44-08-858Z",
+  "toolHashes": {
+    "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\compare.ts": "df394e75bb68b78a9d61dcb80081ba330f588034848c2988364d7f8271708a34",
+    "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\observations.ts": "d9fd660c9bc17524b73057618e969ed6f7b98be6eb512bb37629f2cbaa50b0b7"
+  },
+  "observations": [
+    {
+      "step": 1,
+      "concurrency": 4,
+      "status": 0,
+      "folder": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\comparison-2026-11-18T13-42-41-253Z\\evidence\\c4-1-2026-11-18T13-42-41-363Z",
+      "elapsedMs": 692948.1093,
+      "comparison": {
+        "valid": true,
+        "differences": []
+      }
+    },
+    {
+      "step": 2,
+      "concurrency": 8,
+      "status": 0,
+      "folder": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\comparison-2026-11-18T13-42-41-253Z\\evidence\\c8-2-2026-11-18T13-54-16-490Z",
+      "elapsedMs": 633831.0253999999,
+      "comparison": {
+        "valid": true,
+        "differences": []
+      }
+    },
+    {
+      "step": 3,
+      "concurrency": 8,
+      "status": 0,
+      "folder": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\comparison-2026-11-18T13-42-41-253Z\\evidence\\c8-3-2026-11-18T14-04-52-402Z",
+      "elapsedMs": 657638.7758000001,
+      "comparison": {
+        "valid": true,
+        "differences": []
+      }
+    },
+    {
+      "step": 4,
+      "concurrency": 4,
+      "status": 0,
+      "folder": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\comparison-2026-11-18T13-42-41-253Z\\evidence\\c4-4-2026-11-18T14-15-52-246Z",
+      "elapsedMs": 702170.3589,
+      "comparison": {
+        "valid": true,
+        "differences": []
+      }
+    }
+  ],
+  "rule": "Select 8 only when its median is at least 5% lower; otherwise 4. Both must succeed.",
+  "valid": true,
+  "state": "complete",
+  "median4": 697559.2341,
+  "median8": 645734.9006,
+  "selected": 8,
+  "limitation": "Two samples per setting, operational choice only; not a statistical speedup or final P-6 verdict"
+}

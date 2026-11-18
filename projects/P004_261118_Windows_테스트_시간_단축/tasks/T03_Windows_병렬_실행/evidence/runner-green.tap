@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: 기본 테스트 명령의 Windows 동시성과 추가 옵션·파일 전달을 보존한다
+ok 1 - 기본 테스트 명령의 Windows 동시성과 추가 옵션·파일 전달을 보존한다
+  ---
+  duration_ms: 1.2713
+  type: 'test'
+  ...
+# Subtest: runner options: mixed files, split values, separator and unique concurrency override
+ok 2 - runner options: mixed files, split values, separator and unique concurrency override
+  ---
+  duration_ms: 0.548
+  type: 'test'
+  ...
+# Subtest: runner npm: actual overlap is RED at one, GREEN at two, with filter and failure forwarding
+ok 3 - runner npm: actual overlap is RED at one, GREEN at two, with filter and failure forwarding
+  ---
+  duration_ms: 9123.7505
+  type: 'test'
+  ...
+# Subtest: 기본 테스트 실행기는 실제 테스트의 성공과 실패를 전달한다
+ok 4 - 기본 테스트 실행기는 실제 테스트의 성공과 실패를 전달한다
+  ---
+  duration_ms: 778.294
+  type: 'test'
+  ...
+# Subtest: 테스트 러너가 신호로 종료되면 실행기는 실패와 신호를 전달한다
+ok 5 - 테스트 러너가 신호로 종료되면 실행기는 실패와 신호를 전달한다
+  ---
+  duration_ms: 82.1947
+  type: 'test'
+  ...
+# Subtest: 테스트 러너 실행 오류만 발생해도 실행기는 실패한다
+ok 6 - 테스트 러너 실행 오류만 발생해도 실행기는 실패한다
+  ---
+  duration_ms: 81.0843
+  type: 'test'
+  ...
+# Subtest: 테스트 자식을 띄우는 중 받은 신호도 자식에 전달한다
+ok 7 - 테스트 자식을 띄우는 중 받은 신호도 자식에 전달한다
+  ---
+  duration_ms: 92.7772
+  type: 'test'
+  ...
+# Subtest: signal forwarding: 실행기가 신호를 받으면 테스트 자식에도 전달한다
+ok 8 - signal forwarding: 실행기가 신호를 받으면 테스트 자식에도 전달한다
+  ---
+  duration_ms: 91.7466
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10395.1027

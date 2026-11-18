@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../../..');
+const old='t03-selected-2026-11-18T14-32-40-525Z',current='t03-c4-default-2026-11-18T15-24-37-446Z';
+const readJson=file=>JSON.parse(fs.readFileSync(path.join(here,file),'utf8'));
+const before=readJson(old+'/environment.json'),after=readJson(current+'/environment.json'),launch=readJson('candidate4-validation-launch.json');
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+const sources=[{file:'scripts/test.ts',snapshot:'runner-source-used.ts',expectedOffset:174,expectedLength:4008},{file:'test/test-command.test.ts',snapshot:'runner-tests-used.ts',expectedOffset:694,expectedLength:13465}];
+const differences=sources.map(({file,snapshot,expectedOffset,expectedLength})=>{
+ const original=fs.readFileSync(path.join(here,old,snapshot)),working=fs.readFileSync(path.join(root,file));
+ const oldHash=file.startsWith('scripts/')?before.runnerSha256:before.testSources.find(item=>item.file===file).sha256;
+ const newHash=file.startsWith('scripts/')?after.runnerSha256:after.testSources.find(item=>item.file===file).sha256;
+ assert.equal(hash(original),oldHash);assert.equal(hash(working),newHash);assert.equal(original.length,working.length);assert.equal(original.length,expectedLength);
+ const bytes=[];for(let index=0;index<original.length;index++)if(original[index]!==working[index])bytes.push({offset:index,before:original[index],after:working[index]});
+ assert.deepEqual(bytes,[{offset:expectedOffset,before:56,after:52}]);
+ return {file,originalSnapshot:path.join(old,snapshot),originalEnvironmentSha256:oldHash,currentEnvironmentSha256:newHash,bytes:working.length,differences:bytes};
+});
+assert.deepEqual(before.testSources.map(item=>item.file),after.testSources.map(item=>item.file));
+assert.deepEqual(before.testSources.filter(item=>item.file!=='test/test-command.test.ts'),after.testSources.filter(item=>item.file!=='test/test-command.test.ts'));
+assert.equal(before.helpersSha256,after.helpersSha256);assert.deepEqual(before.toolHashes,after.toolHashes);
+assert.equal(launch.sourceDelta.changedTests[0].sha256,after.testSources.find(item=>item.file==='test/test-command.test.ts').sha256);
+const result={verified:true,differences,other94TestHashesIdentical:true,helperAndFiveMeasurementToolsIdentical:true,launch:'candidate4-validation-launch.json',oldBoundary:old+'/source-boundary.json',currentBoundary:current+'/source-boundary.json',limits:['Byte comparison is tied to preserved source copies and measurement start hashes; start/end boundaries do not provide continuous monitoring.'],verifierSha256:hash(fs.readFileSync(fileURLToPath(import.meta.url)))};
+fs.writeFileSync(path.join(here,'candidate-source-delta.json'),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify(result,null,2));

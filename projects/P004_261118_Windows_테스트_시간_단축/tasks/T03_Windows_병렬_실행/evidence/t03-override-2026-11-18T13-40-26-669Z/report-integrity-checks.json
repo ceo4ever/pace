@@ -1,0 +1,42 @@
+[
+  {
+    "mode": "good",
+    "expectedExit": 0,
+    "actualExit": 0
+  },
+  {
+    "mode": "missing-default-row",
+    "expectedExit": 1,
+    "actualExit": 1
+  },
+  {
+    "mode": "missing-stored-row",
+    "expectedExit": 1,
+    "actualExit": 1
+  },
+  {
+    "mode": "missing-profile-event",
+    "expectedExit": 1,
+    "actualExit": 1
+  },
+  {
+    "mode": "wrong-profile-total",
+    "expectedExit": 1,
+    "actualExit": 1
+  },
+  {
+    "mode": "truncated-json",
+    "expectedExit": 1,
+    "actualExit": 1
+  },
+  {
+    "mode": "missing-stored-duration",
+    "expectedExit": 1,
+    "actualExit": 1
+  },
+  {
+    "mode": "wrong-stored-duration",
+    "expectedExit": 1,
+    "actualExit": 1
+  }
+]

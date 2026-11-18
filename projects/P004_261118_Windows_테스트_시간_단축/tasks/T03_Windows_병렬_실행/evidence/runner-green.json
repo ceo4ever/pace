@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "--test",
+    "--test-reporter=tap",
+    "test/test-command.test.ts"
+  ],
+  "status": 0,
+  "signal": null
+}

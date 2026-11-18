@@ -1,0 +1,2 @@
+# Raw evidence hashes must survive Windows checkout and check-in unchanged.
+**/evidence/** -text

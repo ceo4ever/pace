@@ -1,0 +1,160 @@
+TAP version 13
+# Subtest: runner options: mixed files, split values, separator and unique concurrency override
+not ok 1 - runner options: mixed files, split values, separator and unique concurrency override
+  ---
+  duration_ms: 2.0432
+  type: 'test'
+  location: 'D:\\LucasStudio\\pace.wt\\P004\\test\\test-command.test.ts:19:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        '--test',
+    +   '--test-concurrency=1',
+    +   'test/**/*.test.ts',
+    +   'extra.test.ts',
+        '--test-name-pattern',
+        'two words',
+    +   '--test-concurrency',
+    +   '2',
+    -   '--test-concurrency=2',
+        '--test-only',
+    -   'test/**/*.test.ts',
+    -   'extra.test.ts'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: '--test'
+    1: '--test-name-pattern'
+    2: 'two words'
+    3: '--test-concurrency=2'
+    4: '--test-only'
+    5: 'test/**/*.test.ts'
+    6: 'extra.test.ts'
+  actual:
+    0: '--test'
+    1: '--test-concurrency=1'
+    2: 'test/**/*.test.ts'
+    3: 'extra.test.ts'
+    4: '--test-name-pattern'
+    5: 'two words'
+    6: '--test-concurrency'
+    7: '2'
+    8: '--test-only'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/test-command.test.ts:21:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.start (node:internal/test_runner/test:1262:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+# Subtest: runner npm: actual overlap is RED at one, GREEN at two, with filter and failure forwarding
+not ok 2 - runner npm: actual overlap is RED at one, GREEN at two, with filter and failure forwarding
+  ---
+  duration_ms: 14265.6618
+  type: 'test'
+  location: 'D:\\LucasStudio\\pace.wt\\P004\\test\\test-command.test.ts:29:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    
+    > check
+    > node typecheck.cjs && npm test -- --test-concurrency=2 --test-name-pattern=overlap-sentinel
+    
+    
+    > test
+    > node "D:/LucasStudio/pace.wt/P004/scripts/test.ts" --test-concurrency=2 --test-name-pattern=overlap-sentinel
+    
+    ✖ overlap-sentinel (3031.7006ms)
+    ✖ excluded-sentinel (0.509ms)
+    ✖ failure-sentinel (0.6156ms)
+    ✖ overlap-sentinel (3003.4935ms)
+    ✖ excluded-sentinel (0.5158ms)
+    ℹ tests 5
+    ℹ suites 0
+    ℹ pass 0
+    ℹ fail 5
+    ℹ cancelled 0
+    ℹ skipped 0
+    ℹ todo 0
+    ℹ duration_ms 6219.6583
+    
+    ✖ failing tests:
+    
+    test at test\a.test.ts:2:1
+    ✖ overlap-sentinel (3031.7006ms)
+      Error: OVERLAP_NOT_OBSERVED
+          at TestContext.<anonymous> (file:///C:/Users/root-user/AppData/Local/Temp/pace-test-run-HbWqoG/pace-test-K8LTga/test/a.test.ts:2:325)
+          at async Test.run (node:internal/test_runner/test:1409:7)
+          at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+    
+    test at test\a.test.ts:3:1
+    ✖ excluded-sentinel (0.509ms)
+      Error: FILTER_SENTINEL_EXECUTED
+          at TestContext.<anonymous> (file:///C:/Users/root-user/AppData/Local/Temp/pace-test-run-HbWqoG/pace-test-K8LTga/test/a.test.ts:3:97)
+          at Test.runInAsyncScope (node:async_hooks:227:14)
+          at Test.run (node:internal/test_runner/test:1402:25)
+          at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+          at Test.postRun (node:internal/test_runner/test:1542:19)
+          at Test.run (node:internal/test_runner/test:1467:12)
+          at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+    
+    test at test\a.test.ts:4:1
+    ✖ failure-sentinel (0.6156ms)
+      Error: EXPECTED_NPM_FAILURE
+          at TestContext.<anonymous> (file:///C:/Users/root-user/AppData/Local/Temp/pace-test-run-HbWqoG/pace-test-K8LTga/test/a.test.ts:4:36)
+          at Test.runInAsyncScope (node:async_hooks:227:14)
+          at Test.run (node:internal/test_runner/test:1402:25)
+          at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+          at Test.postRun (node:internal/test_runner/test:1542:19)
+          at Test.run (node:internal/test_runner/test:1467:12)
+          at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+    
+    test at test\b.test.ts:2:1
+    ✖ overlap-sentinel (3003.4935ms)
+      Error: OVERLAP_NOT_OBSERVED
+          at TestContext.<anonymous> (file:///C:/Users/root-user/AppData/Local/Temp/pace-test-run-HbWqoG/pace-test-K8LTga/test/b.test.ts:2:325)
+          at async Test.run (node:internal/test_runner/test:1409:7)
+          at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+    
+    test at test\b.test.ts:3:1
+    ✖ excluded-sentinel (0.5158ms)
+      Error: FILTER_SENTINEL_EXECUTED
+          at TestContext.<anonymous> (file:///C:/Users/root-user/AppData/Local/Temp/pace-test-run-HbWqoG/pace-test-K8LTga/test/b.test.ts:3:97)
+          at Test.runInAsyncScope (node:async_hooks:227:14)
+          at Test.run (node:internal/test_runner/test:1402:25)
+          at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+          at Test.postRun (node:internal/test_runner/test:1542:19)
+          at Test.run (node:internal/test_runner/test:1467:12)
+          at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P004/test/test-command.test.ts:50:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14400.2342

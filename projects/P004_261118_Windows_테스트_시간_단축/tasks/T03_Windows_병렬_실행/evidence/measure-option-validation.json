@@ -1,0 +1,53 @@
+{
+  "rows": [
+    {
+      "args": [
+        "--concurrency",
+        "0"
+      ],
+      "status": 1,
+      "expectedFailure": true
+    },
+    {
+      "args": [
+        "--concurrency",
+        "2"
+      ],
+      "status": 1,
+      "expectedFailure": true
+    },
+    {
+      "args": [
+        "--concurrency"
+      ],
+      "status": 1,
+      "expectedFailure": true
+    },
+    {
+      "args": [
+        "--evidence-dir",
+        "C:/evidence"
+      ],
+      "status": 1,
+      "expectedFailure": true
+    },
+    {
+      "args": [
+        "--evidence-dir",
+        "projects/P004_261118_Windows_테스트_시간_단축/not-evidence"
+      ],
+      "status": 1,
+      "expectedFailure": true
+    }
+  ],
+  "selfTestStatus": 0,
+  "folder": "t03-override-2026-11-18T13-40-26-669Z",
+  "command": "npm run check -- -- --test-concurrency=4",
+  "nodeArguments": [
+    "--test",
+    "--test-concurrency=4",
+    "test/**/*.test.ts"
+  ],
+  "sourceFiles": 95,
+  "verified": true
+}

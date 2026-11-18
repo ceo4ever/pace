@@ -1,0 +1,49 @@
+{
+  "valid": true,
+  "timingSummaryMatches": true,
+  "checks": [
+    {
+      "run": 1,
+      "valid": true,
+      "path": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\t03-override-2026-11-18T13-40-26-669Z\\report-truncated-json\\baseline.log",
+      "raw": {
+        "totals": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "duration_ms": 72.9118
+        },
+        "observed": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "problems": []
+      },
+      "stored": {
+        "complete": true,
+        "problems": [],
+        "observed": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      "differences": [],
+      "timingDifferences": [],
+      "totalsMatch": true
+    }
+  ]
+}

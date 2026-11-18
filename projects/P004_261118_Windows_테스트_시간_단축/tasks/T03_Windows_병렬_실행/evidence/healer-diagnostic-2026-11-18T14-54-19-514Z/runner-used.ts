@@ -1,0 +1,25 @@
+import { spawn } from "node:child_process";
+import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { parseText } from "../../measurement-data.ts";
+const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,"../../../..");
+const out=join(here,"evidence",`healer-diagnostic-${new Date().toISOString().replace(/[:.]/g,"-")}`);
+mkdirSync(out,{recursive:true});
+const temp=mkdtempSync(join(tmpdir(),"pace-p004-healer-")),trace=join(out,"safe-trace.jsonl");writeFileSync(trace,"");
+const env:NodeJS.ProcessEnv={...process.env,TEMP:temp,TMP:temp,TMPDIR:temp,PACE_HOME:join(temp,"pace-home"),PACE_HEAL_TRACE:trace};
+for(const key of ["NODE_TEST_CONTEXT","PACE_TEST_TMP_OWNER","PACE_TEST_TMP_PARENT","PACE_KEEP_TEST_TMP","PACE_PROFILE"])delete env[key];
+const argv=["--import",pathToFileURL(join(root,"test/helpers.ts")).href,"--import",pathToFileURL(join(here,"healer-observe.mjs")).href,"--test","--test-reporter=tap","--test-name-pattern=^S-11 .*\\(Orca\\):",join(root,"test/playbook/healer-e2e.test.mjs")];
+const log=join(out,"healer.tap");writeFileSync(log,"");
+const started=new Date().toISOString(),begin=performance.now();
+const child=spawn(process.execPath,argv,{cwd:root,env,windowsHide:true,stdio:["ignore","pipe","pipe"]});
+child.stdout.on("data",(data:Buffer)=>appendFileSync(log,data));child.stderr.on("data",(data:Buffer)=>appendFileSync(log,data));
+child.on("error",error=>appendFileSync(log,String(error)));
+child.on("close",(status,signal)=>{
+  const parsed=parseText(readFileSync(log,"utf8"));
+  const passed=status===0&&parsed.complete&&parsed.totals.tests===1&&parsed.totals.pass===1&&parsed.totals.skipped===0&&parsed.totals.fail===0;
+  writeFileSync(join(out,"result.json"),JSON.stringify({started,ended:new Date().toISOString(),elapsedMs:performance.now()-begin,status,signal,argv,temp,totals:parsed.totals,complete:parsed.complete,passed,scope:"One original browser E2E only, diagnostic load hook adds safe error codes and failure status fields without changing actions/retries/assertions; not a full stability or performance observation"},null,2)+"\n");
+  process.exitCode=passed?0:1;console.log(`Healer diagnostic status ${status}, passed ${passed}: ${out}`);
+});
+console.log(`Healer diagnostic: ${out}`);

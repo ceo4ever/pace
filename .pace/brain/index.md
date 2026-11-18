@@ -1,6 +1,6 @@
 # 프로젝트 브레인 목차
 
-> 자동 생성 — 직접 고치지 말 것. 페이지 23개. 형식은 SCHEMA.md.
+> 자동 생성 — 직접 고치지 말 것. 페이지 24개. 형식은 SCHEMA.md.
 
 ## 결정과 이유
 
@@ -16,6 +16,7 @@
 - [프로필 = 독립 에이전트, 역할은 AI 비서 고정](pages/concept/profile-is-independent-agent.md) — 프로필마다 정체성·사용자 정보·메모리·스킬을 격리하고(Hermes 참고), 역할은 묻지 않고 AI 비서로 고정 — 개발·관리·리서치는 일의 성격별 방식으로 RULES에 둔다 #profile #identity #design-history
 - [세션 부트는 시작 훅 + 대체 규칙](pages/concept/session-boot-via-hooks.md) — 활성화 명령 대신 각 도구의 세션 시작 훅이 pace boot를 부르고, 훅이 불안정한 도구는 한 줄 대체 규칙으로 부트한다 #boot #hooks #platform
 - [상황별 부트 — 위치를 판별해 사실을 넘긴다](pages/concept/situational-boot-greeting.md) — 부트는 세션 위치를 PACE 프로젝트·정의 없음·새 프로젝트·밖으로 판별하고 git·메모리를 넘기며, 첫 멘트는 에이전트가 판단한다. 홈 폴더(~/.pace 있음)는 프로젝트로 보지 않는다 #boot #situation
+- [Windows 시험 병렬 실행과 안정성 선택](pages/concept/windows-시험-병렬-실행과-안정성-선택.md) — 4·8 속도 비교 뒤 기본8 안정성 실패를 보존하고 새 기본4 전체5회로 선택 검증; 실제 동시성과 중첩 임시 경계·병렬 시간 해석을 구별한다
 - [백로그 대시보드 자동 갱신과 Git 경계](pages/concept/백로그-대시보드-자동-갱신과-git-경계.md) — 대시보드 최초 생성과 Git 자료 갱신의 경계를 유지하고 프로젝트 상태·인덱스 자료를 안전하게 보존한다
 - [작업 하네스 실측 함정](pages/concept/작업-하네스-실측-함정.md) — 정의서 라벨은 한 번만·표 첫 칸에, 계획 행 번호, 링크 증거 경로, 마감 문서의 비밀 예시, 커밋 칸·마감 상태는 done·finish가, stash 공유, list는 worktree 작업본 우선 #harness #pitfalls
 

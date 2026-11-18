@@ -1,0 +1,57 @@
+{
+  "valid": false,
+  "timingSummaryMatches": true,
+  "checks": [
+    {
+      "run": 1,
+      "valid": false,
+      "path": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\t03-tool-2026-11-18T13-34-58-626Z\\report-missing-stored-duration\\baseline.log",
+      "raw": {
+        "totals": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "duration_ms": 75.065
+        },
+        "observed": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "problems": []
+      },
+      "stored": {
+        "complete": true,
+        "problems": [],
+        "observed": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      "differences": [],
+      "timingDifferences": [
+        {
+          "position": 0,
+          "name": "report sentinel a",
+          "rawMs": 0.5828,
+          "storedMs": null,
+          "missingRawTime": false
+        }
+      ],
+      "totalsMatch": true
+    }
+  ]
+}

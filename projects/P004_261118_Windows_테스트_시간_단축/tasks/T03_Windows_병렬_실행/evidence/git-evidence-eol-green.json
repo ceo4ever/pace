@@ -1,0 +1,12 @@
+{
+  "file": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/nested-isolation-2026-11-18T12-40-06-394Z/trace/enter-27092.json",
+  "sourceSha256": "7a9e50084bb10912c8cb1c0cdca8f7f5030e1ddc131e6671f4f2d64d184cec34",
+  "filteredSha256": "7a9e50084bb10912c8cb1c0cdca8f7f5030e1ddc131e6671f4f2d64d184cec34",
+  "checkoutPreserved": true,
+  "crlfCheckin": {
+    "filtered": "b952bf5a65f7016af3cb4bfb0a0167bcb71791b7",
+    "raw": "b952bf5a65f7016af3cb4bfb0a0167bcb71791b7",
+    "preserved": true
+  },
+  "attributes": "\"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T02_git_\\354\\244\\200\\353\\271\\204_\\354\\236\\254\\354\\202\\254\\354\\232\\251/evidence/nested-isolation-2026-11-18T12-40-06-394Z/trace/enter-27092.json\": text: unset\n\"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T03_Windows_\\353\\263\\221\\353\\240\\254_\\354\\213\\244\\355\\226\\211/evidence/eol-crlf-sentinel.txt\": text: unset\n\"projects/P004_261118_Windows_\\355\\205\\214\\354\\212\\244\\355\\212\\270_\\354\\213\\234\\352\\260\\204_\\353\\213\\250\\354\\266\\225/tasks/T01_\\352\\270\\260\\354\\244\\200_\\354\\270\\241\\354\\240\\225/measure.ts\": text: unspecified\ntest/helpers.ts: text: unspecified\nprojects/P003_fake/evidence/example.log: text: unspecified\n"
+}

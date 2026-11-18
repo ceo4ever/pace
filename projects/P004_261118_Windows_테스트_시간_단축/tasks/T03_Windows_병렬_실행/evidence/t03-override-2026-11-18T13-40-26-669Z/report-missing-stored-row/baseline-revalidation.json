@@ -1,0 +1,74 @@
+{
+  "valid": false,
+  "timingSummaryMatches": true,
+  "checks": [
+    {
+      "run": 1,
+      "valid": false,
+      "path": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\t03-override-2026-11-18T13-40-26-669Z\\report-missing-stored-row\\baseline.log",
+      "raw": {
+        "totals": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "duration_ms": 72.9118
+        },
+        "observed": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "problems": []
+      },
+      "stored": {
+        "complete": false,
+        "problems": [
+          "inventory tests: observed 1, summary 2",
+          "inventory pass: observed 1, summary 2",
+          "inventory cardinality mismatch"
+        ],
+        "observed": {
+          "tests": 1,
+          "suites": 0,
+          "pass": 1,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      "differences": [
+        {
+          "id": "pass\treport sentinel a",
+          "baseline": 1,
+          "profile": 0
+        }
+      ],
+      "timingDifferences": [
+        {
+          "position": 0,
+          "name": "report sentinel a",
+          "rawMs": 0.6146,
+          "storedMs": 0.1084,
+          "missingRawTime": false
+        },
+        {
+          "position": 1,
+          "name": "report sentinel b",
+          "rawMs": 0.1084,
+          "storedMs": null,
+          "missingRawTime": false
+        }
+      ],
+      "totalsMatch": true
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "started": "2026-11-18T14:58:45.579Z",
+  "ended": "2026-11-18T15:01:49.237Z",
+  "elapsedMs": 183657.2027,
+  "status": 0,
+  "signal": null,
+  "argv": [
+    "--import",
+    "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+    "--import",
+    "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T03_Windows_%EB%B3%91%EB%A0%AC_%EC%8B%A4%ED%96%89/healer-observe.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-core.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-map.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-strict.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\build.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\capture-core.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver-e2e.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver-runtime.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\heal-web.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\healer-e2e.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\healer.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\interview.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\orca-adapter.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook-e2e.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook-guard.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\position-e2e.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\scaffold.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\skill-doc.test.mjs"
+  ],
+  "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-healer-qGmoxB",
+  "toolHashes": {
+    "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\diagnose-healer.ts": "affae6c1429b0af4a65f301c9286704dafe1838edf59204143cfe79ded5ed27e",
+    "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\healer-observe.mjs": "42b4d55b317344dc3082a4758531af2d8401ee4ee5beb04f1e4f441b986c5ce4"
+  },
+  "mode": "all-19-nested",
+  "totals": {
+    "tests": 181,
+    "suites": 0,
+    "pass": 181,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 183576.4904
+  },
+  "complete": true,
+  "passed": true,
+  "scope": "Diagnostic load hook adds safe error codes and failure status fields without changing actions/retries/assertions; original skip conditions remain; not a full stability or performance observation"
+}

@@ -7,13 +7,56 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { testArguments, testExitCode } from "../scripts/test.ts";
 import { sessionFreeEnv, tempDir } from "./helpers.ts";
 
-test("기본 테스트 명령은 Windows에서만 파일을 순차 실행하고 추가 인자를 전달한다", () => {
+test("기본 테스트 명령의 Windows 동시성과 추가 옵션·파일 전달을 보존한다", () => {
   const extra = ["--test-name-pattern=예시", "test/추가.test.ts"];
-  assert.deepEqual(testArguments("win32", extra), ["--test", "--test-concurrency=1", "test/**/*.test.ts", ...extra]);
-  for (const platform of ["linux", "darwin"] as const) assert.deepEqual(testArguments(platform, extra), ["--test", "test/**/*.test.ts", ...extra]);
+  assert.deepEqual(testArguments("win32", extra), ["--test", "--test-concurrency=4", extra[0], "test/**/*.test.ts", extra[1]]);
+  for (const platform of ["linux", "darwin"] as const) assert.deepEqual(testArguments(platform, extra), ["--test", extra[0], "test/**/*.test.ts", extra[1]]);
   assert.equal(testExitCode(0), 0);
   assert.equal(testExitCode(7), 7);
   assert.notEqual(testExitCode(null), 0, "신호·실행 실패는 성공이 아니다");
+});
+
+test("runner options: mixed files, split values, separator and unique concurrency override", () => {
+  const actual = testArguments("win32", ["extra.test.ts", "--test-name-pattern", "two words", "--test-concurrency", "2", "--test-only"]);
+  assert.deepEqual(actual, ["--test", "--test-name-pattern", "two words", "--test-concurrency=2", "--test-only", "test/**/*.test.ts", "extra.test.ts"]);
+  assert.equal(actual.filter(arg => arg.startsWith("--test-concurrency")).length, 1);
+  assert.deepEqual(testArguments("linux", ["--test-concurrency=8", "--", "-literal.test.ts"]), ["--test", "--test-concurrency=8", "--", "test/**/*.test.ts", "-literal.test.ts"]);
+  for (const extra of [["--test-concurrency=0"], ["--test-concurrency=-2"], ["--test-concurrency=1.5"], ["--test-concurrency"], ["--test-concurrency=2", "--test-concurrency=4"], ["--test-name-pattern"], ["--unknown-split", "value"]]) {
+    assert.throws(() => testArguments("win32", extra), /concurrency|value|option/i);
+  }
+});
+
+test("runner npm: actual overlap is RED at one, GREEN at two, with filter and failure forwarding", () => {
+  const runner = fileURLToPath(new URL("../scripts/test.ts", import.meta.url));
+  const prepare = () => {
+    const root = tempDir(); mkdirSync(join(root, "test")); mkdirSync(join(root, "marks"));
+    writeFileSync(join(root, "package.json"), JSON.stringify({ scripts: { check: "node typecheck.cjs && npm test", test: `node ${JSON.stringify(runner.replace(/\\/g, "/"))}` } }));
+    writeFileSync(join(root, "typecheck.cjs"), `require('node:fs').writeFileSync(${JSON.stringify(join(root, "typechecked"))},'ok');`);
+    const body = `const {test}=require('node:test');const fs=require('node:fs');const path=require('node:path');const root=${JSON.stringify(root)},marks=path.join(root,'marks'),release=path.join(root,'release');
+test('overlap-sentinel',async()=>{const entered=Date.now(),marker=path.join(marks,path.basename(__filename));fs.writeFileSync(marker,String(process.pid));try{const deadline=Date.now()+3000;while(!fs.existsSync(release)){if(fs.readdirSync(marks).length===2){fs.writeFileSync(release,'ok');break;}if(Date.now()>deadline)throw Error('OVERLAP_NOT_OBSERVED');await new Promise(r=>setTimeout(r,25));}fs.appendFileSync(path.join(root,'observed.jsonl'),JSON.stringify({pid:process.pid,entered,passedAt:Date.now()})+'\\n');}finally{fs.rmSync(marker,{force:true});}});
+test('excluded-sentinel',()=>{fs.writeFileSync(path.join(root,'excluded-executed'),'bad');throw Error('FILTER_SENTINEL_EXECUTED');});`;
+    writeFileSync(join(root, "test/a.test.ts"), body + "\ntest('failure-sentinel',()=>{throw Error('EXPECTED_NPM_FAILURE');});\n");
+    writeFileSync(join(root, "test/b.test.ts"), body);
+    return root;
+  };
+  const run = (root: string, concurrency: number, pattern: string) => {
+    const args = ["run", "check", "--", "--", `--test-concurrency=${concurrency}`, `--test-name-pattern=${pattern}`];
+    return spawnSync(process.platform === "win32" ? process.env.ComSpec ?? "cmd.exe" : "npm", process.platform === "win32" ? ["/d", "/s", "/c", `npm ${args.join(" ")}`] : args, { cwd: root, env: { ...sessionFreeEnv(), NODE_TEST_CONTEXT: undefined }, encoding: "utf8", timeout: 20000 });
+  };
+  const serial = prepare(), red = run(serial, 1, "overlap-sentinel");
+  assert.notEqual(red.status, 0);
+  assert.match(red.stdout + red.stderr, /OVERLAP_NOT_OBSERVED/);
+  const concurrent = prepare(), green = run(concurrent, 2, "overlap-sentinel");
+  assert.equal(green.status, 0, green.stdout + green.stderr);
+  assert.ok(existsSync(join(concurrent, "typechecked")), "the real check script must run its typecheck step");
+  assert.equal(existsSync(join(concurrent, "excluded-executed")), false, "name filtering must reach Node before file arguments");
+  const records = readFileSync(join(concurrent, "observed.jsonl"), "utf8").trim().split("\n").map(line => JSON.parse(line) as { pid: number; entered: number; passedAt: number });
+  assert.equal(records.length, 2);
+  assert.equal(new Set(records.map(record => record.pid)).size, 2);
+  assert.ok(Math.max(...records.map(record => record.entered)) <= Math.min(...records.map(record => record.passedAt)), "worker intervals must overlap");
+  const failed = run(concurrent, 2, "failure-sentinel");
+  assert.notEqual(failed.status, 0);
+  assert.match(failed.stdout + failed.stderr, /EXPECTED_NPM_FAILURE/);
 });
 
 test("기본 테스트 실행기는 실제 테스트의 성공과 실패를 전달한다", () => {

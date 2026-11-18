@@ -1,0 +1,21 @@
+{
+  "typecheck": {
+    "status": 0,
+    "signal": null,
+    "elapsedMs": 838.3076000000005,
+    "started": "2026-11-18T16:21:55.237Z",
+    "ended": "2026-11-18T16:21:56.075Z",
+    "log": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\t03-c4-profile-2026-11-18T16-21-51-780Z\\profile-typecheck.log",
+    "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-profile-ND5C8H"
+  },
+  "profile": {
+    "status": 0,
+    "signal": null,
+    "elapsedMs": 671870.5481,
+    "started": "2026-11-18T16:21:56.134Z",
+    "ended": "2026-11-18T16:33:08.013Z",
+    "log": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T03_Windows_병렬_실행\\evidence\\t03-c4-profile-2026-11-18T16-21-51-780Z\\profile.log",
+    "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-profile-ND5C8H"
+  },
+  "auxiliaryOnly": true
+}

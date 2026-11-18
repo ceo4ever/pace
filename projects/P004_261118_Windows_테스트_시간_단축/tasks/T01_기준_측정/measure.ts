@@ -1,7 +1,7 @@
 import { spawn, spawnSync } from "node:child_process";
-import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
+import { appendFileSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, symlinkSync, writeFileSync } from "node:fs";
 import { cpus, freemem, release, tmpdir, totalmem } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -12,18 +12,35 @@ import { parseText, checkInventory, compareItems } from "../../measurement-data.
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "../../../..");
 const args = process.argv.slice(2);
-const flag = (name: string, fallback: string) => args.includes(name) ? args[args.indexOf(name) + 1] ?? fallback : fallback;
+const flag = (name: string, fallback: string) => {
+  if (!args.includes(name)) return fallback;
+  const value = args[args.indexOf(name) + 1];
+  if (value === undefined || value.startsWith("--")) throw new Error(`Missing value: ${name}`);
+  return value;
+};
 const label = flag("--label", "baseline");
 const runs = Number(flag("--runs", "3"));
 const profileOnlyInput = flag("--profile-only", "");
 const profileOnly = profileOnlyInput ? resolve(profileOnlyInput) : "";
 const wantsProfile = args.includes("--profile") || Boolean(profileOnly);
+const concurrency = flag("--concurrency", "");
+if (concurrency && !/^[48]$/.test(concurrency)) throw new Error("Comparison concurrency must be 4 or 8");
+const projectRoot = resolve(here, "../..");
+const evidenceParent = resolve(flag("--evidence-dir", join(here, "evidence")));
+const evidenceRelative = relative(projectRoot, evidenceParent);
+if (isAbsolute(evidenceRelative) || evidenceRelative === ".." || evidenceRelative.startsWith(`..${sep}`) || basename(evidenceParent) !== "evidence") throw new Error("Evidence directory must be inside this project and named evidence");
+let checkedParent = projectRoot;
+for (const segment of evidenceRelative.split(sep)) {
+  checkedParent = join(checkedParent, segment);
+  try { if (lstatSync(checkedParent).isSymbolicLink()) throw new Error("Evidence path must not contain symlinks"); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") break; throw error; }
+}
 if (!/^[a-z0-9-]+$/.test(label) || !Number.isInteger(runs) || runs < 1 || runs > 20) throw new Error("Invalid label/runs");
 // Never remove tracing silently: an inherited profiler invalidates the baseline.
 for (const key of ["NODE_OPTIONS", "NODE_V8_COVERAGE", "NODE_TEST_CONTEXT", "NODE_INSPECT_RESUME_ON_START"]) {
   if (process.env[key]) throw new Error(`Baseline environment must not contain ${key}`);
 }
-const output = join(here, "evidence", `${label}-${new Date().toISOString().replace(/[:.]/g, "-")}`);
+const output = join(evidenceParent, `${label}-${new Date().toISOString().replace(/[:.]/g, "-")}`);
 mkdirSync(output, { recursive: true });
 const json = (path: string, value: unknown) => writeFileSync(path, JSON.stringify(value, null, 2) + "\n");
 const profileArguments = (base: string[]) => [`--test-reporter=${pathToFileURL(join(here, "reporter.ts")).href}`, ...base];
@@ -36,7 +53,10 @@ const command = (exe: string, argv: string[]) => {
   const result = spawnSync(exe, argv, { cwd: root, encoding: "utf8", timeout: 20000, windowsHide: true });
   return { status: result.status, stdout: result.stdout?.trim(), stderr: result.stderr?.trim(), error: result.error?.message };
 };
-const npm = process.platform === "win32" ? [process.env.ComSpec ?? "cmd.exe", ["/d", "/s", "/c", "npm run check"]] as const : ["npm", ["run", "check"]] as const;
+const comparisonArgs = concurrency ? ["--", "--", `--test-concurrency=${concurrency}`] : [];
+const npmCommand = `npm run check${comparisonArgs.length ? " " + comparisonArgs.join(" ") : ""}`;
+const npm = process.platform === "win32" ? [process.env.ComSpec ?? "cmd.exe", ["/d", "/s", "/c", npmCommand]] as const : ["npm", ["run", "check", ...comparisonArgs]] as const;
+const nodeExtra = concurrency ? [`--test-concurrency=${concurrency}`] : [];
 const envFor = (dir: string) => ({ ...process.env, TMP: dir, TEMP: dir, TMPDIR: dir, PACE_HOME: join(dir, "pace-home") });
 type Result = { status: number | null; signal: string | null; error?: string; elapsedMs: number; started: string; ended: string; log: string; temp: string };
 async function execute(exe: string, argv: readonly string[], dir: string, name: string): Promise<Result> {
@@ -73,6 +93,16 @@ mkdirSync(join(preflight, "target-dir"));
 symlinkSync(join(preflight, "target-dir"), join(preflight, "dir-link"), "dir");
 assert.equal(readFileSync(join(preflight, "link"), "utf8"), "symlink probe\n");
 const powershell = (script: string) => command("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script]);
+const testSources: { file: string; sha256: string }[] = [];
+const recordTests = (directory: string): void => {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) recordTests(path);
+    else if (entry.name.endsWith(".test.ts")) testSources.push({ file: relative(root, path).split(sep).join("/"), sha256: createHash("sha256").update(readFileSync(path)).digest("hex") });
+  }
+};
+recordTests(join(root, "test"));
+testSources.sort((a, b) => a.file.localeCompare(b.file));
 const host = {
   node: process.version, npm: command(process.platform === "win32" ? "cmd.exe" : "npm", process.platform === "win32" ? ["/d", "/c", "npm --version"] : ["--version"]),
   git: command("git", ["--version"]), python: command("python", ["--version"]),
@@ -82,7 +112,10 @@ const host = {
   os: { platform: process.platform, release: release(), cpu: cpus()[0]?.model, cores: cpus().length, totalMemory: totalmem() },
   power: command("powercfg", ["/getactivescheme"]),
   defender: powershell("try { Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled | ConvertTo-Json -Compress } catch { Write-Output 'unconfirmed' }"),
-  command: "npm run check", instrumentation: "none in baseline; optional explicit-argv auxiliary profile", preflight,
+  command: npmCommand, commandArgv: npm[1], requestedConcurrency: concurrency || "default", nodeArguments: testArguments(process.platform, nodeExtra), testSources,
+  runnerSha256: createHash("sha256").update(readFileSync(join(root, "scripts/test.ts"))).digest("hex"),
+  helpersSha256: createHash("sha256").update(readFileSync(join(root, "test/helpers.ts"))).digest("hex"),
+  instrumentation: "none in baseline; optional explicit-argv auxiliary profile", preflight,
 };
 json(join(output, "environment.json"), host);
 
@@ -204,8 +237,8 @@ if (!args.includes("--self-test")) {
     const dir = ownsTemp("profile");
     const typecheck = await execute(process.platform === "win32" ? "cmd.exe" : "npm", process.platform === "win32" ? ["/d", "/c", "npm run typecheck"] : ["run", "typecheck"], dir, "profile-typecheck");
     // Node stops parsing options at its first file argument. Keep reporter before the base glob.
-    const argv = profileArguments(testArguments(process.platform));
-    json(join(output, "profile-arguments.json"), { argv, base: testArguments(process.platform), files: command("git", ["ls-files", "test/*.test.ts", "test/**/*.test.ts"]) });
+    const argv = profileArguments(testArguments(process.platform, nodeExtra));
+    json(join(output, "profile-arguments.json"), { argv, base: testArguments(process.platform, nodeExtra), files: command("git", ["ls-files", "test/*.test.ts", "test/**/*.test.ts"]) });
     const profile = await execute(process.execPath, argv, dir, "profile");
     json(join(output, "profile-summary.json"), { typecheck, profile, auxiliaryOnly: true });
     if (profile.status !== 0 || typecheck.status !== 0) process.exitCode = 1;

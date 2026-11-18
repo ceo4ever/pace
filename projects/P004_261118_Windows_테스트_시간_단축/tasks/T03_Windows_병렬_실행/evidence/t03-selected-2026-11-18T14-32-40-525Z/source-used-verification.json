@@ -1,0 +1,7 @@
+{
+  "checks": {
+    "runnerSnapshot": true,
+    "testsSnapshot": true
+  },
+  "note": "Exact current unchanged source copied before candidate changes, with hashes matched to the measured series-start metadata"
+}
