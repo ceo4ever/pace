@@ -1,7 +1,7 @@
 import { closeSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync, rmdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { writeFileAtomic } from '../core/fsutil.ts';
-import { LEGACY_UI, renderDashboardEntry, isGeneratedSharedEntry } from './dashboard-layout.ts';
+import { LEGACY_UI, renderDashboardEntry, isGeneratedSharedEntry, ensureLocalLink, restoreLocalLink, lf, type LocalLinkBefore } from './dashboard-layout.ts';
 import { generateDashboard } from './dashboard.ts';
 import { assertSafeGitPath } from '../core/paths.ts';
 
@@ -86,6 +86,7 @@ export function initDashboard(target: string): string {
     } finally { closeSync(fd); }
   };
   let replaced: { path: string; before: string; after: string } | null = null;
+  let local: LocalLinkBefore | null = null;
   try {
     const html = renderDashboardEntry(); // Verify the shared installation before touching project files.
     const backlog = join(root, 'backlogs');
@@ -116,7 +117,7 @@ export function initDashboard(target: string): string {
     }
     const entryPath = join(backlog, 'README.html');
     if (!entry) claim(entryPath, Buffer.from(html));
-    else if (entry.bytes.toString('utf8') !== html) {
+    else if (lf(entry.bytes.toString('utf8')) !== html) {
       const current = lstatSync(entryPath);
       if (current.dev !== entry.dev || current.ino !== entry.ino || !readFileSync(entryPath).equals(entry.bytes)) throw new Error('진입 HTML이 변경되어 전환을 중단했습니다.');
       replaced = { path: entryPath, before: entry.bytes.toString('utf8'), after: html };
@@ -128,10 +129,13 @@ export function initDashboard(target: string): string {
       const created = owned.find(entry => entry.path === join(dashboard, 'data.js'));
       if (created) { created.dev = current.dev; created.ino = current.ino; }
     }
-    if (!entry) return '백로그 대시보드를 생성했습니다: backlogs/README.html (PACE 공용 화면 참조)';
-    if (replaced && shared) return '공용 설치본 참조 경로를 갱신했습니다. 기존 프로젝트 자료는 보존했습니다.';
-    return found.includes('dashboard/data.js') ? '기존 백로그 대시보드를 보존하고 공용 설치본 경로를 확인했습니다.' : '부분 대시보드 복구 완료: 공용 화면과 프로젝트 자료를 연결했습니다.';
+    local = ensureLocalLink(root)!;
+    const commitHint = local.ignore === null ? ' backlogs/dashboard/.gitignore를 함께 커밋하세요.' : '';
+    if (!entry) return '백로그 대시보드를 생성했습니다: backlogs/README.html (PACE 공용 화면 참조 — 이 PC 경로는 Git 밖 backlogs/dashboard/local.js)' + commitHint;
+    if (replaced && shared) return '공용 진입점을 PC 경로 없는 형식으로 바꿨습니다. 이 PC 경로는 Git 밖 backlogs/dashboard/local.js에 둡니다. 기존 프로젝트 자료는 보존했습니다. 바뀐 backlogs/README.html을 커밋하세요.' + commitHint;
+    return (found.includes('dashboard/data.js') ? '기존 백로그 대시보드를 보존하고 이 PC의 공용 설치본 연결(backlogs/dashboard/local.js)을 확인했습니다.' : '부분 대시보드 복구 완료: 공용 화면과 프로젝트 자료를 연결했습니다.') + commitHint;
   } catch (error) {
+    if (local) restoreLocalLink(root, local);
     if (replaced) {
       const current = stat(replaced.path);
       if (current?.isFile() && !current.isSymbolicLink() && readFileSync(replaced.path, 'utf8') === replaced.after) writeFileAtomic(replaced.path, replaced.before);

@@ -7,7 +7,7 @@ import { getString, parseFrontmatter } from "../core/frontmatter.ts";
 import { AGENT_BUDGET, agentKind, validateAgentDefinition } from "./agent-definition.ts";
 import { listCandidates, registerWorkspace } from "./workspace-registry.ts";
 import { COMMIT_HOOK, COMMIT_HOOK_MARKER, commitHookPath } from "./harness.ts";
-import { SHARED_MARKER, renderDashboardEntry } from "./dashboard-layout.ts";
+import { LEGACY_SHARED_MARKER, ensureLocalLink, renderDashboardEntry, renderLegacyEntry, restoreLocalLink } from "./dashboard-layout.ts";
 import { rebuildMemoryIndex } from "../memory/memory.ts";
 
 /** OPAL(v2) 프로젝트 정의(`.opal/`)를 PACE(`.pace/`)로 가져오는 계획·적용. 홈 프로필·훅·대시보드는 다루지 않는다. */
@@ -284,11 +284,16 @@ function planExtras(plan: AdoptPlan, root: string): void {
   hashes.push(entry ?? "");
   if (entry !== null && entry.startsWith(OPAL_DASHBOARD_MARKER)) {
     try {
-      const asOpal = renderDashboardEntry().replace(SHARED_MARKER, OPAL_DASHBOARD_MARKER);
+      // OPAL 진입점은 PACE v1(설치본 file URL을 직접 담은 형태)과 표지·문구만 다르다
+      const asOpal = renderLegacyEntry().replace(LEGACY_SHARED_MARKER, OPAL_DASHBOARD_MARKER);
+      renderDashboardEntry(); // 쓸 진입점의 설치본도 계획 때 확인한다
       const legacy = asOpal.replace(PACE_DASHBOARD_TEXT, OPAL_DASHBOARD_TEXT);
       const current = normalizeUrls(entry);
       if (current === normalizeUrls(asOpal) || current === normalizeUrls(legacy)) {
         plan.dashboard = true;
+        if (!lstatSync(join(root, "backlogs", "dashboard"), { throwIfNoEntry: false })?.isDirectory()) {
+          plan.warnings.push("backlogs/dashboard 폴더가 없어 이 PC 연결(local.js)은 만들지 않는다 — 진입점 전환 뒤 pace backlog init으로 대시보드를 완성한다");
+        }
         plan.moves.push("backlogs/README.html: OPAL 공용 진입점 → PACE 공용 참조 (data.js 등 다른 파일은 그대로 — 화면 자료는 pace backlog refresh로 갱신)");
       } else {
         plan.warnings.push("backlogs/README.html이 OPAL 진입점에서 수정된 것 같아 보존했다 — pace backlog init으로 직접 전환한다");
@@ -465,6 +470,11 @@ export function applyAdoptOpal(rootInput: string, home: string, expected: AdoptP
       const entryMode = lstatSync(entryPath).mode & 0o777;
       undo.push(() => { writeFileAtomic(entryPath, entryBytes.toString("utf8")); chmodSync(entryPath, entryMode); });
       (deps.writeEntry ?? writeFileAtomic)(entryPath, renderDashboardEntry());
+      // 진입점은 PC 경로가 없다 — 이 PC 연결(local.js)과 그것을 Git에서 빼는 .gitignore를 함께 둔다
+      if (lstatSync(join(root, "backlogs", "dashboard"), { throwIfNoEntry: false })?.isDirectory()) {
+        const before = ensureLocalLink(root)!;
+        undo.push(() => restoreLocalLink(root, before));
+      }
     }
     if (plan.needsRegister) {
       // registerWorkspace는 항목을 마지막에 원자적으로(link) 만든다 — 던졌다면 항목이 없으므로 등록부는 되돌릴 것이 없다

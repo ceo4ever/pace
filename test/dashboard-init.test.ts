@@ -446,11 +446,13 @@ test('shared dashboard init keeps only project entry and data, and shares one ru
   const one = repo(), two = repo(), home = tempDir();
   for (const root of [one, two]) assert.equal(runPace(['backlog', 'init'], { cwd: root, home }).status, 0);
   const html = readFileSync(join(one, 'backlogs/README.html'), 'utf8');
-  assert.match(html, /pace:backlog-shared:1/);
-  assert.match(html, /file:.*src\/dashboard\/backlog\/app\.js/);
+  assert.match(html, /pace:backlog-shared:2/);
+  assert.doesNotMatch(html, /file:/);
   assert.equal(html, readFileSync(join(two, 'backlogs/README.html'), 'utf8'));
-  assert.deepEqual(readdirSync(join(one, 'backlogs/dashboard')), ['data.js']);
-  assert.deepEqual(readdirSync(join(two, 'backlogs/dashboard')), ['data.js']);
+  for (const root of [one, two]) {
+    assert.deepEqual(readdirSync(join(root, 'backlogs/dashboard')).sort(), ['.gitignore', 'data.js', 'local.js']);
+    assert.match(readFileSync(join(root, 'backlogs/dashboard/local.js'), 'utf8'), /file:.*src\/dashboard\/backlog\/app\.js/);
+  }
 });
 
 function copiedDashboard(root: string, custom = false): Buffer {
@@ -484,16 +486,168 @@ test('installed runtime URLs escape special paths and can rebind without touchin
   const first = runtimeCopy('PACE space # & 한글'), next = runtimeCopy('PACE next'), root = repo(), home = tempDir();
   const run = (app: string) => spawnSync(process.execPath, [join(app, 'bin/pace.ts'), 'backlog', 'init'], { cwd: root, encoding: 'utf8', env: { ...process.env, HOME: home, PACE_HOME: home } });
   assert.equal(run(first).status, 0);
-  const entry = join(root, 'backlogs/README.html'), data = join(root, 'backlogs/dashboard/data.js');
-  assert.ok(readFileSync(entry, 'utf8').includes(pathToFileURL(join(first, 'src/dashboard/backlog/app.js')).href.replace(/&/g, '&amp;')));
-  const original = readFileSync(data);
+  const entry = join(root, 'backlogs/README.html'), data = join(root, 'backlogs/dashboard/data.js'), local = join(root, 'backlogs/dashboard/local.js');
+  // 특수 문자 경로는 JSON 문자열 안의 file URL로만 들어간다
+  assert.ok(readFileSync(local, 'utf8').includes(JSON.stringify(pathToFileURL(join(first, 'src/dashboard/backlog/app.js')).href)));
+  const firstEntry = readFileSync(entry), original = readFileSync(data);
   const rebound = run(next);
   assert.equal(rebound.status, 0);
-  assert.match(rebound.stdout, /참조 경로를 갱신/);
-  assert.ok(readFileSync(entry, 'utf8').includes(pathToFileURL(join(next, 'src/dashboard/backlog/app.js')).href));
+  assert.ok(readFileSync(local, 'utf8').includes(pathToFileURL(join(next, 'src/dashboard/backlog/app.js')).href));
+  assert.deepEqual(readFileSync(entry), firstEntry, 'P-1: 설치본이 달라도 진입 HTML 바이트가 같다');
   assert.deepEqual(readFileSync(data), original);
   const edited = readFileSync(entry, 'utf8') + '<!-- user note -->';
   writeFileSync(entry, edited);
   assert.equal(run(first).status, 0);
   assert.equal(readFileSync(entry, 'utf8'), edited);
+});
+
+function commitAll(root: string): void {
+  assert.equal(spawnSync('git', ['-C', root, 'add', '-A']).status, 0);
+  assert.equal(spawnSync('git', ['-C', root, '-c', 'user.name=test', '-c', 'user.email=test@example.com', 'commit', '-qm', 'dashboard']).status, 0);
+}
+const gitStatus = (root: string) => spawnSync('git', ['-C', root, 'status', '--porcelain', '--untracked-files=all'], { encoding: 'utf8' }).stdout;
+const runWith = (app: string, root: string, home: string, command = 'init') => spawnSync(process.execPath, [join(app, 'bin/pace.ts'), 'backlog', command], { cwd: root, encoding: 'utf8', env: { ...process.env, HOME: home, PACE_HOME: home } });
+
+test('P-2: 다른 설치본(PC)에서 init해도 커밋된 대시보드에 Git 변경이 없다', () => {
+  const pcA = runtimeCopy('pc-a'), pcB = runtimeCopy('pc-b'), root = repo(), home = tempDir();
+  const first = runWith(pcA, root, home);
+  assert.equal(first.status, 0, first.stderr);
+  assert.match(first.stdout, /\.gitignore를 함께 커밋/);
+  assert.equal(spawnSync('git', ['-C', root, 'check-ignore', '-q', 'backlogs/dashboard/local.js']).status, 0);
+  commitAll(root);
+  assert.equal(gitStatus(root), '');
+  const second = runWith(pcB, root, home);
+  assert.equal(second.status, 0, second.stderr);
+  assert.equal(gitStatus(root), '', 'PC 경로 변경은 Git 밖 local.js에만 생긴다');
+  assert.ok(readFileSync(join(root, 'backlogs/dashboard/local.js'), 'utf8').includes(pathToFileURL(join(pcB, 'src/dashboard/backlog/core.js')).href));
+});
+
+test('P-3: 수정하지 않은 v1 진입점은 v2로 바꾸고, 고친 v1 진입점은 보존한다', async () => {
+  const { renderLegacyEntry } = await import('../src/project/dashboard-layout.ts');
+  const app = runtimeCopy('pc-legacy'), home = tempDir();
+  // 다른 PC에서 만든 v1 생성본: 설치 경로만 다르다(Windows 체크아웃처럼 CRLF여도 같다)
+  const v1 = renderLegacyEntry().replace(/file:[^"]*\/src\/dashboard\/backlog\//g, 'file:///C:/Users/other/.pace/app/src/dashboard/backlog/');
+  // 리뷰 2차: 리소스 경로 하나만 고친 v1도 사용자 수정이다
+  const customCore = v1.replace(/file:[^"]*\/core\.js/, 'file:///D:/custom/core.js');
+  for (const [html, converted] of [[v1, true], [v1.replace(/\n/g, '\r\n'), true], [v1 + '<!-- 내 메모 -->', false], [customCore, false]] as const) {
+    const root = repo();
+    mkdirSync(join(root, 'backlogs/dashboard'), { recursive: true });
+    writeFileSync(join(root, 'backlogs/README.html'), html);
+    writeFileSync(join(root, 'backlogs/dashboard/data.js'), `window.PACE_DATA = ${JSON.stringify({ generated: new Date().toISOString(), files: {}, assets: {}, catalog: [], skipped: 0, bytes: 0 })};\n`);
+    const refreshed = runWith(app, root, home, 'refresh');
+    assert.equal(refreshed.status, 0, refreshed.stderr);
+    assert.equal(existsSync(join(root, 'backlogs/dashboard/local.js')), false);
+    assert.equal(readFileSync(join(root, 'backlogs/README.html'), 'utf8'), html, 'refresh는 v1 진입점을 바꾸지 않는다');
+    const result = runWith(app, root, home);
+    assert.equal(result.status, 0, result.stderr);
+    if (converted) {
+      assert.match(result.stdout, /PC 경로 없는 형식/);
+      assert.equal(readFileSync(join(root, 'backlogs/README.html'), 'utf8'), renderDashboardEntry());
+      assert.equal(existsSync(join(root, 'backlogs/dashboard/local.js')), true);
+    } else {
+      assert.match(result.stdout, /보존/);
+      assert.equal(readFileSync(join(root, 'backlogs/README.html'), 'utf8'), html);
+    }
+  }
+});
+
+test('리뷰 B1: 추적 중이거나 제외가 실제로 안 되는 local.js는 쓰지 않는다', () => {
+  const pcA = runtimeCopy('pc-track-a'), pcB = runtimeCopy('pc-track-b'), home = tempDir();
+  // 추적 중: 강제로 커밋된 local.js — init은 실패하고 파일·진입점을 바꾸지 않는다
+  const tracked = repo();
+  assert.equal(runWith(pcA, tracked, home).status, 0);
+  assert.equal(spawnSync('git', ['-C', tracked, 'add', '-f', 'backlogs/dashboard/local.js']).status, 0);
+  commitAll(tracked);
+  const local = readFileSync(join(tracked, 'backlogs/dashboard/local.js'));
+  const result = runWith(pcB, tracked, home);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /추적/);
+  assert.deepEqual(readFileSync(join(tracked, 'backlogs/dashboard/local.js')), local);
+  assert.equal(gitStatus(tracked), '');
+  // 부정 규칙으로 제외가 풀린 저장소: refresh는 local.js를 만들지 않아 Git 변경이 생기지 않는다
+  const negated = repo();
+  assert.equal(runWith(pcA, negated, home).status, 0);
+  writeFileSync(join(negated, 'backlogs/dashboard/.gitignore'), '/local.js\n!/local.js\n');
+  unlinkSync(join(negated, 'backlogs/dashboard/local.js'));
+  commitAll(negated);
+  assert.equal(runWith(pcA, negated, home, 'refresh').status, 0);
+  assert.equal(existsSync(join(negated, 'backlogs/dashboard/local.js')), false);
+  assert.equal(gitStatus(negated).split('\n').filter(line => line && !line.endsWith('data.js')).join('\n'), '');
+  // 리뷰 2차: init도 기존 부정 규칙을 덮어쓰지 않고 실패한다
+  const negatedInit = runWith(pcA, negated, home);
+  assert.notEqual(negatedInit.status, 0);
+  assert.match(negatedInit.stderr, /빼지 않습니다/);
+  assert.equal(readFileSync(join(negated, 'backlogs/dashboard/.gitignore'), 'utf8'), '/local.js\n!/local.js\n');
+  assert.equal(existsSync(join(negated, 'backlogs/dashboard/local.js')), false);
+  // 리뷰 2차: 이 PC에만 있는 제외(.git/info/exclude)에 기대지 않고 커밋할 .gitignore를 만든다
+  const localOnly = repo();
+  writeFileSync(join(localOnly, '.git/info/exclude'), 'local.js\n');
+  assert.equal(runWith(pcA, localOnly, home).status, 0);
+  const source = spawnSync('git', ['-C', localOnly, 'check-ignore', '-v', '--', 'backlogs/dashboard/local.js'], { encoding: 'utf8' }).stdout;
+  assert.match(source, /^backlogs\/dashboard\/\.gitignore:/);
+  // 리뷰 3차: 제외 규칙 파일 자체가 Git에서 빠지면 새 clone에 규칙이 없으므로 실패한다
+  const hiddenRule = repo();
+  writeFileSync(join(hiddenRule, '.git/info/exclude'), 'backlogs/dashboard/.gitignore\n');
+  const hidden = runWith(pcA, hiddenRule, home);
+  assert.notEqual(hidden.status, 0);
+  assert.match(hidden.stderr, /규칙이 전달되지 않습니다/);
+});
+
+test('리뷰 B2: PACE가 만들지 않은 local.js가 있으면 init은 실패하고 아무것도 바꾸지 않는다', async () => {
+  const { renderLegacyEntry } = await import('../src/project/dashboard-layout.ts');
+  const app = runtimeCopy('pc-user-local'), home = tempDir(), root = repo();
+  mkdirSync(join(root, 'backlogs/dashboard'), { recursive: true });
+  const v1 = renderLegacyEntry().replace(/file:[^"]*\/src\/dashboard\/backlog\//g, 'file:///C:/Users/other/.pace/app/src/dashboard/backlog/');
+  writeFileSync(join(root, 'backlogs/README.html'), v1);
+  writeFileSync(join(root, 'backlogs/dashboard/data.js'), `window.PACE_DATA = ${JSON.stringify({ generated: new Date().toISOString(), files: {}, assets: {}, catalog: [], skipped: 0, bytes: 0 })};\n`);
+  writeFileSync(join(root, 'backlogs/dashboard/local.js'), '// 내 스크립트\n');
+  const before = treeSnapshot(root);
+  const result = runWith(app, root, home);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /PACE가 만들지 않았거나 고친/);
+  assert.equal(treeSnapshot(root), before, '진입점 전환·.gitignore 생성도 되돌린다');
+  // 리뷰 2차: 생성본 첫 줄을 남긴 채 고친 local.js도 사용자 수정 — init·refresh 모두 덮지 않는다
+  const edited = repo();
+  assert.equal(runWith(app, edited, home).status, 0);
+  commitAll(edited);
+  const path = join(edited, 'backlogs/dashboard/local.js');
+  const generated = readFileSync(path, 'utf8');
+  const other = runtimeCopy('pc-user-local-2');
+  // 별도 줄에 덧붙인 코드, URL 줄 끝에 같은 줄로 덧붙인 코드(리뷰 3차) 모두
+  const duplicateStyle = generated.replace(/var u = (\{[^\n]*)\};/, 'var u =  $1,"style":"file:///D:/my.css"};');
+  for (const mine of [generated + 'console.log("내 코드");\n', generated.replace(/(var u = \{[^\n]*\});/, '$1; window.dashboardOptions = { compact: true };'), duplicateStyle]) {
+    assert.notEqual(mine, generated);
+    writeFileSync(path, mine);
+    assert.notEqual(runWith(other, edited, home).status, 0);
+    assert.equal(readFileSync(path, 'utf8'), mine);
+    const refreshed = runWith(other, edited, home, 'refresh');
+    assert.equal(refreshed.status, 0);
+    assert.match(refreshed.stderr, /고친/);
+    assert.equal(readFileSync(path, 'utf8'), mine);
+  }
+});
+
+test('리뷰 B3: local.js 쓰기가 실패하면 .gitignore 생성까지 되돌린다', async () => {
+  const { ensureLocalLink } = await import('../src/project/dashboard-layout.ts');
+  const root = repo();
+  mkdirSync(join(root, 'backlogs/dashboard'), { recursive: true });
+  const before = treeSnapshot(root);
+  assert.throws(() => ensureLocalLink(root, { writeLocal: () => { throw new Error('주입한 쓰기 실패'); } }), /주입한 쓰기 실패/);
+  assert.equal(treeSnapshot(root), before);
+  assert.equal(gitStatus(root), '');
+  // 리뷰 2차: 실패 사이에 다른 작업이 바꾼 .gitignore는 복구가 지우지 않는다
+  const ignore = join(root, 'backlogs/dashboard/.gitignore');
+  assert.throws(() => ensureLocalLink(root, { writeLocal: () => { writeFileSync(ignore, '# 다른 작업\n'); throw new Error('주입한 경합'); } }), /주입한 경합/);
+  assert.equal(readFileSync(ignore, 'utf8'), '# 다른 작업\n');
+});
+
+test('P-4: 새 clone처럼 local.js가 없으면 refresh가 만든다', () => {
+  const app = runtimeCopy('pc-clone'), root = repo(), home = tempDir();
+  assert.equal(runWith(app, root, home).status, 0);
+  commitAll(root);
+  unlinkSync(join(root, 'backlogs/dashboard/local.js'));
+  const result = runWith(app, root, home, 'refresh');
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(readFileSync(join(root, 'backlogs/dashboard/local.js'), 'utf8'), /async = false/);
+  assert.equal(gitStatus(root).split('\n').filter(line => line && !line.endsWith('data.js')).join('\n'), '');
 });

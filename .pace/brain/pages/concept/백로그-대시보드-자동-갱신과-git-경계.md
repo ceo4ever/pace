@@ -3,10 +3,10 @@ type: concept
 title: 백로그 대시보드 자동 갱신과 Git 경계
 summary: 대시보드 최초 생성과 Git 자료 갱신의 경계를 유지하고 프로젝트 상태·인덱스 자료를 안전하게 보존한다
 tags: []
-sources: [code:src/project/dashboard.ts, code:src/project/dashboard-init.ts, code:src/cli.ts, code:src/project/harness.ts, test:test/dashboard-init.test.ts, test:test/backlog-dashboard.test.ts, test:test/project-harness.test.ts, doc:skills/pace-project-init/SKILL.md, doc:docs/README.md, code:src/dashboard/backlog/core.js, code:src/dashboard/backlog/app.js, doc:templates/backlog/BACKLOG.md, doc:skills/pace-project-init/references/backlog-format.md, code:src/project/dashboard-layout.ts]
+sources: [code:src/project/dashboard.ts, code:src/project/dashboard-init.ts, code:src/cli.ts, code:src/project/harness.ts, test:test/dashboard-init.test.ts, code:src/project/adopt-opal.ts, test:test/backlog-dashboard.test.ts, test:test/project-harness.test.ts, doc:skills/pace-project-init/SKILL.md, doc:docs/README.md, code:src/dashboard/backlog/core.js, code:src/dashboard/backlog/app.js, doc:templates/backlog/BACKLOG.md, doc:skills/pace-project-init/references/backlog-format.md, code:src/project/dashboard-layout.ts]
 related: [작업-하네스-흐름]
 created: 2026-11-07
-updated: 2026-11-17
+updated: 2026-11-18
 status: active
 ---
 
@@ -52,4 +52,10 @@ Git 파일 열거가 경고를 stderr에 내면서 exit 0이어도 목록이 불
 
 화면·스타일·레이아웃은 src/dashboard/backlog에 한 번만 배포한다. 진입 HTML은 설치 CLI의 공통 자산을 file URL로 참조하고, 개발 CLI로 생성하면 해당 checkout을 참조한다. 프로젝트에는 backlogs/README.html과 backlogs/dashboard/data.js만 생성하며 공통 JS/CSS를 복제하지 않는다. 공용 코드 업데이트는 모든 공용 참조 화면에 새로고침 시 반영되지만 자료는 각 HTML 옆 data.js에서 읽어 분리한다. 데이터 경로를 유지한 이유는 기존 인덱스·자동 커밋·상태 갱신 정책을 바꾸지 않기 위해서다.
 
-로컬 HTML을 서버 없이 직접 열기 때문에 진입 HTML의 참조는 설치 PC에 종속된다. 다른 PC나 설치 위치에서는 opi/init으로 연결을 갱신한다. refresh는 자료 갱신만 담당한다. 공용 참조가 아닌 기존 화면은 바이트를 보존해 전환하지 않았음을 알린다. 참조 갱신은 Git 변경을 만들며 사용자 커밋 이후 하네스를 진행한다. 자동 add/commit이나 초안 보호 우회는 하지 않는다.
+로컬 HTML을 서버 없이 직접 열기 때문에 페이지가 설치 위치를 스스로 찾을 수 없다. 그래서 PC 경로는 Git 밖 파일로 분리한다(P003, 2026-11-18). 진입 HTML v2(`pace:backlog-shared:2`)는 PC 경로 없이 `dashboard/data.js`·`dashboard/local.js`만 defer로 읽고 모든 PC에서 같은 바이트다. `local.js`는 이 PC의 공용 자산 file URL을 JSON으로 담아 CSS를 붙이고 script를 `async=false`로 넣어 core → app 순서를 지킨다. `backlogs/dashboard/.gitignore`(커밋)가 `/local.js`를 뺀다 — 대상 저장소 루트 .gitignore는 건드리지 않는다. init은 .gitignore와 local.js를 만들고, 생성 함수(refresh·하네스 자료 갱신)는 제외 규칙이 이미 있을 때만 local.js를 맞춰 Git 변경을 새로 만들지 않는다(하네스 미커밋 검사 보호). 템플릿은 CRLF 체크아웃에서도 같은 바이트가 되도록 LF로 정규화한다.
+
+교차 검토(codex, 4차 pass)로 굳힌 안전 경계: ① 제외 판단은 `git check-ignore -q`와 `-v` 출처가 `backlogs/dashboard/.gitignore`이고 규칙이 `!`로 시작하지 않을 때만 — `-v`는 부정 규칙에 맞아도 종료 0이라 단독으로 쓰면 안 된다. info/exclude·전역 규칙에만 기대면 새 clone에 규칙이 없다. 규칙 파일 자체가 제외돼도 실패. ② 기존 .gitignore는 고치지 않는다(사용자 부정 규칙을 덧붙임으로 무력화하지 않음). ③ local.js 소유권은 URL 줄이 생성 형태 그대로(`JSON.stringify` 정본 일치 — 같은 줄 덧붙임·중복 키 거부)인 생성본만. ④ 추적 중인 local.js는 쓰지 않는다. ⑤ 부분 실패 복구는 이번에 쓴 파일이 쓴 내용 그대로일 때만 — 확인 직후 교체 경합은 잠금 없이 남는 좁은 창. refresh는 수정하지 않은 v2 진입점에서만 연결을 맞춘다.
+
+버린 길: README.html을 Git에서 빼기(새 clone·worktree가 data.js만 있어 부분 설치로 판정되고 pull 때 파일이 지워짐), 공용 자산 복제(공용 설치본 결정 역행), 현행 유지(PC마다 Git 변경·커밋하면 다른 PC 화면 깨짐).
+
+v1(설치본 file URL을 직접 담음)은 판별용으로만 남는다. 경로만 다른 v1 생성본은 init이 v2로 바꾸고 refresh는 바꾸지 않는다. 고친 v1과 공용 참조가 아닌 기존 화면은 바이트를 보존해 전환하지 않았음을 알린다. OPAL 진입점은 v1과 표지·문구만 다르므로 v1 렌더와 비교한다. 자동 add/commit이나 초안 보호 우회는 하지 않는다.

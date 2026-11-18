@@ -316,6 +316,7 @@ test('legacy script remains usable from its own checkout', async () => {
   await mkdir(join(root, 'src/core'), { recursive: true });
   await cp(resolve('src/project/dashboard-layout.ts'), join(root, 'src/project/dashboard-layout.ts'));
   await cp(resolve('src/core/paths.ts'), join(root, 'src/core/paths.ts'));
+  await cp(resolve('src/core/fsutil.ts'), join(root, 'src/core/fsutil.ts'));
   await writeFile(join(root, 'backlogs/README.html'), 'dashboard');
   await writeFile(join(root, 'backlogs/dashboard/data.js'), 'old');
   assert.equal(spawnSync('git', ['init', '-q', root]).status, 0);

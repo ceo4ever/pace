@@ -2,7 +2,7 @@ import { lstatSync, realpathSync, readFileSync, writeFileSync, renameSync, unlin
 import { randomBytes } from 'node:crypto';
 import { resolve, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { dashboardState } from './dashboard-layout.ts';
+import { DASHBOARD_ENTRY, dashboardState, ensureLocalLink, isCurrentSharedEntry } from './dashboard-layout.ts';
 import { assertSafeGitPath } from '../core/paths.ts';
 
 export function generateDashboard(target: string, trackedOnly = false): string | null {
@@ -17,6 +17,7 @@ for (const part of ['backlogs', 'backlogs/dashboard', 'backlogs/dashboard/data.j
   if (stat.isSymbolicLink() || realpathSync(path) !== path) throw new Error(`안전하지 않은 대시보드 경로: ${part}`);
   if (part.endsWith('.js') || part.endsWith('.html') ? !stat.isFile() : !stat.isDirectory()) throw new Error(`잘못된 대시보드 경로: ${part}`);
 }
+linkThisPc(root);
 const dir = join(root, 'backlogs', 'dashboard');
 const lock = join(dir, '.pace-refresh-lock');
 const recovery = join(dir, '.pace-refresh-reaper');
@@ -197,6 +198,17 @@ return `백로그 대시보드 자료 생성: ${Object.keys(files).length}개, $
   try { if (readFileSync(lock, 'utf8') === identity) unlinkSync(lock); }
   catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
 }
+}
+
+/** v2 진입점이면 이 PC의 local.js를 맞춘다(새 clone·worktree). v1 전환은 init 책임이라 건드리지 않는다. 실패는 경고만. */
+function linkThisPc(root: string): void {
+  try {
+    // 수정하지 않은 v2 진입점만 — 사용자가 고친 화면은 자동으로 손대지 않는다.
+    if (!isCurrentSharedEntry(readFileSync(join(root, DASHBOARD_ENTRY), 'utf8'))) return;
+    ensureLocalLink(root, { createIgnore: false });
+  } catch (error) {
+    process.stderr.write(`pace: 경고: 이 PC의 대시보드 연결(backlogs/dashboard/local.js)을 만들지 못했습니다: ${error instanceof Error ? error.message : String(error)} — pace backlog init으로 확인하세요\n`);
+  }
 }
 
 export function refreshDashboard(root: string, trackedOnly = false): boolean {

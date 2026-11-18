@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { applyAdoptOpal, formatPlan, planAdoptOpal } from "../src/project/adopt-opal.ts";
 import { agentKind } from "../src/project/agent-definition.ts";
-import { renderDashboardEntry } from "../src/project/dashboard-layout.ts";
+import { renderDashboardEntry, renderLegacyEntry, renderLocalLoader } from "../src/project/dashboard-layout.ts";
 import { createCandidate, listCandidates, registerWorkspace } from "../src/project/workspace-registry.ts";
 import { runPace, tempDir } from "./helpers.ts";
 
@@ -327,7 +327,7 @@ function installHook(root: string, text: string): void {
 }
 /** 설치된 PACE가 만드는 공용 진입점을 OPAL 표지로 바꾼 것 — OPAL이 만들던 진입점과 같은 모양 */
 function opalEntry(): string {
-  return renderDashboardEntry().replace("<!-- pace:backlog-shared:1 -->", "<!-- opal:backlog-shared:1 -->");
+  return renderLegacyEntry().replace("<!-- pace:backlog-shared:1 -->", "<!-- opal:backlog-shared:1 -->");
 }
 
 test("T02-S-1 OPAL 커밋 게이트 훅을 PACE 훅으로 바꾸고 원본을 백업한다", () => {
@@ -364,6 +364,10 @@ test("T02-S-3 OPAL 공용 대시보드 진입점은 PACE 공용 참조로 바꾸
   assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), renderDashboardEntry());
   assert.equal(readFileSync(join(root, "backlogs", "dashboard", "data.js"), "utf8"), files["backlogs/dashboard/data.js"]);
   assert.equal(readFileSync(join(root, "backlogs", "내-메모.md"), "utf8"), files["backlogs/내-메모.md"]);
+  // P003: 진입점에는 PC 경로가 없고 이 PC 연결은 Git 밖 local.js에 둔다
+  assert.doesNotMatch(readFileSync(join(root, "backlogs", "README.html"), "utf8"), /file:/);
+  assert.equal(readFileSync(join(root, "backlogs", "dashboard", "local.js"), "utf8"), renderLocalLoader());
+  assert.equal(spawnSync("git", ["-C", root, "check-ignore", "-q", "backlogs/dashboard/local.js"]).status, 0);
 });
 
 test("T02-S-3 수정된 OPAL 진입점·이미 PACE인 진입점은 건드리지 않는다", () => {
