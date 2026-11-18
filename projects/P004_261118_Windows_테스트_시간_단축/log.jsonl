@@ -1,0 +1,1 @@
+{"ts":"2026-11-18T08:44:53.458Z","p":"P004","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 0 (Claude 작성 백로그, Codex 독립 검토)","ref":"PROJECT.md","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
