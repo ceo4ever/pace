@@ -1,0 +1,25 @@
+{
+  "text": "**목표 대조는 맞음, 목표 달성은 미달입니다.** v2 진입 HTML과 PC별 로더를 분리하는 설계는 요청에 맞습니다. 정상 렌더와 로더가 없을 때의 안내 화면도 확인했습니다. 다만 기존 스냅샷과 로더의 임시 파일을 통해 PC 경로가 Git에 남을 수 있고, 사용자 파일 보호와 실패 복원에도 결함이 있습니다.\n\n### 1단계 blocking 재판정\n\n| 항목 | 판정 | 근거와 테스트 검출력 |\n|---|---|---|\n| B1 · Git 추적과 제외 | **미해소** | 정확히 `local.js`로 추적된 파일은 거부하고, 제외가 풀리면 refresh는 건너뜁니다. B1 시험은 두 회귀를 잡습니다. 그러나 Windows에서 `ls-files`는 대소문자가 다른 추적 경로를 놓칩니다. 이 저장소에서 `core.ignorecase=true`여도 `readme.md` 조회는 추적된 `README.md`를 찾지 못하는 것을 확인했습니다. 또한 원자적 쓰기에 쓰는 임시 파일에는 PC 경로가 들어가는데, 그 파일명은 제외되지 않습니다. 동시 `git add -A`가 이를 스테이징할 수 있습니다. [Git 검사와 로더 쓰기](D:/LucasStudio/pace/src/project/dashboard-layout.ts:118) · [임시 파일 생성](D:/LucasStudio/pace/src/core/fsutil.ts:6) · [finish 스테이징](D:/LucasStudio/pace/src/project/harness.ts:1388) |\n| B2 · 사용자 파일 보호 | **미해소** | 표지 없는 기존 파일의 보존은 B2 시험이 검출합니다. 실제 판별은 첫 줄 일치가 아닌 `startsWith`여서 같은 접두사로 시작하는 사용자 파일도 덮어씁니다. 최초 읽기와 교체 사이의 파일 변경도 확인하지 않습니다. refresh의 로더 쓰기는 자료 생성 잠금을 잡기 전에 실행되므로, 기존 동시 init 시험으로 init과 refresh가 겹치는 경우를 검증할 수 없습니다. [소유권 판별](D:/LucasStudio/pace/src/project/dashboard-layout.ts:114) · [refresh 잠금 위치](D:/LucasStudio/pace/src/project/dashboard.ts:20) |\n| B3 · 부분 실패 복원 | **미해소** | B3 시험은 로더가 없고 주입된 쓰기가 즉시 실패할 때 새 `.gitignore`가 지워지는지 검출합니다. 실제 복원은 이 호출이 바꾼 파일을 구분하지 않고 두 경로에 모두 손댑니다. 예를 들어 기존 로더를 교체할 수 없어 실패하면 복원도 같은 로더 교체부터 시도합니다. 여기서 다시 실패하면 이미 바꾼 `.gitignore`가 남고 원래 오류도 가려집니다. 다른 호출이 만든 파일을 삭제하거나 덮어쓸 수도 있습니다. [실패 처리와 복원](D:/LucasStudio/pace/src/project/dashboard-layout.ts:132) · [B3 시험](D:/LucasStudio/pace/test/dashboard-init.test.ts:591) |\n\n### 계약 대조\n\n| 기준 | 판정 | 근거 |\n|---|---|---|\n| P-1 | **충족** | v2 템플릿에 설치 경로가 없고, S-1은 두 설치본에서 진입 HTML의 바이트와 `file:` 부재를 검사합니다. [S-1](D:/LucasStudio/pace/test/dashboard-init.test.ts:446) |\n| P-2 | **미달** | **blocking.** v1에서 전환할 때 유효한 기존 `data.js`는 그대로 둡니다. 실제 HEAD의 `data.js`에 v1 진입 HTML과 설치본 `file:///` URL이 포함된 것을 확인했습니다. 따라서 `init` 직후에도 추적 파일에 PC 경로가 남습니다. S-2는 신규 설치만 다루고, S-3은 전환 뒤 스냅샷을 검사하지 않습니다. [init 전환](D:/LucasStudio/pace/src/project/dashboard-init.ts:105) · [S-3](D:/LucasStudio/pace/test/dashboard-init.test.ts:525) |\n| P-3 | **미달** | **blocking.** v1 판별은 세 URL이 같은 설치본에 속하는지 확인하지 않습니다. 사용자가 `core.js` 하나만 다른 `file:` URL로 바꾼 경우에도 정규화 후 원본과 같아져 수정본을 덮어씁니다. S-3의 수정본은 HTML 주석을 붙인 경우뿐입니다. OPAL 판별에는 이미 공통 기반 경로를 검사하는 로직이 있습니다. [v1 판별](D:/LucasStudio/pace/src/project/dashboard-layout.ts:87) · [OPAL 판별](D:/LucasStudio/pace/src/project/adopt-opal.ts:226) |\n| P-4 | **조건부 충족** | S-4는 제외 규칙이 커밋된 저장소에서 로더를 지운 뒤 CLI가 재생성하는지 검출합니다. `project start`도 새 worktree에서 같은 생성 경로를 호출하지만 실제 start·finish 실행 결과는 미확인입니다. [S-4](D:/LucasStudio/pace/test/dashboard-init.test.ts:601) · [worktree 시작 경로](D:/LucasStudio/pace/src/project/harness.ts:1666) |\n| P-5 | **미달** | **blocking.** `backlogs/dashboard/`가 없거나 디렉터리가 아니면 OPAL 가져오기가 성공하면서 HTML만 v2로 바꿉니다. 로더와 제외 규칙은 생성되지 않습니다. 역사 원문 두 판을 다루는 시험이 바로 디렉터리 없는 조건이지만 HTML만 단언하므로 이 결함이 통과합니다. [OPAL 적용](D:/LucasStudio/pace/src/project/adopt-opal.ts:462) · [역사 원문 시험](D:/LucasStudio/pace/test/adopt-opal.test.ts:433) |\n| P-6 | **충족** | 제출된 Chrome 캡처에서 스타일이 적용된 시험 백로그 화면과 로더가 없을 때의 `pace backlog init` 안내를 확인했습니다. [정상 화면](D:/LucasStudio/pace/projects/P003_261118_대시보드_PC_경로_분리/evidence/browser-local-ok.png) · [안내 화면](D:/LucasStudio/pace/projects/P003_261118_대시보드_PC_경로_분리/evidence/browser-no-local.png) |\n| P-7 | **미확인** | **handoff.** 전체 검사는 53건 실패한 이전 실행만 기록돼 있습니다. 알려진 변경 유발 실패의 단독 재실행과 타입 검사는 통과했지만, 최종 변경본 전체 통과 기록은 없습니다. [검사 기록](D:/LucasStudio/pace/projects/P003_261118_대시보드_PC_경로_분리/evidence/check-summary.md) |\n\n- **should_fix · 제외 규칙과 계약을 일치시켜야 합니다.** `.git/info/exclude`나 전역 규칙으로 이미 제외되면 `init`은 공유 `.gitignore`를 만들지 않습니다. 반대로 같은 `.gitignore`의 `!/local.js`로 제외가 풀려 있으면 `/local.js`를 뒤에 추가해 성공할 수 있습니다. 이는 제출 설명의 “init 실패” 및 계약의 “기존 `.gitignore` 보존”과 다릅니다. 현재 B1의 부정 규칙 시험은 refresh만 호출합니다. [제외 규칙 처리](D:/LucasStudio/pace/src/project/dashboard-layout.ts:119) · [B1 시험](D:/LucasStudio/pace/test/dashboard-init.test.ts:552)\n\n새 Git 호출은 셸 없이 고정 인자 배열을 사용하고, 로더는 설치 경로를 파일 URL로 바꿔 JSON 문자열로 넣습니다. 정적 검토에서 셸·스크립트 주입 경로는 발견하지 않았습니다. 최종 판정은 제출 diff, 작업 문서, 소스, 읽기 전용 Git 확인과 브라우저 캡처에 근거하며 테스트는 재실행하지 않았습니다.\n\nfail",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "read-only",
+  "enforcement": "codex exec --sandbox read-only (Windows unelevated sandbox) + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+  "session_id": "01a1ecd0-52ed-7971-8bdf-0489ea50851a",
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 198337,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 76040
+  },
+  "raw_path": null,
+  "process_cleanup": "best-effort-unverified"
+}

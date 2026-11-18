@@ -1,0 +1,25 @@
+{
+  "text": "**목표 정합성은 맞음, 목표 달성은 미달입니다.** 공용 HTML에서 PC 경로를 분리하고 설치본 자산을 `local.js`로 연결하는 설계는 목적에 맞습니다. 다만 `init`이 기존 Git 제외 규칙을 바꾸거나 이 PC에만 적용되는 규칙에 기대어 성공할 수 있고, 실패 복구가 다른 작업의 파일을 지울 수 있습니다.\n\n## 1단계 지적 재판정\n\n| 지적 | 판정 | 근거 |\n|---|---|---|\n| B1 · Git 추적 및 실제 제외 확인 | **미해소** | 추적 중인 파일은 거부하고, 제외가 풀린 경우 `refresh`는 쓰지 않습니다. 하지만 `init`은 기존 부정 규칙 뒤에 `/local.js`를 추가해 그 규칙을 무효화하고 성공합니다. |\n| B2 · 사용자 파일 보존 | **미해소** | 표지 없는 사용자 파일은 보존합니다. 생성된 로더를 사용자가 편집하고 표지를 남기면 `init`과 `refresh`가 수정 내용을 덮습니다. `refresh`의 HTML 판별도 여전히 v2 표지 접두사만 봅니다. |\n| B3 · 부분 실패 복구 | **미해소** | `.gitignore`를 새로 만든 직후 로더 쓰기가 실패하는 순차 사례는 복구합니다. 복구 대상이 이번 호출에서 실제로 바뀐 파일인지 확인하지 않아, 다른 작업의 파일까지 지우거나 덮을 수 있습니다. |\n\n## 지적\n\n- **blocking · P-2/P-4 — 제외 규칙이 저장소에 남는다는 보장이 없습니다.** 기존 `.gitignore`가 `/local.js` 다음에 `!/local.js`를 두면 `init`은 끝에 `/local.js`를 다시 붙입니다. 사용자가 전달한 반영 결과는 이 경우 `init` 실패였고, 계약도 기존 `.gitignore` 보존을 명시합니다. 반대로 `.git/info/exclude`나 전역 제외 규칙이 이미 적용되면 `init`은 커밋할 제외 파일 없이 성공합니다. 그 규칙이 없는 새 clone에서는 `refresh`가 로더 생성을 조용히 건너뜁니다. B1 시험은 추적 파일에 대한 `init`과 부정 규칙에 대한 `refresh`만 검증하므로 두 결함을 통과시킵니다. [dashboard-layout.ts](D:/LucasStudio/pace/src/project/dashboard-layout.ts:117) · [dashboard-init.test.ts](D:/LucasStudio/pace/test/dashboard-init.test.ts:552)\n\n- **blocking · B2 — 파일 표지가 사용자 편집까지 덮어쓸 권한으로 쓰입니다.** 정상 생성된 `local.js`에 사용자 코드를 추가하고 첫 줄을 유지하면 다음 갱신이 파일 전체를 교체합니다. 수정된 v2 HTML에도 표지가 남아 있으면 자동 갱신이 같은 쓰기를 수행합니다. 현재 B2 시험은 표지 없는 파일만 넣으므로, 표지 검사를 제거한 구현은 잡지만 이 덮어쓰기는 잡지 못합니다. [dashboard-layout.ts](D:/LucasStudio/pace/src/project/dashboard-layout.ts:114) · [dashboard.ts](D:/LucasStudio/pace/src/project/dashboard.ts:204) · [dashboard-init.test.ts](D:/LucasStudio/pace/test/dashboard-init.test.ts:576)\n\n- **blocking · B3 — 쓰기 실패 시 다른 작업이 만든 파일을 삭제할 수 있습니다.** `.gitignore`가 없다고 읽은 뒤 다른 작업이 같은 경로에 파일을 만들면, 이 호출의 `wx` 쓰기는 `EEXIST`로 실패합니다. 이어지는 복구는 이전 값이 `null`이었다는 이유로 현재 일반 파일을 삭제합니다. 기존 파일을 복원할 때도 현재 파일이 이번 호출의 결과와 일치하는지 확인하지 않으며, `local.js` 복원이 먼저 실패하면 `.gitignore` 복구까지 중단됩니다. 이 경로는 기존 refresh 잠금보다 앞에서 실행됩니다. B3 시험은 경쟁 작업 없이 로더 쓰기 전에 예외를 던져 새 `.gitignore`가 제거되는 경우만 확인합니다. [dashboard-layout.ts](D:/LucasStudio/pace/src/project/dashboard-layout.ts:124) · [dashboard-layout.ts](D:/LucasStudio/pace/src/project/dashboard-layout.ts:148) · [dashboard.ts](D:/LucasStudio/pace/src/project/dashboard.ts:20) · [dashboard-init.test.ts](D:/LucasStudio/pace/test/dashboard-init.test.ts:591)\n\n- **blocking · P-3 — 리소스 경로만 편집한 v1 HTML이 생성본으로 판정됩니다.** 예를 들어 `core.js` 참조 하나를 `file:///D:/custom/core.js`로 바꾸면 현재 정규화는 이 경로까지 지웁니다. `init`은 사용자가 고친 진입점을 v2로 교체합니다. 이전 판별의 약점이 이번 v1 전환에 이어졌고, S-3의 수정본은 주석만 추가하므로 이 사례를 잡지 못합니다. OPAL 판별에는 이미 세 리소스가 같은 설치 경로를 쓰는지 확인하는 로직이 있습니다. [dashboard-layout.ts](D:/LucasStudio/pace/src/project/dashboard-layout.ts:85) · [dashboard-init.test.ts](D:/LucasStudio/pace/test/dashboard-init.test.ts:525) · [adopt-opal.ts](D:/LucasStudio/pace/src/project/adopt-opal.ts:226)\n\n- **should_fix · P-5 — OPAL 변환이 로더 생성 없이 성공할 수 있습니다.** `backlogs/dashboard`가 없거나 디렉터리가 아니면 진입 HTML을 v2로 바꾼 뒤 로더 생성을 건너뜁니다. S-5의 정상 저장소 시험은 로더까지 확인하지만, 역사적 원문 두 판을 넣는 시험은 실제로 이 분기를 타면서 HTML만 확인합니다. 불완전한 대시보드에서 변환을 완료할지, 원문을 보존하고 문제를 보고할지 결과를 명확히 해야 합니다. [adopt-opal.ts](D:/LucasStudio/pace/src/project/adopt-opal.ts:467) · [adopt-opal.test.ts](D:/LucasStudio/pace/test/adopt-opal.test.ts:438)\n\n- **handoff · P-7 및 하네스 — 최종 변경의 전체 검사와 실제 worktree 흐름은 미확인입니다.** 검사 기록의 전체 실행에는 실패 53건이 있고, 그중 변경으로 생긴 1건을 고친 뒤 관련 시험과 타입 검사만 재실행했습니다. S-4는 `refresh`에서 로더 생성이 빠지면 실패하지만, 실제 `pace project start`로 만든 worktree와 `finish`의 미커밋 검사는 실행하지 않았습니다. [check-summary.md](D:/LucasStudio/pace/projects/P003_261118_대시보드_PC_경로_분리/evidence/check-summary.md:3) · [harness.ts](D:/LucasStudio/pace/src/project/harness.ts:1666)\n\n**확인 범위.** P-1은 두 설치본으로 재연결해 HTML 바이트와 로더 URL을 검사하는 시험이 뒷받침합니다. P-6은 제출된 Chrome 캡처에서 스타일·백로그 자료가 표시된 화면과 로더가 없을 때의 init 안내를 직접 확인했습니다. Git은 셸 없이 인자 배열로 호출하고, 로더는 파일 URL을 JSON 문자열로 삽입하므로 해당 경로에서 셸·스크립트 주입 지점은 발견하지 못했습니다. 정적 링크 검사는 있으나 검사 이후 경로 변경에는 위 복구 결함이 적용됩니다. 계약, 수정 diff, 관련 소스·시험과 증거를 읽었으며 파일 수정, 테스트 재실행, 브라우저 재실행은 하지 않았습니다. [정상 화면](D:/LucasStudio/pace/projects/P003_261118_대시보드_PC_경로_분리/evidence/browser-local-ok.png) · [로더가 없는 화면](D:/LucasStudio/pace/projects/P003_261118_대시보드_PC_경로_분리/evidence/browser-no-local.png)\n\nfail",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "read-only",
+  "enforcement": "codex exec --sandbox read-only (Windows unelevated sandbox) + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+  "session_id": "01a1ecd3-b0e5-73a3-9482-ec9db1ce3a55",
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 109286,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 59947
+  },
+  "raw_path": null,
+  "process_cleanup": "best-effort-unverified"
+}

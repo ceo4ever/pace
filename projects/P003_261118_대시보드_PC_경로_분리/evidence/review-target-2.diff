@@ -1,0 +1,546 @@
+diff --git a/backlogs/README.html b/backlogs/README.html
+index 4e9971a..29054df 100644
+--- a/backlogs/README.html
++++ b/backlogs/README.html
+@@ -1,2 +1,2 @@
+-<!-- pace:backlog-shared:1 -->
+-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>백로그 대시보드</title><link rel="stylesheet" href="file:///C:/Users/roi.kang/.pace/app/src/dashboard/backlog/style.css"><script defer src="dashboard/data.js"></script><script defer src="file:///C:/Users/roi.kang/.pace/app/src/dashboard/backlog/core.js"></script><script defer src="file:///C:/Users/roi.kang/.pace/app/src/dashboard/backlog/app.js"></script></head><body><p>PACE 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 PACE 설치를 확인하고 이 프로젝트에서 pace-project-init을 실행하세요.</p></body></html>
++<!-- pace:backlog-shared:2 -->
++<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>백로그 대시보드</title><script defer src="dashboard/data.js"></script><script defer src="dashboard/local.js"></script></head><body><p>PACE 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 이 PC에 PACE가 설치돼 있는지 확인하고 이 프로젝트 폴더에서 <code>pace backlog init</code>을 실행하세요.</p></body></html>
+diff --git a/docs/README.md b/docs/README.md
+index 37599ca..09a0264 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -81,13 +81,13 @@
+ 
+ ## 백로그 대시보드
+ 
+-공통 화면·스타일·레이아웃 정본은 `src/dashboard/backlog/`다. 설치 시 PACE app에 포함되며 각 프로젝트의 `backlogs/README.html`이 실행한 PACE 패키지의 공용 자산을 file URL로 참조한다. 설치 CLI로 생성하면 설치본을 참조한다. 화면을 고쳐 PACE를 업데이트하면 공용 참조를 쓰는 프로젝트 화면도 새로고침 시 같은 코드를 사용한다. 프로젝트에 JS/CSS를 복제하지 않는다.
++공통 화면·스타일·레이아웃 정본은 `src/dashboard/backlog/`다. 설치 시 PACE app에 포함되며 각 프로젝트 화면은 실행한 PACE 패키지의 공용 자산을 file URL로 불러온다. 설치 CLI로 생성하면 설치본을 참조한다. 화면을 고쳐 PACE를 업데이트하면 공용 참조를 쓰는 프로젝트 화면도 새로고침 시 같은 코드를 사용한다. 프로젝트에 JS/CSS를 복제하지 않는다.
+ 
+-진입 HTML은 설치 PC의 file URL을 담는 생성 파일이다. 다른 PC·clone이나 설치 위치가 달라지면 PACE 설치 후 opi/init으로 다시 연결한다. init의 HTML 갱신이 Git 변경으로 나타나므로, 변경 목록을 확인해 사용자가 커밋한 뒤 프로젝트 하네스를 진행한다. init은 자동 add/commit을 하지 않으며 하네스의 초안·미커밋 변경 보호를 우회하지 않는다.
++PC 경로는 커밋되는 파일에 두지 않는다. 진입 HTML `backlogs/README.html`(표지 `pace:backlog-shared:2`)은 모든 PC에서 같은 바이트이고 `dashboard/data.js`와 `dashboard/local.js`만 읽는다. `backlogs/dashboard/local.js`는 이 PC의 공용 자산 file URL을 담아 CSS를 붙이고 core → app 순서로 실행하는 PC별 파일이며, init이 함께 만드는 `backlogs/dashboard/.gitignore`(커밋)로 Git에서 빠진다. local.js가 없으면(새 clone·worktree) 화면은 `pace backlog init` 안내를 보이고, 다음 refresh·하네스 자료 갱신이나 init이 만든다. refresh는 제외 규칙이 이미 있을 때만 local.js를 맞추고 Git 변경을 새로 만들지 않는다. 설치본 file URL을 직접 담은 v1 진입점(`pace:backlog-shared:1`)은 수정하지 않은 생성본일 때 init이 v2로 바꾸며, 이 한 번의 HTML·.gitignore 변경은 사용자가 커밋한다. init은 자동 add/commit을 하지 않으며 하네스의 초안·미커밋 변경 보호를 우회하지 않는다.
+ 
+ 프로젝트별 생성 자료는 `backlogs/dashboard/data.js`에 둔다. 이 경로는 기존 Git 인덱스·자동 커밋 정책을 유지한다. 원본 문서를 직접 편집한 뒤 `pace backlog refresh`로 자료를 갱신하며 화면 새로고침은 이미 생성된 자료만 다시 연다. 자료 수집의 Git ignore/info-exclude·민감/숨김·symlink·크기 제한과 실패 시 snapshot 보존 규칙은 유지한다.
+ 
+-opi 신규·기존·최신화 마무리는 `pace backlog init`을 실행한다. 새 프로젝트에는 진입 HTML과 자기 자료만 생성한다. PC/PACE 설치 경로가 바뀌면 init이 수정하지 않은 공용 진입점의 참조 경로를 다시 연결한다. 공용 참조가 아닌 기존 화면은 바이트를 보존하고 전환하지 않았음을 알린다. 추가 사용자 파일은 제거하지 않는다.
++opi 신규·기존·최신화 마무리는 `pace backlog init`을 실행한다. 새 프로젝트에는 진입 HTML·자기 자료·`.gitignore`와 이 PC의 local.js만 생성한다. PC/PACE 설치 경로가 바뀌면 init이 local.js만 다시 쓴다 — 커밋되는 파일은 바뀌지 않는다. 공용 참조가 아닌 기존 화면은 바이트를 보존하고 전환하지 않았음을 알린다. 추가 사용자 파일은 제거하지 않는다.
+ 
+ Git 작업 트리 안에서는 상위 저장소 루트를 사용하며 없으면 현재 폴더에서 git init한다. Git 실행/조회 오류는 부재로 오인하지 않는다. HOME/파일시스템 루트 자체는 새로 초기화하지 않는다. 자동 add/commit/remote/push는 하지 않는다. 생성 실패 후 새 .git은 보존하고 재시도 방법을 알린다. unborn 상태에서도 대시보드 생성·갱신·조회는 가능하지만 new/brief와 프로젝트 하네스는 첫 commit/main 조건이 필요하다.
+ 
+diff --git a/skills/pace-project-init/SKILL.md b/skills/pace-project-init/SKILL.md
+index 7bed1a8..b879603 100644
+--- a/skills/pace-project-init/SKILL.md
++++ b/skills/pace-project-init/SKILL.md
+@@ -141,7 +141,7 @@ Q1 목적 → Q2 분석 결과가 맞나요? (고칠 곳) → Q3 꼭 지킬 것
+ 
+ 신규·기존·최신화 모두 현재 워크스페이스의 역할 정의와 등록 상태를 확인한다. `pace workspace list`에 현재 경로가 없으면 `pace workspace register <현재 경로>`로 유효한 `.pace/AGENT.md`를 생성하거나 기존 정의의 ID를 연결한다. 무효 정의는 원문을 보존해 오류를 보고한다. 등록 실패는 성공으로 취급하지 않는다.
+ 
+-완료할 때 작업 폴더에서 `pace backlog init`을 실행한다. 공용 화면 정본은 PACE 설치본의 `src/dashboard/backlog/`이며 프로젝트에는 진입 HTML과 `backlogs/dashboard/data.js`만 둔다. 진입 HTML은 설치본의 공용 JS/CSS를 file URL로 참조한다. 설치 위치나 PC가 바뀌면 init으로 수정되지 않은 공용 진입점의 참조를 다시 연결한다. 추가 사용자 파일은 보존한다. 사용자 편집·판별할 수 없는 화면은 원문을 보존하며 전환하지 않았음을 보고한다. 조회하는 PC에는 PACE가 설치돼 있어야 한다. 진입 HTML에는 해당 설치 PC의 file URL이 기록되므로 다른 PC·clone에서는 opi/init으로 재연결한다. 전환 후 HTML 수정·기존 복사본 삭제 등 변경 목록을 보고하고 사용자 커밋 뒤 프로젝트 하네스를 진행한다. 자동 add/commit 또는 stray 보호 우회는 하지 않는다. 현재 경로부터 상위로 Git 저장소를 조회해 기존 저장소 루트·인덱스·`.gitignore`·`.git/info/exclude` 정책을 유지한다. 저장소가 없는 경우에만 현재 폴더에서 `git init`한 뒤 같은 Git 수집기를 사용한다. 이 경우 dashboard 생성·갱신·조회는 첫 commit 전에도 가능하다. 다만 `pace backlog new/brief`와 프로젝트 하네스는 첫 commit이 있고 main 체크아웃 조건을 충족한 저장소에서만 실행한다. opi가 만든 새 저장소가 그 선행조건을 충족하지 않으면 dashboard를 생성하고 조회 가능한 상태로 마친 뒤, 하네스를 실행하지 않은 이유와 사용자가 첫 commit/main 조건을 갖춰야 함을 보고한다. 자동 add·commit·remote·push나 자동 브랜치 변경은 하지 않으며, 해당 조건이 갖춰졌다고 추정해 하네스 성공을 주장하지 않는다. Git 미설치·손상 `.git`·조회/권한 오류는 저장소 없음으로 오인하지 않고 실패시킨다. 새 저장소는 HOME 또는 파일시스템 루트 자체에서 만들지 않는다. 초기화 후 대시보드 생성이 실패하면 새 `.git`은 보존되며 실제 저장소 경로와 `pace backlog init` 재시도 안내를 확인한다. 성공 출력의 절대 대시보드 경로를 사용한다. 숨김·민감 이름·심볼릭 링크를 제외하고 기존 크기 제한을 적용한다. 읽을 수 없는 자료 경로가 있으면 기존 snapshot을 유지하고 원인과 실패를 보고한다.
++완료할 때 작업 폴더에서 `pace backlog init`을 실행한다. 공용 화면 정본은 PACE 설치본의 `src/dashboard/backlog/`이며 프로젝트에는 진입 HTML·`backlogs/dashboard/data.js`·`backlogs/dashboard/.gitignore`와 Git 밖 `backlogs/dashboard/local.js`만 둔다. 진입 HTML에는 PC 경로가 없고, 설치본의 공용 JS/CSS file URL은 이 PC 전용 local.js에만 있다. 설치 위치나 PC가 바뀌면 init·refresh가 local.js만 다시 쓰고, 수정되지 않은 예전(v1, file URL 포함) 진입점은 init이 새 형식으로 바꾼다. 추가 사용자 파일은 보존한다. 사용자 편집·판별할 수 없는 화면은 원문을 보존하며 전환하지 않았음을 보고한다. 조회하는 PC에는 PACE가 설치돼 있어야 한다. 다른 PC·clone에서 local.js가 없으면 화면이 init 안내를 보이므로 `pace backlog init`(또는 refresh)으로 이 PC를 연결한다 — 커밋할 변경은 생기지 않는다. 전환 후 HTML 수정·기존 복사본 삭제 등 변경 목록을 보고하고 사용자 커밋 뒤 프로젝트 하네스를 진행한다. 자동 add/commit 또는 stray 보호 우회는 하지 않는다. 현재 경로부터 상위로 Git 저장소를 조회해 기존 저장소 루트·인덱스·`.gitignore`·`.git/info/exclude` 정책을 유지한다. 저장소가 없는 경우에만 현재 폴더에서 `git init`한 뒤 같은 Git 수집기를 사용한다. 이 경우 dashboard 생성·갱신·조회는 첫 commit 전에도 가능하다. 다만 `pace backlog new/brief`와 프로젝트 하네스는 첫 commit이 있고 main 체크아웃 조건을 충족한 저장소에서만 실행한다. opi가 만든 새 저장소가 그 선행조건을 충족하지 않으면 dashboard를 생성하고 조회 가능한 상태로 마친 뒤, 하네스를 실행하지 않은 이유와 사용자가 첫 commit/main 조건을 갖춰야 함을 보고한다. 자동 add·commit·remote·push나 자동 브랜치 변경은 하지 않으며, 해당 조건이 갖춰졌다고 추정해 하네스 성공을 주장하지 않는다. Git 미설치·손상 `.git`·조회/권한 오류는 저장소 없음으로 오인하지 않고 실패시킨다. 새 저장소는 HOME 또는 파일시스템 루트 자체에서 만들지 않는다. 초기화 후 대시보드 생성이 실패하면 새 `.git`은 보존되며 실제 저장소 경로와 `pace backlog init` 재시도 안내를 확인한다. 성공 출력의 절대 대시보드 경로를 사용한다. 숨김·민감 이름·심볼릭 링크를 제외하고 기존 크기 제한을 적용한다. 읽을 수 없는 자료 경로가 있으면 기존 snapshot을 유지하고 원인과 실패를 보고한다.
+ 
+ `pace backlog refresh`는 기존 완성 대시보드만 갱신한다. 대시보드가 전혀 없으면 생성하지 않고 `pace backlog init` 안내와 함께 건너뛴다. 부분 설치는 기존 파일을 보존하고 init 복구 안내 오류로 끝낸다. `pace backlog init`의 부분 복구·전환은 남은 UI가 수정하지 않은 공용 진입점이고 snapshot이 유효한 경우에만 허용한다. 다르면 자료를 보존하고 충돌 오류·수동 확인 경로를 안내한다. `pace backlog new/brief`는 Git 전용 명령이다. 최초 생성은 opi 요청에 포함되므로 별도 생성 승인을 반복하지 않는다.
+ 
+diff --git a/src/dashboard/backlog/page.html b/src/dashboard/backlog/page.html
+index dba7e7a..29054df 100644
+--- a/src/dashboard/backlog/page.html
++++ b/src/dashboard/backlog/page.html
+@@ -1,2 +1,2 @@
+-<!-- pace:backlog-shared:1 -->
+-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>백로그 대시보드</title><link rel="stylesheet" href="{{style}}"><script defer src="dashboard/data.js"></script><script defer src="{{core}}"></script><script defer src="{{app}}"></script></head><body><p>PACE 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 PACE 설치를 확인하고 이 프로젝트에서 pace-project-init을 실행하세요.</p></body></html>
++<!-- pace:backlog-shared:2 -->
++<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>백로그 대시보드</title><script defer src="dashboard/data.js"></script><script defer src="dashboard/local.js"></script></head><body><p>PACE 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 이 PC에 PACE가 설치돼 있는지 확인하고 이 프로젝트 폴더에서 <code>pace backlog init</code>을 실행하세요.</p></body></html>
+diff --git a/src/project/adopt-opal.ts b/src/project/adopt-opal.ts
+index 63b4428..7ac40dd 100644
+--- a/src/project/adopt-opal.ts
++++ b/src/project/adopt-opal.ts
+@@ -7,7 +7,7 @@ import { getString, parseFrontmatter } from "../core/frontmatter.ts";
+ import { AGENT_BUDGET, agentKind, validateAgentDefinition } from "./agent-definition.ts";
+ import { listCandidates, registerWorkspace } from "./workspace-registry.ts";
+ import { COMMIT_HOOK, COMMIT_HOOK_MARKER, commitHookPath } from "./harness.ts";
+-import { SHARED_MARKER, renderDashboardEntry } from "./dashboard-layout.ts";
++import { LEGACY_SHARED_MARKER, ensureLocalLink, renderDashboardEntry, renderLegacyEntry, restoreLocalLink } from "./dashboard-layout.ts";
+ import { rebuildMemoryIndex } from "../memory/memory.ts";
+ 
+ /** OPAL(v2) 프로젝트 정의(`.opal/`)를 PACE(`.pace/`)로 가져오는 계획·적용. 홈 프로필·훅·대시보드는 다루지 않는다. */
+@@ -284,7 +284,9 @@ function planExtras(plan: AdoptPlan, root: string): void {
+   hashes.push(entry ?? "");
+   if (entry !== null && entry.startsWith(OPAL_DASHBOARD_MARKER)) {
+     try {
+-      const asOpal = renderDashboardEntry().replace(SHARED_MARKER, OPAL_DASHBOARD_MARKER);
++      // OPAL 진입점은 PACE v1(설치본 file URL을 직접 담은 형태)과 표지·문구만 다르다
++      const asOpal = renderLegacyEntry().replace(LEGACY_SHARED_MARKER, OPAL_DASHBOARD_MARKER);
++      renderDashboardEntry(); // 쓸 진입점의 설치본도 계획 때 확인한다
+       const legacy = asOpal.replace(PACE_DASHBOARD_TEXT, OPAL_DASHBOARD_TEXT);
+       const current = normalizeUrls(entry);
+       if (current === normalizeUrls(asOpal) || current === normalizeUrls(legacy)) {
+@@ -465,6 +467,11 @@ export function applyAdoptOpal(rootInput: string, home: string, expected: AdoptP
+       const entryMode = lstatSync(entryPath).mode & 0o777;
+       undo.push(() => { writeFileAtomic(entryPath, entryBytes.toString("utf8")); chmodSync(entryPath, entryMode); });
+       (deps.writeEntry ?? writeFileAtomic)(entryPath, renderDashboardEntry());
++      // 진입점은 PC 경로가 없다 — 이 PC 연결(local.js)과 그것을 Git에서 빼는 .gitignore를 함께 둔다
++      if (lstatSync(join(root, "backlogs", "dashboard"), { throwIfNoEntry: false })?.isDirectory()) {
++        const before = ensureLocalLink(root)!;
++        undo.push(() => restoreLocalLink(root, before));
++      }
+     }
+     if (plan.needsRegister) {
+       // registerWorkspace는 항목을 마지막에 원자적으로(link) 만든다 — 던졌다면 항목이 없으므로 등록부는 되돌릴 것이 없다
+diff --git a/src/project/dashboard-init.ts b/src/project/dashboard-init.ts
+index d1256eb..e0dd0d4 100644
+--- a/src/project/dashboard-init.ts
++++ b/src/project/dashboard-init.ts
+@@ -1,7 +1,7 @@
+ import { closeSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync, rmdirSync, unlinkSync, writeFileSync } from 'node:fs';
+ import { dirname, join, resolve } from 'node:path';
+ import { writeFileAtomic } from '../core/fsutil.ts';
+-import { LEGACY_UI, renderDashboardEntry, isGeneratedSharedEntry } from './dashboard-layout.ts';
++import { LEGACY_UI, renderDashboardEntry, isGeneratedSharedEntry, ensureLocalLink, restoreLocalLink, lf, type LocalLinkBefore } from './dashboard-layout.ts';
+ import { generateDashboard } from './dashboard.ts';
+ import { assertSafeGitPath } from '../core/paths.ts';
+ 
+@@ -86,6 +86,7 @@ export function initDashboard(target: string): string {
+     } finally { closeSync(fd); }
+   };
+   let replaced: { path: string; before: string; after: string } | null = null;
++  let local: LocalLinkBefore | null = null;
+   try {
+     const html = renderDashboardEntry(); // Verify the shared installation before touching project files.
+     const backlog = join(root, 'backlogs');
+@@ -116,7 +117,7 @@ export function initDashboard(target: string): string {
+     }
+     const entryPath = join(backlog, 'README.html');
+     if (!entry) claim(entryPath, Buffer.from(html));
+-    else if (entry.bytes.toString('utf8') !== html) {
++    else if (lf(entry.bytes.toString('utf8')) !== html) {
+       const current = lstatSync(entryPath);
+       if (current.dev !== entry.dev || current.ino !== entry.ino || !readFileSync(entryPath).equals(entry.bytes)) throw new Error('진입 HTML이 변경되어 전환을 중단했습니다.');
+       replaced = { path: entryPath, before: entry.bytes.toString('utf8'), after: html };
+@@ -128,10 +129,13 @@ export function initDashboard(target: string): string {
+       const created = owned.find(entry => entry.path === join(dashboard, 'data.js'));
+       if (created) { created.dev = current.dev; created.ino = current.ino; }
+     }
+-    if (!entry) return '백로그 대시보드를 생성했습니다: backlogs/README.html (PACE 공용 화면 참조)';
+-    if (replaced && shared) return '공용 설치본 참조 경로를 갱신했습니다. 기존 프로젝트 자료는 보존했습니다.';
+-    return found.includes('dashboard/data.js') ? '기존 백로그 대시보드를 보존하고 공용 설치본 경로를 확인했습니다.' : '부분 대시보드 복구 완료: 공용 화면과 프로젝트 자료를 연결했습니다.';
++    local = ensureLocalLink(root)!;
++    const commitHint = local.ignore === null ? ' backlogs/dashboard/.gitignore를 함께 커밋하세요.' : '';
++    if (!entry) return '백로그 대시보드를 생성했습니다: backlogs/README.html (PACE 공용 화면 참조 — 이 PC 경로는 Git 밖 backlogs/dashboard/local.js)' + commitHint;
++    if (replaced && shared) return '공용 진입점을 PC 경로 없는 형식으로 바꿨습니다. 이 PC 경로는 Git 밖 backlogs/dashboard/local.js에 둡니다. 기존 프로젝트 자료는 보존했습니다. 바뀐 backlogs/README.html을 커밋하세요.' + commitHint;
++    return (found.includes('dashboard/data.js') ? '기존 백로그 대시보드를 보존하고 이 PC의 공용 설치본 연결(backlogs/dashboard/local.js)을 확인했습니다.' : '부분 대시보드 복구 완료: 공용 화면과 프로젝트 자료를 연결했습니다.') + commitHint;
+   } catch (error) {
++    if (local) restoreLocalLink(root, local);
+     if (replaced) {
+       const current = stat(replaced.path);
+       if (current?.isFile() && !current.isSymbolicLink() && readFileSync(replaced.path, 'utf8') === replaced.after) writeFileAtomic(replaced.path, replaced.before);
+diff --git a/src/project/dashboard-layout.ts b/src/project/dashboard-layout.ts
+index e98b4b4..1ebfbdd 100644
+--- a/src/project/dashboard-layout.ts
++++ b/src/project/dashboard-layout.ts
+@@ -1,14 +1,35 @@
+-import { lstatSync, readFileSync, realpathSync } from 'node:fs';
++import { lstatSync, readFileSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs';
+ import { join } from 'node:path';
++import { spawnSync } from 'node:child_process';
+ import { pathToFileURL } from 'node:url';
+ import { packageRoot } from '../core/paths.ts';
++import { writeFileAtomic } from '../core/fsutil.ts';
+ 
+ export const DASHBOARD_ENTRY = 'backlogs/README.html';
+ export const DASHBOARD_DATA = 'backlogs/dashboard/data.js';
+-export const SHARED_MARKER = '<!-- pace:backlog-shared:1 -->';
++/** 이 PC의 공용 설치본 경로 — Git 밖(`backlogs/dashboard/.gitignore`). */
++export const DASHBOARD_LOCAL = 'backlogs/dashboard/local.js';
++export const DASHBOARD_LOCAL_IGNORE = 'backlogs/dashboard/.gitignore';
++/** v2: 진입 HTML에 PC 경로가 없다. 경로는 local.js가 담는다. */
++export const SHARED_MARKER = '<!-- pace:backlog-shared:2 -->';
++/** v1: 진입 HTML이 설치본 file URL을 직접 담았다 — 판별·전환용으로만 남긴다. */
++export const LEGACY_SHARED_MARKER = '<!-- pace:backlog-shared:1 -->';
+ export const LEGACY_UI = ['README.html', 'dashboard/style.css', 'dashboard/core.js', 'dashboard/app.js'];
+ export type DashboardState = 'absent' | 'partial' | 'complete';
+ 
++const LEGACY_TEMPLATE = LEGACY_SHARED_MARKER + '\n<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>백로그 대시보드</title><link rel="stylesheet" href="{{style}}"><script defer src="dashboard/data.js"></script><script defer src="{{core}}"></script><script defer src="{{app}}"></script></head><body><p>PACE 공통 대시보드를 불러오는 중입니다. 화면이 열리지 않으면 PACE 설치를 확인하고 이 프로젝트에서 pace-project-init을 실행하세요.</p></body></html>\n';
++const LOCAL_IGNORE_LINE = '/local.js';
++/** local.js 첫 줄 — PACE 생성본 판별(소유권). */
++const LOCAL_HEADER = '// PACE가 만든 이 PC 전용 파일';
++const LOCAL_IGNORE_TEXT = `# PACE: 이 PC의 공용 대시보드 경로 — pace backlog init·refresh가 만든다\n${LOCAL_IGNORE_LINE}\n`;
++
++/** Windows 체크아웃(CRLF)에서도 모든 PC가 같은 바이트를 내도록 줄바꿈을 맞춘다. */
++export const lf = (text: string) => text.replace(/\r\n/g, '\n');
++
++export function isSharedEntry(source: string): boolean {
++  return source.startsWith(SHARED_MARKER) || source.startsWith(LEGACY_SHARED_MARKER);
++}
++
+ export function dashboardState(root: string): DashboardState {
+   const present = (relative: string): boolean => {
+     try { return lstatSync(join(root, relative)).isFile(); }
+@@ -24,27 +45,112 @@ export function dashboardState(root: string): DashboardState {
+     }
+     return 'absent';
+   }
+-  if (entry && data && realpathSync(join(root, DASHBOARD_ENTRY)) === join(root, DASHBOARD_ENTRY) && readFileSync(join(root, DASHBOARD_ENTRY), 'utf8').startsWith(SHARED_MARKER)) return 'complete';
++  if (entry && data && realpathSync(join(root, DASHBOARD_ENTRY)) === join(root, DASHBOARD_ENTRY) && isSharedEntry(readFileSync(join(root, DASHBOARD_ENTRY), 'utf8'))) return 'complete';
+   if (entry && data && (legacy === 0 || legacy === 3)) return 'complete';
+   return 'partial';
+ }
+ 
+-export function renderDashboardEntry(): string {
++/** 실행한 PACE 패키지의 공용 자산 file URL — 설치본을 검증한다. */
++function sharedAssetUrls(): { style: string; core: string; app: string } {
+   const dir = join(packageRoot, 'src', 'dashboard', 'backlog');
+-  const attribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+-  let html = readFileSync(join(dir, 'page.html'), 'utf8');
+-  for (const [key, file] of [['style', 'style.css'], ['core', 'core.js'], ['app', 'app.js']]) {
+-    const path = join(dir, file!);
++  const url = (file: string) => {
++    const path = join(dir, file);
+     const stat = lstatSync(path);
+     if (!stat.isFile() || stat.isSymbolicLink() || realpathSync(path) !== path) throw new Error(`공통 대시보드 파일을 확인하세요: ${path}`);
+-    html = html.replace(`{{${key}}}`, attribute(pathToFileURL(path).href));
+-  }
+-  return html;
++    return pathToFileURL(path).href;
++  };
++  return { style: url('style.css'), core: url('core.js'), app: url('app.js') };
++}
++
++/** 커밋되는 진입 HTML — PC 경로가 없어 모든 PC에서 같은 바이트다. */
++export function renderDashboardEntry(): string {
++  sharedAssetUrls(); // Verify the shared installation before anything is written.
++  return lf(readFileSync(join(packageRoot, 'src', 'dashboard', 'backlog', 'page.html'), 'utf8'));
++}
++
++/** v1 진입 HTML(설치본 file URL 포함) — 기존 생성본 판별용. */
++export function renderLegacyEntry(): string {
++  const attribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
++  const urls = sharedAssetUrls();
++  return LEGACY_TEMPLATE.replace('{{style}}', attribute(urls.style)).replace('{{core}}', attribute(urls.core)).replace('{{app}}', attribute(urls.app));
+ }
+ 
+-/** 배포 경로만 다를 수 있다. */
++/** 이 PC 전용 local.js — 공용 CSS를 붙이고 core → app 순서로 실행한다(data.js는 진입 HTML의 defer 순서상 먼저). */
++export function renderLocalLoader(): string {
++  const urls = JSON.stringify(sharedAssetUrls());
++  return LOCAL_HEADER + ' — Git에 올리지 않는다(.gitignore). pace backlog init·refresh가 다시 만든다.\n'
++    + `(function () {\n  var u = ${urls};\n  var d = document, h = d.head;\n  var l = d.createElement('link'); l.rel = 'stylesheet'; l.href = u.style; h.appendChild(l);\n  [u.core, u.app].forEach(function (src) { var s = d.createElement('script'); s.src = src; s.async = false; h.appendChild(s); });\n})();\n`;
++}
++
++/** 배포 경로만 다를 수 있다. v2 원문 또는 수정하지 않은 v1 생성본만 인정한다. */
+ export function isGeneratedSharedEntry(source: string): boolean {
++  const text = lf(source);
++  if (text === renderDashboardEntry()) return true;
++  if (!text.startsWith(LEGACY_SHARED_MARKER)) return false;
+   const normalize = (value: string) => value.replace(/file:[^"\r\n]*\/(style\.css|core\.js|app\.js)/g, 'pace-shared:$1');
+-  const current = normalize(renderDashboardEntry());
+-  return source.startsWith(SHARED_MARKER) && normalize(source) === current;
++  return normalize(text) === normalize(renderLegacyEntry());
++}
++
++export type LocalLinkBefore = { local: string | null; ignore: string | null };
++
++/**
++ * 이 PC의 local.js와 그것을 Git에서 빼는 .gitignore를 맞춘다. 같으면 쓰지 않는다.
++ * 돌려준 이전 내용으로 호출자가 되돌릴 수 있다(null = 없던 파일).
++ */
++export function ensureLocalLink(root: string, options: { createIgnore?: boolean; writeLocal?: (path: string, text: string) => void } = {}): LocalLinkBefore | null {
++  const createIgnore = options.createIgnore ?? true;
++  const dir = join(root, 'backlogs', 'dashboard');
++  const unsafe = (path: string) => new Error(`안전하지 않은 대시보드 경로: ${path}`);
++  const dirStat = lstatSync(dir);
++  if (!dirStat.isDirectory() || dirStat.isSymbolicLink() || realpathSync(dir) !== dir) throw unsafe(dir);
++  const read = (path: string): string | null => {
++    let stat;
++    try { stat = lstatSync(path); } catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return null; throw error; }
++    if (!stat.isFile() || stat.isSymbolicLink() || realpathSync(path) !== path) throw unsafe(path);
++    return readFileSync(path, 'utf8');
++  };
++  const loader = renderLocalLoader();
++  const ignorePath = join(dir, '.gitignore'), localPath = join(dir, 'local.js');
++  const before: LocalLinkBefore = { ignore: read(ignorePath), local: read(localPath) };
++  // 소유권: 없거나 PACE가 만든 파일만 쓴다 — 같은 이름의 사용자 파일은 보존한다.
++  if (before.local !== null && !lf(before.local).startsWith(LOCAL_HEADER)) throw new Error(`PACE가 만들지 않은 ${DASHBOARD_LOCAL}이 있어 보존했습니다 — 이름을 바꾸거나 지운 뒤 pace backlog init을 다시 실행하세요`);
++  // 추적 중이면 제외 규칙이 소용없다 — 쓰면 PC별 변경이 Git에 잡힌다.
++  if (localGit(root, ['ls-files', '--error-unmatch', '--', DASHBOARD_LOCAL]) === 0) throw new Error(`${DASHBOARD_LOCAL}이 Git에 추적되고 있어 쓰지 않았습니다 — git rm --cached ${DASHBOARD_LOCAL} 뒤 다시 실행하세요`);
++  const ignored = () => localGit(root, ['check-ignore', '-q', '--', DASHBOARD_LOCAL]) === 0;
++  if (!ignored()) {
++    // refresh는 Git 변경을 새로 만들지 않는다 — 제외가 이미 실제로 적용될 때만 local.js를 맞춘다.
++    if (!createIgnore) return null;
++  }
++  try {
++    if (!ignored()) {
++      // .gitignore를 먼저 둬서 local.js가 한순간도 Git 미추적 파일로 보이지 않게 한다.
++      if (before.ignore === null) writeFileSync(ignorePath, LOCAL_IGNORE_TEXT, { flag: 'wx' });
++      else writeFileAtomic(ignorePath, before.ignore + (before.ignore.endsWith('\n') || before.ignore === '' ? '' : '\n') + LOCAL_IGNORE_LINE + '\n');
++      // 부정 규칙(!local.js)·상위 설정 등으로 여전히 잡히면 쓰지 않는다.
++      if (!ignored()) throw new Error(`${DASHBOARD_LOCAL}을 Git에서 뺄 수 없습니다(부정 규칙 등) — ${DASHBOARD_LOCAL_IGNORE}를 확인하세요`);
++    }
++    if (before.local !== loader) (options.writeLocal ?? writeFileAtomic)(localPath, loader);
++  } catch (error) {
++    // 부분 실패도 이 함수가 직접 되돌린다 — 호출자는 성공한 결과만 받는다.
++    restoreLocalLink(root, before);
++    throw error;
++  }
++  return before;
++}
++
++/** Git 결과 코드(0 = 해당). 실행 실패는 -1 — 추적·제외를 확인하지 못한 것으로 본다. */
++function localGit(root: string, args: string[]): number {
++  const result = spawnSync('git', ['-C', root, ...args], { encoding: 'utf8', windowsHide: true });
++  return result.error ? -1 : (result.status ?? -1);
++}
++
++/** ensureLocalLink가 바꾼 것만 이전 상태로 되돌린다. */
++export function restoreLocalLink(root: string, before: LocalLinkBefore): void {
++  const dir = join(root, 'backlogs', 'dashboard');
++  for (const [name, text] of [['local.js', before.local], ['.gitignore', before.ignore]] as const) {
++    const path = join(dir, name);
++    if (text !== null) { writeFileAtomic(path, text); continue; }
++    try { if (lstatSync(path).isFile()) unlinkSync(path); }
++    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
++  }
+ }
+diff --git a/src/project/dashboard.ts b/src/project/dashboard.ts
+index c40f8e5..41544bf 100644
+--- a/src/project/dashboard.ts
++++ b/src/project/dashboard.ts
+@@ -2,7 +2,7 @@ import { lstatSync, realpathSync, readFileSync, writeFileSync, renameSync, unlin
+ import { randomBytes } from 'node:crypto';
+ import { resolve, join } from 'node:path';
+ import { spawnSync } from 'node:child_process';
+-import { dashboardState } from './dashboard-layout.ts';
++import { DASHBOARD_ENTRY, SHARED_MARKER, dashboardState, ensureLocalLink } from './dashboard-layout.ts';
+ import { assertSafeGitPath } from '../core/paths.ts';
+ 
+ export function generateDashboard(target: string, trackedOnly = false): string | null {
+@@ -17,6 +17,7 @@ for (const part of ['backlogs', 'backlogs/dashboard', 'backlogs/dashboard/data.j
+   if (stat.isSymbolicLink() || realpathSync(path) !== path) throw new Error(`안전하지 않은 대시보드 경로: ${part}`);
+   if (part.endsWith('.js') || part.endsWith('.html') ? !stat.isFile() : !stat.isDirectory()) throw new Error(`잘못된 대시보드 경로: ${part}`);
+ }
++linkThisPc(root);
+ const dir = join(root, 'backlogs', 'dashboard');
+ const lock = join(dir, '.pace-refresh-lock');
+ const recovery = join(dir, '.pace-refresh-reaper');
+@@ -199,6 +200,16 @@ return `백로그 대시보드 자료 생성: ${Object.keys(files).length}개, $
+ }
+ }
+ 
++/** v2 진입점이면 이 PC의 local.js를 맞춘다(새 clone·worktree). v1 전환은 init 책임이라 건드리지 않는다. 실패는 경고만. */
++function linkThisPc(root: string): void {
++  try {
++    if (!readFileSync(join(root, DASHBOARD_ENTRY), 'utf8').startsWith(SHARED_MARKER)) return;
++    ensureLocalLink(root, { createIgnore: false });
++  } catch (error) {
++    process.stderr.write(`pace: 경고: 이 PC의 대시보드 연결(backlogs/dashboard/local.js)을 만들지 못했습니다: ${error instanceof Error ? error.message : String(error)} — pace backlog init으로 확인하세요\n`);
++  }
++}
++
+ export function refreshDashboard(root: string, trackedOnly = false): boolean {
+   try {
+     const state = dashboardState(root);
+diff --git a/test/adopt-opal.test.ts b/test/adopt-opal.test.ts
+index b8710da..4d5008f 100644
+--- a/test/adopt-opal.test.ts
++++ b/test/adopt-opal.test.ts
+@@ -5,7 +5,7 @@ import { join } from "node:path";
+ import { spawnSync } from "node:child_process";
+ import { applyAdoptOpal, formatPlan, planAdoptOpal } from "../src/project/adopt-opal.ts";
+ import { agentKind } from "../src/project/agent-definition.ts";
+-import { renderDashboardEntry } from "../src/project/dashboard-layout.ts";
++import { renderDashboardEntry, renderLegacyEntry, renderLocalLoader } from "../src/project/dashboard-layout.ts";
+ import { createCandidate, listCandidates, registerWorkspace } from "../src/project/workspace-registry.ts";
+ import { runPace, tempDir } from "./helpers.ts";
+ 
+@@ -327,7 +327,7 @@ function installHook(root: string, text: string): void {
+ }
+ /** 설치된 PACE가 만드는 공용 진입점을 OPAL 표지로 바꾼 것 — OPAL이 만들던 진입점과 같은 모양 */
+ function opalEntry(): string {
+-  return renderDashboardEntry().replace("<!-- pace:backlog-shared:1 -->", "<!-- opal:backlog-shared:1 -->");
++  return renderLegacyEntry().replace("<!-- pace:backlog-shared:1 -->", "<!-- opal:backlog-shared:1 -->");
+ }
+ 
+ test("T02-S-1 OPAL 커밋 게이트 훅을 PACE 훅으로 바꾸고 원본을 백업한다", () => {
+@@ -364,6 +364,10 @@ test("T02-S-3 OPAL 공용 대시보드 진입점은 PACE 공용 참조로 바꾸
+   assert.equal(readFileSync(join(root, "backlogs", "README.html"), "utf8"), renderDashboardEntry());
+   assert.equal(readFileSync(join(root, "backlogs", "dashboard", "data.js"), "utf8"), files["backlogs/dashboard/data.js"]);
+   assert.equal(readFileSync(join(root, "backlogs", "내-메모.md"), "utf8"), files["backlogs/내-메모.md"]);
++  // P003: 진입점에는 PC 경로가 없고 이 PC 연결은 Git 밖 local.js에 둔다
++  assert.doesNotMatch(readFileSync(join(root, "backlogs", "README.html"), "utf8"), /file:/);
++  assert.equal(readFileSync(join(root, "backlogs", "dashboard", "local.js"), "utf8"), renderLocalLoader());
++  assert.equal(spawnSync("git", ["-C", root, "check-ignore", "-q", "backlogs/dashboard/local.js"]).status, 0);
+ });
+ 
+ test("T02-S-3 수정된 OPAL 진입점·이미 PACE인 진입점은 건드리지 않는다", () => {
+diff --git a/test/backlog-dashboard.test.ts b/test/backlog-dashboard.test.ts
+index 5738772..dad90fb 100644
+--- a/test/backlog-dashboard.test.ts
++++ b/test/backlog-dashboard.test.ts
+@@ -316,6 +316,7 @@ test('legacy script remains usable from its own checkout', async () => {
+   await mkdir(join(root, 'src/core'), { recursive: true });
+   await cp(resolve('src/project/dashboard-layout.ts'), join(root, 'src/project/dashboard-layout.ts'));
+   await cp(resolve('src/core/paths.ts'), join(root, 'src/core/paths.ts'));
++  await cp(resolve('src/core/fsutil.ts'), join(root, 'src/core/fsutil.ts'));
+   await writeFile(join(root, 'backlogs/README.html'), 'dashboard');
+   await writeFile(join(root, 'backlogs/dashboard/data.js'), 'old');
+   assert.equal(spawnSync('git', ['init', '-q', root]).status, 0);
+diff --git a/test/dashboard-init.test.ts b/test/dashboard-init.test.ts
+index 579c869..f90ad61 100644
+--- a/test/dashboard-init.test.ts
++++ b/test/dashboard-init.test.ts
+@@ -446,11 +446,13 @@ test('shared dashboard init keeps only project entry and data, and shares one ru
+   const one = repo(), two = repo(), home = tempDir();
+   for (const root of [one, two]) assert.equal(runPace(['backlog', 'init'], { cwd: root, home }).status, 0);
+   const html = readFileSync(join(one, 'backlogs/README.html'), 'utf8');
+-  assert.match(html, /pace:backlog-shared:1/);
+-  assert.match(html, /file:.*src\/dashboard\/backlog\/app\.js/);
++  assert.match(html, /pace:backlog-shared:2/);
++  assert.doesNotMatch(html, /file:/);
+   assert.equal(html, readFileSync(join(two, 'backlogs/README.html'), 'utf8'));
+-  assert.deepEqual(readdirSync(join(one, 'backlogs/dashboard')), ['data.js']);
+-  assert.deepEqual(readdirSync(join(two, 'backlogs/dashboard')), ['data.js']);
++  for (const root of [one, two]) {
++    assert.deepEqual(readdirSync(join(root, 'backlogs/dashboard')).sort(), ['.gitignore', 'data.js', 'local.js']);
++    assert.match(readFileSync(join(root, 'backlogs/dashboard/local.js'), 'utf8'), /file:.*src\/dashboard\/backlog\/app\.js/);
++  }
+ });
+ 
+ function copiedDashboard(root: string, custom = false): Buffer {
+@@ -484,16 +486,125 @@ test('installed runtime URLs escape special paths and can rebind without touchin
+   const first = runtimeCopy('PACE space # & 한글'), next = runtimeCopy('PACE next'), root = repo(), home = tempDir();
+   const run = (app: string) => spawnSync(process.execPath, [join(app, 'bin/pace.ts'), 'backlog', 'init'], { cwd: root, encoding: 'utf8', env: { ...process.env, HOME: home, PACE_HOME: home } });
+   assert.equal(run(first).status, 0);
+-  const entry = join(root, 'backlogs/README.html'), data = join(root, 'backlogs/dashboard/data.js');
+-  assert.ok(readFileSync(entry, 'utf8').includes(pathToFileURL(join(first, 'src/dashboard/backlog/app.js')).href.replace(/&/g, '&amp;')));
+-  const original = readFileSync(data);
++  const entry = join(root, 'backlogs/README.html'), data = join(root, 'backlogs/dashboard/data.js'), local = join(root, 'backlogs/dashboard/local.js');
++  // 특수 문자 경로는 JSON 문자열 안의 file URL로만 들어간다
++  assert.ok(readFileSync(local, 'utf8').includes(JSON.stringify(pathToFileURL(join(first, 'src/dashboard/backlog/app.js')).href)));
++  const firstEntry = readFileSync(entry), original = readFileSync(data);
+   const rebound = run(next);
+   assert.equal(rebound.status, 0);
+-  assert.match(rebound.stdout, /참조 경로를 갱신/);
+-  assert.ok(readFileSync(entry, 'utf8').includes(pathToFileURL(join(next, 'src/dashboard/backlog/app.js')).href));
++  assert.ok(readFileSync(local, 'utf8').includes(pathToFileURL(join(next, 'src/dashboard/backlog/app.js')).href));
++  assert.deepEqual(readFileSync(entry), firstEntry, 'P-1: 설치본이 달라도 진입 HTML 바이트가 같다');
+   assert.deepEqual(readFileSync(data), original);
+   const edited = readFileSync(entry, 'utf8') + '<!-- user note -->';
+   writeFileSync(entry, edited);
+   assert.equal(run(first).status, 0);
+   assert.equal(readFileSync(entry, 'utf8'), edited);
+ });
++
++function commitAll(root: string): void {
++  assert.equal(spawnSync('git', ['-C', root, 'add', '-A']).status, 0);
++  assert.equal(spawnSync('git', ['-C', root, '-c', 'user.name=test', '-c', 'user.email=test@example.com', 'commit', '-qm', 'dashboard']).status, 0);
++}
++const gitStatus = (root: string) => spawnSync('git', ['-C', root, 'status', '--porcelain', '--untracked-files=all'], { encoding: 'utf8' }).stdout;
++const runWith = (app: string, root: string, home: string, command = 'init') => spawnSync(process.execPath, [join(app, 'bin/pace.ts'), 'backlog', command], { cwd: root, encoding: 'utf8', env: { ...process.env, HOME: home, PACE_HOME: home } });
++
++test('P-2: 다른 설치본(PC)에서 init해도 커밋된 대시보드에 Git 변경이 없다', () => {
++  const pcA = runtimeCopy('pc-a'), pcB = runtimeCopy('pc-b'), root = repo(), home = tempDir();
++  const first = runWith(pcA, root, home);
++  assert.equal(first.status, 0, first.stderr);
++  assert.match(first.stdout, /\.gitignore를 함께 커밋/);
++  assert.equal(spawnSync('git', ['-C', root, 'check-ignore', '-q', 'backlogs/dashboard/local.js']).status, 0);
++  commitAll(root);
++  assert.equal(gitStatus(root), '');
++  const second = runWith(pcB, root, home);
++  assert.equal(second.status, 0, second.stderr);
++  assert.equal(gitStatus(root), '', 'PC 경로 변경은 Git 밖 local.js에만 생긴다');
++  assert.ok(readFileSync(join(root, 'backlogs/dashboard/local.js'), 'utf8').includes(pathToFileURL(join(pcB, 'src/dashboard/backlog/core.js')).href));
++});
++
++test('P-3: 수정하지 않은 v1 진입점은 v2로 바꾸고, 고친 v1 진입점은 보존한다', async () => {
++  const { renderLegacyEntry } = await import('../src/project/dashboard-layout.ts');
++  const app = runtimeCopy('pc-legacy'), home = tempDir();
++  // 다른 PC에서 만든 v1 생성본: 설치 경로만 다르다(Windows 체크아웃처럼 CRLF여도 같다)
++  const v1 = renderLegacyEntry().replace(/file:[^"]*\/src\/dashboard\/backlog\//g, 'file:///C:/Users/other/.pace/app/src/dashboard/backlog/');
++  for (const [html, converted] of [[v1, true], [v1.replace(/\n/g, '\r\n'), true], [v1 + '<!-- 내 메모 -->', false]] as const) {
++    const root = repo();
++    mkdirSync(join(root, 'backlogs/dashboard'), { recursive: true });
++    writeFileSync(join(root, 'backlogs/README.html'), html);
++    writeFileSync(join(root, 'backlogs/dashboard/data.js'), `window.PACE_DATA = ${JSON.stringify({ generated: new Date().toISOString(), files: {}, assets: {}, catalog: [], skipped: 0, bytes: 0 })};\n`);
++    const refreshed = runWith(app, root, home, 'refresh');
++    assert.equal(refreshed.status, 0, refreshed.stderr);
++    assert.equal(existsSync(join(root, 'backlogs/dashboard/local.js')), false);
++    assert.equal(readFileSync(join(root, 'backlogs/README.html'), 'utf8'), html, 'refresh는 v1 진입점을 바꾸지 않는다');
++    const result = runWith(app, root, home);
++    assert.equal(result.status, 0, result.stderr);
++    if (converted) {
++      assert.match(result.stdout, /PC 경로 없는 형식/);
++      assert.equal(readFileSync(join(root, 'backlogs/README.html'), 'utf8'), renderDashboardEntry());
++      assert.equal(existsSync(join(root, 'backlogs/dashboard/local.js')), true);
++    } else {
++      assert.match(result.stdout, /보존/);
++      assert.equal(readFileSync(join(root, 'backlogs/README.html'), 'utf8'), html);
++    }
++  }
++});
++
++test('리뷰 B1: 추적 중이거나 제외가 실제로 안 되는 local.js는 쓰지 않는다', () => {
++  const pcA = runtimeCopy('pc-track-a'), pcB = runtimeCopy('pc-track-b'), home = tempDir();
++  // 추적 중: 강제로 커밋된 local.js — init은 실패하고 파일·진입점을 바꾸지 않는다
++  const tracked = repo();
++  assert.equal(runWith(pcA, tracked, home).status, 0);
++  assert.equal(spawnSync('git', ['-C', tracked, 'add', '-f', 'backlogs/dashboard/local.js']).status, 0);
++  commitAll(tracked);
++  const local = readFileSync(join(tracked, 'backlogs/dashboard/local.js'));
++  const result = runWith(pcB, tracked, home);
++  assert.notEqual(result.status, 0);
++  assert.match(result.stderr, /추적/);
++  assert.deepEqual(readFileSync(join(tracked, 'backlogs/dashboard/local.js')), local);
++  assert.equal(gitStatus(tracked), '');
++  // 부정 규칙으로 제외가 풀린 저장소: refresh는 local.js를 만들지 않아 Git 변경이 생기지 않는다
++  const negated = repo();
++  assert.equal(runWith(pcA, negated, home).status, 0);
++  writeFileSync(join(negated, 'backlogs/dashboard/.gitignore'), '/local.js\n!/local.js\n');
++  unlinkSync(join(negated, 'backlogs/dashboard/local.js'));
++  commitAll(negated);
++  assert.equal(runWith(pcA, negated, home, 'refresh').status, 0);
++  assert.equal(existsSync(join(negated, 'backlogs/dashboard/local.js')), false);
++  assert.equal(gitStatus(negated).split('\n').filter(line => line && !line.endsWith('data.js')).join('\n'), '');
++});
++
++test('리뷰 B2: PACE가 만들지 않은 local.js가 있으면 init은 실패하고 아무것도 바꾸지 않는다', async () => {
++  const { renderLegacyEntry } = await import('../src/project/dashboard-layout.ts');
++  const app = runtimeCopy('pc-user-local'), home = tempDir(), root = repo();
++  mkdirSync(join(root, 'backlogs/dashboard'), { recursive: true });
++  const v1 = renderLegacyEntry().replace(/file:[^"]*\/src\/dashboard\/backlog\//g, 'file:///C:/Users/other/.pace/app/src/dashboard/backlog/');
++  writeFileSync(join(root, 'backlogs/README.html'), v1);
++  writeFileSync(join(root, 'backlogs/dashboard/data.js'), `window.PACE_DATA = ${JSON.stringify({ generated: new Date().toISOString(), files: {}, assets: {}, catalog: [], skipped: 0, bytes: 0 })};\n`);
++  writeFileSync(join(root, 'backlogs/dashboard/local.js'), '// 내 스크립트\n');
++  const before = treeSnapshot(root);
++  const result = runWith(app, root, home);
++  assert.notEqual(result.status, 0);
++  assert.match(result.stderr, /PACE가 만들지 않은/);
++  assert.equal(treeSnapshot(root), before, '진입점 전환·.gitignore 생성도 되돌린다');
++});
++
++test('리뷰 B3: local.js 쓰기가 실패하면 .gitignore 생성까지 되돌린다', async () => {
++  const { ensureLocalLink } = await import('../src/project/dashboard-layout.ts');
++  const root = repo();
++  mkdirSync(join(root, 'backlogs/dashboard'), { recursive: true });
++  const before = treeSnapshot(root);
++  assert.throws(() => ensureLocalLink(root, { writeLocal: () => { throw new Error('주입한 쓰기 실패'); } }), /주입한 쓰기 실패/);
++  assert.equal(treeSnapshot(root), before);
++  assert.equal(gitStatus(root), '');
++});
++
++test('P-4: 새 clone처럼 local.js가 없으면 refresh가 만든다', () => {
++  const app = runtimeCopy('pc-clone'), root = repo(), home = tempDir();
++  assert.equal(runWith(app, root, home).status, 0);
++  commitAll(root);
++  unlinkSync(join(root, 'backlogs/dashboard/local.js'));
++  const result = runWith(app, root, home, 'refresh');
++  assert.equal(result.status, 0, result.stderr);
++  assert.match(readFileSync(join(root, 'backlogs/dashboard/local.js'), 'utf8'), /async = false/);
++  assert.equal(gitStatus(root).split('\n').filter(line => line && !line.endsWith('data.js')).join('\n'), '');
++});
+diff --git a/backlogs/dashboard/.gitignore b/backlogs/dashboard/.gitignore
+new file mode 100644
+index 0000000..75c52ce
+--- /dev/null
++++ b/backlogs/dashboard/.gitignore
+@@ -0,0 +1,2 @@
++# PACE: 이 PC의 공용 대시보드 경로 — pace backlog init·refresh가 만든다
++/local.js
