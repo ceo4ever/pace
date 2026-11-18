@@ -1,0 +1,1161 @@
+{
+  "command": "node D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T02_git_준비_재사용\\revalidate-isolation.mjs D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T02_git_준비_재사용\\evidence\\nested-isolation-2026-11-18T12-40-06-394Z",
+  "verifier": {
+    "source": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T02_git_준비_재사용\\revalidate-isolation.mjs",
+    "sha256": "d2931c1149eccf269867ea8d0161be7288fdb672f4053284b62a5051a3763938"
+  },
+  "raw": {
+    "originalResult": {
+      "path": "result.json",
+      "sha256": "fa8c9ae50bc8faca4d4541611f474de0951f3372f460a865a6b9d38f0ab970e2"
+    },
+    "log": {
+      "path": "nested.log",
+      "sha256": "c7890e81de7773433827633e3f19e1a058e9a04f97d421610dbfb7f9db624043"
+    },
+    "traces": [
+      {
+        "path": "trace/enter-27092.json",
+        "sha256": "7a9e50084bb10912c8cb1c0cdca8f7f5030e1ddc131e6671f4f2d64d184cec34"
+      },
+      {
+        "path": "trace/enter-33024.json",
+        "sha256": "82eff51c3e15658489c84a94cb502d2bbb00e8326efac73f9f05f009cd4793af"
+      },
+      {
+        "path": "trace/enter-41692.json",
+        "sha256": "eef6cd1231b575ab50d238d5e59f0ad62774ca018fc2d15de0022cde118eaf34"
+      },
+      {
+        "path": "trace/enter-43688.json",
+        "sha256": "5d0ab590d4ac4ca67fd926453c9483f8b8cb0095f746b827ee81f7740add9279"
+      },
+      {
+        "path": "trace/enter-44604.json",
+        "sha256": "befe74d233676fd5b5cb3bf316f5c8512fce8a557e8752b2dfdd57fb4c7ed760"
+      },
+      {
+        "path": "trace/enter-55380.json",
+        "sha256": "5abe2266162ef3d38d2b2daadf222ecd2d129561c902c85e1abe9190b85417f9"
+      },
+      {
+        "path": "trace/enter-55752.json",
+        "sha256": "6acb5b04f97aa13bc6216876715128afbe655c5b5ca6b334a32b09c0f44e2b79"
+      },
+      {
+        "path": "trace/enter-63648.json",
+        "sha256": "9a407497eb928d83bd3b8a7da38718e9f82afe0dc24637275eeab9e931b88f4c"
+      },
+      {
+        "path": "trace/enter-63764.json",
+        "sha256": "eaefbf5fbd1cd315b6b060032b5424dc71fda101b173b737db92d3f0cde00acb"
+      },
+      {
+        "path": "trace/enter-63812.json",
+        "sha256": "321ccec1d13d5afaf9a85c1f3e59d6bc5d71d1b21dbac9b6a1902895fade0541"
+      },
+      {
+        "path": "trace/enter-65400.json",
+        "sha256": "65950ebf2d8c7fa1760d44af8e1670613f0744aef99e7d0ce901c06eda2d52ec"
+      },
+      {
+        "path": "trace/enter-65712.json",
+        "sha256": "a4d43a0b137f71c771af71eccebb1de17e026bce6db57c21abfbdea0f0092a93"
+      },
+      {
+        "path": "trace/enter-66516.json",
+        "sha256": "7872ccc939ea5c7d55e040477bfef2dcbf484d5e98b828d59432c7941a7bb109"
+      },
+      {
+        "path": "trace/enter-67344.json",
+        "sha256": "099eee258c5b038cf0c7859fc4c4aa48ceacdbfadf2e593f2d680a5f7cbe1a0d"
+      },
+      {
+        "path": "trace/enter-68560.json",
+        "sha256": "17477a7803ffb623c4f160544cd1a4ceea09a2ebe68c4c9113043cd436f4614c"
+      },
+      {
+        "path": "trace/enter-68612.json",
+        "sha256": "78378608b7c23731e728a1ba8827bffaa7b85d5c43e9418bece0040c4dc13ad8"
+      },
+      {
+        "path": "trace/enter-68836.json",
+        "sha256": "c90efaea0d2f3d50e3012ca7934fabcbdebd2a59ad8c732c1030d5cf750e5d95"
+      },
+      {
+        "path": "trace/enter-70628.json",
+        "sha256": "486b0a31c936c021487f4ffa39b85c39cfa921bfb915589f6f22dd9af6a7cc5a"
+      },
+      {
+        "path": "trace/enter-8068.json",
+        "sha256": "d8b83d6554673858e6d7cbcffadbc6a1fc39efe5206dd35202fe291b9313078d"
+      },
+      {
+        "path": "trace/exit-27092.json",
+        "sha256": "0222770d1aaa58c8bfcefeba3883d006cb9815e7839c7d5d46a0fe497a26b228"
+      },
+      {
+        "path": "trace/exit-33024.json",
+        "sha256": "67ce76b4f869b048a051f6ac831e1b9b203540f0fc712c565c8144b2557c09e8"
+      },
+      {
+        "path": "trace/exit-41692.json",
+        "sha256": "7658fb55d55e1911511b24cdf4743a9e836a5edc8acf861aefa56f882d500276"
+      },
+      {
+        "path": "trace/exit-43688.json",
+        "sha256": "d41ebc0709d650e6c59d9b5c0928ed49327a54ef73cae343fadb1618e71e101c"
+      },
+      {
+        "path": "trace/exit-44604.json",
+        "sha256": "6d4eac28766a883600b2ff38a60c8b706993481b4621365d64d1283436a5c69a"
+      },
+      {
+        "path": "trace/exit-55380.json",
+        "sha256": "9aaf22b083f4cc8ada5779daebb2825069b0def85f36cfde27febd264ec02920"
+      },
+      {
+        "path": "trace/exit-55752.json",
+        "sha256": "9a8e356ae1289f77aff42c11b247355cd3439a62154b494fbac639b838a7b249"
+      },
+      {
+        "path": "trace/exit-63648.json",
+        "sha256": "f53d5d722160fd562b08a3bcd95472ed62798a8e79c624a01ac3b0398accf2d9"
+      },
+      {
+        "path": "trace/exit-63764.json",
+        "sha256": "0be86f29befb9970ab61c60c258fa631f1900f2606cc3598b80fc3856c8a16f2"
+      },
+      {
+        "path": "trace/exit-63812.json",
+        "sha256": "fda4810e367b951288829506ba9965ef48ae2553753353631a35e381bf93f65b"
+      },
+      {
+        "path": "trace/exit-65400.json",
+        "sha256": "a0716e9d5e3ab93db04e6b4b0a01169c89cde94f90fee635715e130b6b307d74"
+      },
+      {
+        "path": "trace/exit-65712.json",
+        "sha256": "8ee80ce12a5885b00052c4bdf30c59c344ae33b114cb25f081830723dbead287"
+      },
+      {
+        "path": "trace/exit-66516.json",
+        "sha256": "4c3d3c2991768b0d691c54aaf27e9b9d77bb723b6bdcc56a87f362d3ab38bd63"
+      },
+      {
+        "path": "trace/exit-67344.json",
+        "sha256": "10cd2e9be1c0e6f3a34e3aef06ef582274005c3de2c891695beacecd122c0386"
+      },
+      {
+        "path": "trace/exit-68560.json",
+        "sha256": "5032449665fd24f4da9b89f62e0ad2472f947d82d0c10e2f38cfbdd9a95bfbb2"
+      },
+      {
+        "path": "trace/exit-68612.json",
+        "sha256": "5889b2e957b4a8f58f351b6dfb889ec1c49af6e3f37d662a5611a423c3bddf9e"
+      },
+      {
+        "path": "trace/exit-68836.json",
+        "sha256": "32eb9fb5acbc8f7cde94a2e9aade58c66afc9a6c54f24c97480d5226777b1c92"
+      },
+      {
+        "path": "trace/exit-70628.json",
+        "sha256": "54c1b4e5e181ebad7ad4f767e4644f49c90f131d22a7e4a3cfb2c42c73db5f77"
+      },
+      {
+        "path": "trace/exit-8068.json",
+        "sha256": "928e19250331f1d67ef812f83e1fc18ecf2652a21c61933667ddcd38fa989520"
+      }
+    ]
+  },
+  "workers": [
+    {
+      "pid": 27092,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-4y45Dr",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-4y45Dr",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-4y45Dr\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-strict.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 33024,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-TuICtj",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-TuICtj",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-TuICtj\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook-e2e.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 41692,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-wG7CmQ",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-wG7CmQ",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-wG7CmQ\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\healer.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 43688,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-AHvjVB",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-AHvjVB",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-AHvjVB\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\position-e2e.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 44604,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-wSCGSS",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-wSCGSS",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-wSCGSS\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 55380,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-ol55rz",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-ol55rz",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-ol55rz\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\skill-doc.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 55752,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-HqOR2y",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-HqOR2y",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-HqOR2y\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\heal-web.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 63648,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-AzKIXr",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-AzKIXr",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-AzKIXr\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\capture-core.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 63764,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-f7XGQd",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-f7XGQd",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-f7XGQd\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver-runtime.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 63812,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-JYDeVw",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-JYDeVw",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-JYDeVw\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\healer-e2e.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 65400,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-mu1Wx1",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-mu1Wx1",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-mu1Wx1\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\build.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 65712,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-Ix8zyQ",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-Ix8zyQ",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-Ix8zyQ\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\scaffold.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 66516,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-ZkHxp4",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-ZkHxp4",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-ZkHxp4\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\interview.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 67344,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-PvAgtI",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-PvAgtI",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-PvAgtI\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver-e2e.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 68560,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-fUBJMX",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-fUBJMX",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-fUBJMX\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook-guard.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 68612,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-TlhYfs",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-TlhYfs",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-TlhYfs\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-map.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 68836,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-gu8zVv",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-gu8zVv",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-gu8zVv\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-core.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 70628,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-71kWpb",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-71kWpb",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-71kWpb\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    },
+    {
+      "pid": 8068,
+      "ppid": 68972,
+      "tmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-YK0SBS",
+      "owner": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-YK0SBS",
+      "parent": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+      "paceHome": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-YK0SBS\\default-pace-home",
+      "paceProfile": null,
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\orca-adapter.test.mjs"
+      ],
+      "execArgv": [
+        "--use-largepages=off",
+        "--trace-event-file-pattern=node_trace.${rotation}.log",
+        "--v8-pool-size=4",
+        "--node-snapshot",
+        "--cpu-prof-interval=1000",
+        "--report-signal=SIGUSR2",
+        "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+        "--secure-heap=0",
+        "--secure-heap-min=2",
+        "--stack-trace-limit=10",
+        "--test-isolation=process",
+        "--network-family-autoselection-attempt-timeout=250",
+        "--experimental-addon-modules",
+        "--heapsnapshot-near-heap-limit=0",
+        "--heap-prof-interval=524288",
+        "--max-http-header-size=16384",
+        "--test-concurrency=0",
+        "--test-timeout=0",
+        "--test-coverage-branches=0",
+        "--test-coverage-functions=0",
+        "--test-coverage-lines=0",
+        "--watch-kill-signal=SIGTERM",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs",
+        "--inspect-port=127.0.0.1:9229",
+        "--inspect-publish-uid=stderr,http",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+        "--import",
+        "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/nested-temp-trace.mjs"
+      ]
+    }
+  ],
+  "exits": [
+    {
+      "pid": 27092,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-4y45Dr",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 33024,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-TuICtj",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 41692,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-wG7CmQ",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 43688,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-AHvjVB",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 44604,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-wSCGSS",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 55380,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-ol55rz",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 55752,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-HqOR2y",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 63648,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-AzKIXr",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 63764,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-f7XGQd",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 63812,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-JYDeVw",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 65400,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-mu1Wx1",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 65712,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-Ix8zyQ",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 66516,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-ZkHxp4",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 67344,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-PvAgtI",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 68560,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-fUBJMX",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 68612,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-TlhYfs",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 68836,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-gu8zVv",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 70628,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-71kWpb",
+      "remaining": false,
+      "exitCode": 0
+    },
+    {
+      "pid": 8068,
+      "root": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0\\pace-test-run-YK0SBS",
+      "remaining": false,
+      "exitCode": 0
+    }
+  ],
+  "shared": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0",
+  "checks": {
+    "nestedSuccess": true,
+    "workers19": true,
+    "commonParent": true,
+    "distinctRoots": true,
+    "privateRoots": true,
+    "matchingPids": true,
+    "cleanup": true,
+    "noCleanupError": true
+  },
+  "verified": true,
+  "limitations": [
+    "Original verified=false was caused by expecting launcher preload execution; raw result is preserved.",
+    "The original diagnostic source before its launcher expectation correction was not snapshotted or hashed.",
+    "Diagnostic clears inherited OWNER/PARENT; this does not prove the actual wrapper inherited-owner branch. Actual uninstrumented full execution must be assessed separately."
+  ]
+}

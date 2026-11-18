@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { readdirSync } from "node:fs";
 import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 /**
  * pace-playbook-maker의 생성기·캡처 코어·스킬 문서 검사는 `.mjs` 테스트(test/playbook/)다.
@@ -15,10 +16,14 @@ test("playbook-maker .mjs 테스트가 실제로 실행되고 모두 통과한�
   assert.deepEqual(files.map((f) => f.split(/[\\/]/).pop()).sort(), ["agent-core.test.mjs", "agent-map.test.mjs", "agent-strict.test.mjs", "build.test.mjs", "capture-core.test.mjs", "driver-e2e.test.mjs", "driver-runtime.test.mjs", "driver.test.mjs", "heal-web.test.mjs", "healer-e2e.test.mjs", "healer.test.mjs", "interview.test.mjs", "orca-adapter.test.mjs", "playbook-e2e.test.mjs", "playbook-guard.test.mjs", "playbook.test.mjs", "position-e2e.test.mjs", "scaffold.test.mjs", "skill-doc.test.mjs"]);
   const env = { ...process.env };
   delete env.NODE_TEST_CONTEXT; // 중첩 실행이 부모 러너에 묻히지 않게
-  const result = spawnSync(process.execPath, ["--test", "--test-reporter=tap", ...files], { encoding: "utf8", env });
+  // Each file process imports the existing owned-temp lifecycle.
+  const result = spawnSync(process.execPath, ["--import", pathToFileURL(resolve("test/helpers.ts")).href, "--test", "--test-reporter=tap", ...files], { encoding: "utf8", env, maxBuffer: 16 * 1024 * 1024 });
   const out = result.stdout;
   const count = (name: string) => Number(new RegExp(`^# ${name} (\\d+)`, "m").exec(out)?.[1] ?? Number.NaN);
-  assert.equal(result.status, 0, out.slice(-2000) + result.stderr.slice(-500));
+  const capture = result.error && "code" in result.error && result.error.code === "ENOBUFS" ? "capture-limit-exceeded" : "nested-result";
+  const diagnostic = `${capture}: status=${result.status}, signal=${result.signal}, error=${result.error?.message ?? "none"}; maxBuffer=16777216 bytes per stream\n${out ?? ""}\n${result.stderr ?? ""}`;
+  assert.equal(result.error, undefined, diagnostic);
+  assert.equal(result.status, 0, diagnostic);
   assert.equal(count("fail"), 0);
   assert.ok(count("tests") >= 168, `실행된 테스트 ${count("tests")}건 — 검사가 빠졌다`);
   // 건너뜀은 Orca 브라우저 e2e(position-e2e·playbook-e2e·driver-e2e·healer-e2e의 브라우저 흐름) 넷까지만 허용 — 나머지는 모두 통과해야 한다

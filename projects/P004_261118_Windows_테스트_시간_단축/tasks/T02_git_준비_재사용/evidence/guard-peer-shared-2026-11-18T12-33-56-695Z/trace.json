@@ -1,0 +1,9 @@
+{
+  "mode": "peer",
+  "guardPid": 56552,
+  "peerPid": 56184,
+  "guardTmp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-guard-hQWpVB",
+  "sharedTmp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-guard-hQWpVB",
+  "target": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-guard-hQWpVB\\pace-playbook-diagnostic-56552",
+  "injected": true
+}

@@ -1,0 +1,1 @@
+import fs from 'node:fs'; import {tmpdir} from 'node:os'; fs.writeFileSync(process.env.PACE_TESTER_WORKER, JSON.stringify({pid:process.pid,tmp:tmpdir(),owner:process.env.PACE_TEST_TMP_OWNER,parent:process.env.PACE_TEST_TMP_PARENT,home:process.env.PACE_HOME,profile:process.env.PACE_PROFILE??null}));

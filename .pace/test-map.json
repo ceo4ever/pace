@@ -2,6 +2,13 @@
   "version": 1,
   "units": [
     {
+      "id": "git-fixture",
+      "sources": ["test/helpers.ts"],
+      "tests": ["test/git-fixture.test.ts"],
+      "runner": { "kind": "node-test", "cwd": "." },
+      "requires": []
+    },
+    {
       "id": "intent-preview",
       "sources": ["src/intent/preview.ts", "templates/intent-preview/**/*"],
       "tests": ["test/intent-preview.test.ts", "test/intent-plan.test.ts"],

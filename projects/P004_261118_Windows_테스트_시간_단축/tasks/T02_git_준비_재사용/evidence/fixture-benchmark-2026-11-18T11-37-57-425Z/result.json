@@ -1,0 +1,143 @@
+{
+  "node": "v24.22.3",
+  "sourceCommit": "1f01f629ab68f617cd9f6648251768f0758cb343",
+  "git": "git version 2.56.0.windows.4",
+  "samples": [
+    {
+      "pair": 1,
+      "mode": "direct",
+      "elapsedMs": 332.921,
+      "cold": false
+    },
+    {
+      "pair": 1,
+      "mode": "cached",
+      "elapsedMs": 404.232,
+      "cold": true
+    },
+    {
+      "pair": 2,
+      "mode": "cached",
+      "elapsedMs": 24.904300000000035,
+      "cold": false
+    },
+    {
+      "pair": 2,
+      "mode": "direct",
+      "elapsedMs": 337.0906,
+      "cold": false
+    },
+    {
+      "pair": 3,
+      "mode": "direct",
+      "elapsedMs": 339.72969999999987,
+      "cold": false
+    },
+    {
+      "pair": 3,
+      "mode": "cached",
+      "elapsedMs": 24.736200000000053,
+      "cold": false
+    },
+    {
+      "pair": 4,
+      "mode": "cached",
+      "elapsedMs": 24.56139999999982,
+      "cold": false
+    },
+    {
+      "pair": 4,
+      "mode": "direct",
+      "elapsedMs": 327.64840000000004,
+      "cold": false
+    },
+    {
+      "pair": 5,
+      "mode": "direct",
+      "elapsedMs": 333.20410000000015,
+      "cold": false
+    },
+    {
+      "pair": 5,
+      "mode": "cached",
+      "elapsedMs": 24.6570999999999,
+      "cold": false
+    },
+    {
+      "pair": 6,
+      "mode": "cached",
+      "elapsedMs": 23.477899999999863,
+      "cold": false
+    },
+    {
+      "pair": 6,
+      "mode": "direct",
+      "elapsedMs": 333.6752999999999,
+      "cold": false
+    },
+    {
+      "pair": 7,
+      "mode": "direct",
+      "elapsedMs": 324.8586,
+      "cold": false
+    },
+    {
+      "pair": 7,
+      "mode": "cached",
+      "elapsedMs": 24.22609999999986,
+      "cold": false
+    },
+    {
+      "pair": 8,
+      "mode": "cached",
+      "elapsedMs": 24.1565999999998,
+      "cold": false
+    },
+    {
+      "pair": 8,
+      "mode": "direct",
+      "elapsedMs": 332.8895000000002,
+      "cold": false
+    },
+    {
+      "pair": 9,
+      "mode": "direct",
+      "elapsedMs": 330.67570000000023,
+      "cold": false
+    },
+    {
+      "pair": 9,
+      "mode": "cached",
+      "elapsedMs": 30.47420000000011,
+      "cold": false
+    },
+    {
+      "pair": 10,
+      "mode": "cached",
+      "elapsedMs": 25.202600000000075,
+      "cold": false
+    },
+    {
+      "pair": 10,
+      "mode": "direct",
+      "elapsedMs": 327.63070000000016,
+      "cold": false
+    }
+  ],
+  "counters": {
+    "direct": {
+      "callbacks": 10,
+      "callbackGitCalls": 60
+    },
+    "cached": {
+      "callbacks": 1,
+      "callbackGitCalls": 6
+    }
+  },
+  "medianMs": {
+    "direct": 332.90525000000014,
+    "cachedAll": 24.696649999999977,
+    "cachedWarm": 24.6570999999999
+  },
+  "limits": "Small committed fixture preparation only; alternating order, 10 per mode. Cached cold cost included and shown separately. Callback Git count excludes the helper's one readonly HEAD check; its time is included. This is not the whole-suite improvement rate."
+}

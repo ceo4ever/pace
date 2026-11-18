@@ -1,0 +1,9 @@
+{
+  "mode": "peer",
+  "guardPid": 71892,
+  "peerPid": 70764,
+  "guardTmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-t02-tester-ebd1227d7522463a91d2479b021aa68d\\phase-3-run\\pace-test-run-07VAdH",
+  "sharedTmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-t02-tester-ebd1227d7522463a91d2479b021aa68d\\phase-3-run\\pace-test-run-FiVotv",
+  "target": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-t02-tester-ebd1227d7522463a91d2479b021aa68d\\phase-3-run\\pace-test-run-FiVotv\\pace-playbook-diagnostic-71892",
+  "injected": true
+}

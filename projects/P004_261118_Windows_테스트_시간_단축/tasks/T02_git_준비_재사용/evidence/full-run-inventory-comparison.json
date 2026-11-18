@@ -1,0 +1,90 @@
+{
+  "comparison": "name plus occurrence number; time excluded from verdict comparison",
+  "baselineRuns": [
+    {
+      "tests": 963,
+      "suites": 0,
+      "pass": 954,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 9,
+      "todo": 0,
+      "duration_ms": 1442220.7368
+    },
+    {
+      "tests": 963,
+      "suites": 0,
+      "pass": 954,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 9,
+      "todo": 0,
+      "duration_ms": 1423675.4494
+    },
+    {
+      "tests": 963,
+      "suites": 0,
+      "pass": 954,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 9,
+      "todo": 0,
+      "duration_ms": 1423721.75
+    }
+  ],
+  "current": {
+    "tests": 968,
+    "suites": 0,
+    "pass": 958,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 9,
+    "todo": 0,
+    "duration_ms": 1388336.3874
+  },
+  "baselineCount": 963,
+  "currentCount": 968,
+  "added": [
+    {
+      "key": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다#1",
+      "name": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다",
+      "result": "pass",
+      "durationMs": 946.9721
+    },
+    {
+      "key": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다#1",
+      "name": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다",
+      "result": "pass",
+      "durationMs": 319.041
+    },
+    {
+      "key": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다#1",
+      "name": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다",
+      "result": "pass",
+      "durationMs": 381.3497
+    },
+    {
+      "key": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다#1",
+      "name": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다",
+      "result": "pass",
+      "durationMs": 643.2887
+    },
+    {
+      "key": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다#1",
+      "name": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다",
+      "result": "pass",
+      "durationMs": 564.0506
+    }
+  ],
+  "removed": [],
+  "changed": [
+    {
+      "key": "playbook-maker .mjs 테스트가 실제로 실행되고 모두 통과한다#1",
+      "before": "pass",
+      "after": "fail"
+    }
+  ],
+  "skipsIdentical": true,
+  "fullCheckSatisfied": false,
+  "innerFailure": "Nested wrapper reports 181 tests, 180 pass, 1 fail; wrapper retains only stdout last 2000 chars plus stderr last 500 chars, exact failing inner test not established from this log."
+}

@@ -1,0 +1,9 @@
+{
+  "mode": "own",
+  "guardPid": 56948,
+  "peerPid": 66496,
+  "guardTmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-guard-P4Ga5k\\pace-test-run-dPizfr",
+  "sharedTmp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-guard-P4Ga5k",
+  "target": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-guard-P4Ga5k\\pace-test-run-dPizfr\\pace-playbook-diagnostic-56948",
+  "injected": true
+}

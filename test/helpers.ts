@@ -1,4 +1,4 @@
-import { lstatSync, mkdtempSync, realpathSync, rmSync } from "node:fs";
+import { cpSync, existsSync, lstatSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, isAbsolute, join, relative, sep } from "node:path";
 import { spawn, spawnSync, type ChildProcess, type SpawnSyncReturns } from "node:child_process";
@@ -82,6 +82,44 @@ export const spawnTestChild: typeof spawn = ((...args: Parameters<typeof spawn>)
 export function tempDir(prefix = "pace-test-"): string {
   if (!prefix.startsWith("pace-") || basename(prefix) !== prefix || prefix.includes("\\")) throw new Error("Invalid test temporary directory prefix");
   return mkdtempSync(join(tempRoot, prefix));
+}
+
+/** 파일 프로세스/형태별 원본 한 번, 첫 호출을 포함한 모든 대상에 독립 파일 복사. */
+export function reusableGitFixture(prepare: (source: string, firstDestination: string) => void): (destination: string) => void {
+  let source: string | undefined;
+  return (destination) => {
+    const checkDestination = () => {
+      const actual = realpathSync.native(destination), within = relative(tempRoot, actual);
+      if (!within || isAbsolute(within) || within === ".." || within.startsWith(`..${sep}`) || lstatSync(destination).isSymbolicLink() || !lstatSync(destination).isDirectory() || readdirSync(destination).length) throw new Error("Git fixture destination must be an empty owned directory");
+    };
+    checkDestination();
+    let prepared = source;
+    if (!prepared) {
+      const candidate = tempDir("pace-git-seed-");
+      prepare(candidate, destination);
+      const gitDir = join(candidate, ".git");
+      if (!existsSync(gitDir) || !lstatSync(gitDir).isDirectory() || lstatSync(gitDir).isSymbolicLink()) throw new Error("Git fixture must have its own .git directory");
+      const plainTree = (dir: string): void => {
+        for (const entry of readdirSync(dir, { withFileTypes: true })) {
+          const path = join(dir, entry.name);
+          if (entry.isSymbolicLink()) throw new Error("Git fixture seed must not contain symlinks");
+          if (entry.isDirectory()) plainTree(path);
+          else if (!entry.isFile()) throw new Error("Git fixture seed must contain regular files only");
+        }
+      };
+      plainTree(candidate);
+      if (existsSync(join(gitDir, "worktrees")) || existsSync(join(gitDir, "objects/info/alternates")) || /^\s*(?:worktree|hooksPath|fsmonitor)\s*=|^\s*\[include(?:If)?\b/im.test(readFileSync(join(gitDir, "config"), "utf8"))) throw new Error("Git fixture seed must be self-contained");
+      const env: NodeJS.ProcessEnv = { ...sessionFreeEnv(), HOME: candidate, USERPROFILE: candidate };
+      for (const key of ["GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_OBJECT_DIRECTORY", "GIT_ALTERNATE_OBJECT_DIRECTORIES"]) delete env[key];
+      const head = spawnSync("git", ["-C", candidate, "rev-parse", "--verify", "HEAD"], { env, encoding: "utf8", timeout: 5000 });
+      if (head.status !== 0) throw new Error(`Git fixture seed must be committed: ${head.stderr ?? head.error?.message ?? "unknown failure"}`);
+      prepared = candidate;
+    }
+    checkDestination();
+    // cpSync performs independent copies; do not use clone, alternates or hardlinks.
+    cpSync(prepared, destination, { recursive: true, dereference: false, verbatimSymlinks: true });
+    source = prepared;
+  };
 }
 
 export const ALTU: ProfileInput = {

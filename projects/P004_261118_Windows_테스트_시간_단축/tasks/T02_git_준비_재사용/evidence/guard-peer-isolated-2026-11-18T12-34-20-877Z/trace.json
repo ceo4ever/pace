@@ -1,0 +1,9 @@
+{
+  "mode": "peer",
+  "guardPid": 28880,
+  "peerPid": 51048,
+  "guardTmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-guard-WYhAtk\\pace-test-run-OopR8B",
+  "sharedTmp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-guard-WYhAtk",
+  "target": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-guard-WYhAtk\\pace-playbook-diagnostic-28880",
+  "injected": true
+}

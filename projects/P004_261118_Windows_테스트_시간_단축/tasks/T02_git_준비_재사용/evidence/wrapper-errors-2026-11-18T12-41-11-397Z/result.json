@@ -1,0 +1,44 @@
+[
+  {
+    "mode": "failure",
+    "status": 1,
+    "signal": null,
+    "argv": [
+      "--import",
+      "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-capture-mWtX6U/inject.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook-maker.test.ts"
+    ],
+    "checks": {
+      "nonzero": true,
+      "begin": true,
+      "middle": true,
+      "end": true,
+      "stderr": true,
+      "classified": true,
+      "metadata": true
+    }
+  },
+  {
+    "mode": "limit",
+    "status": 1,
+    "signal": null,
+    "argv": [
+      "--import",
+      "file:///C:/Users/ROOT-U%7E1/AppData/Local/Temp/pace-p004-capture-eYTTBX/inject.mjs",
+      "--test",
+      "--test-reporter=tap",
+      "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook-maker.test.ts"
+    ],
+    "checks": {
+      "nonzero": true,
+      "begin": true,
+      "middle": true,
+      "end": true,
+      "stderr": true,
+      "classified": true,
+      "metadata": true
+    }
+  }
+]

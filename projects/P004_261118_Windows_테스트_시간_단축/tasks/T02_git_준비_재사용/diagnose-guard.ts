@@ -1,0 +1,22 @@
+import {spawnSync} from "node:child_process";
+import {mkdirSync,mkdtempSync,readFileSync,writeFileSync} from "node:fs";
+import {tmpdir} from "node:os";
+import {dirname,join,resolve} from "node:path";
+import {fileURLToPath,pathToFileURL} from "node:url";
+const here=dirname(fileURLToPath(import.meta.url)), root=resolve(here,"../../../..");
+const mode=process.argv[2];
+if(mode!=="peer"&&mode!=="own")throw new Error("Usage: diagnose-guard.ts peer|own [isolated]");
+const isolated=process.argv[3]==="isolated";
+const folder=join(here,"evidence",`guard-${mode}-${isolated?"isolated":"shared"}-${new Date().toISOString().replace(/[:.]/g,"-")}`);
+mkdirSync(folder,{recursive:true});
+const shared=mkdtempSync(join(tmpdir(),"pace-p004-guard-"));
+const env: NodeJS.ProcessEnv={...process.env,TEMP:shared,TMP:shared,TMPDIR:shared,PACE_HOME:join(shared,"pace-home"),PACE_GUARD_INJECTION:mode,PACE_GUARD_SHARED_TMP:shared,PACE_GUARD_TRACE:join(folder,"trace.json")};
+for(const key of ["NODE_TEST_CONTEXT","PACE_TEST_TMP_OWNER","PACE_TEST_TMP_PARENT","PACE_KEEP_TEST_TMP","PACE_PROFILE"])delete env[key];
+const argv=[...(isolated?["--import",pathToFileURL(join(root,"test/helpers.ts")).href]:[]),"--import",pathToFileURL(join(here,"guard-interference.mjs")).href,"--test","--test-reporter=tap",join(root,"test/playbook/playbook-guard.test.mjs")];
+const started=new Date().toISOString(),begin=performance.now();
+const result=spawnSync(process.execPath,argv,{cwd:root,env,encoding:"utf8",timeout:30_000,windowsHide:true});
+writeFileSync(join(folder,"guard.tap"),result.stdout+result.stderr);
+let trace:unknown;try{trace=JSON.parse(readFileSync(join(folder,"trace.json"),"utf8"));}catch{/* Missing trace is invalid, never success. */}
+writeFileSync(join(folder,"result.json"),JSON.stringify({mode,isolated,started,status:result.status,signal:result.signal,error:result.error?.message,elapsedMs:performance.now()-begin,argv,trace},null,2)+"\n");
+console.log(`Guard diagnostic exit ${result.status}: ${folder}`);
+process.exitCode=result.status??1;

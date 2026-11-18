@@ -1,0 +1,31 @@
+import {spawn} from "node:child_process";
+import {appendFileSync,mkdirSync,mkdtempSync,readdirSync,readFileSync,realpathSync,writeFileSync} from "node:fs";
+import {tmpdir} from "node:os";
+import {dirname,join,resolve} from "node:path";
+import {fileURLToPath,pathToFileURL} from "node:url";
+const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,"../../../..");
+const out=join(here,"evidence",`nested-isolation-${new Date().toISOString().replace(/[:.]/g,"-")}`);
+mkdirSync(join(out,"trace"),{recursive:true});
+const shared=mkdtempSync(join(tmpdir(),"pace-p004-isolation-"));
+const env:NodeJS.ProcessEnv={...process.env,TEMP:shared,TMP:shared,TMPDIR:shared,PACE_HOME:join(shared,"pace-home"),PACE_NESTED_TRACE_DIR:join(out,"trace")};
+for(const key of ["NODE_TEST_CONTEXT","PACE_TEST_TMP_OWNER","PACE_TEST_TMP_PARENT","PACE_KEEP_TEST_TMP","PACE_PROFILE"])delete env[key];
+const files=readdirSync(join(root,"test/playbook")).filter(n=>n.endsWith(".test.mjs")).map(n=>join(root,"test/playbook",n));
+const baseArgv=["--import",pathToFileURL(join(root,"test/helpers.ts")).href,"--test","--test-reporter=tap",...files];
+const argv=["--import",pathToFileURL(join(root,"test/helpers.ts")).href,"--import",pathToFileURL(join(here,"nested-temp-trace.mjs")).href,...baseArgv.slice(2)];
+const log=join(out,"nested.log");writeFileSync(log,"");
+const started=new Date().toISOString(),begin=performance.now();
+const child=spawn(process.execPath,argv,{cwd:root,env,windowsHide:true,stdio:["ignore","pipe","pipe"]});
+child.stdout.on("data",(data:Buffer)=>appendFileSync(log,data));child.stderr.on("data",(data:Buffer)=>appendFileSync(log,data));
+child.on("error",error=>appendFileSync(log,String(error)));
+child.on("close",(status,signal)=>{
+  const traceFiles=readdirSync(join(out,"trace"));
+  const enters=traceFiles.filter(n=>n.startsWith("enter-")).map(n=>JSON.parse(readFileSync(join(out,"trace",n),"utf8")) as {pid:number;ppid:number;tmp:string;paceProfile:null|string});
+  const exits=traceFiles.filter(n=>n.startsWith("exit-")).map(n=>JSON.parse(readFileSync(join(out,"trace",n),"utf8")) as {pid:number;remaining:boolean;exitCode:number});
+  const runner=enters.find(t=>t.pid===child.pid),workers=enters.filter(t=>t.pid!==child.pid);
+  const leftover=readdirSync(shared).filter(n=>n.startsWith("pace-test-run-"));
+  // Node 24 test launcher may apply --import only to file workers, not itself.
+  const verified=status===0&&files.length===19&&workers.length===19&&workers.every(t=>t.ppid===child.pid&&t.tmp!==realpathSync.native(shared)&&(!runner||t.tmp!==runner.tmp))&&new Set(enters.map(t=>t.tmp)).size===enters.length&&enters.every(t=>t.paceProfile===null)&&exits.length===enters.length&&exits.every(t=>!t.remaining&&t.exitCode===0)&&leftover.length===0;
+  writeFileSync(join(out,"result.json"),JSON.stringify({started,ended:new Date().toISOString(),elapsedMs:performance.now()-begin,status,signal,shared,baseArgv,argv,runner,workers,exits,leftover,verified},null,2)+"\n");
+  process.exitCode=verified?0:1;console.log(`Nested isolation status ${status}, verified ${verified}: ${out}`);
+});
+console.log(`Nested isolation: ${out}`);

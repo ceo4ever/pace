@@ -1,0 +1,22 @@
+// Read-only evidence verification; does not launch tests or alter the raw records.
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+const folder=path.resolve(process.argv[2]??'');
+if(!process.argv[2])throw new Error('Usage: node revalidate-isolation.mjs <nested-isolation evidence folder>');
+const hash=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const traceDirectory=path.join(folder,'trace');
+const names=fs.readdirSync(traceDirectory).sort();
+const read=name=>JSON.parse(fs.readFileSync(path.join(traceDirectory,name),'utf8'));
+const enters=names.filter(n=>n.startsWith('enter-')).map(read),exits=names.filter(n=>n.startsWith('exit-')).map(read);
+const original=JSON.parse(fs.readFileSync(path.join(folder,'result.json'),'utf8'));
+const log=fs.readFileSync(path.join(folder,'nested.log'),'utf8');
+const shared=fs.realpathSync.native(original.shared);
+const parentIds=[...new Set(enters.map(x=>x.ppid))];
+const checks={nestedSuccess:original.status===0&&/^# tests 181$/m.test(log)&&/^# pass 181$/m.test(log)&&/^# fail 0$/m.test(log)&&/^# skipped 0$/m.test(log),workers19:enters.length===19,commonParent:parentIds.length===1&&enters.every(x=>x.pid!==parentIds[0]),distinctRoots:new Set(enters.map(x=>x.tmp)).size===19,privateRoots:enters.every(x=>x.tmp!==shared&&x.parent===shared&&x.owner===x.tmp&&x.paceHome===path.join(x.tmp,'default-pace-home')&&x.paceProfile===null),matchingPids:JSON.stringify(enters.map(x=>x.pid).sort((a,b)=>a-b))===JSON.stringify(exits.map(x=>x.pid).sort((a,b)=>a-b)),cleanup:exits.length===19&&exits.every(x=>!x.remaining&&x.exitCode===0)&&!fs.readdirSync(shared).some(n=>n.startsWith('pace-test-run-')),noCleanupError:!log.includes('preserving the temporary root')&&!log.includes('Temporary test root was replaced')};
+const source=fileURLToPath(import.meta.url);
+const result={command:'node '+source+' '+folder,verifier:{source,sha256:hash(source)},raw:{originalResult:{path:'result.json',sha256:hash(path.join(folder,'result.json'))},log:{path:'nested.log',sha256:hash(path.join(folder,'nested.log'))},traces:names.map(n=>({path:'trace/'+n,sha256:hash(path.join(traceDirectory,n))}))},workers:enters,exits,shared,checks,verified:Object.values(checks).every(Boolean),limitations:['Original verified=false was caused by expecting launcher preload execution; raw result is preserved.','The original diagnostic source before its launcher expectation correction was not snapshotted or hashed.','Diagnostic clears inherited OWNER/PARENT; this does not prove the actual wrapper inherited-owner branch. Actual uninstrumented full execution must be assessed separately.']};
+fs.writeFileSync(path.join(folder,'revalidation-v2.json'),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({verified:result.verified,checks},null,2));
+if(!result.verified)process.exitCode=1;

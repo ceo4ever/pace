@@ -7,11 +7,11 @@ import { basename, delimiter, dirname, join, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { packageRoot, templatesDir } from "../src/core/paths.ts";
 import { canonTouched, declaredCommand, findSecrets } from "../src/project/harness.ts";
-import { PACE_BIN, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
+import { PACE_BIN, reusableGitFixture, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
 
 const fixtureContexts = new Map<string, { home: string; bin: string }>();
 function gitRun(cwd: string, args: string[], extra: NodeJS.ProcessEnv = {}) {
-  const context = [...fixtureContexts].find(([parent]) => cwd.startsWith(parent + sep))?.[1];
+  const context = [...fixtureContexts].find(([parent]) => cwd === parent || cwd.startsWith(parent + sep))?.[1];
   const env = context ? { ...sessionFreeEnv(), HOME: context.home, PACE_HOME: context.home, PATH: `${context.bin}${delimiter}${process.env.PATH}` } : sessionFreeEnv();
   return spawnSync("git", ["-C", cwd, ...args], { encoding: "utf8", env: { ...env, ...extra } });
 }
@@ -38,15 +38,17 @@ function installDashboardFixture(root: string, data = "old"): void {
   write(join(root, "backlogs/dashboard/data.js"), data);
 }
 
-/** main 브랜치에 AGENTS.md·docs/README.md(검사 선언)가 있는 저장소. */
-function repoFixture(): { home: string; main: string } {
+function privateFixtureContext(): { home: string; bin: string } {
   const home = tempDir("pace-home-");
-  const main = join(tempDir("pace-harness-"), "app");
-  mkdirSync(main);
   const bin = join(home, "bin");
   write(join(bin, "pace"), `#!/bin/sh\nexec '${process.execPath.replaceAll("'", "'\\''")}' '${PACE_BIN.replaceAll("'", "'\\''")}' "$@"\n`);
   chmodSync(join(bin, "pace"), 0o755);
-  fixtureContexts.set(dirname(main), { home, bin });
+  return { home, bin };
+}
+
+const copyHarnessRepo = reusableGitFixture((main) => {
+  // 원본 전용 HOME/bin이다. 정확한 원본 키는 다른 fixture의 부모 접두사가 아니다.
+  fixtureContexts.set(main, privateFixtureContext());
   git(main, "init", "-q", "-b", "main");
   git(main, "config", "user.name", "test");
   git(main, "config", "user.email", "test@example.com");
@@ -56,8 +58,32 @@ function repoFixture(): { home: string; main: string } {
   write(join(main, "docs", "README.md"), "# app\n\n## 환경\n\n- 검사: `true`\n- 보안 검사: `true`\n");
   git(main, "add", "-A");
   git(main, "commit", "-q", "-m", "init");
-  return { home, main };
+});
+
+/** main 브랜치에 AGENTS.md·docs/README.md(검사 선언)가 있는 저장소. */
+function repoFixture(): { home: string; main: string } {
+  const context = privateFixtureContext();
+  const main = join(tempDir("pace-harness-"), "app");
+  mkdirSync(main);
+  fixtureContexts.set(dirname(main), context);
+  copyHarnessRepo(main);
+  return { home: context.home, main };
 }
+
+test("git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다", () => {
+  const a = repoFixture(), b = repoFixture();
+  const source = [...fixtureContexts].find(([key]) => basename(key).startsWith("pace-git-seed-"));
+  assert.ok(source);
+  const [seed, context] = source;
+  assert.notEqual(context.home, a.home); assert.notEqual(context.home, b.home); assert.notEqual(a.home, b.home);
+  for (const [cwd, home, owner] of [[seed, context.home, "seed"], [a.main, a.home, "a"], [b.main, b.home, "b"]]) {
+    write(join(home!, ".gitconfig"), `[fixture]\nowner = ${owner}\n`);
+    const actual = gitRun(cwd!, ["config", "--global", "fixture.owner"]);
+    assert.equal(actual.status, 0, actual.stderr);
+    assert.equal(actual.stdout.trim(), owner);
+  }
+  assert.equal(basename(a.main), "app"); assert.equal(basename(b.main), "app");
+});
 
 // 이 파일의 기존 회귀 사례는 v1 도입 전 태스크의 호환성을 검증한다.
 const runCli = (home: string, cwd: string, ...args: string[]) => {

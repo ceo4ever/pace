@@ -1,0 +1,15 @@
+{
+  "note": "Original diagnostic incorrectly required launcher preload execution; raw status=0 and verified=false preserved. Node test launcher has no trace; all 19 file processes have distinct owned roots and common parent PID.",
+  "checks": {
+    "nestedSuccess": true,
+    "workers19": true,
+    "commonRunner": true,
+    "distinctWorkerRoots": true,
+    "privateRoots": true,
+    "cleanup": true,
+    "noCleanupError": true
+  },
+  "verified": true,
+  "runnerPid": 68972,
+  "shared": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-isolation-Frx2Y0"
+}

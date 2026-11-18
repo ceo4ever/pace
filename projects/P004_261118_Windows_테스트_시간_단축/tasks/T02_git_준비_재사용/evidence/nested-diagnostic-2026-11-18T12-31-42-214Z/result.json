@@ -1,0 +1,31 @@
+{
+  "started": "2026-11-18T12:31:42.216Z",
+  "ended": "2026-11-18T12:34:42.919Z",
+  "elapsedMs": 180701.2253,
+  "status": 1,
+  "signal": null,
+  "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-nested-zlc6HZ",
+  "argv": [
+    "--test",
+    "--test-reporter=tap",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-core.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-map.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\agent-strict.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\build.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\capture-core.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver-e2e.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver-runtime.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\driver.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\heal-web.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\healer-e2e.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\healer.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\interview.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\orca-adapter.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook-e2e.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook-guard.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\position-e2e.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\scaffold.test.mjs",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\skill-doc.test.mjs"
+  ]
+}

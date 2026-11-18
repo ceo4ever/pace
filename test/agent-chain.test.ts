@@ -7,7 +7,7 @@ import { AgentError, normalizeResult, type AgentName, type AgentRequest, type Ex
 import { ChainConfigError, checkChain, fileCooldownStore, memoryCooldownStore, normalizeEffort, outcomeExitCode, parseChainConfig, resolveChain, runChain, type ChainDef, type ChainDeps, type ChainOutcome } from "../src/agent/chain.ts";
 import { classifyFailure, classifyText, parseResetAt } from "../src/agent/limits.ts";
 import { SnapshotError } from "../src/agent/snapshot.ts";
-import { tempDir } from "./helpers.ts";
+import { reusableGitFixture, tempDir } from "./helpers.ts";
 
 const caps = { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true };
 
@@ -38,14 +38,17 @@ const git = (cwd: string, ...args: string[]) => {
   assert.equal(r.status, 0, `git ${args.join(" ")}: ${r.stderr}`);
   return r.stdout;
 };
-function repo(): string {
-  const dir = tempDir();
+const copyRepo = reusableGitFixture((dir) => {
   git(dir, "init", "-q");
   writeFileSync(join(dir, ".gitignore"), "ignored/\n");
   writeFileSync(join(dir, "a.txt"), "a\n");
   writeFileSync(join(dir, "b.txt"), "b\n");
   git(dir, "add", ".");
   git(dir, "commit", "-qm", "init");
+});
+function repo(): string {
+  const dir = tempDir();
+  copyRepo(dir);
   return dir;
 }
 const claudeP = (b: Behavior, o?: { readOnlyEnforced?: boolean }) => fake("claude", "p", b, o);

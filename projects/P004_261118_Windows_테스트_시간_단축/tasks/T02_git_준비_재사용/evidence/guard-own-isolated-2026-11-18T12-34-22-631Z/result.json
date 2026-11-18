@@ -1,0 +1,26 @@
+{
+  "mode": "own",
+  "isolated": true,
+  "started": "2026-11-18T12:34:22.633Z",
+  "status": 1,
+  "signal": null,
+  "elapsedMs": 1035.3694,
+  "argv": [
+    "--import",
+    "file:///D:/LucasStudio/pace.wt/P004/test/helpers.ts",
+    "--import",
+    "file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T02_git_%EC%A4%80%EB%B9%84_%EC%9E%AC%EC%82%AC%EC%9A%A9/guard-interference.mjs",
+    "--test",
+    "--test-reporter=tap",
+    "D:\\LucasStudio\\pace.wt\\P004\\test\\playbook\\playbook-guard.test.mjs"
+  ],
+  "trace": {
+    "mode": "own",
+    "guardPid": 56948,
+    "peerPid": 66496,
+    "guardTmp": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-guard-P4Ga5k\\pace-test-run-dPizfr",
+    "sharedTmp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-guard-P4Ga5k",
+    "target": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-guard-P4Ga5k\\pace-test-run-dPizfr\\pace-playbook-diagnostic-56948",
+    "injected": true
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "file": "test/project-harness.test.ts",
+    "existingTopLevelDeclarations": 72,
+    "existingTestBodySuffixSha256": "c44dff52a9f9460c793f10735744577cbebe3b8340af26666879c9175852f14f",
+    "unchanged": true
+  },
+  {
+    "file": "test/agent-chain.test.ts",
+    "existingTopLevelDeclarations": 27,
+    "existingTestBodySuffixSha256": "b90658e86667388c264e39c4eacc43fbaa1bf30b9d19d82829daa59943e42f9e",
+    "unchanged": true
+  }
+]

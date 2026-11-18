@@ -1,0 +1,134 @@
+{
+  "current": {
+    "status": 0,
+    "elapsedMs": 1423023.8333,
+    "totals": {
+      "tests": 968,
+      "suites": 0,
+      "pass": 959,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 9,
+      "todo": 0,
+      "duration_ms": 1421293.9863
+    }
+  },
+  "comparisons": [
+    {
+      "baselineRun": 1,
+      "removed": [],
+      "changed": [],
+      "added": [
+        {
+          "key": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다#1",
+          "name": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다",
+          "result": "pass",
+          "durationMs": 1013.116
+        },
+        {
+          "key": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다#1",
+          "name": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다",
+          "result": "pass",
+          "durationMs": 319.5866
+        },
+        {
+          "key": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다#1",
+          "name": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다",
+          "result": "pass",
+          "durationMs": 391.2776
+        },
+        {
+          "key": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다#1",
+          "name": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다",
+          "result": "pass",
+          "durationMs": 664.0538
+        },
+        {
+          "key": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다#1",
+          "name": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다",
+          "result": "pass",
+          "durationMs": 600.1208
+        }
+      ],
+      "skipsIdentical": true
+    },
+    {
+      "baselineRun": 2,
+      "removed": [],
+      "changed": [],
+      "added": [
+        {
+          "key": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다#1",
+          "name": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다",
+          "result": "pass",
+          "durationMs": 1013.116
+        },
+        {
+          "key": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다#1",
+          "name": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다",
+          "result": "pass",
+          "durationMs": 319.5866
+        },
+        {
+          "key": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다#1",
+          "name": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다",
+          "result": "pass",
+          "durationMs": 391.2776
+        },
+        {
+          "key": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다#1",
+          "name": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다",
+          "result": "pass",
+          "durationMs": 664.0538
+        },
+        {
+          "key": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다#1",
+          "name": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다",
+          "result": "pass",
+          "durationMs": 600.1208
+        }
+      ],
+      "skipsIdentical": true
+    },
+    {
+      "baselineRun": 3,
+      "removed": [],
+      "changed": [],
+      "added": [
+        {
+          "key": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다#1",
+          "name": "Git fixture: 처음부터 독립 복사하고 작업 파일·config·index·ref·object와 원본을 분리한다",
+          "result": "pass",
+          "durationMs": 1013.116
+        },
+        {
+          "key": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다#1",
+          "name": "Git fixture: 비어 있지 않은/연결/비소유 대상과 비자기완결 원본을 거부한다",
+          "result": "pass",
+          "durationMs": 319.5866
+        },
+        {
+          "key": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다#1",
+          "name": "Git fixture: 준비 실패를 캐시하지 않고 다음 호출이 정상 원본을 준비한다",
+          "result": "pass",
+          "durationMs": 391.2776
+        },
+        {
+          "key": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다#1",
+          "name": "Git fixture: 최초 복사 오류도 정상 캐시로 등록하지 않는다",
+          "result": "pass",
+          "durationMs": 664.0538
+        },
+        {
+          "key": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다#1",
+          "name": "git 준비 재사용: 원본 전용 HOME과 복사본별 Git 문맥을 보존한다",
+          "result": "pass",
+          "durationMs": 600.1208
+        }
+      ],
+      "skipsIdentical": true
+    }
+  ],
+  "fullCheckSatisfied": true,
+  "interpretation": "Single successful full observation contains both Git fixture reuse and nested isolation fix; do not attribute full time difference to either change alone."
+}

@@ -1,0 +1,13 @@
+{
+  "verified": true,
+  "checks": {
+    "nestedSuccess": true,
+    "workers19": true,
+    "commonParent": true,
+    "distinctRoots": true,
+    "privateRoots": true,
+    "matchingPids": true,
+    "cleanup": true,
+    "noCleanupError": true
+  }
+}
