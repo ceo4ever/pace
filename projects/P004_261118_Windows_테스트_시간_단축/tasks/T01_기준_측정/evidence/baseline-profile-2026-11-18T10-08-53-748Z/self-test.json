@@ -1,0 +1,12 @@
+{
+  "pass": true,
+  "checks": [
+    "odd/even medians",
+    "pass exit 0",
+    "injected fail exit 1",
+    "all-skip rejected",
+    "summary/inventory",
+    "incomplete rejected",
+    "reporter not inherited"
+  ]
+}

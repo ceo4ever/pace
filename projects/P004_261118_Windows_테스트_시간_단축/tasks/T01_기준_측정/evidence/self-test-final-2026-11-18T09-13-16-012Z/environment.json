@@ -1,0 +1,48 @@
+{
+  "node": "v24.22.3",
+  "npm": {
+    "status": 0,
+    "stdout": "11.19.1",
+    "stderr": ""
+  },
+  "git": {
+    "status": 0,
+    "stdout": "git version 2.56.0.windows.4",
+    "stderr": ""
+  },
+  "python": {
+    "status": 0,
+    "stdout": "Python 3.14.10",
+    "stderr": ""
+  },
+  "commit": {
+    "status": 0,
+    "stdout": "e27ef7c40329a8d755f9e68a2ff832a5decf5660",
+    "stderr": ""
+  },
+  "diff": {
+    "status": 0,
+    "stdout": ".../BACKLOG.md\"                                            |  1 +\n ...0_\\352\\262\\200\\354\\202\\254_\\353\\252\\205\\353\\240\\271.md\" | 14 ++++++++++----\n backlogs/dashboard/data.js                                 |  2 +-\n .../PROJECT.md\"                                            | 11 +++++++----\n .../log.jsonl\"                                             | 11 +++++++++++\n 5 files changed, 30 insertions(+), 9 deletions(-)",
+    "stderr": "warning: in the working copy of 'backlogs/dashboard/data.js', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'projects/P004_261118_Windows_테스트_시간_단축/PROJECT.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'projects/P004_261118_Windows_테스트_시간_단축/log.jsonl', LF will be replaced by CRLF the next time Git touches it"
+  },
+  "os": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "cpu": "AMD Ryzen 7 5800X 8-Core Processor             ",
+    "cores": 16,
+    "totalMemory": 34282184704
+  },
+  "power": {
+    "status": 0,
+    "stdout": "���� ����ǥ GUID: 9570a19f-262f-495e-9481-772b2ff87523  (�ְ��� ����)",
+    "stderr": ""
+  },
+  "defender": {
+    "status": 0,
+    "stdout": "{\"AntivirusEnabled\":true,\"RealTimeProtectionEnabled\":true}",
+    "stderr": ""
+  },
+  "command": "npm run check",
+  "instrumentation": "none in baseline; optional explicit-argv auxiliary profile",
+  "preflight": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-preflight-7fPo47"
+}

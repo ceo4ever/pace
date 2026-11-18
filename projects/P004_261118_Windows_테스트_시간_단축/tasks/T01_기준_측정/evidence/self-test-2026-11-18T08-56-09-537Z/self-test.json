@@ -1,0 +1,10 @@
+{
+  "pass": true,
+  "checks": [
+    "pass exit 0",
+    "injected fail exit 1",
+    "summary/inventory",
+    "incomplete rejected",
+    "reporter not inherited"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "auxiliaryOnly": true,
+  "valid": false,
+  "totals": {
+    "tests": 2,
+    "failed": 0,
+    "passed": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "topLevel": 2,
+    "suites": 0
+  },
+  "fileTimes": [
+    {
+      "file": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-jU72K1\\report-two.test.cjs",
+      "durationMs": 6.7233,
+      "counts": {
+        "tests": 2,
+        "failed": 0,
+        "passed": 2,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0,
+        "topLevel": 2,
+        "suites": 0
+      }
+    }
+  ],
+  "inventory": [
+    {
+      "file": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-jU72K1\\report-two.test.cjs",
+      "line": 1,
+      "column": 68,
+      "name": "report sentinel b",
+      "kind": "test",
+      "result": "pass",
+      "durationMs": 0.1147
+    }
+  ],
+  "comparisons": [
+    {
+      "run": 1,
+      "differences": [
+        {
+          "id": "pass\treport sentinel a",
+          "baseline": 1,
+          "profile": 0
+        }
+      ],
+      "totalsMatch": true,
+      "totalsDifferences": []
+    }
+  ],
+  "inventoryIntegrity": {
+    "complete": false,
+    "problems": [
+      "inventory tests: observed 1, summary 2",
+      "inventory pass: observed 1, summary 2",
+      "inventory cardinality mismatch"
+    ],
+    "observed": {
+      "tests": 1,
+      "suites": 0,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "fileIntegrity": [
+    {
+      "file": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-fixture-jU72K1\\report-two.test.cjs",
+      "complete": false,
+      "problems": [
+        "inventory tests: observed 1, summary 2",
+        "inventory pass: observed 1, summary 2",
+        "inventory cardinality mismatch"
+      ],
+      "observed": {
+        "tests": 1,
+        "suites": 0,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    }
+  ],
+  "filesCovered": true,
+  "rootSummaries": 1,
+  "diagnostics": []
+}

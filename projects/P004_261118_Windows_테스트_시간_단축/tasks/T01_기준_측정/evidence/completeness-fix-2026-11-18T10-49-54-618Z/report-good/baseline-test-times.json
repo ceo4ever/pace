@@ -1,0 +1,22 @@
+[
+  {
+    "name": "report sentinel a",
+    "occurrence": 1,
+    "times": [
+      0.573
+    ],
+    "medianMs": 0.573,
+    "minMs": 0.573,
+    "maxMs": 0.573
+  },
+  {
+    "name": "report sentinel b",
+    "occurrence": 1,
+    "times": [
+      0.1115
+    ],
+    "medianMs": 0.1115,
+    "minMs": 0.1115,
+    "maxMs": 0.1115
+  }
+]

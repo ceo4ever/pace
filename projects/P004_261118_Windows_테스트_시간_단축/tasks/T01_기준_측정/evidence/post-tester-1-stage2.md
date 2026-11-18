@@ -1,0 +1,9 @@
+# T01 독립 tester · 2단계
+
+**판정 fail. 독립 목표 대조 맞음.** 유효한 Windows 실측 3회를 확보했고 느린 구간을 찾았다. 인벤토리가 누락된 비교 자료를 성공으로 인정하는 결함이 있어 재사용 계약의 달성은 미달이다.
+
+- **T-1 pass.** 비계측 전체 검사 3회는 모두 타입 검사와 시험을 실행했고, 회차별 새 임시 루트, 종료 코드 0, 통과 954·실패 0·건너뜀 9를 확인했다. 원시 출력에서 963개 이름·판정과 건너뜀 사유가 일치한다. 벽시계 1444.136·1425.406·1425.464초, 중앙값 1425.464초, 절반 712.732초다. 실제 파일·디렉터리 symlink와 도구 기록을 확인했다. 측정된 기준 코드 대비 시험·러너·설치·하네스 변경은 발견되지 않았다. 근거는 `baseline-2026-11-18T08-56-17-364Z/{run-1.log,run-2.log,run-3.log,environment.json,results.json,summary.json}`이다.
+- **T-2 pass.** 비계측 954개 정상 시험에 각각 표본 3개가 있다. 실패를 포함한 별도 보조 1회의 94개 파일·963개 결과를 대조했다. 정상 파일 표본 중 project-harness 540.390초가 가장 길고, 비계측 최장 시험은 playbook wrapper 176.929초다. 보조 타입 검사 0.827초, 파일 합계 1403.776초, 벽시계 1432.391초, 간극 28.615초를 재계산했다. git 준비·자식 프로세스·대기 표본을 관련 코드와 대조했다. Windows ACP의 세 모드에는 각 12.5초 대기가 있다. git과 프로세스 개별 비용 및 전체 정상 파일 순위는 미확인이다. 보조 실패 1건을 정상 성능과 분리한 P004 결정대로 판정했다. 근거는 `baseline-profile-2026-11-18T10-08-53-748Z/{profile-analysis.json,baseline-test-times.json,profile-summary.json,report.md}`와 `cause-samples.md`다.
+- **T-3 fail.** 원래 ESM 설정을 반영한 임시 사본에서 `node measure.ts --self-test --label independent-self-test-module`은 0으로 종료했고 자식 통과·실패·전부 건너뜀·보조 fixture의 종료는 0/1/0/0이었다. 실제 Node 시험 1개를 실행하는 미니 npm 검사에서 사례 행만 빼고 실제 요약과 상태를 전달했다. `node measure.ts --runs 1 --label independent-missing-inventory-module`은 종료 0, `tests=1`, `inventory.length=0`, `complete=true`, `valid=true`였다. 별도 실제 Node 시험 2개의 보조 로그에서 통과 이벤트 하나만 제거해 `node report.ts <임시 증거 폴더>`를 실행했다. 파일/전체 총계 2, 인벤토리 1, 차이 1인데도 종료 0과 `profile-analysis.valid=true`였다. `measure.ts:73`과 `report.ts:59`의 판정에서 인벤토리와 총계가 대조되지 않는다. 기존 fixture는 요약 없는 짧은 로그만 불완전 입력으로 다룬다. 기준·보조 각각에서 총계와 결과 목록의 누락을 탐지하고 실패 주입을 fixture에 포함해야 한다.
+
+중첩 원시 TAP은 19파일 실행에서 guard 1건 실패와 단독 3건 통과를 보여 준다. 최초 보조 wrapper의 정확한 내부 실패와 임시 폴더 생성자는 미확인이다. 간섭 검증은 T03, 누락 판정은 T01 측정 도구 단계로 올린다. 기존 기준 3회의 이름·판정·건너뜀은 원시 로그에서 직접 확인했다. 작업 트리를 수정하거나 전체 검사를 반복하지 않았다. 첫 임시 사본의 모듈 설정 누락에 따른 reporter 진단은 원본의 모듈 설정을 복원해 해소했다.

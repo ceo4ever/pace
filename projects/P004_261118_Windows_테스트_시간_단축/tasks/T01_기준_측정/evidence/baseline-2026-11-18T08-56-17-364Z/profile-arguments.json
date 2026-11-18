@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "--test",
+    "--test-concurrency=1",
+    "test/**/*.test.ts",
+    "--test-reporter=file:///D:/LucasStudio/pace.wt/P004/projects/P004_261118_Windows_%ED%85%8C%EC%8A%A4%ED%8A%B8_%EC%8B%9C%EA%B0%84_%EB%8B%A8%EC%B6%95/tasks/T01_%EA%B8%B0%EC%A4%80_%EC%B8%A1%EC%A0%95/reporter.ts"
+  ],
+  "base": [
+    "--test",
+    "--test-concurrency=1",
+    "test/**/*.test.ts"
+  ],
+  "files": {
+    "status": 0,
+    "stdout": "test/adopt-opal-docs.test.ts\ntest/adopt-opal-e2e.test.ts\ntest/adopt-opal-recover.test.ts\ntest/adopt-opal.test.ts\ntest/agent-acp-hooks.test.ts\ntest/agent-acp.test.ts\ntest/agent-cancel.test.ts\ntest/agent-chain.test.ts\ntest/agent-contract.test.ts\ntest/agent-definition.test.ts\ntest/agent-p.test.ts\ntest/agent-proc-group.test.ts\ntest/agent-session.test.ts\ntest/agent-setup.test.ts\ntest/agent-verify.test.ts\ntest/backlog-dashboard.test.ts\ntest/backlog.test.ts\ntest/boot.test.ts\ntest/brain.test.ts\ntest/canvas-skills.test.ts\ntest/cli.test.ts\ntest/console-decode.test.ts\ntest/daemon-approval.test.ts\ntest/daemon-autostart.test.ts\ntest/daemon-core.test.ts\ntest/daemon-gateway.test.ts\ntest/daemon-install-wizard.test.ts\ntest/daemon-instance-port.test.ts\ntest/daemon-process.test.ts\ntest/daemon-recovery.test.ts\ntest/daemon-runner.test.ts\ntest/daemon-stop-notice.test.ts\ntest/daemon-store.test.ts\ntest/daemon-t05.test.ts\ntest/daemon-wizard-follow.test.ts\ntest/dashboard-init.test.ts\ntest/frontmatter.test.ts\ntest/fsutil-windows.test.ts\ntest/install-autostart.test.ts\ntest/install-script.test.ts\ntest/install-windows-wrapper.test.ts\ntest/install.test.ts\ntest/intent-plan.test.ts\ntest/intent-preview.test.ts\ntest/intent.test.ts\ntest/mcp-cli.test.ts\ntest/mcp-server.test.ts\ntest/memory.test.ts\ntest/onboard.test.ts\ntest/onboarding.test.ts\ntest/pace-install-ownership.test.ts\ntest/pace-paths.test.ts\ntest/playbook-install.test.ts\ntest/playbook-maker.test.ts\ntest/playbook-pilot-harness.test.ts\ntest/pre-review.test.ts\ntest/preview-owned.test.ts\ntest/profile.test.ts\ntest/project-dev-skill.test.ts\ntest/project-harness.test.ts\ntest/project-log.test.ts\ntest/project-metrics-index.test.ts\ntest/project-metrics-report.test.ts\ntest/project-metrics.test.ts\ntest/project-shell.test.ts\ntest/project-templates.test.ts\ntest/project-tokens.test.ts\ntest/rules.test.ts\ntest/scout-ideas.test.ts\ntest/scout-report.test.ts\ntest/scout-source.test.ts\ntest/scout-transcript.test.ts\ntest/scout-verify.test.ts\ntest/scout.test.ts\ntest/secret-precision.test.ts\ntest/secret-scan.test.ts\ntest/situation.test.ts\ntest/telegram-adapter.test.ts\ntest/telegram-api.test.ts\ntest/telegram-flow.test.ts\ntest/telegram-format.test.ts\ntest/telegram-mention.test.ts\ntest/telegram-process.test.ts\ntest/telegram-render.test.ts\ntest/telegram-typing.test.ts\ntest/telegram-use.test.ts\ntest/temp-lifecycle.test.ts\ntest/test-command.test.ts\ntest/test-runner.test.ts\ntest/windows-agent-command.test.ts\ntest/windows-job-stress.test.ts\ntest/windows-watchdog.test.ts\ntest/worker-settings.test.ts\ntest/workspace-registry.test.ts",
+    "stderr": ""
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "valid": false,
+  "timingSummaryMatches": true,
+  "checks": [
+    {
+      "run": 1,
+      "valid": false,
+      "path": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T01_기준_측정\\evidence\\duration-source-fix-2026-11-18T11-07-03-465Z\\report-missing-default-row\\baseline.log",
+      "raw": {
+        "totals": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "duration_ms": 75.1595
+        },
+        "observed": {
+          "tests": 1,
+          "suites": 0,
+          "pass": 1,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "problems": [
+          "inventory tests: observed 1, summary 2",
+          "inventory pass: observed 1, summary 2",
+          "inventory cardinality mismatch"
+        ]
+      },
+      "stored": {
+        "complete": true,
+        "problems": [],
+        "observed": {
+          "tests": 2,
+          "suites": 0,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      "differences": [
+        {
+          "id": "pass\treport sentinel a",
+          "baseline": 0,
+          "profile": 1
+        }
+      ],
+      "timingDifferences": [
+        {
+          "position": 0,
+          "name": "report sentinel b",
+          "rawMs": 0.1089,
+          "storedMs": 0.6186,
+          "missingRawTime": false
+        }
+      ],
+      "totalsMatch": true
+    }
+  ]
+}

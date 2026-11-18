@@ -1,0 +1,141 @@
+# Windows 검사 측정
+
+평가 기준은 계측 없는 npm run check의 벽시계 시간이다. 보조 프로파일은 중앙값에 포함하지 않는다.
+
+| 회차 | 시작(UTC) | 경과(초) | 종료 | 시험 | 통과 | 실패 | 건너뜀 |
+|---|---|---:|---:|---:|---:|---:|---:|
+| 1 | 2026-11-18T08:56:19.816Z | 1444.136 | 0 | 963 | 954 | 0 | 9 |
+| 2 | 2026-11-18T09:20:24.324Z | 1425.406 | 0 | 963 | 954 | 0 | 9 |
+| 3 | 2026-11-18T09:44:10.110Z | 1425.464 | 0 | 963 | 954 | 0 | 9 |
+
+기준 유효: true (원시 요약·저장 인벤토리 재대조: baseline-revalidation.json).
+중앙값 1425.464초, 최소 1425.406초, 최대 1444.136초.
+
+환경: environment.json, 회차별 부하: run-N-host.json, 원시 출력: run-N.log, 원시 결과/인벤토리: results.json.
+
+동시 작업·원래 도구 버전·개인 경로의 공개와 한계는 T01 evidence/measurement-limitations.md를 따른다. 실제 기준 실행 당시 도구 해시나 동시 부하의 영향량을 사후에 확정하지 않는다.
+
+기준 3회의 환경·회차별 부하·원시 로그는 [원래 기준 실행 폴더](../baseline-2026-11-18T08-56-17-364Z/)의 environment.json·run-N-host.json·run-N.log를 가리킨다. 현재 폴더의 environment.json은 보조 실행 환경이며 results.json은 원래 기준 결과의 참조를 보존한 복사본이다.
+
+## 비계측 정상 시험 시간
+
+원시 기본 로그를 다시 파싱한 정상 판정·개별 시간만 사용한다. 저장 목록의 시간 누락/불일치도 기준 무효로 거부한다. 동일 이름은 등장 순번으로 구분하며 파일 식별자는 기본 출력에 없다. 실패한 보조 표본은 아래 순위에 넣지 않는다. 전체 목록: baseline-test-times.json.
+
+| 시험(등장 순번) | 표본 수 | 중앙값(초) | 최소 | 최대 |
+|---|---:|---:|---:|---:|
+| playbook-maker .mjs 테스트가 실제로 실행되고 모두 통과한다 (#1) | 3 | 176.929 | 176.770 | 181.359 |
+| P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 (#1) | 3 | 70.183 | 70.089 | 70.787 |
+| Windows ACP 부모 종료와 시간 초과는 자손을 회수하고 무관 프로세스를 보존한다 (#1) | 3 | 42.820 | 42.700 | 42.838 |
+| P025 실패 복구: 병합 최종 커밋 거부는 FF 뒤 진행 상태를 복원한다 (#1) | 3 | 35.350 | 35.215 | 35.657 |
+| 프로젝트 전 과정: new → start → task → check → finish → merge (#1) | 3 | 31.299 | 31.123 | 31.497 |
+| BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다 (#1) | 3 | 28.927 | 28.871 | 28.972 |
+| 동시 프로젝트: 한쪽 병합 후 다른 쪽 finish는 생성 자료만 재생성하고 미추적 초안을 커밋하지 않는다 (#1) | 3 | 26.843 | 26.697 | 26.889 |
+| done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다 (#1) | 3 | 24.695 | 24.627 | 24.814 |
+| commit gate: 사용자 훅·링크·외부 hooksPath 보존, PACE 훅만 갱신 (#1) | 3 | 17.953 | 17.858 | 17.954 |
+| 작업자 도구: --agent > PROJECT.md `- 작업자:` > 정의서 `작업자 도구:` > 지금 세션, 오타는 worktree 전에 거부 (#1) | 3 | 16.452 | 16.441 | 16.454 |
+| 신규 태스크 사전 검토 게이트는 check와 done을 막고 기록 뒤 통과한다 (#1) | 3 | 16.073 | 16.070 | 16.095 |
+| Windows 감시자 자체가 죽어도 잡 자손만 종료한다 (#1) | 3 | 13.369 | 13.310 | 13.370 |
+| Windows 부모가 정상 종료해도 독립 감시자가 자손을 회수한다 (#1) | 3 | 13.310 | 13.290 | 13.315 |
+| Windows 부모 강제 종료 뒤 감시자가 자손을 회수하고 무관 프로세스를 보존한다 (#1) | 3 | 13.309 | 13.300 | 13.367 |
+| 작업자 설정 CLI와 실행별 우선순위 및 사전 오류 (#1) | 3 | 11.953 | 11.832 | 11.986 |
+| 하네스 소유 worktree는 활성 원본과 역할 ID가 일치할 때만 현재 정의를 전달한다 (#1) | 3 | 9.683 | 9.575 | 10.096 |
+| finish: 의존성 감사는 잠금 파일이 base 대비 바뀐 브랜치에서만 실행한다 (#1) | 3 | 9.381 | 9.375 | 9.447 |
+| finish: 완료 태스크의 태그 커밋 누락 차단, 태그 커밋 후 통과 (#1) | 3 | 9.355 | 9.324 | 10.706 |
+| P025 v2: 직접 finish 중간 커밋 뒤 최종 실패는 삭제 staged 없이 재시도한다 (#1) | 3 | 9.063 | 9.060 | 9.125 |
+| Orca 안이면 start가 작업자 세션을 띄우고, 다시 start·--no-launch·Orca 밖에서는 띄우지 않는다 (#1) | 3 | 8.727 | 8.672 | 8.772 |
+| finish: base에 선언이 없으면 worktree 명령을 실행하고 실패를 보존한다 (#1) | 3 | 8.507 | 8.487 | 8.617 |
+| BL 출처: 같은 번호 태스크 생성·done BR/BACKLOG 동기화와 실패 무변경 (#1) | 3 | 8.372 | 8.358 | 8.471 |
+| commit gate: start 설치·갱신, check 실패/성공, 무관 커밋과 복수 태그 (#1) | 3 | 8.214 | 8.198 | 8.248 |
+| 사용자가 확장한 공유 훅에 PACE 참조가 남으면 제거 시 실행 파일도 보존한다 (#1) | 3 | 7.906 | 7.835 | 7.949 |
+| S-8a 식별 실패·목록 밖은 결정표대로 — 강제 거절은 콜백을 부르지 않는다 (#1) | 3 | 7.879 | 7.789 | 8.024 |
+| start: 긴 백로그·대화 출처도 착수 결정을 남기고 전체 근거는 PROJECT.md로 가리킨다 (#1) | 3 | 7.804 | 7.748 | 7.846 |
+| PowerShell 5.1 격리 설치·재설치·제거는 한 줄로 보고하고 사용자 래퍼를 보존한다 (#1) | 3 | 7.750 | 7.707 | 8.158 |
+| finish: main에 선반영된 HEAD 조상의 태스크 커밋을 인정한다 (#1) | 3 | 7.334 | 7.279 | 8.049 |
+| check: 템플릿 주석이 남아도 통과하고, 빠진 기준·판정 실패는 잡는다 (#1) | 3 | 7.023 | 6.982 | 7.053 |
+| P025 v2: BR·태스크·현황의 중복 번호를 거부한다 (#1) | 3 | 6.831 | 6.768 | 6.858 |
+
+보조 실행 판정: 종료 1, 통과 953, 실패 1, 건너뜀 9, 보조 실행 유효 false. 기준 3회의 유효성과 구별한다.
+
+파일 합계와 벽시계의 간극은 T01의 실제 파일 동시성 1을 전제로 한다. T03에서 병렬 실행한 파일 시간을 합해 같은 간극으로 해석하지 않는다.
+
+## 보조 관측
+
+명령·파일 집합: profile-arguments.json(기본 실행기의 testArguments 직접 사용). 원시 이벤트: profile.log. 파일·시험 식별자/결과 및 회차별 이름·결과 다중집합 대조: profile-analysis.json. 기본 출력은 파일을 표시하지 않으므로 파일 식별자는 보조 관측에서 얻었다.
+
+타입 검사 0.827초, 보조 시험 벽시계 1432.391초, 파일 내부 시간 합계 1403.776초. 설명되지 않는 시험 간극 28.615초(프로세스 기동·수집·파일 로딩 등 포함; 원인별 비중은 추정). 이 분해는 실패 파일도 포함한 해당 보조 실행의 기술적 분해이며 정상 실행 성능 추정치가 아니다. 중첩 시험 시간을 다시 더하지 않는다.
+
+인벤토리 대조: 회차 1: 총계 불일치, 이름·판정 차이 2건; 회차 2: 총계 불일치, 이름·판정 차이 2건; 회차 3: 총계 불일치, 이름·판정 차이 2건. 차이는 profile-analysis.json에 전부 보존한다.
+
+### 정상 판정 파일의 보조 시간
+
+단일 보조 관측이다. 실패 파일은 제외하므로 전체 파일의 정상 순위를 확정하는 표가 아니다. 실패 파일의 정상 시간은 비계측 wrapper 시험 시간을 참고하며 파일 시간과 같다고 보지 않는다.
+
+| 파일 | 초 |
+|---|---:|
+| test\project-harness.test.ts | 540.390 |
+| test\windows-watchdog.test.ts | 83.797 |
+| test\adopt-opal.test.ts | 79.032 |
+| test\agent-chain.test.ts | 59.379 |
+| test\dashboard-init.test.ts | 50.610 |
+| test\install.test.ts | 49.341 |
+| test\agent-acp-hooks.test.ts | 39.495 |
+| test\boot.test.ts | 25.821 |
+| test\install-windows-wrapper.test.ts | 21.940 |
+| test\agent-acp.test.ts | 21.720 |
+| test\daemon-process.test.ts | 21.305 |
+| test\backlog-dashboard.test.ts | 18.740 |
+| test\agent-p.test.ts | 16.958 |
+| test\test-runner.test.ts | 15.021 |
+| test\telegram-flow.test.ts | 14.895 |
+| test\adopt-opal-recover.test.ts | 14.001 |
+| test\intent-preview.test.ts | 12.823 |
+| test\cli.test.ts | 10.312 |
+| test\project-metrics.test.ts | 7.593 |
+| test\pace-install-ownership.test.ts | 6.849 |
+
+### 실패 또는 미확인 파일의 별도 관측
+
+| 파일 | 초 | 실패 수 |
+|---|---:|---:|
+| test\playbook-maker.test.ts | 177.251 | 1 |
+
+### 정상 판정 시험의 보조 시간(suite 제외)
+
+| 파일:줄 | 시험 | 초 | 결과 |
+|---|---|---:|---|
+| test\project-harness.test.ts:1808 | P025 v2: 병합 기록 EIO는 소유 임시 파일을 정리하고 복구 명령으로 완료한다 | 69.782 | pass |
+| test\windows-watchdog.test.ts:105 | Windows ACP 부모 종료와 시간 초과는 자손을 회수하고 무관 프로세스를 보존한다 | 42.650 | pass |
+| test\project-harness.test.ts:1640 | P025 실패 복구: 병합 최종 커밋 거부는 FF 뒤 진행 상태를 복원한다 | 36.171 | pass |
+| test\project-harness.test.ts:163 | 프로젝트 전 과정: new → start → task → check → finish → merge | 31.115 | pass |
+| test\project-harness.test.ts:1893 | BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다 | 28.708 | pass |
+| test\project-harness.test.ts:2046 | 동시 프로젝트: 한쪽 병합 후 다른 쪽 finish는 생성 자료만 재생성하고 미추적 초안을 커밋하지 않는다 | 27.088 | pass |
+| test\project-harness.test.ts:531 | done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다 | 24.584 | pass |
+| test\project-harness.test.ts:1278 | commit gate: 사용자 훅·링크·외부 hooksPath 보존, PACE 훅만 갱신 | 18.700 | pass |
+| test\project-harness.test.ts:955 | 작업자 도구: --agent > PROJECT.md `- 작업자:` > 정의서 `작업자 도구:` > 지금 세션, 오타는 worktree 전에 거부 | 16.279 | pass |
+| test\project-harness.test.ts:2116 | 신규 태스크 사전 검토 게이트는 check와 done을 막고 기록 뒤 통과한다 | 16.195 | pass |
+| test\windows-watchdog.test.ts:22 | Windows 부모 강제 종료 뒤 감시자가 자손을 회수하고 무관 프로세스를 보존한다 | 13.312 | pass |
+| test\windows-watchdog.test.ts:88 | Windows 부모가 정상 종료해도 독립 감시자가 자손을 회수한다 | 13.308 | pass |
+| test\windows-watchdog.test.ts:63 | Windows 감시자 자체가 죽어도 잡 자손만 종료한다 | 13.301 | pass |
+| test\project-harness.test.ts:836 | 작업자 설정 CLI와 실행별 우선순위 및 사전 오류 | 11.787 | pass |
+| test\project-harness.test.ts:1162 | finish: 의존성 감사는 잠금 파일이 base 대비 바뀐 브랜치에서만 실행한다 | 9.689 | pass |
+| test\project-harness.test.ts:1347 | finish: 완료 태스크의 태그 커밋 누락 차단, 태그 커밋 후 통과 | 9.657 | pass |
+| test\boot.test.ts:72 | 하네스 소유 worktree는 활성 원본과 역할 ID가 일치할 때만 현재 정의를 전달한다 | 9.436 | pass |
+| test\project-harness.test.ts:1772 | P025 v2: 직접 finish 중간 커밋 뒤 최종 실패는 삭제 staged 없이 재시도한다 | 8.984 | pass |
+| test\project-harness.test.ts:1191 | finish: base에 선언이 없으면 worktree 명령을 실행하고 실패를 보존한다 | 8.852 | pass |
+| test\project-harness.test.ts:1124 | start: 긴 백로그·대화 출처도 착수 결정을 남기고 전체 근거는 PROJECT.md로 가리킨다 | 8.731 | pass |
+| test\project-harness.test.ts:774 | Orca 안이면 start가 작업자 세션을 띄우고, 다시 start·--no-launch·Orca 밖에서는 띄우지 않는다 | 8.623 | pass |
+| test\project-harness.test.ts:1246 | commit gate: start 설치·갱신, check 실패/성공, 무관 커밋과 복수 태그 | 8.493 | pass |
+| test\project-harness.test.ts:1943 | BL 출처: 같은 번호 태스크 생성·done BR/BACKLOG 동기화와 실패 무변경 | 8.285 | pass |
+| test\project-harness.test.ts:1066 | 정본 반영 표: 템플릿 브레인 행만 남은 표는 비었다고 본다, main 직접 프로젝트도 브레인 행을 확인한다 | 8.027 | pass |
+| test\install.test.ts:419 | 사용자가 확장한 공유 훅에 PACE 참조가 남으면 제거 시 실행 파일도 보존한다 | 7.880 | pass |
+| test\agent-acp-hooks.test.ts:65 | S-8a 식별 실패·목록 밖은 결정표대로 — 강제 거절은 콜백을 부르지 않는다 | 7.792 | pass |
+| test\install-windows-wrapper.test.ts:151 | PowerShell 5.1 격리 설치·재설치·제거는 한 줄로 보고하고 사용자 래퍼를 보존한다 | 7.756 | pass |
+| test\project-harness.test.ts:1374 | finish: main에 선반영된 HEAD 조상의 태스크 커밋을 인정한다 | 7.562 | pass |
+| test\project-harness.test.ts:471 | check: 템플릿 주석이 남아도 통과하고, 빠진 기준·판정 실패는 잡는다 | 6.991 | pass |
+| test\project-harness.test.ts:1841 | P025 v2: BR·태스크·현황의 중복 번호를 거부한다 | 6.761 | pass |
+
+### 실패한 시험 표본(정상 순위에서 제외)
+
+| 파일:줄 | 시험 | 관측 초 |
+|---|---|---:|
+| test\playbook-maker.test.ts:14 | playbook-maker .mjs 테스트가 실제로 실행되고 모두 통과한다 | 177.244 |

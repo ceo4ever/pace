@@ -1,0 +1,8 @@
+{
+  "valid": true,
+  "runs": 3,
+  "medianMs": 1425464.3326999997,
+  "minMs": 1425405.8206999998,
+  "maxMs": 1444135.9002,
+  "reusedBaseline": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/evidence/baseline-2026-11-18T08-56-17-364Z"
+}
