@@ -1,0 +1,24 @@
+{
+  "provider": "openai",
+  "reviewer": "Codex",
+  "context": "new independent project reviewer; automatic PACE boot/project memory exposure disclosed, not full isolation",
+  "stages": "phase1 user purpose/observable results then phase2 project contracts/whole diff/security",
+  "head": "7b3a926861916b2899e29b9898ed1b2dbf3a122f",
+  "scope": "Before main Vitest integration only",
+  "blocking": 0,
+  "should_fix": 2,
+  "handoff": 2,
+  "newTestExecutions": 0,
+  "records": [
+    {
+      "name": "phase-1.md",
+      "source": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-independent-review-4013317fbbd249818375990d2cbcd8bd\\phase-1.md",
+      "sha256": "8b3148d18b1b014aa04c428a54cba2ba1926c088db3cfec56b3fe3bc90277a51"
+    },
+    {
+      "name": "phase-2.md",
+      "source": "C:\\Users\\root-user\\AppData\\Local\\Temp\\pace-p004-independent-review-4013317fbbd249818375990d2cbcd8bd\\phase-2.md",
+      "sha256": "28cb88fda64b4cf216234052d247ce9a1f594f4e46034cfdc914e3e87d3810c3"
+    }
+  ]
+}

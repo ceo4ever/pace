@@ -1,0 +1,12 @@
+{
+  "head": "7b3a926861916b2899e29b9898ed1b2dbf3a122f",
+  "base": "35d0da642059f7a89215c605f282d307d0addf2e",
+  "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-project-security-input-SQOa4T\\full-project.diff",
+  "sha256": "4f5f9ed5a3357c3d23ae7819f65f070ca88c6edc26a38d52a42c5ff27d3cc917",
+  "byteLength": 39968553,
+  "scope": "Complete main...HEAD diff, including evidence and all project code.",
+  "limits": [
+    "Stored outside the repo because existing synthetic security fixtures can appear in diff context; no scan exclusions were added.",
+    "PROJECT-CLOSE and final head binding metadata remain uncommitted for project closing; runtime sources are committed and unchanged."
+  ]
+}

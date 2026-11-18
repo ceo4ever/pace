@@ -6,4 +6,4 @@ created: 2026-10-22
 updated: 2026-11-19
 ---
 
-P004 T01~T05 완료·최종독립reviewer/tester T1~3/P5/P6통과. 새전체3회996/987/0/9·중앙705472.9278ms(기준49.49%),609측정소스 동일성/정규화blob연결·오류/한계보존. T05마감커밋 및 프로젝트 전체diff 보안/독립목표대조·PROJECT-CLOSE 후 finish필수검사만 남음, 병합/설치/push미실행.
+P004 T05커밋7b3a926·609스냅숏 P1~6독립목표/보안 B0/SF2/handoff2 원문보존. main Vitest와충돌예상으로 finish/rebase/전체중지·실행소스609그대로. 최소통합안: Vitest file/unit→공유execute 이식·changed는전체전환, README2보완·통합610+/999+건에서 새P6세회필요. 계획/검증범위 main승인대기.
