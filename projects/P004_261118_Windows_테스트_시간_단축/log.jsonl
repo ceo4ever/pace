@@ -187,3 +187,5 @@
 {"ts":"2026-11-19T01:05:53.099Z","p":"P004","type":"review","by":"agent","msg":"reviewer pass: 동일독립openai 프로젝트/통합연속 P1~6·통합보안 blocking 0 should_fix 0,610/SHA/새1000범위와3회목표확인. 자동노출/시작전check0·읽기보정/부하/회수·실제Vitest한계유지·새실행없음.","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
 {"ts":"2026-11-19T01:05:53.632Z","p":"P004","type":"review","by":"agent","msg":"tester pass: 동일독립openai T05/통합연속 P6계약 blocking 0 should_fix 0,3회각1000/991/0/9·원값702115.5500999999/명시대체추가/skip확인. 610체크·tool9/0회startup분리,새블라인드/재실행으로표시않음.","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
 {"ts":"2026-11-19T01:05:54.167Z","p":"P004","type":"decision","by":"agent","msg":"통합최종양측목표/보안pass수락, 원문·해시/연속성/적용범위연결뒤마감메타commit. main35d0da6/610SHA확인후finish필수전체1회만수행·전후중복검사금지, 실패/새main변경시보고·성공후자체판단대조/worker_done·병합설치push금지.","src":"main 판단"}
+{"ts":"2026-11-19T01:18:59.148Z","p":"P004","type":"gate","by":"cli","msg":"finish","ok":true,"data":{"finish":1}}
+{"ts":"2026-11-19T01:18:59.148Z","p":"P004","type":"finish","by":"cli","msg":"finish","ok":true}
