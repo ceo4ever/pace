@@ -1,0 +1,68 @@
+[
+  {
+    "agent": "claude",
+    "mode": "p",
+    "readExact": true,
+    "initialShortPathReadFailed": true,
+    "longCanonicalPathUsed": true,
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read"
+    ],
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "rawPolicyErrors": null,
+    "initialReadonlySnapshot": {
+      "agent": "claude",
+      "code": 0,
+      "fixtureUnchanged": true,
+      "probeExists": false,
+      "shellProbeExists": false,
+      "outsideProbeExists": false,
+      "gitLocalChanged": false,
+      "rawAvailable": true
+    },
+    "moduleEvidence": {
+      "moduleHash": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75",
+      "source": "s0-installation.json",
+      "scope": "Initial CLI read-only requests checked this hash immediately before spawn; the Claude long-path retry reused the same installation, with matching hashes subsequently confirmed at operational apply and live chain run. No separate before-retry hash output was recorded."
+    }
+  },
+  {
+    "agent": "codex",
+    "mode": "p",
+    "readExact": true,
+    "initialShortPathReadFailed": false,
+    "longCanonicalPathUsed": false,
+    "tools": null,
+    "enforcement": "codex exec --sandbox read-only (Windows unelevated sandbox) + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "rawPolicyErrors": {
+      "sandboxReadOnly": true,
+      "unauthorizedAccess": true,
+      "gitDenied": true
+    },
+    "initialReadonlySnapshot": {
+      "agent": "codex",
+      "code": 0,
+      "fixtureUnchanged": true,
+      "probeExists": false,
+      "shellProbeExists": false,
+      "outsideProbeExists": false,
+      "gitLocalChanged": false,
+      "rawAvailable": true
+    },
+    "moduleEvidence": {
+      "moduleHash": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75",
+      "source": "s0-installation.json",
+      "scope": "Initial CLI read-only requests checked this hash immediately before spawn; the Claude long-path retry reused the same installation, with matching hashes subsequently confirmed at operational apply and live chain run. No separate before-retry hash output was recorded."
+    }
+  }
+]

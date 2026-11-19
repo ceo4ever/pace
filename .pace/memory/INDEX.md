@@ -76,6 +76,7 @@
 - [사람 확인 대기 완료 표시 명령](사람-확인-대기-완료-표시-명령.md) — pendingHumanChecks 대기 항목을 사람이 이미지 확인 뒤 확인 완료로 표시하는 명령을 둔다
 - [main 직접 프로젝트 착수 기록](main-직접-프로젝트-착수-기록.md) — main 직접 프로젝트도 start처럼 상태 진행·착수 결정 log.jsonl을 남기는 명령(start --main 등)을 둔다
 - [대시보드 local.js 복구 경합](대시보드-local-js-복구-경합.md) — ensureLocalLink 복구가 내용 확인 직후 교체된 파일을 덮을 수 있는 좁은 창 — local.js 쓰기를 refresh 잠금 안으로 옮기는 안 검토
+- [읽기 전용 실행기 버전 재검증](읽기-전용-실행기-버전-재검증.md) — CLI 버전이 바뀌면 읽기 전용 강제의 기존 실측 증거를 재검증하도록 개선한다
 - [문서 표 SECURITY 적용 범위 정렬](문서-표-security-적용-범위-정렬.md) — 정의서 문서 표의 docs/SECURITY.md 적용 범위를 민감 경로 표와 맞춘다(src/test-runner/·skills/pace-playbook-maker/tools/·src/project/situation.ts 누락)
 - [서브 문서 내부 구조 정리](서브-문서-내부-구조-정리.md) — 원문 그대로 옮긴 DAEMON.md(한 문단)·DASHBOARD.md(절 없음)·TESTING 검사 선택(한 문장)을 절로 나눠 찾기 쉽게 — 정의서 크기 여유 6%도 함께 본다
 - [정의서 측정 도구 제공](정의서-측정-도구-제공.md) — pace-project-init의 정의서 측정(크기·절·비고·미등록 폴더·문서·서브 문서)을 CLI나 스킬 도구로 제공 — 지금은 analysis.md에 재는 법만 있다

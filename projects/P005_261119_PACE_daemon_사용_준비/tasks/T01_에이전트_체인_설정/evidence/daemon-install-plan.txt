@@ -1,0 +1,8 @@
+플랫폼: win32
+파일 작성: %USERPROFILE%\.pace\daemon-launch.vbs
+로그온 때 실행하는 시작 항목 PACE Daemon 등록(현재 사용자, 콘솔 창 없음)
+  $ reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v "PACE Daemon" /t REG_SZ /d "wscript.exe //B //Nologo \"%USERPROFILE%\.pace\daemon-launch.vbs\"" /f
+관리자 권한은 필요 없다. 다음 로그온부터 콘솔 창 없이 실행된다.
+에이전트 체인(default)은 준비돼 있다.
+계획만 출력했다. 실제로 등록하려면 사람이 확인한 뒤 --yes를 붙인다.
+

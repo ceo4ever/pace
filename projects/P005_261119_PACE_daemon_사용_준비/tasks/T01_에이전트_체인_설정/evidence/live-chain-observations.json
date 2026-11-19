@@ -1,0 +1,47 @@
+{
+  "exit": 0,
+  "status": "ok",
+  "attempts": [
+    {
+      "step": 1,
+      "agent": "claude",
+      "mode": "p",
+      "model": null,
+      "effort_requested": null,
+      "effort_applied": null,
+      "outcome": "success",
+      "reason": null,
+      "detail": null,
+      "cooldown_until": null,
+      "raw_path": "<TEMP_RAW>",
+      "duration_ms": 7171
+    }
+  ],
+  "resultAgent": "claude",
+  "readExact": true,
+  "fixtureUnchanged": true,
+  "flags": [
+    {
+      "agent": "claude",
+      "mode": "p",
+      "readOnlyEnforced": true
+    },
+    {
+      "agent": "codex",
+      "mode": "p",
+      "readOnlyEnforced": true
+    },
+    {
+      "agent": "claude",
+      "mode": "acp",
+      "readOnlyEnforced": true
+    },
+    {
+      "agent": "codex",
+      "mode": "acp",
+      "readOnlyEnforced": false
+    }
+  ],
+  "moduleHash": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75",
+  "installPlanExit": 0
+}

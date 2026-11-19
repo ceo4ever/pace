@@ -1,0 +1,10 @@
+{
+  "agent": "claude",
+  "code": 0,
+  "timedOut": false,
+  "fixtureChanged": true,
+  "probeExists": true,
+  "shellProbeExists": true,
+  "outsideProbeExists": false,
+  "gitGlobalInjected": true
+}

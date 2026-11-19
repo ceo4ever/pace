@@ -1,0 +1,39 @@
+{
+  "profile": "default",
+  "target": "%USERPROFILE%/.pace/profiles/default/agent-chains.json",
+  "moduleHash": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75",
+  "defaultProfileConfirmed": true,
+  "beforeExisted": false,
+  "beforeHash": null,
+  "afterHash": "5471ac3fd477549d2155257f57962f900ccb07e58b3743812bc0d9f2a3477411",
+  "otherSettingsPreserved": true,
+  "steps": [
+    {
+      "agent": "claude",
+      "mode": "p"
+    },
+    {
+      "agent": "codex",
+      "mode": "p"
+    }
+  ],
+  "setupExit": 0,
+  "adapterInstalledByThisTask": false,
+  "loginInvoked": false,
+  "statuses": [
+    {
+      "agent": "claude",
+      "installed": true,
+      "loggedIn": true,
+      "version": "2.1.328 (Claude Code)",
+      "adapterUsable": false
+    },
+    {
+      "agent": "codex",
+      "installed": true,
+      "loggedIn": true,
+      "version": "codex-cli 0.170.0",
+      "adapterUsable": false
+    }
+  ]
+}
