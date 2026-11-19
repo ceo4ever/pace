@@ -189,3 +189,4 @@
 {"ts":"2026-11-19T01:05:54.167Z","p":"P004","type":"decision","by":"agent","msg":"통합최종양측목표/보안pass수락, 원문·해시/연속성/적용범위연결뒤마감메타commit. main35d0da6/610SHA확인후finish필수전체1회만수행·전후중복검사금지, 실패/새main변경시보고·성공후자체판단대조/worker_done·병합설치push금지.","src":"main 판단"}
 {"ts":"2026-11-19T01:18:59.148Z","p":"P004","type":"gate","by":"cli","msg":"finish","ok":true,"data":{"finish":1}}
 {"ts":"2026-11-19T01:18:59.148Z","p":"P004","type":"finish","by":"cli","msg":"finish","ok":true}
+{"ts":"2026-11-19T01:41:24.994Z","p":"P004","type":"merge","by":"cli","msg":"merge: 사용자 승인","ok":true,"data":{"approved":1,"commits":9}}

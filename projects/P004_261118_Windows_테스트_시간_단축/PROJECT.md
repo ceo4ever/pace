@@ -1,6 +1,6 @@
 # P004 Windows 테스트 시간 단축
 
-- 상태: 병합 대기
+- 상태: 완료
 - 규모: L(태스크 5개)
 - 출처: [BL261118_01_Windows_테스트_시간_단축](../../backlogs/BL261118_01_Windows_테스트_시간_단축/BACKLOG.md)
 - 브랜치: `project/P004` · worktree: `../pace.wt/P004/`
