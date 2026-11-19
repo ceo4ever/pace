@@ -185,6 +185,36 @@ test("changed distinguishes no changes, unborn, outside Git, missing Git and dam
   assert.equal(damaged.run().status, 3); assert.deepEqual(damaged.events(), []);
 });
 
+test("changed Vitest uses the full command before checks and preserves 0/1/3 while file-unit stays supported", () => {
+  for (const configured of [false, true]) {
+    const f = fixture(), originalSource = readFileSync(join(f.root, "src/a.ts"), "utf8"), declaration = readFileSync(join(f.root, "docs/README.md"), "utf8");
+    f.map.units[0]!.runner.kind = "vitest";
+    if (configured) { f.write("vitest.config.mjs", "export default {};\n"); Object.assign(f.map.units[0]!.runner, { config: "vitest.config.mjs" }); }
+    f.write("node_modules/vitest/package.json", JSON.stringify({ name: "vitest", bin: { vitest: "vitest.cjs" } }));
+    f.write("node_modules/vitest/vitest.cjs", f.mark("vitest") + String.raw`
+const args = process.argv.slice(2), ci = args.indexOf('--config');
+const files = args.filter((a, i) => i > 0 && !a.startsWith('--') && (ci < 0 || i !== ci + 1));
+const out = args.find(a => a.startsWith('--outputFile=')).slice('--outputFile='.length);
+require('node:fs').writeFileSync(out, JSON.stringify({success:true,numTotalTests:files.length,numPendingTests:0,numFailedTests:0,numFailedTestSuites:0,numTodoTests:0,testResults:files.map(f=>({name:require('node:path').resolve(f),status:'passed',assertionResults:[]}))}));
+`);
+    f.commit();
+    const unit = f.run(["test", "unit", "a"]); assert.equal(unit.status, 0, unit.stdout + unit.stderr); assert.deepEqual(f.events(), ["vitest"]);
+    for (const status of [0, 1, 3]) {
+      if (status !== 0) {
+        f.write("src/a.ts", originalSource);
+        f.write("full.cjs", f.mark("full") + (status === 1 ? "process.exitCode=7;\n" : ""));
+        f.write("docs/README.md", status === 3 ? "# no declaration\n" : declaration);
+        f.commit();
+      }
+      writeFileSync(f.trace, ""); f.write("src/a.ts", originalSource + "\n// changed\n");
+      const result = f.run(); assert.equal(result.status, status, result.stdout + result.stderr);
+      assert.deepEqual(f.events(), status === 3 ? [] : ["full"]);
+      assert.equal((result.stdout.match(/전체 검사 전환:/g) ?? []).length, 1, result.stdout);
+      assert.doesNotMatch(result.stdout, /사전 검사 ·|단위 a:/);
+    }
+  }
+});
+
 test("changed missing or unsupported map/checks falls back and full absence/failure remains distinct", () => {
   for (const kind of ["checks-missing", "checks-empty", "runner", "config", "requires"]) {
     const f = fixture();

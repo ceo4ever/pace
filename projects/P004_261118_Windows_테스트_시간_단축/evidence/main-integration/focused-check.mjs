@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {parseText} from '../../measurement-data.ts';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../..'),out=path.join(here,'focused-'+new Date().toISOString().replace(/[:.]/g,'-'));fs.mkdirSync(out);
+const temp=fs.mkdtempSync(path.join(os.tmpdir(),'pace-p004-integrated-focused-')),argv=['--test','--test-concurrency=2','test/test-runner.test.ts','test/changed-test.test.ts'],log=path.join(out,'run.log');fs.writeFileSync(log,'');
+const env={...process.env,TMP:temp,TEMP:temp,TMPDIR:temp,PACE_HOME:path.join(temp,'pace')};delete env.NODE_TEST_CONTEXT;
+const begin=performance.now();const state=await new Promise((resolve,reject)=>{const child=spawn(process.execPath,argv,{cwd:root,env,windowsHide:true,stdio:['ignore','pipe','pipe']});child.once('error',reject);for(const pipe of [child.stdout,child.stderr])pipe.on('data',chunk=>fs.appendFileSync(log,chunk));child.once('close',(status,signal)=>resolve({status,signal}));});
+const raw=fs.readFileSync(log,'utf8'),parsed=parseText(raw),sha=b=>createHash('sha256').update(b).digest('hex');
+fs.writeFileSync(path.join(out,'result.json'),JSON.stringify({argv,temp,...state,elapsedMs:performance.now()-begin,parsed,logSha256:sha(raw),sources:['src/test-runner/execute.ts','src/test-runner/runner.ts','src/test-runner/changed.ts','src/test-runner/vitest-driver.mjs','test/test-runner.test.ts','test/changed-test.test.ts'].map(file=>({file,sha256:sha(fs.readFileSync(path.join(root,file)))})),limits:['Focused integration checks only; not a P6 timing sample.','Typecheck already completed with status0 in the preceding console invocation; it is not repeated just to collect output.']},null,2)+'\n');
+console.log(JSON.stringify({out,...state,totals:parsed.totals,complete:parsed.complete}));assert.equal(state.status,0);assert.equal(state.signal,null);assert.equal(parsed.complete,true);assert.equal(parsed.totals.tests,40);assert.equal(parsed.totals.pass,40);assert.equal(parsed.totals.fail,0);assert.equal(parsed.totals.cancelled,0);assert.equal(parsed.totals.skipped,0);

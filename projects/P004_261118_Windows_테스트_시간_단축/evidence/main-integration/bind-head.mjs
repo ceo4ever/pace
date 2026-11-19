@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../..'),input=JSON.parse(fs.readFileSync(path.join(here,'preflight-source.json'),'utf8'));
+const git=(args,stdin)=>{const r=spawnSync('git',args,{cwd:root,input:stdin,encoding:'utf8',maxBuffer:16*1024*1024});assert.equal(r.status,0,r.stderr);return r.stdout.trimEnd();};
+assert.equal(input.files.length,610);for(const f of input.files)assert.equal(createHash('sha256').update(fs.readFileSync(path.join(root,f.file))).digest('hex'),f.sha256,f.file);
+const objects=git(['cat-file','--batch-check=%(objectname)'],input.files.map(f=>'HEAD:'+f.file).join('\n')+'\n').split(/\r?\n/);assert.equal(objects.length,610);assert.equal(objects.every((id,i)=>id===input.files[i].gitNormalizedBlobId),true);
+const result={verified:true,head:git(['rev-parse','HEAD']),runtimeFiles:610,workingBytesMatchFocusedAndPreflight:true,committedNormalizedBlobsMatch:true};
+if(process.argv[2]!=='print'){const out=path.join(here,'integrated-source-head.json');assert.equal(fs.existsSync(out),false);fs.writeFileSync(out,JSON.stringify(result,null,2)+'\n');}console.log(JSON.stringify(result));

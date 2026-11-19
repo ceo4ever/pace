@@ -1,0 +1,27 @@
+{
+  "main": "35d0da6",
+  "recoveryRef": "p004-before-main-integration-20261119",
+  "conflicts": [
+    "backlogs/dashboard/data.js"
+  ],
+  "records": [
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 1,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-Z9mxHT\\1-backlogs__dashboard__data.js",
+      "sha256": "623a69bb41da9c41639853a7f1e0be1319fe7220099f4d51203ab7051dc6d342"
+    },
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 2,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-Z9mxHT\\2-backlogs__dashboard__data.js",
+      "sha256": "bc0734ea9a24d41dbd971b5e46ce2bc0fda9655a5c0d13af110053cdd93d1ba8"
+    },
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 3,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-Z9mxHT\\3-backlogs__dashboard__data.js",
+      "sha256": "d19ecc079ac25b42bd8971673aa00253789d97b94fe760fd267fc89cdf97251f"
+    }
+  ]
+}

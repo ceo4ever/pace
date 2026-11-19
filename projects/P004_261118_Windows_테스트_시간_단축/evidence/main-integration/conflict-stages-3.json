@@ -1,0 +1,46 @@
+{
+  "main": "35d0da6",
+  "recoveryRef": "p004-before-main-integration-20261119",
+  "conflicts": [
+    ".pace/brain/log.md",
+    "backlogs/dashboard/data.js"
+  ],
+  "records": [
+    {
+      "file": ".pace/brain/log.md",
+      "stage": 1,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-eyDRTe\\1-.pace__brain__log.md",
+      "sha256": "80f2519746061ae19e6ef248ffc967c0e6c593ab3cb8e641e5d69f826d734933"
+    },
+    {
+      "file": ".pace/brain/log.md",
+      "stage": 2,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-eyDRTe\\2-.pace__brain__log.md",
+      "sha256": "34089eb9f1324123d119e5edb43dd5192ab6c249b04e55e57226a9bda7ce2128"
+    },
+    {
+      "file": ".pace/brain/log.md",
+      "stage": 3,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-eyDRTe\\3-.pace__brain__log.md",
+      "sha256": "d1fc5a681bd6ac5eecbebbdc22a801dfb6301aaf8416f3dec794cdf464f0d9f0"
+    },
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 1,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-eyDRTe\\1-backlogs__dashboard__data.js",
+      "sha256": "d19ecc079ac25b42bd8971673aa00253789d97b94fe760fd267fc89cdf97251f"
+    },
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 2,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-eyDRTe\\2-backlogs__dashboard__data.js",
+      "sha256": "99471908d379f6703d8b680347061ce1be4a823b4668769dd0d96c7608b5c16f"
+    },
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 3,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-eyDRTe\\3-backlogs__dashboard__data.js",
+      "sha256": "162d8fc4b5be054ee24f3d15f3dbd6f392728cc33d752bd916bf10b219bc13e9"
+    }
+  ]
+}

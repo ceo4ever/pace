@@ -1,0 +1,48 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'../../../..'),project=path.resolve(here,'../..'),tasks=path.join(project,'tasks');
+const task=n=>path.join(tasks,fs.readdirSync(tasks).find(x=>x.startsWith(n+'_'))),t01=task('T01'),t03=task('T03'),t04=task('T04'),t05=task('T05');
+const {readRuns,counters,skipReasons,median}=await import(pathToFileURL(path.join(t03,'observations.ts')).href);
+const sha=b=>createHash('sha256').update(b).digest('hex'),json=f=>JSON.parse(fs.readFileSync(f,'utf8')),git=(argv,input)=>{const r=spawnSync('git',argv,{cwd:root,input,encoding:'utf8',windowsHide:true,maxBuffer:32*1024*1024});assert.equal(r.status,0,r.stderr);return r.stdout.trimEnd();};
+const inputFile=path.join(here,'preflight-source.json'),mode=process.argv[2];assert.ok(['prepare','progress','verify'].includes(mode));
+function runtime(){const files=[];const walk=f=>{const st=fs.lstatSync(f);assert.equal(st.isSymbolicLink(),false);if(st.isDirectory())for(const name of fs.readdirSync(f))walk(path.join(f,name));else files.push({file:path.relative(root,f).replaceAll('\\','/'),sha256:sha(fs.readFileSync(f))});};for(const part of ['bin','src','scripts','test','templates','skills','docs','package.json','package-lock.json','tsconfig.json','README.md','AGENTS.md','.pace/test-map.json'])walk(path.join(root,part));return files.sort((a,b)=>a.file.localeCompare(b.file));}
+if(mode==='prepare'){
+ assert.equal(fs.existsSync(inputFile),false);
+ assert.equal(git(['rev-parse','main']),'35d0da642059f7a89215c605f282d307d0addf2e');git(['merge-base','--is-ancestor','main','HEAD']);
+ const files=runtime();assert.equal(files.length,610);
+ const normalized=git(['hash-object','--stdin-paths'],files.map(x=>x.file).join('\n')+'\n').split(/\r?\n/);assert.equal(normalized.length,610);
+ const records=files.map((f,i)=>({...f,gitNormalizedBlobId:normalized[i]})),old=json(path.join(t05,'evidence/closing-source-worktree.json')).records;
+ const semanticChanges=[],lineEndingOnly=[],lineEndingProvenance=[];
+ const priorCopy=path.dirname(path.dirname(json(path.join(t05,'evidence/wrapper-validation/records.json'))[0].sourceReference.rawPath));
+ for(const before of old){const now=records.find(x=>x.file===before.file);assert.ok(now);if(now.gitNormalizedBlobId!==before.gitNormalizedBlobId)semanticChanges.push(now.file);else if(now.sha256!==before.sha256){
+  const bytes=fs.readFileSync(path.join(root,now.file),'utf8'),priorPath=path.join(priorCopy,now.file),prior=fs.readFileSync(priorPath,'utf8');assert.equal(sha(prior),before.sha256,now.file);assert.equal(bytes.replace(/\r\n/g,'\n'),prior.replace(/\r\n/g,'\n'),now.file);
+  lineEndingOnly.push(now.file);lineEndingProvenance.push({file:now.file,priorPath,priorSha256:before.sha256,priorNewlineForms:[...prior.matchAll(/\r?\n/g)].map(m=>m[0]==='\r\n'?'1':'0').join(''),meaning:'1=CRLF,0=LF; preserves mixed historical forms rather than assuming uniform LF/CRLF'});
+ }}
+ const expectedSemantic=['README.md','docs/README.md','skills/pace-project-init/references/test-map.md','src/test-runner/execute.ts','test/changed-test.test.ts','test/test-runner.test.ts'];assert.deepEqual(semanticChanges.sort(),expectedSemantic.sort());
+ const added=records.filter(x=>!old.some(y=>y.file===x.file));assert.deepEqual(added.map(x=>x.file),['src/test-runner/vitest-driver.mjs']);
+ for(const f of ['src/test-runner/vitest-driver.mjs','test/test-runner.test.ts'])assert.equal(records.find(x=>x.file===f).gitNormalizedBlobId,git(['rev-parse','main:'+f]));
+ const names=s=>[...s.matchAll(/^test\("([^"]+)"/gm)].map(m=>m[1]),read=f=>fs.readFileSync(path.join(root,f),'utf8'),oldRunner=names(git(['show','p004-before-main-integration-20261119:test/test-runner.test.ts'])),newRunner=names(read('test/test-runner.test.ts'));
+ const from=oldRunner.find(x=>x.startsWith('T02 ')&&x.includes('Vitest')),to=newRunner.find(x=>x.startsWith('T02 ')&&x.includes('vitest'));assert.ok(from&&to);assert.equal(newRunner.length-oldRunner.length,3);
+ const oldChanged=git(['show','p004-before-main-integration-20261119:test/changed-test.test.ts']),currentChanged=read('test/changed-test.test.ts'),newNames=names(currentChanged).filter(x=>!names(oldChanged).includes(x));assert.equal(newNames.length,1);
+ const flat=s=>s.replace(/\r\n/g,'\n'),currentFlat=flat(currentChanged),start=currentFlat.indexOf('test('+JSON.stringify(newNames[0])),end=currentFlat.indexOf('\ntest(',start+1);assert.ok(start>0&&end>start);assert.equal(currentFlat.slice(0,start)+currentFlat.slice(end+1),flat(oldChanged)+'\n');
+ const oldBinding=json(path.join(t05,'evidence/wrapper-final-binding.json'));assert.equal(oldBinding.rawLogs.every(x=>sha(fs.readFileSync(x.file))===x.sha256),true);const oldRuns=readRuns(oldBinding.folder);assert.equal(oldRuns.length,3);
+ const addedNames=[...newRunner.filter(x=>x!==to&&!oldRunner.includes(x)),...newNames];assert.equal(addedNames.length,4);
+ const expected=oldRuns[0].run.inventory.map(x=>({name:x.name===from?to:x.name,result:x.result}));assert.equal(expected.filter(x=>x.name===to).length,1);expected.push(...addedNames.map(name=>({name,result:'pass'})));assert.equal(expected.length,1000);
+ const focusedDir=fs.readdirSync(here).find(n=>n.startsWith('focused-')),focused=json(path.join(here,focusedDir,'result.json'));assert.equal(focused.status,0);assert.equal(focused.parsed.totals.tests,40);assert.equal(focused.parsed.totals.pass,40);for(const f of focused.sources)assert.equal(records.find(x=>x.file===f.file).sha256,f.sha256);
+ const input={prepared:new Date().toISOString(),head:git(['rev-parse','HEAD']),main:git(['rev-parse','main']),recoveryRef:'p004-before-main-integration-20261119',files:records,semanticChanges,lineEndingOnly,lineEndingProvenance,addedFiles:added.map(x=>x.file),mainDriverAndTestExact:true,originalP6Folder:oldBinding.folder,originalSkipReasons:skipReasons(oldRuns[0].raw),allowedRename:{from,to},addedCaseNames:addedNames,expectedCounters:[...counters(expected)],expectedTotals:{tests:1000,pass:991,fail:0,cancelled:0,skipped:9,todo:0},focused:{folder:focusedDir,status:0,tests:40,pass:40,elapsedMs:focused.elapsedMs},limitations:['Only the explicit upstream name change is allowed; prior P004 cases and skip reasons are preserved.','Rebase checkout changed seven unchanged file byte line endings; Git-normalized content remains identical.','The integration sentinel mocks a local Vitest executable, not the complete real Vitest engine.']};
+ fs.writeFileSync(inputFile,JSON.stringify(input,null,2)+'\n');console.log(JSON.stringify({prepared:true,files:files.length,semanticChanges,lineEndingOnly,addedCases:addedNames.length,expectedTotals:input.expectedTotals}));
+}else{
+ const input=json(inputFile),current=runtime();assert.equal(current.length,input.files.length);for(const f of current)assert.equal(f.sha256,input.files.find(x=>x.file===f.file)?.sha256,f.file);
+ const folder=path.resolve(process.argv[3]),runs=readRuns(folder),results=json(path.join(folder,'results.json')),environment=json(path.join(folder,'environment.json'));
+ if(mode==='verify'){assert.equal(runs.length,3);const summary=json(path.join(folder,'summary.json'));assert.equal(summary.valid,true);assert.equal(summary.runs,3);assert.equal(summary.medianMs,median(results.map(x=>x.elapsedMs)));}else assert.ok(runs.length>=1&&runs.length<=3);
+ for(const f of environment.testSources)assert.equal(f.sha256,input.files.find(x=>x.file===f.file)?.sha256,f.file);assert.equal(environment.helpersSha256,input.files.find(x=>x.file==='test/helpers.ts').sha256);assert.equal(environment.runnerSha256,input.files.find(x=>x.file==='scripts/test.ts').sha256);
+ const comparisons=runs.map(({run,raw},i)=>{for(const [k,v]of Object.entries(input.expectedTotals))assert.equal(run.totals[k],v,k);assert.deepEqual([...counters(run.inventory)],input.expectedCounters);assert.deepEqual(skipReasons(raw),input.originalSkipReasons);return{run:i+1,elapsedMs:run.elapsedMs,totals:run.totals,inventoryAndSkipReasonsMatch:true,log:run.log,logSha256:sha(fs.readFileSync(run.log))};});
+ const baselineDir=path.join(t01,'evidence/baseline-2026-11-18T08-56-17-364Z'),baseline=json(path.join(baselineDir,'summary.json')),baselineRuns=readRuns(baselineDir);assert.equal(baseline.valid,true);assert.equal(baselineRuns.length,3);assert.equal(baseline.medianMs,median(baselineRuns.map(x=>x.run.elapsedMs)));
+ const report={verified:true,mode,inputSha256:sha(fs.readFileSync(inputFile)),runtime610Matches:true,head:git(['rev-parse','HEAD']),comparisons,baseline:{file:path.join(baselineDir,'summary.json'),rawMedianMs:baseline.medianMs},medianMs:median(results.map(x=>x.elapsedMs))};
+ if(mode==='verify'){const freeze=json(path.join(t04,'evidence/runtime-t05-integrated-comparison.json'));assert.equal(freeze.verified,true);assert.equal(freeze.fileCount,610);report.freezeVerified=true;report.goalMet=report.medianMs*2<=baseline.medianMs;report.percentOfBaseline=report.medianMs/baseline.medianMs*100;}
+ const output=path.join(here,mode==='verify'?'integrated-final-verification.json':'integrated-progress-'+runs.length+'.json');assert.equal(fs.existsSync(output),false);fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({verified:true,mode,runs:runs.length,medianMs:report.medianMs,goalMet:report.goalMet,percentOfBaseline:report.percentOfBaseline}));if(mode==='verify'&&!report.goalMet)process.exitCode=1;
+}

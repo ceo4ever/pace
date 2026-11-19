@@ -1,0 +1,268 @@
+{
+  "argv": [
+    "--test",
+    "--test-concurrency=2",
+    "test/test-runner.test.ts",
+    "test/changed-test.test.ts"
+  ],
+  "temp": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-integrated-focused-ElOjaN",
+  "status": 0,
+  "signal": null,
+  "elapsedMs": 128610.5565,
+  "parsed": {
+    "totals": {
+      "tests": 40,
+      "suites": 0,
+      "pass": 40,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0,
+      "duration_ms": 128534.3622
+    },
+    "inventory": [
+      {
+        "name": "changed CLI uses the installed app and the external repository map",
+        "result": "pass",
+        "durationMs": 2231.5843
+      },
+      {
+        "name": "changed includes staged, unstaged and nested untracked files once per unit",
+        "result": "pass",
+        "durationMs": 2234.3748
+      },
+      {
+        "name": "changed runs every related unit and preserves a related failure over a successful full command",
+        "result": "pass",
+        "durationMs": 2199.5271
+      },
+      {
+        "name": "changed test files select the entire unit with overlapping test globs deduplicated",
+        "result": "pass",
+        "durationMs": 2175.5318
+      },
+      {
+        "name": "changed stops remaining files inside the same unit after an actual failure",
+        "result": "pass",
+        "durationMs": 2047.3329
+      },
+      {
+        "name": "changed common, unknown, deleted, renamed and control paths execute the committed full declaration",
+        "result": "pass",
+        "durationMs": 12208.2445
+      },
+      {
+        "name": "changed conflict, executable mode and gitlink states cannot become a partial success",
+        "result": "pass",
+        "durationMs": 6303.6225
+      },
+      {
+        "name": "changed preserves staged deletion when the same working path remains untracked",
+        "result": "pass",
+        "durationMs": 2030.9391
+      },
+      {
+        "name": "changed treats assume-unchanged and skip-worktree as uncertain without mutating flags",
+        "result": "pass",
+        "durationMs": 5453.0163
+      },
+      {
+        "name": "changed sparse checkout and sparse-index policies execute full without rewriting the index",
+        "result": "pass",
+        "durationMs": 5410.4153
+      },
+      {
+        "name": "changed converts a post-check selected-path exception to unavailable without a success retry",
+        "result": "pass",
+        "durationMs": 1851.1019
+      },
+      {
+        "name": "changed supports master and HEAD fallbacks while legacy all keeps its main boundary",
+        "result": "pass",
+        "durationMs": 5655.4284
+      },
+      {
+        "name": "changed never adopts committed feature-branch checks over the selected main map",
+        "result": "pass",
+        "durationMs": 2222.3024
+      },
+      {
+        "name": "changed distinguishes no changes, unborn, outside Git, missing Git and damaged refs",
+        "result": "pass",
+        "durationMs": 4940.984
+      },
+      {
+        "name": "changed Vitest uses the full command before checks and preserves 0/1/3 while file-unit stays supported",
+        "result": "pass",
+        "durationMs": 12303.1485
+      },
+      {
+        "name": "changed missing or unsupported map/checks falls back and full absence/failure remains distinct",
+        "result": "pass",
+        "durationMs": 18766.0034
+      },
+      {
+        "name": "changed shell checks use the declared cwd and Git sh syntax and stop on failure",
+        "result": "pass",
+        "durationMs": 3853.0495
+      },
+      {
+        "name": "changed rejects escaping cwd/tests and handles special paths without shell interpolation",
+        "result": "pass",
+        "durationMs": 8267.5887
+      },
+      {
+        "name": "changed Windows matching is conservative across case while POSIX stays case sensitive",
+        "result": "pass",
+        "durationMs": 1970.3506
+      },
+      {
+        "name": "changed does not read an escaping working definition during full fallback",
+        "result": "pass",
+        "durationMs": 1451.3204
+      },
+      {
+        "name": "changed empty/all-skip tests fail and unknown Python results trigger the actual full check",
+        "result": "pass",
+        "durationMs": 7710.101
+      },
+      {
+        "name": "Windows changed missing Python start falls back while legacy unit keeps its failure",
+        "result": "pass",
+        "durationMs": 2855.4651
+      },
+      {
+        "name": "shell execution state distinguishes real timeout/overflow and missing executables",
+        "result": "pass",
+        "durationMs": 792.8425
+      },
+      {
+        "name": "changed check timeout and parent OS termination never continue into tests or full fallback",
+        "result": "pass",
+        "durationMs": 4368.6906
+      },
+      {
+        "name": "installed Windows entry and copied real Node/Python drivers execute outside the checkout",
+        "result": "pass",
+        "durationMs": 5230.696
+      },
+      {
+        "name": "the user README map example runs unchanged through the installed CLI",
+        "result": "pass",
+        "durationMs": 2672.1318
+      },
+      {
+        "name": "실제 Node·Python 테스트의 성공, 빈 파일, 전체 skip 및 실패를 구분한다",
+        "result": "pass",
+        "durationMs": 2896.4042
+      },
+      {
+        "name": "공통·미분류·전제와 잘못된 패턴 및 외부 경로를 오인하지 않는다",
+        "result": "pass",
+        "durationMs": 2023.6323
+      },
+      {
+        "name": "전체 검사는 base 선언을 사용하고 CLI는 결과를 전달한다",
+        "result": "pass",
+        "durationMs": 1842.9338
+      },
+      {
+        "name": "미지원 구성과 여러 소속의 실패 우선 및 테스트·소스 겹침을 구분한다",
+        "result": "pass",
+        "durationMs": 2164.4431
+      },
+      {
+        "name": "실제 외부 파일과 밖을 가리키는 구성 경로는 실경로에서 거부한다",
+        "result": "pass",
+        "durationMs": 815.2693
+      },
+      {
+        "name": "Python 0건과 실패, Node 시그널 및 타임아웃은 실패한다",
+        "result": "pass",
+        "durationMs": 1374.623
+      },
+      {
+        "name": "전체 검사 선언 부재와 base 조회 실패는 작업본 선언으로 성공하지 않는다",
+        "result": "pass",
+        "durationMs": 1650.4858
+      },
+      {
+        "name": "T02 다중 패키지 시범 구성은 스키마로 읽고 로컬 vitest가 없으면 확인 불가로 처리한다",
+        "result": "pass",
+        "durationMs": 885.5717
+      },
+      {
+        "name": "외부 SIGTERM으로 중단해도 선택 테스트 자식이 남지 않는다",
+        "result": "pass",
+        "durationMs": 0.3236
+      },
+      {
+        "name": "공통은 등록된 단위보다 우선하고 파일 선택은 지정된 테스트만 실행하며 실행 정보가 나온다",
+        "result": "pass",
+        "durationMs": 1437.8538
+      },
+      {
+        "name": "미지원 러너 설정과 결과를 읽지 못하는 실행은 확인 불가다",
+        "result": "pass",
+        "durationMs": 572.0903
+      },
+      {
+        "name": "vitest: 단위의 파일을 한 번에 로컬 vitest로 돌리고 설정 파일을 넘긴다",
+        "result": "pass",
+        "durationMs": 1041.8938
+      },
+      {
+        "name": "vitest: 실패·전체 skip·0건·보고서에 빠진 파일은 실패, 보고서 없음·vitest 없음은 확인 불가",
+        "result": "pass",
+        "durationMs": 3536.303
+      },
+      {
+        "name": "설정 파일은 vitest만 받고 다른 러너는 확인 불가로 둔다",
+        "result": "pass",
+        "durationMs": 559.9546
+      }
+    ],
+    "complete": true,
+    "problems": [],
+    "observed": {
+      "tests": 40,
+      "suites": 0,
+      "pass": 40,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "logSha256": "173c3fec56b73023df2c7875c633318088e687811c9d0f33e4d95087989c0eb1",
+  "sources": [
+    {
+      "file": "src/test-runner/execute.ts",
+      "sha256": "a9930d30f6180c33e8a488b47cfb07eb5a35181e88422b88db0b7bde17dd6526"
+    },
+    {
+      "file": "src/test-runner/runner.ts",
+      "sha256": "ed50b6167953bdaefefc933145c869ad70d2584a0c2342c54af728394f0305d7"
+    },
+    {
+      "file": "src/test-runner/changed.ts",
+      "sha256": "055a03cb592a4b69ffb461ef2f3b679c2e5e0624bb3ad41f6c95d4a0044ae221"
+    },
+    {
+      "file": "src/test-runner/vitest-driver.mjs",
+      "sha256": "8179d5486f17102531a2602be9995ab5617b382c041ae0f5dd64ee0fa8d81e82"
+    },
+    {
+      "file": "test/test-runner.test.ts",
+      "sha256": "853a0ed403170a5ad157dc4f31e80835f0e48d1716b5df61ea60a362881c74cb"
+    },
+    {
+      "file": "test/changed-test.test.ts",
+      "sha256": "63dbbe2ed9b8bbc4f7fa128aba654e0cebfb3449f973e88fa2e95ba779074128"
+    }
+  ],
+  "limits": [
+    "Focused integration checks only; not a P6 timing sample.",
+    "Typecheck already completed with status0 in the preceding console invocation; it is not repeated just to collect output."
+  ]
+}

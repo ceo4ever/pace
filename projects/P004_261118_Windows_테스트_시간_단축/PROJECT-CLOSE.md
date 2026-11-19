@@ -10,7 +10,7 @@ HEAD7b3a926의통합 전 측정 스냅숏에서는 프로젝트 계약 목표를
 
 태스크별 독립1·2단계와 최종 T05의 reviewer/tester 판정은 각각 마감 문서와 원문에 연결했다. 초기 단계 판단 이후 실패·새 근거를 공개하고 같은 검토자가 재판정한 연속성을 유지했다. 최종 T05 검토는 새 블라인드 검토라고 표시하지 않는다. 새 독립 openai 프로젝트 reviewer의1단계 사용자 목표/결과 관측과2단계 계약/보안 대조도7b3a926의P-1~6을 충족으로 판정했다. [원문](evidence/independent-project-review/phase-1.md)과[계약 대조](evidence/independent-project-review/phase-2.md)에 자동 PACE 부트/메모리 노출·읽기 범위·재실행 없음과 한계를 보존했다.
 
-현재 main35d0da6에는 Vitest file/unit 지원이 있고 merge-base는e27ef7c다. runner·문서·브레인 로그·생성 대시보드의 통합 충돌이 사전 확인됐다. 실제 rebase는 시작하지 않았다. 위609개/996건 측정은 통합 전 결과이며 통합한 실행 소스의 P-6을 대표하지 않는다. 통합 목표/판정은 재검증 전 미확인으로 두고 finish도 대기한다. 최소 통합안과 검증 범위는 [별도 계획](evidence/main-vitest-integration-plan.md)에 정리했다.
+main35d0da6의 Vitest file/unit 지원을 보존하도록 승인된 다섯 경로의 충돌을 처리하고 rebase했다. 복구점과 양쪽 원문·최소 통합/집중 검증은 [통합 결과](evidence/main-integration/implementation-results.md)에 정리했다.610개 소스와 신규 sentinel을 포함한 실제40건 runner 검증이 통과했으며 기대 전체는1000/991통과/기존skip9다. 위609개/996건 측정은 통합 전 결과이며 통합한 실행 소스의 P-6을 대표하지 않는다. 통합 후 목표/판정은 독립 읽기 검토와 새 전체3회 전 미확인으로 두고 finish도 대기한다. 기존 T01~T05/BR 완료는 되열지 않고 마감 전 호환성 통합으로 기록한다.
 
 한계는 동일 Windows PC의 관측이라는 점이다. 다른 장비/OS의 일반 속도, Windows 임의 자손 완전 회수, 과거 stale-lock/healer/Git Bash 표기 실패의 정확한 원인은 미확인이다. 일반적인 개발 생산성 증가를 직접 측정한 것은 아니며 필수 계약 목표를 그 효과로 대체하지 않는다.
 
@@ -37,7 +37,7 @@ HEAD7b3a926의통합 전 측정 스냅숏에서는 프로젝트 계약 목표를
 
 기계 검사 `node scripts/secret-scan.ts`는 태스크 마감 때2526개 파일 통과였고 `pace brain lint`는 오류0/경고0이다. 설치 스크립트·패키지 잠금·의존성은 변경하지 않았다. fixture에 원래 들어 있던 가짜 비밀의 소스 복사9개는 보안 정책을 바꾸지 않고 소유 원문/SHA 참조로 보존했다. 측정 원문/기록은 덮어쓰지 않았다. 판독기2개 오류와 재실행 없는 읽기 정정, 불필요한 preload 진단 오류·순서 실수도 구별해 보존했다.
 
-새 독립 openai reviewer가 전체39,968,553바이트 diff/SHA와1548경로 구조·제품/민감 변경을 대조했다. 통합 전 스냅숏 blocking0·should_fix2·handoff2다. [원문](evidence/independent-project-review/phase-2.md)과[출처/연속성](evidence/independent-project-review/provenance.json)에 연결했다. should_fix는 README의 기준 전체 선언 우선/실제 부재만 작업본 사용/조회오류 대체금지와 사전 검사 뒤 예상 밖 예외의 재실행 없는3 종료 설명이다. 구현은 계약과 일치하며 문서 보완은 통합안에 포함했다. handoff는 Windows 임의 자손 회수 및 로컬 경로 메타데이터의 외부 공개 경계다. 원시 기록은 수정하지 않는다. 이 보안 판정도 main Vitest 합성 이후의 코드 검토를 대체하지 않는다.
+새 독립 openai reviewer가 전체39,968,553바이트 diff/SHA와1548경로 구조·제품/민감 변경을 대조했다. 통합 전 스냅숏 blocking0·should_fix2·handoff2다. [원문](evidence/independent-project-review/phase-2.md)과[출처/연속성](evidence/independent-project-review/provenance.json)에 연결했다. should_fix는 README의 기준 전체 선언 우선/실제 부재만 작업본 사용/조회오류 대체금지와 사전 검사 뒤 예상 밖 예외의 재실행 없는3 종료 설명으로, 통합 문서에 둘 다 반영했다. handoff는 Windows 임의 자손 회수 및 로컬 경로 메타데이터의 외부 공개 경계다. 원시 기록은 수정하지 않는다. 이 보안 판정도 main Vitest 합성 이후의 코드 검토를 대체하지 않는다.
 
 ## 정본 반영
 

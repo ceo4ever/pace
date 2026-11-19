@@ -1,0 +1,84 @@
+{
+  "main": "35d0da6",
+  "recoveryRef": "p004-before-main-integration-20261119",
+  "conflicts": [
+    "backlogs/dashboard/data.js",
+    "docs/README.md",
+    "skills/pace-project-init/references/test-map.md",
+    "src/test-runner/runner.ts"
+  ],
+  "records": [
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 1,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\1-backlogs__dashboard__data.js",
+      "sha256": "162d8fc4b5be054ee24f3d15f3dbd6f392728cc33d752bd916bf10b219bc13e9"
+    },
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 2,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\2-backlogs__dashboard__data.js",
+      "sha256": "96c13ea75e4b23595dba2f951a778e29f84d84dbd033a3cfd7a271438a26688f"
+    },
+    {
+      "file": "backlogs/dashboard/data.js",
+      "stage": 3,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\3-backlogs__dashboard__data.js",
+      "sha256": "b6d5ea6d0c9d8f47390fd9152631c9012acb8cd84dc0ea93a000a9f0f524bce8"
+    },
+    {
+      "file": "docs/README.md",
+      "stage": 1,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\1-docs__README.md",
+      "sha256": "56ee7cae8005fa39b0018a7d122e8c21acfe0c02f2b9a78128b0b60d9b2fc431"
+    },
+    {
+      "file": "docs/README.md",
+      "stage": 2,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\2-docs__README.md",
+      "sha256": "64a313e46eacec1d5a5e3664df08399f0601f27c1881ad4e77719a091ece2f60"
+    },
+    {
+      "file": "docs/README.md",
+      "stage": 3,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\3-docs__README.md",
+      "sha256": "91421f5bf0ec021debe0bf673f7b27e07e30b7401247c40f021a8541f04dd9b4"
+    },
+    {
+      "file": "skills/pace-project-init/references/test-map.md",
+      "stage": 1,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\1-skills__pace-project-init__references__test-map.md",
+      "sha256": "d41af702241e0553ecaf0785e72fcdcf5758a0b6722ffb367d41c4674316529a"
+    },
+    {
+      "file": "skills/pace-project-init/references/test-map.md",
+      "stage": 2,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\2-skills__pace-project-init__references__test-map.md",
+      "sha256": "332f13243cdc902dde53f284ec556a014fac0d3adfbc34a03e45bef1d6ea902f"
+    },
+    {
+      "file": "skills/pace-project-init/references/test-map.md",
+      "stage": 3,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\3-skills__pace-project-init__references__test-map.md",
+      "sha256": "9973ab57f2d7f18544aa4fb73b743f47bf2cf979f7c47a2fa0febeec16b59d6e"
+    },
+    {
+      "file": "src/test-runner/runner.ts",
+      "stage": 1,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\1-src__test-runner__runner.ts",
+      "sha256": "99288a40fd68061c287ed3f935ae9dae23d7afc5501399cc50f3a255b780eb2b"
+    },
+    {
+      "file": "src/test-runner/runner.ts",
+      "stage": 2,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\2-src__test-runner__runner.ts",
+      "sha256": "94bce746bfb8898bc065355a0c7929dd8bb53a0a4ab8fcf11682cfe4c85d85b7"
+    },
+    {
+      "file": "src/test-runner/runner.ts",
+      "stage": 3,
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-rebase-stages-vBBzP5\\3-src__test-runner__runner.ts",
+      "sha256": "269d3efe9389e8d18fb3b12578120db6d4f40b5b1b719c8ae052af8012bb9d5f"
+    }
+  ]
+}
