@@ -1,0 +1,31 @@
+{
+  "verified": true,
+  "mode": "progress",
+  "inputSha256": "ec44ba4cbf60234dade1e694be214d463a440c1b9844b62b23d6d25c29402f21",
+  "runtime610Matches": true,
+  "head": "a5d1115b9a63bf35627ef69897be0712417447c5",
+  "comparisons": [
+    {
+      "run": 1,
+      "elapsedMs": 698136.3187000001,
+      "totals": {
+        "tests": 1000,
+        "suites": 0,
+        "pass": 991,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 9,
+        "todo": 0,
+        "duration_ms": 696358.5586
+      },
+      "inventoryAndSkipReasonsMatch": true,
+      "log": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\evidence\\main-integration\\evidence\\t05-integrated-final-v2-2026-11-19T00-15-58-729Z\\run-1.log",
+      "logSha256": "2920c27517d62cc653c37ea0e048faada5d7f9fb0413042936ed0d54009edeaa"
+    }
+  ],
+  "baseline": {
+    "file": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T01_기준_측정\\evidence\\baseline-2026-11-18T08-56-17-364Z\\summary.json",
+    "rawMedianMs": 1425464.3326999997
+  },
+  "medianMs": 698136.3187000001
+}

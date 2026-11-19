@@ -1,0 +1,40 @@
+{
+  "verified": true,
+  "matchedFields": [
+    "node",
+    "npm",
+    "git",
+    "python",
+    "os",
+    "power",
+    "defender",
+    "command",
+    "instrumentation"
+  ],
+  "requestedConcurrency": "default",
+  "finalNodeArguments": [
+    "--test",
+    "--test-concurrency=4",
+    "test/**/*.test.ts"
+  ],
+  "newMetadataFields": [
+    "gitStatus",
+    "toolHashes",
+    "commandArgv",
+    "requestedConcurrency",
+    "nodeArguments",
+    "testSources",
+    "runnerSha256",
+    "helpersSha256"
+  ],
+  "expectedCommonDifferences": [
+    "commit",
+    "diff",
+    "preflight"
+  ],
+  "firstReadCorrection": "An inline metadata assertion initially expected an empty string; inspected serialized default value and original commandArgv instead. No test or timing was rerun.",
+  "limits": [
+    "The original baseline did not record every source/tool metadata field added later; this comparison does not invent missing original tool bytes.",
+    "Commit/source/concurrency differences are the changes being evaluated; host load is not frozen."
+  ]
+}

@@ -4,13 +4,15 @@
 
 ## 목표 달성 판정
 
-HEAD7b3a926의통합 전 측정 스냅숏에서는 프로젝트 계약 목표를 달성했다. Windows에서 전체 검사를 자주 돌리도록 같은 PC·원래 비계측 명령의 중앙값을 절반 이하로 줄이면서 기존 범위/판정을 유지한다는 목표는 상위 목적에 맞는다. 원래3회 중앙1425464.3326999997ms에서 최종 새3회705472.9278ms로50.5092543% 줄었고 각996건·987통과·실패취소0·기존skip9/사유 동일이다. 과거34분 대신 검증된 실제 기준선을 사용했다. 기존963건을 제거하지 않고33건을 추가했다.
+main Vitest 통합 후 a5d1115의610개 고정 소스에서 프로젝트 계약 목표를 달성했다. Windows에서 전체 검사를 자주 돌리도록 같은 PC·원래 비계측 명령의 중앙값을 절반 이하로 줄이면서 기존 범위/판정을 유지한다는 목표는 상위 목적에 맞는다. 원래3회 중앙1425464.3326999997ms에서 통합 후702115.5500999999ms로50.7447830% 줄었고 각1000건·991통과·실패취소0·기존skip9/사유 동일이다. 과거34분 대신 검증된 실제 기준선을 사용했고37건을 추가했다. [새3회 원문과 대조](evidence/main-integration/final-results.md)를 근거로 독립 최종 reviewer/tester가 수락했다.
+
+통합 전7b3a926의609개/996건·중앙705472.9278ms·50.5092543% 감소도 그 시점의 유효 관측으로 T05에 그대로 보존했다. 현재 통합 소스의 목표 수락을 그 결과로 대체하지 않았다.
 
 빠른 변경 기반 검사는 설치 형태의 PACE CLI를 독립 Git 샘플에서 실행해 관련 단위·사전 검사·보수적 전체 전환과 실패/확인 불가 구분을 검증했다. 중앙14.794초는 부분 범위의 빠른 피드백 관측이며 전체 절반 목표의 표본으로 쓰지 않았다. finish의 전체 검사 경로도 보존했다. 함수 전환3건의11.9%는 같은3사례 단회 전후 대조이고 누적 전체 개선의 단독 기여로 주장하지 않는다.
 
 태스크별 독립1·2단계와 최종 T05의 reviewer/tester 판정은 각각 마감 문서와 원문에 연결했다. 초기 단계 판단 이후 실패·새 근거를 공개하고 같은 검토자가 재판정한 연속성을 유지했다. 최종 T05 검토는 새 블라인드 검토라고 표시하지 않는다. 새 독립 openai 프로젝트 reviewer의1단계 사용자 목표/결과 관측과2단계 계약/보안 대조도7b3a926의P-1~6을 충족으로 판정했다. [원문](evidence/independent-project-review/phase-1.md)과[계약 대조](evidence/independent-project-review/phase-2.md)에 자동 PACE 부트/메모리 노출·읽기 범위·재실행 없음과 한계를 보존했다.
 
-main35d0da6의 Vitest file/unit 지원을 보존하도록 승인된 다섯 경로의 충돌을 처리하고 rebase했다. 복구점과 양쪽 원문·최소 통합/집중 검증은 [통합 결과](evidence/main-integration/implementation-results.md)에 정리했다.610개 소스와 신규 sentinel을 포함한 실제40건 runner 검증이 통과했으며 기대 전체는1000/991통과/기존skip9다. 위609개/996건 측정은 통합 전 결과이며 통합한 실행 소스의 P-6을 대표하지 않는다. 통합 후 목표/판정은 독립 읽기 검토와 새 전체3회 전 미확인으로 두고 finish도 대기한다. 기존 T01~T05/BR 완료는 되열지 않고 마감 전 호환성 통합으로 기록한다.
+main35d0da6의 Vitest file/unit 지원을 보존하도록 승인된 다섯 경로의 충돌을 처리하고 rebase했다. 복구점과 양쪽 원문·최소 통합/집중 검증은 [통합 결과](evidence/main-integration/implementation-results.md)에 정리했다.610개 소스와 신규 sentinel을 포함한 실제40건 runner 및 독립 통합 읽기 pass 후 새 전체3회가1000/991통과/기존skip9로 완료됐다. 측정 중610개·도구9개·HEAD/main은 같았다. 최종 [독립 reviewer](evidence/main-integration/final-independent-review/reviewer-stage2.md)는 P-1~6/통합 보안 blocking0·should_fix0, [tester](evidence/main-integration/final-independent-review/tester-stage2.md)는 통합 P-6/계약 pass·blocking0으로 수락했다. 원문/해시·연속성·자동 노출은 [출처](evidence/main-integration/final-independent-review/provenance.json)에 연결했다. 새 블라인드나 별도 전체 재실행으로 표시하지 않는다. 기존 T01~T05/BR 완료를 되열지 않고 마감 전 호환성 통합으로 기록했다. finish 필수 검사는 별도 게이트이며 이 세 회에 산입하지 않는다.
 
 한계는 동일 Windows PC의 관측이라는 점이다. 다른 장비/OS의 일반 속도, Windows 임의 자손 완전 회수, 과거 stale-lock/healer/Git Bash 표기 실패의 정확한 원인은 미확인이다. 일반적인 개발 생산성 증가를 직접 측정한 것은 아니며 필수 계약 목표를 그 효과로 대체하지 않는다.
 
@@ -23,7 +25,7 @@ main35d0da6의 Vitest file/unit 지원을 보존하도록 승인된 다섯 경�
 | P-3 | 통과 | [T03 마감](tasks/T03_Windows_병렬_실행/TASK-CLOSE.md):4→8→8→4 비교,8 안정성 실패 보존 후4의 새 연속5회 모두970/961/0/9, 기본4 및 선택 근거/한계 |
 | P-4 | 통과 | [T04 마감](tasks/T04_빠른_검사_명령/TASK-CLOSE.md): 설치형CLI·독립Node/Python Git 표본, 관련 단위/사전 검사·숨김index/삭제/sparse 전체전환·실패1/확인불가3, 기존all/finish·채택 문서 |
 | P-5 | 통과 | [T05 마감](tasks/T05_느린_시험_함수_직접_호출/TASK-CLOSE.md): 실제 main3블록·대표CLI70블록/EIO4회·같은 결함8실행 검출·단회 전후 비교·목표도달 뒤 전환 중단 |
-| P-6 | 통과 | [최종3회](tasks/T05_느린_시험_함수_직접_호출/evidence/wrapper-final-results.md): 세회 종료0·996/987/0/9·기존판정/skip사유 보존·중앙705472.9278ms×2<=1425464.3326999997ms·독립양쪽 통과 |
+| P-6 | 통과 | [통합 후 새3회](evidence/main-integration/final-results.md): 세회 종료0·1000/991/0/9·명시 이름대체/추가 외 기존판정/skip사유 보존·중앙702115.5500999999ms×2<=1425464.3326999997ms, 통합 최종 독립양쪽 pass. 기존 T05 판정은 통합 전 별도 보존 |
 
 ## 태스크 결과
 
@@ -35,9 +37,11 @@ main35d0da6의 Vitest file/unit 지원을 보존하도록 승인된 다섯 경�
 
 ## 보안
 
-기계 검사 `node scripts/secret-scan.ts`는 태스크 마감 때2526개 파일 통과였고 `pace brain lint`는 오류0/경고0이다. 설치 스크립트·패키지 잠금·의존성은 변경하지 않았다. fixture에 원래 들어 있던 가짜 비밀의 소스 복사9개는 보안 정책을 바꾸지 않고 소유 원문/SHA 참조로 보존했다. 측정 원문/기록은 덮어쓰지 않았다. 판독기2개 오류와 재실행 없는 읽기 정정, 불필요한 preload 진단 오류·순서 실수도 구별해 보존했다.
+기계 검사 `node scripts/secret-scan.ts`는 통합 새3회 뒤2599개 파일 통과였고 `pace brain lint`는 오류0/경고0이다. 이후 공급된 독립 원문도 복사 전 비밀 검사를 통과했다. finish의 선언 보안 검사는 별도 필수 게이트로 실행한다. 설치 스크립트·패키지 잠금·의존성은 변경하지 않았다. fixture에 원래 들어 있던 가짜 비밀의 소스 복사9개는 보안 정책을 바꾸지 않고 소유 원문/SHA 참조로 보존했다. 측정 원문/기록은 덮어쓰지 않았다. 판독기2개 오류와 재실행 없는 읽기 정정, 불필요한 preload 진단 오류·순서 실수도 구별해 보존했다.
 
 새 독립 openai reviewer가 전체39,968,553바이트 diff/SHA와1548경로 구조·제품/민감 변경을 대조했다. 통합 전 스냅숏 blocking0·should_fix2·handoff2다. [원문](evidence/independent-project-review/phase-2.md)과[출처/연속성](evidence/independent-project-review/provenance.json)에 연결했다. should_fix는 README의 기준 전체 선언 우선/실제 부재만 작업본 사용/조회오류 대체금지와 사전 검사 뒤 예상 밖 예외의 재실행 없는3 종료 설명으로, 통합 문서에 둘 다 반영했다. handoff는 Windows 임의 자손 회수 및 로컬 경로 메타데이터의 외부 공개 경계다. 원시 기록은 수정하지 않는다. 이 보안 판정도 main Vitest 합성 이후의 코드 검토를 대체하지 않는다.
+
+같은 독립 reviewer가 a5d1115의 통합 증가분·집중 원문/610SHA 결속을 대조해 pass 후 새3회를 검증했고, [최종 목표/보안 판정](evidence/main-integration/final-independent-review/reviewer-stage2.md)에서 누적 전체 diff와 통합/마감 증거 증가분을 확인해 blocking0·should_fix0으로 수락했다. 제품·배포·의존성 신규 차이는 없었고 기존 handoff만 남았다. 초기 출력 폴더 거부는 실제check0이며 원본 도구/요약과 전체stderr 파일 미보존 한계를 함께 공개했다. 입력 직렬화 보정도 읽기 보정으로만 구분했다. 이 최종 판정은 같은 독립 검토의 연속이며 새 격리·재실행으로 과장하지 않는다.
 
 ## 정본 반영
 
@@ -50,11 +54,11 @@ main35d0da6의 Vitest file/unit 지원을 보존하도록 승인된 다섯 경�
 | `src/test-runner/`, CLI 진입점·README | 반영 | 변경 기반 선택/명시검사/전체전환/확인불가·외부 프로젝트 채택과 신뢰 경계 |
 | `src/project/harness.ts`, `src/project/shell-result.ts` | 반영 | changed 전용 기준revision·실행상태 메타데이터/선언 상수만 공유, 인자 없는 all/finish 유지 |
 | `AGENTS.md`, `docs/README.md`, `skills/pace-project-dev/` | 반영 | 빠른 검사 사용법과 기존 전체 경로, 하네스 라벨 유지·Windows 기본4 |
-| 브레인(`.pace/brain/`) | 반영 | pace brain add/update로 병렬 이력/격리·선택 신뢰경계·실측 한계와 오류 판독/경로 별칭 교훈을 적립. 근거가 바뀐 기존8페이지와 Telegram/실측 페이지를 대조·갱신했고 최종lint0/0. 신규 소스와 마감은 작업-하네스-실측-함정에 연결 |
+| 브레인(`.pace/brain/`) | 반영 | pace brain add/update로 병렬 이력/격리·선택 신뢰경계·실측 한계와 오류 판독/경로 별칭 교훈을 적립. 근거가 바뀐 기존8페이지와 Telegram/실측 페이지를 대조·갱신했다. 통합 후610개/1000건 관측과 file-unit Vitest/changed 전환·전체 선언/예외 경계도 실측 함정·변경 기반 신뢰 경계에 연결하고 lint0/0 확인 |
 
 ## 남은 일
 
-필수 계약의 미해결 차단은 없다. 전체 보안/별도 목표 검토와 finish 필수 검사는 마감 게이트로 남아 있다. 이후 병합·설치·푸시는 main의 사람 승인 영역이며 실행하지 않았다.
+실행 소스·통합 후 목표/보안의 미해결 차단과 should_fix는0이다. finish의 필수 하네스 결과는 프로젝트 상태와 그 명령 기록으로 확인하며, 세 시간 표본과 별도로 둔다. 이후 병합·설치·푸시는 main의 사람 승인 영역이며 실행하지 않았다.
 
 현재 fixture/제품 경로 밖 모듈 재사용·미등록 자손 회수·POSIX 설치 실기/다른 장비 성능은 미검증이다. 과거 불안정 실패의 정확한 발생 조건과 inode 단독 음성은 미확정으로 유지한다. 기존 관련 메모리 이슈를 그대로 두며 새 범위로 자동 확대하지 않는다. T05 nit는 그 마감의 남긴 것에 기록했고 신규 검토/제품 작업으로 발의할 때 판단한다.
 

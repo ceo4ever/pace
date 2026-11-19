@@ -51,3 +51,5 @@
 ## [2026-11-19] update | Telegram 어댑터 설계 함정 (.pace/brain/pages/synthesis/telegram-어댑터-설계-함정.md)
 
 ## [2026-11-19] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
+## [2026-11-19] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
+## [2026-11-19] update | 변경 기반 검사와 실행 선언 신뢰 경계 (.pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md)

@@ -1,0 +1,60 @@
+{
+  "created": "2026-11-19T00:14:28.712Z",
+  "head": "a5d1115b9a63bf35627ef69897be0712417447c5",
+  "main": "35d0da642059f7a89215c605f282d307d0addf2e",
+  "gitStatus": " M .pace/memory/status.md\u0000 M projects/P004_261118_Windows_테스트_시간_단축/log.jsonl\u0000?? projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/independent-review-provenance.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/independent-review.md\u0000?? projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/integrated-source-head-before-message-fix.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/integrated-source-head.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/review-input.json\u0000?? projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/run-final.mjs\u0000?? projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/evidence/runtime-t05-integrated-before-full.json\u0000",
+  "freezeLabel": "t05-integrated",
+  "sourceFiles": 610,
+  "tools": [
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/measure.ts",
+      "sha256": "1ecdf979b2e1ad67b85ed035846072a1db920ebb44091585bdae184e6742df29"
+    },
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T01_기준_측정/reporter.ts",
+      "sha256": "7c1c196cb939adce514f1618f128b7b72d3d0574edcb1341d6fbbf69d06b2cf1"
+    },
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/report.ts",
+      "sha256": "6f0115c07f5b71c4d70560eb4c4c49ef37249c19dfccae7802149c61445c6773"
+    },
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/measurement-data.ts",
+      "sha256": "2c26f7ec1501f5fbbbba4fb27ef13d3ad6b3d752869543f69920000302cbe1a6"
+    },
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T03_Windows_병렬_실행/observations.ts",
+      "sha256": "5049e9e51355f16e56e704922758c788aa675f45a4ef315771bc420ec5e64b18"
+    },
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/tasks/T04_빠른_검사_명령/freeze-runtime.mjs",
+      "sha256": "9e5acc92a11fccf50a746013d0a603d93b54825f3c3962999b9a9aa9b60001eb"
+    },
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/integration-proof.mjs",
+      "sha256": "edc5c5da06ebdf54398c3a5a0a0d1d82e70fb17fdf0e4092d569fd49348c40bd"
+    },
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/preflight-source.json",
+      "sha256": "ec44ba4cbf60234dade1e694be214d463a440c1b9844b62b23d6d25c29402f21"
+    },
+    {
+      "file": "projects/P004_261118_Windows_테스트_시간_단축/evidence/main-integration/run-final.mjs",
+      "sha256": "24cac8311597477e81c97ed3512fa7980d29134074b1069642d822557e6ef387"
+    }
+  ],
+  "argv": [
+    "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\tasks\\T01_기준_측정\\measure.ts",
+    "--runs",
+    "3",
+    "--label",
+    "t05-integrated-final",
+    "--evidence-dir",
+    "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\evidence\\main-integration"
+  ],
+  "limits": [
+    "Only this new set is eligible for integrated P6 acceptance.",
+    "Snapshots are not continuous monitoring or host load isolation.",
+    "No tests/diagnostics or runtime/tool edits overlap; reading and progress verification may occur."
+  ]
+}

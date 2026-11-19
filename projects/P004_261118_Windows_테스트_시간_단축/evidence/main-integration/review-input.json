@@ -1,0 +1,43 @@
+{
+  "head": "a5d1115b9a63bf35627ef69897be0712417447c5",
+  "main": "35d0da642059f7a89215c605f282d307d0addf2e",
+  "recoveryRef": "p004-before-main-integration-20261119",
+  "records": [
+    {
+      "name": "runtime-integration.diff",
+      "args": [
+        "diff",
+        "p004-before-main-integration-20261119",
+        "HEAD",
+        "--",
+        "bin",
+        "src",
+        "scripts",
+        "test",
+        "templates",
+        "skills",
+        "docs",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "README.md",
+        "AGENTS.md",
+        ".pace/test-map.json"
+      ],
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-integration-review-FDjqdq\\runtime-integration.diff",
+      "sha256": "49d85b379d84be96b05a85178034dd70205fd0eacea0f53cc6b5a70105fed20c",
+      "byteLength": 38383
+    },
+    {
+      "name": "full-project.diff",
+      "args": [
+        "diff",
+        "main...HEAD",
+        "--"
+      ],
+      "rawPath": "C:\\Users\\ROOT-U~1\\AppData\\Local\\Temp\\pace-p004-integration-review-FDjqdq\\full-project.diff",
+      "sha256": "21f8b707ffb90f7331b21d4522f12d5369b09d317062c280297b13d7744ddb33",
+      "byteLength": 40596153
+    }
+  ]
+}

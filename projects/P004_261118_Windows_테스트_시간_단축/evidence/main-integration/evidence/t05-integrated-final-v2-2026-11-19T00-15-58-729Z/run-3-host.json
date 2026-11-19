@@ -1,0 +1,8 @@
+{
+  "freeMemory": 17076625408,
+  "load": {
+    "status": 0,
+    "stdout": "[{\"ProcessName\":\"Orca\",\"CPU\":1628.1875,\"WorkingSet64\":98541568},{\"ProcessName\":\"InstallUtil\",\"CPU\":1377.078125,\"WorkingSet64\":259379200},{\"ProcessName\":\"CCDaemon\",\"CPU\":739.015625,\"WorkingSet64\":9732096},{\"ProcessName\":\"MSIAfterburner\",\"CPU\":678.03125,\"WorkingSet64\":18145280},{\"ProcessName\":\"svchost\",\"CPU\":671.96875,\"WorkingSet64\":8970240},{\"ProcessName\":\"claude\",\"CPU\":497.953125,\"WorkingSet64\":403349504},{\"ProcessName\":\"ego\",\"CPU\":465.609375,\"WorkingSet64\":118431744},{\"ProcessName\":\"Orca\",\"CPU\":425.921875,\"WorkingSet64\":310161408}]",
+    "stderr": ""
+  }
+}

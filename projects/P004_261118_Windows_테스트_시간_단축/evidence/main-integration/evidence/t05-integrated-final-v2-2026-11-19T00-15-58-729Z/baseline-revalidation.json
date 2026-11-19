@@ -1,0 +1,135 @@
+{
+  "valid": true,
+  "timingSummaryMatches": true,
+  "checks": [
+    {
+      "run": 1,
+      "valid": true,
+      "path": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\evidence\\main-integration\\evidence\\t05-integrated-final-v2-2026-11-19T00-15-58-729Z\\run-1.log",
+      "raw": {
+        "totals": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0,
+          "duration_ms": 696358.5586
+        },
+        "observed": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0
+        },
+        "problems": []
+      },
+      "stored": {
+        "complete": true,
+        "problems": [],
+        "observed": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0
+        }
+      },
+      "differences": [],
+      "timingDifferences": [],
+      "totalsMatch": true
+    },
+    {
+      "run": 2,
+      "valid": true,
+      "path": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\evidence\\main-integration\\evidence\\t05-integrated-final-v2-2026-11-19T00-15-58-729Z\\run-2.log",
+      "raw": {
+        "totals": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0,
+          "duration_ms": 701434.0594
+        },
+        "observed": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0
+        },
+        "problems": []
+      },
+      "stored": {
+        "complete": true,
+        "problems": [],
+        "observed": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0
+        }
+      },
+      "differences": [],
+      "timingDifferences": [],
+      "totalsMatch": true
+    },
+    {
+      "run": 3,
+      "valid": true,
+      "path": "D:\\LucasStudio\\pace.wt\\P004\\projects\\P004_261118_Windows_테스트_시간_단축\\evidence\\main-integration\\evidence\\t05-integrated-final-v2-2026-11-19T00-15-58-729Z\\run-3.log",
+      "raw": {
+        "totals": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0,
+          "duration_ms": 700343.9157
+        },
+        "observed": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0
+        },
+        "problems": []
+      },
+      "stored": {
+        "complete": true,
+        "problems": [],
+        "observed": {
+          "tests": 1000,
+          "suites": 0,
+          "pass": 991,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 9,
+          "todo": 0
+        }
+      },
+      "differences": [],
+      "timingDifferences": [],
+      "totalsMatch": true
+    }
+  ]
+}

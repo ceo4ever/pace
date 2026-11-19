@@ -1,0 +1,22 @@
+{
+  "status": "failed before any measurement",
+  "measureExit": 1,
+  "launcherExit": 1,
+  "actualNpmCheckExecutions": 0,
+  "reason": "Evidence directory must be inside this project and named evidence",
+  "invalidArgument": "projects\\P004_261118_Windows_테스트_시간_단축\\evidence\\main-integration",
+  "firstLaunch": "final-launch.json",
+  "oldToolSources": [
+    {
+      "file": "run-final.mjs",
+      "sha256": "24cac8311597477e81c97ed3512fa7980d29134074b1069642d822557e6ef387",
+      "preserved": "startup-failed-run-final.mjs.txt"
+    },
+    {
+      "file": "integration-proof.mjs",
+      "sha256": "edc5c5da06ebdf54398c3a5a0a0d1d82e70fb17fdf0e4092d569fd49348c40bd",
+      "preserved": "startup-failed-integration-proof.mjs.txt"
+    }
+  ],
+  "correction": "Use a new child directory actually named evidence, new label and new snapshots; do not modify any runtime source or acceptance criteria."
+}
