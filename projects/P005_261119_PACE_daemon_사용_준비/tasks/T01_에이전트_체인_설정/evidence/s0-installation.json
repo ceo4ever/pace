@@ -1,0 +1,11 @@
+{
+  "version": "0.1.1",
+  "moduleHash": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75",
+  "mainHash": "ccda27732c4f0e56dff9e2ca433cf4ada01b0de661876950591ca5377aee0e75",
+  "gitObjectHash": "562809a7fac33de1736ac9b146a2b196e17f36960504e5e6cce200e56622421a",
+  "installedNormalizedHash": "562809a7fac33de1736ac9b146a2b196e17f36960504e5e6cce200e56622421a",
+  "ancestry": 0,
+  "unelevated": true,
+  "ancestryCommand": "git merge-base --is-ancestor f385e03b v0.1.1",
+  "ancestryMeaning": "exit code 0: f385e03b is an ancestor of v0.1.1"
+}

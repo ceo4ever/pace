@@ -1,0 +1,28 @@
+{
+  "command": "npm run check",
+  "exit": 0,
+  "durationMs": 784507,
+  "rawSha256": "1d8cb835111c23abaee0175d5575658c046f1750af26b09ecfacada6f1ce4a5f",
+  "raw": "repository-check.log",
+  "totals": [
+    "ℹ tests 1000",
+    "ℹ suites 0",
+    "ℹ pass 991",
+    "ℹ fail 0",
+    "ℹ cancelled 0",
+    "ℹ skipped 9",
+    "ℹ todo 0",
+    "ℹ duration_ms 779334.4335"
+  ],
+  "skipLines": [
+    "﹣ S-2 가져온 저장소의 실제 git commit — 교체된 훅이 pace project check를 호출하고 실패를 전달한다 (8.04ms) # sh를 실행할 수 없다 — T-2는 이 환경에서 충족으로 인정하지 않는다",
+    "﹣ T02-S-1 교체된 훅이 실제로 게이트로 동작한다(차단 조건에서 실패 종료) (2021.3261ms) # sh를 실행할 수 없음",
+    "﹣ T02-S-1 교체된 훅의 조건 분기: 대상 브랜치·태그가 있을 때만 검사하고 실패·성공·조건 밖을 구분한다 (1696.4789ms) # sh를 실행할 수 없음",
+    "﹣ 지연된 git은 합산 부트 예산 안에서 유효한 훅 출력으로 열화한다 (0.1256ms) # POSIX 지연 git 대역",
+    "﹣ git 상태 조회가 시간 초과되면 변경 0개로 오인하지 않는다 (0.0961ms) # POSIX 지연 git 대역",
+    "﹣ 신규 설치: 훅 등록, pace 링크, PATH를 zshrc에 한 번만 추가 (0.8978ms) # install.sh는 macOS·Linux 전용",
+    "﹣ 미리보기는 아무것도 바꾸지 않는다 (0.133ms) # install.sh는 macOS·Linux 전용",
+    "﹣ 임시 설치된 Antigravity 훅은 단일 workspacePaths의 활성 역할을 반환한다 (0.1158ms) # Windows 설치 실행 경로는 별도 실기 검증 필요",
+    "﹣ 구현 후 리뷰 1차: 조회 도중 루트가 통째로 바뀌면 거부된다(열기 뒤 루트 식별자 재확인) (1236.8906ms) # 루트 교체 훅이 동작하지 않음(권한·열린 핸들)"
+  ]
+}

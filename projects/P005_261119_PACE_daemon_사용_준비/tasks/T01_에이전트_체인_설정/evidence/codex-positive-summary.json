@@ -1,0 +1,10 @@
+{
+  "agent": "codex",
+  "code": 0,
+  "timedOut": false,
+  "fixtureChanged": true,
+  "probeExists": true,
+  "shellProbeExists": true,
+  "outsideProbeExists": true,
+  "gitGlobalInjected": true
+}
