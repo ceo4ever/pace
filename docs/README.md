@@ -6,11 +6,12 @@
 |---|---|
 | 목적 | Claude Code·Codex·Gemini CLI·Cursor·Antigravity 어디서 세션을 열어도 올라오는 **개인 비서 에이전트**. 정체성·메모리·브레인만 두고, 실행은 각 LLM 도구의 기능을 그대로 쓴다 |
 | 유형 | 개발 |
-| 단계 | 진행 중 — PACE (`0.1.0`) |
+| 단계 | 진행 중 — PACE (`0.1.1`) |
 | 사용자 | 개발자 본인(캡틴), 이후 PACE 사용자 |
 
 ## 변경 기록
 
+- 0.1.1 (2026-11-19): 플레이북 생성기(`pace-playbook-maker`), OPAL 가져오기(`pace adopt opal`), 선택 검사 러너 vitest 지원, Windows 전체 검사 시간 절반으로 단축(동시성 4·Git 준비 재사용, 같은 PC 중앙값 약 23.8분 → 11.7분)과 변경 기반 빠른 검사(`pace test changed`), 백로그 대시보드 진입 HTML에서 PC 경로 분리(v2 + Git 밖 `local.js`), Windows 원격 설치 `irm | iex` 수정. 넘어올 때: 이미 대시보드가 있는 저장소는 업데이트 뒤 PC마다 `pace backlog init` 한 번.
 - 0.1.0 (2026-11-16): 첫 공개 버전.
 
 ## 원칙과 기준
