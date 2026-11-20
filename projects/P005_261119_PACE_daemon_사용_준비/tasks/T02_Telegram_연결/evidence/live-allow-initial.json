@@ -1,0 +1,20 @@
+{
+  "phase": "allow-initial",
+  "passed": true,
+  "reason": "observed",
+  "readyReached": true,
+  "freshRequestCount": 1,
+  "rejectedDelta": 0,
+  "statusResponseCount": 1,
+  "sendsAfterCandidate": 1,
+  "noNewTasks": true,
+  "operationalConfigUnchanged": true,
+  "tokenMatches": 0,
+  "paramsChecked": 11,
+  "responsesChecked": 10,
+  "apiFailures": 0,
+  "interference": 0,
+  "runtimeDeviceNonSensitive": true,
+  "runtimeExclusionOnly": false,
+  "snapshotScope": "Only booleans and counts; identifiers and message contents remained in process memory."
+}

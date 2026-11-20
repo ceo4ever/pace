@@ -1,0 +1,4 @@
+{
+  "command": "node scripts/secret-scan.ts",
+  "exit": 0
+}

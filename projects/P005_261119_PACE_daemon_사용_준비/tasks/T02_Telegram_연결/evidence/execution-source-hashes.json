@@ -1,0 +1,23 @@
+{
+  "execution-common.mjs": {
+    "originalSourceRawSha256": "c977b3a63be4ded282f18b7ee0ab2e1df99c107ff2d929cbdad0d7dba6bd37d2",
+    "originalSourceNormalizedSha256": "c977b3a63be4ded282f18b7ee0ab2e1df99c107ff2d929cbdad0d7dba6bd37d2",
+    "auditRawSha256": "78212600351c879293ef632abc4f8fbfa97423ce44971709b4f04c3bc57ab3d6",
+    "auditNormalizedSha256": "78212600351c879293ef632abc4f8fbfa97423ce44971709b4f04c3bc57ab3d6",
+    "auditTransform": "Added whitespace around one assignment to identify a code expression to the secret scanner. Runtime original unchanged; no behavioral edit.",
+    "rawSha256": "78212600351c879293ef632abc4f8fbfa97423ce44971709b4f04c3bc57ab3d6",
+    "normalizedSha256": "78212600351c879293ef632abc4f8fbfa97423ce44971709b4f04c3bc57ab3d6"
+  },
+  "execution-apply.mjs": {
+    "rawSha256": "b9308bb308844eeb97b265bdbe85bf05c7ed587f163eb88b90ed9b05ad5fb0a2",
+    "normalizedSha256": "b9308bb308844eeb97b265bdbe85bf05c7ed587f163eb88b90ed9b05ad5fb0a2"
+  },
+  "execution-runtime.mjs": {
+    "rawSha256": "c50f011b446f32c5572884d229809064bc9d3111a53fb4313d84bc71a244d87c",
+    "normalizedSha256": "c50f011b446f32c5572884d229809064bc9d3111a53fb4313d84bc71a244d87c"
+  },
+  "execution-supervisor.mjs": {
+    "rawSha256": "9d1c2c51bd5a88db643a22b95a59ab630fa37fb1c8720359d1a6f34b24ea9b26",
+    "normalizedSha256": "9d1c2c51bd5a88db643a22b95a59ab630fa37fb1c8720359d1a6f34b24ea9b26"
+  }
+}

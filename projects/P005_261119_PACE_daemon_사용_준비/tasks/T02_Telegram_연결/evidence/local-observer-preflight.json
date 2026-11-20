@@ -1,0 +1,21 @@
+{
+  "connect": {
+    "present": true,
+    "writable": true,
+    "configurable": true
+  },
+  "call": {
+    "present": true,
+    "writable": true,
+    "configurable": true
+  },
+  "runDaemonExport": true,
+  "modules": {
+    "src/daemon/telegram/adapter.ts": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80",
+    "src/daemon/telegram/api.ts": "f73681174e8274ee1da59eab32ab694acf1c112c6c49ef8be24c46941fb2f9fd",
+    "src/daemon/index.ts": "4d56a00d69a9694e1d5d8f4e0efe43eb3bf9832d8b4b986db62763be385be957",
+    "src/daemon/cli.ts": "700a4a5ccae6b124443fc3dfc69c3d4b97ac4374aae4ed5749b8d0d983e271f8",
+    "src/daemon/config.ts": "56879c50bcc4eb7afa643c195c1afab10174bd3ec734b61de06072f31834772d"
+  },
+  "scope": "Imported installed source modules and inspected descriptors only; no instance, prototype mutation, operational file read, Telegram API, daemon start or setting change."
+}
