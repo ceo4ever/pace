@@ -1,0 +1,42 @@
+{
+  "sourceAcl": {
+    "unexpectedAllow": 0,
+    "protected": false
+  },
+  "dirAcl": {
+    "unexpectedAllow": 0,
+    "protected": true
+  },
+  "fileAcl": {
+    "unexpectedAllow": 0,
+    "protected": false
+  },
+  "tokenInput": "user-approved ACL-restricted local env, RAM to child stdin only",
+  "userCount": 1,
+  "botVerified": true,
+  "forumVerified": true,
+  "botMemberVerified": true,
+  "topicCreationNotRequired": true,
+  "webhookAbsent": true,
+  "priorSecretExisted": false,
+  "configLoaderPass": true,
+  "devicePreserved": true,
+  "otherConfigPreserved": true,
+  "configHash": "a845ac7b8708b05488f66f483582c665901caecbeebf0d0a1366aae2ee71b920",
+  "modules": {
+    "src/daemon/telegram/adapter.ts": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80",
+    "src/daemon/telegram/api.ts": "f73681174e8274ee1da59eab32ab694acf1c112c6c49ef8be24c46941fb2f9fd",
+    "src/daemon/index.ts": "4d56a00d69a9694e1d5d8f4e0efe43eb3bf9832d8b4b986db62763be385be957",
+    "src/daemon/cli.ts": "700a4a5ccae6b124443fc3dfc69c3d4b97ac4374aae4ed5749b8d0d983e271f8",
+    "src/daemon/config.ts": "56879c50bcc4eb7afa643c195c1afab10174bd3ec734b61de06072f31834772d"
+  },
+  "apiCalls": [
+    "getMe",
+    "getChat",
+    "getWebhookInfo",
+    "getChatMember"
+  ],
+  "tokenInChildOutput": false,
+  "automaticStartupTouched": false,
+  "workspaceCount": 0
+}

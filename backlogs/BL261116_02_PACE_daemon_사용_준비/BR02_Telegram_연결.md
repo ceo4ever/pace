@@ -1,6 +1,6 @@
 # BR02 Telegram 연결
 
-- 상태: 대기
+- 상태: 완료
 - 백로그: [BL261116_02_PACE_daemon_사용_준비](BACKLOG.md)
 
 

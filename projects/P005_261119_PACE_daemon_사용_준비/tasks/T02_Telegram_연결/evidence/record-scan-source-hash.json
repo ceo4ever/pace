@@ -1,0 +1,7 @@
+{
+  "source": "execution-record-scan.mjs",
+  "originalRawSha256": "4ee486e9ef0361a48d8ba6d8cffaab2dab41963d12654e00cd25162d92b81872",
+  "auditRawSha256": "e4cfb8e44a826b9d92073a07324b1d37658fbbabb66c648524cb271865446a25",
+  "auditTransform": "Added one whitespace after the token-named object field colon. Original executed scanner unchanged; no behavioral edit.",
+  "rawSha256": "e4cfb8e44a826b9d92073a07324b1d37658fbbabb66c648524cb271865446a25"
+}

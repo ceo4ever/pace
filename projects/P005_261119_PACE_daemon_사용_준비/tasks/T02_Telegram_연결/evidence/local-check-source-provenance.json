@@ -1,0 +1,38 @@
+{
+  "execution-initial-stop.mjs": {
+    "originalBasename": "pace-p005-t02-stop-check.mjs",
+    "rawSha256": "d565e24f0a8917e9df211f6edc665f7452815232acec28a245d281af7f0fe3e0",
+    "normalizedSha256": "1b1e1cef2dec197f755b77af60744f44c4e694e6d72679f0922d471b2d07ebd9",
+    "sourceLastModified": "2026-11-20T10:43:02.212Z"
+  },
+  "execution-deny-stop.mjs": {
+    "originalBasename": "pace-p005-t02-deny-result.mjs",
+    "rawSha256": "dc6e073d5a7eb7eb0defda0531a6fb53ca52f02a9f95dc9183de8a64286c1a3f",
+    "normalizedSha256": "e8d2dfcb54857ea40d5bb9517aae7207364c2f72a5ce07a2aa998f6a47a4dfa5",
+    "sourceLastModified": "2026-11-20T10:46:10.397Z"
+  },
+  "execution-final-local-check.mjs": {
+    "originalBasename": "pace-p005-t02-finish-observation.mjs",
+    "rawSha256": "4618517914ae73cbf4e6e5aa84cbade6523737d3e44212687373e53a2cdea252",
+    "normalizedSha256": "a6c0f137280b677928ee6ea36d47522eef602bab08310144dae5425566e0f1a1",
+    "sourceLastModified": "2026-11-20T10:50:05.232Z"
+  },
+  "results": {
+    "allow-initial-stop.json": {
+      "rawSha256": "6b1f343e02a9f4c313958f26de7470f9562eac48d739fd9139affaad4f6a5532",
+      "modifiedAt": "2026-11-20T10:43:02.375Z"
+    },
+    "deny-stop.json": {
+      "rawSha256": "6b1f343e02a9f4c313958f26de7470f9562eac48d739fd9139affaad4f6a5532",
+      "modifiedAt": "2026-11-20T10:46:58.506Z"
+    },
+    "final-runtime-restoration.json": {
+      "rawSha256": "06bec130845c2bcc18dd4d17dcde8a643258f8c5673afd41af929360b9176641",
+      "modifiedAt": "2026-11-20T10:50:05.714Z"
+    },
+    "secret-observations.json": {
+      "rawSha256": "46d2648dc5a4444b08f3cc4818a35bcd1d7f4e1d27c7cf9bc4f6cbf803e51384",
+      "modifiedAt": "2026-11-20T10:50:06.256Z"
+    }
+  }
+}

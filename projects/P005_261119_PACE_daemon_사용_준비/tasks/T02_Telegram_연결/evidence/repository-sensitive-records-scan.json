@@ -1,0 +1,10 @@
+{
+  "scope": "All T02 files recursively, PROJECT and project event log, project memory files, backlog overview/BR02 and generated dashboard",
+  "filesChecked": 109,
+  "tokenMatches": 0,
+  "chatMatches": 0,
+  "userMatches": 0,
+  "matchedFiles": [],
+  "publicBotUsernameLiteralRetainedForSourceIntegrity": true,
+  "sourceEnvAndOperationalSecretIntentionallyExcluded": true
+}

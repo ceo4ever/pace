@@ -26,3 +26,46 @@
 {"ts":"2026-11-19T08:11:38.849Z","p":"P005","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-19T08:11:47.430Z","p":"P005","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-19T08:11:47.430Z","p":"P005","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-19T08:12:24.498Z","p":"P005","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-19T08:15:12.340Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"T01 a00fdb2 마감 커밋 완료 뒤 T02를 열고 실사용 Telegram 조건·불허 무응답 계측·비밀 검증 계획을 작성했다"}
+{"ts":"2026-11-19T08:15:14.862Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"T01 마감 커밋 결과와 T02 계획을 전달하고 사전 검토 및 Telegram 운영 선택·실제 전송·제한 시험 기동 승인을 요청한다"}
+{"ts":"2026-11-19T08:19:45.720Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"main 제공 새 anthropic 사전 검토 fail blocking1: 대화형 설치 마법사도 자동 시작을 반영하므로 배제하고 토큰 stdin·복원·계측·기동 전송 범위를 보완한다"}
+{"ts":"2026-11-19T08:21:52.080Z","p":"P005","t":"T02","type":"review","by":"agent","msg":"사전 reviewer fail blocking 1 should_fix 4; 마법사 배제·SecureString stdin·단일 connect 관찰·권한 복원·기동 전송 범위를 보완","ref":"tasks/T02_Telegram_연결/evidence/pre-review-1-phase2.md","data":{"blocking":1,"should_fix":4,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-19T08:21:54.685Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"T02 사전 검토1차 지적을 반영한 TASK의 동일 reviewer 2차 검토를 요청한다"}
+{"ts":"2026-11-19T08:24:22.919Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"동일 anthropic reviewer 2차 pass blocking0 수신; API call 관찰 가능성 및 config 로더 검증을 실행 상세로 반영하고 운영 승인 전 로컬 확인만 진행한다"}
+{"ts":"2026-11-19T08:25:45.470Z","p":"P005","t":"T02","type":"review","by":"agent","msg":"사전 reviewer pass blocking 0 should_fix 1; connect와 API call 로컬 관찰 가능성 확인, 실제 송신 증거 미확보 시 T3 미확인 유지","ref":"tasks/T02_Telegram_연결/evidence/pre-review-2.md","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-19T08:25:46.080Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"운영 파일 내용 미열람으로 설치본 connect/call descriptor와 runDaemon export 확인; 로컬 PACE daemon 명령 후보0, 실제 운영 승인·토큰·API·기동은 대기","ref":"tasks/T02_Telegram_연결/evidence/local-observer-preflight.json"}
+{"ts":"2026-11-20T10:30:04.644Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"캡틴 직접 승인 전달: 제한 Telegram 연결·메뉴·기기별칭 시험표시·알림·status·허용자 임시제외/복원; 입력은 사용자 선택 ACL 제한 로컬 env에서 RAM→CLI stdin"}
+{"ts":"2026-11-20T10:30:05.345Z","p":"P005","t":"T02","type":"decision","by":"agent","msg":"캡틴 요청으로 토큰 입력을 ACL 제한 로컬 env로 변경하고 승인 그룹과 송신자1명으로 제한 시험한다; 운영 device 보존·시험표시 pace-pc, T03/T04·workspace 제외","src":"사용자 결정"}
+{"ts":"2026-11-20T10:31:42.263Z","p":"P005","t":"T02","type":"change","by":"agent","msg":"승인된 임시 제외와 pace-pc 표시는 runDaemon config 메모리 사본만 사용해 운영 허용목록·device 파일을 시험 중에도 보존한다; 자체기한·독립감독으로 턴 종료 대비","src":"자체 판단"}
+{"ts":"2026-11-20T10:31:42.834Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"사용자 선택 env 입력 및 운영파일 보존형 시험 config 사본·자체기한 상세를 같은 reviewer에게 변경분 검토 요청"}
+{"ts":"2026-11-20T10:34:13.554Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"동일 anthropic 변경분 reviewer pass blocking0 수신; 승인 반영 절을 실행 정본으로 하고 이전 update baseline·새 요청 RAM 대조·runtime config 전달 확인 뒤 진행한다"}
+{"ts":"2026-11-20T10:35:14.956Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"승인된 입력 env ACL/형식 통과와 별개로 운영 secrets 디렉터리에 예상밖 상속가능 Allow FullControl 1개를 발견; 토큰 저장·API·기동 전에 중단"}
+{"ts":"2026-11-20T10:35:16.282Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"운영 secrets 디렉터리의 예상밖 상속가능 FullControl 허용 ACE 처리 결정을 요청한다"}
+{"ts":"2026-11-20T10:36:45.423Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"main이 새 secrets 디렉터리 ACL만 사용자/SYSTEM/Administrators로 보호했고 입력 setup/env SDDL 불변을 확인; 저장 전후 ACL 재확인 후 승인된 시험 진행"}
+{"ts":"2026-11-20T10:39:01.338Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"main 소스 확인: T02 General status는 토픽생성을 하지 않아 관리자·토픽관리 권한 불필요; 실제 그룹 멤버십으로 확인하고 봇 멘션 명령 사용"}
+{"ts":"2026-11-20T10:39:02.172Z","p":"P005","t":"T02","type":"decision","by":"agent","msg":"T02는 포럼·승인봇·webhook부재·그룹멤버십만 검증하고 토픽관리자 승격 없이 진행한다; privacy mode 대응은 봇명 멘션 status로 한정","src":"main 판단"}
+{"ts":"2026-11-20T10:41:16.336Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"저장전후 ACL·승인봇/포럼/실제멤버십·webhook부재 확인 후 CLI stdin 시크릿과 허용자1명 config 적용, device 보존; 첫허용 시험은 이전update 처리완료 baseline 뒤 준비됨"}
+{"ts":"2026-11-20T10:41:16.975Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"첫 허용 시험 준비 완료: 승인그룹 General에서 새 봇멘션 status1회 전송 타이밍 요청"}
+{"ts":"2026-11-20T10:42:40.307Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"캡틴이 첫허용 준비 이후 General에서 봇멘션 status1회 전송했다고 main이 전달했다"}
+{"ts":"2026-11-20T10:43:46.464Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"첫 허용 실제새요청1·상태응답1·거절0·새작업0·토큰일치0 통과, 정상종료·lock없음·포트해제 확인; 운영파일 불변으로 불허 runtime 준비"}
+{"ts":"2026-11-20T10:43:47.099Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"불허 runtime 준비 완료: 같은 그룹 General에서 새 봇멘션 status1회 전송 요청"}
+{"ts":"2026-11-20T10:46:04.466Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"캡틴이 불허 준비 통보 뒤 동일 봇멘션 status1회 전송했다고 main이 전달했다"}
+{"ts":"2026-11-20T10:47:09.660Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"불허 실제새요청1·거절카운터1·응답0·새작업0·토큰일치0 통과 및 정상정지·포트해제 확인; 결과기록 전 조기 복원 기동1회는 acquireInstance에서 exit2로 차단돼 둘째poller/외부동작 없음"}
+{"ts":"2026-11-20T10:48:10.604Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"정상허용 복원 runtime 준비 완료: 같은 General에서 새 봇멘션 status1회 전송 요청"}
+{"ts":"2026-11-20T10:49:47.859Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"캡틴이 정상허용 복원 준비 통보 뒤 General에서 봇멘션 status1회 전송했다고 main이 전달했다"}
+{"ts":"2026-11-20T10:52:05.045Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"실제 허용→불허→복원 각 새요청1 관측, 응답1→0→1·거절0→1→0·새작업0·토큰일치0, 정상정지·포트해제·운영config해시 불변 및 허용자복원 확인","ref":"tasks/T02_Telegram_연결/evidence/live-observations.md"}
+{"ts":"2026-11-20T10:52:11.991Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"실제3단계 시험·복원·비밀관측 증거를 전달하고 새 맥락 독립 tester·reviewer를 요청한다"}
+{"ts":"2026-11-20T10:57:09.430Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"독립 사후 reviewer pass blocking0·tester fail 보류(B1 전체/비밀검사 대기,B2 로컬검사 소스 누락) 수신; 실제메시지 재시험 없이 원본검사 소스·결과 연결 보완"}
+{"ts":"2026-11-20T10:57:58.860Z","p":"P005","t":"T02","type":"decision","by":"agent","msg":"승인된 토큰 안전 저장 범위에서 main이 새 secrets 폴더만 보호ACL 사용자/SYSTEM/Administrators3개로 제한했다; 기존운영시크릿없음·setup/env SDDL불변·부모 pace ACL미변경","src":"main 판단"}
+{"ts":"2026-11-20T11:03:04.793Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"사후 B2 실제 로컬 검사 소스3개와 해시/결과 출처 보완, 기록103파일 알려진토큰·그룹·사용자ID 일치0; 선언비밀검사2688파일통과와 오탐2회/공백변환 이력 보존","ref":"tasks/T02_Telegram_연결/evidence/post-review-resolution.md"}
+{"ts":"2026-11-20T11:03:07.343Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"사후 B2·should_fix 보완 근거와 비밀검사 결과를 같은 tester/reviewer에게 추가 판정 요청"}
+{"ts":"2026-11-20T11:05:29.401Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"동일 독립 tester/reviewer 보완검토에서 B2해소·T1~T3/최종복원통과, tester는 B1전체검사대기만 남음; 초기stop파일과 최종exit0 단언 구분"}
+{"ts":"2026-11-20T11:06:34.641Z","p":"P005","t":"T02","type":"note","by":"agent","msg":"기존 전체검사1회 exit0:1000건 pass991 fail0 skipped9, 보완검토 B2해소 후 기록107파일 민감일치0·최종범위 비밀검사통과","ref":"tasks/T02_Telegram_연결/evidence/repository-check-result.json"}
+{"ts":"2026-11-20T11:06:35.249Z","p":"P005","t":"T02","type":"question","by":"agent","msg":"전체검사 최종원문과 마지막 범위 비밀검사 결과를 같은 독립 세션에 전달해 최종 판정 요청"}
+{"ts":"2026-11-20T11:08:37.804Z","p":"P005","t":"T02","type":"answer","by":"agent","msg":"같은 독립 anthropic tester/reviewer B1·S6 포함 최종 pass blocking0·T1~T3·복원/목표달성 수신; 최종범위 비밀검사 뒤 마감한다"}
+{"ts":"2026-11-20T11:08:40.879Z","p":"P005","t":"T02","type":"review","by":"agent","msg":"최종 tester pass blocking 0 should_fix 0; B1/B2해소·S6·T1~T3·복원·목표달성 확인, 관측한계유지","ref":"tasks/T02_Telegram_연결/evidence/post-tester-final.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-20T11:08:41.493Z","p":"P005","t":"T02","type":"review","by":"agent","msg":"최종 reviewer pass blocking 0 should_fix 0; 전체원문·추가소스·민감검사·ACL결정 및 관측범위대조 완료","ref":"tasks/T02_Telegram_연결/evidence/post-reviewer-final.md","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-20T11:08:43.124Z","p":"P005","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-20T11:08:52.621Z","p":"P005","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-20T11:08:52.621Z","p":"P005","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
