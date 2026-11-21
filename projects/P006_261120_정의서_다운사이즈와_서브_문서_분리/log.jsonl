@@ -42,3 +42,4 @@
 {"ts":"2026-11-21T04:08:53.963Z","p":"P006","type":"gate","by":"cli","msg":"finish","ok":true,"data":{"finish":1}}
 {"ts":"2026-11-21T04:08:53.963Z","p":"P006","type":"finish","by":"cli","msg":"finish","ok":true}
 {"ts":"2026-11-21T05:53:08.395Z","p":"P006","type":"merge","by":"cli","msg":"merge: 사용자 승인","ok":true,"data":{"approved":1,"commits":6}}
+{"ts":"2026-11-21T05:53:13.921Z","p":"P006","type":"merge","by":"cli","msg":"merge: command","ok":false,"data":{}}
