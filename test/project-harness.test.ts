@@ -1028,6 +1028,17 @@ test("declaredCommand: 표 칸·목록 항목 맨 앞의 라벨만 읽고, 설�
   assert.equal(declaredCommand(root, "린트"), "eslint . | tee lint.log", "표 칸 안의 \\| 는 파이프");
 });
 
+test("declaredCommand: CRLF 정의서(Windows core.autocrlf 작업본)도 LF와 같은 선언을 읽는다", () => {
+  const lines = ["# app", "", "| 구분 | 명령 / 값 | 확인 |", "|---|---|---|", "| 검사 | `npm run check` | ✅ |", "| worktree 준비 | `npm ci` | |", "", "- 실행: `npm run dev`", ""];
+  const lf = tempDir("pace-declared-lf-"), crlf = tempDir("pace-declared-crlf-");
+  write(join(lf, "docs", "README.md"), lines.join("\n"));
+  write(join(crlf, "docs", "README.md"), lines.join("\r\n"));
+  for (const [label, cmd] of [["검사", "npm run check"], ["worktree 준비", "npm ci"], ["실행", "npm run dev"]] as const) {
+    assert.equal(declaredCommand(lf, label), cmd, label);
+    assert.equal(declaredCommand(crlf, label), cmd, label);
+  }
+});
+
 test("작업자 도구: --agent > PROJECT.md `- 작업자:` > 정의서 `작업자 도구:` > 지금 세션, 오타는 worktree 전에 거부", () => {
   const { home, main } = repoFixture();
   const orca = fakeOrca();

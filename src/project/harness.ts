@@ -353,7 +353,8 @@ function appendRow(text: string, heading: string, row: string): string {
 function commandInDocument(text: string, label: string): string | null {
   const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const row = new RegExp(`^\\s*(?:\\|\\s*|[-*]\\s+)(?:\\*\\*)?${escaped}(?:\\*\\*)?\\s*(?:\\||:)(.*)$`);
-  for (const line of text.split("\n")) {
+  // CRLF 작업본(Windows core.autocrlf)도 읽는다 — 남은 \r은 `.`과 맞지 않아 라벨 행을 놓친다.
+  for (const line of text.split(/\r?\n/)) {
     const rest = row.exec(line)?.[1];
     if (rest === undefined) continue;
     const cell = line.trimStart().startsWith("|") ? rest.split(/(?<!\\)\|/)[0]! : rest;
