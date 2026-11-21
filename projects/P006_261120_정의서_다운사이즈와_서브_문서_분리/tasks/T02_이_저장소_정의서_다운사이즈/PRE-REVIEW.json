@@ -1,0 +1,5 @@
+{"version":1,"author":"anthropic","attempts":[
+{"hash":"7afd5ead18360c6d751cc94f1299e7882fbe971b5853a1fff05f6e8e34683898","provider":"openai","cross":true,"status":"fail","blocking":3,"evidence":"evidence/pre-review-1.md","continuity":"new"},
+{"hash":"7afd5ead18360c6d751cc94f1299e7882fbe971b5853a1fff05f6e8e34683898","provider":"openai","cross":true,"status":"fail","blocking":3,"evidence":"evidence/pre-review-2.md","continuity":"changed","reason":"codex p 세션 재개 불가로 새 세션 — PM 수정 스크립트 오류로 바뀌지 않은 본문을 다시 검토(같은 지적)"},
+{"hash":"4af795d2b3c47949db2347387b295f3d0adad7a885dbab08e717cdf722cf750c","provider":"openai","cross":true,"status":"pass","blocking":0,"evidence":"evidence/pre-review-3.md","continuity":"changed","reason":"반영 확인 — codex p 세션 재개 불가로 새 세션에 1·2차 원문 인계"}
+]}

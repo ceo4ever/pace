@@ -1,0 +1,16 @@
+PASS S-1 고정 절
+PASS S-2 하네스 선언
+PASS S-3 원문 보존
+PASS S-4 문서 표
+PASS S-4 링크
+PASS S-4 참조 대조
+PASS S-1 측정 15370B · 기준 위반 없음
+PASS 결함 사본 — 고정 절 `용어` 삭제 → S-1 고정 절 실패로 잡음
+PASS 결함 사본 — 같은 라벨 `검사` 행을 뒤에 추가 → S-2 하네스 선언 실패로 잡음
+PASS 결함 사본 — 대상 SETUP의 Canvas 문단을 ARCHITECTURE로 옮김 → S-3 원문 보존 실패로 잡음
+PASS 결함 사본 — DAEMON 적용 범위를 `전체`로 → S-4 문서 표 실패로 잡음
+PASS 결함 사본 — DAEMON 적용 범위를 `**/*`로 → S-4 문서 표 실패로 잡음
+PASS 결함 사본 — ARCHITECTURE 24행을 기준선 문구로 되돌림 → S-4 참조 대조 실패로 잡음
+PASS 결함 사본 — 24행을 되돌리고 안내 문장을 문서 끝에 붙임 → S-4 참조 대조 실패로 잡음
+PASS 결함 사본 — TESTING의 SECURITY 링크 제거 → S-4 참조 대조 실패로 잡음
+PASS 결함 사본 — 브레인에 옛 근거 doc:docs/README.md를 남김 → S-4 참조 대조 실패로 잡음

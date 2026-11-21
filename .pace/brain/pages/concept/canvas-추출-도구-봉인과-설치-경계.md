@@ -3,10 +3,10 @@ type: concept
 title: Canvas 스킬 묶음 설치 경계
 summary: pace-canvas-skills 경로로 봉인 묶음을 통째 설치하며 상류 format과 바이트를 보존한다
 tags: []
-sources: [code:src/setup/install.ts, code:scripts/secret-scan.ts, doc:docs/README.md, test:test/canvas-skills.test.ts]
+sources: [code:src/setup/install.ts, code:scripts/secret-scan.ts, doc:docs/SETUP.md, test:test/canvas-skills.test.ts]
 related: [pace-intent-의도-파악-기획-구조와-함정]
 created: 2026-11-09
-updated: 2026-11-19
+updated: 2026-11-21
 status: active
 ---
 

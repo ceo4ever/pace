@@ -1,0 +1,270 @@
+{
+  "baseline": "a2488d9",
+  "note": "기준선 docs/README.md의 줄 번호(1부터) → 대상 서브 문서와 절. section이 빈 문자열이면 첫 `## ` 앞(머리말). 이 줄의 단위가 반영본 정의서에 없으면 대상 문서의 그 절에서만 찾는다.",
+  "moves": [
+    {
+      "line": 36,
+      "row": "에이전트 호출",
+      "target": "docs/AGENT-CALL.md",
+      "section": "에이전트 호출"
+    },
+    {
+      "line": 37,
+      "row": "검사 선택",
+      "target": "docs/TESTING.md",
+      "section": "검사 선택"
+    },
+    {
+      "line": 42,
+      "row": "PACE 도구 서버",
+      "target": "docs/AGENT-CALL.md",
+      "section": "PACE 도구 서버"
+    },
+    {
+      "line": 43,
+      "row": "상시 실행 daemon",
+      "target": "docs/DAEMON.md",
+      "section": "상시 실행 daemon"
+    },
+    {
+      "line": 44,
+      "row": "기회 탐색",
+      "target": "docs/PLANNING-TOOLS.md",
+      "section": "기회 탐색"
+    },
+    {
+      "line": 45,
+      "row": "의도 파악 기획",
+      "target": "docs/PLANNING-TOOLS.md",
+      "section": "의도 파악 기획"
+    },
+    {
+      "line": 47,
+      "row": "OPAL 가져오기",
+      "target": "docs/ADOPT-OPAL.md",
+      "section": "OPAL 가져오기"
+    },
+    {
+      "line": 48,
+      "row": "설치",
+      "target": "docs/SETUP.md",
+      "section": "설치"
+    },
+    {
+      "line": 49,
+      "row": "스킬",
+      "target": "docs/SKILLS.md",
+      "section": "스킬"
+    },
+    {
+      "line": 50,
+      "row": "플레이북 생성기",
+      "target": "docs/PLAYBOOK.md",
+      "section": "플레이북 생성기"
+    },
+    {
+      "line": 63,
+      "row": "보안 검사(환경)",
+      "target": "docs/TESTING.md",
+      "section": "보안 검사"
+    },
+    {
+      "line": 75,
+      "target": "docs/TESTING.md",
+      "section": "테스트 임시 루트"
+    },
+    {
+      "line": 81,
+      "target": "docs/PLANNING-TOOLS.md",
+      "section": "화면 기획과 Canvas"
+    },
+    {
+      "line": 85,
+      "target": "docs/DASHBOARD.md",
+      "section": ""
+    },
+    {
+      "line": 87,
+      "target": "docs/DASHBOARD.md",
+      "section": ""
+    },
+    {
+      "line": 89,
+      "target": "docs/DASHBOARD.md",
+      "section": ""
+    },
+    {
+      "line": 91,
+      "target": "docs/DASHBOARD.md",
+      "section": ""
+    },
+    {
+      "line": 93,
+      "target": "docs/DASHBOARD.md",
+      "section": ""
+    },
+    {
+      "line": 95,
+      "target": "docs/DASHBOARD.md",
+      "section": ""
+    },
+    {
+      "line": 97,
+      "target": "docs/DASHBOARD.md",
+      "section": ""
+    },
+    {
+      "line": 99,
+      "target": "docs/SETUP.md",
+      "section": "Canvas 묶음 설치"
+    },
+    {
+      "line": 103,
+      "target": "docs/WORK-PROCESS.md",
+      "section": ""
+    },
+    {
+      "line": 105,
+      "target": "docs/WORK-PROCESS.md",
+      "section": ""
+    },
+    {
+      "line": 108,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "백로그 상태 전환"
+    },
+    {
+      "line": 111,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "지표와 사건 기록"
+    },
+    {
+      "line": 112,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "지표와 사건 기록"
+    },
+    {
+      "line": 113,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "지표와 사건 기록"
+    },
+    {
+      "line": 114,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "지표와 사건 기록"
+    },
+    {
+      "line": 115,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "지표와 사건 기록"
+    },
+    {
+      "line": 116,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "선언 명령과 커밋 게이트"
+    },
+    {
+      "line": 121,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "선언 명령과 커밋 게이트"
+    },
+    {
+      "line": 126,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 128,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 129,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 130,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 131,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 132,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 133,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 134,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 135,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 136,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 137,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 138,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 139,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 141,
+      "target": "docs/SECURITY.md",
+      "section": ""
+    },
+    {
+      "line": 166,
+      "target": "docs/WORK-PROCESS.md",
+      "section": "작업자 모델 설정"
+    }
+  ],
+  "exceptions": [
+    {
+      "line": 110,
+      "why": "계약 덤 교정 — worktree 예시 경로",
+      "before": "`../ai-framework.wt/P###`",
+      "after": "`../pace.wt/P###`",
+      "in": "docs/README.md"
+    },
+    {
+      "line": 148,
+      "why": "설계 — 문서 표 security 행을 SECURITY.md로(적용 범위 그대로)",
+      "before": "`docs/README.md` §보안",
+      "after": "`docs/SECURITY.md`",
+      "in": "docs/README.md"
+    },
+    {
+      "line": 32,
+      "why": "T01 스킬 템플릿 — 구성 요소 표 넷째 열 머리글",
+      "before": "| 비고 |",
+      "after": "| 요약 · 상세 |",
+      "in": "docs/README.md"
+    }
+  ]
+}

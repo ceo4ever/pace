@@ -24,3 +24,17 @@
 {"ts":"2026-11-21T03:13:06.480Z","p":"P006","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-21T03:13:13.632Z","p":"P006","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-21T03:13:13.632Z","p":"P006","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-21T03:13:51.834Z","p":"P006","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-21T03:19:53.816Z","p":"P006","t":"T02","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-21T03:19:54.673Z","p":"P006","t":"T02","type":"review","by":"agent","msg":"reviewer fail blocking 3 should_fix 1 — codex 사전 검토 1차(S-3 대상 대조·S-4 의미·S-1/2 유일성)","data":{"blocking":3,"should_fix":1,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-21T03:19:55.507Z","p":"P006","t":"T02","type":"review","by":"agent","msg":"reviewer fail blocking 3 should_fix 1 — codex 사전 검토 2차(수정 스크립트 오류로 본문 동일)","data":{"blocking":3,"should_fix":1,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-21T03:19:56.359Z","p":"P006","t":"T02","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — codex 반영 확인(전체 덮는 glob 검출 보강 권고)","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-21T03:22:51.764Z","p":"P006","t":"T02","type":"decision","by":"agent","msg":"서브 문서 배치: 출발안 10개 + docs/SKILLS.md(스킬 행 원문 417자가 비고 150자 초과 — 한 주제 문서로 분리), 워크스페이스 등록부 행은 원문 유지·링크 글자만 줄임","src":"자체 판단"}
+{"ts":"2026-11-21T03:22:52.618Z","p":"P006","t":"T02","type":"decision","by":"agent","msg":"원문 보존 예외 3건(대응표에 전후 값): worktree 예시 경로(계약 덤), 문서 표 security 행 대상(설계), 구성 요소 머리글 비고→요약 · 상세(T01 템플릿)","src":"자체 판단"}
+{"ts":"2026-11-21T03:45:29.602Z","p":"P006","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-21T03:45:37.153Z","p":"P006","t":"T02","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 — 2단계(S-6 마감 기록 조건, S-5 원문 첨부 요청 반영)","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-21T03:45:37.978Z","p":"P006","t":"T02","type":"review","by":"agent","msg":"reviewer fail blocking 1 should_fix 1 — codex 1단계(민감 경로 서브 문서 SECURITY 미연결)","data":{"blocking":1,"should_fix":1,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-21T03:45:38.815Z","p":"P006","t":"T02","type":"review","by":"agent","msg":"reviewer fail blocking 2 should_fix 0 — codex 2단계(S-5 문항·원문, ARCHITECTURE 24행)","data":{"blocking":2,"should_fix":0,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-21T03:45:39.641Z","p":"P006","t":"T02","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — codex 재검토(24행 줄 단위 검사 반영)","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-21T03:45:40.545Z","p":"P006","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-21T03:45:40.545Z","p":"P006","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}

@@ -53,3 +53,5 @@
 ## [2026-11-19] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
 ## [2026-11-19] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
 ## [2026-11-19] update | 변경 기반 검사와 실행 선언 신뢰 경계 (.pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md)
+## [2026-11-21] update | 백로그 대시보드 자동 갱신과 Git 경계 (.pace/brain/pages/concept/백로그-대시보드-자동-갱신과-git-경계.md)
+## [2026-11-21] update | Canvas 스킬 묶음 설치 경계 (.pace/brain/pages/concept/canvas-추출-도구-봉인과-설치-경계.md)

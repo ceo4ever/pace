@@ -6,4 +6,4 @@ created: 2026-10-22
 updated: 2026-11-21
 ---
 
-P006 T01 완료(정의서 크기·분리 기준을 pace-project-init 스킬에 정본화, 작성·최신화 절차·템플릿 개선) · 다음: T02 이 저장소 정의서 다운사이즈(출발안 refs/wip/P006-T02-draft, 측정·대조 도구는 프로젝트 evidence) · 막힌 것: 기존 간헐 실패 canvas-미리보기-소유-chrome-관찰-간헐-실패(main이 처리, finish에서 재실행 1회)
+P006 T01·T02 완료(정의서 기준을 pace-project-init에 정본화, 이 저장소 정의서 40.7KB→15.4KB·서브 문서 11개) · 다음: PROJECT-CLOSE와 finish · 막힌 것: 전체 검사의 시간 의존 시험(changed check timeout)이 부하 때 실패, Canvas 소유 Chrome 간헐 실패는 main이 처리

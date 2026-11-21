@@ -3,10 +3,10 @@ type: concept
 title: 백로그 대시보드 자동 갱신과 Git 경계
 summary: 대시보드 최초 생성과 Git 자료 갱신의 경계를 유지하고 프로젝트 상태·인덱스 자료를 안전하게 보존한다
 tags: []
-sources: [code:src/project/dashboard.ts, code:src/project/dashboard-init.ts, code:src/cli.ts, code:src/project/harness.ts, test:test/dashboard-init.test.ts, code:src/project/adopt-opal.ts, test:test/backlog-dashboard.test.ts, test:test/project-harness.test.ts, doc:skills/pace-project-init/SKILL.md, doc:docs/README.md, code:src/dashboard/backlog/core.js, code:src/dashboard/backlog/app.js, doc:templates/backlog/BACKLOG.md, doc:skills/pace-project-init/references/backlog-format.md, code:src/project/dashboard-layout.ts]
+sources: [code:src/project/dashboard.ts, code:src/project/dashboard-init.ts, code:src/cli.ts, code:src/project/harness.ts, test:test/dashboard-init.test.ts, code:src/project/adopt-opal.ts, test:test/backlog-dashboard.test.ts, test:test/project-harness.test.ts, doc:skills/pace-project-init/SKILL.md, doc:docs/DASHBOARD.md, code:src/dashboard/backlog/core.js, code:src/dashboard/backlog/app.js, doc:templates/backlog/BACKLOG.md, doc:skills/pace-project-init/references/backlog-format.md, code:src/project/dashboard-layout.ts]
 related: [작업-하네스-흐름]
 created: 2026-11-07
-updated: 2026-11-19
+updated: 2026-11-21
 status: active
 ---
 
@@ -36,7 +36,7 @@ Git 파일 열거가 경고를 stderr에 내면서 exit 0이어도 목록이 불
 
 ## 결정 이력
 
-초기 검토 중에는 비Git 일반 폴더를 자체 수집하는 안이 잠시 승인됐고 관련 파서·테스트가 만들어졌다. 독립 검토에서 상위 Git 탐지, Git ignore 호환성, refresh 범위 문제가 발견됐으며, 최종 사용자 결정은 비Git 전용 수집기를 제거하고 저장소가 없을 때 `git init`하는 방식으로 대체했다. 독립 재검증은 경로 trim, Git 목록 경고, init 후 오류 안내, HOME/root 초기화 경계, 절대경로 안내를 추가 보완으로 지적했고 이 경계를 반례 검사했다. 현재 `docs/README.md`와 `pace-project-init` 지침은 새 Git 저장소의 unborn 상태에서 dashboard 생성/조회와 backlog new/brief·project harness 선행조건을 구분한다.
+초기 검토 중에는 비Git 일반 폴더를 자체 수집하는 안이 잠시 승인됐고 관련 파서·테스트가 만들어졌다. 독립 검토에서 상위 Git 탐지, Git ignore 호환성, refresh 범위 문제가 발견됐으며, 최종 사용자 결정은 비Git 전용 수집기를 제거하고 저장소가 없을 때 `git init`하는 방식으로 대체했다. 독립 재검증은 경로 trim, Git 목록 경고, init 후 오류 안내, HOME/root 초기화 경계, 절대경로 안내를 추가 보완으로 지적했고 이 경계를 반례 검사했다. 현재 `docs/DASHBOARD.md`(정의서에서 분리한 대시보드 상세)와 `pace-project-init` 지침은 새 Git 저장소의 unborn 상태에서 dashboard 생성/조회와 backlog new/brief·project harness 선행조건을 구분한다.
 
 ## 테스트 fixture
 

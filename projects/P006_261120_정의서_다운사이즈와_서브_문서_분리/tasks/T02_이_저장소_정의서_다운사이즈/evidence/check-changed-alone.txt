@@ -1,0 +1,4 @@
+✔ changed check timeout and parent OS termination never continue into tests or full fallback (6306.272ms)
+ℹ tests 26
+ℹ pass 26
+ℹ fail 0

@@ -21,8 +21,8 @@ LLM CLI 세션 시작 훅으로 올라오는 개인 비서 에이전트. TypeScr
 
 ## 더 보기
 
-- `docs/README.md` — 정의서: 개요·구성 요소·환경·작업 프로세스·보안(민감 경로)·문서 표
-- `docs/ARCHITECTURE.md` — 구성 요소와 주요 실행 흐름
+- 작업 시작 때: `docs/README.md` — 정의서(지도): 구성 요소·환경·작업 프로세스, 상세 문서 위치(문서 표)
+- 경로를 고칠 때: 정의서 문서 표에서 그 경로가 적용 범위인 서브 문서(`docs/*.md` — 예: `src/daemon/**` → `docs/DAEMON.md`, 민감 경로 → `docs/SECURITY.md`)
 - 작업: 프로젝트 `pace project list` (`projects/P###_…`), 백로그 `backlogs/BL…/` (`BACKLOG.md` 개요·결정, `BR…` 브리프)
 - 진행 상황·이슈·할 일: `pace memory list --project` · 상세 `pace memory show <slug> --project`
 - 결정의 이유·도구별 훅 동작·설치 함정: `pace brain search "<질의>"` (`.pace/brain/`)

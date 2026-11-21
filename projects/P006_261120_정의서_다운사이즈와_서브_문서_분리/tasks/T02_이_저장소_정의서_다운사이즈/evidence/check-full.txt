@@ -1,0 +1,15 @@
+ℹ tests 1004
+ℹ suites 0
+ℹ pass 997
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 6
+ℹ todo 0
+ℹ duration_ms 1099555.028
+check exit=1
+scan exit=0
+1060-  AssertionError [ERR_ASSERTION]: check started
+1061-      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P006/test/changed-test.test.ts:344:10)
+1062-      at async Test.run (node:internal/test_runner/test:1409:7)
+1063-      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+비밀 검사 통과: 2686개 파일 (�
