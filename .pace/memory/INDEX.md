@@ -28,6 +28,7 @@
 - [main 직접 finish 브레인 반영 검사 모순](main-직접-finish-브레인-반영-검사-모순.md) — main 직접 프로젝트 finish가 커밋 안 한 변경만 보고 브레인 반영을 판정해, 브레인을 고친 main 직접 프로젝트는 통과 불가 — 프로젝트 번호 커밋도 보게 고친다
 - [playbook-guard 임시 폴더 시험 병렬 경합](playbook-guard-임시-폴더-시험-병렬-경합.md) — playbook-guard 저장 경계 시험이 공용 tmpdir의 pace-playbook-* 증가로 판정해 병렬 실행 때 다른 시험 파일의 임시 폴더를 잡고 실패 — 시험 전용 임시 루트로 격리
 - [Canvas 미리보기 소유 Chrome 관찰 간헐 실패](canvas-미리보기-소유-chrome-관찰-간헐-실패.md) — intent-preview 실제 렌더 시험이 Windows에서 간헐 'owned Chrome not observed' — 감시자 관찰 방식을 보강한다
+- [changed check timeout 시험 부하 민감](changed-check-timeout-시험-부하-민감.md) — test/changed-test.test.ts 'changed check timeout and parent OS termination …'이 전체 검사 부하에서 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
 
 ## 할 일
 
@@ -72,3 +73,6 @@
 - [사람 확인 대기 완료 표시 명령](사람-확인-대기-완료-표시-명령.md) — pendingHumanChecks 대기 항목을 사람이 이미지 확인 뒤 확인 완료로 표시하는 명령을 둔다
 - [대시보드 local.js 복구 경합](대시보드-local-js-복구-경합.md) — ensureLocalLink 복구가 내용 확인 직후 교체된 파일을 덮을 수 있는 좁은 창 — local.js 쓰기를 refresh 잠금 안으로 옮기는 안 검토
 - [main 직접 프로젝트 착수 기록](main-직접-프로젝트-착수-기록.md) — main 직접 프로젝트도 start처럼 상태 진행·착수 결정 log.jsonl을 남기는 명령(start --main 등)을 둔다
+- [문서 표 SECURITY 적용 범위 정렬](문서-표-security-적용-범위-정렬.md) — 정의서 문서 표의 docs/SECURITY.md 적용 범위를 민감 경로 표와 맞춘다(src/test-runner/·skills/pace-playbook-maker/tools/·src/project/situation.ts 누락)
+- [서브 문서 내부 구조 정리](서브-문서-내부-구조-정리.md) — 원문 그대로 옮긴 DAEMON.md(한 문단)·DASHBOARD.md(절 없음)·TESTING 검사 선택(한 문장)을 절로 나눠 찾기 쉽게 — 정의서 크기 여유 6%도 함께 본다
+- [정의서 측정 도구 제공](정의서-측정-도구-제공.md) — pace-project-init의 정의서 측정(크기·절·비고·미등록 폴더·문서·서브 문서)을 CLI나 스킬 도구로 제공 — 지금은 analysis.md에 재는 법만 있다
