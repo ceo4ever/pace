@@ -27,6 +27,7 @@
 - [codex 같은 세션 재검토 불가](codex-같은-세션-재검토-불가.md) — pace agent run codex p 모드가 --resume을 지원하지 않아 reviewer 지침의 같은 세션 재검토를 못 한다 — 재개 지원 또는 지침 대안 정리
 - [main 직접 finish 브레인 반영 검사 모순](main-직접-finish-브레인-반영-검사-모순.md) — main 직접 프로젝트 finish가 커밋 안 한 변경만 보고 브레인 반영을 판정해, 브레인을 고친 main 직접 프로젝트는 통과 불가 — 프로젝트 번호 커밋도 보게 고친다
 - [playbook-guard 임시 폴더 시험 병렬 경합](playbook-guard-임시-폴더-시험-병렬-경합.md) — playbook-guard 저장 경계 시험이 공용 tmpdir의 pace-playbook-* 증가로 판정해 병렬 실행 때 다른 시험 파일의 임시 폴더를 잡고 실패 — 시험 전용 임시 루트로 격리
+- [Canvas 미리보기 소유 Chrome 관찰 간헐 실패](canvas-미리보기-소유-chrome-관찰-간헐-실패.md) — intent-preview 실제 렌더 시험이 Windows에서 간헐 'owned Chrome not observed' — 감시자 관찰 방식을 보강한다
 
 ## 할 일
 
