@@ -69,3 +69,33 @@
 {"ts":"2026-11-20T11:08:43.124Z","p":"P005","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-20T11:08:52.621Z","p":"P005","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-20T11:08:52.621Z","p":"P005","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-20T11:10:02.570Z","p":"P005","t":"T03","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-20T11:11:26.161Z","p":"P005","t":"T03","type":"note","by":"agent","msg":"T02 4806f72 커밋 완료 뒤 T03를 열고 정식CLI 수명주기·중복·메모리 병행·시작방식과 기기표시 선택 영향을 계획했다"}
+{"ts":"2026-11-20T11:11:28.772Z","p":"P005","t":"T03","type":"question","by":"agent","msg":"T02 마감커밋 결과와 T03 계획을 전달하고 시작방식·기기표시·기동알림/최종상태 선택 및 독립 사전검토 요청"}
+{"ts":"2026-11-20T11:16:51.286Z","p":"P005","t":"T03","type":"answer","by":"agent","msg":"main 제공 독립 T03 사전 fail blocking1: 미승인2GiB/10% 합격·권한게이트 제거, P3/BR03대로 시각/간격/지표/관측최저·OOM중단·동일daemon유지 증거로 보완"}
+{"ts":"2026-11-20T11:17:57.086Z","p":"P005","t":"T03","type":"change","by":"agent","msg":"P3/BR03은 메모리 여유 관측을 요구하므로 미승인2GiB/10% 합격선·사전권한게이트를 제거하고 실제구간/샘플/지표·검사종료·동일daemon유지·OOM관측을 기록한다","src":"main 판단"}
+{"ts":"2026-11-20T11:18:01.117Z","p":"P005","t":"T03","type":"question","by":"agent","msg":"T03 메모리 임의 게이트 제거 및 관측 기준 수정분의 동일 reviewer 재검토 요청"}
+{"ts":"2026-11-20T11:19:48.053Z","p":"P005","t":"T03","type":"answer","by":"agent","msg":"동일 anthropic 2차 pass blocking0·B1해소 수신, CLI요청 effort low와 보고모델 구분; 운영선택 전 안전한 로컬준비만 진행"}
+{"ts":"2026-11-20T11:19:49.644Z","p":"P005","t":"T03","type":"review","by":"agent","msg":"사전 reviewer fail blocking 1 should_fix 0; 최초 원문 보존과 임의 메모리게이트 제거, 앞선 형식오류로 누락된 리뷰사건을 보완","ref":"tasks/T03_기동과_자동_시작/evidence/pre-review-1-phase2.md","data":{"blocking":1,"should_fix":0,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-20T11:20:41.113Z","p":"P005","t":"T03","type":"review","by":"agent","msg":"사전 reviewer pass blocking 0 should_fix 0; 동일 anthropic 세션2차 B1해소·샘플링관측범위확정","ref":"tasks/T03_기동과_자동_시작/evidence/pre-review-2.md","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-20T11:20:42.978Z","p":"P005","t":"T03","type":"note","by":"agent","msg":"설치본0.1.1 관련26모듈해시와 OS메모리조회가능성 로컬확인, 단독관측을 병행증거로 쓰지않음; 운영선택전 기동·등록·device변경대기","ref":"tasks/T03_기동과_자동_시작/evidence/local-preparation.md"}
+{"ts":"2026-11-21T04:41:40.088Z","p":"P005","t":"T03","type":"answer","by":"agent","msg":"캡틴 최신결정 자동실행·지금기동 승인: 로그인자동시작/부수알림/정식CLI·검사병행실측 진행, 마지막등록+정상기동 유지; 로그오프는 사람이 수행"}
+{"ts":"2026-11-21T04:41:40.646Z","p":"P005","t":"T03","type":"decision","by":"agent","msg":"캡틴 자동실행 선택: Windows 로그인 시작항목·설치본 런처 등록 및 지금기동, 승인그룹 메뉴/연결·재기동알림·기동정지중복·검사병행 허용, 최종자동등록+정상기동","src":"사용자 결정"}
+{"ts":"2026-11-21T04:41:41.202Z","p":"P005","t":"T03","type":"decision","by":"agent","msg":"직전 사용자 안내에 따라 기존운영device 유지로 해석하며 이름을 바꾸지 않는다; 실제재로그온 자동기동/콘솔없음은 사람실측 전 미확인","src":"main 판단"}
+{"ts":"2026-11-21T04:51:06.269Z","p":"P005","t":"T03","type":"note","by":"agent","msg":"승인된 Run등록/현재기동 및 중복start동일인스턴스·직접run exit2·정상stop/재기동 실측 통과, 실제daemon+전체검사1회 메모리관측 진행. 초기 소유자준비확인실패는 추정/관측구분·실제소유검증후 제한폴링으로보완","ref":"tasks/T03_기동과_자동_시작/evidence/lifecycle-observations.json"}
+{"ts":"2026-11-21T05:06:42.634Z","p":"P005","t":"T03","type":"note","by":"agent","msg":"등록/정식CLI·검사병행 완료: 전체991pass/0fail/9skip, 152샘플 최저가용12530608KiB/최대daemon97116160bytes·조회오류0·동일인스턴스·OOM신호0/해당이벤트0. 최종등록+정상기동·시험감독해제, 실제재로그온 기준점/절차 보존","ref":"tasks/T03_기동과_자동_시작/evidence/relogon-checklist.md"}
+{"ts":"2026-11-21T05:06:44.993Z","p":"P005","t":"T03","type":"question","by":"agent","msg":"검사/감독 종료·증거/재로그온기준점 보존 완료: 같은사용자 실제 재로그온과 콘솔비표시 확인을 요청할 시점/절차 전달"}
+{"ts":"2026-11-21T05:46:40.623Z","p":"P005","t":"T03","type":"answer","by":"agent","msg":"캡틴 현재로그아웃곤란·병합후시험 결정 전달: 실제로그인자동기동/콘솔실측을 후속인수로 이관, 지금재로그인요청·강제로그오프없음"}
+{"ts":"2026-11-21T05:46:41.200Z","p":"P005","t":"T03","type":"change","by":"agent","msg":"캡틴 승인으로 실제Windows재로그온 자동기동·콘솔비표시 실측을 병합후 인수로 이관한다; 병합전 P3/T03은 Run·런처정확등록/현재기동·수명주기·단일인스턴스·자원관측을 판정하고 미실측후속todo 유지","src":"사용자 결정"}
+{"ts":"2026-11-21T05:51:37.030Z","p":"P005","t":"T03","type":"question","by":"agent","msg":"사용자 승인 실측시점 변경을 반영한 PROJECT P3/T03 T4·S5a/BR03 및 후속todo·기준점 갱신 절차의 현재해시 독립재검토 요청"}
+{"ts":"2026-11-21T05:54:30.764Z","p":"P005","t":"T03","type":"answer","by":"agent","msg":"동일 anthropic 계약변경 재검토 pass blocking0 수신; 기존기준점보존/별도새인수기준점·BACKLOG인수미완비고 보완하고 수정계약 사후판정 준비"}
+{"ts":"2026-11-21T05:55:36.260Z","p":"P005","t":"T03","type":"review","by":"agent","msg":"계약변경 reviewer pass blocking 0 should_fix 0; 현재TASK해시·원래미실측·병합후인수/별도기준점·todo연계 보존","ref":"tasks/T03_기동과_자동_시작/evidence/pre-review-relogon-change.md","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-21T05:55:53.103Z","p":"P005","t":"T03","type":"question","by":"agent","msg":"수정된 병합전 계약 기준 T03 실제 실행증거·마감초안과 후속todo/백로그비고를 새맥락 독립 tester/reviewer 사후판정 요청"}
+{"ts":"2026-11-21T06:01:59.218Z","p":"P005","t":"T03","type":"answer","by":"agent","msg":"새독립 tester/reviewer 최종 pass blocking0·수정T1~T4/S6/병합전목표달성 수신; reviewer2차 device증거 blocking은 읽기보완으로해소, 원래상수/비교범위와 미실측한계보존"}
+{"ts":"2026-11-21T06:04:48.724Z","p":"P005","t":"T03","type":"review","by":"agent","msg":"사후 tester pass blocking 0 should_fix 4; 최초2단계 원문과 관측 한계를 보존","ref":"tasks/T03_기동과_자동_시작/evidence/post-tester-phase2.md","data":{"blocking":0,"should_fix":4,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-21T06:04:49.786Z","p":"P005","t":"T03","type":"review","by":"agent","msg":"사후 reviewer fail blocking 1 should_fix 3; device 측정근거와 Run 비교범위 지적 원문 보존","ref":"tasks/T03_기동과_자동_시작/evidence/post-reviewer-phase2.md","data":{"blocking":1,"should_fix":3,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-21T06:04:50.873Z","p":"P005","t":"T03","type":"review","by":"agent","msg":"최종 tester pass blocking 0 should_fix 0; 수정병합전계약·자원/복원·읽기보완·미실측후속 확인","ref":"tasks/T03_기동과_자동_시작/evidence/post-tester-final.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-21T06:04:51.821Z","p":"P005","t":"T03","type":"review","by":"agent","msg":"최종 reviewer pass blocking 0 should_fix 0; 원래상수/비교범위 정정과 별도읽기증거로 F1해소·한계수용","ref":"tasks/T03_기동과_자동_시작/evidence/post-reviewer-final.md","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-21T06:04:57.016Z","p":"P005","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-21T06:05:31.342Z","p":"P005","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-21T06:05:31.342Z","p":"P005","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}

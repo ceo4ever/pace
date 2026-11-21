@@ -1,0 +1,6 @@
+{
+  "filesChecked": 107,
+  "knownSensitiveValueMatches": 0,
+  "matchedFiles": [],
+  "scope": "All T03 files plus project contract/event log, project memory, original backlog/BR03 and generated dashboard. Intended external input and operational secret stores are excluded."
+}

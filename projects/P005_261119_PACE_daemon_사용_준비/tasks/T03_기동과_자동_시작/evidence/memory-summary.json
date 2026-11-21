@@ -1,0 +1,19 @@
+{
+  "targetIntervalMs": 5000,
+  "checkStartedAt": "2026-11-21T04:48:19.924Z",
+  "checkEndedAt": "2026-11-21T05:00:51.371Z",
+  "firstSampleAt": "2026-11-21T13:48:19.8634524+09:00",
+  "lastSampleAt": "2026-11-21T14:00:52.2839717+09:00",
+  "sampleCount": 152,
+  "sampleErrors": 0,
+  "skippedOverlappingIntervals": 0,
+  "minimumObservedAvailablePhysicalKiB": 12530608,
+  "maximumObservedDaemonWorkingSetBytes": 97116160,
+  "actualMinimumIntervalMs": 658,
+  "actualMaximumIntervalMs": 5864,
+  "allSamplesSameDaemon": true,
+  "outputOomSignalCount": 0,
+  "checkExit": 0,
+  "workload": "Existing Codex worktree session plus idle operational Telegram daemon and one repository full check (Windows test concurrency 4). No two live model jobs.",
+  "scope": "Observed samples only; no arbitrary memory threshold, no guarantee of between-sample instantaneous minimum or every system OOM."
+}

@@ -8,7 +8,7 @@
 
 ## 지킬 것 · 하지 말 것
 
-- [Orca 안 전체 검사는 브라우저 E2E 끔](orca-안-전체-검사는-브라우저-e2e-끔.md) — Orca 터미널에서 npm run check는 PACE_SKIP_BROWSER_E2E=1로 돌린다 — playbook E2E 4개가 Orca 브라우저 탭을 열어 사용자 화면을 어지럽힌다. 브라우저 동작을 바꾼 일만 켠다
+- (없음)
 
 ## 열린 이슈
 
@@ -24,20 +24,19 @@
 - [Windows 설치 스킬 교체 EPERM](windows-설치-스킬-교체-eperm.md) — Windows 설치가 스킬 폴더 교체 중 EPERM으로 실패하면 잠근 프로세스를 확인하고 재시도·이름 바꾼 뒤 지우기를 검토한다
 - [Windows 실제 ACP 세션 환경 검증](windows-실제-acp-세션-환경-검증.md) — Windows 실제 Claude ACP 세션에서 Git Bash 위치 환경과 요청 흐름을 검증한다
 - [daemon-store S-15 간헐 실패 — Windows 제외 포트 범위](daemon-store-s-15-간헐-실패-windows-제외-포트-범위.md) — 임시 PACE_HOME의 해시 인스턴스 포트가 Windows 제외 범위면 listen EACCES 실패 — 다음 후보 포트로 넘어가게 고침
+- [codex 같은 세션 재검토 불가](codex-같은-세션-재검토-불가.md) — pace agent run codex p 모드가 --resume을 지원하지 않아 reviewer 지침의 같은 세션 재검토를 못 한다 — 재개 지원 또는 지침 대안 정리
 - [main 직접 finish 브레인 반영 검사 모순](main-직접-finish-브레인-반영-검사-모순.md) — main 직접 프로젝트 finish가 커밋 안 한 변경만 보고 브레인 반영을 판정해, 브레인을 고친 main 직접 프로젝트는 통과 불가 — 프로젝트 번호 커밋도 보게 고친다
 - [playbook-guard 임시 폴더 시험 병렬 경합](playbook-guard-임시-폴더-시험-병렬-경합.md) — playbook-guard 저장 경계 시험이 공용 tmpdir의 pace-playbook-* 증가로 판정해 병렬 실행 때 다른 시험 파일의 임시 폴더를 잡고 실패 — 시험 전용 임시 루트로 격리
 - [Canvas 미리보기 소유 Chrome 관찰 간헐 실패](canvas-미리보기-소유-chrome-관찰-간헐-실패.md) — intent-preview 실제 렌더 시험이 Windows에서 간헐 'owned Chrome not observed' — 감시자 관찰 방식을 보강한다
 - [changed check timeout 시험 부하 민감](changed-check-timeout-시험-부하-민감.md) — test/changed-test.test.ts 'changed check timeout and parent OS termination …'이 전체 검사 부하에서 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
-- [2단계 검토 판정 원장 미반영](2단계-검토-판정-원장-미반영.md) — goal-review 2단계(작업 문서 받은 뒤 호스트 판정) blocking이 검토 원장에 안 들어가 1단계 pass·2단계 blocking 반복이 반복 실패 단계로 안 잡힌다 — 최종 판정 확정 절차를 설계한다
-- [Gateway 인증 시간 초과 시험 부하 민감](gateway-인증-시간-초과-시험-부하-민감.md) — test/daemon-process.test.ts Gateway 인증 시간 초과·미인증 연결 상한 시험이 전체 검사 부하에서 간헐 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
-- [Orca 메뉴 경로 복구 전체 검사 불안정](orca-메뉴-경로-복구-전체-검사-불안정.md) — 전체 검사에서 메뉴 경로 승인 뒤 screen-mismatch가 반복되면 단독 실행과 비교하고 실패 원문을 보존한다
-- [daemon stop 직후 start 무시](daemon-stop-직후-start-무시.md) — macOS에서 pace daemon stop 직후 start가 서비스를 띄우지 않음 — stop이 종료 확인 전에 반환하는지, launchctl start가 종료 중 작업에 걸리는지 확인한다
-- [dashboard-init 정션 시험 부하 민감](dashboard-init-정션-시험-부하-민감.md) — test/dashboard-init.test.ts '상위 정션 아래 모호한 cwd도 형제 저장소를 바꾸지 않는다'가 전체 검사 부하에서 실패 — 단독 5회 통과, 비교 스냅숏에 .git 파일이 들어가 부하 중 내용이 바뀌는지 확인한다(BL261124_01 BR01 대상)
+- [daemon 초기 준비 확인 실패 관측](daemon-초기-준비-확인-실패-관측.md) — Windows daemon 초기 소유자 확인 실패가 재발하면 원문과 시점을 확보해 원인을 구분한다
+- [Windows 루트 교체 검사 skip](windows-루트-교체-검사-skip.md) — Windows의 루트 교체 훅 skip 원인을 확인해 실제 경로 재검증 시험의 실행 가능성을 점검한다
 
 ## 할 일
 
 - [pace agent Codex 호스트 조건 안내 확인](pace-agent-codex-호스트-조건-안내-확인.md) — Codex 호스트의 네트워크 허용·중첩 Codex의 샌드박스 해제 필요 안내가 실제 사용 때 드러나는지 확인한다
 - [호스트 실사용 검증](호스트-실사용-검증.md) — GUI 호스트와 Windows에서 프로젝트 역할 수신·부트를 실사용으로 확인한다
+- [로그온 자동 기동 병합 후 실측](로그온-자동-기동-병합-후-실측.md) — P005 병합 후 같은 Windows 사용자 재로그온으로 자동 기동과 콘솔 비표시를 실제 확인한다
 
 ## 메모 (사실·결정)
 

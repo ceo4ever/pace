@@ -1,0 +1,27 @@
+{
+  "execution-common.mjs": {
+    "originalBasename": "pace-p005-t03-common.mjs",
+    "rawSha256": "468acf99bb0125ba82e469a7bd96f9741db45e5985a476409d948068d2893323",
+    "normalizedSha256": "468acf99bb0125ba82e469a7bd96f9741db45e5985a476409d948068d2893323"
+  },
+  "execution-run.mjs": {
+    "originalBasename": "pace-p005-t03-run.mjs",
+    "rawSha256": "756376394f3dc5b88c8d39df3a9323a15f229c258a7395f417f3d565c9cdb5d3",
+    "normalizedSha256": "756376394f3dc5b88c8d39df3a9323a15f229c258a7395f417f3d565c9cdb5d3"
+  },
+  "execution-guardian.mjs": {
+    "originalBasename": "pace-p005-t03-guardian.mjs",
+    "rawSha256": "b958f1c577a40a01e52bc99629fc9ca37de8a134ea655280bc958485a1d8a127",
+    "normalizedSha256": "b958f1c577a40a01e52bc99629fc9ca37de8a134ea655280bc958485a1d8a127"
+  },
+  "execution-memory.ps1": {
+    "originalBasename": "pace-p005-t03-memory.ps1",
+    "rawSha256": "8429653f3a4cc7cdbad765db994d52d80fc2ad350318f43d6e46872382f025e4",
+    "normalizedSha256": "8429653f3a4cc7cdbad765db994d52d80fc2ad350318f43d6e46872382f025e4"
+  },
+  "execution-adopt.mjs": {
+    "originalBasename": "pace-p005-t03-adopt.mjs",
+    "rawSha256": "4d3a034f1cca646ae9d3b2ed1ce4407f9bf17ee2e9b0c71c7b26582987701706",
+    "normalizedSha256": "5290f090932c0b5f010396751a4cc712f292bb1a54131bb0b33325ad7e12734e"
+  }
+}

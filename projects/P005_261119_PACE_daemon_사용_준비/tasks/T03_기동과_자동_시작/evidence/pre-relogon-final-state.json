@@ -1,0 +1,15 @@
+{
+  "automaticStartupRegistered": true,
+  "runValueExact": true,
+  "launcherExact": true,
+  "normalDaemonRunning": true,
+  "sameInstanceThroughoutCheck": true,
+  "configUnchanged": true,
+  "devicePreserved": true,
+  "secretUnchanged": true,
+  "logOutputKnownTokenMatches": 0,
+  "realRelogonConfirmed": false,
+  "consoleHiddenAfterRelogonConfirmed": false,
+  "finalOperationalState": "registered and running as approved",
+  "guardianDisarmedForApprovedFinalRunning": true
+}

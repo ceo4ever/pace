@@ -1,0 +1,9 @@
+{
+    "configMatchesT02":  true,
+    "configMatchesT03":  true,
+    "explicitDevice":  false,
+    "loadedMatchesHostnameDefault":  true,
+    "runningDeviceMatchesLoaded":  true,
+    "runFullStringCaseSensitiveExact":  true,
+    "observedAt":  "2026-11-21T14:59:39.0956446+09:00"
+}

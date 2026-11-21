@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "b1e7b2e2ec8ac2b44e639a4204e3ee3ded1e135ee32899400e6a68f677e76fff",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "unavailable",
+      "blocking": 0,
+      "evidence": "evidence/pre-review-unavailable.md",
+      "continuity": "new",
+      "reason": "Coordinator reported initial cross-provider call timeout exit 6; no valid judgment and original output unavailable."
+    },
+    {
+      "hash": "b1e7b2e2ec8ac2b44e639a4204e3ee3ded1e135ee32899400e6a68f677e76fff",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "evidence/pre-review-1-phase2.md",
+      "continuity": "new"
+    },
+    {
+      "hash": "9312ebf73b52ee6df654ae95e75d3cdcb772d48e108803d667d8883d44d66288",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "evidence/pre-review-2.md",
+      "continuity": "same"
+    },
+    {
+      "hash": "af2a0f0403d192ba6dce8f9df2543c2d0c16eb097f8fd316e3649a7227e4f24d",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "evidence/pre-review-relogon-change.md",
+      "continuity": "same"
+    }
+  ]
+}
