@@ -1,0 +1,17 @@
+PASS 유사 경로만 등록된 src/dashboard/ 검출
+PASS 대조군: 끝 / 없이 정확히 등록된 src/core는 미등록 아님
+PASS 대조군: 등록된 src/dashboard-old/는 미등록 아님
+PASS 표 밖·설명 칸에서만 언급된 docs/X.md 검출
+PASS 대조군: 첫 칸에 등록된 docs/Y.md는 미등록 아님
+PASS 비고 151자 검출, 150자 대조군 제외
+PASS 대조군: 첫 칸 링크 대상으로 등록된 docs/Z.md는 미등록 아님
+PASS 링크 글자만 맞고 대상이 다른 docs/W.md 검출
+PASS 백틱 표시명만 맞고 대상이 다른 docs/V.md 검출
+PASS 대조군: 등록된 폴더 docs/services/ 아래 문서는 미등록 아님
+PASS 하위 폴더의 미등록 docs/extra/NOTE.md 검출
+PASS 일반 절 3,001자 검출
+PASS 대조군: 일반 절 3,000자는 위반 아님
+PASS 구성 요소 절은 3,001자여도 절 한도로 잡지 않음
+PASS 크기 16384B 대조군 위반 아님
+PASS 크기 16385B 검출
+PASS CRLF 작업본도 LF 기준 16,384B로 재 위반 아님

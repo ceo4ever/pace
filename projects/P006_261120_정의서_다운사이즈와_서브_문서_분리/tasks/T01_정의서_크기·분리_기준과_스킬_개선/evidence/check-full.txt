@@ -1,0 +1,33 @@
+ℹ tests 1004
+ℹ suites 0
+ℹ pass 996
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 6
+ℹ todo 0
+ℹ duration_ms 1132421.2636
+check exit=1
+비밀 검사 통과: 2644개 파일 (제외: skills/pace-tech-handbook/references/common/api-design/GUIDE.md, skills/pace-tech-handbook/references/kotlin/rules-kotlin/security.md, skills/pace-tech-handbook/references/python/fastapi-patterns/GUIDE.md, skills/pace-tech-handbook/references/python/python-testing/GUIDE.md, skills/pace-tech-handbook/references/typescript/backend-patterns/GUIDE.md, test/project-harness.test.ts, test/secret-scan.test.ts, test/agent-setup.test.ts, test/daemon-install-wizard.test.ts, test/daemon-runner.test.ts, test/daemon-wizard-follow.test.ts, test/telegram-format.test.ts, test/telegram-helpers.ts; Canvas 묶음 JS 5개는 경로·SHA-256 일치 시 제외)
+scan exit=0
+324:✖ changed check timeout and parent OS termination never continue into tests or full fallback (6728.243ms)
+325-✔ installed Windows entry and copied real Node/Python drivers execute outside the checkout (9472.5477ms)
+326-✔ the user README map example runs unchanged through the installed CLI (4502.5061ms)
+327-✔ 잘못된 작업자 명령은 PACE 사용법을 안내한다 (287.194ms)
+--
+574:✖ 실제 Canvas 도구로 프레임을 렌더하고 소유 Chrome과 프로필을 회수한다 (4877.8974ms)
+575-✔ SKILL.md는 영어 본문·언어 규칙·일곱 절·순서 ①~⑨를 갖는다 (2.2184ms)
+576-✔ SKILL.md는 수집 요약을 질문보다 먼저, 질문은 한 번에 하나로 지시한다 (0.2188ms)
+577-✔ 저장소 렌즈는 모두 형식 검사를 통과하고 INDEX.md가 머리말에서 생성된 그대로다 (15.8433ms)
+--
+1050:✖ failing tests:
+1051-
+1052-test at test\changed-test.test.ts:336:1
+1053:✖ changed check timeout and parent OS termination never continue into tests or full fallback (6728.243ms)
+1054-  AssertionError [ERR_ASSERTION]: check started
+1055-      at TestContext.<anonymous> (file:///D:/LucasStudio/pace.wt/P006/test/changed-test.test.ts:344:10)
+1056-      at async Test.run (node:internal/test_runner/test:1409:7)
+--
+1067:✖ 실제 Canvas 도구로 프레임을 렌더하고 소유 Chrome과 프로필을 회수한다 (4877.8974ms)
+1068-  Error: 실제 렌더/회수 실패: 0, 1; 테스트 루트=C:\Users\root-user\AppData\Local\Temp\pace-test-run-jaCvgG; 출력=C:\Users\root-user\AppData\Local\Temp\pace-test-run-jaCvgG\pace-preview-fmeev5; 프로필 루트=C:\Users\root-user\AppData\Local\Temp\pace-test-run-jaCvgG\pace-preview-fmeev5\owned-chrome-temp; ; READY 75631c7a524370d8d252ae22404608db root=31488 created=2026-11-20T20:45:35.7341440+09:00 at=2026-11-20T11:45:37.3516758Z
+1069-  owned Chrome not observed
+1070-  renderer GO at=2026-11-20T11:45:37.354Z

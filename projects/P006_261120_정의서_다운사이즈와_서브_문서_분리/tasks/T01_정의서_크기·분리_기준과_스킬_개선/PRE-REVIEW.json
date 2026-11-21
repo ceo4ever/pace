@@ -1,0 +1,6 @@
+{"version":1,"author":"anthropic","attempts":[
+{"hash":"b52eaec416092eb905d57cc4447edcf5abf77afb499e4547924ea64940f13250","provider":"openai","cross":true,"status":"fail","blocking":3,"evidence":"evidence/pre-review-1.md","continuity":"new","note":"해시는 검토 뒤 TASK 수정 치환을 역순 적용해 재구성(검토 시점에 기록하지 못함)"},
+{"hash":"d8e00be7f8f32269b84ea9cfdb07b0c3d41f109d2522c49452fd85c085a23428","provider":"openai","cross":true,"status":"fail","blocking":2,"evidence":"evidence/pre-review-2.md","continuity":"changed","reason":"codex p 모드가 세션 재개를 지원하지 않아 새 세션에 1차 원문·수정 범위를 넘김","note":"해시 재구성"},
+{"hash":"d453109591cdf7a7c27f00d3438a8c884e6ba5ac85015b037e0094004285b526","provider":"openai","cross":true,"status":"fail","blocking":1,"evidence":"evidence/pre-review-3.md","continuity":"changed","reason":"반영 확인 — codex p 세션 재개 불가로 새 세션","note":"해시 재구성"}
+],
+"waiver":{"by":"user","date":"2026-11-20","reason":"반영 확인 fail의 남은 1건(S-7 분리 전후 resolveAgent 비교)을 TASK에 반영, 구현 뒤 tester·reviewer가 다시 확인","evidence":"evidence/user-waiver.md","hash":"6c78274494378d0369902bb0ac437e945d1b926e51b9fb079f0c3a14da9b2f17"}}
