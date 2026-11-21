@@ -27,12 +27,15 @@
 - [codex 같은 세션 재검토 불가](codex-같은-세션-재검토-불가.md) — pace agent run codex p 모드가 --resume을 지원하지 않아 reviewer 지침의 같은 세션 재검토를 못 한다 — 재개 지원 또는 지침 대안 정리
 - [main 직접 finish 브레인 반영 검사 모순](main-직접-finish-브레인-반영-검사-모순.md) — main 직접 프로젝트 finish가 커밋 안 한 변경만 보고 브레인 반영을 판정해, 브레인을 고친 main 직접 프로젝트는 통과 불가 — 프로젝트 번호 커밋도 보게 고친다
 - [playbook-guard 임시 폴더 시험 병렬 경합](playbook-guard-임시-폴더-시험-병렬-경합.md) — playbook-guard 저장 경계 시험이 공용 tmpdir의 pace-playbook-* 증가로 판정해 병렬 실행 때 다른 시험 파일의 임시 폴더를 잡고 실패 — 시험 전용 임시 루트로 격리
+- [daemon 초기 준비 확인 실패 관측](daemon-초기-준비-확인-실패-관측.md) — Windows daemon 초기 소유자 확인 실패가 재발하면 원문과 시점을 확보해 원인을 구분한다
+- [Windows 루트 교체 검사 skip](windows-루트-교체-검사-skip.md) — Windows의 루트 교체 훅 skip 원인을 확인해 실제 경로 재검증 시험의 실행 가능성을 점검한다
 
 ## 할 일
 
 - [호스트 실사용 검증](호스트-실사용-검증.md) — GUI 호스트와 Windows에서 프로젝트 역할 수신·부트를 실사용으로 확인한다
 - [pace agent Codex 호스트 조건 안내 확인](pace-agent-codex-호스트-조건-안내-확인.md) — Codex 호스트의 네트워크 허용·중첩 Codex의 샌드박스 해제 필요 안내가 실제 사용 때 드러나는지 확인한다
 - [설치본 재설치로 대시보드 연결 갱신](설치본-재설치로-대시보드-연결-갱신.md) — main에서 bash scripts/install.sh 뒤 설치 CLI로 pace backlog init — 이 저장소 local.js가 소스 checkout 대신 설치본을 가리키게 한다
+- [로그온 자동 기동 병합 후 실측](로그온-자동-기동-병합-후-실측.md) — P005 병합 후 같은 Windows 사용자 재로그온으로 자동 기동과 콘솔 비표시를 실제 확인한다
 
 ## 메모 (사실·결정)
 

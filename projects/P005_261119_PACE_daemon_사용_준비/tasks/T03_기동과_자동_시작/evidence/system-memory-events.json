@@ -1,0 +1,8 @@
+{
+  "queryAvailable": true,
+  "eventCount": 0,
+  "rawEventsRecorded": false,
+  "checkStartedAt": "2026-11-21T04:48:19.924Z",
+  "checkEndedAt": "2026-11-21T05:00:51.371Z",
+  "scope": "Only this provider and check interval; no claim that every system OOM is covered."
+}

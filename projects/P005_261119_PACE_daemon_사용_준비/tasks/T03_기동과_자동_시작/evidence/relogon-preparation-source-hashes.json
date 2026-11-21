@@ -1,0 +1,16 @@
+{
+  "execution-after-relogon.mjs": {
+    "originalBasename": "pace-p005-t03-after-relogon.mjs",
+    "rawSha256": "c8d9d30dc2d2186409177c0774a0abf9914b0b561f1cff918683ca08bb553bfa",
+    "preparedOnly": true,
+    "scope": "Syntax checked; not executed before the full check and explicit human relogon timing."
+  },
+  "execution-relogon-baseline.mjs": {
+    "originalBasename": "pace-p005-t03-relogon-baseline.mjs",
+    "rawSha256": "ef4ae85a175b25ecdcb55e8ddb575f59d12786d381ac7d995868e66d9f1debae",
+    "preparedOnly": false,
+    "scope": "Syntax checked; not executed before the full check and explicit human relogon timing.",
+    "executedForPreRelogonBaseline": true,
+    "result": "human-relogon-baseline.json"
+  }
+}

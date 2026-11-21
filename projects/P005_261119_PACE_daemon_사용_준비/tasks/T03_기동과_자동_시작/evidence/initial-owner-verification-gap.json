@@ -1,0 +1,12 @@
+{
+  "initialControllerFailedBeforeOwnershipClaim": true,
+  "initialFailureStage": "registration-start",
+  "initialDetailedChecksNotPreserved": true,
+  "followupStatusExit": 0,
+  "registeredAndRunningObserved": true,
+  "ownerStartedDuringApprovedAttempt": true,
+  "ownerInstalledCommandVerified": true,
+  "ownerPortListenerVerified": true,
+  "inference": "Immediate owner readiness check may have raced the instance-port acquisition before lock/status initialization; exact initial failed predicate was not captured.",
+  "recovery": "Adopt only this verified process for the remaining approved lifecycle tests; add bounded readiness polling and immediate owned-stop fallback."
+}

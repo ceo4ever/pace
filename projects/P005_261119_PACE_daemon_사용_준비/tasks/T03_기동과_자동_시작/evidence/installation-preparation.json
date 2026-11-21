@@ -1,0 +1,33 @@
+{
+  "version": "0.1.1",
+  "modules": {
+    "src/daemon/autostart.ts": "f8951599cbda27d22317a129ec78f1f45a86f247f4ed77909967bf2d26cafd5c",
+    "src/daemon/cli.ts": "700a4a5ccae6b124443fc3dfc69c3d4b97ac4374aae4ed5749b8d0d983e271f8",
+    "src/daemon/config.ts": "56879c50bcc4eb7afa643c195c1afab10174bd3ec734b61de06072f31834772d",
+    "src/daemon/core.ts": "ea076871210f0eb3b834553d3b03a737d1d865362dee349974b88aa3b992758c",
+    "src/daemon/gateway.ts": "e95ed9f14af791f0beecba40c10eaefe686d3e72272a8375f99569a6a4b5c539",
+    "src/daemon/index.ts": "4d56a00d69a9694e1d5d8f4e0efe43eb3bf9832d8b4b986db62763be385be957",
+    "src/daemon/install-wizard.ts": "3875eee8cb8155998a2f5744015a410bb52afc7df270f6a40c393478c967c73e",
+    "src/daemon/instance.ts": "28cdba28d2ab920ac38400257c23b0f5ac47b550f63753521e276f5355c466ca",
+    "src/daemon/runner.ts": "0f5bae4e859c9ed0cd4ed8691d9812c191106dc2189fcfab2260ef6919ab11af",
+    "src/daemon/secrets.ts": "4c74e12a12e9481729333b8a8fb11ebe39a047bcd8e749d29ae8160cb43b200d",
+    "src/daemon/store.ts": "4099ec70c9861fa758a5b3073307bd3d7589e0051cfdada5f75d93980520c22b",
+    "src/daemon/telegram/adapter.ts": "4af3f07ace388597da577483ddd6fb4f94bd9cee80141a2ee9409824b4addd80",
+    "src/daemon/telegram/api.ts": "f73681174e8274ee1da59eab32ab694acf1c112c6c49ef8be24c46941fb2f9fd",
+    "src/daemon/telegram/fsworker-thread.ts": "b875a1e7d6ac51659ce9e4f0fdc8e5595fe0d45a98ce3c76b266ebb5fd1fc132",
+    "src/daemon/telegram/fsworker.ts": "622ec0fc2512860886bce6f3d617488e3cf6adc88d361d765e41ea8c6d96a3af",
+    "src/daemon/telegram/index.ts": "bb98e3bd5c0710571213c4e55412f584388ba694577323114db6dce465da505f",
+    "src/daemon/telegram/markdown.ts": "9684722b5968b4bb38516b408bdb884d2b40068decdd96489148036adfab8407",
+    "src/daemon/telegram/render.ts": "3b1f9e1e279bdcd19426dac4206cabf2e3bdbfee0bafa6ef3b0f69e60460daf2",
+    "src/daemon/telegram/state.ts": "2924f67bc3b5c9c9b263c16aa7b2ba66cdc04747ee8f0f2a61017afbc60500ab",
+    "src/daemon/types.ts": "bcc24aba3fc8a8d70f4992e655b77755d36415ef301547534295b17d4f8b5930",
+    "bin/pace.ts": "92112876727b414cf917c4bb0cf69b8d2d6ed67fc34ed5fe5b8c30a4f91d3ca3",
+    "src/cli.ts": "020040e969db51731463a2a45c191a1e107e33d9538757864aae1c2c411d0386",
+    "src/core/paths.ts": "a9d11c9482c1e3f44f4dda494a10414c278616451d82e8ecc5ac7e8d1779301c",
+    "src/core/fsutil.ts": "4b6ffce7172d71060a1855e017b3b075b02daffbf76dd90e3a81dbeba00395af",
+    "src/core/console-decode.ts": "f7b8d524c54c716b64056fbcd93ef71c9b250d7a674a9c282f5203f1c49bb29c",
+    "src/agent/win-command.ts": "64a9cf48435de8be9888e865fdfafaa51b150059ff0e5a6302ecf0dd28e6da19"
+  },
+  "scope": "Installed daemon source tree plus CLI entry and directly used path/filesystem/console/Windows command helpers; not a claim of all transitive modules.",
+  "operationalSettingsRead": false
+}
