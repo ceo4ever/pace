@@ -99,3 +99,17 @@
 {"ts":"2026-11-21T06:04:57.016Z","p":"P005","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-21T06:05:31.342Z","p":"P005","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-21T06:05:31.342Z","p":"P005","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-21T06:05:58.427Z","p":"P005","t":"T04","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-21T06:11:46.024Z","p":"P005","t":"T04","type":"decision","by":"agent","msg":"P4 필수실사용은 합성작업을 하나씩 검증하고 현재TTL 실제만료를 검사1회와 병행한다; 추가 동시모델2개부하와 임의TTL변경은 필수합격에 넣지 않는다","src":"자체 판단"}
+{"ts":"2026-11-21T06:11:46.976Z","p":"P005","t":"T04","type":"note","by":"agent","msg":"T03 4cc83c9 커밋 뒤 T04 TASK 작성: 실제runner 읽기/승인쓰기·거절/실제만료/재시작구승인·running쓰기중단 needs_review/quarantine·소유회수/정상복원 계획"}
+{"ts":"2026-11-21T06:11:50.701Z","p":"P005","t":"T04","type":"question","by":"agent","msg":"T03 마감커밋 결과와 T04 계획을 전달하고 새독립 사전검토·검증workspace/토픽/쓰기·중단회수/release 운영승인 요청"}
+{"ts":"2026-11-21T06:15:54.716Z","p":"P005","t":"T04","type":"answer","by":"agent","msg":"새독립 anthropic T04 사전 pass blocking0 수신; privacy 명령멘션/자연어봇답장·실제TTL·정상stop무효/구boot거부분리·최종read·회수부재분기/release소스 확인 보완, 운영승인대기"}
+{"ts":"2026-11-21T06:19:13.840Z","p":"P005","t":"T04","type":"review","by":"agent","msg":"reviewer 독립 anthropic 사전검토 pass blocking 0 should_fix 0; 비차단권고6건 실행준비문서 반영, 원문/스냅샷/해시 보존, 실제TTL600초 확인, 운영승인대기","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-22T02:27:54.133Z","p":"P005","t":"T04","type":"answer","by":"agent","msg":"캡틴 전체 복구 시험 승인·기존그룹 검증토픽 생성 확인; 전용 합성Git 작업공간 등록·실제요청/버튼/TTL/구승인·running중단/소유자손회수·복구 허용, 시험뒤 config 등록만 해제하고 파일/토픽/메시지 보존, release별도확인"}
+{"ts":"2026-11-22T02:27:55.568Z","p":"P005","t":"T04","type":"decision","by":"agent","msg":"전체 복구 시험 승인·시험뒤 작업공간 등록 해제: 전용 합성경로만 사용, 검증토픽결속/실제LLM/승인거절/TTL/구승인/running중단·소유자손회수/정상복구 허용; release 별도확인, 파일/Git/토픽/메시지 보존, read-only·정상기동·자동실행 유지","src":"사용자 결정"}
+{"ts":"2026-11-22T02:29:40.641Z","p":"P005","t":"T04","type":"note","by":"agent","msg":"승인된 전용 합성Git pace-p005-t04 생성·기준commit/해시·보호config복구사본 보존, workspace항목만 추가 후 정상stop/start·새boot/설치본소유자/관련소스일치/Run정확일치 확인; bind준비완료, 실제LLM미실행"}
+{"ts":"2026-11-22T02:29:43.448Z","p":"P005","t":"T04","type":"question","by":"agent","msg":"검증workspace 등록·설치본정상재기동 후 검증토픽에서 실제 bind명령 수행과 정상응답 확인 요청; 개인정보/토픽ID 전송 불필요"}
+{"ts":"2026-11-22T02:43:03.881Z","p":"P005","t":"T04","type":"answer","by":"agent","msg":"캡틴 검증토픽 bind 성공응답 확인; 로컬 비노출대조와 새수신/응답 관측 준비 후 정답없는 읽기답장문구 요청"}
+{"ts":"2026-11-22T02:43:56.262Z","p":"P005","t":"T04","type":"note","by":"agent","msg":"검증토픽 workspace결속 비노출대조 일치·기존task0 확인; 30분한정 읽기전용 state/offset 관측 준비, 새actor/topic/access/chain/result정확·파일보존 검사; API/getUpdates 추가소비자 없음, 실제Telegram전달은 캡틴확인과 구분"}
+{"ts":"2026-11-22T02:43:57.571Z","p":"P005","t":"T04","type":"question","by":"agent","msg":"검증토픽의 결속성공 봇메시지에 fixture 원문만 읽어 답하는 실제LLM 요청 전송과 정상도착 확인 요청; 요청에 정답문자열 미포함"}
+{"ts":"2026-11-22T06:02:57.413Z","p":"P005","t":"T04","type":"decision","by":"agent","msg":"캡틴 요청으로 T04 진행 상태에서 다른 PC로 인계; 활성·대기승인 0, 정상stop·Run보존, 등록·결속 로컬보존, 읽기처리 미관측; 새PC에서 중복 방지 확인 후 재개","src":"사용자 결정"}

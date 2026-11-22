@@ -1,0 +1,10 @@
+{
+  "approvalTtlSeconds": 600,
+  "defaultAccess": "read-only",
+  "maxConcurrent": 2,
+  "workspaceCount": 0,
+  "releaseMethodPresent": true,
+  "scope": "Local config metadata and installed class export inspection only; no release, topic/config mutation, Telegram API, model task, or process termination.",
+  "gatewayTokenProbeCorrection": "Earlier false checked secrets/gateway.token, not the exported path; it was not evidence of token absence.",
+  "gatewayTokenFilePresentAtExportedPath": true
+}
