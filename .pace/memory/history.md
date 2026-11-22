@@ -20,3 +20,4 @@
 - 2026-11-16 [issue] telegram-flow 시험 고아 프로세스 — 2026-11-16 PID 27356 소멸 확인 — 남은 프로세스 없음, 재현되면 새 이슈
 - 2026-11-16 [todo] 원격 저장소 공개 여부 — 2026-11-16 저장소 public 전환(캡틴) — README curl·irm 설치 URL 200, 익명 git ls-remote 확인
 - 2026-11-21 [issue] 하네스 선언 판독 CRLF 실패 — d2fb666 — commandInDocument가 \r?\n으로 나눔, CRLF 회귀 시험 추가, 독립 리뷰 pass
+- 2026-11-22 [todo] 설치본 재설치로 대시보드 연결 갱신 — 설치본 11-22 재설치(최신 main 반영 확인) 뒤 pace backlog init — local.js가 ~/.pace/app 가리킴
