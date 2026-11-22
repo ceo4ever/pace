@@ -1,0 +1,17 @@
+{
+    "observedAt":  "2026-11-22T06:02:10.3783810+00:00",
+    "daemonRunning":  false,
+    "installedDaemonOwners":  0,
+    "matchingObserverProcesses":  0,
+    "runEntryUnchangedByStop":  true,
+    "taskCount":  0,
+    "approvalCount":  0,
+    "quarantineCount":  0,
+    "outboxCount":  0,
+    "workspaceRegistrationMatches":  true,
+    "topicBindingMatches":  true,
+    "accessDefaultsToReadOnly":  true,
+    "knownFixtureFilesUnchanged":  true,
+    "gitClean":  true,
+    "lastUpdateAt":  "2026-11-22T02:42:27.0010000+00:00"
+}

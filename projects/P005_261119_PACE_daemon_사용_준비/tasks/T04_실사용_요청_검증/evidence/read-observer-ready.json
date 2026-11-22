@@ -1,0 +1,18 @@
+{
+  "at": "2026-11-22T02:43:39.352Z",
+  "bindingMatches": true,
+  "nonGeneralTopic": true,
+  "boundWorkspaceCount": 1,
+  "baselineTaskCount": 0,
+  "fixtureSha": "989bc7cdb1d963ea79a0380013549ae99528349e9ac27b02b84a6e1253de9f49",
+  "files": {
+    "AGENTS.md": "a3e78a87991e0abb78dd9728610fafadafb067dc438c26fc2e59770af90cf622",
+    "approved.txt": "215276a41375dfa2d80c11f4a085ea36e58dc5d64f90d39fa71e42da2d6cbdc4",
+    "denied.txt": "80c2036251917e9253639867c7da90f0fadbbb8e4ccbccba7463602bce55146b",
+    "expired.txt": "02bf63d2f7f1216d0dcacba4f58e46bc82c6f941ba15cf7516749f28aeea7e77",
+    "fixture.txt": "eb3d5fcfe94faffd130c4e59689311259df96fc45f95000dbef7a3385df121ab",
+    "interrupted.txt": "70426ae70ec2a37bb17c91fe14b8f985f110d167435fa5a8055cccab3d527c28",
+    "old-boot.txt": "848b8c458581b2b5992601d824ca1184263bf3c40e7287895ffcf6a0ca84ccb3"
+  },
+  "observation": "Read-only state and Telegram offset polling; no getUpdates consumer or API instrumentation. Captain independently confirms delivered response."
+}

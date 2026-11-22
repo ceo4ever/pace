@@ -1,0 +1,34 @@
+{
+    "at":  "2026-11-22T02:28:50.150Z",
+    "root":  "D:/LucasStudio/pace-validation/P005-T04-20261122",
+    "workspace":  "pace-p005-t04",
+    "sourceCheckout":  false,
+    "createdFiles":  [
+                         "AGENTS.md",
+                         "fixture.txt",
+                         "approved.txt",
+                         "denied.txt",
+                         "expired.txt",
+                         "old-boot.txt",
+                         "interrupted.txt"
+                     ],
+    "writeAllowlist":  [
+                           "approved.txt",
+                           "denied.txt",
+                           "expired.txt",
+                           "old-boot.txt",
+                           "interrupted.txt"
+                       ],
+    "files":  {
+                  "AGENTS.md":  "a3e78a87991e0abb78dd9728610fafadafb067dc438c26fc2e59770af90cf622",
+                  "fixture.txt":  "eb3d5fcfe94faffd130c4e59689311259df96fc45f95000dbef7a3385df121ab",
+                  "approved.txt":  "215276a41375dfa2d80c11f4a085ea36e58dc5d64f90d39fa71e42da2d6cbdc4",
+                  "denied.txt":  "80c2036251917e9253639867c7da90f0fadbbb8e4ccbccba7463602bce55146b",
+                  "expired.txt":  "02bf63d2f7f1216d0dcacba4f58e46bc82c6f941ba15cf7516749f28aeea7e77",
+                  "old-boot.txt":  "848b8c458581b2b5992601d824ca1184263bf3c40e7287895ffcf6a0ca84ccb3",
+                  "interrupted.txt":  "70426ae70ec2a37bb17c91fe14b8f985f110d167435fa5a8055cccab3d527c28"
+              },
+    "baselineCommit":  "9fe2bda67ef2572621ee4d9ce3c7b5b926c74faf",
+    "recovery":  "설치 PC의 보호된 로컬 위치에 등록 전 복구 사본 보관",
+    "baselineTaskCount":  0
+}
