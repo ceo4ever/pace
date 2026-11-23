@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-24",
+  "request": "old-boot.txt를 OLD-BOOT-SHOULD-NOT-APPEAR 한 줄로 바꾸라는 쓰기 요청 — 승인하지 않음",
+  "before_stop": {"task": "t-6251495b awaiting_approval", "write_start": "pending", "approval_boot": "이전 boot", "ttl_left_s": 588},
+  "normal_stop": {"command": "pace daemon stop", "after_stop_before_start": {"task": "expired", "approval": "invalidated", "decidedAt": "00:25:56", "ttl_left_s": 584}, "distinguished_from_ttl_expiry": "TTL 584초가 남은 시점에 무효화 — 만료가 아니라 정상 정지의 무효화"},
+  "restart": {"command": "pace daemon start", "new_boot": true, "pid_equals_launchd_service_pid": true},
+  "old_button_on_new_boot": {
+    "press_1": {"time": "약 00:26:4x", "received": false, "note": "새 기동 뒤 60초 이상 수신 기록 없음(lastUpdateAt 정지 전 값). 같은 시각대 getUpdates fetch failed가 이어졌던 네트워크 불안정 — 입력 유실 원인 미확인"},
+    "press_2": {"time": "00:41:38 수신", "captain_screen": "'이전 기동에 발급…' 알림", "after": {"task": "expired", "approval": "invalidated", "executor_procs": 0}, "note": "이때는 원래 기한(00:35:43)도 지났지만 화면 거부 사유는 이전 기동 — 기동 불일치 분기로 거부됨"}
+  },
+  "files": {"old-boot.txt_hash_unchanged": true},
+  "scope_of_conclusion": "재기동 뒤 이전 승인 재사용 거부. 분기별 근거는 단위 시험 S-12와 S-8(이전 기동 승인 거부)",
+  "verdict": "pass (T-3 이전 기동 승인)"
+}
