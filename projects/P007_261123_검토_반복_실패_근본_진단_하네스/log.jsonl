@@ -17,3 +17,4 @@
 {"ts":"2026-11-23T08:09:44.817Z","p":"P007","type":"change","by":"agent","msg":"정본 목록 표기를 패턴(test/agent-verify*, references/{…})에서 실제 경로로 — finish 정본 반영 검사가 패턴을 경로로 읽지 못함","src":"자체 판단"}
 {"ts":"2026-11-23T08:12:49.081Z","p":"P007","type":"gate","by":"cli","msg":"finish","ok":true,"data":{"finish":1}}
 {"ts":"2026-11-23T08:12:49.081Z","p":"P007","type":"finish","by":"cli","msg":"finish","ok":true}
+{"ts":"2026-11-23T09:10:12.074Z","p":"P007","type":"merge","by":"cli","msg":"merge: 사용자 승인","ok":true,"data":{"approved":1,"commits":4}}
