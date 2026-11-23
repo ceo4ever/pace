@@ -123,3 +123,6 @@
 {"ts":"2026-11-23T01:28:28.673Z","p":"P005","t":"T04","type":"decision","by":"agent","msg":"ACP 쓰기의 작업사본 밖 편집은 사전 차단 없이 사후 확인으로 진행 — T-5는 관측 범위 내 무변경으로 판정, 홈 밖 등은 미확인 제약, 편집 경로 미대조는 이슈로 별도 수정","src":"사용자 결정"}
 {"ts":"2026-11-23T02:07:19.736Z","p":"P005","t":"T04","type":"decision","by":"agent","msg":"캡틴 확인: Windows daemon 정지(11/22 15:02) 뒤 봇에 명령·요청 보낸 적 없음 — 묵은 업데이트 소화 절차 없이 install에서 허용 사용자 바로 설정, 첫 기동 60초 작업·workspace 0 관찰","src":"사용자 결정"}
 {"ts":"2026-11-23T09:18:57.881Z","p":"P005","t":"T04","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-23T09:34:14.995Z","p":"P005","t":"T04","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-23T12:50:38.597Z","p":"P005","t":"T04","type":"decision","by":"agent","msg":"S-0 뒤 config에 PACE 소스 저장소 workspace(pace) 1건 발견 — 강제 중단·보고 뒤 캡틴 결정으로 그 항목만 삭제(작업·수신 0건, 출처 11/22 설정 또는 마법사 제안 미확정)","src":"사용자 결정"}
+{"ts":"2026-11-23T12:50:38.781Z","p":"P005","t":"T04","type":"change","by":"agent","msg":"macOS 강제 종료 뒤 pace daemon start가 기동 못 하는 제품 결함 발견(로드된 항목 launchctl load가 실패해도 종료 0) — PATH 수정 선례대로 main 작은 일 521e3b8로 고치고 재설치·rebase","src":"자체 판단"}
