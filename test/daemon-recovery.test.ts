@@ -143,3 +143,24 @@ test("실행자 예외는 failed+회수 미확인(안전 쪽)으로 격리한다
   assert.equal(t.cleanup, "unconfirmed");
   assert.equal(Object.keys(h.store.state.quarantine).length, 1);
 });
+
+test("S-12w 격리된 경로의 새 쓰기는 시작 승인 뒤에도 queued로 남고 실행기를 부르지 않는다", async () => {
+  const h = await crashScene();
+  const h2 = await h.restart({ reap: async () => "unconfirmed" });
+  assert.equal(byPrompt(h2, "W").status, "needs_review");
+  const startedBefore = [...h2.runner.started];
+  h2.runner.immediate.add("W2");
+  await h2.daemon.ingest(msg("/access write", "w-b2", "u1", "cb"));
+  await h2.daemon.ingest(msg("W2", "W2", "u1", "cb")); // W와 같은 격리 경로(b)의 쓰기
+  const w2 = byPrompt(h2, "W2");
+  assert.equal(w2.status, "awaiting_approval");
+  assert.deepEqual(await h2.daemon.approval(w2.approvalId!, actor("u1", "cb"), "approve"), { ok: true });
+  await sleep(80); // 승인 뒤 스케줄링이 돌 기회를 준다
+  assert.equal(w2.status, "queued", "승인된 쓰기도 격리 경로면 대기");
+  assert.ok(!h2.runner.started.includes("W2"), "격리 경로의 승인된 쓰기는 실행기 호출 0회");
+  assert.deepEqual(h2.runner.started, startedBefore);
+  // 운영자 해제 뒤에만 시작된다(검출 대조)
+  assert.equal(await h2.daemon.release(byPrompt(h2, "W").target.worktree), true);
+  await h2.runner.waitStarted("W2");
+  await h2.daemon.idle();
+});

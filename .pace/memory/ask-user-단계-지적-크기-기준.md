@@ -1,6 +1,6 @@
 ---
 name: ask_user 단계 지적 크기 기준
-description: "reviewer.md 반복 실패 절의 ask_user를 지적 크기로 가른다 — 작고 분명·범위 불변이면 PM이 고쳐 재검토 1회 뒤 waiver, 목적·범위·방향·위험만 사용자 결정"
+description: "reviewer.md 반복 실패 절: 진단 뒤 fail도 PM이 근본 조치(채우기·덜어내기) 뒤 재검증하고 사후 보고 — 사용자 사전 결정은 심각한 오류·보안·목적·범위 변경만"
 type: idea
 created: 2026-11-23
 updated: 2026-11-23
