@@ -5,7 +5,40 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { tempDir } from './helpers.ts';
-import { reviewIssues, reviewHash } from '../src/project/pre-review.ts';
+import { reviewIssues, reviewHash, taskFormat } from '../src/project/pre-review.ts';
+
+test('v2 증명 범위는 검토 기록보다 먼저 검사하고 옛 TASK는 호환한다', () => {
+  const dir = tempDir('pace-proof-');
+  const marker = '- TASK 형식: v2\n';
+  const scope = '## 증명 범위\n\n- 판정 주체: 자동 테스트\n- 포함: 호환 검사\n- 범위 밖: 운영 측정은 설치 뒤\n\n## 기준\nT-1\n';
+  const valid = marker + scope;
+  assert.deepEqual(reviewIssues(dir, '## 목적\n옛 TASK\n'), []);
+  assert.deepEqual(reviewIssues(dir, valid), []);
+  assert.deepEqual(reviewIssues(dir, valid.replaceAll('\n', '\r\n')), []);
+  for (const [text, expected] of [
+    [marker + '## 기준\nT-1\n', /절 누락/],
+    [marker + '## 증명 범위\n<!-- 안내 -->\n## 기준\nT-1\n', /빈 절/],
+    [marker + scope.replace('- 판정 주체: 자동 테스트\n', ''), /판정 주체/],
+    [marker + scope.replace('자동 테스트', '<!-- 선택 -->'), /판정 주체/],
+    [valid.replace('v2', 'v3'), /지원하지 않는/],
+    [marker + valid, /중복/],
+  ] as const) assert.match(reviewIssues(dir, text).join(), expected);
+  assert.equal(taskFormat(scope), 'legacy');
+  assert.equal(taskFormat(valid), 'v2');
+  assert.equal(taskFormat(valid.replace('v2', 'v 2')), 'invalid');
+  assert.equal(taskFormat('<!--\n' + marker + '-->\n## 목적\n옛 형식'), 'legacy');
+  assert.equal(taskFormat('```md\n' + marker + '```\n## 목적\n옛 형식'), 'legacy');
+  assert.equal(taskFormat('## 예시\n' + marker), 'legacy');
+  assert.match(reviewIssues(dir, marker + '```md\n' + scope + '```\n').join(), /절 누락/);
+  assert.deepEqual(reviewIssues(dir, marker + '```html\n<!--\n```\n' + scope + '\n<!-- 안내 -->\n'), []);
+  assert.deepEqual(reviewIssues(dir, marker + '<!--\n```\n-->\n' + scope), []);
+  assert.deepEqual(reviewIssues(dir, marker + '## 재료\n인라인 예제 `<!--` 설명\n' + scope + '\n<!-- 안내 -->\n'), []);
+  // 유효한 이력이 있어도 구조를 생략할 수 없다.
+  const missing = marker + '## 목적\n옮기기\n';
+  writeFileSync(join(dir, 'evidence.md'), '독립 검토');
+  writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify({ version: 1, author: 'openai', attempts: [{ hash: reviewHash(missing), provider: 'anthropic', cross: true, status: 'pass', blocking: 0, evidence: 'evidence.md', continuity: 'new' }] }));
+  assert.match(reviewIssues(dir, missing).join(), /절 누락/);
+});
 
 test('사전 검토 해시는 CRLF만 정규화하고 기존 LF 기록·기록 명령과 일치한다', () => {
   const dir = tempDir('pace-review-eol-');

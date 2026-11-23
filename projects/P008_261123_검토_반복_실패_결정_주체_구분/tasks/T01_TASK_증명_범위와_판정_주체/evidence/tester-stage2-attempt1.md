@@ -1,0 +1,10 @@
+제공자: openai, codex p 읽기 전용; 테스트 실행 EPERM 한계 포함.
+
+**최종 fail · T-1 fail · T-2 pass(규칙 구현) · T-3 fail(운영 증거).**
+
+- **실행 및 선택 정확성.** `npm run typecheck`는 통과했습니다. 지정한 두 `node --test` 명령은 모두 `mkdtemp`에서 `EPERM`으로 종료돼 테스트 본문 실행은 미확인입니다. 이름 필터가 의도한 하네스 테스트 두 개를 선택하는 것은 소스에서 확인했습니다. [project-harness.test.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P008/test/project-harness.test.ts:604)
+- **T-1 fail.** 직접 호출에서 1단계의 fenced 코드 블록 속 `<!--` 재현은 통과했고, 코드 블록에만 적힌 절은 거부했습니다. 그러나 `## 재료` 아래에 인라인 코드로 `` `<!--` ``를 설명하고 증명 범위 뒤에 실제 주석을 두면, 유효한 v2 TASK를 여전히 `절 누락`으로 거부합니다. 표지 없는 TASK 호환과 v2 누락·빈 절·빈 주체·중복·미지원 버전 거부는 확인했습니다. [pre-review.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P008/src/project/pre-review.ts:14)
+- **T-1 검출력과 회귀.** 기존 해시·증거·사용자 예외 검사는 코드상 유지됩니다. 신규 하네스의 절 순서 단언은 절이 없어도 `-1 < 기준 위치`로 통과합니다. 이후 게이트가 이 결함을 잡는지는 실행 미확인입니다. 하네스 일부는 표지를 제거한 호환 fixture이며, 신규 경로도 사전 검토 기록을 주입합니다. [project-harness.test.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P008/test/project-harness.test.ts:2215)
+- **T-2 pass.** 직접 생성한 프롬프트와 수동 reviewer 지침에 누락 blocking 1건, 범위 부족·권한 대체·필수 안전 제외 blocking, 충분한 범위의 확장 should_fix가 일치합니다. 구형 TASK·goal에는 새 규칙이 빠지고 재검토 제한은 유지됩니다. 문구 단언은 규칙 삽입을 검출하며 제공자의 실제 등급 선택은 T-3 증거로 판정했습니다. [verify.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P008/src/agent/verify.ts:74)
+- **T-3 fail.** `cases`·`cases-run2`의 완료된 13개 기록은 TASK 스냅숏과 원문 해시가 일치하고, 모두 읽기 전용 Claude/Anthropic 교차 호출로 기록됐습니다. ① 누락 blocking 1건·fail, ③ 범위 부족 blocking·fail, ④ 사람 원문 충실 전달 pass, ⑤a 권한 대체와 ⑤b 안전 제외 blocking·fail을 확인했습니다. ②는 pass였으나 명시된 브라우저 자동화 확장 요구를 `should_fix` 대신 `note`로 분류했습니다. ②와 ④의 TASK·승인 원문은 동일하며, 이 등급 차이를 입증하려면 별도 요청과 응답이 필요합니다. 진행 중인 `pending`은 미확인입니다.
+- **검토 연속성.** Codex `p`의 resume 제약으로 같은 제공자의 새 맥락에서 1단계 원문을 인계받았습니다. 운영 CLI 결과는 보존 원문에서 확인했으며, 이번 세션의 직접 실행은 타입 검사와 파일 쓰기 없는 재현에 한정했습니다. 파일은 수정하지 않았습니다.

@@ -1,0 +1,4 @@
+
+> pace@0.1.1 typecheck
+> tsc -p tsconfig.json
+

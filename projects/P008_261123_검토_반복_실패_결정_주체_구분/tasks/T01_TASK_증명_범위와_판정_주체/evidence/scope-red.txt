@@ -1,0 +1,30 @@
+✖ v2 구조 누락을 채운 뒤에는 억제됐던 목적·안전까지 전체 검토한다 (8.36775ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 95.569375
+
+✖ failing tests:
+
+test at test/agent-review-log.test.ts:42:1
+✖ v2 구조 누락을 채운 뒤에는 억제됐던 목적·안전까지 전체 검토한다 (8.36775ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'review-records/R1.json'
+  - null
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P008/test/agent-review-log.test.ts:48:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'review-records/R1.json',
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -91,7 +91,7 @@ const runCli = (home: string, cwd: string, ...args: string[]) => {
   const result = runPace(["project", ...args], { home, cwd, timeout: 60_000 });
   if (args[0] === "task" && result.status === 0) {
     const path = result.stdout.trim().split(": ").at(-1);
-    if (path && existsSync(path)) writeFileSync(path, readFileSync(path, "utf8").replace(/^- 사전 검토: v1\r?\n/m, ""));
+    if (path && existsSync(path)) writeFileSync(path, readFileSync(path, "utf8").replace(/^- 사전 검토: v1\r?\n/m, "").replace(/^- TASK 형식: v2\r?\n/m, ""));
   }
   return result;
 };
@@ -172,7 +172,7 @@ test("CRLF 설치본: BL 프로젝트 생성·예정/추가 태스크·check/don
   const added = installed("task", "P001", "추가");
   assert.equal(added.status, 0, added.stderr + added.stdout);
   assert.ok(existsSync(join(projectDir(main), "tasks", "T04_추가", "TASK.md")));
-  writeFileSync(join(task, "TASK.md"), readFileSync(join(task, "TASK.md"), "utf8").replace(/^- 사전 검토: v1\r?\n/m, ""));
+  writeFileSync(join(task, "TASK.md"), readFileSync(join(task, "TASK.md"), "utf8").replace(/^- 사전 검토: v1\r?\n/m, "").replace(/^- TASK 형식: v2\r?\n/m, ""));
   passTask(task);
   writeFileSync(join(task, "TASK.md"), crlf(readFileSync(join(task, "TASK.md"), "utf8")));
   const close = join(task, "TASK-CLOSE.md");
@@ -594,7 +594,7 @@ test("check: 템플릿 주석이 남아도 통과하고, 빠진 기준·판정 �
 
 /** 통과하는 TASK-CLOSE를 쓴다(기준 T-1 하나). */
 function passTask(taskDir: string): void {
-  writeFileSync(join(taskDir, "TASK.md"), readFileSync(join(taskDir, "TASK.md"), "utf8").replace(/\| T-1 \| <!--.*?--> \|/, "| T-1 | 된다 |"));
+  writeFileSync(join(taskDir, "TASK.md"), readFileSync(join(taskDir, "TASK.md"), "utf8").replace(/\| T-1 \| <!--.*?--> \|/, "| T-1 | 된다 |").replace(/- 판정 주체: <!--[^\n]*-->/, '- 판정 주체: 자동 테스트'));
   write(
     join(taskDir, "TASK-CLOSE.md"),
     "# 마감\n\n- 태스크: [TASK.md](TASK.md) · 판정: 통과\n\n## 기준 대조\n\n| # | 결과 | 증거 |\n|---|---|---|\n| T-1 | 통과 | S-1 |\n\n## 단위 테스트\n\n통과 1\n\n## E2E\n\n해당 없음\n\n## 리뷰\n\nblocking 0\n\n## 남긴 것\n\n없음\n",
@@ -2215,6 +2215,11 @@ test('신규 태스크 사전 검토 게이트는 check와 done을 막고 기록
   const created = runPace(['project', 'task', 'P001', '검토'], { home, cwd: wt, timeout: 60_000 });
   assert.equal(created.status, 0);
   const dir = join(projectDir(wt), 'tasks', 'T01_검토');
+  const generated = readFileSync(join(dir, 'TASK.md'), 'utf8');
+  assert.equal(generated.match(/^- TASK 형식: v2$/gm)?.length, 1);
+  assert.ok(generated.includes('## 증명 범위'));
+  assert.ok(generated.indexOf('## 증명 범위') < generated.indexOf('## 기준'));
+  writeFileSync(join(dir, 'TASK.md'), generated.replace(/- 판정 주체: [^\n]*/, '- 판정 주체: 자동 테스트'));
   passTask(dir);
   const task = readFileSync(join(dir, 'TASK.md'), 'utf8');
   assert.match(task, /사전 검토: v1/);

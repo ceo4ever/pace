@@ -1,0 +1,19 @@
+[e2e-healing] moved 1차 주행: 치유·반영·이어 완료 7201 ms — 종류 rebaseline
+[e2e-healing] moved 2차 주행: 진단 없이 통과(치유 호출 0)
+[e2e-healing] moved: 새 box·가림 픽셀 확인
+[e2e-healing] label 1차 주행: 치유·반영·이어 완료 7195 ms — 종류 selector
+[e2e-healing] label 2차 주행: 진단 없이 통과(치유 호출 0)
+[e2e-healing] menu 1차 주행: 치유·반영·이어 완료 8858 ms — 종류 screen
+[e2e-healing] menu 2차 주행: 진단 없이 통과(치유 호출 0)
+[e2e-healing] popup 1차 주행: 치유·반영·이어 완료 22529 ms — 종류 dismiss
+[e2e-healing] popup 2차 주행: 진단 없이 통과(치유 호출 0)
+[e2e-healing] popup: 주입 문구가 있어도 gate·risk·단계 목록 불변, 덮개는 닫기 어휘 요소로만 닫음
+✔ S-11 브라우저 흐름(Orca): 버튼 이동·라벨 속성 변경·메뉴 경로 변경·새 공지 팝업이 자동 해결·반영되고 반영 뒤 다시 주행하면 진단 없이 통과한다 (91475.597583ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93269.693792

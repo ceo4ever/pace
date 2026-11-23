@@ -1,0 +1,37 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "산출물과 PROJECT.md·BR01, 관련 소스(pre-review.ts·verify.ts·verify-cli.ts·템플릿)를 대조했고, 이제 검토 결과를 정리합니다.\n\n# T01 TASK 사전 검토 결과\n\n## 첫 판단\n- **목표 대조**: 이 TASK의 목적은 P-1과 BR01 목적에 맞습니다. 증명 범위·판정 주체를 먼저 적어 검토가 필요한 지적에 집중하게 하고, 옛 TASK 호환과 필수 안전은 지킵니다. BR01 완료 기준도 빠짐없이 옮겼습니다. 구조 검사 4건은 T-1/S-1, 프롬프트 분기는 S-2, 다섯 사례 실측은 T-3/S-3에 대응합니다. 운영 지표인 bubble-catch 통과 회차는 범위 밖으로 넘겼고, PROJECT.md 설계와도 맞습니다.\n- **목표 달성**: 계획 단계에서는 **달성 가능**으로 봅니다. 구현 전이라 실제 결과는 미확인입니다.\n- **근거와 한계**: 문서 대조와 현재 소스 확인에 근거합니다. `reviewIssues`(`src/project/pre-review.ts:22`)는 마커와 기록이 없으면 바로 통과시킵니다. 그래서 \"표지가 있으면 기록이 없어도 구조 검사부터\"라는 접근은 BR01의 우회 위험(절을 통째로 빼면 옛 TASK처럼 보임)을 실제로 막습니다. verify-cli는 대상 옆 원장으로 재검토 여부를 고릅니다(`src/agent/verify-cli.ts:137`). 따라서 S-3의 \"변형별 별도 폴더·최초 검토\"는 재검토 프롬프트가 섞이는 것을 막는 올바른 조건입니다. LLM 판정은 확률적이어서 사례당 한 번 돌린 결과는 경향을 보여 줄 뿐 보장하지는 않습니다.\n- **올릴 단계**: 없습니다. 목표·전략을 고칠 일은 없고, 계획(테스트 표)만 다듬으면 됩니다.\n\n## 지적\n\n1. **should_fix: T-2의 \"누락은 blocking 한 건\"이 무엇의 누락인지 모호합니다.** \"증명 범위 절·판정 주체가 비었을 때 blocking 1건만\"(BR01)으로 읽힐 수도 있고, \"충분성·권한·안전 판정이 빠지면 blocking\"으로 읽힐 수도 있습니다. BR01 문구로 고정하는 것이 좋습니다. 예: \"증명 범위·판정 주체가 비면 그것만 blocking 1건, 목적에 비해 좁은 범위·권한 대체·안전 제외는 blocking, 충분한 범위를 넓히는 요구는 should_fix\". 이렇게 하면 S-2가 프롬프트에서 어떤 문구를 단언해야 하는지도 정해집니다.\n\n2. **should_fix: S-2에서 새 형식 TASK의 재검토 프롬프트가 어떤 결과를 내야 하는지 정해져 있지 않습니다.** \"goal/task/재검토 프롬프트 생성 → 새 task만 증명 규칙\"만으로는, 재검토(`rereview`) 분기에서 새 형식 TASK에 증명 범위 규칙을 넣을지 말지 알 수 없습니다. 현재 재검토 분기는 kind와 관계없이 별도 scope를 씁니다(`src/agent/verify.ts:43-48`). 기대값을 적지 않으면 어느 구현도 테스트를 통과하므로 검출력이 없습니다.\n\n3. **should_fix: S-3에서 LLM 실측이 기대와 다를 때의 처리가 없습니다.** 프롬프트를 고친 뒤 원하는 결과가 나올 때까지 일부 사례만 다시 돌리면 선택 편향이 생깁니다. 다음 세 가지를 적어 두는 것이 좋습니다.\n   - 실패한 회차도 지우지 않고 evidence에 남긴다.\n   - 프롬프트나 reviewer.md를 고치면 다섯 사례(6회)를 모두 다시 돌린다.\n   - 기록마다 제공자와 최초 검토 여부를 남긴다.\n\n4. **should_fix: 사례 ④ 예제에 \"승인받은 사람의 원문\"이 있어야 합니다.** 그 원문이 별도 폴더 안에 근거 파일로 없으면, reviewer는 옮긴 내용이 정확한지 대조할 수 없어 미확인이나 blocking을 내게 됩니다. 그러면 pass 기대가 구조적으로 실패합니다. 변형별 폴더에 원문 파일을 함께 두고 TASK에서 링크한다는 조건을 S-3에 적어 주세요.\n\n5. **note: 기준선 비교가 없습니다.** 새 규칙이 들어간 프롬프트와 옛 프롬프트로 같은 변형을 돌려 비교하면, 결과가 새 규칙 덕분인지 보여 주는 검출력이 커집니다. ①의 \"정확히 1건\"과 ②의 \"should_fix로 강등\"이 가장 잘 갈리는 사례입니다. 다만 합의 기준(BR01·P-1)은 다섯 결과를 기록하는 것까지이므로 범위 확장 제안에 그칩니다.\n\n6. **note: S-1의 \"주체 빈 값\"이 템플릿 주석만 있는 값까지 포함하는지 분명히 하는 것이 좋습니다.** 새 템플릿은 `- 판정 주체: <!-- … -->`처럼 안내 주석을 둘 가능성이 큽니다. 접근에는 \"HTML 주석만 있는 빈 절\"만 적혀 있습니다. 주체 값이 주석뿐인 경우도 거부 사례로 S-1에 넣어 주세요.\n\n7. **note: 게이트가 `포함`·`범위 밖` 항목은 구조 검사하지 않습니다.** BR01의 게이트 요구는 ①②③뿐이므로 범위에 맞습니다. 두 항목이 비어 있는지는 reviewer의 의미 판정으로 넘어간다는 점을 reviewer.md에 적어 두면 경계가 분명해집니다.\n\n8. **note: 마커 판독의 경계 사례를 정해 두면 좋습니다.** 콜론 뒤 공백 유무, 끝 공백, 코드 블록이나 주석 안에 들어간 표지 같은 경우입니다. 기존 `사전 검토:` 마커의 판독 규칙(줄 단위·trim)과 맞추면 됩니다.\n\n## 전략 대안\n게이트와 verify가 pre-review.ts의 공유 함수를 함께 쓰는 방식은 적절합니다. verify-cli가 이미 `../project/pre-review.ts`를 import하고 있어 선례도 있습니다. 대안으로 절이 있는지로 새 TASK를 판별하는 방식이 있지만, BR01이 이유를 들어 이미 배제했습니다. 표지를 지워 우회하는 한계를 문서에 적는 것도 BR01과 일치합니다.\n\n## 결정 추적\n형식 줄 `v2`, 주석만 있는 절 불인정, 중복·미지원 표지 거부, fixture 보완, 보안 검사는 finish에서 수행한다는 결정은 모두 T-1, P-1, PROJECT.md 설계 중 하나로 추적됩니다.\n\n## 노출 범위\n- **읽은 파일**: TASK.md, PROJECT.md, BR01, `templates/project/TASK.md`, `src/project/pre-review.ts`, `src/agent/verify.ts`(20–89줄). 일부만 grep으로 본 파일은 `src/project/harness.ts`, `src/agent/verify-cli.ts`, `docs/ARCHITECTURE.md`입니다.\n- **읽지 않은 파일**: `review-records/R1·R2.json`, `REVIEW-LOG.jsonl`, `PRE-REVIEW.json`은 이전 지적과 기록이라 열지 않았습니다. 다만 Glob 결과로 이 파일들이 있다는 사실은 알게 됐습니다.\n- **자동 첨부 맥락**: OPAL 부트 주입(에이전트 정의, 프로젝트 메모리 \"없음\"), 하네스의 AGENTS.md/CLAUDE.md, git 상태 스냅샷이 있었습니다.\n- **검토 주체**: 이 검토는 Anthropic(claude-opus-5-5) 1단계 호출입니다. 작성자 제공자가 무엇인지는 확인하지 못했습니다. 2단계는 수행하지 않았습니다.\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 75622,
+    "usage": {
+      "input_tokens": 14,
+      "output_tokens": 7902
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "c343d5056e3350250864acf7cf9374b8d85b20b7b5e4d890bccb6ec3e3ccba30",
+    "verdict": "pass",
+    "rereview_of": null,
+    "snapshot": "# T01 TASK 증명 범위와 판정 주체\n\n- 프로젝트: [P008](../../PROJECT.md) · 백로그: [BR01](../../../../backlogs/BL261123_02_검토_반복_실패_결정_주체_구분/BR01_TASK_증명_범위와_판정_주체.md)\n- 상태: 진행\n- 사전 검토: v1\n\n## 목적\n\n사전 검토가 목적에 필요한 증명과 정당한 판정 주체에 집중하게 한다. 합의한 범위를 넘는 반례를 계속 추가하는 반복을 예방하면서 목적·필수 안전 기준 누락은 막는다(P-1).\n\n## 재료\n\nPROJECT.md P-1, 출처 BR01 전체, templates/project/TASK.md, src/project/pre-review.ts, src/agent/verify.ts, test/pre-review.test.ts, test/agent-verify.test.ts.\n\n## 증명 범위\n\n- 판정 주체: 형식·호환은 자동 테스트, 의미 판정은 다른 제공자 reviewer가 사례별로 독립 판정한다. 사람의 결정이 정답인 사례에서는 승인받은 사람의 원문을 기준으로 정확히 옮겼는지를 판정한다.\n- 포함: 새 형식 표지와 증명 범위의 필수 구조, 표지 없는 옛 TASK 호환, 독립 reviewer 다섯 사례의 관측 결과.\n- 범위 밖: 설치본·bubble-catch 통과 회차 개선 효과는 병합·설치 뒤 운영 측정으로 넘긴다. 실제 사람의 정답 결정·보안 기준을 자동 검사로 대체하지 않는다.\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | 새 템플릿의 명시적 형식 표지를 게이트·verify·스킬이 공유한다. 표지 있는 TASK의 절 누락·빈 절·판정 주체 누락을 거부하고 옛 TASK는 유지한다(P-1). |\n| T-2 | 새 TASK 의미 판정에 목적 대비 범위 충분성·판정 권한·필수 안전을 포함하고 누락은 blocking 한 건, 충분한 범위를 넓히는 제안은 should_fix로 한정한다. 옛 TASK에는 새 규칙을 강제하지 않는다. |\n| T-3 | 다른 제공자가 새 형식의 별도 예제 TASK의 다섯 유형(⑤는 권한·안전을 5a/5b로 분리)을 판정한 원문을 보존한다: 누락 1 blocking, 충분한 범위+확장 제안 should_fix, 부족한 범위 blocking, 사람 원문 충실 전달 pass, 권한 대체/안전 제외 blocking. |\n\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | unit | T-1 | 새 표지(검토 기록 유무 무관)와 옛 TASK | 절 누락/주석만 빈 절/주체 빈 값/충족/CRLF/미지원·중복 표지를 검사 | 불완전·미지원 거부, 충족·CRLF·옛 TASK 허용 | pre-review.test.ts |\n| S-2 | unit | T-1,T-2 | 옛 TASK·새 TASK | goal/task/재검토 프롬프트 생성 | 새 task만 증명 규칙, 옛 방식 유지 | agent-verify.test.ts |\n| S-3 | e2e | T-3 | 동일 TASK의 다섯 변형 | 변형별 별도 폴더에서 소스 CLI verify --kind task로 다른 제공자 최초 검토 호출 | 각 변형의 기대 등급·판정 원문 확인 | evidence/cases/ |\n| S-4 | check | T-1,T-2 | 변경한 정본 | tester·reviewer가 정본 독립 대조·전체 검사 | 템플릿·게이트·프롬프트·스킬 경계 일치 | npm run check |\n\n## 접근\n\n형식 줄은 `- TASK 형식: v2`로 둔다. 형식 판독·구조 검사를 pre-review.ts에 공유 함수로 두어 verify.ts와 같은 경계를 쓴다. 기존 사전 검토 v1 이력 검사는 유지한다. HTML 주석만 있는 빈 템플릿은 유효 내용으로 인정하지 않는다. 의미적 충분성·정당한 권한·안전은 독립 reviewer가 판정한다. reviewer.md를 의미 규칙 정본으로 하고 task-steps는 링크한다. 기준 문서는 docs/ARCHITECTURE.md·AGENT-CALL.md·WORK-PROCESS.md·SECURITY.md·TESTING.md. 교본 typescript/INDEX 및 verification/INDEX 대조: 공유 상태 없이 임시 루트, 거부 경로 단언, 테스트 대역과 실제 CLI 경계를 따로 검증한다.\n\n추가 경계: 표지가 존재하면 사전 검토 기록 유무와 무관하게 구조 검사부터 한다. 주체는 `- 판정 주체:`의 비어 있지 않은 값이다. 미지원·중복 표지는 거부한다. 실제 task 생성 결과의 표지·절 순서도 검사해 템플릿 누락을 검출한다. 기존 하네스의 생성 TASK fixture는 증명 범위 값을 채운다. 표지 제거·허위 기록의 우회 한계는 docs/WORK-PROCESS.md와 reviewer.md에 적는다. 선언 보안 검사는 finish가 수행한다.\n"
+  }
+}

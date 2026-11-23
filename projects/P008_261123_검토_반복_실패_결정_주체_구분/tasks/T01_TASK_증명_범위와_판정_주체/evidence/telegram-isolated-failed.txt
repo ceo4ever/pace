@@ -1,0 +1,17 @@
+✖ S-4b 저장 실패는 offset 유지·재시도로 복구 뒤 정확히 1회 수락, 5회 연속 실패는 메타데이터만 보류(본문·토큰 미저장) (52.43575ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 164.704541
+
+✖ failing tests:
+
+test at test/telegram-flow.test.ts:74:1
+✖ S-4b 저장 실패는 offset 유지·재시도로 복구 뒤 정확히 1회 수락, 5회 연속 실패는 메타데이터만 보류(본문·토큰 미저장) (52.43575ms)
+  Error: 상태 저장 실패(주입)
+      at StateStore.save (file:///Volumes/Data/AiStudio/workspace/pace.wt/P008/src/daemon/store.ts:86:32)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P008/src/daemon/core.ts:282:20

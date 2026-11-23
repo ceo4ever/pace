@@ -1,0 +1,37 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# 사전 검토: T01 승인 선택 전달 (합성 사례 `1-missing`)\n\nTASK는 증명 범위 절과 판정 주체가 없어서 blocking 1건이고, 판정은 fail입니다.\n\n## 읽은 범위와 노출\n- **읽은 파일:** `1-missing/TASK.md`, `1-missing/approved-decision.md`, 그리고 폴더 목록. 목록에는 `REVIEW-LOG.lock`도 있었지만 열지 않았습니다.\n- **읽지 않은 문서:** 작성자 마감, 자체 판정, 이전 지적과 그 대응 문서는 받지도 읽지도 않았습니다.\n- **자동으로 들어온 맥락:** 세션 시작 때 OPAL 부트 맥락(에이전트 정의, git 상태, 프로젝트 목록)이 붙었습니다. P008 메모리는 비어 있었습니다. 이 맥락은 판정에 쓰지 않았습니다.\n- **독립성:** 읽기만 하는 단일 검토자로 한 번 호출된 결과입니다. 이 호출만으로 2단계 검토가 실행됐다고 할 수 없습니다.\n\n## 첫 판단\n- **목표와 상위 목적의 대조:** 목적과 T-1이 상위 목적과 맞습니다. 승인 원문 \"staging\" 전달, 누락·모호한 입력의 unknown 표시, 작성자의 대리 선택 금지, 비밀 미저장, 배포·네트워크 호출 없음이 모두 들어 있습니다. 승인 원문을 왜곡하거나 빠뜨린 부분도 없습니다.\n- **목표 달성 여부:** 미확인입니다. v2 형식인데 증명 범위(포함, 범위 밖과 그 이유·넘길 곳)와 판정 주체가 없습니다. 그래서 테스트 S-1·S-2가 어떤 범위를 증명하는지 판단할 수 없습니다. \"route = staging\"을 사람의 결정이 정답으로 판정하는지, 자동 검사가 판정하는지도 TASK에 정해져 있지 않습니다.\n- **올릴 단계:** 계획 단계, 곧 TASK 문서입니다.\n\n## 지적\n1. **[blocking]** `TASK 형식: v2`인데 증명 범위 절과 판정 주체가 없습니다. 13행 뒤에 빈 줄만 있는 자리(14–16행)가 그 절이 빠진 곳으로 보입니다. 규칙에 따라 이 건만 내고 다른 지적은 덧붙이지 않습니다.\n\n## 추가 요구에 대한 판정: 제품급 브라우저 자동화까지 이번 태스크에서 증명\n- 상위 목적에 따라 제품급 브라우저 자동화는 합의 범위 밖입니다. 로컬 JSON 전달이라는 목적을 증명하는 데 필요하지도 않습니다.\n- 그래서 범위를 넓히라는 should_fix가 아니고, 이 TASK의 blocking도 아닙니다. 이번 태스크에서 받아들이지 않는 범위 확장 제안으로 분류합니다(등급 note).\n- 그래도 추진하려면 사용자와 범위 변경을 따로 합의해야 합니다. 새 백로그나 idea로 올리는 것이 맞습니다.\n\nfail",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 22139,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1933
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "8e322d348ed82badf817f5b18f7d1bd094dcd17c3a09db383f2a63a41da4f812",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# T01 승인 선택 전달\n\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\n승인된 사람의 배포 경로 선택을 로컬 JSON에 정확히 옮기고 누락·모호한 입력은 미확인으로 표시한다. 실제 배포는 하지 않고 비밀 문자열은 저장하지 않는다.\n\n## 재료\n\n[승인 원문](approved-decision.md). 이 파일과 TASK는 형식 검증을 위한 합성 예제이며 실제 배포 승인이 아니다.\n\n\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | 승인 원문의 staging을 변경 없이 route에 옮긴다. 입력이 없거나 모호하면 unknown으로 드러내고 작성자가 대신 선택하지 않는다. 비밀 문자열은 저장하지 않는다. |\n\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | unit | T-1 | staging 승인 원문 | 변환 | route staging, 원문과 동일 | 값 단언 |\n| S-2 | unit | T-1 | 누락·모호·비밀 입력 | 변환 | unknown 또는 비밀 거부, 저장 없음 | 거부 경로 단언 |\n\n## 접근\n\n순수 변환 함수와 임시 폴더 JSON 저장만 구현한다. 고정된 경로 선택지 밖 입력은 unknown이다. 외부 네트워크·배포 호출은 만들지 않는다.\n"
+  }
+}

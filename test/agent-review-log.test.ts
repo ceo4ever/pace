@@ -39,6 +39,20 @@ function harness() {
 const FIRST = /이전 지적과 그 대응 문서는 받거나 읽지 않는다/;
 const REREVIEW = /판정 범위: 직전 검토의 blocking이 해소됐는지/;
 
+test('v2 구조 누락을 채운 뒤에는 억제됐던 목적·안전까지 전체 검토한다', async () => {
+  const h = harness();
+  h.set('- TASK 형식: v2\n## 목적\n안전한 처리\n');
+  await h.verify('F1 [blocking] 증명 범위 누락\nfail');
+  h.set('- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n');
+  const full = await h.verify('F1 [blocking] 안전 누락\nfail');
+  assert.equal(full.json.review.rereview_of, null);
+  assert.doesNotMatch(h.prompts.at(-1)!, REREVIEW);
+  h.set(readFileSync(h.target, 'utf8') + '\n안전 기준 보완\n');
+  const narrow = await h.verify('안전 보완 확인\npass');
+  assert.equal(narrow.json.review.rereview_of, 'review-records/R2.json');
+  assert.match(h.prompts.at(-1)!, REREVIEW);
+});
+
 test("S-1 직전 fail이면 원장 기준점의 원문·바뀐 줄로 재검토하고 원장·기록을 남긴다", async () => {
   const h = harness();
   h.set("# T\n- 상태: 진행\n기준 A\n접근 X\n");

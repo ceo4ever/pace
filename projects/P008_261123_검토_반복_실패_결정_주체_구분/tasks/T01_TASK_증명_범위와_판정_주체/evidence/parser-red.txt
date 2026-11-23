@@ -1,0 +1,38 @@
+✖ v2 증명 범위는 검토 기록보다 먼저 검사하고 옛 TASK는 호환한다 (1.709083ms)
+✔ 사전 검토 해시는 CRLF만 정규화하고 기존 LF 기록·기록 명령과 일치한다 (32.487041ms)
+✔ Git autocrlf로 다시 체크아웃한 태스크는 기존 LF 검토 기록을 유지한다 (29.743ms)
+✔ 사전 검토 이력: 최신 대상·판정과 대체·안전한 증거를 검사한다 (2.762708ms)
+✔ 사용자 게이트 예외: 실행된 검토가 pass에 못 미쳐도 사용자 결정·현재 해시·근거에 묶이면 통과, 이력은 그대로 (1.694125ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150.4315
+
+✖ failing tests:
+
+test at test/pre-review.test.ts:10:1
+✖ v2 증명 범위는 검토 기록보다 먼저 검사하고 옛 TASK는 호환한다 (1.709083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   '증명 범위: 절 누락 또는 중복'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P008/test/pre-review.test.ts:33:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '증명 범위: 절 누락 또는 중복' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

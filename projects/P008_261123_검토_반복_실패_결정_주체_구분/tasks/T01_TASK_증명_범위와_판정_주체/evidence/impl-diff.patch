@@ -1,0 +1,368 @@
+diff --git a/docs/WORK-PROCESS.md b/docs/WORK-PROCESS.md
+index 2cdc7b0..dd3820a 100644
+--- a/docs/WORK-PROCESS.md
++++ b/docs/WORK-PROCESS.md
+@@ -15,6 +15,7 @@
+ ## 지표와 사건 기록
+ 
+ - 지표: `pace project stats P### [--json]` — 프로젝트·태스크 시간, 도구별 토큰, 게이트 실패, 리뷰 지적 수·개선 후보. main에서도 소유 worktree를 조회한다. `projects/P###_…/log.jsonl`은 커밋하는 사건 기록(`{ts,p,t?,type,by,msg,ok?,src?,ref?,data?}` — 시간대 포함 ISO·작성자 cli/agent/coordinator/user·짧은 메시지·수치 data)이며 기록 오류는 명령을 막지 않는다. finish·merge는 프로젝트의 `METRICS.md`(프로젝트 기준·태스크 기준·태스크 밖 집계)와 `projects/METRICS.md`(비교표)를 자동 생성한다. PROJECT-CLOSE `## 지표`는 METRICS.md 링크와 에이전트 해석 1~3줄이며 누락 시 finish 실패. 개선 후보를 메모리·브레인으로 올릴지는 사람이 고른다
++- 새 TASK의 `TASK 형식: v2`는 증명 범위와 비어 있지 않은 판정 주체를 요구한다(기준·테스트 앞 배치는 템플릿 관례이며 게이트의 순서 검사는 아니다). 게이트·verify·수동 reviewer는 같은 표지로 나누며 표지 없는 옛 TASK에는 새 규칙을 강제하지 않는다. 구조 검사와 의미 판정의 경계는 reviewer.md의 TASK 증명 범위 절을 따른다. 표지 제거·허위 기록의 우회와 의미·진정성은 기계가 보증하지 않는다.
+ - 새 태스크의 `사전 검토: v1`은 `PRE-REVIEW.json`의 마지막 판정·대상 해시·증거를 check/done/finish에서 확인한다. 작성법과 교차 대체 조건은 `skills/pace-project-dev/references/reviewer.md`의 사전 검토 기록 v1을 따른다. 과거 마커 없는 태스크는 기존 방식이며, 마커와 기록 삭제·허위 기록 우회 및 검토 의미·실제 선행 시점은 기계가 보증하지 않는다.
+ - 사건 작성: `pace project log P### [T##] --type decision|change|review|question|answer|escalation|note --msg "한 줄" [--src "사용자 결정|main 판단|자체 판단"] [--ref 프로젝트의_상대파일] [--by agent|coordinator|user]`. decision/change는 PROJECT 결정 표도 자동 반영하므로 손으로 두 번 쓰지 않는다. review 메시지는 `tester pass blocking 0 should_fix 0` 또는 `reviewer fail blocking 1 should_fix 2`처럼 판정·지적 수를 적는다. start는 도구·선택 출처·launch 결과 및 PROJECT 출처 기반 착수 결정을, merge는 사용자 승인·커밋 수를 함께 기록한다. 출력 원문·세션 내용·코드 diff·비밀은 남기지 않는다
+ - 대기 구분: 질문·에스컬레이션→같은 태스크(또는 프로젝트)의 답변까지 구간을 겹침 없이 합쳐 질의 대기로 보고 러닝 시간에서 빼 작업 경과를 계산한다. finish→merge(미병합이면 조회 시각)는 병합 승인 대기다. 결정/변경/리뷰 사건 수는 log 도입 후 기준이고 미도입 태스크의 리뷰 등급은 TASK-CLOSE로 보완한다. 착수는 출처(백로그 지시·확정된 대화)를 결정으로 기록하고 승인 대기 없이 바로 수행한다. 과거 계약 승인 사건은 기존 지표에서 계속 읽는다
+diff --git a/skills/pace-project-dev/references/document-shape.md b/skills/pace-project-dev/references/document-shape.md
+index 2ba1f8d..075bf3a 100644
+--- a/skills/pace-project-dev/references/document-shape.md
++++ b/skills/pace-project-dev/references/document-shape.md
+@@ -24,7 +24,7 @@
+ | BACKLOG: intent check·backlog brief·project new --from | BL 폴더/BACKLOG.md, 상태, `## 목표`, `## 진행 현황` 기존 5칸 표(브리프·상태·선행·프로젝트·비고)·BR 파일 연결 | 목표 본문·근거·추가 절·산출물 |
+ | BR: intent check·project new/done | BR##_이름.md 유일 번호·상태, `## 목적`·`## 범위`·`## 완료 기준`; BR 번호↔T 번호 | 범위/관찰 기준 서술·비교표·산출물 링크 |
+ | PROJECT: intent check·project | P### 폴더/PROJECT.md, 상태·출처·브랜치/worktree 머리, `## 목적`·`## 재료`·`## 기준` P-n 표. 태스크 사용 시 `## 태스크` 4칸 표(T·이름·상태·커밋). 설계의 정본 목록은 finish가 읽음 | 목적/재료/설계 본문·추가 절. 태스크 없는 프로젝트는 태스크 표 생략 |
+-| TASK/마감: project check/done | TASK.md 상태·`## 기준` T-n 표. TASK-CLOSE.md의 `- 태스크: … 판정: 통과`, `## 기준 대조` 동일 ID/결과 `통과`, 비지 않은 `## 단위 테스트`·`## E2E`·`## 리뷰`·`## 남긴 것`, 적은 증거 파일의 실재 | 목적/재료/접근 본문·검증 계층. 코드 테스트가 안 맞으면 해당 없음 이유와 적합한 문서/관측 검증을 기록 |
++| TASK/마감: project check/done | TASK.md 상태·`## 기준` T-n 표. 새 `- TASK 형식: v2`는 `## 증명 범위`와 비어 있지 않은 `- 판정 주체:` 값(주석·코드 예제 제외); 표지 없는 옛 TASK는 호환. TASK-CLOSE.md의 `- 태스크: … 판정: 통과`, `## 기준 대조` 동일 ID/결과 `통과`, 비지 않은 `## 단위 테스트`·`## E2E`·`## 리뷰`·`## 남긴 것`, 적은 증거 파일의 실재 | 목적/재료/접근 본문·검증 계층. 코드 테스트가 안 맞으면 해당 없음 이유와 적합한 문서/관측 검증을 기록 |
+ | 프로젝트 마감: project finish | P-n 기준 대조, 보안·정본 반영 표(브레인 포함), 지표 링크/해석, 완료 태스크·태그 커밋·정본/증거 검사 | 업무별 결과 해석·회고·관측 형태. 목표 달성은 별도 판단 |
+ | 정의서: 실행 선언 | docs/README.md의 `검사`·`보안 검사`·`worktree 준비` 라벨 | 나머지 업무 설명. 선언 라벨은 한 번씩 유지 |
+ 
+@@ -41,3 +41,5 @@
+ | 계약 최소 구조 보존 + 본문/산출물 선택 | 추적·게이트 호환과 업무별 표현 보존 | 이번 선택. 작은 일은 프로젝트 자체 생략, 하네스 사용 시 필요한 절은 짧게 의미 있게 작성 |
+ 
+ 예시: 비개발 업무의 의사결정 메모·근거 대조표. 가상 판단을 실제 성과나 사용자 판정으로 치지 않는다.
++
++TASK 형식 구조 파서는 전체 Markdown 렌더러가 아니다. 여러 줄에 걸친 인라인 코드 등 복잡한 혼합 구문은 오판할 수 있으므로 머리 목록과 증명 범위는 템플릿의 일반 텍스트 필드로 작성한다. 표지 제거·본문 위조는 이력 조작과 같은 진정성 한계다.
+diff --git a/skills/pace-project-dev/references/reviewer.md b/skills/pace-project-dev/references/reviewer.md
+index dc84231..f91f090 100644
+--- a/skills/pace-project-dev/references/reviewer.md
++++ b/skills/pace-project-dev/references/reviewer.md
+@@ -8,6 +8,16 @@
+ 
+ TASK.md(목적·기준·접근), 이 태스크의 전체 diff(`git diff` — 커밋 전 작업본 또는 태스크 시작 커밋 이후), 관련 기준 문서(SKILL.md §5), 바뀐 언어의 `pace-tech-handbook` 색인(`references/<언어>/INDEX.md`), 필요하면 `security.md` 체크리스트.
+ 
++## TASK 증명 범위와 판정 주체
++
++형식 경계는 머리 목록의 `- TASK 형식: v2`다. 표지가 없는 옛 TASK에는 이 절의 새 요구(누락 blocking 포함)를 적용하지 않고 기존 기준으로 검토한다. 절 존재만으로 새 형식을 추정하지 않는다. 중복·미지원 표지는 거부한다. 게이트와 verify도 같은 표지를 읽는다. 표지 제거·기록 위조는 기존 이력 조작처럼 우회 가능한 한계이며 기계가 진정성을 보증하지 않는다.
++
++새 TASK는 기준·테스트 앞 `## 증명 범위`에 `- 판정 주체:`의 비어 있지 않은 값, 포함, 범위 밖(이유·넘길 곳)을 쓴다. 게이트는 절 누락·빈 절(HTML 주석만 있는 절 포함)·판정 주체 누락/빈 값을 거부한다. 포함·범위 밖의 충분성은 reviewer의 의미 판정이다.
++
++증명 범위·판정 주체가 비면 그것 자체만 **blocking 1건**으로 내고 다른 지적을 늘어놓지 않는다. 단건 억제는 게이트가 거부하는 구조 누락(절 없음·주석뿐인 절·주체 줄 없음·값 공백)에 한한다. 미정·TBD 같은 실제 텍스트의 의미적 불충분성에는 나머지 지적을 억제하지 않는다. 구조 누락을 채운 다음 verify는 아직 평가하지 못한 목적·필수 안전까지 전체 검토한다(rereview_of null, 실패 집계는 유지). blocking은 적힌 증명 범위로 목적·기준을 증명할 수 없을 때다. 현재 적힌 범위가 이미 목적·기준을 충분히 입증한다면 그 밖으로 확대하라는 요구는 목적 증명에 필요하지 않아도 should_fix로 남긴다. 합의 범위 밖이라는 이유로 note로 바꾸지 않는다. should_fix는 범위 변경 승인이나 반영 의무가 아니며 확장은 별도 합의를 받는다. 범위 자체가 목적에 비해 좁으면 blocking이며 범위 밖 선언으로 검토를 피할 수 없다.
++
++판정 주체의 권한도 대조한다. 사람의 결정이 정답인 기준은 승인받은 사람의 원문을 왜곡·누락 없이 옮기고 불완전하면 미확인으로 드러내면 통과다. 작성자나 자동 검사가 그 결정을 대신하거나 필수 안전 기준(보안·데이터·되돌리기 어려운 행동)을 범위 밖으로 빼면 blocking이다. 재검토에서는 이 규칙도 직전 blocking 해소와 바뀐 줄이 만든 새 결함 범위 안에서 적용한다.
++
+ ## 사전 검토 이력 보존
+ 
+ PM은 검토 차수마다 최초 판정과 재검토 원문을 고유한 증거 경로에 보존한다. 비밀·민감정보를 검사하고 원문을 잃었거나 복사할 수 없으면 추정 복원하지 않고 그 한계를 남긴다. 지적마다 등급·내용·판정 근거, 반영/미반영과 이유, 수정 위치, 같은 reviewer의 재검토 결과와 남은 사항을 연결한다. TASK-CLOSE와 해당 review 로그에 증거 경로를 연결해 실제 원문과 처리 이력을 확인한다. 기록의 존재만으로 독립성이나 의미 판정을 증명하지 않는다.
+diff --git a/skills/pace-project-dev/references/task-steps.md b/skills/pace-project-dev/references/task-steps.md
+index 817da30..98c6331 100644
+--- a/skills/pace-project-dev/references/task-steps.md
++++ b/skills/pace-project-dev/references/task-steps.md
+@@ -4,7 +4,7 @@ SKILL.md §3에서 옮긴 문서다. 분석·설계·구현 전 검토·테스
+ 
+ 1. **분석** — `pace project task P### "<이름>"`. 명령이 `tasks/T0n_<이름>/TASK.md`를 만들고 표 상태를 `진행`으로 둔다 — 표의 `대기` 행과 이름(이름 칸 그대로)이 같으면 그 번호로 열고, 아니면 새 번호로 행을 더한다. 목적·재료를 쓴다. 앞 태스크 TASK-CLOSE의 "남긴 것"을 읽는다.
+ 
+-2. **설계** — 기준 `T-n`(프로젝트 기준 P-n과 이어지면 적는다), 테스트 표(기준마다 시나리오 한 줄 이상, 가장 싼 충분한 계층), 접근. 기준 문서는 §5 규칙으로 고른다. 코드를 바꾸면 `pace-tech-handbook` 언어 색인과 testing·`verification/` 색인의 안티패턴을 테스트 표와 접근에 대조한다. 화면·상태가 복잡하면 html-plan으로 설계를 보여 줄 수 있다(선택, `references/html-plan.md`). 착수 뒤 테스트 표·접근은 필요하면 고친다. 기준 `T-n`을 바꿀 때만 결정 메모에 이유를 남긴다.
++2. **설계** — 새 형식 TASK는 사전 검토 전에 [증명 범위·판정 주체](reviewer.md#task-증명-범위와-판정-주체)를 먼저 쓴다(표지 없는 옛 TASK는 기존 방식). 기준 `T-n`(프로젝트 기준 P-n과 이어지면 적는다), 테스트 표(기준마다 시나리오 한 줄 이상, 가장 싼 충분한 계층), 접근. 기준 문서는 §5 규칙으로 고른다. 코드를 바꾸면 `pace-tech-handbook` 언어 색인과 testing·`verification/` 색인의 안티패턴을 테스트 표와 접근에 대조한다. 화면·상태가 복잡하면 html-plan으로 설계를 보여 줄 수 있다(선택, `references/html-plan.md`). 착수 뒤 테스트 표·접근은 필요하면 고친다. 기준 `T-n`을 바꿀 때만 결정 메모에 이유를 남긴다.
+    **구현 전 검토** — [reviewer.md](reviewer.md)의 구현 전 TASK 검토 절을 따른다. 워크트리 PM이 작성한 TASK.md를 별도 reviewer에 맡겨 상위 목적·브리프와의 정합, 범위·완료 기준·테스트 계획·접근과 위험을 검토받는다. blocking은 수정하고 `verify`를 다시 불러 자동 재검토를 받아 pass(blocking 0)이거나 사용자 결정으로 PRE-REVIEW `waiver`를 붙였을 때 구현한다. 연속 fail로 출력에 `escalation`이 붙으면 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)대로 그 호출에서 진단하거나 사용자 결정을 받는다. should_fix는 반영하거나 이유를 남기고, 목적·범위 변경은 §6을 따른다. 대상과 판정·지적 처리·검토 방식을 태스크 기록에 남긴다. 검토한 내용이 구현 전에 실질적으로 바뀌면 다시 검토받는다(pass 뒤 변경이면 전체 검토로 열린다).
+    **reviewer 배정** — 작성 PM과 다른 제공자를 우선한다(Claude PM → Codex, Codex PM → Claude). 다른 제공자 발동이 실패하거나 사용할 수 없으면 실패 이유를 기록하고 같은 제공자의 별도 새 세션에 맡긴다. 이는 교차 검증이 아닌 별도 맥락 검토로 기록한다. 어느 쪽도 검토하지 못하면 미검토로 남기고 구현하지 않는다. 제공자·실행 결과를 확인하며 실패를 통과로 취급하지 않는다.
+ 
+diff --git a/src/agent/verify-cli.ts b/src/agent/verify-cli.ts
+index 54c7692..9e66a52 100644
+--- a/src/agent/verify-cli.ts
++++ b/src/agent/verify-cli.ts
+@@ -1,7 +1,7 @@
+ import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, renameSync, rmdirSync, rmSync, writeFileSync } from "node:fs";
+ import { basename, dirname, join, resolve, sep } from "node:path";
+ import { parseArgs } from "node:util";
+-import { reviewHash } from "../project/pre-review.ts";
++import { proofScopeIssues, reviewHash } from "../project/pre-review.ts";
+ import { AgentError, errorCodes, errorPayload, type Executor } from "./contract.ts";
+ import {
+   acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, reviewStage,
+@@ -69,7 +69,7 @@ function escalation(info: StageInfo, target: string) {
+ }
+ 
+ /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
+-function loadRereview(target: string, base: ReviewEntry, currentHash: string, current: string): Rereview {
++function loadRereview(target: string, base: ReviewEntry, currentHash: string, current: string, kind: string): Rereview | undefined {
+   if (currentHash === base.hash) throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
+   const file = join(dirname(target), base.record);
+   if (!existsSync(file)) throw new AgentError("invalid_request", `재검토 기준점의 기록 파일이 없다: ${file}`);
+@@ -80,6 +80,8 @@ function loadRereview(target: string, base: ReviewEntry, currentHash: string, cu
+   if (typeof snapshot !== "string" || typeof text !== "string" || record.review?.hash !== base.hash || reviewHash(snapshot) !== base.hash || textHash(text) !== base.result_hash) {
+     throw new AgentError("invalid_request", `재검토 기준점의 기록이 원장과 맞지 않는다: ${file}`);
+   }
++  // 구조 누락 단건 판정은 나머지 평가를 억제했다. 구조를 채운 다음에는 목적·안전까지 처음 평가한다.
++  if (kind === 'task' && proofScopeIssues(snapshot).length) return undefined;
+   return { previousText: text, diff: lineDiff(snapshot, current) };
+ }
+ 
+@@ -141,7 +143,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+       deps.write(JSON.stringify({ ran: false, reason: "검토 반복 실패 단계", escalation: escalation(before, target), ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n");
+       return ESCALATION_EXIT;
+     }
+-    const rereview = before.base ? loadRereview(target, before.base, hash, artifact) : undefined;
++    const rereview = before.base ? loadRereview(target, before.base, hash, artifact, kind) : undefined;
+ 
+     // 실행 전에 이번 기록 자리를 먼저 만든다 — 실행 뒤 기록·원장 확정이 끊기면 원장에 없는 기록으로 남아 다음 검토를 막는다
+     const recordName = nextRecordName(target);
+@@ -170,7 +172,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     const verdict = parseVerdict(outcome.result.text);
+     // 기록 파일에는 세션 ID를 남기지 않는다
+     const result = { ...outcome.result, session_id: null };
+-    const review = { target: name, hash, verdict, rereview_of: before.base?.record ?? null, snapshot: artifact };
++    const review = { target: name, hash, verdict, rereview_of: rereview ? before.base!.record : null, snapshot: artifact };
+     const record = { ...outcome, result, review };
+     writeOrLedgerError(recordFile, JSON.stringify(record, null, 2) + "\n", "검토 기록");
+ 
+diff --git a/src/agent/verify.ts b/src/agent/verify.ts
+index aabd937..6bd98b8 100644
+--- a/src/agent/verify.ts
++++ b/src/agent/verify.ts
+@@ -1,4 +1,5 @@
+ import { AgentError, providerFromModel, providerOf, runAgent, type AgentName, type AgentResult, type Executor, type Provider } from "./contract.ts";
++import { taskFormat } from "../project/pre-review.ts";
+ 
+ // 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용 -p로 독립 검토한다.
+ // 같은 제공자로 몰래 대체하지 않는다 — 못 하면 "미실행"으로 기록하고 사용자에게 묻는다.
+@@ -70,6 +71,12 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
+     "## 묻는 것",
+     "1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?",
+     "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.",
++    ...(kind === "task" && taskFormat(artifact) !== "legacy" ? [
++      "새 TASK 형식(v2)의 증명 범위 규칙: 형식 표지가 중복되거나 지원하지 않는 버전이면 blocking이다. 증명 범위 절·판정 주체가 누락되거나 비면 그것 자체만 blocking 1건으로 내고 다른 지적을 늘어놓지 않는다. 단건 억제의 빈 값은 게이트가 거부하는 구조 누락(절 없음·주석뿐인 절·주체 줄 없음·값 공백)이다. 미정·TBD처럼 실제 텍스트가 있으나 의미상 불충분한 값은 단건 억제하지 않고 목적·안전까지 함께 평가한다.",
++      "포함·범위 밖(이유·넘길 곳)의 내용과 판정 주체를 목적·기준에 대조한다. blocking은 적힌 증명 범위로 목적·기준을 증명할 수 없을 때다. 목적에 충분한 범위를 넓히라는 요구는 should_fix다. 현재 적힌 범위가 이미 목적·기준을 충분히 입증한다면 그 밖으로 확대하라는 요구는 목적 증명에 필요하지 않아도 반드시 should_fix로 분류한다. 합의 범위 밖이라는 이유로 note로 바꾸지 않는다. should_fix는 확장 승인이나 반영 의무가 아니며 범위 변경은 별도 합의한다. 범위 자체가 목적에 비해 좁으면 blocking이며 범위 밖 선언으로 검토를 피할 수 없다.",
++      "판정 주체의 권한도 대조한다. 사람의 결정이 정답인 기준은 승인받은 사람의 원문을 왜곡·누락 없이 옮기고 불완전하면 미확인으로 드러내면 통과다. 작성자나 자동 검사가 그 결정을 대신하거나 필수 안전 기준(보안·데이터·되돌리기 어려운 행동)을 범위 밖으로 빼면 blocking이다.",
++      ...(rereview ? ["재검토에서는 위 규칙도 직전 blocking 해소와 바뀐 줄의 새 결함 범위 안에서 적용한다. 바뀌지 않은 부분의 새 지적은 note다."] : []),
++    ] : []),
+     "",
+     ...(rereview ? ["## 직전 검토 원문", rereview.previousText.trim(), "", "## 바뀐 줄 (직전 검토 때 → 지금, - 삭제 · + 추가)", rereview.diff, ""] : []),
+     `## 산출물: ${artifactName}`,
+diff --git a/src/project/pre-review.ts b/src/project/pre-review.ts
+index 5af76cb..1b7dfcb 100644
+--- a/src/project/pre-review.ts
++++ b/src/project/pre-review.ts
+@@ -2,6 +2,55 @@ import { createHash } from 'node:crypto';
+ import { lstatSync, readFileSync } from 'node:fs';
+ import { isAbsolute, join } from 'node:path';
+ 
++/** 명시적 표지만으로 호환 경계를 정한다. 절 누락을 옛 형식으로 오인하지 않는다. */
++export function taskFormat(task: string): 'legacy' | 'v2' | 'invalid' {
++  const header = visibleMarkdown(task).split(/^## /m)[0]!;
++  const markers = [...header.matchAll(/^- TASK 형식:([^\n]*)$/gm)];
++  if (!markers.length) return 'legacy';
++  return markers.length === 1 && markers[0]![1]!.trim() === 'v2' ? 'v2' : 'invalid';
++}
++
++/** 주석과 fenced 예제는 실제 문서 필드가 아니다. 완전한 Markdown 의미 판독은 reviewer 책임이다. */
++function visibleMarkdown(task: string): string {
++  let fence: string | undefined;
++  let comment = false;
++  return task.replace(/\r\n/g, '\n').split('\n').map(line => {
++    if (fence) {
++      const mark = /^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
++      if (mark && mark[0] === fence[0] && mark.length >= fence.length && line.trim() === mark) fence = undefined;
++      return '';
++    }
++    if (comment) {
++      const end = line.indexOf('-->');
++      if (end < 0) return '';
++      line = line.slice(end + 3);
++      comment = false;
++    }
++    line = line.replace(/(`+)(.*?)\1/g, span => span.replaceAll('<!--', '&lt;!--'));
++    while (line.includes('<!--')) {
++      const start = line.indexOf('<!--'), end = line.indexOf('-->', start + 4);
++      if (end < 0) { line = line.slice(0, start); comment = true; break; }
++      line = line.slice(0, start) + line.slice(end + 3);
++    }
++    const mark = /^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
++    if (mark) { fence = mark; return ''; }
++    return line;
++  }).join('\n');
++}
++
++export function proofScopeIssues(task: string): string[] {
++  const format = taskFormat(task);
++  if (format === 'legacy') return [];
++  if (format === 'invalid') return ['TASK 형식: 중복 또는 지원하지 않는 버전'];
++  const visible = visibleMarkdown(task);
++  const sections = [...visible.matchAll(/^## 증명 범위[ \t]*\n([\s\S]*?)(?=^## |$(?![\s\S]))/gm)];
++  if (sections.length !== 1) return ['증명 범위: 절 누락 또는 중복'];
++  const body = sections[0]![1]!.trim();
++  if (!body) return ['증명 범위: 빈 절'];
++  if (!/^- 판정 주체:[ \t]*\S[^\n]*$/m.test(body)) return ['증명 범위: 판정 주체 누락 또는 빈 값'];
++  return [];
++}
++
+ /** CRLF만 LF로 정규화하고 상태 값을 제외한다. 나머지 문자는 그대로다. */
+ export function reviewHash(task: string): string {
+   return createHash('sha256').update(task.replace(/\r\n/g, '\n').replace(/^- 상태: .+$/m, '- 상태:')).digest('hex');
+@@ -20,6 +69,8 @@ function safeFile(dir: string, path: string): boolean {
+ }
+ 
+ export function reviewIssues(dir: string, task: string): string[] {
++  const scopeIssues = proofScopeIssues(task);
++  if (scopeIssues.length) return scopeIssues;
+   const markers = [...task.matchAll(/^- 사전 검토:([^\r\n]*)\r?$/gm)];
+   const marker = markers[0]?.[1]?.trim();
+   const file = join(dir, 'PRE-REVIEW.json');
+diff --git a/templates/project/TASK.md b/templates/project/TASK.md
+index 1b20d47..3d37062 100644
+--- a/templates/project/TASK.md
++++ b/templates/project/TASK.md
+@@ -3,6 +3,7 @@
+ - 프로젝트: [{{projectId}}](../../PROJECT.md) · 백로그: {{source}}
+ - 상태: 진행
+ - 사전 검토: v1
++- TASK 형식: v2
+ 
+ <!--
+ 개발 업무의 예시 형식. 형식·추적 정본: pace-project-dev의 references/document-shape.md.
+@@ -18,6 +19,12 @@
+ 
+ <!-- 무슨 근거로: 링크·파일 위치·확인한 지금 동작·앞 태스크 TASK-CLOSE의 "남긴 것" -->
+ 
++## 증명 범위
++
++- 판정 주체: <!-- 자동 테스트 / 승인받은 사람의 결정 원문 / 관찰 — 최종 정답을 누가 무엇으로 판정하는가 -->
++- 포함: <!-- 목적에 비례해 증명할 것 -->
++- 범위 밖: <!-- 증명하지 않는 것 + 이유 + 넘길 곳. 필수 안전 기준은 제외할 수 없다 -->
++
+ ## 기준
+ 
+ | # | 완료 기준 |
+diff --git a/test/agent-review-log.test.ts b/test/agent-review-log.test.ts
+index 791df5f..d78855d 100644
+--- a/test/agent-review-log.test.ts
++++ b/test/agent-review-log.test.ts
+@@ -39,6 +39,20 @@ function harness() {
+ const FIRST = /이전 지적과 그 대응 문서는 받거나 읽지 않는다/;
+ const REREVIEW = /판정 범위: 직전 검토의 blocking이 해소됐는지/;
+ 
++test('v2 구조 누락을 채운 뒤에는 억제됐던 목적·안전까지 전체 검토한다', async () => {
++  const h = harness();
++  h.set('- TASK 형식: v2\n## 목적\n안전한 처리\n');
++  await h.verify('F1 [blocking] 증명 범위 누락\nfail');
++  h.set('- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n');
++  const full = await h.verify('F1 [blocking] 안전 누락\nfail');
++  assert.equal(full.json.review.rereview_of, null);
++  assert.doesNotMatch(h.prompts.at(-1)!, REREVIEW);
++  h.set(readFileSync(h.target, 'utf8') + '\n안전 기준 보완\n');
++  const narrow = await h.verify('안전 보완 확인\npass');
++  assert.equal(narrow.json.review.rereview_of, 'review-records/R2.json');
++  assert.match(h.prompts.at(-1)!, REREVIEW);
++});
++
+ test("S-1 직전 fail이면 원장 기준점의 원문·바뀐 줄로 재검토하고 원장·기록을 남긴다", async () => {
+   const h = harness();
+   h.set("# T\n- 상태: 진행\n기준 A\n접근 X\n");
+diff --git a/test/agent-verify.test.ts b/test/agent-verify.test.ts
+index d11b2e4..bc25e6e 100644
+--- a/test/agent-verify.test.ts
++++ b/test/agent-verify.test.ts
+@@ -105,3 +105,18 @@ test("판정은 등급으로 정한다 — blocking 없으면 pass, revise 같
+     assert.doesNotMatch(p, /pass \| revise \| fail/);
+   }
+ });
++
++test('증명 범위 규칙은 명시된 새 TASK에만 적용하고 재검토 범위를 유지한다', () => {
++  const old = '## 목적\n옛 TASK\n';
++  const fresh = '- TASK 형식: v2\n' + old;
++  for (const artifact of [old, '## 증명 범위\n- 판정 주체: 자동 테스트\n']) {
++    assert.doesNotMatch(buildVerifyPrompt('목적', 'TASK.md', artifact, 'task'), /새 TASK 형식|blocking 1건|권한도 대조/);
++  }
++  assert.doesNotMatch(buildVerifyPrompt('목적', 'TASK.md', fresh, 'goal'), /새 TASK 형식|blocking 1건/);
++  const prompt = buildVerifyPrompt('목적', 'TASK.md', fresh, 'task');
++  for (const rule of [/blocking 1건/, /목적에 충분한 범위를 넓히라는 요구는 should_fix/, /사람의 원문/, /필수 안전 기준/, /권한도 대조/]) assert.match(prompt, rule);
++  assert.match(buildVerifyPrompt('목적', 'TASK.md', fresh.replace('v2', 'v3'), 'task'), /지원하지 않는 버전이면 blocking/);
++  const re = buildVerifyPrompt('목적', 'TASK.md', fresh, 'task', { previousText: 'F1 [blocking] 범위 부족\nfail', diff: '+포함 보완' });
++  assert.match(re, /새 TASK 형식/);
++  assert.match(re, /위 규칙도 직전 blocking 해소와 바뀐 줄/);
++});
+diff --git a/test/pre-review.test.ts b/test/pre-review.test.ts
+index 0360c86..aa4b116 100644
+--- a/test/pre-review.test.ts
++++ b/test/pre-review.test.ts
+@@ -5,7 +5,40 @@ import { join } from 'node:path';
+ import { createHash } from 'node:crypto';
+ import { spawnSync } from 'node:child_process';
+ import { tempDir } from './helpers.ts';
+-import { reviewIssues, reviewHash } from '../src/project/pre-review.ts';
++import { reviewIssues, reviewHash, taskFormat } from '../src/project/pre-review.ts';
++
++test('v2 증명 범위는 검토 기록보다 먼저 검사하고 옛 TASK는 호환한다', () => {
++  const dir = tempDir('pace-proof-');
++  const marker = '- TASK 형식: v2\n';
++  const scope = '## 증명 범위\n\n- 판정 주체: 자동 테스트\n- 포함: 호환 검사\n- 범위 밖: 운영 측정은 설치 뒤\n\n## 기준\nT-1\n';
++  const valid = marker + scope;
++  assert.deepEqual(reviewIssues(dir, '## 목적\n옛 TASK\n'), []);
++  assert.deepEqual(reviewIssues(dir, valid), []);
++  assert.deepEqual(reviewIssues(dir, valid.replaceAll('\n', '\r\n')), []);
++  for (const [text, expected] of [
++    [marker + '## 기준\nT-1\n', /절 누락/],
++    [marker + '## 증명 범위\n<!-- 안내 -->\n## 기준\nT-1\n', /빈 절/],
++    [marker + scope.replace('- 판정 주체: 자동 테스트\n', ''), /판정 주체/],
++    [marker + scope.replace('자동 테스트', '<!-- 선택 -->'), /판정 주체/],
++    [valid.replace('v2', 'v3'), /지원하지 않는/],
++    [marker + valid, /중복/],
++  ] as const) assert.match(reviewIssues(dir, text).join(), expected);
++  assert.equal(taskFormat(scope), 'legacy');
++  assert.equal(taskFormat(valid), 'v2');
++  assert.equal(taskFormat(valid.replace('v2', 'v 2')), 'invalid');
++  assert.equal(taskFormat('<!--\n' + marker + '-->\n## 목적\n옛 형식'), 'legacy');
++  assert.equal(taskFormat('```md\n' + marker + '```\n## 목적\n옛 형식'), 'legacy');
++  assert.equal(taskFormat('## 예시\n' + marker), 'legacy');
++  assert.match(reviewIssues(dir, marker + '```md\n' + scope + '```\n').join(), /절 누락/);
++  assert.deepEqual(reviewIssues(dir, marker + '```html\n<!--\n```\n' + scope + '\n<!-- 안내 -->\n'), []);
++  assert.deepEqual(reviewIssues(dir, marker + '<!--\n```\n-->\n' + scope), []);
++  assert.deepEqual(reviewIssues(dir, marker + '## 재료\n인라인 예제 `<!--` 설명\n' + scope + '\n<!-- 안내 -->\n'), []);
++  // 유효한 이력이 있어도 구조를 생략할 수 없다.
++  const missing = marker + '## 목적\n옮기기\n';
++  writeFileSync(join(dir, 'evidence.md'), '독립 검토');
++  writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify({ version: 1, author: 'openai', attempts: [{ hash: reviewHash(missing), provider: 'anthropic', cross: true, status: 'pass', blocking: 0, evidence: 'evidence.md', continuity: 'new' }] }));
++  assert.match(reviewIssues(dir, missing).join(), /절 누락/);
++});
+ 
+ test('사전 검토 해시는 CRLF만 정규화하고 기존 LF 기록·기록 명령과 일치한다', () => {
+   const dir = tempDir('pace-review-eol-');
+diff --git a/test/project-harness.test.ts b/test/project-harness.test.ts
+index 0418939..8303a04 100644
+--- a/test/project-harness.test.ts
++++ b/test/project-harness.test.ts
+@@ -91,7 +91,7 @@ const runCli = (home: string, cwd: string, ...args: string[]) => {
+   const result = runPace(["project", ...args], { home, cwd, timeout: 60_000 });
+   if (args[0] === "task" && result.status === 0) {
+     const path = result.stdout.trim().split(": ").at(-1);
+-    if (path && existsSync(path)) writeFileSync(path, readFileSync(path, "utf8").replace(/^- 사전 검토: v1\r?\n/m, ""));
++    if (path && existsSync(path)) writeFileSync(path, readFileSync(path, "utf8").replace(/^- 사전 검토: v1\r?\n/m, "").replace(/^- TASK 형식: v2\r?\n/m, ""));
+   }
+   return result;
+ };
+@@ -172,7 +172,7 @@ test("CRLF 설치본: BL 프로젝트 생성·예정/추가 태스크·check/don
+   const added = installed("task", "P001", "추가");
+   assert.equal(added.status, 0, added.stderr + added.stdout);
+   assert.ok(existsSync(join(projectDir(main), "tasks", "T04_추가", "TASK.md")));
+-  writeFileSync(join(task, "TASK.md"), readFileSync(join(task, "TASK.md"), "utf8").replace(/^- 사전 검토: v1\r?\n/m, ""));
++  writeFileSync(join(task, "TASK.md"), readFileSync(join(task, "TASK.md"), "utf8").replace(/^- 사전 검토: v1\r?\n/m, "").replace(/^- TASK 형식: v2\r?\n/m, ""));
+   passTask(task);
+   writeFileSync(join(task, "TASK.md"), crlf(readFileSync(join(task, "TASK.md"), "utf8")));
+   const close = join(task, "TASK-CLOSE.md");
+@@ -594,7 +594,7 @@ test("check: 템플릿 주석이 남아도 통과하고, 빠진 기준·판정 
+ 
+ /** 통과하는 TASK-CLOSE를 쓴다(기준 T-1 하나). */
+ function passTask(taskDir: string): void {
+-  writeFileSync(join(taskDir, "TASK.md"), readFileSync(join(taskDir, "TASK.md"), "utf8").replace(/\| T-1 \| <!--.*?--> \|/, "| T-1 | 된다 |"));
++  writeFileSync(join(taskDir, "TASK.md"), readFileSync(join(taskDir, "TASK.md"), "utf8").replace(/\| T-1 \| <!--.*?--> \|/, "| T-1 | 된다 |").replace(/- 판정 주체: <!--[^\n]*-->/, '- 판정 주체: 자동 테스트'));
+   write(
+     join(taskDir, "TASK-CLOSE.md"),
+     "# 마감\n\n- 태스크: [TASK.md](TASK.md) · 판정: 통과\n\n## 기준 대조\n\n| # | 결과 | 증거 |\n|---|---|---|\n| T-1 | 통과 | S-1 |\n\n## 단위 테스트\n\n통과 1\n\n## E2E\n\n해당 없음\n\n## 리뷰\n\nblocking 0\n\n## 남긴 것\n\n없음\n",
+@@ -2215,6 +2215,11 @@ test('신규 태스크 사전 검토 게이트는 check와 done을 막고 기록
+   const created = runPace(['project', 'task', 'P001', '검토'], { home, cwd: wt, timeout: 60_000 });
+   assert.equal(created.status, 0);
+   const dir = join(projectDir(wt), 'tasks', 'T01_검토');
++  const generated = readFileSync(join(dir, 'TASK.md'), 'utf8');
++  assert.equal(generated.match(/^- TASK 형식: v2$/gm)?.length, 1);
++  assert.ok(generated.includes('## 증명 범위'));
++  assert.ok(generated.indexOf('## 증명 범위') < generated.indexOf('## 기준'));
++  writeFileSync(join(dir, 'TASK.md'), generated.replace(/- 판정 주체: [^\n]*/, '- 판정 주체: 자동 테스트'));
+   passTask(dir);
+   const task = readFileSync(join(dir, 'TASK.md'), 'utf8');
+   assert.match(task, /사전 검토: v1/);

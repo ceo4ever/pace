@@ -105,3 +105,18 @@ test("판정은 등급으로 정한다 — blocking 없으면 pass, revise 같�
     assert.doesNotMatch(p, /pass \| revise \| fail/);
   }
 });
+
+test('증명 범위 규칙은 명시된 새 TASK에만 적용하고 재검토 범위를 유지한다', () => {
+  const old = '## 목적\n옛 TASK\n';
+  const fresh = '- TASK 형식: v2\n' + old;
+  for (const artifact of [old, '## 증명 범위\n- 판정 주체: 자동 테스트\n']) {
+    assert.doesNotMatch(buildVerifyPrompt('목적', 'TASK.md', artifact, 'task'), /새 TASK 형식|blocking 1건|권한도 대조/);
+  }
+  assert.doesNotMatch(buildVerifyPrompt('목적', 'TASK.md', fresh, 'goal'), /새 TASK 형식|blocking 1건/);
+  const prompt = buildVerifyPrompt('목적', 'TASK.md', fresh, 'task');
+  for (const rule of [/blocking 1건/, /목적에 충분한 범위를 넓히라는 요구는 should_fix/, /사람의 원문/, /필수 안전 기준/, /권한도 대조/]) assert.match(prompt, rule);
+  assert.match(buildVerifyPrompt('목적', 'TASK.md', fresh.replace('v2', 'v3'), 'task'), /지원하지 않는 버전이면 blocking/);
+  const re = buildVerifyPrompt('목적', 'TASK.md', fresh, 'task', { previousText: 'F1 [blocking] 범위 부족\nfail', diff: '+포함 보완' });
+  assert.match(re, /새 TASK 형식/);
+  assert.match(re, /위 규칙도 직전 blocking 해소와 바뀐 줄/);
+});

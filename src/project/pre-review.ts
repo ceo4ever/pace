@@ -2,6 +2,55 @@ import { createHash } from 'node:crypto';
 import { lstatSync, readFileSync } from 'node:fs';
 import { isAbsolute, join } from 'node:path';
 
+/** 명시적 표지만으로 호환 경계를 정한다. 절 누락을 옛 형식으로 오인하지 않는다. */
+export function taskFormat(task: string): 'legacy' | 'v2' | 'invalid' {
+  const header = visibleMarkdown(task).split(/^## /m)[0]!;
+  const markers = [...header.matchAll(/^- TASK 형식:([^\n]*)$/gm)];
+  if (!markers.length) return 'legacy';
+  return markers.length === 1 && markers[0]![1]!.trim() === 'v2' ? 'v2' : 'invalid';
+}
+
+/** 주석과 fenced 예제는 실제 문서 필드가 아니다. 완전한 Markdown 의미 판독은 reviewer 책임이다. */
+function visibleMarkdown(task: string): string {
+  let fence: string | undefined;
+  let comment = false;
+  return task.replace(/\r\n/g, '\n').split('\n').map(line => {
+    if (fence) {
+      const mark = /^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
+      if (mark && mark[0] === fence[0] && mark.length >= fence.length && line.trim() === mark) fence = undefined;
+      return '';
+    }
+    if (comment) {
+      const end = line.indexOf('-->');
+      if (end < 0) return '';
+      line = line.slice(end + 3);
+      comment = false;
+    }
+    line = line.replace(/(`+)(.*?)\1/g, span => span.replaceAll('<!--', '&lt;!--'));
+    while (line.includes('<!--')) {
+      const start = line.indexOf('<!--'), end = line.indexOf('-->', start + 4);
+      if (end < 0) { line = line.slice(0, start); comment = true; break; }
+      line = line.slice(0, start) + line.slice(end + 3);
+    }
+    const mark = /^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
+    if (mark) { fence = mark; return ''; }
+    return line;
+  }).join('\n');
+}
+
+export function proofScopeIssues(task: string): string[] {
+  const format = taskFormat(task);
+  if (format === 'legacy') return [];
+  if (format === 'invalid') return ['TASK 형식: 중복 또는 지원하지 않는 버전'];
+  const visible = visibleMarkdown(task);
+  const sections = [...visible.matchAll(/^## 증명 범위[ \t]*\n([\s\S]*?)(?=^## |$(?![\s\S]))/gm)];
+  if (sections.length !== 1) return ['증명 범위: 절 누락 또는 중복'];
+  const body = sections[0]![1]!.trim();
+  if (!body) return ['증명 범위: 빈 절'];
+  if (!/^- 판정 주체:[ \t]*\S[^\n]*$/m.test(body)) return ['증명 범위: 판정 주체 누락 또는 빈 값'];
+  return [];
+}
+
 /** CRLF만 LF로 정규화하고 상태 값을 제외한다. 나머지 문자는 그대로다. */
 export function reviewHash(task: string): string {
   return createHash('sha256').update(task.replace(/\r\n/g, '\n').replace(/^- 상태: .+$/m, '- 상태:')).digest('hex');
@@ -20,6 +69,8 @@ function safeFile(dir: string, path: string): boolean {
 }
 
 export function reviewIssues(dir: string, task: string): string[] {
+  const scopeIssues = proofScopeIssues(task);
+  if (scopeIssues.length) return scopeIssues;
   const markers = [...task.matchAll(/^- 사전 검토:([^\r\n]*)\r?$/gm)];
   const marker = markers[0]?.[1]?.trim();
   const file = join(dir, 'PRE-REVIEW.json');

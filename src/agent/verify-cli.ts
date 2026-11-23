@@ -1,7 +1,7 @@
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, renameSync, rmdirSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
-import { reviewHash } from "../project/pre-review.ts";
+import { proofScopeIssues, reviewHash } from "../project/pre-review.ts";
 import { AgentError, errorCodes, errorPayload, type Executor } from "./contract.ts";
 import {
   acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, reviewStage,
@@ -69,7 +69,7 @@ function escalation(info: StageInfo, target: string) {
 }
 
 /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
-function loadRereview(target: string, base: ReviewEntry, currentHash: string, current: string): Rereview {
+function loadRereview(target: string, base: ReviewEntry, currentHash: string, current: string, kind: string): Rereview | undefined {
   if (currentHash === base.hash) throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
   const file = join(dirname(target), base.record);
   if (!existsSync(file)) throw new AgentError("invalid_request", `재검토 기준점의 기록 파일이 없다: ${file}`);
@@ -80,6 +80,8 @@ function loadRereview(target: string, base: ReviewEntry, currentHash: string, cu
   if (typeof snapshot !== "string" || typeof text !== "string" || record.review?.hash !== base.hash || reviewHash(snapshot) !== base.hash || textHash(text) !== base.result_hash) {
     throw new AgentError("invalid_request", `재검토 기준점의 기록이 원장과 맞지 않는다: ${file}`);
   }
+  // 구조 누락 단건 판정은 나머지 평가를 억제했다. 구조를 채운 다음에는 목적·안전까지 처음 평가한다.
+  if (kind === 'task' && proofScopeIssues(snapshot).length) return undefined;
   return { previousText: text, diff: lineDiff(snapshot, current) };
 }
 
@@ -141,7 +143,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
       deps.write(JSON.stringify({ ran: false, reason: "검토 반복 실패 단계", escalation: escalation(before, target), ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n");
       return ESCALATION_EXIT;
     }
-    const rereview = before.base ? loadRereview(target, before.base, hash, artifact) : undefined;
+    const rereview = before.base ? loadRereview(target, before.base, hash, artifact, kind) : undefined;
 
     // 실행 전에 이번 기록 자리를 먼저 만든다 — 실행 뒤 기록·원장 확정이 끊기면 원장에 없는 기록으로 남아 다음 검토를 막는다
     const recordName = nextRecordName(target);
@@ -170,7 +172,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     const verdict = parseVerdict(outcome.result.text);
     // 기록 파일에는 세션 ID를 남기지 않는다
     const result = { ...outcome.result, session_id: null };
-    const review = { target: name, hash, verdict, rereview_of: before.base?.record ?? null, snapshot: artifact };
+    const review = { target: name, hash, verdict, rereview_of: rereview ? before.base!.record : null, snapshot: artifact };
     const record = { ...outcome, result, review };
     writeOrLedgerError(recordFile, JSON.stringify(record, null, 2) + "\n", "검토 기록");
 
