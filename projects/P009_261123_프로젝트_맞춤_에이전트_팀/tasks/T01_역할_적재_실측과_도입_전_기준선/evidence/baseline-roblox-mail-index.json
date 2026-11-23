@@ -1,0 +1,306 @@
+[
+  {
+    "id": "msg_4c20255df42c",
+    "at": "2026-11-23T12:42:50Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_cde9da75a734",
+    "at": "2026-11-23T12:30:20Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_59a58a9c6cc1",
+    "at": "2026-11-23T12:26:16Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_896fae7eba63",
+    "at": "2026-11-23T12:24:15Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_1c1aec57352c",
+    "at": "2026-11-23T12:22:36Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_3d42ceb08e16",
+    "at": "2026-11-23T12:18:14Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_d68c762d319f",
+    "at": "2026-11-23T12:17:09Z",
+    "type": "status",
+    "subject": "캡틴 플레이 종료",
+    "from": "term_835aa9a7-4f48-45f1-bfcc-e166be5d111b",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_rest_3ebe4047ad9f6516f47e4b5c",
+    "at": "2026-11-23T09:16:34Z",
+    "type": "escalation",
+    "subject": "Worker stopped without reporting",
+    "from": "term_cabde1df-f790-4735-88b3-9d263b57998e",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_fdb8b697eb66",
+    "at": "2026-11-23T09:16:24Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_529a9132de08",
+    "at": "2026-11-23T09:16:17Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_8f7dfe68a91a",
+    "at": "2026-11-23T09:12:41Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_80978c16f145",
+    "at": "2026-11-23T09:11:20Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_f6a3b4b30607",
+    "at": "2026-11-23T09:09:30Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_99b9d6bddc3e",
+    "at": "2026-11-23T09:09:23Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_f0984f59258f",
+    "at": "2026-11-23T09:06:09Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_10a9c1d35eae",
+    "at": "2026-11-23T08:59:52Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_466593d8ef94",
+    "at": "2026-11-23T08:56:59Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_7bedf77e9d44",
+    "at": "2026-11-23T08:55:12Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_469c291fa6cc",
+    "at": "2026-11-23T08:49:38Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_f25120e61461",
+    "at": "2026-11-23T08:45:15Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_76fdc19aa849",
+    "at": "2026-11-23T08:10:59Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_a5064510b1e4",
+    "at": "2026-11-23T08:10:40Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_696e7e733204",
+    "at": "2026-11-23T08:09:25Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_1b483c39571f",
+    "at": "2026-11-23T08:09:15Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_82ed0e9953b2",
+    "at": "2026-11-23T08:00:38Z",
+    "type": "status",
+    "subject": "역할: 아테나로 진행",
+    "from": "term_835aa9a7-4f48-45f1-bfcc-e166be5d111b",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_d5e32d9671b8",
+    "at": "2026-11-23T14:42:08Z",
+    "type": "worker_done",
+    "subject": "P002 slope-ladder 시제품·관문2 완료 — 관문2 통과(A 진행), finish 통과·병합 대기",
+    "from": "term_cabde1df-f790-4735-88b3-9d263b57998e",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_35f8b2ba05cf",
+    "at": "2026-11-23T14:30:34Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_388bb156ab3d",
+    "at": "2026-11-23T13:39:44Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_rest_b8e4bf4f228a493b04e8cf7a",
+    "at": "2026-11-23T13:18:54Z",
+    "type": "escalation",
+    "subject": "Worker stopped without reporting",
+    "from": "term_cabde1df-f790-4735-88b3-9d263b57998e",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_c07bedb3243e",
+    "at": "2026-11-23T13:18:40Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_bd350cb5a8b8",
+    "at": "2026-11-23T12:57:59Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_210e714ca6c5",
+    "at": "2026-11-23T12:53:18Z",
+    "type": "question",
+    "subject": "Question",
+    "from": "dispatch:ctx_8d73f39fe6e3",
+    "to": "run:run_435cd275b889"
+  },
+  {
+    "id": "msg_3e98a0045e8c",
+    "at": "2026-11-23T14:35:48Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_eb8179645414",
+    "at": "2026-11-23T14:29:34Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_2239f837443a",
+    "at": "2026-11-23T13:38:54Z",
+    "type": "status",
+    "subject": "캡틴 재플레이 종료",
+    "from": "term_835aa9a7-4f48-45f1-bfcc-e166be5d111b",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_63aa96c1b37e",
+    "at": "2026-11-23T13:18:46Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_2f52cd385ba9",
+    "at": "2026-11-23T12:58:34Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  },
+  {
+    "id": "msg_a24c88a83bcd",
+    "at": "2026-11-23T12:53:29Z",
+    "type": "status",
+    "subject": "Re: Question",
+    "from": "run:run_435cd275b889",
+    "to": "dispatch:ctx_8d73f39fe6e3"
+  }
+]

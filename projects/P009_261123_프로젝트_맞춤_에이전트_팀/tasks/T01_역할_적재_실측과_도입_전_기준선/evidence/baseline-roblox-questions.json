@@ -1,0 +1,162 @@
+[
+  {
+    "question_line": 4,
+    "answer_line": 6,
+    "task": "T01",
+    "question_at": "2026-11-23T08:09:09.252Z",
+    "answer_at": "2026-11-23T08:09:33.958Z",
+    "classified_recipient": "coordinator",
+    "basis": "답 6행의 코디네이터 추가 확인 승인",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 9,
+    "answer_line": 10,
+    "task": "T01",
+    "question_at": "2026-11-23T08:10:39.849Z",
+    "answer_at": "2026-11-23T08:11:12.415Z",
+    "classified_recipient": "coordinator",
+    "basis": "답 10행의 코디네이터 판정 방식 결정",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 13,
+    "answer_line": 16,
+    "task": "T01",
+    "question_at": "2026-11-23T08:45:14.775Z",
+    "answer_at": "2026-11-23T08:50:05.486Z",
+    "classified_recipient": "captain",
+    "basis": "답 16행 캡틴 waiver와 결정 17행 및 waiver 증거 파일",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 24,
+    "answer_line": 25,
+    "task": "T02",
+    "question_at": "2026-11-23T08:55:12.731Z",
+    "answer_at": "2026-11-23T08:57:07.353Z",
+    "classified_recipient": "captain",
+    "basis": "답 25행 캡틴 판정 해석과 결정 26행",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 28,
+    "answer_line": 29,
+    "task": "T02",
+    "question_at": "2026-11-23T08:59:52.725Z",
+    "answer_at": "2026-11-23T09:06:17.421Z",
+    "classified_recipient": "captain",
+    "basis": "답 29행 캡틴 근본 해결 지시와 결정 30행",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 32,
+    "answer_line": 33,
+    "task": "T02",
+    "question_at": "2026-11-23T09:09:23.319Z",
+    "answer_at": "2026-11-23T09:09:55.566Z",
+    "classified_recipient": "coordinator",
+    "basis": "답 33행 코디네이터 반영 확인 승인",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 36,
+    "answer_line": 37,
+    "task": "T02",
+    "question_at": "2026-11-23T09:11:20.728Z",
+    "answer_at": "2026-11-23T09:12:52.699Z",
+    "classified_recipient": "captain",
+    "basis": "답 37행 캡틴 단일 항목 확인과 결정 38행",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 41,
+    "answer_line": 42,
+    "task": "T02",
+    "question_at": "2026-11-23T09:16:17.721Z",
+    "answer_at": "2026-11-23T09:16:31.548Z",
+    "classified_recipient": "unknown",
+    "basis": "답 42행은 코디네이터 잠금 승인과 캡틴 안내 전달만 확인되어 실제 캡틴 질문/결정 요청 도달은 미확인",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 43,
+    "answer_line": 44,
+    "task": "T02",
+    "question_at": "2026-11-23T12:18:14.628Z",
+    "answer_at": "2026-11-23T12:22:56.130Z",
+    "classified_recipient": "captain",
+    "basis": "답 44행 캡틴 플레이 후 답 수신",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 45,
+    "answer_line": 46,
+    "task": "T02",
+    "question_at": "2026-11-23T12:24:15.069Z",
+    "answer_at": "2026-11-23T12:26:25.037Z",
+    "classified_recipient": "captain",
+    "basis": "답 46행 캡틴 수정 1회 결정과 결정 47행",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 50,
+    "answer_line": 51,
+    "task": "T02",
+    "question_at": "2026-11-23T12:30:19.940Z",
+    "answer_at": "2026-11-23T12:43:15.080Z",
+    "classified_recipient": "captain",
+    "basis": "답 51행 캡틴 F5 횟수·결정 유지와 결정 52행",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 61,
+    "answer_line": 62,
+    "task": "T03",
+    "question_at": "2026-11-23T12:53:18.663Z",
+    "answer_at": "2026-11-23T12:53:51.601Z",
+    "classified_recipient": "coordinator",
+    "basis": "답 62·결정 63 main 판단, msg_a24c88a83bcd",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 66,
+    "answer_line": null,
+    "task": "T03",
+    "question_at": "2026-11-23T12:57:59.316Z",
+    "answer_at": null,
+    "classified_recipient": "captain",
+    "basis": "msg_2f52cd385ba9 캡틴 Studio 사용 승인; 로그 answer 누락",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 68,
+    "answer_line": 69,
+    "task": "T03",
+    "question_at": "2026-11-23T13:18:40.794Z",
+    "answer_at": "2026-11-23T13:18:51.912Z",
+    "classified_recipient": "unknown",
+    "basis": "답 69·msg_63aa96c1b37e는 재플레이 안내 전달만 확인. 41행과 동일하게 실제 질문/결정 요청 도달은 미확인으로 분류",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 70,
+    "answer_line": 71,
+    "task": "T03",
+    "question_at": "2026-11-23T13:39:44.065Z",
+    "answer_at": "2026-11-23T14:30:34.409Z",
+    "classified_recipient": "captain",
+    "basis": "답 71 및 msg_eb8179645414 캡틴 재플레이 답 수신",
+    "forwarded_duplicate": false
+  },
+  {
+    "question_line": 72,
+    "answer_line": 73,
+    "task": "T03",
+    "question_at": "2026-11-23T14:30:34.642Z",
+    "answer_at": "2026-11-23T14:36:19.031Z",
+    "classified_recipient": "captain",
+    "basis": "답 73·결정 74 및 msg_3e98a0045e8c 최종 진행 선택",
+    "forwarded_duplicate": false
+  }
+]

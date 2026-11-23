@@ -1,0 +1,24 @@
+{
+  "text": "# 2단계 독립 문서 검토 — `baseline-ai-sql-client-review.md`\n\n## 노출 범위와 한계\n- **읽은 파일**: `baseline-ai-sql-client-review-stage1.json`(먼저), `baseline-ai-sql-client-review.md`(현재본), `baseline-source-excerpts.md`, `baseline-ai-sql-client.json`. `baseline-stage2-prompt.txt`와 작성자 마감·자체 판정 문서는 읽지 않았습니다.\n- **원본 직접 대조 실패**: `ai-sql-client/docs/DEPLOYMENT_AUTH.md`를 직접 읽어 보려 했지만 권한이 거부됐습니다. 지금 쓸 수 있는 도구(Read·Grep·Glob)로는 해시를 계산할 수 없습니다. 그래서 발췌가 eb24060c 원본과 같은지는 확인하지 못했습니다.\n- **분량**: 정확히 세지 못했습니다. 문단별로 어림하면 약 3,700~4,000자로 기준 안입니다. [추정]\n- **제공자 한계**: 저는 claude-opus-5-5(anthropic)입니다. 1단계 검토자와 같은 제공자라서 1단계와의 독립성은 제공자 수준에서 보장되지 않습니다. 작성자(codex)와는 제공자가 다릅니다.\n- **맥락 한계**: OPAL 부트 주입과 gitStatus(P009 T01이라는 정보)를 자동으로 받았습니다. 또 지시대로 1단계 판단을 먼저 읽었으므로 그 판단에 끌렸을 수 있습니다.\n\n## 1단계 읽기 거부를 이 발췌로 해소할 수 있는가\n**발췌 범위 안에서는 해소됩니다.** 메모가 인용한 절은 모두 발췌에 들어 있습니다(AGENTS, PROJECT, DESIGN §7·§10, DEPLOYMENT_AUTH §1·§3·§4·§6·§9). 다만 두 가지는 남습니다.\n- 발췌가 원본과 같은지는 해시로 확인하지 못했습니다. 미확인입니다.\n- DEPLOYMENT_AUTH의 제목 줄은 발췌에 없습니다. 그래서 \"제목부터 초안\"(review.md:7)은 AGENTS:29·PROJECT:106의 문서 설명으로만 뒷받침됩니다.\n\n## 1단계 지적의 처리 상태\n| 1단계 지적 | 현재 상태 |\n|---|---|\n| #1 인용 정확성 미확인 | 발췌 범위 안에서 해소 (아래 대조 결과) |\n| #2 주장별 표 없음 | 반영 안 됨. 기준이 5절 산문이므로 note로 낮춤 |\n| #3 \"현재 구현 경계\" 제목 | 해소: \"현재 문서 서술 경계\"로 바뀜 (review.md:9) |\n| #4 DB 권한 내용이 얇음 | 해소: review.md:33에 문단 추가, §9 R3 인용이 정확함 |\n| #5 실험 메타 문장 | 해소: 운영 안내 문장으로 바뀜 (review.md:39) |\n\n## 인용 정확성 대조\n**원문과 일치하는 인용**\n- DESIGN §7 파이프라인: 진입점 다섯 개, `write_policy × source × kind`, 승인·실행·기록 흐름 (excerpts:121-133)\n- DESIGN §10: 루프백 바인딩, 토큰과 Origin 검사, `#token=`을 HttpOnly·SameSite=Strict 쿠키로 교환, MCP는 Bearer, DB 세션 유지와 같은 ID로 재연결, SecretStore, `SESSION_STATE_LOST`, 비밀 분리, AI의 파이프라인 우회 금지 (excerpts:207-215)\n- DEPLOYMENT_AUTH §3: 자격 증명 종류 구분, ②는 \"제안\", ⑤는 \"P2\", ③ 화면 저장 위치는 localStorage(A) (excerpts:241-248)\n- DEPLOYMENT_AUTH §4·§6: 커넥터, 중계, 결과 비저장, 동기화 제안. §9 R3: 최소 권한 DB 계정 권장\n- PROJECT 환경 표와 AGENTS의 Docker·실제 Claude 비용 규칙\n\n구현을 단정하는 문장은 없습니다. 메모는 모든 문장에서 \"문서상\", \"확인 안 함\" 같은 경계를 지킵니다.\n\n## 지적\n\n**[should_fix] 1. 출처에 없는 선후 판단: \"최신\"·\"초기\"·\"구버전\" 표현**\n- 해당 위치: review.md:13 \"최신 화면 인증\", :21 \"초기 설명\"·\"구버전 설명\"\n- 출처의 두 문서에는 이 부분에 대한 날짜나 선후 관계가 없습니다.\n- 오히려 DEPLOYMENT_AUTH §3 ③에는 localStorage 방식이 **\"구현됨(A)\"**이라고 적혀 있습니다 (excerpts:245).\n- 메모가 잡지 못한 불일치가 하나 더 있습니다. DESIGN §10은 \"기동할 때 랜덤 토큰\"(:207)이라고 하고, §3 ③은 \"A: 고정(재발급 가능)\"이라고 합니다.\n- 고칠 방향: \"두 문서의 서술이 다르고 어느 쪽이 나중인지는 미확인\"으로 적습니다.\n\n**[should_fix] 2. 출처가 직접 단 현재·미확인 표시를 경계 분류에 쓰지 않음**\n메모의 목적에 가장 직접적인 근거인데 빠져 있습니다.\n- 초안 문서 안에도 \"구현됨\"으로 표시된 항목이 있습니다 (③(A), DB 자격 증명).\n- ⑤는 §3에서 \"P2\"입니다. 그런데 §4.5에서는 \"A 가능 — `127.0.0.1/mcp` + ⑤\"이고, \"지금의 ⑤ 정적 토큰\"이라고도 씁니다 (excerpts:291·314). 서로 충돌합니다.\n- PROJECT 환경 표에서 실행·개발·데스크톱은 \"⬜ 미확인\"입니다 (excerpts:78-80).\n\n\"초안이라서 미래, 설계라서 현재\"라는 문서 단위 분류보다 이 표시들이 더 정밀한 경계입니다.\n\n**[should_fix] 3. 권한 경계에서 사람 경로와 read-only 정책이 빠짐**\n§7.2 정책 매트릭스에는 다음 내용이 있습니다 (excerpts:154-165).\n- 사람이 실행하면 `approve` 정책에서도 비파괴 DDL은 바로 실행됩니다.\n- UPDATE/DELETE는 확인 대화상자만 거치고, 이 대화상자는 `approvals`에 기록되지 않습니다.\n- `read-only` 정책은 `SET SESSION TRANSACTION READ ONLY`로 이중으로 막습니다.\n\n메모는 AI 승인 카드만 다루고, review.md:11에서는 \"같은 정책을 거치는지\"라고만 씁니다. 그래서 출처별로 결과가 다르다는 점이 드러나지 않습니다.\n\n**[note] 4. 추론을 사실처럼 씀 (review.md:15)**\n\"DB 세션은 화면 인증 세션과 수명이 다릅니다\"라고 단정합니다. 출처는 화면 세션의 수명을 직접 서술하지 않습니다. 추론이라고 표시하는 편이 낫습니다.\n\n**[note] 5. 확정 원칙을 제안으로 묶음 (review.md:23)**\n\"이 제안의 비밀번호 비클라우드 원칙\"이라고 썼지만, 출처 §1은 이 원칙을 \"(확정)\"으로 표시합니다 (excerpts:230-231).\n\n**[note] 6. AGENTS 규칙의 범위를 넓혀 씀 (review.md:27)**\nAGENTS의 workspace 규칙은 코드 위치와 명령을 실행할 위치에 관한 것입니다. 이것을 데이터 경로 보호와 연결한 것은 메모의 추론입니다.\n\n**[note] 7. 범위 요약의 출처 혼합 (review.md:7)**\n\"로컬 우선\"은 AGENTS의 표현입니다. PROJECT 범위에 있는 MCP 서버는 요약에서 빠졌습니다.\n\n## 권한 경계\n- **메모 작성자**: 원본을 바꾸지 않았고, localStorage와 인증 파일을 읽지 않았으며, 패키지·DB·Claude를 실행하지 않았다고 밝힙니다. 출처 규칙(비용 확인, 비밀 비기록)과 맞고, 범위를 넘은 행동은 보이지 않습니다.\n- **이번 검토**: 읽기만 했고 파일은 바꾸지 않았습니다.\n\n## 목표 달성 판단\n- 요구한 5절 구성(개요·현재 문서 서술 경계·초안 제안 경계·운영 점검·결정 필요 사항)이 그대로 맞습니다.\n- 분량은 기준 안으로 보입니다. [추정]\n- 인용은 발췌 기준으로 정확하고, 구현을 단정하는 문장은 없습니다.\n- 지적 1~3은 경계를 더 정밀하게 만들 부분이고, 목표를 무너뜨리지는 않습니다.\n\n---\n- blocking: **0**\n- should_fix: **3** (note 4개, 1단계 #2를 낮춘 note는 별도)\n- 목표 달성: **달성** (분량은 추정, 발췌가 원본과 같은지는 미확인)\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 100162,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 10618
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

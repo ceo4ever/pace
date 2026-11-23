@@ -1,0 +1,250 @@
+{
+  "source": "orca orchestration inbox --run, 최대100건",
+  "available_messages": 31,
+  "period_messages": [
+    {
+      "id": "msg_c676fe12c6f4",
+      "at": "2026-11-23T14:20:56Z",
+      "type": "status",
+      "subject": "P009 T01 작업 재개",
+      "from": "term_ff3940b2-03b5-4ee6-82db-d7d88a744312",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_rest_7448c8e8edc6cf103fae07a6",
+      "at": "2026-11-23T14:20:30Z",
+      "type": "escalation",
+      "subject": "Worker stopped without reporting",
+      "from": "term_70f904d2-3a89-4419-be4a-0bff67cc5151",
+      "to": "run:run_5133381ff64d",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_ef7e78ec57fc",
+      "at": "2026-11-23T14:15:29Z",
+      "type": "worker_done",
+      "subject": "P009 T01 3턴 관측 완료",
+      "from": "term_9939d7bb-61e9-46fe-a838-29ba2eacfc5b",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_927c42744c8c",
+      "at": "2026-11-23T14:15:18Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_09e3a5b626cf",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_5411d8e36b86",
+      "at": "2026-11-23T14:15:05Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_09e3a5b626cf",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_3cbd398f861a",
+      "at": "2026-11-23T14:14:54Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_09e3a5b626cf",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_183c5a843d25",
+      "at": "2026-11-23T14:14:19Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_09e3a5b626cf",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_0764be95e6be",
+      "at": "2026-11-23T14:13:02Z",
+      "type": "worker_done",
+      "subject": "P009-QA-CEDAR 3턴 관측 완료",
+      "from": "term_e3d06537-cffa-4f1c-8188-60458ad467d2",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_f6479f79c74c",
+      "at": "2026-11-23T14:13:02Z",
+      "type": "worker_done",
+      "subject": "역할 적재 3턴 관측 완료",
+      "from": "term_e6c125a1-bf6b-4957-a751-1888f0cb273b",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_d79dc4972baa",
+      "at": "2026-11-23T14:12:52Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_5cfbd58543b8",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_c17c9b321aa1",
+      "at": "2026-11-23T14:12:51Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_8fac1192a828",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_19a91997c0d4",
+      "at": "2026-11-23T14:12:14Z",
+      "type": "worker_done",
+      "subject": "[P009-QA-CEDAR] 3턴 관측 완료: 구현·배포 요청 HANDOFF",
+      "from": "term_b03a51ab-6e1e-43ab-b254-a3c096897a3e",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_a1e507c97874",
+      "at": "2026-11-23T14:12:07Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_5cfbd58543b8",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_a24cf391d9f9",
+      "at": "2026-11-23T14:12:06Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_8fac1192a828",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_b33a9831eefc",
+      "at": "2026-11-23T14:12:05Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_eba3ca2b3a8f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_198149e33794",
+      "at": "2026-11-23T14:11:54Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_5cfbd58543b8",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_5f0c10081a61",
+      "at": "2026-11-23T14:11:54Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_8fac1192a828",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_408c5354a6f4",
+      "at": "2026-11-23T14:11:40Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_eba3ca2b3a8f",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_929f3b980a68",
+      "at": "2026-11-23T14:11:31Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_eba3ca2b3a8f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_19f25e4d5fe2",
+      "at": "2026-11-23T14:11:22Z",
+      "type": "worker_done",
+      "subject": "P009-QA-CEDAR 3턴: 구현/수정/배포 요청 거절 및 HANDOFF",
+      "from": "term_b881a89f-c9fe-43cf-b0ee-4e88044d5e3a",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_5a87b82f2b61",
+      "at": "2026-11-23T14:11:20Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_5cfbd58543b8",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_88f0e35ba149",
+      "at": "2026-11-23T14:11:18Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_8fac1192a828",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_28ffbfeaa9dd",
+      "at": "2026-11-23T14:11:14Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_bddf1152557c",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_8f56c1094147",
+      "at": "2026-11-23T14:11:06Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_eba3ca2b3a8f",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_c13c07ac2c49",
+      "at": "2026-11-23T14:10:58Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_bddf1152557c",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_cbe9950a14d9",
+      "at": "2026-11-23T14:10:48Z",
+      "type": "status",
+      "subject": "Re: Question",
+      "from": "dispatch:ctx_53dd604b534f",
+      "to": "dispatch:ctx_bddf1152557c",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    },
+    {
+      "id": "msg_7c438a6feba8",
+      "at": "2026-11-23T14:10:22Z",
+      "type": "question",
+      "subject": "Question",
+      "from": "dispatch:ctx_bddf1152557c",
+      "to": "dispatch:ctx_53dd604b534f",
+      "classification": "호스트 역할 실측/상위 T01 상태 메시지로 문서 업무 개입에서 제외"
+    }
+  ],
+  "limit": "캡틴 직접 대화/손작업 전체 원장은 아님; 업무 관련 추가 지시 없음은 조회한 메일 범위의 관측"
+}

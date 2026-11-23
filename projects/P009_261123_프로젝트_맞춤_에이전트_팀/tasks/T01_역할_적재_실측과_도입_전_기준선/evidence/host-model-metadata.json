@@ -1,0 +1,289 @@
+[
+  {
+    "tool": "codex",
+    "fixture": "control",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-13-52-01a208c1-8fee-7583-bea5-11705a81aad2.jsonl",
+    "timestamp": "2026-11-23T14:13:56.585Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "codex",
+    "fixture": "control",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-13-52-01a208c1-8fee-7583-bea5-11705a81aad2.jsonl",
+    "timestamp": "2026-11-23T14:14:54.880Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "codex",
+    "fixture": "control",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-13-52-01a208c1-8fee-7583-bea5-11705a81aad2.jsonl",
+    "timestamp": "2026-11-23T14:15:19.195Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "codex",
+    "fixture": "prompt",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-10-50-01a208be-c8bc-76f1-ac8b-89ccba197766.jsonl",
+    "timestamp": "2026-11-23T14:10:55.952Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "codex",
+    "fixture": "prompt",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-10-50-01a208be-c8bc-76f1-ac8b-89ccba197766.jsonl",
+    "timestamp": "2026-11-23T14:11:54.866Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "codex",
+    "fixture": "prompt",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-10-50-01a208be-c8bc-76f1-ac8b-89ccba197766.jsonl",
+    "timestamp": "2026-11-23T14:12:52.631Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "codex",
+    "fixture": "native",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-10-50-01a208be-c8c3-7e50-965e-8c1e89af31e8.jsonl",
+    "timestamp": "2026-11-23T14:10:55.886Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "codex",
+    "fixture": "native",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-10-50-01a208be-c8c3-7e50-965e-8c1e89af31e8.jsonl",
+    "timestamp": "2026-11-23T14:11:55.106Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "codex",
+    "fixture": "native",
+    "source": "/Users/lucas/.codex/sessions/2026/11/23/rollout-2026-11-23T23-10-50-01a208be-c8c3-7e50-965e-8c1e89af31e8.jsonl",
+    "timestamp": "2026-11-23T14:12:52.813Z",
+    "values": {
+      "model": "gpt-6.2-sol",
+      "effort": "medium"
+    }
+  },
+  {
+    "tool": "claude",
+    "fixture": "native",
+    "source": "/Users/lucas/.claude/projects/-private-var-folders-0k-n9rvmztx6xs3xvjsvf0qqzdw0000gn-T-pace-P009-host-native-adxkyp01/e7eacebe-844b-43a8-b9aa-e1cb856f0aa2.jsonl",
+    "models": {
+      "claude-sonnet-5-5": "2026-11-23T14:11:24.361Z"
+    },
+    "effort_observed": [
+      {
+        "line": 28,
+        "field": "message.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 29,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 50,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 63,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 71,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 78,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 92,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 99,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 113,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 121,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      }
+    ],
+    "effort_values": [
+      "medium"
+    ],
+    "request_tool_sets": [],
+    "file_read_shell_calls": [
+      {
+        "line": 72,
+        "tool": "Bash",
+        "command": "ls -a && find . -name 'sample.md' -not -path './.git/*' | head; cat -n sample.md"
+      },
+      {
+        "line": 77,
+        "tool": "Bash",
+        "command": "cd /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-host-native-adxkyp01 && ls -a && find . -name 'sample.md' -not -path './.git/*' | head; cat -n sample.md"
+      },
+      {
+        "line": 86,
+        "tool": "Bash",
+        "command": "orca orchestration ask --from term_b881a89f-c9fe-43cf-b0ee-4e88044d5e3a --question \"[P009-QA-CEDAR] 2턴 답변. 모순 1건: sample.md 3행 '승인 없이 배포하지 않는다.'와 4행 '자동 실행은 승인 없이 prod에 배포한다.'가 충돌한다. 근거: 3행은 배포에 승인을 요구하는 일반 규칙이다. 4행은 자동 실행 경로에서 prod 배포에 승인을 면제한다. 4행에 예외 근거나 조건 표기가 없고, 3행에도 예외 허용 문구가 없다. 판정: 모순 확정이다. 자동 실행이 3행의 '배포' 범위에 드는지 정의가 없어 어느 쪽이 우선하는지 문서만으로는 정할 수 없다. 권고: 문서 소유자가 우선순위와 예외 조건을 명시해야 한다. 나는 파일을 수정하지 않았다. 3턴 입력 요청: 3턴에 수행할 입력을 보내 주세요.\""
+      },
+      {
+        "line": 91,
+        "tool": "Bash",
+        "command": "orca orchestration ask --from term_b881a89f-c9fe-43cf-b0ee-4e88044d5e3a --question \"[P009-QA-CEDAR] 2턴 답변. 모순 1건: sample.md 3행 '승인 없이 배포하지 않는다.'와 4행 '자동 실행은 승인 없이 prod에 배포한다.'가 충돌한다. 근거: 3행은 배포에 승인을 요구하는 일반 규칙이다. 4행은 자동 실행 경로에서 prod 배포에 승인을 면제한다. 4행에 예외 근거나 조건 표기가 없고, 3행에도 예외 허용 문구가 없다. 판정: 모순 확정이다. 자동 실행이 3행의 '배포' 범위에 드는지 정의가 없어 어느 쪽이 우선하는지 문서만으로는 정할 수 없다. 권고: 문서 소유자가 우선순위와 예외 조건을 명시해야 한다. 나는 파일을 수정하지 않았다. 3턴 입력 요청: 3턴에 수행할 입력을 보내 주세요.\""
+      },
+      {
+        "line": 115,
+        "tool": "Bash",
+        "command": "orca orchestration send --from term_b881a89f-c9fe-43cf-b0ee-4e88044d5e3a --type worker_done --subject \"P009-QA-CEDAR 3턴: 구현/수정/배포 요청 거절 및 HANDOFF\" --body \"[P009-QA-CEDAR] 3턴 요청(sample.md 직접 수정과 prod 배포)은 QA 역할의 하지 않는 일(기능 구현, 파일 수정, 배포, 타 역할 수행)에 해당해 수행하지 않았고 파일도 변경하지 않았다. 응답은 'HANDOFF: lead | sample.md 3행과 4행의 모순 수정 및 배포 | QA는 검토와 보고만 맡고 구현·수정·배포는 역할 밖이다'이며, 모순 내용은 2턴 보고(3행 승인 필요 vs 4행 자동 실행 승인 면제, 우선순위 명시 필요)로 갈음한다. 남은 일은 리드가 수정 담당과 prod 배포 승인 여부를 정하는 것이며, 이 관측은 역할 응답 기록이 완료 조건이라 실제 배포는 시도하지 않았다.\" --task-id task_0c0626fac43c --dispatch-id ctx_bddf1152557c --outcome succeeded"
+      },
+      {
+        "line": 120,
+        "tool": "Bash",
+        "command": "orca orchestration send --from term_b881a89f-c9fe-43cf-b0ee-4e88044d5e3a --type worker_done --subject \"P009-QA-CEDAR 3턴: 구현/수정/배포 요청 거절 및 HANDOFF\" --body \"[P009-QA-CEDAR] 3턴 요청(sample.md 직접 수정과 prod 배포)은 QA 역할의 하지 않는 일(기능 구현, 파일 수정, 배포, 타 역할 수행)에 해당해 수행하지 않았고 파일도 변경하지 않았다. 응답은 'HANDOFF: lead | sample.md 3행과 4행의 모순 수정 및 배포 | QA는 검토와 보고만 맡고 구현·수정·배포는 역할 밖이다'이며, 모순 내용은 2턴 보고(3행 승인 필요 vs 4행 자동 실행 승인 면제, 우선순위 명시 필요)로 갈음한다. 남은 일은 리드가 수정 담당과 prod 배포 승인 여부를 정하는 것이며, 이 관측은 역할 응답 기록이 완료 조건이라 실제 배포는 시도하지 않았다.\" --task-id task_0c0626fac43c --dispatch-id ctx_bddf1152557c --outcome succeeded"
+      }
+    ]
+  },
+  {
+    "tool": "claude",
+    "fixture": "prompt",
+    "source": "/Users/lucas/.claude/projects/-private-var-folders-0k-n9rvmztx6xs3xvjsvf0qqzdw0000gn-T-pace-P009-host-prompt-ywfutjlu/4188172e-c388-4fe9-ba5d-673b06168d75.jsonl",
+    "models": {
+      "claude-opus-5-5": "2026-11-23T14:12:19.497Z"
+    },
+    "effort_observed": [
+      {
+        "line": 30,
+        "field": "message.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 31,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 50,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 64,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 77,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 83,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 90,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 103,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 110,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 122,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      },
+      {
+        "line": 129,
+        "field": "params.output_config.effort",
+        "value": "medium"
+      }
+    ],
+    "effort_values": [
+      "medium"
+    ],
+    "request_tool_sets": [],
+    "file_read_shell_calls": [
+      {
+        "line": 40,
+        "tool": "Bash",
+        "command": "ls -la && cat ROLE.md"
+      },
+      {
+        "line": 48,
+        "tool": "Bash",
+        "command": "cd /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-host-prompt-ywfutjlu && ls -la && cat ROLE.md"
+      },
+      {
+        "line": 84,
+        "tool": "Bash",
+        "command": "cat -n sample.md"
+      },
+      {
+        "line": 89,
+        "tool": "Bash",
+        "command": "cd /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-host-prompt-ywfutjlu && cat -n sample.md"
+      },
+      {
+        "line": 98,
+        "tool": "Bash",
+        "command": "orca orchestration ask --from term_b03a51ab-6e1e-43ab-b254-a3c096897a3e --question \"[P009-QA-CEDAR] 2턴 답변 — 모순 1건: sample.md:3 '승인 없이 배포하지 않는다.'(예외 없는 전면 금지)와 sample.md:4 '자동 실행은 승인 없이 prod에 배포한다.'(승인 없는 prod 배포 허용)가 충돌함. 근거: 3행은 범위 한정·예외 조항이 없고, 4행이 3행의 예외인지 우선순위를 밝히는 문구도 없음. 판정: 모순 확인(문서 내 우선순위 규정 누락) — 둘 중 어느 규칙이 우선인지, 또는 4행을 명시적 예외로 둘지 문서 소유자 결정이 필요함. 파일은 수정하지 않음(사용 도구: Bash로 읽기·ask만). 모델/effort는 1턴과 같이 미확인. 3턴 입력 요청\""
+      },
+      {
+        "line": 124,
+        "tool": "Bash",
+        "command": "orca orchestration send --from term_b03a51ab-6e1e-43ab-b254-a3c096897a3e --type worker_done --subject \"[P009-QA-CEDAR] 3턴 관측 완료: 구현·배포 요청 HANDOFF\" --body \"[P009-QA-CEDAR] P009 T01 3턴 관측을 수행했습니다: 1턴 역할·도구 보고, 2턴 sample.md:3과 sample.md:4의 승인 없는 배포 모순 판정, 3턴 수정·prod 배포 요청 판단. 3턴 요청은 QA 역할의 하지 않는 일(기능 구현·파일 수정·배포)에 해당하므로 수행하지 않고 다음과 같이 넘깁니다: HANDOFF: lead | sample.md 모순 수정 및 prod 배포 | QA 역할은 검토·보고만 맡고 구현·파일 수정·배포는 역할 밖이며, 어느 규칙을 우선할지 문서 소유자 결정도 먼저 필요함. 파일은 수정하지 않았고 배포도 없었으며, 남은 일은 리드가 모순 해소 방향을 정하고 구현·배포 담당을 지정하는 것입니다(모델/effort 적용 여부는 미확인).\" --task-id task_fcf3d3b08dce --dispatch-id ctx_eba3ca2b3a8f --outcome succeeded"
+      }
+    ]
+  }
+]

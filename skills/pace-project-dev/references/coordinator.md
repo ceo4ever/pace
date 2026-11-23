@@ -23,8 +23,8 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
 
 - **반복되는 검토·검사 지적은 도구부터 의심한다**: 같은 지적(특히 독립성·열람 불가·형식 같은 절차 지적)이 두 번 이어졌다는 보고를 받으면, 우회 지시(대체 검토자·본문 첨부·재시도)를 내리기 전에 증거 원문의 노출 범위·오류 문구를 읽고 그 도구(`pace agent verify` 프롬프트·실행 옵션 등)를 직접 한 번 재현해 원인을 확인한다. 원인이 PACE 도구면 main에서 고치고 재설치한 뒤 작업자에게 알린다. 실측: P001에서 codex 파일 열람 불가(Windows sandbox)와 verify 프롬프트의 작업 문서 금지 충돌을 우회로만 넘겨 사전 검토가 14회 돌았다. 반복 fail의 단계·분류·조치·보고는 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정) 형식으로 받는다.
 
-- `question`: 작업자가 ask 직전 `pace project log P### [T##] --type question --by agent --msg "질문 요약"`, 답 수신 직후 같은 범위의 `--type answer --by agent`를 기록한다. 코디네이터는 답변 전에 질문 기록을 확인하고 누락된 것만 `--by coordinator`로 보완한다. 답 사건은 작업자가 수신 시각에 한 번만 기록한다. 아래 판단 규칙으로 대신 답하거나 사용자에게 올린다.
-- `escalation`: 사용자에게 그대로 올린다.
+- `question`: 작업자가 ask 직전 `pace project log P### [T##] --type question --by agent --to coordinator --msg "질문 요약"`, 답 수신 직후 같은 범위의 `--type answer --by agent`를 기록한다. 코디네이터는 답변 전에 질문 기록을 확인하고 누락된 것만 `--by coordinator --to coordinator`로 보완한다. 답 사건은 작업자가 수신 시각에 한 번만 기록한다. 아래 판단 규칙으로 대신 답하거나 사용자에게 올린다.
+- `escalation`: 작업자의 `--type escalation --to coordinator` 기록을 확인하고, 사용자에게 실제 전달할 때 같은 범위의 `--type escalation --by coordinator --to captain --ref tasks/T01_이름/evidence/question-links.md`를 기록한다. 캡틴 답을 받으면 코디네이터가 전달 사건의 answer를 기록한 뒤 reply하고, 작업자는 원래 escalation의 answer를 기록한다. 질문 전달과 같은 수명·연결 규칙을 적용한다.
 - `worker_done`: 검증 대상 커밋과 최종 변경 범위, 검사 결과·독립 판정·증거·미해결 사항을 확인한다(`pace project list`, PROJECT-CLOSE, METRICS.md, projects/METRICS.md 비교표). 같은 컨벤션·브레인·보안·전체 검사나 독립 검토를 허브에서 다시 수행하지 않는다. 부족한 근거는 해당 부분과 이유를 특정해 워크트리 PM에게 보완 요청한다. 사용자에게 결과를 보고하고 병합 승인을 확인한다. 이미 승인받은 범위라면 같은 승인을 다시 요청하지 않는다. 보고에는 이전 프로젝트 대비 태스크 수·작업 시간·작업자 출력 토큰·blocking 차이를 한 줄로 포함한다. 규모·도구·기록 누락이 다르면 단순 생산성 순위로 해석하지 않는다.
   작업자 터미널은 정리 결정을 한다 — 결과를 보관하고 놓아 주거나(`worker-release`), 디버깅할 일이 있으면 남긴다(`worker-retain`).
 
@@ -51,3 +51,24 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
 ## 보고
 
 코디네이터가 대신 답한 결정은 쌓아 두었다가, 사용자와 다음에 대화할 때(또는 `worker_done` 보고 때) 한꺼번에 짧게 알린다 — 대신 정한 것이 숨지 않게.
+
+## 질문 수신자와 캡틴 개입
+
+작업자의 question·escalation은 --to coordinator로 기록한다. 코디네이터가 대신 답한 질문은 캡틴 개입이 아니다. 캡틴에게 실제 전달할 때만 코디네이터가 같은 범위에 --type question --by coordinator --to captain으로 한 건 기록하고 --ref로 프로젝트 내부 질문 연결 파일을 가리킨다. 연결 파일은 원질문의 로그 행·시각·태스크와 전달 시각을 매핑하며 원문·비밀을 복사하지 않는다. 같은 요청을 coordinator와 captain 양쪽에서 캡틴 개입으로 중복 집계하지 않는다. 캡틴 답을 받으면 코디네이터가 전달 질문과 같은 범위에 --type answer --by coordinator로 전달 대기를 닫고 나서 작업자에게 reply한다. 작업자는 원질문에 대해 --type answer --by agent를 한 번 기록한다. question 2행에는 answer 2행이 대응하며, 코디네이터가 대신 답한 경우는 원질문·작업자 answer 각 1행뿐이다. answer에는 --to를 붙이지 않는다.
+
+--to는 question·escalation에서만 허용한다. 생략한 과거 명령도 유효하지만 수신자별 비교에서는 미확인으로 남기며 0건으로 추정하지 않는다. answer에는 --to를 붙이지 않는다. 기존 stats의 질문 수는 수신자와 관계없이 question·escalation을 합친 기존 의미를 유지한다.
+
+### 전달 1건의 전체 기록 예시
+
+1. 작업자: project log P001 T01 --type question --by agent --to coordinator --msg "결정 요청 요약"
+2. 캡틴에게 전달한 코디네이터: project log P001 T01 --type question --by coordinator --to captain --msg "전달 요약" --ref tasks/T01_이름/evidence/question-links.md
+3. 캡틴 답을 받은 코디네이터: project log P001 T01 --type answer --by coordinator --msg "캡틴 답 요약" --ref tasks/T01_이름/evidence/question-links.md
+4. Orca reply를 수신한 작업자: project log P001 T01 --type answer --by agent --msg "수신 답 요약"
+
+연결 파일은 원질문 로그 행·시각·태스크와 전달 질문/답 로그 행·시각을 표로 남긴다. escalation도 같은 수명으로 기록한다. 위 예시는 기존 stats에서 질문 사건 2·답 사건 2이며, 캡틴 개입 비교에서는 captain 수신 1건이다. 기존 stats는 요청 중복을 제거한 개입 지표가 아니라 사건 수이므로 두 수치를 혼용하지 않는다. 수신자별 자동 통계 출력은 T06에서 다루며, T01은 원문 없는 기록 근거와 수동 집계 정의를 제공한다.
+
+`--ref`는 프로젝트 디렉터리 기준이다. 프로젝트 질문은 `evidence/question-links.md`, 태스크 질문은 `tasks/T##_이름/evidence/question-links.md`에 파일을 만들고 실제 경로를 인자로 쓴다. 아래 표의 사건 행 번호는 프로젝트 `log.jsonl`의 1부터 시작하는 줄 번호다. CLI는 파일 존재나 연결 의미를 검사하지 않으므로 코디네이터가 전달·답 기록 후 실제 행과 대조한다. FIFO 대기 집계의 짝을 개별 질문의 답 연결로 재사용하지 않는다.
+
+| 요청 식별자 | 태스크(프로젝트 질문이면 생략) | 원질문 행·시각 | 전달 행·시각 | 코디네이터 답 행·시각 | 작업자 답 행·시각 |
+|---|---|---|---|---|---|
+| q-1 | T01 | 10 · ISO 시각 | 11 · ISO 시각 | 12 · ISO 시각 | 13 · ISO 시각 |

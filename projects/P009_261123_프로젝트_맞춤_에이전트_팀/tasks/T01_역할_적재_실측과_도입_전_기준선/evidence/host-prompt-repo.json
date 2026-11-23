@@ -1,0 +1,29 @@
+{
+  "id": "c44f23c2-92d3-464d-8c70-e8b45047a735",
+  "ok": true,
+  "result": {
+    "repo": {
+      "id": "f89bc71c-8249-4df9-819a-58ed72086758",
+      "path": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-host-prompt-ywfutjlu",
+      "displayName": "pace-P009-host-prompt-ywfutjlu",
+      "badgeColor": "#737373",
+      "addedAt": 1795442920299,
+      "kind": "git",
+      "externalWorktreeVisibilityLegacy": false,
+      "gitUsername": "",
+      "hookSettings": {
+        "mode": "auto",
+        "setupRunPolicy": "run-by-default",
+        "setupAgentStartupPolicy": "start-immediately",
+        "scripts": {
+          "setup": "",
+          "archive": ""
+        }
+      },
+      "externalWorktreeVisibility": "hide"
+    }
+  },
+  "_meta": {
+    "runtimeId": "cb6baaeb-4058-4c7c-aed1-6cd37b0640d5"
+  }
+}

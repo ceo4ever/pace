@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "repository": "/Volumes/Data/AiStudio/workspace/roblox-studio.wt/P002",
+  "condition": "메시지 지시 조건(팀 도입 전 아님)",
+  "observed_at": "2026-11-23T14:25:33.157014+00:00",
+  "base_commit": "d0f9ed0c7016536466ce75b4918573814630eb16",
+  "period": {
+    "start": "2026-11-23T08:00:26.280Z",
+    "end": "2026-11-23T12:46:07.583Z",
+    "tasks": [
+      "T01",
+      "T02"
+    ],
+    "reason": "P002 미병합·T03 진행 상태이므로 완료 태스크 T01·T02로 고정"
+  },
+  "source_log_sha256": "5835b2965a32ac9d43770c8656c1eeb959d8e80b030ddc61e02e85d8377d26c3",
+  "counts": {
+    "captain_questions": 7,
+    "coordinator_questions": 3,
+    "recipient_unknown": 1,
+    "captain_decisions": 6,
+    "captain_merge_approvals": 0,
+    "captain_deploy_approvals": 0,
+    "normal_role_assignment_messages": 1,
+    "manual_role_corrections_total": null,
+    "captain_file_edits_total": null,
+    "captain_command_runs_total": null,
+    "coordinator_extra_instructions_observed": 0,
+    "normal_approval_decisions": 6,
+    "blocking_sum_audited": 35,
+    "blocking_sum_stats_events": 22,
+    "rereviews_after_fail_audited": 12,
+    "gate_failures": 4,
+    "captain_questions_range": [
+      7,
+      8
+    ]
+  },
+  "unknown": {
+    "captain_role_correction_coverage_spans": 1,
+    "captain_file_edit_coverage_spans": 1,
+    "captain_command_run_coverage_spans": 1,
+    "reason": "Orca 작업자 질문/회신은 확보했으나 캡틴 직접 대화·손작업 전체 원장을 복원하지 못했다. 미확인 구간은 0건으로 합산하지 않는다.",
+    "recipient_events": 1
+  },
+  "normal_role_assignment": {
+    "at": "2026-11-23T08:00:38Z",
+    "source_message": "msg_82ed0e9953b2",
+    "summary": "일반 작업자 시작 뒤 아테나 정의를 읽고 게임 리드로 진행하라는 첫 정상 배정 메시지 1건; 재지시 보정으로 중복 세지 않음"
+  },
+  "quality": {
+    "pre_reviews": [
+      {
+        "task": "T01",
+        "attempts": [
+          {
+            "status": "fail",
+            "blocking": 3,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T01_시제품/evidence/pre-review-1.md"
+          },
+          {
+            "status": "fail",
+            "blocking": 2,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T01_시제품/evidence/pre-review-2.md"
+          },
+          {
+            "status": "fail",
+            "blocking": 1,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T01_시제품/evidence/pre-review-3.md"
+          },
+          {
+            "status": "fail",
+            "blocking": 1,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T01_시제품/evidence/pre-review-4.md"
+          }
+        ],
+        "source": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T01_시제품/PRE-REVIEW.json"
+      },
+      {
+        "task": "T02",
+        "attempts": [
+          {
+            "status": "fail",
+            "blocking": 4,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/evidence/pre-review-1.md"
+          },
+          {
+            "status": "fail",
+            "blocking": 5,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/evidence/pre-review-2.md"
+          },
+          {
+            "status": "fail",
+            "blocking": 5,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/evidence/pre-review-3.md"
+          },
+          {
+            "status": "fail",
+            "blocking": 2,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/evidence/pre-review-4.md"
+          },
+          {
+            "status": "fail",
+            "blocking": 1,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/evidence/pre-review-5.md"
+          },
+          {
+            "status": "pass",
+            "blocking": 0,
+            "evidence": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/evidence/pre-review-6.md"
+          }
+        ],
+        "source": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/PRE-REVIEW.json"
+      }
+    ],
+    "pre_blocking_sum": 24,
+    "post_reviewer_blocking": {
+      "T01": [
+        2,
+        0,
+        0
+      ],
+      "T02": [
+        3,
+        0
+      ]
+    },
+    "post_tester_blocking": {
+      "T01": [
+        3,
+        0
+      ],
+      "T02": [
+        3,
+        0
+      ]
+    },
+    "audit_source": "T01·T02 TASK-CLOSE 리뷰와 PRE-REVIEW의 실제 차수. 같은 차수의 log 요약을 다시 합산하지 않음",
+    "stats_gap_reason": "과거 log는 여러 판정의 묶음·일부 차수 누락이 있어 사건 blocking 22와 원문 기반 판정 합 35가 다르다. 공통 비교에는 실제 판정별 합 35 사용."
+  },
+  "source_project": "projects/P002_261123_[slope-ladder]_시제품과_관문2/PROJECT.md",
+  "limits": [
+    "최종 병합까지가 아닌 완료 태스크 2개 구간",
+    "캡틴 손작업 3종은 미확인 구간 각 1, 실제 총 건수 미확인",
+    "기존 팀을 쓰던 저장소의 메시지 지정 자동화 비교이며 팀 도입 효과가 아님"
+  ],
+  "excluded_automated_notices": [
+    {
+      "at": "2026-11-23T09:16:34Z",
+      "subject": "Worker stopped without reporting",
+      "reason": "Orca의 자동 수명 알림이며 캡틴 결정 요청으로 확인되지 않아 질문/개입 합계에서 제외"
+    }
+  ]
+}

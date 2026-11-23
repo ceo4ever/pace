@@ -1,0 +1,79 @@
+[
+  {
+    "source": "AGENTS.md",
+    "start_line": 1,
+    "line_count": 24,
+    "sha256": "c7e0ca71053b319dc85314ae6e969b1206b84047a272f1bb45a401bfa49e350d",
+    "characters": 1009
+  },
+  {
+    "source": "docs/PROJECT.md",
+    "start_line": 1,
+    "line_count": 83,
+    "sha256": "af4928b9dad7aaf3a5856ba7144c8943b38998493846e2a9959d86db6b585604",
+    "characters": 3960
+  },
+  {
+    "source": "docs/DESIGN.md",
+    "start_line": 1,
+    "line_count": 1,
+    "sha256": "d43ba6c3c197f99b45b1af37f6383660859558cf998ec7b47d93de391ef7129c",
+    "characters": 36
+  },
+  {
+    "source": "docs/DESIGN.md",
+    "start_line": 347,
+    "line_count": 83,
+    "sha256": "42ff0027a68958986b85ad52050ba3a61d8c9e713b1954d2cacbb5a2679dee12",
+    "characters": 5515
+  },
+  {
+    "source": "docs/DESIGN.md",
+    "start_line": 598,
+    "line_count": 14,
+    "sha256": "cf8c5603cd5f8cbb78a9f1df34a347ece65eb800f3da879d659350bd074f27d3",
+    "characters": 1222
+  },
+  {
+    "source": "docs/DEPLOYMENT_AUTH.md",
+    "start_line": 1,
+    "line_count": 1,
+    "sha256": "ea9f632a76628e8ac1a1c5a110f14660d9ca49411742b6ba474a3a430aabef0d",
+    "characters": 51
+  },
+  {
+    "source": "docs/DEPLOYMENT_AUTH.md",
+    "start_line": 9,
+    "line_count": 15,
+    "sha256": "202e95f3301dc3e54ed0ecb0e8a1813c33b6d4d82b23859403b4135562bb19d9",
+    "characters": 580
+  },
+  {
+    "source": "docs/DEPLOYMENT_AUTH.md",
+    "start_line": 49,
+    "line_count": 18,
+    "sha256": "0c8443c571ec5fc608afe12d54aff4213abea4de46c889df49a1ced7981b00cd",
+    "characters": 1184
+  },
+  {
+    "source": "docs/DEPLOYMENT_AUTH.md",
+    "start_line": 67,
+    "line_count": 66,
+    "sha256": "a28cae1dfbccf51a485383c570cf4aa3fc1b2aeaa6f05bf6243f856f19d07609",
+    "characters": 3449
+  },
+  {
+    "source": "docs/DEPLOYMENT_AUTH.md",
+    "start_line": 147,
+    "line_count": 15,
+    "sha256": "dc42225b9c2d7f4379f5add78edc4defa6a830a030533d44ec732cd69c461f57",
+    "characters": 537
+  },
+  {
+    "source": "docs/DEPLOYMENT_AUTH.md",
+    "start_line": 196,
+    "line_count": 9,
+    "sha256": "27201e8eed55b24c60637f046f37e20fe0692def464bdb3b7a77461c38f52c3d",
+    "characters": 489
+  }
+]

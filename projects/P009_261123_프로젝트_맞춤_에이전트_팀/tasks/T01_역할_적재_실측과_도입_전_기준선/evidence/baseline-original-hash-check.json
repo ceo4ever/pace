@@ -1,0 +1,46 @@
+{
+  "checked_by": "P009 작성 PM, 독립 검토자 외부 접근 제한 보완",
+  "files": [
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T01_시제품/TASK-CLOSE.md",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/TASK-CLOSE.md",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/TASK-CLOSE.md",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/PRE-REVIEW.json",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-1.md",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-2.md",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-3.md",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-t4-1.md",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-t4-2.md",
+      "sha256_match": true
+    },
+    {
+      "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/tester.md",
+      "sha256_match": true
+    }
+  ],
+  "event_log_sha256_match": true
+}

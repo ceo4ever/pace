@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "3ea6e52307337bd933012186aa0541fb8ea09a2954a96eb62181a66a4dd21f1b",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "1cd34e3f0c0fced4f77c840f2a1512747cdf54ff5a3768a8efd09411d7c09a4d",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "직전 fail 지적 반영 후 자동 재검토, rereview_of R1"
+    },
+    {
+      "hash": "992a1db4250bb8ab11ef9ac988aadf38759e7dc01d7796d0758cb1685cb90d45",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "사용자 비교 저장소 변경 뒤 새 기준 전체 검토"
+    },
+    {
+      "hash": "0762d353ab969476958f47792953223fee96e1ed19ba10a6f101d53b32342cbe",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R4.json",
+      "continuity": "changed",
+      "reason": "R3 기준선 프로토콜 보완 뒤 자동 재검토"
+    },
+    {
+      "hash": "ebadc33d7c6c1995044af0175ee6c30a424ea4f8d0de3718035007546f4f7bfe",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R5.json",
+      "continuity": "changed",
+      "reason": "R4 시작 맥락 보완 뒤 자동 재검토"
+    }
+  ]
+}

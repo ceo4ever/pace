@@ -160,7 +160,7 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace project done <P###> <T##>                 check 통과 시 상태 완료 — TASK.md·태스크 표·같은 번호 브리프·빈 커밋 칸 (worktree, 커밋은 직접)
   pace project finish <P###>                     마감 하네스 → 병합 대기 (worktree에서만)
   pace project merge <P###> [--yes]              ff 병합·정리 (main에서만, 기본은 요약만)
-  pace project log <P###> [T##] --type <decision|change|review|question|answer|escalation|note> --msg <한 줄> [--src 출처] [--ref 파일]
+  pace project log <P###> [T##] --type <decision|change|review|question|answer|escalation|note> --msg <한 줄> [--to captain|coordinator] [--src 출처] [--ref 파일]
   pace project list                              프로젝트 상태·진행 태스크·worktree
   pace project stats <P###> [--json|--write]     러닝 시간·대기·게이트 실패·도구별 토큰 (--write: METRICS.md·비교 표 다시 만들기)
   pace onboard [--with claude|codex|gemini|cursor-agent] [-- <도구 옵션>]   온보딩을 바로 시작하며 LLM CLI 열기
@@ -664,6 +664,7 @@ function projectCommand(args: string[]): number {
       src: { type: "string" },
       ref: { type: "string" },
       by: { type: "string" },
+      to: { type: "string" },
       "no-launch": { type: "boolean" },
       launch: { type: "boolean" },
     },
@@ -746,10 +747,10 @@ function projectCommand(args: string[]): number {
         return 0;
       }
       case "log": {
-        need(1, "pace project log <P###> [T##] --type <종류> --msg <한 줄> [--src 출처] [--ref 파일]");
+        need(1, "pace project log <P###> [T##] --type <종류> --msg <한 줄> [--to captain|coordinator] [--src 출처] [--ref 파일]");
         if (!values.type || !values.msg) throw new UsageError("log는 --type과 --msg가 필요하다");
         const r = repo(); const ref = findProject(r, positionals[0]!); const owner = statsRepo(r, ref);
-        const result = agentEvent(join(owner.root, "projects", ref.dir), { p: ref.id, t: positionals[1]?.toUpperCase(), type: values.type, msg: values.msg, src: values.src, ref: values.ref, by: values.by });
+        const result = agentEvent(join(owner.root, "projects", ref.dir), { p: ref.id, t: positionals[1]?.toUpperCase(), type: values.type, msg: values.msg, src: values.src, ref: values.ref, by: values.by, to: values.to });
         out(result.recorded ? result.duplicate ? "이미 기록됨 (결정 표 동기화)" : "사건 기록" : "경고: 사건을 기록하지 못했다");
         return 0;
       }

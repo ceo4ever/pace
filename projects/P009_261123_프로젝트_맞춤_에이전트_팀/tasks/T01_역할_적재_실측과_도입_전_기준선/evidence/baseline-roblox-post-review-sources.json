@@ -1,0 +1,124 @@
+[
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T01_시제품/TASK-CLOSE.md",
+    "sha256": "586d905a287082defad03e694756bee6af1dcc00fb6d18faed387097397a3ce8",
+    "lines": [
+      {
+        "line": 44,
+        "text": "## 리뷰"
+      },
+      {
+        "line": 45,
+        "text": ""
+      },
+      {
+        "line": 46,
+        "text": "- 사전 검토(Codex gpt-6.2-sol, openai — 교차): 1차 fail blocking 3 → 2차 fail blocking 2 → 반영 확인 fail blocking 1 → 코디네이터 허용 추가 확인 fail blocking 1(같은 항목: 2단계 전용 코드 은닉 검출) → 근본 진단(판정 주체 = 작성자 편향)으로 T-4 판정 방법을 \"구현 후 reviewer가 기준 해시 직접 대조\"로 바꾸고 추가 사전 검토 없이 착수(main 판단 2026-11-23). 원문 [pre-review-1~4](evidence/)"
+      },
+      {
+        "line": 47,
+        "text": "- 1차: tester fail(blocking 3: Remote 빈도, 중도 퇴장 첫 출발 누락, 계단 튐 단언) · reviewer(Codex) fail blocking 2(F1 빈도, F2 첫 출발 집계) should_fix 3(F3 표지, F4 sync 삭제 범위, F5 경계 테스트) handoff 1(F6) — T-4 기준 해시 대조 \"데이터 결정\""
+      },
+      {
+        "line": 48,
+        "text": "- 2차: tester pass · reviewer pass blocking 0 — should_fix F4(이름 충돌)·F5(S-1 상한)·F6(테마 슬롯)·F7(스테이징)·F8(중도 퇴장 판정 일관성) 모두 반영"
+      },
+      {
+        "line": 49,
+        "text": "- 3차(반영 확인, Codex 새 세션): reviewer pass blocking 0 — F5·F6·F7 해소, F4·F8 부분 해소 + 새 should_fix 2(sync 사전 검사가 같은 이름 자식 전부를 봐야 함, `StudioSyncForce`가 남아 이후 보호를 우회) → 모두 반영(같은 이름 전부 검사, Force는 실행 때 지움), F8은 T-3에 퇴장 판 제외 규칙 명시(결정 메모 '자체 판단'). [review-3](evidence/review-3.md)"
+      },
+      {
+        "line": 50,
+        "text": "- reviewer 연속성: Codex 비대화 모드가 세션 재개를 지원하지 않아 차수마다 새 세션에 이전 지적을 넘김(changed). tester는 같은 아르고스 세션으로 재판정."
+      },
+      {
+        "line": 51,
+        "text": "- 특수 기능: Roblox Studio MCP(플레이·입력·콘솔·캡처·클라이언트 Remote 재현) — 시제품 판정에 Studio 실측이 필요. Rojo 플러그인이 이 Mac Studio에 없어 `tools/studio-sync`로 대체."
+      },
+      {
+        "line": 52,
+        "text": "- 교본: typescript — 안티패턴 대조(입력 `unknown` 좁히기, 순수 모듈 `import type`, `as` 단정 제거 → `spawnThemedPart`/`requireShapes`), Roblox 서버 권한·Remote 검증 절(빈도 → 타입 → 상태 순) 따름"
+      },
+      {
+        "line": 53,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T02_검토와_관문2/TASK-CLOSE.md",
+    "sha256": "c4564d72e33ce832900224540f546b7928383e3c0e7d3c1941a9879a1e69742c",
+    "lines": [
+      {
+        "line": 32,
+        "text": "## 리뷰"
+      },
+      {
+        "line": 33,
+        "text": ""
+      },
+      {
+        "line": 34,
+        "text": "- 사전 검토(Codex gpt-6.2-sol, openai, 교차, 버전마다 해시·사본 보존): 1차 fail blocking 4 → 2차 fail 5 → 반영 확인 fail 5 → 캡틴 지시(waiver 아님, 근본 해결) — 제우스 진단 3층(범위 과적·상위 절차 부재·신뢰 경계 미표시)대로 범위 축소·game-review 일반 규칙·신뢰 경계 → 4차 fail 2 → 코디네이터 허용 반영 확인 5차 fail 1 → 캡틴 지시 단일 항목 확인 6차 **pass**. 원문 [pre-review-1~6](evidence/), 기록 PRE-REVIEW.json"
+      },
+      {
+        "line": 35,
+        "text": "- 구현 후 1차: tester fail(blocking 3: Play 횟수 해석으로 덮음·재현 스크립트 실행 불가·인용 축약, 결정 시각) · reviewer fail blocking 3 should_fix 3([review-1](evidence/review-1.md), [tester-1](evidence/tester-1.md)) → 캡틴에게 정정·재확인, 스크립트 경로·인용·시각·README 안내 수정"
+      },
+      {
+        "line": 36,
+        "text": "- 구현 후 2차: tester pass · reviewer pass blocking 0 should_fix 3(판정 이력 문구, 재현값·가설 구분, F5 숫자 확인 절차) → 모두 반영(질문 4 스킬 문구 개정) ([review-2](evidence/review-2.md))"
+      },
+      {
+        "line": 37,
+        "text": "- 특수 기능: Roblox Studio MCP(빌드 주입·리비전 확인·콘솔 회수·캡처) — 캡틴 플레이 동안은 잠금으로 사용 안 함"
+      },
+      {
+        "line": 38,
+        "text": "- 교본: 해당 없음(판정 문서, 코드 변경은 도구 스크립트 한 줄 — S-1 실행 확인)"
+      },
+      {
+        "line": 39,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/TASK-CLOSE.md",
+    "sha256": "0258a0db5435e179ab1172faafc96250022791f4740d36fa10ac4abc5587befc",
+    "lines": [
+      {
+        "line": 35,
+        "text": "## 리뷰"
+      },
+      {
+        "line": 36,
+        "text": ""
+      },
+      {
+        "line": 37,
+        "text": "- 사전 검토(Codex gpt-6.2-sol, openai, 교차, 버전마다 해시·사본 보존): 1차 fail blocking 3 → 2차 fail 3 → 반영 확인 fail 3 → 3회 fail 진단(planning 층: 증명 범위 미정, `pace agent review-note` 기록, [diagnosis.md](evidence/diagnosis.md)) → 증명 범위를 목적에 비례해 명시(main 판단) → 4차 **pass**. 원문 [pre-review-1~4](evidence/), PRE-REVIEW.json"
+      },
+      {
+        "line": 38,
+        "text": "- 구현 후(T-1~T-3): 1차 tester pass · reviewer fail blocking 2(같은 프레임 팝업 겹침, 시작·끝 상태·늦은 스냅숏) → runId·시작/끝 공 상태·팝업 쌓기·투명도/타이머 버전 / 2차 tester pass · reviewer fail blocking 1(칸 재사용 겹침) → 칸 점유·역순 스냅숏·서버 공 숨김·runSerial 정리·측정 로그 / 3차 tester pass · reviewer pass blocking 0 should_fix 1(공 크기 변화 시 칸 간격 — 남김: 1.2초 수명이라 영향 작음, 제품 단계 입력) — [review-1~3](evidence/)"
+      },
+      {
+        "line": 39,
+        "text": "- 구현 후(T-4 재판정): 1차 tester fail(기준 2 한계에 사전 설명 사실 누락) · reviewer pass should_fix 1(질문 4 생략 예외) → 보강·스킬 예외 명문화 / 2차 tester pass · reviewer pass — [review-t4-1·2](evidence/), [tester.md](evidence/tester.md)"
+      },
+      {
+        "line": 40,
+        "text": "- 특수 기능: Roblox Studio MCP(주입·Play·영상·LogService 회수) — 캡틴 플레이 동안은 잠금으로 사용 안 함"
+      },
+      {
+        "line": 41,
+        "text": "- 교본: typescript — 안티패턴 대조(시뮬 계산 불변·덧붙이기, 순수 컨트롤러 `import type`, 클라이언트 지연 콜백은 버전으로 무효화, 신뢰 채널로 상태 전달)"
+      },
+      {
+        "line": 42,
+        "text": ""
+      }
+    ]
+  }
+]

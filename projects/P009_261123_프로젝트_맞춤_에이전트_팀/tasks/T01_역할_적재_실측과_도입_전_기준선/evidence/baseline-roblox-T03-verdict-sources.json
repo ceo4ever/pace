@@ -1,0 +1,105 @@
+[
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/PRE-REVIEW.json",
+    "sha256": "cf94b3e68082f11afed2c2d8984a7968e5aa6a68729775e5b1e58793b84f267c",
+    "verdict_lines": [],
+    "attempts": [
+      {
+        "status": "fail",
+        "blocking": 3,
+        "evidence": "evidence/pre-review-1.md"
+      },
+      {
+        "status": "fail",
+        "blocking": 3,
+        "evidence": "evidence/pre-review-2.md"
+      },
+      {
+        "status": "fail",
+        "blocking": 3,
+        "evidence": "evidence/pre-review-3.md"
+      },
+      {
+        "status": "pass",
+        "blocking": 0,
+        "evidence": "evidence/pre-review-4.md"
+      }
+    ]
+  },
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-1.md",
+    "sha256": "8be1cc3a08fce8c8dc32c76d31b41f6e2c2c584ebb45ec5e79b177e19443f06d",
+    "verdict_lines": [
+      {
+        "line": 3,
+        "text": "판정: **fail** (blocking 2)"
+      }
+    ]
+  },
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-2.md",
+    "sha256": "f6f6dfbd02966b03aecd7f0349e19ab309e636fb1a536f670c01b305d5e5fdc7",
+    "verdict_lines": [
+      {
+        "line": 3,
+        "text": "판정: **fail (blocking 1)**"
+      }
+    ]
+  },
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-3.md",
+    "sha256": "59a42ffbefdb2c25c87a2a89c02998044a52ff017e0b9470dc405573990365ed",
+    "verdict_lines": [
+      {
+        "line": 3,
+        "text": "판정: **pass (blocking 0)**"
+      }
+    ]
+  },
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-t4-1.md",
+    "sha256": "b6a10eadd969cec6df89383cea14c9ded0664ffac2b9891131641a33d825255c",
+    "verdict_lines": [
+      {
+        "line": 3,
+        "text": "판정: pass (blocking 0)"
+      }
+    ]
+  },
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/review-t4-2.md",
+    "sha256": "6704d434222d773726e93f8702d72a9fba16abd41c03f60e53743fc862c5356d",
+    "verdict_lines": [
+      {
+        "line": 3,
+        "text": "판정: pass (blocking 0)"
+      }
+    ]
+  },
+  {
+    "path": "projects/P002_261123_[slope-ladder]_시제품과_관문2/tasks/T03_수정_1회와_재판정/evidence/tester.md",
+    "sha256": "4a8b42382d909b18714261301bd3fe0c4705169ce1c5619d58ccd9c88973db44",
+    "verdict_lines": [
+      {
+        "line": 3,
+        "text": "- 1차 pass — 독립 목표 대조 맞음. T-1·T-2·T-3 pass. `pnpm check`·`security:check`·slope-ladder 테스트 종료 0, stages·metrics·progress diff 0바이트, sim.ts 삭제 줄 0. 검출력(컴파일 out 변이): 접촉 키 중복 허용·pickup delta에 거리 성장 포함·같은 스텝 두 번째 접촉 버림·touchLog 안 비움 → 모두 실패로 검출. \"endRun 뒤 꺼내기\"는 동등 변이(생존) — 변형(종료 뒤 접촉 잃기)은 검출. 공백: main의 touches→ended 전송 순서·클라이언트 연출은 자동 테스트 밖(코드 읽기·증거)."
+      },
+      {
+        "line": 4,
+        "text": "- 2차 pass — reviewer 1차 반영(runId·시작/끝 공 상태·팝업 쌓기·투명도/타이머) 확인, 범위 밖 변경 없음, T-3 유지. 검출력: `final` 미설정·끝 전 상태·반지름 먹기 전 값·x 오값 → 모두 실패로 검출. 남은 공백: `final.air` 단언 없음(낮은 위험)."
+      },
+      {
+        "line": 5,
+        "text": "- 3차 pass — reviewer 2차 반영(칸 점유·역순 스냅숏·서버 공 숨김·runSerial 삭제·측정 로그) 확인, `pnpm check`·테스트 0, T-3 유지. 비차단 이상: none 판 첫 두 충돌의 shake 로그 없음(원인 미확인 — 재플레이에서 첫 충돌 흔들림 관찰), `shakeMax` 판 시작 때 미초기화(Studio 진단 로그만 영향)."
+      },
+      {
+        "line": 6,
+        "text": "- 4차(T-4 재판정) fail — 판 수 5=5, `[metrics]` 5줄 글자 그대로, 기준 1·4 재계산, 답·확인 인용 원문 일치, F5 1=1, BR01 문턱, 결정 4곳 일치는 모두 통과. 실패 1건: 기준 2 한계에 \"확인 질문 전에 표지판 의도를 설명받음\"이 빠짐(미확인 공개 취지)."
+      },
+      {
+        "line": 7,
+        "text": "- 5차 pass — 기준 2 한계 보강·질문 4 생략 절차 예외 기록·스킬 예외 명문화 확인, 새 결함 없음."
+      }
+    ]
+  }
+]

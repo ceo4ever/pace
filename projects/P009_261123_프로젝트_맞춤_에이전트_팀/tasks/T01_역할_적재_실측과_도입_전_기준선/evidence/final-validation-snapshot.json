@@ -1,0 +1,20 @@
+{
+  "head": "d761d04",
+  "check": "PACE_SKIP_BROWSER_E2E=0 npm run check",
+  "result": "1035 tests, 1018 pass, 17 skip, fail 0; exit 0",
+  "files": {
+    "src/cli.ts": "43909792872aa586c826a4142c6e797df2c620b1ff73280974cb49a2eb9d71b8",
+    "src/project/event-log.ts": "48a73977f647029247c7cc73d5c7a5bd8f3382404fc52436aa1a3c182b2e6b24",
+    "src/project/harness.ts": "d70104d03688d83b732de0aebe5ad19bf639c7ba6d3575e8cebd7bfdf3ccf34f",
+    "test/project-log.test.ts": "d0e5888c56a7d8e8fceaf68c6a34de72e919475938411ed48206c36ef83d04b2",
+    "docs/WORK-PROCESS.md": "dae52fff695e9868957075b87b7a116d91d989403c245c5126770602090bf136",
+    "skills/pace-project-dev/references/coordinator.md": "cb535086719c2a0df2ac42d005fab6bed95f37dc5649e470fd4d5e75703c4e8b",
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/host-loading.md": "513f61c53fcd97d1a338e853aeeab745f94ef47c19a949579ba8cd4aca4e4f33",
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/host-model-metadata.json": "3f1e836de08b553d225c7999f414b71285ae5800625cd9ee18b9aee7ad9ff660",
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/baseline-ai-sql-client.json": "4a10821c6e30e3432f65967b3a2ab7f134bbc90ee78510901a735a733ff27b3b",
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/baseline-roblox.json": "9b8ecf3212459e81fe8a21cef8b62e6a17045d315ed1e2b877ed6ff2d15a52e6",
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/baseline-roblox-questions.json": "6aa6b62d359851ccb57bcc85314b56ceced59b0f4ac1457a0cf3a149d85b902d",
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/counting.md": "c5efb941a150a2ef2c95882aba71adf42da998a5e91ae20910508450c8709fbf",
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/check-document.py": "62d4af0a01a1e6d010c426012455ce79f4c533065cec70854987d3a542af3c03"
+  }
+}

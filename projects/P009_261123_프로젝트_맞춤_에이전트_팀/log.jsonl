@@ -1,0 +1,30 @@
+{"ts":"2026-11-23T13:47:09.995Z","p":"P009","type":"start","by":"cli","msg":"start: codex · launch launched","ok":true,"src":"명령 옵션","data":{}}
+{"ts":"2026-11-23T13:47:09.996Z","p":"P009","type":"decision","by":"cli","msg":"착수 결정 — 출처에 따라 바로 수행","src":"[BL261123_01_프로젝트_맞춤_에이전트_팀](../../backlogs/BL261123_01_프로젝트","ref":"PROJECT.md"}
+{"ts":"2026-11-23T13:47:29.711Z","p":"P009","t":"T01","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-23T13:47:45.709Z","p":"P009","t":"T01","type":"question","by":"agent","msg":"팀 도입 전 기준선을 확보할 업무 문서 저장소와 대표 업무 지정을 요청한다"}
+{"ts":"2026-11-23T13:49:19.080Z","p":"P009","t":"T01","type":"answer","by":"agent","msg":"캡틴 확인으로 PACE를 두 번째 비교 저장소로 지정하고 코디네이터가 내부 검토용 문서 작성 1건을 대표 업무로 정했다"}
+{"ts":"2026-11-23T13:49:26.082Z","p":"P009","t":"T01","type":"decision","by":"agent","msg":"캡틴 확인으로 PACE를 두 번째 비교 저장소로 지정; 대표 업무는 기존 자료 기반 내부 검토용 문서 1건이며 역할 정의 전 기준선을 확보한다","src":"main 판단"}
+{"ts":"2026-11-23T13:53:00.168Z","p":"P009","t":"T01","type":"review","by":"agent","msg":"reviewer fail blocking 1 should_fix 5 — Orca経路の明示と観測・基準線の順序を補う","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/review-records/R1.json","data":{"blocking":1,"should_fix":5,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-23T13:53:39.258Z","p":"P009","t":"T01","type":"decision","by":"agent","msg":"두 번째 비교 저장소를 ai-sql-client로 변경 승인; 기존 PACE 지정은 대체하며 내부 검토용 문서 1건의 도입 전 기준선을 확보한다","src":"사용자 결정"}
+{"ts":"2026-11-23T14:04:02.409Z","p":"P009","t":"T01","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2 — R5 기준선 조건 사전 검토","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/review-records/R5.json","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-23T14:04:02.659Z","p":"P009","t":"T01","type":"decision","by":"agent","msg":"문서 비교는 P009 Codex에서 ai-sql-client 팀 원본을 prompt로 읽는 경로로 고정; native 현장 검증과 구분하며 T08에서 운영 지시 파일 해시 차이를 보고한다","src":"자체 판단"}
+{"ts":"2026-11-23T14:05:36.531Z","p":"P009","t":"T01","type":"note","by":"agent","msg":"ai-sql-client 팀 없는 문서 기준선 시작; 별도 원장으로 범위를 분리한다","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/baseline-ai-sql-client.json"}
+{"ts":"2026-11-23T14:21:48.040Z","p":"P009","t":"T01","type":"note","by":"agent","msg":"ai-sql-client 문서 기준선 종료; 독립 대조와 문서 게이트 통과, 대상 저장소 변경 없음","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/baseline-ai-sql-client.json"}
+{"ts":"2026-11-23T14:32:51.752Z","p":"P009","t":"T01","type":"note","by":"agent","msg":"최종 전체 검사에서 기존 경로 Telegram S-9g와 Orca 브라우저 S-11 실패; S-9g 단독 실행은 통과, 브라우저 단독 재현 확인 중","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/host-loading.md"}
+{"ts":"2026-11-23T14:39:23.496Z","p":"P009","t":"T01","type":"review","by":"agent","msg":"tester fail blocking 1 should_fix 5 — 근거 표 갱신 시점 차이 포함, 수정된 정적 산출로 재검증 필요","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/tester-stage2.json","data":{"blocking":1,"should_fix":5,"tester":1,"reviewer":0,"pass":0,"fail":1}}
+{"ts":"2026-11-23T14:39:23.748Z","p":"P009","t":"T01","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 6 — 원장 근거·범위·미확인 표기를 보완하고 T06 인계","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/reviewer-stage2.json","data":{"blocking":0,"should_fix":6,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-23T14:39:24.304Z","p":"P009","t":"T01","type":"question","by":"agent","msg":"기존 브라우저 S-11이 전체·단독·시작 커밋 사본에서 세 번 실패하여 선행 수정 범위 결정을 요청한다","to":"coordinator","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/blocker.md"}
+{"ts":"2026-11-23T14:43:01.343Z","p":"P009","t":"T01","type":"answer","by":"agent","msg":"사용자가 A안 승인: S-11 기존 결함 별도 선행 수정, 확인된 경우만 S-9g 포함하며 S-4b는 건드리지 않는다"}
+{"ts":"2026-11-23T14:43:01.595Z","p":"P009","t":"T01","type":"decision","by":"agent","msg":"S-11 메뉴 승인 재개 기존 결함을 별도 선행 수정·커밋한다; 승인 검증 유지, 확인된 S-9g 원인만 포함, 별도 S-4b 작업은 제외","src":"사용자 결정"}
+{"ts":"2026-11-23T14:48:42.158Z","p":"P009","t":"T01","type":"decision","by":"agent","msg":"S-9g는 Telegram 허브 PM이 main에서 처리한다; P009 진단 패치는 Git 메타데이터에 보존하고 소스에서 분리해 커밋에 섞지 않는다","src":"main 판단"}
+{"ts":"2026-11-23T14:55:04.010Z","p":"P009","t":"T01","type":"note","by":"agent","msg":"main e7c7d24까지 fast-forward로 반영; S-4b 1131c2a와 S-9g ee580c5 포함, T01 미커밋 변경은 별도 백업 후 복원했다"}
+{"ts":"2026-11-23T14:59:34.132Z","p":"P009","t":"T01","type":"note","by":"agent","msg":"S-11 선행 수정 d761d04 커밋 완료; main의 Telegram 수정 포함, 브라우저를 켠 T01 전체 검사 재실행 중","ref":"evidence/S11_선행_검사_수정/RESULT.md"}
+{"ts":"2026-11-23T15:12:26.692Z","p":"P009","t":"T01","type":"note","by":"agent","msg":"마감 재확인에서 Roblox P002 병합 완료를 확인하여 BR01대로 T01~T03·merge까지 기준선을 확장, 중간 T01·T02 원장 별도 보존","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/baseline-roblox.json"}
+{"ts":"2026-11-23T15:13:18.497Z","p":"P009","t":"T01","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-23T15:20:36.790Z","p":"P009","t":"T01","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 — 21건·문서 게이트 직접 검증 및 최종 증거 수정분 확인, 계약 목표 달성","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/tester-stage2-settled.json","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-23T15:20:36.961Z","p":"P009","t":"T01","type":"note","by":"agent","msg":"브라우저 포함 전체 검사 1035건 중 pass1018 skip17 fail0 종료0; source 변경 없이 최종 문서·기준선 증거를 보완했다","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/check-after-prerequisite-pass.txt"}
+{"ts":"2026-11-23T15:22:29.702Z","p":"P009","t":"T01","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — S1~S5 해소·계약 목표 달성, 남은 문장 수치 잔재 정정","ref":"tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/reviewer-stage2-settled.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-23T15:22:29.865Z","p":"P009","t":"T01","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
+{"ts":"2026-11-23T15:22:38.497Z","p":"P009","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T15:22:38.996Z","p":"P009","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-23T15:22:38.996Z","p":"P009","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}

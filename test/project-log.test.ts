@@ -19,6 +19,65 @@ function fixture() {
   return { root, home, dir, repo, ref };
 }
 const at = (n: number) => new Date(Date.UTC(2026, 0, 1, 0, 0, n)).toISOString();
+test("project log: CLI 수신자를 보존하고 잘못된 조합은 기록 전에 거부한다", () => {
+  const f = fixture();
+  for (const args of [["init", "-q", "-b", "main"], ["config", "user.name", "test"], ["config", "user.email", "test@example.com"], ["add", "."], ["commit", "-qm", "init"]]) {
+    const result = spawnSync("git", args, { cwd: f.root, encoding: "utf8" });
+    assert.equal(result.status, 0, result.stderr);
+  }
+  const log = (type: string, ...args: string[]) => runPace(["project", "log", "P001", "T01", "--type", type, "--msg", "합성 질문", ...args], { home: f.home, cwd: f.root });
+  for (const type of ["question", "escalation"]) {
+    for (const to of ["captain", "coordinator"]) assert.equal(log(type, "--to", to).status, 0);
+    assert.equal(log(type).status, 0);
+  }
+  const events = readEvents(f.dir);
+  assert.deepEqual(events.map((e) => (e as ProjectEvent & { to?: string }).to), ["captain", "coordinator", undefined, "captain", "coordinator", undefined]);
+  assert.deepEqual(JSON.parse(readFileSync(join(f.dir, "log.jsonl"), "utf8").split("\n")[0]!).to, "captain");
+  const stats = collectStats(f.repo, f.ref);
+  assert.equal(stats.eventCounts.questions, 6, "기존 stats는 수신자와 관계없이 질문과 escalation을 합산한다");
+  for (const type of ["question", "escalation"]) for (const to of ["", "user", "Captain", "captain\n", "coordinator/other"]) {
+    assert.notEqual(log(type, "--to", to).status, 0);
+  }
+  for (const type of ["note", "answer", "decision", "change", "review"]) assert.notEqual(log(type, "--to", "captain").status, 0);
+  assert.equal(readEvents(f.dir).length, 6, "거부 입력은 행을 추가하지 않는다");
+  assert.deepEqual(collectStats(f.repo, f.ref).eventCounts, stats.eventCounts);
+});
+
+test("project log: 직접 기록과 읽기에도 수신자 검증을 적용하고 기존 로그를 유지한다", () => {
+  const f = fixture();
+  const base = { ts: at(1), p: "P001", type: "question" as const, by: "agent" as const, msg: "합성 질문" };
+  for (const to of ["captain", "coordinator"]) {
+    assert.equal(recordEvent(f.dir, { ...base, to } as ProjectEvent), true);
+  }
+  assert.equal(recordEvent(f.dir, base), true);
+  for (const to of [null, "invalid", 1, ""]) assert.throws(() => validateEvent({ ...base, to } as unknown as ProjectEvent));
+  assert.throws(() => agentEvent(f.dir, { p: "P001", type: "question", msg: "합성", to: "invalid" } as Parameters<typeof agentEvent>[1]));
+  const raw = readFileSync(join(f.dir, "log.jsonl"), "utf8");
+  writeFileSync(join(f.dir, "log.jsonl"), raw + JSON.stringify({ ...base, to: "invalid" }) + "\n");
+  assert.equal(readEvents(f.dir).length, 3);
+  assert.deepEqual(readEvents(f.dir).map((e) => (e as ProjectEvent & { to?: string }).to), ["captain", "coordinator", undefined]);
+});
+test("project log: 캡틴 전달 질문과 원질문의 답을 각각 닫으면 미응답 대기가 남지 않는다", () => {
+  const f = fixture();
+  const base = { p: "P001", t: "T01", msg: "합성 전달" };
+  for (const type of ["question", "escalation"] as const) {
+    writeFileSync(join(f.dir, "log.jsonl"), "");
+    recordMetric(f.dir, { ts: at(0), project: "P001", cmd: "start", ok: true });
+    recordMetric(f.dir, { ts: at(0), project: "P001", cmd: "task", task: "T01", ok: true });
+    for (const event of [
+      { ts: at(10), type, by: "agent" as const, to: "coordinator" as const },
+      { ts: at(20), type, by: "coordinator" as const, to: "captain" as const, ref: "evidence/question-links.md" },
+      { ts: at(30), type: "answer" as const, by: "coordinator" as const },
+      { ts: at(31), type: "answer" as const, by: "agent" as const },
+    ]) assert.equal(recordEvent(f.dir, { ...base, ...event }), true);
+    const events = readEvents(f.dir);
+    const stats = collectStats(f.repo, f.ref, at(90));
+    assert.equal(stats.project.questionWaitMs, 21000, "대기는 10초부터 작업자가 답을 수신한 31초까지만 열린다");
+    assert.equal(stats.eventCounts.questions, 2, "기존 stats는 전체 질문 사건 수다");
+    assert.equal(stats.eventCounts.answers, 2);
+    assert.equal(events.filter((e) => e.to === "captain").length, 1, "캡틴 개입 수는 전달 한 건이다");
+  }
+});
 test("project log: 다른 기록자가 최초 생성한 파일에도 현재 사건을 남긴다", () => {
   const f = fixture();
   const preload = join(tempDir(), "log-race.mjs");

@@ -1,0 +1,24 @@
+{
+  "text": "첫 판단은 **pass**입니다. 시험은 아직 돌리지 않았고, 이번에는 산출물과 원시 근거만 대조했습니다. 파일은 고치지 않았습니다.\n\n## 자동 부트 / 호스트 첨부 노출\n- **SessionStart 훅:** `[PACE-BOOT]`는 \"pace agent가 호출한 자식 세션\"이라며 부트를 건너뛰었습니다. 대신 `[OPAL-BOOT]`가 알투 정의(SOUL·USER·RULES, 프로필 default, P009 worktree, 하네스 프로젝트 목록)를 주입했습니다.\n- **호스트 첨부:** `CLAUDE.md`→`AGENTS.md` 프로젝트 지침, git 상태 스냅샷(project/P009, 커밋 안 한 변경 12개), 사용자 이메일 컨텍스트가 붙었습니다.\n- TASK.md·테스트 표·작성자 마감·자체 판정·지적 대응 파일은 열지 않았습니다. 이것들은 부트로도 노출되지 않았습니다.\n\n## 읽은 파일\n- `git diff src/`는 권한 거부로 실행하지 못했습니다. 대신 증거 폴더의 `impl-diff.patch`를 읽었습니다.\n- `src/project/event-log.ts` 65–73행(`readEvents`)을 직접 확인했습니다.\n- 증거 문서 3건: `host-loading.md`, `baseline-ai-sql-client-review.md`, `baseline-roblox.md`\n- 원시 근거:\n  - `codex-native-probe-observations.json` 1–60행\n  - `host-model-metadata.json` 1–60행\n  - `baseline-roblox-questions.json` 1–80행\n  - `baseline-ai-sql-client.json` 1–50행\n- 증거 폴더 목록도 확인했습니다.\n\n## 목표 대조\n| 상위 목적 요소 | 산출 | 판단 |\n|---|---|---|\n| 두 호스트(Claude·Codex)에서 Orca 작업자의 역할 적재 관측 | `host-loading.md`가 4경로와 Codex 대조군 1회를 다룸. 각 경로 3턴, 세션 메타 근거 | 달성. Codex native 적재 실패도 관측 결과로 기록됨 [확인: `codex-native-probe-observations.json`에서 \"활성 역할은 알투\", QA 식별어 없음] |\n| 인계 관측 | Claude native·prompt, Codex prompt에서 3턴째에 리드 인계 기록 | 문서상 달성. Claude 쪽 원문 대조는 미확인(아래) |\n| 도입 전 비교 기준선 | ai-sql-client 검토 메모: 기준 커밋, 원본 해시, `team_role: null`, 팀 경로 전부 false. Roblox: 기준 커밋, 구간, blocking 35, 재검토 12, 게이트 실패 4 | 달성. 22와 35처럼 서로 다른 지표를 혼용하지 않고, 복원하지 못한 값은 미확인으로 둠 |\n| 수신자가 있는 질문 기록 | `--to captain\\|coordinator` 추가(question·escalation만 허용). 읽기 경로도 `validateEvent`로 걸러짐 [확인: event-log.ts:72]. `workerSpec`에 `--to coordinator` 안내. 코디네이터 문서에 전달 1건의 기록 예시 | 코드·절차는 갖춰짐. Roblox 과거 질문 11건은 필드가 없어 수동 분류(captain 8, coordinator 3)했고 표와 원시 행이 일치 [확인: questions.json 4·9·32행 = coordinator] |\n\n## 미확인 (다음 시험 입력에서 확인)\n1. **잘못된 `--to`를 CLI가 정말 거부하는지:** `recordEvent`는 `try` 안에서 검증하므로 실패해도 기록 실패 경고만 내고 종료 코드 0일 수 있습니다. `agentEvent` 앞단에서 먼저 막는지는 확인하지 못했습니다. 테스트를 실제로 돌려 봐야 합니다.\n2. **Claude native 원시 근거:** `claude-sonnet-5-5`, `HANDOFF: lead` 등을 `claude-native-observations.json`에서 대조하려던 grep이 권한 거부로 막혔습니다.\n3. **Claude effort:** 문서 스스로 미확인이라고 적었습니다. model/effort 전달 여부는 T03 범위입니다.\n4. **표본 크기:** 칸마다 표본이 1회뿐입니다. 역할 유지를 관측한 것이지 강제 격리를 증명한 것은 아닙니다. 문서도 이 한계를 밝혔습니다.\n5. **Roblox 캡틴 역할 보정·파일 수정·명령 대행:** 건수가 복원되지 않아 미확인입니다. 문서는 이를 0으로 두지 않았습니다.\n6. **수신자별 자동 집계:** 아직 출력이 없습니다. T06으로 미뤄졌으니 T01 범위 밖이 맞는지 확인이 필요합니다.\n\n## 올릴 단계\n목표나 전략 단계로 올릴 어긋남은 없습니다. 1·2번은 시험 단계에서 확인할 항목입니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 61609,
+  "usage": {
+    "input_tokens": 24,
+    "output_tokens": 6384
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "claude-native",
+    "agent": "claude",
+    "root": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-host-native-adxkyp01"
+  },
+  {
+    "name": "claude-prompt",
+    "agent": "claude",
+    "root": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-host-prompt-ywfutjlu"
+  },
+  {
+    "name": "codex-prompt",
+    "agent": "codex",
+    "root": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-host-prompt-ywfutjlu"
+  },
+  {
+    "name": "codex-native-probe",
+    "agent": "codex",
+    "root": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-host-native-adxkyp01"
+  }
+]

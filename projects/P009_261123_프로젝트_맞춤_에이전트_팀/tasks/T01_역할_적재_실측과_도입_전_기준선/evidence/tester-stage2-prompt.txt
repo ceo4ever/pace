@@ -1,0 +1,3 @@
+이제 동일 tester의 2단계다. 앞선 첫 판단을 보존한 채 TASK.md·BR01·PROJECT 기준과 전체 산출·증거를 대조하고 필요한 시험을 실행하라. 읽을 TASK는 projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/TASK.md이다. 작성자 마감이나 자체 판정·지적 대응은 읽지 않는다.
+허용된 셸 시험 명령은 node --test test/project-log.test.ts test/project-metrics.test.ts 와 python3 projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/evidence/check-document.py 이다. 원본 파일은 편집하지 않는다. 시험은 test/helpers.ts의 임시 루트를 사용한다.
+수신자 유효/생략/거부·저장 재읽기·기존 stats 및 전달 질문의 두 answer 수명, 네 호스트/경로와 Codex 대조군의 3턴 원문, 모델·effort 메타와 tools 실제 노출, 두 기준선의 적용 전 시점·항목별 수·미확인 처리를 검증하라. 자동 부트 및 읽은 문서 노출을 기록한다. 시험 판정은 실행·선택 정확성·기준 충족성·검출력·약화 없음 5항목이며 각 TASK 기준별 판단과 목표 달성 여부를 분리한다. 코드·원문에서 근거를 직접 확인하고 불충분하면 fail이다. 마지막 줄은 pass 또는 fail로 한다.

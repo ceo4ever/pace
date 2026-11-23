@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "repository": "/Volumes/Data/AiStudio/workspace/ai-sql-client",
+  "base_commit": "eb24060c88db271e6d2168e846daf7d1125a8af9",
+  "writer": {
+    "host": "codex",
+    "launch": "Orca dispatched worker",
+    "start_directory": "/Volumes/Data/AiStudio/workspace/pace.wt/P009",
+    "team_role": null
+  },
+  "started_at": "2026-11-23T14:05:35.482834+00:00",
+  "topic": "DB 접속·권한 운영 내부 검토",
+  "output": "baseline-ai-sql-client-review.md",
+  "sources": {
+    "AGENTS.md": "c7e0ca71053b319dc85314ae6e969b1206b84047a272f1bb45a401bfa49e350d",
+    "docs/PROJECT.md": "af4928b9dad7aaf3a5856ba7144c8943b38998493846e2a9959d86db6b585604",
+    "docs/DESIGN.md": "c06971ae93960d4065c44935f7b401c14e455adc6b0f36ed6f3a02b49e1ff602",
+    "docs/DEPLOYMENT_AUTH.md": "c87e2837b3781eeb9cc10a1f38b86a480d910475fc8faaaa1050788dd2c8aa3f"
+  },
+  "context": {
+    "AGENTS.md": "8f2105dfed1f52124b8559e77d5d3b8a38382ee3de3630894420c7921798d4f0",
+    "CLAUDE.md": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+    "docs/WORK-PROCESS.md": "bd93da54477991b3f5244cfab6b5520144edfd7b889b96b483141de505ccdace",
+    "skills/pace-project-dev/SKILL.md": "aa81f1b6445d84dae54d7319beaa098c8483e6d10ce945b65550696ab53ca9c7",
+    "skills/pace-project-dev/references/coordinator.md": "27a7c8df8bdce719142a23650208c0c377aaccaecf6792a6f5a243a9d256ebf0"
+  },
+  "team_paths": {
+    "target": {
+      ".pace/team": false,
+      ".claude/agents": false,
+      ".codex/agents": false,
+      ".codex/config.toml": false
+    },
+    "writer": {
+      ".pace/team": false,
+      ".claude/agents": false,
+      ".codex/agents": false,
+      ".codex/config.toml": false
+    }
+  },
+  "events": [],
+  "quality": {
+    "review_calls": 3,
+    "stage1": "baseline-ai-sql-client-review-stage1.json",
+    "stage2": [
+      "baseline-ai-sql-client-review-stage2.json",
+      "baseline-ai-sql-client-review-stage2-final.json"
+    ],
+    "gate": "check-document.py",
+    "gate_exit_code": 0,
+    "document_characters": 4285,
+    "independent_provider": "anthropic",
+    "goal": "달성",
+    "limits": "독립 검토자는 발췌로 인용을 대조했고 원본 파일 해시는 PM 실행 gate로 확인; 원본 직접 접근은 거부됨"
+  },
+  "unknown": {
+    "recipient_events": 0,
+    "captain_manual_events": null,
+    "review_source_direct_access": 1,
+    "captain_role_correction_coverage_spans": 1,
+    "captain_file_edit_coverage_spans": 1,
+    "captain_command_run_coverage_spans": 1
+  },
+  "limits": [
+    "P009에서 작성, 대상 저장소 읽기 전용",
+    "단일 표본·자기 보고·누적 맥락·주제 차이",
+    "기준선 구간에 호스트 실측·다른 T01 작업을 병행했으므로 T08과 경과 시간 비교 불가",
+    "개입 수는 별도 원장과 조회 가능한 Orca 메시지 범위만의 관측이며 캡틴 직접 대화/손작업 전체는 미확인"
+  ],
+  "team_instruction_check": "대상 AGENTS는 개인 비서 큐리와 프로젝트 규칙만 있고 팀 역할 배정 없음; P009 AGENTS도 PACE 규칙이며 팀 배정 없음",
+  "working_tree_before": "",
+  "finished_at": "2026-11-23T14:21:47.701822+00:00",
+  "counts": {
+    "captain_questions": 0,
+    "captain_approvals": 0,
+    "captain_manual_role_corrections": null,
+    "captain_file_edits": null,
+    "captain_command_runs": null,
+    "coordinator_extra_instructions": 0,
+    "normal_task_assignment": 1,
+    "normal_role_assignment": 0,
+    "blocking_sum": 0,
+    "rereviews_after_fail": 0,
+    "gate_failures": 0
+  },
+  "event_evidence": "baseline-ai-sql-client-mail-index.json과 시작/종료 note. 문서 업무 관련 추가 질문·승인·수동 지시는 관측 0이나 캡틴 전체 손작업 총 건수는 미확인으로 분리한다.",
+  "document_sha256": "b414af57b6d9a1ea6330835f150b14985ad0d0d311c479d2ee70464571246d41",
+  "working_tree_after": "",
+  "duration_comparable": false,
+  "observed_counts": {
+    "captain_manual_role_corrections": 0,
+    "captain_file_edits": 0,
+    "captain_command_runs": 0
+  },
+  "gate_protocol_change": "1단계 독립 검토 뒤 '현재 구현 경계' 표제를 '현재 문서 서술 경계'로 변경했다. 의미상 구현 단정 방지를 위한 동등한 5절 구조이며 T08도 변경된 표제로 같은 게이트를 사용한다."
+}
