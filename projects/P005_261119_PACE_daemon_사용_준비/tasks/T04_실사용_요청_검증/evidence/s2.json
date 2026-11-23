@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-23",
+  "request": "캡틴이 결속 토픽에서 'fixture.txt 파일을 읽고 파일 내용만 그대로 답해 주세요. 파일은 변경하지 마세요.'(정답 미포함)",
+  "task": {"status": "done", "access": "read-only", "target.chain": "default", "result.via": "claude/acp", "cleanup": "confirmed", "duration_s": 5},
+  "answer_vs_marker": {"exact_match": true, "lines": 1},
+  "worktree": {"sha256_unchanged_all_7": true, "git_status_clean": true, "commits": 1},
+  "conversation": {"access": "read-only", "saved_session_agent": "claude", "saved_session_id_present": true},
+  "protected_files": "config·secrets·profiles 해시·권한 불변",
+  "outside_changes_in_task_window": {
+    "allowed": [".claude/projects/<작업사본 폴더>/<세션>.jsonl", ".claude/sessions/*", ".pace/daemon/state.json", ".pace/daemon/telegram.json"],
+    "not_preclassified": [".claude.json", ".claude/policy-limits.json(+signature·stamp)", ".claude/remote-settings.json.signature.json", ".claude_platform_mkt/.claude.json", "작업사본 .git/index"],
+    "pm_judgement": "Claude 실행 파일이 기동할 때마다 쓰는 런타임 상태(시작 기록·정책·원격 설정 캐시)로 모델의 파일 편집이 아님 — TASK의 허용 변화('Claude 세션·plans 폴더')가 이 런타임 상태 파일을 빠뜨린 목록 누락으로 보고 허용 변화에 더함. .claude_platform_mkt는 이 코디네이터 세션의 설정 폴더라 daemon과 무관. 작업사본 .git/index는 모델이 실행한 git 읽기 명령의 stat 캐시 갱신(파일 해시·git status 불변). 내용 대조는 하지 않았으므로 이 파일들의 내용 변경 여부는 미확인으로 TASK-CLOSE에 남김. 같은 구간 밖의 홈 변경(.claude/plugins 등 수백 건)은 동시에 돌던 다른 세션(P008·Codex 검토자·npm)의 것으로 작업 구간과 시각이 겹치지 않음",
+    "window": "작업 createdAt~updatedAt(+5초) 수정 시각 기준"
+  },
+  "verdict": "pass (T-1 읽기 부분)"
+}
