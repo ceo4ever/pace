@@ -44,3 +44,5 @@
 {"ts":"2026-11-23T15:32:20.730Z","p":"P008","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-23T15:32:20.900Z","p":"P008","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-23T15:32:20.900Z","p":"P008","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-23T15:35:12.491Z","p":"P008","type":"gate","by":"cli","msg":"finish","ok":true,"data":{"finish":1}}
+{"ts":"2026-11-23T15:35:12.491Z","p":"P008","type":"finish","by":"cli","msg":"finish","ok":true}
