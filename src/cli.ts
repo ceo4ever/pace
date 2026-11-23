@@ -18,7 +18,7 @@ import { createPreview, verifyPreview } from "./intent/preview.ts";
 import { AgentError, errorPayload, runAgent, validateRequest } from "./agent/contract.ts";
 import { allExecutors, findExecutor } from "./agent/registry.ts";
 import { ChainConfigError, checkChain, defaultChainFile, fileCooldownStore, loadChainConfig, outcomeExitCode, resolveChain, runChain } from "./agent/chain.ts";
-import { crossVerify } from "./agent/verify.ts";
+import { reviewNoteCommand, verifyCommand } from "./agent/verify-cli.ts";
 import { daemonCommand, DaemonUsageError } from "./daemon/cli.ts";
 import { defaultDataHome, refreshAutostart, type AutostartEnv } from "./daemon/autostart.ts";
 import { runAgentSetup, SetupUsageError } from "./agent/setup.ts";
@@ -149,7 +149,8 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace agent run --chain <이름> [--chain-file <파일>] [--prompt-file <파일>|stdin] [--cwd --write --timeout-ms --raw-dir]   체인 호출 — 한도 시 다음 단계로 폴백, 쓰기 변경 뒤에는 handoff_required (종료 0 ok · 12 handoff · 13 소진 · 11 한도 …)
   pace daemon run|start|status|stop [--force]|logs [-n N]|release <경로>|install [--yes] [--start] [--agents --login --install-adapters]|uninstall [--yes]   기기 상시 실행(메신저·Gateway 요청을 워크트리에서 체인으로 실행) — 쓰기는 승인, 재시작 뒤 자동 재실행 없음. install은 --yes 없이는 계획만 출력
   pace mcp --workspace <경로> --access read-only|write   PACE 도구 서버(stdio MCP) — ACP 세션에 주입된다. 워크스페이스·접근 권한은 기동 때 고정, 읽기 전용이면 변경 도구를 서버가 거부
-  pace agent verify --author-agent claude|codex --target <파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록>]   다른 제공자 에이전트의 읽기 전용 교차 검증 (task: 구현 전 TASK 사전 검토, 미실행이면 종료 10과 질문)
+  pace agent verify --author-agent claude|codex --target <파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록>]   다른 제공자 에이전트의 읽기 전용 교차 검증 (task: 구현 전 TASK 사전 검토, 미실행이면 종료 10과 질문). 대상 폴더 REVIEW-LOG.jsonl에 판정을 남기고, 직전이 fail이면 그 검토 원문·바뀐 줄로 재검토하며, 연속 3회 fail이면 진단·진단 뒤 fail이면 사용자 결정 전까지 종료 16
+  pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary <글> [--file <근거>] | --decision --choice <글> --summary <글> --file <결정 원문>)   반복 실패의 근본 진단·사용자 결정을 검토 원장에 기록
   pace project new "<이름>" [--from <BL 폴더 또는 앞부분>]   프로젝트 폴더·PROJECT.md (main)
   pace worker show | set <도구> <model|effort> <값> | reset <도구> <model|effort>
   pace project start <P###> [--model <모델>] [--effort <값|default>] [--agent <도구>] [--no-launch|--launch]   정의 커밋 + worktree(../<저장소>.wt/P###) (main). Orca 안이면 작업자 세션을 띄우고 이 세션이 코디네이터
@@ -922,8 +923,9 @@ function readVersion(): string {
 async function agentCommand(args: string[]): Promise<number> {
   const [sub, ...rest] = args;
   if (sub === "verify") return agentVerify(rest);
+  if (sub === "review-note") return agentReviewNote(rest);
   if (sub === "setup") return agentSetup(rest);
-  if (sub !== "run") throw new UsageError("pace agent run|setup|verify …");
+  if (sub !== "run") throw new UsageError("pace agent run|setup|verify|review-note …");
   const { values } = parseArgs({
     args: rest,
     options: {
@@ -1007,36 +1009,13 @@ async function agentChainRun(values: { chain?: string; "chain-file"?: string; "p
   }
 }
 
-/** 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용으로 검토. 미실행이면 종료 10과 질문 문구. */
-async function agentVerify(args: string[]): Promise<number> {
-  const { values } = parseArgs({
-    args,
-    options: { "author-agent": { type: "string" }, "author-provider": { type: "string" }, purpose: { type: "string" }, "purpose-file": { type: "string" }, target: { type: "string" }, cwd: { type: "string" }, "timeout-ms": { type: "string" }, "allow-same-provider": { type: "boolean" }, model: { type: "string" }, out: { type: "string" }, kind: { type: "string" } },
-    strict: true,
-  });
-  const usage = "pace agent verify --author-agent claude|codex --target <산출물 파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록 파일>]";
-  try {
-    const author = requireArg(str(values["author-agent"]), usage);
-    if (author !== "claude" && author !== "codex") throw new AgentError("invalid_request", "--author-agent는 claude|codex");
-    const target = requireArg(str(values.target), usage);
-    const purpose = values["purpose-file"] ? readFileSync(values["purpose-file"], "utf8") : requireArg(str(values.purpose), usage);
-    const timeout = str(values["timeout-ms"]);
-    const kind = str(values.kind) ?? "goal";
-    if (kind !== "goal" && kind !== "task") throw new AgentError("invalid_request", "--kind는 goal|task");
-    const outcome = await crossVerify({
-      kind,
-      authorAgent: author, authorProvider: str(values["author-provider"]) as "anthropic" | "openai" | undefined, purpose, artifact: readFileSync(target, "utf8"), artifactName: target,
-      cwd: str(values.cwd) ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout), allowSameProvider: values["allow-same-provider"], model: str(values.model), executors: allExecutors(),
-    });
-    const text = JSON.stringify(outcome, null, 2) + "\n";
-    if (values.out) writeFileSync(values.out, text);
-    process.stdout.write(text);
-    return outcome.ran ? 0 : 10;
-  } catch (error) {
-    if (!(error instanceof AgentError)) throw error;
-    process.stdout.write(JSON.stringify(errorPayload(error), null, 2) + "\n");
-    return error.exitCode;
-  }
+/** 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용으로 검토. 미실행이면 종료 10과 질문 문구, 반복 실패 단계면 종료 16(P007). */
+function agentVerify(args: string[]): Promise<number> {
+  return verifyCommand(args, { executors: allExecutors, write: (t) => process.stdout.write(t) });
+}
+
+function agentReviewNote(args: string[]): Promise<number> {
+  return reviewNoteCommand(args, { executors: allExecutors, write: (t) => process.stdout.write(t) });
 }
 
 function backlogRoot(current: string): string | null {

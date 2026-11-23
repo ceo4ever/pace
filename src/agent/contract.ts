@@ -27,6 +27,8 @@ export const errorCodes = {
   chain_exhausted: 13,
   auth_failed: 14,
   cancelled: 15,
+  // 16: verify가 반복 실패 단계(근본 진단·사용자 결정 대기)라 실행하지 않음 (P007)
+  review_escalation: 16,
 } as const;
 export type ErrorCode = keyof typeof errorCodes;
 

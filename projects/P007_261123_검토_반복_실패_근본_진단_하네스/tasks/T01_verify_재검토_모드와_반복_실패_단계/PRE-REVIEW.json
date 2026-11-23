@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "author": "anthropic",
+  "hash_note": "시도 1~3의 당시 TASK 본문을 보존하지 않아 해시를 재구성할 수 없다 — 0으로 채워 현재 해시가 아님을 표시한다(T01이 만드는 자동 원장이 이 공백을 막는다)",
+  "attempts": [
+    {
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "evidence/pre-review-1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "evidence/pre-review-2.json",
+      "continuity": "changed",
+      "reason": "codex -p는 세션 재개 불가 — 새 세션에 직전 검토 원문과 재검토 범위를 전달(reviewer.md 재검토 규칙)"
+    },
+    {
+      "hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "evidence/pre-review-3.json",
+      "continuity": "changed",
+      "reason": "codex -p는 세션 재개 불가 — 새 세션에 직전 검토 원문과 재검토 범위를 전달(reviewer.md 재검토 규칙); 3회 fail 뒤 진단 evidence/diagnosis-1.md"
+    },
+    {
+      "hash": "f3331713360068fec84c8be9ca6ccfc325cfa3a8609e04892123e681cd145173",
+      "provider": "openai",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "evidence/pre-review-4.json",
+      "continuity": "changed",
+      "reason": "codex -p는 세션 재개 불가 — 새 세션에 직전 검토 원문과 재검토 범위를 전달(reviewer.md 재검토 규칙)"
+    }
+  ]
+}

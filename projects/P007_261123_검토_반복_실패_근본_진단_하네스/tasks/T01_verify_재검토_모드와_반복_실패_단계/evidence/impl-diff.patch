@@ -1,0 +1,1138 @@
+diff --git a/docs/AGENT-CALL.md b/docs/AGENT-CALL.md
+index 19ec50f..38fa4bc 100644
+--- a/docs/AGENT-CALL.md
++++ b/docs/AGENT-CALL.md
+@@ -7,7 +7,7 @@
+ - 경로: `src/agent/`
+ - 스택·형식: TypeScript
+ 
+-`pace agent setup [--agents claude,codex] [--yes] [--login] [--install-adapters]`(`setup.ts` — 감지(읽기만) → 계획·확인 → 적용, 공식 CLI 로그인만 쓰고 토큰·자격증명 파일은 읽거나 복사하지 않는다, 프로필 `agent-chains.json`의 `default` 체인은 기존 파일을 보존·병합하고 바꾸기 전 확인과 `.bak`) · `pace agent` — 호출 계약(`contract.ts`: 입력·정규화 결과·오류 코드·능력 검사)과 실행기 등록(`registry.ts`). 실행기: `-p`(`p-executor.ts`)·ACP(`acp-executor.ts`), 프로세스 수명·env 허용 목록(`process.ts`), 체인·폴백(`chain.ts`·`limits.ts`·`snapshot.ts`, `pace agent run --chain <이름>` — 프로필 `agent-chains.json`의 단계 순서대로, 한도·인증·실행기 없음이면 다음 단계로 폴백하고 쓰기 요청이 시작된 뒤에는 기본적으로 `handoff_required`로 사람에게 넘긴다. 읽기 전용 요청은 읽기 전용 강제가 실측으로 확인된 단계만 실행), ACP 보강(`hooks.ts`·`acp-executor.ts` — 실행 훅: 이벤트 스트림 `onEvent`(상한 큐, 원본 `--raw-dir` 저장은 별도 64MB 상한)·권한 위임 `onPermission`(식별 실패·읽기 전용의 허용 밖은 강제 거절, 읽기 전용에서 콜백은 허용을 낮추기만)·`paceMcp`·정체성 맥락 `context`·이전 대화 요약 `handoffSummary`, 대화 이어가기 `session/resume`은 호출자 보관 `savedSession` 대조 필수, 읽기→쓰기 전환은 `continueSession`이 새 세션+요약으로), 교차 검증(`verify.ts`, `pace agent verify` — 다른 제공자 에이전트가 읽기 전용으로 독립 검토, 불가하면 미실행·질문). Codex 호스트에서 쓸 때는 호스트 샌드박스의 네트워크 허용이 필요하고(기본 차단 → 타임아웃), Codex를 다시 부르려면 호스트 샌드박스 해제가 필요하다. Claude ACP는 모델을 보고하지 않아 교차 검증 근거로 쓸 수 없다(`-p` 사용). 회수 보증: POSIX는 프로세스 그룹, Windows는 최선 노력(`process_cleanup: best-effort-unverified`, 실기 검증은 병합 후). 용어: **에이전트**(도구를 쓰며 일하는 프로그램: Claude Code·Codex) · **모델** · **제공자**(모델 회사) · **호출 방식**(`p` 헤드리스 단발 / `acp` 세션) · **Client**(ACP에서 부르는 쪽 = pace agent). 프롬프트는 stdin·파일만(argv 금지), 기본 읽기 전용, 미지원 옵션은 오류
++`pace agent setup [--agents claude,codex] [--yes] [--login] [--install-adapters]`(`setup.ts` — 감지(읽기만) → 계획·확인 → 적용, 공식 CLI 로그인만 쓰고 토큰·자격증명 파일은 읽거나 복사하지 않는다, 프로필 `agent-chains.json`의 `default` 체인은 기존 파일을 보존·병합하고 바꾸기 전 확인과 `.bak`) · `pace agent` — 호출 계약(`contract.ts`: 입력·정규화 결과·오류 코드·능력 검사)과 실행기 등록(`registry.ts`). 실행기: `-p`(`p-executor.ts`)·ACP(`acp-executor.ts`), 프로세스 수명·env 허용 목록(`process.ts`), 체인·폴백(`chain.ts`·`limits.ts`·`snapshot.ts`, `pace agent run --chain <이름>` — 프로필 `agent-chains.json`의 단계 순서대로, 한도·인증·실행기 없음이면 다음 단계로 폴백하고 쓰기 요청이 시작된 뒤에는 기본적으로 `handoff_required`로 사람에게 넘긴다. 읽기 전용 요청은 읽기 전용 강제가 실측으로 확인된 단계만 실행), ACP 보강(`hooks.ts`·`acp-executor.ts` — 실행 훅: 이벤트 스트림 `onEvent`(상한 큐, 원본 `--raw-dir` 저장은 별도 64MB 상한)·권한 위임 `onPermission`(식별 실패·읽기 전용의 허용 밖은 강제 거절, 읽기 전용에서 콜백은 허용을 낮추기만)·`paceMcp`·정체성 맥락 `context`·이전 대화 요약 `handoffSummary`, 대화 이어가기 `session/resume`은 호출자 보관 `savedSession` 대조 필수, 읽기→쓰기 전환은 `continueSession`이 새 세션+요약으로), 교차 검증(`verify.ts`·`verify-cli.ts`, `pace agent verify` — 다른 제공자 에이전트가 읽기 전용으로 독립 검토, 불가하면 미실행·질문(종료 10)). 검토 원장(`review-log.ts`, P007): 실행된 검토마다 대상 폴더 `REVIEW-LOG.jsonl`에 판정(결과 마지막 줄 끝의 pass·fail 단어 — `판정: fail`도 인식, 그 밖은 unknown)을 덧붙이고 결과·대상 스냅숏을 `review-records/R<n>.json`에 저장한다(세션 ID 제외, `--out`은 추가 사본). 마지막 pass·결정·진단 뒤 구간에 fail 검토가 있으면 원장이 그 구간의 가장 최근 fail을 기준점으로 골라 **재검토**한다 — 기준점 검토 원문과 그때→지금 바뀐 줄을 주고 직전 blocking 해소와 그 수정이 만든 새 결함만 판정하게 한다(대상 무변경·기록 불일치면 거부). 연속 fail 3회면 `diagnose`, 진단 뒤 fail이면 `ask_user` 단계로 다음 검토를 실행하지 않는다(종료 16 `review_escalation`, 출력 `escalation`). `pace agent review-note`로 근본 진단(층: structure·planning·design·other)과 사용자 결정(비어 있지 않은 결정 원문 파일 필수 — 원문인지는 PM 책임)을 기록하면 다음 검토가 새 기준 전체 검토로 열린다. 같은 원장은 잠금 파일로 직렬화하고, 실행 전에 기록 자리(`{"pending": true}`)를 먼저 만들어 실행 중 중단·기록 끊김이 원장에 없는 기록으로 남아 다음 검토를 막게 한다. 손상·잠금·기록·쓰기 실패는 종료 2. 대상은 실제 경로로 열고(링크 별칭도 같은 원장), 기록·`--out`은 같은 폴더 임시 파일에 쓴 뒤 rename으로 바꿔 끼워 링크·하드링크로 이어진 다른 파일의 내용을 고치지 않는다(`--out`은 대상·원장·잠금·기록 폴더 이름 자체는 가리킬 수 없다). 바뀐 줄은 같은 앞뒤 줄을 뗀 뒤 비교하고 남은 구간이 너무 크면 그 구간을 통째로 준다(재검토가 막히지 않는다). 원장에 없는 기록(실행 중 중단·기록 끊김)은 다음 실행이 자동 복구한다 — 판정 있는 기록은 그 판정으로, `pending`은 연속 실패를 줄이지 않도록 fail(`interrupted`)로 넣고 재검토 기준점에서는 뺀다(출력 `recovered`). 잠금에는 PID를 적어 그 프로세스가 없으면 남은 잠금으로 치운다. `--out` 경로 비교는 대소문자를 구분하지 않는다. 원장·기록은 태스크 폴더에 있어 TASK와 함께 커밋·공유된다 — 기록에는 대상 원문과 검토 원문이 들어가므로 노출 범위는 그 TASK·산출물과 같고, 구조화된 세션 ID는 지운다(본문에 든 값은 거르지 않으므로 대상·검토 원문에 비밀을 쓰지 않는다). Codex 호스트에서 쓸 때는 호스트 샌드박스의 네트워크 허용이 필요하고(기본 차단 → 타임아웃), Codex를 다시 부르려면 호스트 샌드박스 해제가 필요하다. Claude ACP는 모델을 보고하지 않아 교차 검증 근거로 쓸 수 없다(`-p` 사용). 회수 보증: POSIX는 프로세스 그룹, Windows는 최선 노력(`process_cleanup: best-effort-unverified`, 실기 검증은 병합 후). 용어: **에이전트**(도구를 쓰며 일하는 프로그램: Claude Code·Codex) · **모델** · **제공자**(모델 회사) · **호출 방식**(`p` 헤드리스 단발 / `acp` 세션) · **Client**(ACP에서 부르는 쪽 = pace agent). 프롬프트는 stdin·파일만(argv 금지), 기본 읽기 전용, 미지원 옵션은 오류
+ 
+ ## PACE 도구 서버
+ 
+diff --git a/src/agent/contract.ts b/src/agent/contract.ts
+index c652a4b..ac9ad3a 100644
+--- a/src/agent/contract.ts
++++ b/src/agent/contract.ts
+@@ -27,6 +27,8 @@ export const errorCodes = {
+   chain_exhausted: 13,
+   auth_failed: 14,
+   cancelled: 15,
++  // 16: verify가 반복 실패 단계(근본 진단·사용자 결정 대기)라 실행하지 않음 (P007)
++  review_escalation: 16,
+ } as const;
+ export type ErrorCode = keyof typeof errorCodes;
+ 
+diff --git a/src/agent/review-log.ts b/src/agent/review-log.ts
+new file mode 100644
+index 0000000..6a68289
+--- /dev/null
++++ b/src/agent/review-log.ts
+@@ -0,0 +1,207 @@
++import { createHash } from "node:crypto";
++import { appendFileSync, closeSync, existsSync, openSync, readFileSync, readdirSync, rmSync, writeSync } from "node:fs";
++import { basename, dirname, join } from "node:path";
++
++// 검토 원장 (P007 T01): 같은 대상의 독립 검토가 거듭 fail할 때 땜질 반복을 끊는다.
++//  - verify가 실행될 때마다 대상 폴더의 REVIEW-LOG.jsonl에 판정을 자동으로 남긴다(작성자 수작업 없음).
++//  - 재검토 기준점은 호출자가 아니라 원장이 정한다: 마지막 pass·decision·diagnosis 뒤 구간의 가장 최근 fail 검토.
++//  - 연속 fail 3회면 근본 진단(diagnose), 진단 뒤에도 fail이면 사용자 결정(ask_user) 전까지 다음 검토를 막는다.
++// 원장에는 대상 원문·검토 원문·비밀·세션 ID를 넣지 않는다(원문은 review-records/의 기록 파일에).
++
++export const LEDGER_FILE = "REVIEW-LOG.jsonl";
++export const LOCK_FILE = "REVIEW-LOG.lock";
++export const RECORDS_DIR = "review-records";
++export const DIAGNOSE_AFTER = 3;
++
++export type Verdict = "pass" | "fail" | "unknown";
++export type Layer = "structure" | "planning" | "design" | "other";
++export const LAYERS: readonly Layer[] = ["structure", "planning", "design", "other"];
++
++export interface ReviewEntry {
++  type: "review";
++  at: string;
++  kind: string;
++  target: string;
++  hash: string;
++  verdict: Verdict;
++  verifier: string;
++  provider: string | null;
++  /** 재검토였으면 기준점 검토의 기록 경로(원장 폴더 기준), 처음 검토면 null */
++  rereview_of: string | null;
++  /** 이 검토의 기록 파일(원장 폴더 기준 상대 경로) */
++  record: string;
++  /** 기록 파일의 검토 원문 해시 — 재검토 때 기록 교체·변조를 막는다 */
++  result_hash: string;
++  /** 실행 중 중단돼 판정을 모르는 검토를 자동 복구한 항목(fail로 센다, 원문이 없어 재검토 기준점이 되지 않는다) */
++  interrupted?: true;
++}
++export interface DiagnosisEntry { type: "diagnosis"; at: string; target: string; layer: Layer; summary: string; file?: string }
++export interface DecisionEntry { type: "decision"; at: string; target: string; choice: string; summary: string; file: string }
++export type LedgerEntry = ReviewEntry | DiagnosisEntry | DecisionEntry;
++
++export type Stage = "normal" | "diagnose" | "ask_user";
++export interface StageInfo {
++  stage: Stage;
++  /** 마지막 pass·decision 뒤 연속 fail 수(unknown은 세지 않는다) */
++  consecutive_fails: number;
++  /** 재검토 기준점 — 마지막 pass·decision·diagnosis 뒤 구간의 가장 최근 fail 검토. 없으면 처음 검토 */
++  base: ReviewEntry | null;
++}
++
++export class LedgerError extends Error {}
++
++export function textHash(text: string): string { return createHash("sha256").update(text).digest("hex"); }
++
++const isStr = (v: unknown): v is string => typeof v === "string";
++const HEX64 = /^[a-f0-9]{64}$/;
++/** 항목 종류별 필수 필드를 확인한다 — 필드가 빠진 decision이 연속 실패를 초기화하지 못하게 */
++function validEntry(v: Record<string, unknown>): boolean {
++  if (!isStr(v.target) || !isStr(v.at)) return false;
++  if (v.type === "review") return isStr(v.kind) && isStr(v.hash) && ["pass", "fail", "unknown"].includes(v.verdict as string) && isStr(v.verifier) && (v.provider === null || isStr(v.provider)) && (v.rereview_of === null || isStr(v.rereview_of)) && isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.result_hash) && HEX64.test(v.result_hash) && (v.interrupted === undefined || (v.interrupted === true && v.verdict === "fail"));
++  if (v.type === "diagnosis") return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" && (v.file === undefined || isStr(v.file));
++  if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "";
++  return false;
++}
++
++export function ledgerPath(target: string): string { return join(dirname(target), LEDGER_FILE); }
++export function lockPath(target: string): string { return join(dirname(target), LOCK_FILE); }
++
++/** 결과 텍스트의 마지막 비어 있지 않은 줄이 pass·fail이면 그 값, 아니면 unknown */
++export function parseVerdict(text: string): Verdict {
++  // 마지막 줄 끝의 판정 단어(예: "fail", "판정: fail", "**pass**") — 형식이 조금 달라도 횟수 세기를 피해 가지 않게
++  const last = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).at(-1)?.replace(/[*`_.]/g, "").trim().toLowerCase() ?? "";
++  const m = /(?:^|[\s:：])(pass|fail)$/.exec(last);
++  return m ? (m[1] as Verdict) : "unknown";
++}
++
++/** 원장 전체를 읽는다. 해석할 수 없는 줄이 있으면 위치를 알리고 멈춘다(손상된 원장으로 단계를 잘못 계산하지 않는다) */
++export function readLedger(target: string): LedgerEntry[] {
++  const file = ledgerPath(target);
++  if (!existsSync(file)) return [];
++  const entries: LedgerEntry[] = [];
++  let raw: string;
++  try { raw = readFileSync(file, "utf8"); } catch (error) { throw new LedgerError(`검토 원장을 읽을 수 없다: ${file} — ${(error as Error).message}`); }
++  raw.split("\n").forEach((line, i) => {
++    if (!line.trim()) return;
++    let value: unknown;
++    try { value = JSON.parse(line); } catch { throw new LedgerError(`검토 원장이 손상됐다: ${file}:${i + 1} — 고친 뒤 다시 실행한다`); }
++    if (!value || typeof value !== "object" || Array.isArray(value) || !validEntry(value as Record<string, unknown>)) {
++      throw new LedgerError(`검토 원장이 손상됐다: ${file}:${i + 1} — 알 수 없는 항목이거나 필수 필드가 없다`);
++    }
++    entries.push(value as LedgerEntry);
++  });
++  return entries;
++}
++
++export function appendLedger(target: string, entry: LedgerEntry): void {
++  appendFileSync(ledgerPath(target), `${JSON.stringify(entry)}\n`);
++}
++
++/** 같은 대상(폴더 기준 이름)의 단계. 순수 함수 */
++export function reviewStage(entries: readonly LedgerEntry[], targetName: string): StageInfo {
++  const mine = entries.filter((e) => e.target === targetName);
++  let start = 0; // 마지막 pass·decision 다음
++  mine.forEach((e, i) => { if ((e.type === "review" && e.verdict === "pass") || e.type === "decision") start = i + 1; });
++  const segment = mine.slice(start);
++  const fails = segment.filter((e) => e.type === "review" && e.verdict === "fail").length;
++  const diagIndex = segment.map((e) => e.type).lastIndexOf("diagnosis");
++  const afterDiag = diagIndex < 0 ? segment : segment.slice(diagIndex + 1);
++  const base = [...afterDiag].reverse().find((e): e is ReviewEntry => e.type === "review" && e.verdict === "fail" && e.interrupted !== true) ?? null;
++  let stage: Stage = "normal";
++  if (diagIndex < 0) { if (fails >= DIAGNOSE_AFTER) stage = "diagnose"; }
++  else if (afterDiag.some((e) => e.type === "review" && e.verdict === "fail")) stage = "ask_user";
++  return { stage, consecutive_fails: fails, base };
++}
++
++/** 같은 원장의 검토·기록을 직렬화한다(배타 생성). 잠겨 있으면 멈춘다 */
++export function acquireLock(target: string): () => void {
++  const file = lockPath(target);
++  const create = (): number => openSync(file, "wx");
++  let fd: number;
++  try { fd = create(); } catch (error) {
++    if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw new LedgerError(`검토 잠금을 만들 수 없다: ${file} — ${(error as Error).message}`);
++    // 잠금을 만든 프로세스가 이미 없으면(중단) 남은 잠금이다 — 치우고 한 번 다시 시도한다
++    if (!staleLock(file)) throw new LedgerError(`같은 대상의 검토가 진행 중이다(잠금 ${file}). 진행 중인 검토가 없으면 잠금 파일을 지우고 다시 실행한다`);
++    try { rmSync(file, { force: true }); fd = create(); } catch { throw new LedgerError(`같은 대상의 검토가 진행 중이다(잠금 ${file})`); }
++  }
++  try { writeSync(fd, String(process.pid)); } finally { closeSync(fd); }
++  return () => { try { rmSync(file, { force: true }); } catch { /* 잠금 정리 실패는 다음 실행이 알린다 */ } };
++}
++
++function staleLock(file: string): boolean {
++  let pid: number;
++  try { pid = Number(readFileSync(file, "utf8").trim()); } catch { return false; }
++  if (!Number.isInteger(pid) || pid <= 0) return false; // 내용을 모르면 진행 중으로 본다
++  try { process.kill(pid, 0); return false; } catch (error) { return (error as NodeJS.ErrnoException).code === "ESRCH"; }
++}
++
++/** 원장이 가리키지 않는 기록 파일 — 기록 뒤 원장 추가가 끊긴 흔적이라 다음 검토를 막는다 */
++export function orphanRecords(target: string, entries: readonly LedgerEntry[]): string[] {
++  const dir = join(dirname(target), RECORDS_DIR);
++  if (!existsSync(dir)) return [];
++  let names: string[];
++  try { names = readdirSync(dir); } catch (error) { throw new LedgerError(`검토 기록 폴더를 읽을 수 없다: ${dir} — ${(error as Error).message}`); }
++  const known = new Set(entries.filter((e): e is ReviewEntry => e.type === "review").map((e) => e.record));
++  // 번호 순(R9 다음 R10)으로 복구해야 기준점 순서가 맞다
++  return names.filter((n) => /^R\d+\.json$/.test(n)).sort((x, y) => Number(x.slice(1, -5)) - Number(y.slice(1, -5))).map((n) => `${RECORDS_DIR}/${n}`).filter((n) => !known.has(n));
++}
++
++/** 다음 기록 파일 이름(review-records/R<n>.json, 폴더 기준) */
++export function nextRecordName(target: string): string {
++  const dir = join(dirname(target), RECORDS_DIR);
++  let max = 0;
++  if (existsSync(dir)) for (const name of readdirSync(dir)) { const m = /^R(\d+)\.json$/.exec(name); if (m) max = Math.max(max, Number(m[1])); }
++  return `${RECORDS_DIR}/R${max + 1}.json`;
++}
++
++export function targetName(target: string): string { return basename(target); }
++
++export function escalationNext(stage: Stage, target: string, fails: number): string {
++  if (stage === "diagnose") {
++    return `같은 대상에서 연속 ${fails}회 fail — 지적별 수정을 멈춘다. 실패들을 모아 원인 층(structure 구조·도구·검토 방식 / planning 목표·범위·전제 / design 계획과 환경·제품 동작의 어긋남 / other)을 진단하고 그 층에서 근본적으로 고친 뒤 \`pace agent review-note --target ${target} --diagnosis --layer <층> --summary "<진단·조치>" [--file <진단 문서>]\`로 기록한다. 진단 뒤 첫 검토는 새 기준의 전체 검토다.`;
++  }
++  if (stage === "ask_user") {
++    return `진단 뒤에도 fail — 더 고치기 전에 사용자에게 실패 유형·고친 층·남은 지적의 성격·선택지(추천 포함)를 설명하고 결정을 받는다. 결정 원문을 파일로 남긴 뒤 \`pace agent review-note --target ${target} --decision --choice "<선택>" --summary "<사유>" --file <결정 원문>\`으로 기록한다.`;
++  }
++  return "";
++}
++
++const MAX_DIFF_CELLS = 4_000_000;
++
++/** 의존성 없는 줄 단위 비교: 바뀐 줄(-/+)과 앞뒤 1줄 맥락. 같은 앞뒤 줄을 먼저 떼고, 남은 구간이 커서 LCS를 못 돌리면
++ * 그 구간을 통째로 -/+로 낸다(거칠지만 바뀐 줄은 언제나 나온다 — 재검토가 막다른 길에 빠지지 않게) */
++export function lineDiff(before: string, after: string): string {
++  const a = before.replace(/\r\n/g, "\n").split("\n");
++  const b = after.replace(/\r\n/g, "\n").split("\n");
++  let pre = 0;
++  while (pre < a.length && pre < b.length && a[pre] === b[pre]) pre++;
++  let suf = 0;
++  while (suf < a.length - pre && suf < b.length - pre && a[a.length - 1 - suf] === b[b.length - 1 - suf]) suf++;
++  const am = a.slice(pre, a.length - suf), bm = b.slice(pre, b.length - suf);
++  const ops: { op: " " | "-" | "+"; text: string }[] = a.slice(0, pre).map((text) => ({ op: " " as const, text }));
++  if (am.length * bm.length > MAX_DIFF_CELLS) {
++    for (const text of am) ops.push({ op: "-", text });
++    for (const text of bm) ops.push({ op: "+", text });
++  } else {
++    const n = am.length, m = bm.length;
++    const lcs: Uint32Array[] = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
++    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) lcs[i]![j] = am[i] === bm[j] ? lcs[i + 1]![j + 1]! + 1 : Math.max(lcs[i + 1]![j]!, lcs[i]![j + 1]!);
++    let i = 0, j = 0;
++    while (i < n && j < m) {
++      if (am[i] === bm[j]) { ops.push({ op: " ", text: am[i]! }); i++; j++; }
++      else if (lcs[i + 1]![j]! >= lcs[i]![j + 1]!) ops.push({ op: "-", text: am[i++]! });
++      else ops.push({ op: "+", text: bm[j++]! });
++    }
++    while (i < n) ops.push({ op: "-", text: am[i++]! });
++    while (j < m) ops.push({ op: "+", text: bm[j++]! });
++  }
++  for (const text of a.slice(a.length - suf)) ops.push({ op: " ", text });
++  const changed = (k: number) => ops[k] !== undefined && ops[k]!.op !== " ";
++  const out: string[] = [];
++  let skipped = false;
++  ops.forEach((o, k) => {
++    if (changed(k) || changed(k - 1) || changed(k + 1)) { if (skipped && out.length) out.push("…"); skipped = false; out.push(`${o.op} ${o.text}`); }
++    else skipped = true;
++  });
++  return out.length ? out.join("\n") : "(바뀐 줄 없음)";
++}
+diff --git a/src/agent/verify-cli.ts b/src/agent/verify-cli.ts
+new file mode 100644
+index 0000000..c51a60e
+--- /dev/null
++++ b/src/agent/verify-cli.ts
+@@ -0,0 +1,257 @@
++import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, renameSync, rmdirSync, rmSync, writeFileSync } from "node:fs";
++import { basename, dirname, join, resolve, sep } from "node:path";
++import { parseArgs } from "node:util";
++import { reviewHash } from "../project/pre-review.ts";
++import { AgentError, errorCodes, errorPayload, type Executor } from "./contract.ts";
++import {
++  acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, reviewStage,
++  lineDiff, targetName, textHash, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
++} from "./review-log.ts";
++import { crossVerify, type Rereview } from "./verify.ts";
++
++// `pace agent verify`·`pace agent review-note` 명령 처리 (P007 T01). src/cli.ts는 여기로 위임만 한다 — 시험이 실행기를 주입해 같은 경로를 탄다.
++
++export interface VerifyCliDeps {
++  executors: () => Executor[];
++  write: (text: string) => void;
++  now?: () => Date;
++}
++
++export const VERIFY_USAGE = "pace agent verify --author-agent claude|codex --target <산출물 파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록 파일>]";
++export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary "<진단·조치>" [--file <근거>] | --decision --choice "<선택>" --summary "<사유>" --file <사용자 결정 원문>)';
++
++const ESCALATION_EXIT = errorCodes.review_escalation;
++
++function req(value: string | undefined, usage: string): string {
++  if (value === undefined || value === "") throw new AgentError("invalid_request", `인자가 부족하다 — ${usage}`);
++  return value;
++}
++
++/** 대상은 실제 경로로 연다 — 링크 별칭으로 다른 원장을 써서 단계를 우회하지 못하게 */
++function realTarget(path: string): string {
++  try { return realpathSync(path); } catch { throw new AgentError("invalid_request", `대상이 없다: ${path}`); }
++}
++
++/** --out이 원장·잠금·대상·기록 폴더를 덮어쓰지 못하게 실제 경로로 비교한다 */
++function checkOut(out: string, target: string): void {
++  let real: string;
++  try { real = join(realpathSync(dirname(resolve(out))), basename(out)); } catch { throw new AgentError("invalid_request", `--out 폴더가 없다: ${out}`); }
++  // 쓰기는 rename 교체라 링크·하드링크 너머 파일을 고치지 않는다 — 여기서는 관리 파일의 이름 자체를 바꿔 끼우지 못하게만 막는다
++  // 대소문자를 구분하지 않는 볼륨(macOS·Windows 기본)에서는 철자만 다른 경로가 같은 파일이다 — 비교는 대소문자 무시
++  const low = real.toLowerCase();
++  const records = (join(dirname(target), RECORDS_DIR) + sep).toLowerCase();
++  if ([target, ledgerPath(target), lockPath(target)].some((p) => p.toLowerCase() === low) || low.startsWith(records)) {
++    throw new AgentError("invalid_request", "--out이 대상·검토 원장·잠금 파일·기록 폴더를 가리킨다");
++  }
++}
++
++/** 같은 폴더 임시 파일에 쓴 뒤 rename으로 이름을 바꿔 끼운다 — 기존 파일(링크·하드링크로 이어진 다른 파일 포함)의 내용을 고치지 않는다 */
++function writeOrLedgerError(file: string, text: string, what: string): void {
++  const tmp = join(dirname(file), `.${basename(file)}.${process.pid}.${Date.now()}.tmp`);
++  try {
++    mkdirSync(dirname(file), { recursive: true });
++    writeFileSync(tmp, text, { flag: "wx" });
++    renameSync(tmp, file);
++  } catch (error) {
++    try { rmSync(tmp, { force: true }); } catch { /* 임시 파일 정리 실패는 무시 */ }
++    throw new LedgerError(`${what}을 쓰지 못했다: ${file} — ${(error as Error).message}`);
++  }
++}
++
++/** 기록 자리를 지우고, 기록 폴더가 비면 폴더도 치운다 */
++function clearPending(recordFile: string): void {
++  try { rmSync(recordFile, { force: true }); } catch (error) { throw new LedgerError(`검토 기록 자리를 치우지 못했다: ${recordFile} — 판정이 없으니 지운 뒤 다시 실행한다 (${(error as Error).message})`); }
++  try { rmdirSync(dirname(recordFile)); } catch { /* 다른 기록이 있으면 남긴다 */ }
++}
++
++function escalation(info: StageInfo, target: string) {
++  return { stage: info.stage, consecutive_fails: info.consecutive_fails, next: escalationNext(info.stage, target, info.consecutive_fails) };
++}
++
++/** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
++function loadRereview(target: string, base: ReviewEntry, currentHash: string, current: string): Rereview {
++  if (currentHash === base.hash) throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
++  const file = join(dirname(target), base.record);
++  if (!existsSync(file)) throw new AgentError("invalid_request", `재검토 기준점의 기록 파일이 없다: ${file}`);
++  let record: { result?: { text?: unknown }; review?: { hash?: unknown; snapshot?: unknown } };
++  try { record = JSON.parse(readFileSync(file, "utf8")); } catch { throw new AgentError("invalid_request", `재검토 기준점의 기록 파일을 읽을 수 없다: ${file}`); }
++  const snapshot = record.review?.snapshot;
++  const text = record.result?.text;
++  if (typeof snapshot !== "string" || typeof text !== "string" || record.review?.hash !== base.hash || reviewHash(snapshot) !== base.hash || textHash(text) !== base.result_hash) {
++    throw new AgentError("invalid_request", `재검토 기준점의 기록이 원장과 맞지 않는다: ${file}`);
++  }
++  return { previousText: text, diff: lineDiff(snapshot, current) };
++}
++
++/** 원장에 없는 기록(중단·기록 끊김의 흔적)을 원장에 자동 복구한다 — 사람이 원장을 손으로 고치지 않게.
++ *  판정이 있는 기록은 그 판정으로, pending(실행기 결과를 모름)은 연속 실패를 줄이지 않도록 fail+interrupted로 넣는다. 복구한 항목 설명을 돌려준다 */
++function recoverOrphans(target: string, name: string, kind: string, now: () => Date): string[] {
++  const notes: string[] = [];
++  for (const rel of orphanRecords(target, readLedger(target))) {
++    const file = join(dirname(target), rel);
++    let rec: { pending?: unknown; verifier?: unknown; result?: { text?: unknown; provider?: { value?: unknown } }; review?: { hash?: unknown; verdict?: unknown; rereview_of?: unknown; snapshot?: unknown } };
++    try { rec = JSON.parse(readFileSync(file, "utf8")); } catch { throw new LedgerError(`원장에 없는 검토 기록을 읽을 수 없다: ${file} — 확인해 고치거나 지운 뒤 다시 실행한다`); }
++    const hash = typeof rec.review?.hash === "string" ? rec.review.hash : "";
++    const text = rec.result?.text;
++    const verdict = rec.review?.verdict;
++    let entry: ReviewEntry;
++    // 기록 안의 판정을 그대로 믿지 않는다 — 원문의 판정·스냅숏 해시와 맞을 때만 그 판정으로, 아니면 fail(중단)으로 복구한다(위조·손상 기록으로 차단을 풀지 못하게)
++    const consistent = rec.pending !== true && typeof text === "string" && typeof rec.review?.snapshot === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")
++      && parseVerdict(text) === verdict && hash !== "" && reviewHash(rec.review.snapshot) === hash;
++    if (consistent && typeof text === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")) {
++      entry = { type: "review", at: now().toISOString(), kind, target: name, hash, verdict, verifier: typeof rec.verifier === "string" ? rec.verifier : "unknown", provider: typeof rec.result?.provider?.value === "string" ? rec.result.provider.value : null, rereview_of: typeof rec.review?.rereview_of === "string" ? rec.review.rereview_of : null, record: rel, result_hash: textHash(text) };
++      notes.push(`${rel}: 기록의 판정(${verdict})으로 원장에 복구했다`);
++    } else {
++      entry = { type: "review", at: now().toISOString(), kind, target: name, hash: hash || "unknown", verdict: "fail", verifier: "unknown", provider: null, rereview_of: null, record: rel, result_hash: textHash(""), interrupted: true };
++      notes.push(`${rel}: ${rec.pending === true ? "실행 중 중단돼 판정을 모른다" : "기록의 판정·원문·스냅숏이 서로 맞지 않는다"} — 연속 실패를 줄이지 않도록 fail(중단)로 원장에 복구했다(재검토 기준점은 되지 않는다)`);
++    }
++    try { appendLedger(target, entry); } catch (error) { throw new LedgerError(`원장 복구에 실패했다: ${(error as Error).message}`); }
++  }
++  return notes;
++}
++
++export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promise<number> {
++  const { values } = parseArgs({
++    args,
++    options: { "author-agent": { type: "string" }, "author-provider": { type: "string" }, purpose: { type: "string" }, "purpose-file": { type: "string" }, target: { type: "string" }, cwd: { type: "string" }, "timeout-ms": { type: "string" }, "allow-same-provider": { type: "boolean" }, model: { type: "string" }, out: { type: "string" }, kind: { type: "string" } },
++    strict: true,
++  });
++  const now = deps.now ?? (() => new Date());
++  let release: (() => void) | null = null;
++  try {
++    const author = req(values["author-agent"], VERIFY_USAGE);
++    if (author !== "claude" && author !== "codex") throw new AgentError("invalid_request", "--author-agent는 claude|codex");
++    const target = realTarget(req(values.target, VERIFY_USAGE));
++    const purpose = values["purpose-file"] ? readFileSync(values["purpose-file"], "utf8") : req(values.purpose, VERIFY_USAGE);
++    const kind = values.kind ?? "goal";
++    if (kind !== "goal" && kind !== "task") throw new AgentError("invalid_request", "--kind는 goal|task");
++    const artifact = readFileSync(target, "utf8");
++    const out = values.out;
++    if (out !== undefined) checkOut(out, target);
++    const name = targetName(target);
++    const hash = reviewHash(artifact);
++
++    release = acquireLock(target);
++    const recovered = recoverOrphans(target, name, kind, now);
++    const entries = readLedger(target);
++    const before = reviewStage(entries, name);
++    if (before.stage !== "normal") {
++      deps.write(JSON.stringify({ ran: false, reason: "검토 반복 실패 단계", escalation: escalation(before, target), ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n");
++      return ESCALATION_EXIT;
++    }
++    const rereview = before.base ? loadRereview(target, before.base, hash, artifact) : undefined;
++
++    // 실행 전에 이번 기록 자리를 먼저 만든다 — 실행 뒤 기록·원장 확정이 끊기면 원장에 없는 기록으로 남아 다음 검토를 막는다
++    const recordName = nextRecordName(target);
++    const recordFile = join(dirname(target), recordName);
++    writeOrLedgerError(recordFile, JSON.stringify({ pending: true, review: { target: name, hash } }, null, 2) + "\n", "검토 기록 자리");
++    const timeout = values["timeout-ms"];
++    let outcome: Awaited<ReturnType<typeof crossVerify>>;
++    try {
++      outcome = await crossVerify({
++      kind, rereview,
++      authorAgent: author, authorProvider: values["author-provider"] as "anthropic" | "openai" | undefined, purpose, artifact, artifactName: target,
++      cwd: values.cwd ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout), allowSameProvider: values["allow-same-provider"], model: values.model, executors: deps.executors(),
++      });
++    } catch (error) {
++      clearPending(recordFile); // 실행 자체가 실패하면 판정이 없다 — 자리를 치운다
++      throw error;
++    }
++    if (!outcome.ran) {
++      clearPending(recordFile);
++      const text = JSON.stringify(recovered.length ? { ...outcome, recovered } : outcome, null, 2) + "\n";
++      if (out !== undefined) writeOrLedgerError(out, text, "--out 사본"); // 종전처럼 미실행 사유도 --out에 남긴다
++      deps.write(text);
++      return 10;
++    }
++
++    const verdict = parseVerdict(outcome.result.text);
++    // 기록 파일에는 세션 ID를 남기지 않는다
++    const result = { ...outcome.result, session_id: null };
++    const review = { target: name, hash, verdict, rereview_of: before.base?.record ?? null, snapshot: artifact };
++    const record = { ...outcome, result, review };
++    writeOrLedgerError(recordFile, JSON.stringify(record, null, 2) + "\n", "검토 기록");
++
++    const entry: ReviewEntry = {
++      type: "review", at: now().toISOString(), kind, target: name, hash, verdict, verifier: outcome.verifier,
++      provider: outcome.result.provider.value ?? null, rereview_of: review.rereview_of, record: recordName, result_hash: textHash(outcome.result.text),
++    };
++    try { appendLedger(target, entry); } catch (error) {
++      throw new LedgerError(`검토는 실행됐지만 원장 기록에 실패했다(${(error as Error).message}) — 기록 파일 ${recordFile}을 확인하고 원장을 복구한 뒤 진행한다`);
++    }
++    // 필수 기록(기록 파일·원장)이 확정된 뒤에만 보조 사본을 쓴다
++    if (out !== undefined) writeOrLedgerError(out, JSON.stringify(record, null, 2) + "\n", "--out 사본");
++    const after = reviewStage(readLedger(target), name);
++    const output: Record<string, unknown> = { ...outcome, review: { target: name, hash, verdict, rereview_of: review.rereview_of, record: recordName } };
++    if (recovered.length) output.recovered = recovered;
++    if (verdict === "unknown") output.warning = "결과 마지막 줄에서 pass·fail 판정을 찾지 못했다(unknown) — 연속 실패 수에 넣지 않는다. 원문을 확인한다";
++    if (after.stage !== "normal") output.escalation = escalation(after, target);
++    deps.write(JSON.stringify(output, null, 2) + "\n");
++    return 0;
++  } catch (error) {
++    if (error instanceof LedgerError) {
++      deps.write(JSON.stringify({ is_error: true, error: { code: "invalid_request", message: error.message } }, null, 2) + "\n");
++      return 2;
++    }
++    if (!(error instanceof AgentError)) throw error;
++    deps.write(JSON.stringify(errorPayload(error), null, 2) + "\n");
++    return error.exitCode;
++  } finally {
++    release?.();
++  }
++}
++
++/** 공백이 아닌 내용이 있는 일반 파일 */
++function contentFile(path: string): boolean {
++  try { return lstatSync(path).isFile() && readFileSync(path, "utf8").trim() !== ""; } catch { return false; }
++}
++
++export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Promise<number> {
++  const { values } = parseArgs({
++    args,
++    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" } },
++    strict: true,
++  });
++  const now = deps.now ?? (() => new Date());
++  let release: (() => void) | null = null;
++  try {
++    const target = realTarget(req(values.target, REVIEW_NOTE_USAGE));
++    if (values.diagnosis === values.decision) throw new AgentError("invalid_request", `--diagnosis와 --decision 중 하나만 — ${REVIEW_NOTE_USAGE}`);
++    const summary = req(values.summary, REVIEW_NOTE_USAGE).trim();
++    if (!summary) throw new AgentError("invalid_request", "--summary가 비었다");
++    const name = targetName(target);
++    release = acquireLock(target);
++    const info = reviewStage(readLedger(target), name);
++    let entry: LedgerEntry;
++    if (values.diagnosis) {
++      if (info.stage !== "diagnose") throw new AgentError("invalid_request", `진단은 연속 fail로 diagnose 단계일 때만 기록한다(지금 ${info.stage})`);
++      const layer = req(values.layer, REVIEW_NOTE_USAGE) as Layer;
++      if (!LAYERS.includes(layer)) throw new AgentError("invalid_request", `--layer는 ${LAYERS.join("|")}`);
++      if (values.file !== undefined && !contentFile(values.file)) throw new AgentError("invalid_request", `근거 파일이 없거나 비었다: ${values.file}`);
++      entry = { type: "diagnosis", at: now().toISOString(), target: name, layer, summary, ...(values.file !== undefined ? { file: values.file } : {}) };
++    } else {
++      if (info.stage !== "ask_user") throw new AgentError("invalid_request", `사용자 결정은 진단 뒤에도 fail인 ask_user 단계일 때만 기록한다(지금 ${info.stage})`);
++      const choice = req(values.choice, REVIEW_NOTE_USAGE).trim();
++      const file = req(values.file, REVIEW_NOTE_USAGE);
++      if (!choice) throw new AgentError("invalid_request", "--choice가 비었다");
++      // 근거 파일이 사람의 결정 원문인지는 도구가 보장하지 않는다 — PM이 책임진다(pace-project-dev 스킬)
++      if (!contentFile(file)) throw new AgentError("invalid_request", `사용자 결정 원문 파일이 없거나 비었다: ${file}`);
++      if (realpathSync(file) === target) throw new AgentError("invalid_request", "검토 대상 자체를 사용자 결정 원문으로 쓸 수 없다");
++      entry = { type: "decision", at: now().toISOString(), target: name, choice, summary, file };
++    }
++    try { appendLedger(target, entry); } catch (error) { throw new LedgerError(`원장 기록에 실패했다: ${(error as Error).message}`); }
++    const after = reviewStage(readLedger(target), name);
++    deps.write(JSON.stringify({ ok: true, entry, stage: after.stage }, null, 2) + "\n");
++    return 0;
++  } catch (error) {
++    if (error instanceof LedgerError) {
++      deps.write(JSON.stringify({ is_error: true, error: { code: "invalid_request", message: error.message } }, null, 2) + "\n");
++      return 2;
++    }
++    if (!(error instanceof AgentError)) throw error;
++    deps.write(JSON.stringify(errorPayload(error), null, 2) + "\n");
++    return error.exitCode;
++  } finally {
++    release?.();
++  }
++}
+diff --git a/src/agent/verify.ts b/src/agent/verify.ts
+index fe3f111..aabd937 100644
+--- a/src/agent/verify.ts
++++ b/src/agent/verify.ts
+@@ -21,16 +21,32 @@ export interface VerifyOptions {
+   model?: string;
+   /** goal(기본): 결과물의 목표/결과 대조 · task: 구현 전 TASK 사전 검토 — TASK.md 자체가 검토 대상 결과물이다 */
+   kind?: VerifyKind;
++  /** 재검토(P007): 원장이 고른 기준점 검토의 원문과 그때→지금 대상의 바뀐 줄 */
++  rereview?: Rereview;
+   executors: Executor[];
+ }
+ 
+ export type VerifyKind = "goal" | "task";
+ 
++export interface Rereview {
++  /** 기준점 검토의 결과 원문 */
++  previousText: string;
++  /** 기준점 검토 때 대상 → 현재 대상의 바뀐 줄 */
++  diff: string;
++}
++
+ /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
+-export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal"): string {
++export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview): string {
+   // 구현 전 TASK 사전 검토에서는 TASK.md(기준·테스트 표·접근)가 평가할 결과물이다 — 이것을 "작업 문서 노출"로 막으면
+   // 검토자가 매번 자기 열람을 독립성 위반으로 지적해 pass가 나올 수 없다(P001 T02 실측, 2026-11-16).
+-  const scope = kind === "task"
++  // 재검토(reviewer.md: 두 번째 검토부터는 직전 blocking 해소와 그 수정이 만든 새 결함만)는 1단계가 아니다 — 직전 검토 원문을 받는 것이 정해진 입력이다
++  const scope = rereview
++    ? [
++      `지금은 같은 산출물의 재검토다(${kind === "task" ? "구현 전 TASK 사전 검토" : "목표/결과 대조"}). 아래 "직전 검토 원문"과 "바뀐 줄"이 재검토의 정해진 입력이며, 그것을 읽는 것은 독립성 위반이 아니다.`,
++      "작성자 마감·자체 판정·지적 대응 문서는 받거나 읽지 않는다. 허용되는 이전 자료는 직전 검토 원문뿐이다.",
++      "판정 범위: 직전 검토의 blocking이 해소됐는지와 그 수정(바뀐 줄)이 만든 새 결함만 판정한다. 직전에 지적되지 않았고 바뀌지 않은 부분의 새 지적은 note로만 남기고 판정에 넣지 않는다.",
++    ]
++    : kind === "task"
+     ? [
+       "지금은 구현 전 TASK 사전 검토다. 산출물 TASK.md(목적·기준·테스트 표·접근)가 검토할 결과물이며, 그것을 읽는 것은 정해진 입력이고 독립성 위반이 아니다.",
+       "작성자 마감·자체 판정·이전 지적과 그 대응 문서는 받거나 읽지 않는다. 기준·범위 대조가 필요하면 저장소의 PROJECT.md·브리프(BR)를 직접 열어도 된다.",
+@@ -44,7 +60,9 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
+     "첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다.",
+     "상위 목적은 대조 기준이며 어긋나면 목표·전략·계획 등 해당 단계를 고친다. 합의 목적/목표/범위 변경은 사용자에게 묻는다.",
+     "읽은 파일과 자동 부트/메모리·호스트 첨부 맥락의 노출 범위를 기록한다. 읽기 전용이 작업 문서 접근 차단이나 완전 격리를 뜻하지 않는다.",
+-    "2단계 작업 문서는 첫 판정을 받은 호출자가 1단계 원문과 함께 호스트 검토 절차로 별도 전달한다. 검토 주체가 바뀌면 제공자·독립성 수준·변경 이유를 기록한다. 이 호출만으로 두 단계가 실행됐다고 주장하지 않는다.",
++    rereview
++      ? "재검토이므로 노출 범위에 직전 검토 원문과 바뀐 줄을 받았음을 기록한다. 검토 주체가 바뀌었으면 제공자·독립성 수준을 기록한다."
++      : "2단계 작업 문서는 첫 판정을 받은 호출자가 1단계 원문과 함께 호스트 검토 절차로 별도 전달한다. 검토 주체가 바뀌면 제공자·독립성 수준·변경 이유를 기록한다. 이 호출만으로 두 단계가 실행됐다고 주장하지 않는다.",
+     "",
+     "## 상위 목적·목표 (먼저 읽는다)",
+     purpose.trim(),
+@@ -53,6 +71,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
+     "1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?",
+     "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.",
+     "",
++    ...(rereview ? ["## 직전 검토 원문", rereview.previousText.trim(), "", "## 바뀐 줄 (직전 검토 때 → 지금, - 삭제 · + 추가)", rereview.diff, ""] : []),
+     `## 산출물: ${artifactName}`,
+     artifact,
+   ].join("\n");
+@@ -64,7 +83,7 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
+   const authorProvider = options.authorProvider ?? providerOf[options.authorAgent];
+   const candidates = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] !== authorProvider);
+   const sameProvider = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] === authorProvider);
+-  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind);
++  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind, options.rereview);
+   const reasons: string[] = [];
+ 
+   const attempt = async (executor: Executor, cross: boolean): Promise<VerifyOutcome | null> => {
+diff --git a/src/cli.ts b/src/cli.ts
+index 8766b65..b3f19e8 100644
+--- a/src/cli.ts
++++ b/src/cli.ts
+@@ -18,7 +18,7 @@ import { createPreview, verifyPreview } from "./intent/preview.ts";
+ import { AgentError, errorPayload, runAgent, validateRequest } from "./agent/contract.ts";
+ import { allExecutors, findExecutor } from "./agent/registry.ts";
+ import { ChainConfigError, checkChain, defaultChainFile, fileCooldownStore, loadChainConfig, outcomeExitCode, resolveChain, runChain } from "./agent/chain.ts";
+-import { crossVerify } from "./agent/verify.ts";
++import { reviewNoteCommand, verifyCommand } from "./agent/verify-cli.ts";
+ import { daemonCommand, DaemonUsageError } from "./daemon/cli.ts";
+ import { defaultDataHome, refreshAutostart, type AutostartEnv } from "./daemon/autostart.ts";
+ import { runAgentSetup, SetupUsageError } from "./agent/setup.ts";
+@@ -149,7 +149,8 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
+   pace agent run --chain <이름> [--chain-file <파일>] [--prompt-file <파일>|stdin] [--cwd --write --timeout-ms --raw-dir]   체인 호출 — 한도 시 다음 단계로 폴백, 쓰기 변경 뒤에는 handoff_required (종료 0 ok · 12 handoff · 13 소진 · 11 한도 …)
+   pace daemon run|start|status|stop [--force]|logs [-n N]|release <경로>|install [--yes] [--start] [--agents --login --install-adapters]|uninstall [--yes]   기기 상시 실행(메신저·Gateway 요청을 워크트리에서 체인으로 실행) — 쓰기는 승인, 재시작 뒤 자동 재실행 없음. install은 --yes 없이는 계획만 출력
+   pace mcp --workspace <경로> --access read-only|write   PACE 도구 서버(stdio MCP) — ACP 세션에 주입된다. 워크스페이스·접근 권한은 기동 때 고정, 읽기 전용이면 변경 도구를 서버가 거부
+-  pace agent verify --author-agent claude|codex --target <파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록>]   다른 제공자 에이전트의 읽기 전용 교차 검증 (task: 구현 전 TASK 사전 검토, 미실행이면 종료 10과 질문)
++  pace agent verify --author-agent claude|codex --target <파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록>]   다른 제공자 에이전트의 읽기 전용 교차 검증 (task: 구현 전 TASK 사전 검토, 미실행이면 종료 10과 질문). 대상 폴더 REVIEW-LOG.jsonl에 판정을 남기고, 직전이 fail이면 그 검토 원문·바뀐 줄로 재검토하며, 연속 3회 fail이면 진단·진단 뒤 fail이면 사용자 결정 전까지 종료 16
++  pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary <글> [--file <근거>] | --decision --choice <글> --summary <글> --file <결정 원문>)   반복 실패의 근본 진단·사용자 결정을 검토 원장에 기록
+   pace project new "<이름>" [--from <BL 폴더 또는 앞부분>]   프로젝트 폴더·PROJECT.md (main)
+   pace worker show | set <도구> <model|effort> <값> | reset <도구> <model|effort>
+   pace project start <P###> [--model <모델>] [--effort <값|default>] [--agent <도구>] [--no-launch|--launch]   정의 커밋 + worktree(../<저장소>.wt/P###) (main). Orca 안이면 작업자 세션을 띄우고 이 세션이 코디네이터
+@@ -922,8 +923,9 @@ function readVersion(): string {
+ async function agentCommand(args: string[]): Promise<number> {
+   const [sub, ...rest] = args;
+   if (sub === "verify") return agentVerify(rest);
++  if (sub === "review-note") return agentReviewNote(rest);
+   if (sub === "setup") return agentSetup(rest);
+-  if (sub !== "run") throw new UsageError("pace agent run|setup|verify …");
++  if (sub !== "run") throw new UsageError("pace agent run|setup|verify|review-note …");
+   const { values } = parseArgs({
+     args: rest,
+     options: {
+@@ -1007,36 +1009,13 @@ async function agentChainRun(values: { chain?: string; "chain-file"?: string; "p
+   }
+ }
+ 
+-/** 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용으로 검토. 미실행이면 종료 10과 질문 문구. */
+-async function agentVerify(args: string[]): Promise<number> {
+-  const { values } = parseArgs({
+-    args,
+-    options: { "author-agent": { type: "string" }, "author-provider": { type: "string" }, purpose: { type: "string" }, "purpose-file": { type: "string" }, target: { type: "string" }, cwd: { type: "string" }, "timeout-ms": { type: "string" }, "allow-same-provider": { type: "boolean" }, model: { type: "string" }, out: { type: "string" }, kind: { type: "string" } },
+-    strict: true,
+-  });
+-  const usage = "pace agent verify --author-agent claude|codex --target <산출물 파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록 파일>]";
+-  try {
+-    const author = requireArg(str(values["author-agent"]), usage);
+-    if (author !== "claude" && author !== "codex") throw new AgentError("invalid_request", "--author-agent는 claude|codex");
+-    const target = requireArg(str(values.target), usage);
+-    const purpose = values["purpose-file"] ? readFileSync(values["purpose-file"], "utf8") : requireArg(str(values.purpose), usage);
+-    const timeout = str(values["timeout-ms"]);
+-    const kind = str(values.kind) ?? "goal";
+-    if (kind !== "goal" && kind !== "task") throw new AgentError("invalid_request", "--kind는 goal|task");
+-    const outcome = await crossVerify({
+-      kind,
+-      authorAgent: author, authorProvider: str(values["author-provider"]) as "anthropic" | "openai" | undefined, purpose, artifact: readFileSync(target, "utf8"), artifactName: target,
+-      cwd: str(values.cwd) ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout), allowSameProvider: values["allow-same-provider"], model: str(values.model), executors: allExecutors(),
+-    });
+-    const text = JSON.stringify(outcome, null, 2) + "\n";
+-    if (values.out) writeFileSync(values.out, text);
+-    process.stdout.write(text);
+-    return outcome.ran ? 0 : 10;
+-  } catch (error) {
+-    if (!(error instanceof AgentError)) throw error;
+-    process.stdout.write(JSON.stringify(errorPayload(error), null, 2) + "\n");
+-    return error.exitCode;
+-  }
++/** 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용으로 검토. 미실행이면 종료 10과 질문 문구, 반복 실패 단계면 종료 16(P007). */
++function agentVerify(args: string[]): Promise<number> {
++  return verifyCommand(args, { executors: allExecutors, write: (t) => process.stdout.write(t) });
++}
++
++function agentReviewNote(args: string[]): Promise<number> {
++  return reviewNoteCommand(args, { executors: allExecutors, write: (t) => process.stdout.write(t) });
+ }
+ 
+ function backlogRoot(current: string): string | null {
+diff --git a/test/agent-review-log.test.ts b/test/agent-review-log.test.ts
+new file mode 100644
+index 0000000..21ed7aa
+--- /dev/null
++++ b/test/agent-review-log.test.ts
+@@ -0,0 +1,485 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import { chmodSync, existsSync, linkSync, mkdirSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
++import { join } from "node:path";
++import { AgentError, normalizeResult, type Executor } from "../src/agent/contract.ts";
++import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
++import { lineDiff, parseVerdict, reviewStage, type LedgerEntry, type ReviewEntry } from "../src/agent/review-log.ts";
++import { runPace, tempDir } from "./helpers.ts";
++
++/** 받은 프롬프트를 기록하고 정해진 결과를 차례로 돌려주는 가짜 codex 실행기 */
++function harness() {
++  const dir = tempDir("pace-rl-");
++  const target = join(dir, "TASK.md");
++  const prompts: string[] = [];
++  const replies: string[] = [];
++  const out: string[] = [];
++  const executor: Executor = {
++    agent: "codex", mode: "p",
++    capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
++    async run(request) {
++      prompts.push(request.prompt);
++      return normalizeResult(request, { text: replies.shift() ?? "x\nfail", provider: "openai", model: "gpt-6", sessionId: "sess-123" }, { durationMs: 1, enforcement: "fake" });
++    },
++  };
++  let available = true;
++  const deps = { executors: () => (available ? [executor] : []), write: (t: string) => out.push(t) };
++  const set = (text: string) => writeFileSync(target, text);
++  const verify = async (reply: string, extra: string[] = []) => {
++    replies.push(reply);
++    out.length = 0;
++    const code = await verifyCommand(["--author-agent", "claude", "--kind", "task", "--target", target, "--purpose", "목적", ...extra], deps);
++    return { code, json: JSON.parse(out.join("")) };
++  };
++  const note = async (args: string[]) => { out.length = 0; const code = await reviewNoteCommand(["--target", target, ...args], deps); return { code, json: JSON.parse(out.join("")) }; };
++  const ledger = (): LedgerEntry[] => (existsSync(join(dir, "REVIEW-LOG.jsonl")) ? readFileSync(join(dir, "REVIEW-LOG.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)) : []);
++  return { dir, target, prompts, verify, note, ledger, set, offline: () => { available = false; } };
++}
++
++const FIRST = /이전 지적과 그 대응 문서는 받거나 읽지 않는다/;
++const REREVIEW = /판정 범위: 직전 검토의 blocking이 해소됐는지/;
++
++test("S-1 직전 fail이면 원장 기준점의 원문·바뀐 줄로 재검토하고 원장·기록을 남긴다", async () => {
++  const h = harness();
++  h.set("# T\n- 상태: 진행\n기준 A\n접근 X\n");
++  const r1 = await h.verify("F1 [blocking] 기준 A가 모호\nfail");
++  assert.equal(r1.code, 0);
++  assert.match(h.prompts[0]!, FIRST);
++  assert.doesNotMatch(h.prompts[0]!, REREVIEW);
++  h.set("# T\n- 상태: 진행\n기준 A2\n접근 X\n");
++  const r2 = await h.verify("해소\nfail");
++  assert.equal(r2.code, 0);
++  const p = h.prompts[1]!;
++  assert.match(p, REREVIEW);
++  assert.match(p, /## 직전 검토 원문\nF1 \[blocking\] 기준 A가 모호/);
++  assert.match(p, /- 기준 A\n\+ 기준 A2/);
++  assert.doesNotMatch(p, FIRST, "1단계 문구 없음");
++  assert.doesNotMatch(p, /이 호출만으로 두 단계가 실행됐다고 주장하지 않는다/);
++  assert.match(p, /작성자 마감·자체 판정·지적 대응 문서는 받거나 읽지 않는다/, "작성자 자료 제한 유지");
++  assert.match(p, /노출 범위에 직전 검토 원문/);
++  const l = h.ledger() as ReviewEntry[];
++  assert.deepEqual(l.map((e) => [e.type, e.verdict, e.rereview_of, e.record]), [["review", "fail", null, "review-records/R1.json"], ["review", "fail", "review-records/R1.json", "review-records/R2.json"]]);
++  assert.deepEqual(readdirSync(join(h.dir, "review-records")).sort(), ["R1.json", "R2.json"]);
++  const rec = JSON.parse(readFileSync(join(h.dir, "review-records/R2.json"), "utf8"));
++  assert.equal(rec.review.snapshot, "# T\n- 상태: 진행\n기준 A2\n접근 X\n");
++  assert.equal(rec.result.session_id, null, "기록에 세션 ID를 남기지 않는다(가짜 실행기는 sess-123을 돌려준다)");
++  assert.ok(!readFileSync(join(h.dir, "review-records/R2.json"), "utf8").includes("sess-123"));
++  assert.ok(!readFileSync(join(h.dir, "REVIEW-LOG.jsonl"), "utf8").includes("sess-123"));
++  assert.equal(r2.json.review.rereview_of, "review-records/R1.json");
++});
++
++test("S-2 기준점은 구간의 가장 최근 fail — unknown은 건너뛴다", async () => {
++  const a = harness();
++  a.set("v1\n"); await a.verify("A1\nfail");
++  a.set("v2\n"); await a.verify("A2\nfail");
++  a.set("v3\n"); await a.verify("A3\nfail");
++  assert.match(a.prompts[2]!, /## 직전 검토 원문\nA2/);
++  assert.match(a.prompts[2]!, /- v2\n\+ v3/);
++  assert.equal((a.ledger()[2] as ReviewEntry).rereview_of, "review-records/R2.json");
++
++  const b = harness();
++  b.set("v1\n"); await b.verify("B1\nfail");
++  b.set("v2\n"); const u = await b.verify("판정 없음\nrevise");
++  assert.equal(u.json.review.verdict, "unknown");
++  assert.match(u.json.warning, /unknown/);
++  b.set("v3\n"); await b.verify("B3\nfail");
++  assert.match(b.prompts[2]!, /## 직전 검토 원문\nB1/);
++  assert.match(b.prompts[2]!, /- v1\n\+ v3/);
++  assert.equal((b.ledger()[2] as ReviewEntry).rereview_of, "review-records/R1.json");
++});
++
++test("S-3 대상 무변경·기록 삭제·기록 변조면 실행기를 부르지 않는다", async () => {
++  const h = harness();
++  h.set("v1\n"); await h.verify("x\nfail");
++  const n = h.prompts.length;
++  const same = await h.verify("y\nfail");
++  assert.equal(same.code, 2); assert.match(same.json.error.message, /바뀌지 않았다/);
++  h.set("v2\n");
++  const recFile = join(h.dir, "review-records/R1.json");
++  const saved = readFileSync(recFile, "utf8");
++  const tampered = JSON.parse(saved); tampered.review.snapshot = "다른 내용\n";
++  writeFileSync(recFile, JSON.stringify(tampered));
++  const bad = await h.verify("z\nfail");
++  assert.equal(bad.code, 2); assert.match(bad.json.error.message, /원장과 맞지 않는다/);
++  const textTampered = JSON.parse(saved); textTampered.result.text = "바꾼 검토 원문\nfail";
++  writeFileSync(recFile, JSON.stringify(textTampered));
++  const bad2 = await h.verify("z\nfail");
++  assert.equal(bad2.code, 2, "검토 원문 교체도 거부"); assert.match(bad2.json.error.message, /원장과 맞지 않는다/);
++  rmSync(recFile);
++  const gone = await h.verify("z\nfail");
++  assert.equal(gone.code, 2); assert.match(gone.json.error.message, /기록 파일이 없다/);
++  assert.equal(h.prompts.length, n, "실행기 호출 없음");
++  assert.equal(h.ledger().length, 1, "원장 불변");
++});
++
++test("S-4 판정 파싱: 마지막 비어 있지 않은 줄 pass·fail, 그 밖은 unknown", async () => {
++  assert.equal(parseVerdict("본문\n\npass\n"), "pass");
++  assert.equal(parseVerdict("본문\n**fail**"), "fail");
++  assert.equal(parseVerdict("본문\nrevise"), "unknown");
++  const h = harness();
++  h.set("v1\n");
++  const r = await h.verify("좋다\npass");
++  assert.equal(r.json.review.verdict, "pass");
++  assert.equal(r.json.warning, undefined);
++});
++
++test("S-5 3회 fail → 진단 → 진단 뒤 fail → 사용자 결정 → 재개 전체 전이", async () => {
++  const h = harness();
++  h.set("v1\n"); assert.equal((await h.verify("a\nfail")).json.escalation, undefined);
++  h.set("v2\n"); await h.verify("b\nfail");
++  h.set("v3\n");
++  const third = await h.verify("c\nfail");
++  assert.equal(third.code, 0);
++  assert.equal(third.json.escalation.stage, "diagnose");
++  assert.equal(third.json.escalation.consecutive_fails, 3);
++  let calls = h.prompts.length;
++  h.set("v4\n");
++  const blocked = await h.verify("d\nfail");
++  assert.equal(blocked.code, 16); assert.equal(blocked.json.escalation.stage, "diagnose"); assert.match(blocked.json.escalation.next, /review-note/);
++  assert.equal(h.prompts.length, calls, "차단 때 실행기 호출 0");
++  assert.equal(h.ledger().length, 3);
++
++  assert.equal((await h.note(["--diagnosis", "--layer", "design", "--summary", "문서 동기화"])).code, 0);
++  const afterDiag = await h.verify("e\nfail");
++  assert.equal(afterDiag.code, 0);
++  assert.doesNotMatch(h.prompts.at(-1)!, REREVIEW, "진단 뒤 첫 검토는 전체");
++  assert.doesNotMatch(h.prompts.at(-1)!, /## 직전 검토 원문/);
++  assert.equal(afterDiag.json.escalation.stage, "ask_user");
++  calls = h.prompts.length;
++  h.set("v5\n");
++  const blocked2 = await h.verify("f\nfail");
++  assert.equal(blocked2.code, 16); assert.equal(blocked2.json.escalation.stage, "ask_user");
++  assert.equal(h.prompts.length, calls);
++
++  const decision = join(h.dir, "decision.md"); writeFileSync(decision, "캡틴: 예외 승인으로 진행");
++  assert.equal((await h.note(["--decision", "--choice", "예외 승인", "--summary", "세부 갈래만 남음", "--file", decision])).code, 0);
++  const resumed = await h.verify("g\npass");
++  assert.equal(resumed.code, 0);
++  assert.doesNotMatch(h.prompts.at(-1)!, REREVIEW, "결정 뒤 첫 검토도 전체");
++  assert.equal(resumed.json.escalation, undefined);
++  assert.deepEqual(h.ledger().map((e) => e.type), ["review", "review", "review", "diagnosis", "review", "decision", "review"]);
++});
++
++test("S-6 단계 계산: pass가 연속을 초기화하고 unknown은 연속을 유지한다", () => {
++  const r = (verdict: "pass" | "fail" | "unknown", n: number): ReviewEntry => ({ type: "review", at: "", kind: "task", target: "T.md", hash: "h", verdict, verifier: "codex", provider: "openai", rereview_of: null, record: `review-records/R${n}.json`, result_hash: "0".repeat(64) });
++  assert.equal(reviewStage([r("fail", 1), r("fail", 2), r("pass", 3), r("fail", 4), r("fail", 5)], "T.md").stage, "normal");
++  const s = reviewStage([r("fail", 1), r("unknown", 2), r("fail", 3), r("unknown", 4), r("fail", 5)], "T.md");
++  assert.equal(s.stage, "diagnose"); assert.equal(s.consecutive_fails, 3); assert.equal(s.base?.record, "review-records/R5.json");
++  assert.equal(reviewStage([r("fail", 1), r("fail", 2), r("fail", 3)], "OTHER.md").stage, "normal", "대상별로 센다");
++});
++
++test("S-7 손상 원장·잠금이 있으면 실행하지 않고, 원장 기록 실패는 종료 2로 알린다", async () => {
++  const h = harness();
++  h.set("v1\n");
++  writeFileSync(join(h.dir, "REVIEW-LOG.jsonl"), "{깨진 줄\n");
++  const broken = await h.verify("x\nfail");
++  assert.equal(broken.code, 2); assert.match(broken.json.error.message, /손상.*:1/);
++  for (const line of [JSON.stringify({ type: "memo", target: "TASK.md", at: "" }), JSON.stringify({ type: "decision", target: "TASK.md", at: "" })]) {
++    writeFileSync(join(h.dir, "REVIEW-LOG.jsonl"), line + "\n");
++    const r = await h.verify("x\nfail");
++    assert.equal(r.code, 2, "알 수 없는 종류·필수 필드 없는 항목은 손상"); assert.match(r.json.error.message, /손상.*:1/);
++  }
++  rmSync(join(h.dir, "REVIEW-LOG.jsonl"));
++  mkdirSync(join(h.dir, "review-records")); writeFileSync(join(h.dir, "review-records/R1.json"), "{깨짐");
++  const orphan = await h.verify("x\nfail");
++  assert.equal(orphan.code, 2, "읽을 수 없는 고아 기록은 멈춘다"); assert.match(orphan.json.error.message, /원장에 없는 검토 기록을 읽을 수 없다/);
++  assert.equal(h.prompts.length, 0);
++  rmSync(join(h.dir, "review-records"), { recursive: true });
++  // 남은 잠금: 살아 있는 PID면 진행 중, 없는 PID면 치우고 진행
++  writeFileSync(join(h.dir, "REVIEW-LOG.lock"), String(process.pid));
++  assert.equal((await h.verify("x\nfail")).code, 2, "살아 있는 프로세스의 잠금");
++  writeFileSync(join(h.dir, "REVIEW-LOG.lock"), "2147483646");
++  const staleRun = await h.verify("x\nfail");
++  assert.equal(staleRun.code, 0, "죽은 프로세스의 잠금은 치운다");
++  assert.ok(!existsSync(join(h.dir, "REVIEW-LOG.lock")));
++  rmSync(join(h.dir, "review-records"), { recursive: true }); rmSync(join(h.dir, "REVIEW-LOG.jsonl"));
++  const runs = h.prompts.length;
++  writeFileSync(join(h.dir, "REVIEW-LOG.lock"), "");
++  const locked = await h.verify("x\nfail");
++  assert.equal(locked.code, 2); assert.match(locked.json.error.message, /진행 중/);
++  assert.equal(h.prompts.length, runs);
++  rmSync(join(h.dir, "REVIEW-LOG.lock"));
++  if (process.platform !== "win32") {
++    mkdirSync(join(h.dir, "REVIEW-LOG.jsonl")); // 파일 자리에 폴더 — 읽기 단계에서 멈춘다
++    const unreadable = await h.verify("x\nfail");
++    assert.equal(unreadable.code, 2); assert.match(unreadable.json.error.message, /읽을 수 없다/);
++    assert.equal(h.prompts.length, runs);
++    rmSync(join(h.dir, "REVIEW-LOG.jsonl"), { recursive: true });
++    writeFileSync(join(h.dir, "REVIEW-LOG.jsonl"), "");
++    chmodSync(join(h.dir, "REVIEW-LOG.jsonl"), 0o444); // 읽기는 되고 덧붙이기는 실패
++    const fail = await h.verify("x\nfail");
++    chmodSync(join(h.dir, "REVIEW-LOG.jsonl"), 0o644);
++    assert.equal(fail.code, 2); assert.match(fail.json.error.message, /원장 기록에 실패/);
++    assert.ok(!existsSync(join(h.dir, "REVIEW-LOG.lock")), "실패해도 잠금을 푼다");
++  }
++});
++
++test("S-8 review-note는 단계 안에서만, 결정은 비어 있지 않은 근거 파일이 있어야 기록한다", async () => {
++  const h = harness();
++  h.set("v1\n");
++  assert.equal((await h.note(["--diagnosis", "--layer", "design", "--summary", "x"])).code, 2, "normal에서 진단 거부");
++  await h.verify("a\nfail"); h.set("v2\n"); await h.verify("b\nfail"); h.set("v3\n"); await h.verify("c\nfail");
++  const empty = join(h.dir, "empty.md"); writeFileSync(empty, "");
++  const real = join(h.dir, "decision.md"); writeFileSync(real, "캡틴 결정 원문");
++  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", real])).code, 2, "diagnose에서 결정 거부(근거가 정상이어도)");
++  assert.equal((await h.note(["--diagnosis", "--layer", "nope", "--summary", "x"])).code, 2, "층 이름 검사");
++  assert.equal(h.ledger().length, 3, "거부 때 원장 불변");
++  assert.equal((await h.note(["--diagnosis", "--layer", "structure", "--summary", "검토 방식"])).code, 0);
++  await h.verify("d\nfail");
++  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", empty])).code, 2, "빈 결정 원문 거부");
++  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y"])).code, 2, "결정 원문 필수");
++  const blank = join(h.dir, "blank.md"); writeFileSync(blank, "  \n");
++  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", blank])).code, 2, "공백뿐인 원문 거부");
++  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", h.dir])).code, 2, "폴더 거부");
++  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", h.target])).code, 2, "검토 대상 자체 거부");
++  assert.equal((await h.note(["--diagnosis", "--layer", "design", "--summary", "x"])).code, 2, "ask_user에서 진단 거부");
++  assert.equal(h.ledger().length, 5);
++  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", real])).code, 0);
++});
++
++test("S-9 --out이 대상·원장 경로면 실행하지 않는다", async () => {
++  const h = harness();
++  h.set("v1\n");
++  mkdirSync(join(h.dir, "review-records"), { recursive: true });
++  for (const out of [h.target, join(h.dir, "REVIEW-LOG.jsonl"), join(h.dir, "REVIEW-LOG.lock"), join(h.dir, "review-records", "R1.json")]) {
++    const r = await h.verify("x\nfail", ["--out", out]);
++    assert.equal(r.code, 2);
++  }
++  assert.equal(h.prompts.length, 0);
++  assert.ok(!existsSync(join(h.dir, "REVIEW-LOG.lock")), "잠금 경로 --out 거부 뒤 잠금이 남지 않는다");
++  rmSync(join(h.dir, "review-records"), { recursive: true });
++  const extra = join(h.dir, "copy.json");
++  await h.verify("x\nfail", ["--out", extra]);
++  assert.equal(JSON.parse(readFileSync(extra, "utf8")).review.verdict, "fail", "--out은 추가 사본");
++});
++
++test("S-9d 미실행(종료 10)은 원장에 적지 않고 --out에 사유를 남긴다", async () => {
++  const h = harness();
++  h.set("v1\n"); h.offline();
++  const out = join(h.dir, "copy.json");
++  const r = await h.verify("x\nfail", ["--out", out]);
++  assert.equal(r.code, 10);
++  assert.ok(!existsSync(join(h.dir, "REVIEW-LOG.jsonl")), "원장 없음");
++  assert.ok(!existsSync(join(h.dir, "review-records")), "기록 없음");
++  assert.match(readFileSync(out, "utf8"), /교차 검증 미실행/);
++});
++
++test("S-9e 링크 별칭으로 열어도 같은 원장을 쓴다", async () => {
++  if (process.platform === "win32") return;
++  const h = harness();
++  h.set("v1\n"); await h.verify("a\nfail"); h.set("v2\n"); await h.verify("b\nfail"); h.set("v3\n"); await h.verify("c\nfail");
++  const other = tempDir("pace-rl-alias-");
++  const alias = join(other, "ALIAS.md"); symlinkSync(h.target, alias);
++  {
++    const r = await verifyCommand(["--author-agent", "claude", "--target", alias, "--purpose", "목적"], { executors: () => [], write: () => {} });
++    assert.equal(r, 16, "별칭으로도 diagnose 단계에서 막힌다");
++  }
++  assert.ok(!existsSync(join(other, "REVIEW-LOG.jsonl")));
++});
++
++test("S-9f 쓰기 오류는 종료 2, --out 사본은 원장 확정 뒤에만, 쓰기는 rename 교체라 링크·하드링크 너머를 고치지 않는다", async () => {
++  if (process.platform === "win32") return;
++  const h = harness();
++  h.set("v1\n");
++  // 링크 --out
++  const real = join(h.dir, "real.json"); writeFileSync(real, "{}");
++  const link = join(h.dir, "link.json"); symlinkSync(real, link);
++  // 쓰기는 rename 교체 — 링크·하드링크 --out이어도 너머의 파일 내용은 바뀌지 않는다
++  const hard = join(h.dir, "hard.json"); linkSync(h.target, hard);
++  const viaLink = await h.verify("x\nfail", ["--out", link]);
++  assert.equal(viaLink.code, 0);
++  assert.equal(readFileSync(real, "utf8"), "{}", "링크 너머 파일 불변");
++  h.set("v1b\n");
++  const recHard = join(h.dir, "rec-hard.json"); linkSync(join(h.dir, "review-records/R1.json"), recHard);
++  const recBefore = readFileSync(join(h.dir, "review-records/R1.json"), "utf8");
++  await h.verify("y\nfail", ["--out", recHard]);
++  assert.equal(readFileSync(join(h.dir, "review-records/R1.json"), "utf8"), recBefore, "기록 하드링크 --out도 기록 불변");
++  h.set("v1c\n");
++  const viaHard = await h.verify("z\nfail", ["--out", hard]);
++  assert.equal(viaHard.code, 0, "실제로 --out 사본을 쓰는 경로");
++  assert.equal(readFileSync(h.target, "utf8"), "v1c\n", "대상 하드링크 --out도 대상 불변");
++  for (const p of [hard, recHard, link]) rmSync(p, { force: true });
++  rmSync(join(h.dir, "review-records"), { recursive: true, force: true }); rmSync(join(h.dir, "REVIEW-LOG.jsonl"), { force: true });
++  const calls0 = h.prompts.length;
++  // 원장 덧붙이기 실패 → --out 사본을 쓰지 않는다
++  writeFileSync(join(h.dir, "REVIEW-LOG.jsonl"), ""); chmodSync(join(h.dir, "REVIEW-LOG.jsonl"), 0o444);
++  const out = join(h.dir, "copy.json");
++  const failed = await h.verify("x\nfail", ["--out", out]);
++  chmodSync(join(h.dir, "REVIEW-LOG.jsonl"), 0o644);
++  assert.equal(failed.code, 2);
++  assert.ok(!existsSync(out), "원장 확정 전에는 --out 사본이 없다");
++  assert.equal(h.prompts.length, calls0 + 1);
++  rmSync(join(h.dir, "review-records"), { recursive: true, force: true });
++  // 기록 자리 쓰기 실패 → 종료 2, 실행기 호출 없음
++  const calls = h.prompts.length;
++  mkdirSync(join(h.dir, "review-records")); chmodSync(join(h.dir, "review-records"), 0o555);
++  const noRecord = await h.verify("x\nfail");
++  chmodSync(join(h.dir, "review-records"), 0o755);
++  assert.equal(noRecord.code, 2); assert.match(noRecord.json.error.message, /기록 자리/);
++  assert.equal(h.prompts.length, calls);
++  // 잠금 생성 실패(폴더 쓰기 불가) → 종료 2
++  chmodSync(h.dir, 0o555);
++  const noLock = await h.verify("x\nfail");
++  chmodSync(h.dir, 0o755);
++  assert.equal(noLock.code, 2); assert.match(noLock.json.error.message, /잠금을 만들 수 없다/);
++});
++
++test("S-9g review-note: 원장 쓰기 오류는 종료 2, 진단 근거가 비면 거부", async () => {
++  const h = harness();
++  h.set("v1\n"); await h.verify("a\nfail"); h.set("v2\n"); await h.verify("b\nfail"); h.set("v3\n"); await h.verify("c\nfail");
++  const empty = join(h.dir, "empty.md"); writeFileSync(empty, " \n");
++  assert.equal((await h.note(["--diagnosis", "--layer", "design", "--summary", "x", "--file", empty])).code, 2, "빈 진단 근거 거부");
++  if (process.platform === "win32") return;
++  chmodSync(join(h.dir, "REVIEW-LOG.jsonl"), 0o444);
++  const r = await h.note(["--diagnosis", "--layer", "design", "--summary", "x"]);
++  chmodSync(join(h.dir, "REVIEW-LOG.jsonl"), 0o644);
++  assert.equal(r.code, 2); assert.match(r.json.error.message, /원장 기록에 실패/);
++  assert.equal(h.ledger().length, 3);
++});
++
++test("S-9h 실행기 오류·미실행 --out 쓰기 오류·너무 큰 변경", async () => {
++  const h = harness();
++  h.set("v1\n");
++  // 실행기가 오류로 끝나면 기록 자리를 치우고 그 오류 코드로 끝난다
++  const boom: Executor = { agent: "codex", mode: "p", capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true }, async run() { throw new AgentError("agent_failed", "실패"); } };
++  const out: string[] = [];
++  const code = await verifyCommand(["--author-agent", "claude", "--target", h.target, "--purpose", "목적"], { executors: () => [boom], write: (t) => out.push(t) });
++  assert.equal(code, 7);
++  assert.ok(!existsSync(join(h.dir, "review-records")), "기록 자리 정리");
++  assert.equal(h.ledger().length, 0);
++  // 미실행 경로의 --out 쓰기 오류는 종료 2
++  if (process.platform !== "win32") {
++    const ro = join(h.dir, "ro"); mkdirSync(ro); chmodSync(ro, 0o555);
++    h.offline();
++    const r = await h.verify("x\nfail", ["--out", join(ro, "o.json")]);
++    chmodSync(ro, 0o755);
++    assert.equal(r.code, 2);
++  }
++  // 아주 크게 바뀌어도 막다른 길 없이 재검토한다(거친 비교로 바뀐 구간을 통째로 준다)
++  const g = harness();
++  g.set(["머리", ...Array.from({ length: 2100 }, (_, i) => "a" + i), "꼬리"].join("\n")); await g.verify("x\nfail");
++  g.set(["머리", ...Array.from({ length: 2100 }, (_, i) => "b" + i), "꼬리"].join("\n"));
++  const big = await g.verify("y\nfail");
++  assert.equal(big.code, 0);
++  assert.match(g.prompts[1]!, REREVIEW);
++  assert.match(g.prompts[1]!, /  머리\n- a0\n- a1/);
++  assert.match(g.prompts[1]!, /\+ b2099\n  꼬리/);
++});
++
++test("S-9i 중단 흔적 자동 복구: pending은 fail(중단)로 세고 기준점에서 빠지며, 판정 있는 기록은 그 판정으로", async () => {
++  const h = harness();
++  h.set("v1\n"); await h.verify("A1\nfail");
++  h.set("v2\n"); await h.verify("A2\nfail");
++  // 세 번째 검토가 실행 중 중단돼 pending만 남은 상황
++  writeFileSync(join(h.dir, "review-records/R3.json"), JSON.stringify({ pending: true, review: { target: "TASK.md", hash: "x" } }));
++  h.set("v3\n");
++  const r = await h.verify("never");
++  assert.equal(r.code, 16, "중단을 fail로 세어 3회 — 진단 단계");
++  assert.match(r.json.recovered[0], /R3\.json: 실행 중 중단/);
++  const l = h.ledger() as ReviewEntry[];
++  assert.equal(l.length, 3); assert.equal(l[2]!.interrupted, true); assert.equal(l[2]!.verdict, "fail");
++  assert.equal(h.prompts.length, 2, "진단 단계라 실행하지 않음");
++  // 판정 있는 기록의 복구와, 중단 항목이 기준점에서 빠지는지
++  const k = harness();
++  k.set("v1\n"); await k.verify("K1\nfail");
++  const rec = JSON.parse(readFileSync(join(k.dir, "review-records/R1.json"), "utf8"));
++  writeFileSync(join(k.dir, "REVIEW-LOG.jsonl"), ""); // 원장 추가가 끊긴 상황
++  writeFileSync(join(k.dir, "review-records/R2.json"), JSON.stringify({ pending: true, review: { target: "TASK.md", hash: "y" } }));
++  k.set("v2\n");
++  const r2 = await k.verify("K3\nfail");
++  assert.equal(r2.code, 0);
++  assert.equal(r2.json.recovered.length, 2);
++  const kl = k.ledger() as ReviewEntry[];
++  assert.deepEqual(kl.map((e) => [e.record, e.verdict, e.interrupted ?? false]), [["review-records/R1.json", "fail", false], ["review-records/R2.json", "fail", true], ["review-records/R3.json", "fail", false]]);
++  assert.equal(kl[2]!.rereview_of, "review-records/R1.json", "중단 항목은 기준점이 되지 않는다");
++  assert.match(k.prompts.at(-1)!, /## 직전 검토 원문\nK1/);
++  void rec;
++});
++
++test("S-9k 자동 복구는 기록을 검증한다: 위조 판정은 fail(중단)으로, 맞는 pass·unknown은 그 판정과 rereview_of로, 번호 순으로", async () => {
++  // 위조: diagnose 단계에서 pass로 바꾼 고아 기록을 넣어도 차단이 풀리지 않는다
++  const h = harness();
++  h.set("v1\n"); await h.verify("a\nfail"); h.set("v2\n"); await h.verify("b\nfail"); h.set("v3\n"); await h.verify("c\nfail");
++  writeFileSync(join(h.dir, "review-records/R4.json"), JSON.stringify({ result: { text: "…\nfail" }, review: { verdict: "pass", hash: "", snapshot: "" } }));
++  h.offline();
++  const forged = await h.verify("x\nfail");
++  assert.equal(forged.code, 16, "차단 유지");
++  assert.match(forged.json.recovered[0], /서로 맞지 않는다/);
++  assert.equal((h.ledger().at(-1) as ReviewEntry).interrupted, true);
++  // 맞는 기록은 그 판정(pass·unknown)과 rereview_of로, 여러 개면 번호 순
++  const k = harness();
++  k.set("v1\n"); await k.verify("K1\nfail");
++  k.set("v2\n"); await k.verify("K2\nrevise");
++  k.set("v3\n"); await k.verify("K3\npass");
++  const recs = [1, 2, 3].map((n) => readFileSync(join(k.dir, `review-records/R${n}.json`), "utf8"));
++  rmSync(join(k.dir, "review-records"), { recursive: true }); mkdirSync(join(k.dir, "review-records"));
++  // R1→R9, R2→R10, R3→R11로 옮겨 사전순과 번호순이 다르게
++  const order = [[recs[0]!, 9], [recs[1]!, 10], [recs[2]!, 11]] as const;
++  for (const [text, n] of order) writeFileSync(join(k.dir, `review-records/R${n}.json`), text.replace(/review-records\/R1\.json/g, "review-records/R9.json"));
++  writeFileSync(join(k.dir, "REVIEW-LOG.jsonl"), "");
++  k.set("v4\n");
++  const r = await k.verify("K4\nfail");
++  assert.equal(r.code, 0);
++  const kl = k.ledger() as ReviewEntry[];
++  assert.deepEqual(kl.slice(0, 3).map((e) => [e.record, e.verdict, e.interrupted ?? false]), [["review-records/R9.json", "fail", false], ["review-records/R10.json", "unknown", false], ["review-records/R11.json", "pass", false]]);
++  assert.equal(kl[1]!.rereview_of, "review-records/R9.json", "복구 항목의 rereview_of 보존");
++  assert.equal(kl[3]!.rereview_of, null, "pass 뒤라 처음 검토");
++});
++
++test("S-9l 원장 검증·잠금 PID·판정 구분자", async () => {
++  const h = harness();
++  h.set("v1\n");
++  const bad = { type: "review", at: "", kind: "task", target: "TASK.md", hash: "h", verdict: "pass", verifier: "x", provider: null, rereview_of: null, record: "review-records/R1.json", result_hash: "0".repeat(64), interrupted: true };
++  writeFileSync(join(h.dir, "REVIEW-LOG.jsonl"), JSON.stringify(bad) + "\n");
++  assert.equal((await h.verify("x\nfail")).code, 2, "interrupted는 fail만");
++  rmSync(join(h.dir, "REVIEW-LOG.jsonl"));
++  // 실행 중 잠금 파일에는 이 프로세스 PID가 있다
++  let lockText = "";
++  const peek: Executor = { agent: "codex", mode: "p", capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true }, async run(request) { lockText = readFileSync(join(h.dir, "REVIEW-LOG.lock"), "utf8"); return normalizeResult(request, { text: "x\nfail", provider: "openai", model: "gpt-6" }, { durationMs: 1, enforcement: "fake" }); } };
++  await verifyCommand(["--author-agent", "claude", "--target", h.target, "--purpose", "목적"], { executors: () => [peek], write: () => {} });
++  assert.equal(lockText, String(process.pid));
++  // 살아 있지만 권한이 없는 프로세스(EPERM)는 진행 중으로 본다 — PID 1
++  if (process.platform !== "win32" && process.getuid?.() !== 0) {
++    writeFileSync(join(h.dir, "REVIEW-LOG.lock"), "1");
++    h.set("v2\n");
++    assert.equal((await h.verify("y\nfail")).code, 2, "PID 1 잠금은 남은 잠금이 아니다");
++    rmSync(join(h.dir, "REVIEW-LOG.lock"));
++  }
++  assert.equal(parseVerdict("본문\nx|fail"), "unknown");
++  // 미실행(종료 10) 출력에도 복구 안내가 붙는다
++  const g = harness();
++  g.set("v1\n"); mkdirSync(join(g.dir, "review-records"));
++  writeFileSync(join(g.dir, "review-records/R1.json"), JSON.stringify({ pending: true, review: { target: "TASK.md", hash: "z" } }));
++  g.offline();
++  const nr = await g.verify("x\nfail");
++  assert.equal(nr.code, 10); assert.match(nr.json.recovered[0], /R1\.json/);
++});
++
++test("S-9j 판정 단어 변형·대소문자만 다른 --out", async () => {
++  assert.equal(parseVerdict("본문\n판정: fail"), "fail");
++  assert.equal(parseVerdict("본문\n**판정: PASS**"), "pass");
++  assert.equal(parseVerdict("본문\nfailure"), "unknown");
++  const h = harness();
++  h.set("v1\n");
++  const r = await h.verify("x\nfail", ["--out", join(h.dir, "review-log.JSONL")]);
++  assert.equal(r.code, 2, "대소문자만 다른 원장 경로");
++  assert.equal(h.prompts.length, 0);
++});
++
++test("S-9c 실제 진입점: fail 3줄 원장이면 실행기 탐색 전에 종료 16", () => {
++  const home = tempDir();
++  const bin = join(home, "empty"); mkdirSync(bin);
++  const target = join(home, "TASK.md"); writeFileSync(target, "v\n");
++  const line = (n: number) => JSON.stringify({ type: "review", at: "", kind: "task", target: "TASK.md", hash: "h", verdict: "fail", verifier: "codex", provider: "openai", rereview_of: null, record: `review-records/R${n}.json`, result_hash: "0".repeat(64) });
++  writeFileSync(join(home, "REVIEW-LOG.jsonl"), [1, 2, 3].map(line).join("\n") + "\n");
++  const r = runPace(["agent", "verify", "--author-agent", "claude", "--target", target, "--purpose", "목적"], { home, env: { PATH: bin } });
++  assert.equal(r.status, 16);
++  assert.equal(JSON.parse(r.stdout).escalation.stage, "diagnose");
++});
++
++test("lineDiff는 바뀐 줄과 앞뒤 1줄 맥락만 낸다", () => {
++  const d = lineDiff("a\nb\nc\nd\ne\nf\n", "a\nb\nC\nd\ne\nf\n");
++  assert.equal(d, "  b\n- c\n+ C\n  d");
++  assert.equal(lineDiff("x\n", "x\n"), "(바뀐 줄 없음)");
++});
++
