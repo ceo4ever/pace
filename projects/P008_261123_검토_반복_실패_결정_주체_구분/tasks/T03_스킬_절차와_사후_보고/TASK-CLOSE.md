@@ -19,7 +19,7 @@
 
 ## 단위 테스트
 
-node --test test/project-dev-skill.test.ts: 8 통과·실패0·skip0. evidence/structure-final.txt. 옛 무조건 사용자 문장을 임시사본에 주입해 실패를 검출한 e2e/doc-negative.mjs의 baseline·negative 출력도 보존했다. 전체 검사: PACE_SKIP_BROWSER_E2E=1 npm run check, 1037건 중 1020 통과·실패0·플랫폼 skip17, 166.6초. 중첩 playbook 브라우저 E2E4개는 새 Orca 규칙으로 제외했다. evidence/full-check.txt.
+node --test test/project-dev-skill.test.ts: 8 통과·실패0·skip0. evidence/structure-final.txt. 옛 무조건 사용자 문장을 임시사본에 주입해 실패를 검출한 e2e/doc-negative.mjs의 baseline·negative 출력도 보존했다. 전체 검사: PACE_SKIP_BROWSER_E2E=1 npm run check, 1037건 중 1020 통과·실패0·집계 skip17, 166.6초. 중첩 playbook 브라우저 E2E4개는 새 Orca 규칙으로 제외했다. evidence/full-check.txt.
 
 ## E2E
 

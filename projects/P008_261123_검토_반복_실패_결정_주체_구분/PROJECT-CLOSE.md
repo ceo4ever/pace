@@ -41,7 +41,7 @@ waiver는 사용자만 가능, 옛 by 미기재를 user로 추정하지 않으�
 
 병합은 main에서 사람이 승인한다. 승인·병합 뒤 main 담당이 scripts/install.sh로 재설치하고 코디네이터가 설치 CLI의 정상 검토 흐름 하나를 확인한다. worktree에서는 설치·푸시·병합·배포하지 않았다. bubble-catch 두 회차 이내 통과 같은 운영효과는 설치 뒤 측정할 지표로 남긴다.
 
-기존 Orca 메뉴 E2E·전체검사 불안정 이슈는 메모리에 유지한다. main의 S4b·S9g 시험 수정과 Orca 전체검사 browser E2E 제외 규칙을 반영했으며 제외범위를 숨기지 않았다. PACE_SKIP_BROWSER_E2E=1은 중첩 playbook E2E4개를 제외하고 top-level 플랫폼 skip17과 구별한다. T02 rebase 전 백업·stash는 유지했다.
+기존 Orca 메뉴 E2E·전체검사 불안정 이슈는 메모리에 유지한다. main의 S4b·S9g 시험 수정과 Orca 전체검사 browser E2E 제외 규칙을 반영했으며 제외범위를 숨기지 않았다. PACE_SKIP_BROWSER_E2E=1은 중첩 playbook E2E4개를 제외하고 집계 skip17과 구별한다. T02 rebase 전 백업·stash는 유지했다.
 
 ## 회고
 
