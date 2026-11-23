@@ -31,6 +31,7 @@
 - [changed check timeout 시험 부하 민감](changed-check-timeout-시험-부하-민감.md) — test/changed-test.test.ts 'changed check timeout and parent OS termination …'이 전체 검사 부하에서 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
 - [daemon 초기 준비 확인 실패 관측](daemon-초기-준비-확인-실패-관측.md) — Windows daemon 초기 소유자 확인 실패가 재발하면 원문과 시점을 확보해 원인을 구분한다
 - [Windows 루트 교체 검사 skip](windows-루트-교체-검사-skip.md) — Windows의 루트 교체 훅 skip 원인을 확인해 실제 경로 재검증 시험의 실행 가능성을 점검한다
+- [ACP 쓰기 편집 경로 미대조](acp-쓰기-편집-경로-미대조.md) — ACP 쓰기 모드에서 편집 도구 자동 허용이 경로를 대조하지 않아 작업사본 밖 편집도 승인 없이 허용될 수 있다 — 워크트리 안 경로만 자동 허용하게 고친다
 
 ## 할 일
 

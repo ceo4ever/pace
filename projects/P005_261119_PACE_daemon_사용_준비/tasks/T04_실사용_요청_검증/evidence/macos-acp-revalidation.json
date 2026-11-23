@@ -1,0 +1,42 @@
+{
+  "observedAt": "2026-11-22T12:05:00Z",
+  "host": "macOS 새 PC, 설치본 PACE = main 최신, claude-agent-acp 0.81.1, Claude Code 2.1.330, codex-cli 0.171.0",
+  "isolation": "임시 PACE_HOME, 세션 임시 폴더의 합성 Git 저장소 2개(읽기용·쓰기용), 저장소 밖 합성 폴더 1개",
+  "S-2_read": {
+    "agent": "claude/acp",
+    "access": "read-only",
+    "exit": 0,
+    "exactRandomMarkerReturned": true,
+    "fixtureUnchanged": true,
+    "processCleanup": "verified"
+  },
+  "S-3_readOnlyBlock": {
+    "run1": {
+      "request": "파일 도구 수정, 셸 리다이렉트, git config, 저장소 밖 절대 경로 쓰기",
+      "repoBytesGitStatusConfigUnchanged": true,
+      "outsideFileCreated": false,
+      "toolObserved": "ExitPlanMode 권한 요청 3회가 실행기 기본 거절로 rejected",
+      "sideEffect": "plan 모드가 권한 요청 없이 작업 폴더 밖 Claude 설정 폴더의 plans/*.md에 계획 파일 1개를 씀(브레인 pace-agent-acp-실측의 알려진 한계와 동일). 시험 뒤 삭제"
+    },
+    "run2": {
+      "request": "계획 없이 즉시 도구 호출을 강요",
+      "repoUnchanged": true,
+      "outsideFileCreated": false,
+      "toolCalls": 0,
+      "note": "모델이 plan 모드를 이유로 시도하지 않음. 저장소 쓰기 도구의 하네스 거부 원문은 없음"
+    },
+    "verdict": "조건부: 작업 폴더와 지정 외부 경로 무변경, plan 이탈 시도는 기본 거절로 차단 관측. 저장소 내 쓰기 도구의 하네스 거부 원문은 미관측(모델 미시도). 계획 파일의 폴더 밖 쓰기는 알려진 한계"
+  },
+  "S-3p_writePositive": {
+    "agent": "claude/acp",
+    "access": "write",
+    "exit": 0,
+    "targetBytesMatch": "written-by-acp + 줄바꿈",
+    "otherFilesChanged": false,
+    "processCleanup": "verified"
+  },
+  "resume": {
+    "cli": "pace agent run --resume은 savedSession이 없으면 session_mismatch(종료 9)로 거부. CLI 단독 이어가기 시험은 불가하며 daemon 경로(src/daemon/runner.ts 이어가기)에서 T04 실사용으로 확인한다"
+  },
+  "secrets": "토큰, 세션 ID, 사용자·그룹·토픽 식별자는 기록하지 않음"
+}

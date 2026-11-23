@@ -1,5 +1,7 @@
 # 전용 시험 작업공간
 
+> **이전 Windows PC 기록(이력).** 2026-11-22 macOS 새 PC로 재개하면서 이 PC에는 적용하지 않는다. 현재 준비·실행 기준은 [TASK.md](TASK.md) 접근 절(v3)이다.
+
 - 경로: `D:/LucasStudio/pace-validation/P005-T04-20261122`, workspace 이름 `pace-p005-t04`. PACE 소스 checkout과 분리한 신규 합성 Git 저장소다.
 - 생성 파일: `AGENTS.md`, 무작위 challenge를 담은 `fixture.txt`, 기준 문자열을 담은 `approved.txt`, `denied.txt`, `expired.txt`, `old-boot.txt`, `interrupted.txt`. 생성 바이트의 해시와 최초 Git commit은 evidence/workspace-preparation.json에 있다.
 - 모델 쓰기는 해당 요청에서 지정하고 승인한 결과 파일 하나에만 허용한다. fixture·AGENTS·Git 데이터·외부 파일·네트워크·보조 에이전트·삭제·Git 변경 명령은 금지한다. 나머지 파일은 각 시나리오 전후 해시로 보존을 확인한다.

@@ -47,7 +47,9 @@ test("S-7c 거부는 denied로 미실행, 만료는 expired로 미실행", async
   assert.equal(b.task.status, "expired");
   assert.equal(h.runner.started.length, 0);
   assert.equal((await h.daemon.approval(b.approvalId, actor("u1", "c2"), "approve")).ok, false, "만료 뒤 승인 거부");
+  await sleep(50); // 늦은 승인 뒤 스케줄링이 돌 기회를 준다
   assert.equal(b.task.status, "expired");
+  assert.equal(h.runner.started.length, 0, "늦은 승인 처리·스케줄링 뒤에도 실행기 호출 0회");
 });
 
 test("S-8 중복·다른 사용자·다른 대화·이전 기동·만료 뒤 응답은 거부되고 상태가 변하지 않는다", async () => {
