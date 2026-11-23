@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-23",
+  "request": "denied.txt를 DENIED-SHOULD-NOT-APPEAR 한 줄로 바꾸라는 쓰기 요청 → 캡틴이 쓰기 시작 승인을 실제 거부",
+  "task": {"id": "t-184893c0", "status": "denied", "procs": 0, "result": "없음", "prompt_cleared": true},
+  "approval": {"write_start": "rejected"},
+  "files": {"denied.txt_hash_unchanged": true, "git_status": "M approved.txt(S-3) 외 변경 없음"},
+  "outside_changes": {"protected_files_unchanged": true, "in_window_not_allowed": 0},
+  "order_guarantee": "거절 뒤 미실행은 단위 시험 S-7c(거절 뒤 실행기 호출 0회) + 이 보조 판독",
+  "verdict": "pass (T-3 거절)"
+}
