@@ -1,0 +1,9 @@
+{
+  "date": "2026-11-24",
+  "review_presented_to": "캡틴 위임으로 PACE 코디네이터가 판단(사후 보고)",
+  "reap": {"pinned_descendants": 4, "vanished_after_kill": 4, "executor_procs_now": 0, "product_view": "procs 미보고라 회수 미확인·격리가 정상 기대(설계)"},
+  "file_review": {"interrupted.txt": "S-5 강제 종료 직전 해시와 같음 — 요청된 셸 쓰기 미실행", "others": "S-3 approved.txt 외 불변, 새 파일·새 커밋 없음"},
+  "decision": "회수·파일 검토 근거 충분 → release",
+  "release": {"command": "pace daemon release <검증 작업사본>", "quarantine_after": 0, "log": "quarantine_released by=operator", "t-049f72b2_status": "needs_review 유지(done으로 바뀌지 않음)", "rerun": false},
+  "verdict": "pass (T-4 별도 승인 뒤 격리 해제)"
+}
