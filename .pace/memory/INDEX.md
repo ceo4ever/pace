@@ -8,7 +8,7 @@
 
 ## 지킬 것 · 하지 말 것
 
-- (없음)
+- [Orca 안 전체 검사는 브라우저 E2E 끔](orca-안-전체-검사는-브라우저-e2e-끔.md) — Orca 터미널에서 npm run check는 PACE_SKIP_BROWSER_E2E=1로 돌린다 — playbook E2E 4개가 Orca 브라우저 탭을 열어 사용자 화면을 어지럽힌다. 브라우저 동작을 바꾼 일만 켠다
 
 ## 열린 이슈
 
