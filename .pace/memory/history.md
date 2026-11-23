@@ -22,3 +22,4 @@
 - 2026-11-21 [issue] 하네스 선언 판독 CRLF 실패 — d2fb666 — commandInDocument가 \r?\n으로 나눔, CRLF 회귀 시험 추가, 독립 리뷰 pass
 - 2026-11-22 [todo] 설치본 재설치로 대시보드 연결 갱신 — 설치본 11-22 재설치(최신 main 반영 확인) 뒤 pace backlog init — local.js가 ~/.pace/app 가리킴
 - 2026-11-23 [issue] codex 같은 세션 재검토 불가 — P007: verify가 원장의 직전 fail 원문·바뀐 줄로 자동 재검토 — 세션 재개 없이 연속성 확보
+- 2026-11-23 [issue] telegram-flow S-4b 단독 실행 실패 — 1131c2a — 대기 조건이 빈 폴링을 세어 5회 보류 문턱과 경합. 시험만 수정, 단독 20회 통과·결함 주입 검출

@@ -30,7 +30,6 @@
 - [changed check timeout 시험 부하 민감](changed-check-timeout-시험-부하-민감.md) — test/changed-test.test.ts 'changed check timeout and parent OS termination …'이 전체 검사 부하에서 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
 - [2단계 검토 판정 원장 미반영](2단계-검토-판정-원장-미반영.md) — goal-review 2단계(작업 문서 받은 뒤 호스트 판정) blocking이 검토 원장에 안 들어가 1단계 pass·2단계 blocking 반복이 반복 실패 단계로 안 잡힌다 — 최종 판정 확정 절차를 설계한다
 - [Gateway 인증 시간 초과 시험 부하 민감](gateway-인증-시간-초과-시험-부하-민감.md) — test/daemon-process.test.ts Gateway 인증 시간 초과·미인증 연결 상한 시험이 전체 검사 부하에서 간헐 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
-- [telegram-flow S-4b 단독 실행 실패](telegram-flow-s-4b-단독-실행-실패.md) — test/telegram-flow.test.ts S-4b가 --test-name-pattern 단독 실행에서 항상 실패(파일 전체는 통과) — 앞 시험에 기대는 숨은 의존을 끊는다
 
 ## 할 일
 

@@ -405,7 +405,8 @@ test("S-9g /new: 설정 기록 뒤 코어 등록 실패는 안내만 하고 upda
     host.addWorkspace = (e, r) => { if (fail) throw new Error("등록 실패"); return real(e, r); };
     t.mock.text(CHAT, undefined, U1, `/new g ${dir}`);
     await until(() => t.mock.texts().some((x) => x.includes("반영하지 못했다")), 6000, "반영 실패");
-    assert.ok(t.adapter.state.offset > 0, "update는 소비");
+    // 안내는 처리 도중 보내고 offset은 처리가 끝난 뒤 진행한다 — 안내 직후 판독하면 부하에서 경합한다
+    await until(() => t.adapter.state.offset > 0, 4000, "update는 소비");
     fail = false;
     t.mock.text(CHAT, undefined, U1, `/new g ${dir}`);
     await until(() => t.mock.texts().some((x) => x.includes("등록 완료: g")), 6000, "재입력 복구");
