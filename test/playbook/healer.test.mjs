@@ -23,12 +23,12 @@ const files=d=>readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?fi
 const dirSnap=d=>new Map(files(d).map(f=>[f.slice(d.length),readFileSync(f).toString('base64')]));
 const sameDir=(a,b)=>{assert.equal(a.size,b.size,'파일 수');for(const [k,v] of a)assert.equal(b.get(k),v,`파일 ${k}`);};
 // 패치된 단계에 맞는 가짜 새 기준 기록(가림 검사 통과 가정)
-const recaptureFor=(pb)=>async patched=>{
+const recaptureFor=(pb,shotVariant=()=> '')=>async patched=>{
   const frames=rd(join(pb.flowDir,'steps.json')).frames||{};
   const els=patched.elements||[];
   const boxes=Object.fromEntries(els.map(e=>[e.n,{x:10*e.n,y:20,w:100,h:30}]));
   const info={masked:1,errors:[],frames:{},perRule:Object.fromEntries((patched.maskRequire||[]).map(r=>[r,1])),missing:[],boxes,elementsMasked:Object.fromEntries(els.map(e=>[e.n,true])),view:{vw:800,vh:600,dpr:1}};
-  const bytes=Buffer.from('jpg-'+JSON.stringify(boxes)+'-'+(patched.elements||[]).map(e=>e.find).join('|'));
+  const bytes=Buffer.from('jpg-'+JSON.stringify(boxes)+'-'+(patched.elements||[]).map(e=>e.find).join('|')+shotVariant());
   return {record:captureRecord({info,post:{ok:true,reasons:[]},step:patched,shotSha256:sha256Hex(bytes),frames}),bytes};
 };
 const okVerify=async()=>({ok:true,expectChecked:true,values:{x:'ZZ-값'}});
@@ -38,6 +38,28 @@ const obsMissing=(extra={})=>({elements:[
   {tag:'button',type:'',role:'',attrs:{id:'go'},text:'조회',box:{x:300,y:10,w:60,h:26,vw:800,vh:600},sel:['#go']}],overlays:[],...extra});
 const failMissing=(step='S02',element=1,observation=obsMissing())=>({status:'conflict',step,report:{element,reason:'missing'},observation});
 const base=(pb,o={})=>({flowDir:pb.flowDir,playbookDir:pb.out,runId:'r1',verifyStep:okVerify,regress:okRegress(['S02','S01']),recapture:recaptureFor(pb),account:'acct-1',task:'task-1',...o});
+
+test('승인 재개: 캡처 픽셀이 바뀌면 이전 승인을 거부하고 새 캡처 승인만 반영한다', async()=>{
+  const pb=mkPlaybook(),before=dirSnap(pb.out);
+  let shot='before',verified=0;
+  const recapture=recaptureFor(pb,()=>shot);
+  const verifyStep=async()=>{verified++;return {ok:true,expectChecked:true};};
+  const failure={status:'screen-mismatch',step:'S02',observation:{url:'/box/list',pathHint:true}};
+  const args=base(pb,{recapture,verifyStep});
+  const first=await learn({...args,failure});
+  assert.equal(first.status,'needs-approval');
+  const approval=candidateHash=>({stepId:'S02',candidateHash,account:'acct-1',task:'task-1',by:'user',date:'2026-11-23'});
+  shot='after';
+  const changed=await learn({...args,failure,learnApprovals:[approval(first.candidate.candidateHash)]});
+  assert.equal(changed.status,'needs-approval');
+  assert.notEqual(changed.candidate.prepared.shotSha256,first.candidate.prepared.shotSha256);
+  assert.notEqual(changed.candidate.candidateHash,first.candidate.candidateHash);
+  assert.equal(verified,0,'잘못된 승인으로 검증 수행에 진입하지 않는다');
+  sameDir(before,dirSnap(pb.out));
+  const approved=await learn({...args,failure,learnApprovals:[approval(changed.candidate.candidateHash)]});
+  assert.equal(approved.status,'applied',JSON.stringify(approved));
+  assert.equal(verified,1);
+});
 
 test('S-2 감지·진단 — 종류 분류, 진단 결과에는 종류·단계·요소 번호·건수뿐(값·문구 0)', ()=>{
   const FAKE=['1002','123','456789'].join('-');

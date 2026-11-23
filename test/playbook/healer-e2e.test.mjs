@@ -112,6 +112,10 @@ function prime(browser,step){
   sleep(900);
 }
 function captureStepOn(browser,doc,step){
+  // Orca의 이전 캡처 뒤 래스터 배율이 달라질 수 있어 같은 CSS 뷰를 다시 고정한다.
+  // 승인 해시를 느슨하게 하지 않고 승인 전후 캡처가 같은 픽셀 조건을 쓰게 한다.
+  orca('viewport','--page',browser.page,'--width','320','--height','240','--scale','1');
+  browser.sleep(500);
   prime(browser,step);
   const cap=runCapture({doc,step,frames:{},browser});
   const bytes=readFileSync(cap.path);const sha=sha256Hex(bytes);

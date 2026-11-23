@@ -1,0 +1,24 @@
+{
+  "text": "# 독립 2단계 검토: S-11 선행 검사 수정 (DIFF.patch)\n\n판정은 **pass**입니다. blocking은 0건, should_fix는 2건입니다.\n\n## 독립성 수준\n- **새 세션입니다.** 다른 reviewer의 1단계 첫 판단(REVIEW-final.json)을 먼저 읽었습니다. 그래서 그 판단에 끌렸을 가능성이 있습니다.\n- **같은 모델 계열입니다.** 1단계와 이번 검토 모두 claude-opus-5-5라서 모델이 달라서 생기는 독립성은 없습니다.\n- **읽은 것:** REVIEW-final.json, DIFF.patch, RESULT.md, 지정하신 증거 7개(JPEG 2장은 직접 봤습니다).\n- **읽지 않은 것:** TASK-CLOSE, T01 문서, REVIEW.json, review-records/R1·R2, REVIEW-LOG.jsonl, review-stage2-prompt.txt.\n- **자동으로 들어온 것:** 부트 주입에 P009 프로젝트·태스크 이름이 있었습니다.\n- **소스 파일은 못 읽었습니다.** `test/playbook/healer-e2e.test.mjs`를 Read와 Grep으로 열려 했지만 권한이 거부됐습니다. 그래서 테스트 코드는 DIFF.patch 범위만 판단했습니다. 검사는 제가 실행하지 않았고, 증거 원문으로만 판단했습니다.\n\n## 1단계 첫 판단 (보존)\n- 판정은 pass, blocking 0이었습니다.\n- 안전 쪽(픽셀이 바뀌면 다시 승인)은 **달성**, Orca 실측 재개는 **미확인**으로 봤습니다.\n- 지적은 6건이었습니다.\n  1. should_fix: 보정이 시험 하네스에만 들어가 실제 경로와 달라짐\n  2. should_fix: 원인이 확인되지 않았고 500ms 대기에 기댐\n  3. note: e2e가 두 해시가 같은지 직접 검사하지 않음\n  4. note: 실제 브라우저에서 반대 방향(화면이 바뀌면 거부)을 확인하지 않음\n  5. note: 새 단위 시험이 `maxAttempts=3` 상한에 딱 걸침\n  6. note: \"하네스에서만 고친다\"는 결정의 근거가 diff에 없음\n\n## 1단계 지적이 해소됐는지\n\n| # | 상태 | 근거 |\n|---|---|---|\n| 1 하네스 전용 | **범위 결정으로 해소. 이슈 등록 근거는 미확인** | RESULT.md:31이 시험 준비만 고친다고 범위를 밝히고, 운영 어댑터 수정은 이슈로 분리한다고 적었습니다. 의뢰에서 정한 범위와 같습니다. 다만 실제 이슈 ID나 메모리 항목은 증거에 없습니다. |\n| 2 원인 미확인 | **현상은 확인, 내부 원인은 미확인 (정직하게 기재)** | browser-approval-diagnostic.json의 n1과 n2를 비교하면 patch, boxHash, view(320×240, dpr 1), boxes, masking, contextSha가 같습니다. 다른 것은 shotSha256과 거기서 파생된 recordHash·candidateHash뿐입니다. 이미지는 승인 전 캡처가 정상 배율이고, 재캡처는 같은 캔버스에 약 절반 배율로 그려져 있습니다. 그래서 diff 주석의 \"래스터 배율이 달라질 수 있다\"는 이제 근거가 있습니다. 반면 500ms 대기로 충분한지는 진단 1회와 전체 시험 1회로만 확인돼, 반복했을 때 안정적인지는 미확인입니다. |\n| 3 해시 같음 직접 검사 | **미해소 (note)** | 진단 사본의 출력(viewport-reset:1–2)에서는 승인 전후의 shotSha·recordHash·candidateHash가 같았습니다. 하지만 커밋되는 e2e에는 이 검사가 들어가지 않았습니다. |\n| 4 브라우저 반대 방향 | **미해소 (note, 지금 범위에선 수용 가능)** | 판정 로직(healer.mjs)은 diff에 없습니다. 반대 방향은 단위 시험으로만 증명됩니다. |\n| 5 maxAttempts 상한 | **미해소 (note)** | diff에서 그대로입니다. 지금은 통과합니다(unit-green:1). |\n| 6 결정 추적 | **해소** | RESULT.md:9, 31이 하네스에서만 고친 근거와 범위를 기록했습니다. |\n\n## 목표 대조\n\n**달성**\n- **320×240 같은 화면의 메뉴 승인 재개**\n  - RED: 시작 커밋 e4129f5 사본에서 menu 변형이 `screen-mismatch`로 실패했습니다(base-browser-repro:23–26). 명령과 base가 기록돼 있습니다.\n  - 진단: n2가 n1의 candidateHash `84d6…`로 승인됐고, 1차 완료 뒤 2차 주행에서 치유 호출이 0이었습니다(viewport-reset:2–4).\n  - GREEN: 실제 S-11의 네 변형이 모두 pass 1/1, 2차 주행 치유 호출 0이었습니다(s11-browser-green:1–11).\n- **픽셀이 바뀌면 기존 승인 거부**\n  - 새 단위 시험(DIFF:39–59)이 다음을 모두 확인합니다: 이전 승인을 받아도 `needs-approval`, 해시가 다름, 검증 콜백 0, 파일 불변, 새 해시 승인에서만 `applied`.\n  - 이 시험은 통과했습니다(unit-green:1).\n- **해시·계정·업무 검증 유지**\n  - diff는 테스트 파일 2개만 바꾸고, healer.mjs와 capture 코드는 건드리지 않았습니다.\n  - 계정·업무 결속을 다루는 기존 시험 S-6, S-6b, 검토1-②, 검토2-①이 포함된 25건이 모두 통과했습니다(unit-green:6–7, 14, 19, 26–29).\n\n**미확인**\n- 500ms 대기 기반 수정이 반복 실행에서도 안정적인지(각 1회만 실행됨).\n- Orca 내부 원인.\n- 운영 경로의 임의 viewport에서도 배율이 흔들리는지. 이건 범위 밖이고 RESULT도 그렇게 적었습니다.\n\n**미달**\n- 없습니다.\n\n## 지적\n\n**blocking**\n- 없습니다.\n\n**should_fix**\n1. **GREEN 증거의 출처가 기록되지 않았습니다.**\n   - base-browser-repro.txt에는 base 커밋과 명령이 있는데, s11-browser-green.txt와 unit-green.txt에는 둘 다 없습니다.\n   - 그래서 이 GREEN이 DIFF.patch를 적용한 바로 그 트리에서 나왔는지 증거만으로는 묶을 수 없습니다. git status를 보면 같은 작업본에 T01 변경(src/cli.ts 등)이 섞여 있습니다.\n   - 실행 명령과 트리·diff 해시를 증거 머리에 추가하는 것을 권합니다.\n2. **운영 경로 이슈를 실제로 등록했다는 근거가 없습니다.**\n   - RESULT.md:31은 \"이슈로 분리한다\"고만 적었습니다.\n   - 1단계 1번 지적을 해소하려면 이슈 ID나 프로젝트 메모리의 `issue` 항목을 증거로 남겨야 합니다.\n   - 이 수정으로 e2e가 매 캡처 전에 viewport를 다시 고정합니다. 그래서 운영 경로에서 같은 배율 흔들림이 생겨도 이 시험은 더 이상 잡아내지 못합니다. 이 점도 이슈 본문에 적어 두는 게 좋습니다.\n\n**note**\n- 1단계 3·4·5번은 그대로 유효합니다.\n- diff는 `orca('viewport',…)`의 반환값을 검사하지 않습니다. 소스를 못 읽어서 실패 시 예외가 나는지는 미확인입니다.\n- 새 코드는 `browser.sleep(500)`을 쓰고, 기존 `prime`은 `sleep(900)`을 씁니다. 표기만 다르고, 시험이 통과했으니 동작에는 문제가 없습니다.\n\n## 결론\n의뢰 범위(명시적 320×240 시험 viewport의 캡처 조건 안정화와 승인 거부 검증 유지)는 증거로 달성이 확인됩니다. 1단계의 핵심 미확인이던 Orca 실측 재개는 RED에서 GREEN으로 바뀐 원문으로 해소됐습니다. 남은 것은 증거의 출처 기록과 이슈 등록 근거(should_fix)입니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 66053,
+  "usage": {
+    "input_tokens": 14,
+    "output_tokens": 7177
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

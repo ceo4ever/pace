@@ -1,0 +1,14 @@
+P009_APPROVAL_DIAGNOSTIC {"n":1,"candidate":{"id":"c-okdmcfhdfepd","kind":"screen","stepId":"S02","candidateHash":"84d6cf1dfe9d6c9f0220f796bbb6cba04720f645003605157de3763d418a6db9","irreversible":false,"needsApproval":true,"patch":[{"path":"steps[1].screen.url","from":"^/heal-page\\.html$","to":"^/heal-page-menu\\.html$"}],"prepared":{"recordHash":"f7edb0231f64048357dc1a700b169b60551281ef159eddcbf5281f51ef841b54","shotSha256":"d59bd2547166c97153ab29d16856c8643e73a1c607e13499abcf75ed0753649c","boxHash":"c3dbdbd21c8d6b9d700cf633ef1706335506d54c95850cb9b9c9a2823af68f98"}},"approvals":[],"record":{"boxes":{"1":{"x":10,"y":10,"w":128,"h":30},"2":{"x":140,"y":10,"w":60,"h":26},"3":{"x":10,"y":60,"w":300,"h":100}},"view":{"vw":320,"vh":240,"dpr":1},"shotSha256":"d59bd2547166c97153ab29d16856c8643e73a1c607e13499abcf75ed0753649c","masking":{"masked":2,"perRule":{"#result":1,"(기본:값 있는 입력)":1}},"post":true,"elementsMasked":{"1":true,"2":false,"3":true},"finds":{"1":"input[aria-label=\"조회어\"]","2":"button[aria-label=\"조회\"]","3":"#result"},"contextSha":"79c2518a00a484d3ee1d0044f39cf0ac27951e55f6ffd8aefd99c56c0496b614","recordHash":"f7edb0231f64048357dc1a700b169b60551281ef159eddcbf5281f51ef841b54"}}
+P009_APPROVAL_DIAGNOSTIC {"n":2,"candidate":{"id":"c-okdmcfhdfepd","kind":"screen","stepId":"S02","candidateHash":"84d6cf1dfe9d6c9f0220f796bbb6cba04720f645003605157de3763d418a6db9","irreversible":false,"needsApproval":true,"patch":[{"path":"steps[1].screen.url","from":"^/heal-page\\.html$","to":"^/heal-page-menu\\.html$"}],"prepared":{"recordHash":"f7edb0231f64048357dc1a700b169b60551281ef159eddcbf5281f51ef841b54","shotSha256":"d59bd2547166c97153ab29d16856c8643e73a1c607e13499abcf75ed0753649c","boxHash":"c3dbdbd21c8d6b9d700cf633ef1706335506d54c95850cb9b9c9a2823af68f98"}},"approvals":[{"stepId":"S02","candidateHash":"84d6cf1dfe9d6c9f0220f796bbb6cba04720f645003605157de3763d418a6db9","account":"acct-e2e","task":"task-e2e","by":"user","date":"2026-11-16"}],"record":{"boxes":{"1":{"x":10,"y":10,"w":128,"h":30},"2":{"x":140,"y":10,"w":60,"h":26},"3":{"x":10,"y":60,"w":300,"h":100}},"view":{"vw":320,"vh":240,"dpr":1},"shotSha256":"d59bd2547166c97153ab29d16856c8643e73a1c607e13499abcf75ed0753649c","masking":{"masked":2,"perRule":{"#result":1,"(기본:값 있는 입력)":1}},"post":true,"elementsMasked":{"1":true,"2":false,"3":true},"finds":{"1":"input[aria-label=\"조회어\"]","2":"button[aria-label=\"조회\"]","3":"#result"},"contextSha":"79c2518a00a484d3ee1d0044f39cf0ac27951e55f6ffd8aefd99c56c0496b614","recordHash":"f7edb0231f64048357dc1a700b169b60551281ef159eddcbf5281f51ef841b54"}}
+[e2e-healing] menu 1차 주행: 치유·반영·이어 완료 11455 ms — 종류 screen
+[e2e-healing] menu 2차 주행: 진단 없이 통과(치유 호출 0)
+✔ P009 menu diagnostic (21942.05025ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22219.564083
+
