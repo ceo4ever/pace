@@ -52,9 +52,9 @@ test("사용자 교정 규칙이 작업자가 읽는 §4 본문에 있다 (병�
   assert.match(selfCheck, /합의를 바꾼 것이 있으면 보고 전에 §6으로 올리고/, "합의 변경 시 보고 전 §6 상신");
 });
 
-test("시나리오 문서에 필수 시나리오 S1~S6이 있다", () => {
+test("시나리오 문서에 필수 시나리오 S1~S7이 있다", () => {
   const scenarios = readFileSync(join(skillDir, "evals/scenarios.md"), "utf8");
-  for (let n = 1; n <= 6; n++) {
+  for (let n = 1; n <= 7; n++) {
     const row = scenarios.split("\n").find((line) => line.startsWith(`| S${n} |`));
     assert.ok(row, `S${n} 없음`);
     const cells = row.split("|").slice(1, -1).map((c) => c.trim());

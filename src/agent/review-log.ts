@@ -37,7 +37,9 @@ export interface ReviewEntry {
 }
 export interface DiagnosisEntry { type: "diagnosis"; at: string; target: string; layer: Layer; summary: string; file?: string }
 export interface DecisionEntry { type: "decision"; at: string; target: string; choice: string; summary: string; file: string }
-export type LedgerEntry = ReviewEntry | DiagnosisEntry | DecisionEntry;
+/** 검토 도구 결함(프롬프트·옵션·열람 불가 등)으로 무효인 검토 — 횟수·기준점에서 뺀다. 대상은 그대로여도 다시 검토할 수 있게 한다 */
+export interface VoidEntry { type: "void"; at: string; target: string; record: string; summary: string; file: string }
+export type LedgerEntry = ReviewEntry | DiagnosisEntry | DecisionEntry | VoidEntry;
 
 export type Stage = "normal" | "diagnose" | "ask_user";
 export interface StageInfo {
@@ -60,6 +62,7 @@ function validEntry(v: Record<string, unknown>): boolean {
   if (v.type === "review") return isStr(v.kind) && isStr(v.hash) && ["pass", "fail", "unknown"].includes(v.verdict as string) && isStr(v.verifier) && (v.provider === null || isStr(v.provider)) && (v.rereview_of === null || isStr(v.rereview_of)) && isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.result_hash) && HEX64.test(v.result_hash) && (v.interrupted === undefined || (v.interrupted === true && v.verdict === "fail"));
   if (v.type === "diagnosis") return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" && (v.file === undefined || isStr(v.file));
   if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "";
+  if (v.type === "void") return isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.summary) && v.summary.trim() !== "" && isStr(v.file) && v.file !== "";
   return false;
 }
 
@@ -99,7 +102,8 @@ export function appendLedger(target: string, entry: LedgerEntry): void {
 
 /** 같은 대상(폴더 기준 이름)의 단계. 순수 함수 */
 export function reviewStage(entries: readonly LedgerEntry[], targetName: string): StageInfo {
-  const mine = entries.filter((e) => e.target === targetName);
+  const voided = new Set(entries.filter((e): e is VoidEntry => e.type === "void" && e.target === targetName).map((e) => e.record));
+  const mine = entries.filter((e) => e.target === targetName && e.type !== "void" && !(e.type === "review" && voided.has(e.record)));
   let start = 0; // 마지막 pass·decision 다음
   mine.forEach((e, i) => { if ((e.type === "review" && e.verdict === "pass") || e.type === "decision") start = i + 1; });
   const segment = mine.slice(start);

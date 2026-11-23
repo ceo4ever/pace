@@ -375,7 +375,7 @@ test("S-9i 중단 흔적 자동 복구: pending은 fail(중단)로 세고 기준
   h.set("v3\n");
   const r = await h.verify("never");
   assert.equal(r.code, 16, "중단을 fail로 세어 3회 — 진단 단계");
-  assert.match(r.json.recovered[0], /R3\.json: 실행 중 중단/);
+  assert.match(r.json.recovered[0], /R3\.json\(TASK\.md\): 실행 중 중단/);
   const l = h.ledger() as ReviewEntry[];
   assert.equal(l.length, 3); assert.equal(l[2]!.interrupted, true); assert.equal(l[2]!.verdict, "fail");
   assert.equal(h.prompts.length, 2, "진단 단계라 실행하지 않음");
@@ -464,6 +464,71 @@ test("S-9j 판정 단어 변형·대소문자만 다른 --out", async () => {
   const r = await h.verify("x\nfail", ["--out", join(h.dir, "review-log.JSONL")]);
   assert.equal(r.code, 2, "대소문자만 다른 원장 경로");
   assert.equal(h.prompts.length, 0);
+});
+
+test("S-9m 도구 결함으로 무효인 검토(void)는 횟수·기준점에서 빠지고, 대상이 그대로여도 다시 검토할 수 있다", async () => {
+  const h = harness();
+  h.set("v1\n"); await h.verify("A1 열람 불가\nfail");
+  // 도구만 고침(대상 그대로) — 그냥 다시 부르면 무변경 거부
+  assert.equal((await h.verify("x\nfail")).code, 2);
+  const why = join(h.dir, "tool-fix.md"); writeFileSync(why, "verify 프롬프트가 열람을 막던 결함을 고쳤다");
+  assert.equal((await h.note(["--void", "--record", "review-records/R9.json", "--summary", "없음", "--file", why])).code, 2, "원장에 없는 검토");
+  assert.equal((await h.note(["--void", "--record", "review-records/R1.json", "--summary", "도구 결함", "--file", join(h.dir, "nope.md")])).code, 2, "근거 필수");
+  assert.equal((await h.note(["--void", "--record", "review-records/R1.json", "--summary", "도구 결함", "--file", why])).code, 0);
+  assert.equal((await h.note(["--void", "--record", "review-records/R1.json", "--summary", "도구 결함", "--file", why])).code, 2, "중복 무효");
+  const again = await h.verify("B1\nfail");
+  assert.equal(again.code, 0, "대상이 그대로여도 전체 검토로 다시 연다");
+  assert.equal(again.json.review.rereview_of, null);
+  // 무효 검토는 세지 않는다: 이후 fail 2회로는 진단 단계가 아니다
+  h.set("v2\n"); const r = await h.verify("B2\nfail");
+  assert.equal(r.json.escalation, undefined);
+  assert.equal(r.json.review.rereview_of, "review-records/R2.json", "기준점은 무효가 아닌 가장 최근 fail");
+  // 열린 단계(diagnose·ask_user)에서는 무효 처리로 빠져나갈 수 없다
+  h.set("v3\n"); const third = await h.verify("B3\nfail");
+  assert.equal(third.json.escalation.stage, "diagnose");
+  assert.equal((await h.note(["--void", "--record", "review-records/R4.json", "--summary", "도구 결함", "--file", why])).code, 2, "diagnose 단계 무효 거부");
+  assert.equal((await h.note(["--diagnosis", "--layer", "design", "--summary", "x"])).code, 0);
+  h.set("v4\n"); const afterDiag = await h.verify("B4\nfail");
+  assert.equal(afterDiag.json.escalation.stage, "ask_user");
+  assert.equal((await h.note(["--void", "--record", "review-records/R5.json", "--summary", "도구 결함", "--file", why])).code, 2, "ask_user 단계 무효 거부");
+});
+
+test("S-9n 무효 처리는 이 대상의 실행된 fail 검토만", async () => {
+  const h = harness();
+  const why = join(h.dir, "why.md"); writeFileSync(why, "근거");
+  h.set("v1\n"); await h.verify("ok\npass");
+  assert.equal((await h.note(["--void", "--record", "review-records/R1.json", "--summary", "x", "--file", why])).code, 2, "pass는 무효 처리하지 않는다");
+  // 같은 폴더의 다른 대상 검토 record
+  const other = join(h.dir, "OTHER.md"); writeFileSync(other, "o\n");
+  await verifyCommand(["--author-agent", "claude", "--target", other, "--purpose", "목적"], { executors: () => [{ agent: "codex", mode: "p", capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true }, async run(request) { return normalizeResult(request, { text: "x\nfail", provider: "openai", model: "gpt-6" }, { durationMs: 1, enforcement: "fake" }); } }], write: () => {} });
+  assert.equal((await h.note(["--void", "--record", "review-records/R2.json", "--summary", "x", "--file", why])).code, 2, "다른 대상의 검토는 무효 처리하지 않는다");
+  // 중단 복구 항목
+  writeFileSync(join(h.dir, "review-records/R3.json"), JSON.stringify({ pending: true, review: { target: "TASK.md", hash: "q" } }));
+  h.set("v2\n"); h.offline(); await h.verify("x\nfail");
+  assert.equal((await h.note(["--void", "--record", "review-records/R3.json", "--summary", "x", "--file", why])).code, 2, "중단 복구는 무효 처리하지 않는다");
+});
+
+test("S-9o 중단 복구는 기록의 대상에 귀속한다(같은 폴더의 다른 대상)", async () => {
+  const h = harness();
+  h.set("v1\n"); mkdirSync(join(h.dir, "review-records"));
+  // 구현 diff 검토가 중단돼 남은 pending
+  writeFileSync(join(h.dir, "review-records/R1.json"), JSON.stringify({ pending: true, review: { target: "impl-diff.patch", hash: "d" } }));
+  const r = await h.verify("A1\nfail");
+  assert.equal(r.code, 0);
+  assert.match(r.json.recovered[0], /R1\.json\(impl-diff\.patch\)/);
+  const l = h.ledger() as ReviewEntry[];
+  assert.deepEqual(l.map((e) => [e.target, e.verdict, e.interrupted ?? false]), [["impl-diff.patch", "fail", true], ["TASK.md", "fail", false]]);
+  assert.equal(r.json.review.rereview_of, null, "TASK.md에는 다른 대상의 중단이 들어오지 않는다");
+  // 다른 대상의 판정 있는 기록(pass)도 그 대상에 귀속 — 지금 대상의 구간을 초기화하지 않는다
+  const k = harness();
+  const other = join(k.dir, "impl-diff.patch"); writeFileSync(other, "d1\n");
+  await verifyCommand(["--author-agent", "claude", "--target", other, "--purpose", "목적"], { executors: () => [{ agent: "codex", mode: "p", capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true }, async run(request) { return normalizeResult(request, { text: "좋다\npass", provider: "openai", model: "gpt-6" }, { durationMs: 1, enforcement: "fake" }); } }], write: () => {} });
+  writeFileSync(join(k.dir, "REVIEW-LOG.jsonl"), ""); // impl-diff의 pass 기록이 원장에서 끊긴 상황
+  k.set("v1\n"); await k.verify("A\nfail"); k.set("v2\n"); await k.verify("B\nfail");
+  k.set("v3\n"); const third = await k.verify("C\nfail");
+  assert.equal(third.json.escalation.stage, "diagnose", "다른 대상의 pass가 이 대상의 연속 fail을 끊지 않는다");
+  const kl = k.ledger() as ReviewEntry[];
+  assert.deepEqual([kl[0]!.target, kl[0]!.verdict], ["impl-diff.patch", "pass"]);
 });
 
 test("S-9c 실제 진입점: fail 3줄 원장이면 실행기 탐색 전에 종료 16", () => {

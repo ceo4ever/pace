@@ -7,3 +7,9 @@
 {"ts":"2026-11-23T05:29:32.219Z","p":"P007","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-23T05:29:37.299Z","p":"P007","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-23T05:29:37.299Z","p":"P007","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-23T05:29:43.876Z","p":"P007","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-23T06:55:41.845Z","p":"P007","t":"T02","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-23T08:08:26.882Z","p":"P007","t":"T02","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-23T08:08:29.852Z","p":"P007","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T08:08:36.152Z","p":"P007","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-23T08:08:36.152Z","p":"P007","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}

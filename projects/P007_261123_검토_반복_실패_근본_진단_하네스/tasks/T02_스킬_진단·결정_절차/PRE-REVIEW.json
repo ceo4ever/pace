@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "author": "anthropic",
+  "attempts": [
+    {
+      "hash": "2813e02ef7897f2aa96b4e76246b01d0e25b3d6610d943cf0887310c4f22700c",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "6f2a0187beddcb19bc7235023d6851a41ed47cfe526e21775f1634db52e3a1bf",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "자동 재검토 rereview_of review-records/R1.json(codex -p 새 세션에 직전 원문·바뀐 줄 전달)"
+    },
+    {
+      "hash": "d0ba9b0ccc61781c1dfe45e4ec4320df7af83c7683dd6ebf9f35b4b3b72c4ca8",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "자동 재검토 rereview_of review-records/R2.json(codex -p 새 세션에 직전 원문·바뀐 줄 전달)"
+    },
+    {
+      "hash": "facbbd8650ec97a88899195f173724a9bec5467ce27313cde623367f10402dc4",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "review-records/R4.json",
+      "continuity": "changed",
+      "reason": "진단 뒤 새 기준 전체 검토(codex -p 새 세션)"
+    }
+  ],
+  "waiver": {
+    "by": "user",
+    "date": "2026-11-23",
+    "reason": "진단 뒤 전체 검토 fail(ask_user) — 캡틴 결정: 실제 누락 2건·세부 1건 반영 후 사전 검토 추가 없이 구현 진행",
+    "evidence": "evidence/user-decision-1.md",
+    "hash": "d27dc3bcd1da580afffddab838187b74011160f26cb22b1150293394a2d2ad88"
+  }
+}

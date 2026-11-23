@@ -18,7 +18,7 @@ export interface VerifyCliDeps {
 }
 
 export const VERIFY_USAGE = "pace agent verify --author-agent claude|codex --target <산출물 파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록 파일>]";
-export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary "<진단·조치>" [--file <근거>] | --decision --choice "<선택>" --summary "<사유>" --file <사용자 결정 원문>)';
+export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary "<진단·조치>" [--file <근거>] | --decision --choice "<선택>" --summary "<사유>" --file <사용자 결정 원문> | --void --record review-records/R<n>.json --summary "<도구 결함>" --file <근거>)';
 
 const ESCALATION_EXIT = errorCodes.review_escalation;
 
@@ -89,8 +89,10 @@ function recoverOrphans(target: string, name: string, kind: string, now: () => D
   const notes: string[] = [];
   for (const rel of orphanRecords(target, readLedger(target))) {
     const file = join(dirname(target), rel);
-    let rec: { pending?: unknown; verifier?: unknown; result?: { text?: unknown; provider?: { value?: unknown } }; review?: { hash?: unknown; verdict?: unknown; rereview_of?: unknown; snapshot?: unknown } };
+    let rec: { pending?: unknown; verifier?: unknown; result?: { text?: unknown; provider?: { value?: unknown } }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; rereview_of?: unknown; snapshot?: unknown } };
     try { rec = JSON.parse(readFileSync(file, "utf8")); } catch { throw new LedgerError(`원장에 없는 검토 기록을 읽을 수 없다: ${file} — 확인해 고치거나 지운 뒤 다시 실행한다`); }
+    // 기록은 그 기록의 대상에 귀속한다 — 같은 폴더의 다른 대상(예: TASK.md와 구현 diff) 기록을 지금 대상의 fail로 가져가지 않는다
+    const owner = typeof rec.review?.target === "string" && rec.review.target !== "" ? rec.review.target : name;
     const hash = typeof rec.review?.hash === "string" ? rec.review.hash : "";
     const text = rec.result?.text;
     const verdict = rec.review?.verdict;
@@ -99,11 +101,11 @@ function recoverOrphans(target: string, name: string, kind: string, now: () => D
     const consistent = rec.pending !== true && typeof text === "string" && typeof rec.review?.snapshot === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")
       && parseVerdict(text) === verdict && hash !== "" && reviewHash(rec.review.snapshot) === hash;
     if (consistent && typeof text === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")) {
-      entry = { type: "review", at: now().toISOString(), kind, target: name, hash, verdict, verifier: typeof rec.verifier === "string" ? rec.verifier : "unknown", provider: typeof rec.result?.provider?.value === "string" ? rec.result.provider.value : null, rereview_of: typeof rec.review?.rereview_of === "string" ? rec.review.rereview_of : null, record: rel, result_hash: textHash(text) };
-      notes.push(`${rel}: 기록의 판정(${verdict})으로 원장에 복구했다`);
+      entry = { type: "review", at: now().toISOString(), kind, target: owner, hash, verdict, verifier: typeof rec.verifier === "string" ? rec.verifier : "unknown", provider: typeof rec.result?.provider?.value === "string" ? rec.result.provider.value : null, rereview_of: typeof rec.review?.rereview_of === "string" ? rec.review.rereview_of : null, record: rel, result_hash: textHash(text) };
+      notes.push(`${rel}(${owner}): 기록의 판정(${verdict})으로 원장에 복구했다`);
     } else {
-      entry = { type: "review", at: now().toISOString(), kind, target: name, hash: hash || "unknown", verdict: "fail", verifier: "unknown", provider: null, rereview_of: null, record: rel, result_hash: textHash(""), interrupted: true };
-      notes.push(`${rel}: ${rec.pending === true ? "실행 중 중단돼 판정을 모른다" : "기록의 판정·원문·스냅숏이 서로 맞지 않는다"} — 연속 실패를 줄이지 않도록 fail(중단)로 원장에 복구했다(재검토 기준점은 되지 않는다)`);
+      entry = { type: "review", at: now().toISOString(), kind, target: owner, hash: hash || "unknown", verdict: "fail", verifier: "unknown", provider: null, rereview_of: null, record: rel, result_hash: textHash(""), interrupted: true };
+      notes.push(`${rel}(${owner}): ${rec.pending === true ? "실행 중 중단돼 판정을 모른다" : "기록의 판정·원문·스냅숏이 서로 맞지 않는다"} — 연속 실패를 줄이지 않도록 fail(중단)로 원장에 복구했다(재검토 기준점은 되지 않는다)`);
     }
     try { appendLedger(target, entry); } catch (error) { throw new LedgerError(`원장 복구에 실패했다: ${(error as Error).message}`); }
   }
@@ -209,21 +211,31 @@ function contentFile(path: string): boolean {
 export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Promise<number> {
   const { values } = parseArgs({
     args,
-    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" } },
+    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, void: { type: "boolean" }, record: { type: "string" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" } },
     strict: true,
   });
   const now = deps.now ?? (() => new Date());
   let release: (() => void) | null = null;
   try {
     const target = realTarget(req(values.target, REVIEW_NOTE_USAGE));
-    if (values.diagnosis === values.decision) throw new AgentError("invalid_request", `--diagnosis와 --decision 중 하나만 — ${REVIEW_NOTE_USAGE}`);
+    if ([values.diagnosis, values.decision, values.void].filter(Boolean).length !== 1) throw new AgentError("invalid_request", `--diagnosis·--decision·--void 중 하나만 — ${REVIEW_NOTE_USAGE}`);
     const summary = req(values.summary, REVIEW_NOTE_USAGE).trim();
     if (!summary) throw new AgentError("invalid_request", "--summary가 비었다");
     const name = targetName(target);
     release = acquireLock(target);
-    const info = reviewStage(readLedger(target), name);
+    const ledger = readLedger(target);
+    const info = reviewStage(ledger, name);
     let entry: LedgerEntry;
-    if (values.diagnosis) {
+    if (values.void) {
+      // 검토 도구 결함으로 무효인 fail 검토 — normal 단계에서만(열린 단계는 진단·결정으로만 넘어간다), 이 대상의 fail 검토여야 하고 근거가 있어야 한다
+      if (info.stage !== "normal") throw new AgentError("invalid_request", `무효 처리는 normal 단계에서만 한다(지금 ${info.stage}) — 열린 단계는 진단·사용자 결정으로 넘어간다`);
+      const record = req(values.record, REVIEW_NOTE_USAGE);
+      if (!ledger.some((e) => e.type === "review" && e.target === name && e.record === record && e.verdict === "fail" && e.interrupted !== true)) throw new AgentError("invalid_request", `원장에 이 대상의 실행된 fail 검토 ${record}가 없다(pass·중단 복구는 무효 처리하지 않는다)`);
+      if (ledger.some((e) => e.type === "void" && e.target === name && e.record === record)) throw new AgentError("invalid_request", `${record}는 이미 무효로 기록됐다`);
+      const file = req(values.file, REVIEW_NOTE_USAGE);
+      if (!contentFile(file)) throw new AgentError("invalid_request", `무효 근거 파일이 없거나 비었다: ${file}`);
+      entry = { type: "void", at: now().toISOString(), target: name, record, summary, file };
+    } else if (values.diagnosis) {
       if (info.stage !== "diagnose") throw new AgentError("invalid_request", `진단은 연속 fail로 diagnose 단계일 때만 기록한다(지금 ${info.stage})`);
       const layer = req(values.layer, REVIEW_NOTE_USAGE) as Layer;
       if (!LAYERS.includes(layer)) throw new AgentError("invalid_request", `--layer는 ${LAYERS.join("|")}`);
