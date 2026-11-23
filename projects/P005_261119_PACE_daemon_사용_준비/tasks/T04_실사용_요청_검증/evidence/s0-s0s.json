@@ -2,17 +2,50 @@
   "date": "2026-11-23",
   "S-0": {
     "install": "캡틴 대화형 pace daemon install 완료(토큰·식별자는 캡틴만 입력, main 미열람)",
-    "secrets": {"telegram.json": "600", "gateway-token": "600", "dir": "700"},
-    "loader_vs_intended": {"device": "기본값", "allowedUsers.telegram": "1명 일치", "workspaces": "0 일치(기존 pace 항목 캡틴 결정으로 삭제 뒤)", "defaultAccess": "read-only 일치", "approvalTtlSeconds": "600 일치", "maxConcurrent": "2 일치", "defaultChain": "default = claude/acp → codex/p 일치"},
+    "secrets": {
+      "telegram.json": "600",
+      "gateway-token": "600",
+      "dir": "700"
+    },
+    "loader_vs_intended": {
+      "device": "기본값",
+      "allowedUsers.telegram": "1명 일치",
+      "workspaces": "0 일치(기존 pace 항목 캡틴 결정으로 삭제 뒤)",
+      "defaultAccess": "read-only 일치",
+      "approvalTtlSeconds": "600 일치",
+      "maxConcurrent": "2 일치",
+      "defaultChain": "default = claude/acp → codex/p 일치"
+    },
     "launchd": "io.pace.daemon 등록, plist PATH 있음",
     "anomaly": "기존 workspace(pace, PACE 소스 저장소) 1건 — 강제 중단·보고·캡틴 결정으로 삭제(close-carry.md)"
   },
   "S-0s": {
-    "boot": {"pid_equals_launchd_service_pid": true, "entry": "설치본 bin/pace.ts daemon run", "started_after_fix": "521e3b8 재설치 뒤 pace daemon start로 기동(강제 종료 뒤 재기동 결함 수정 실측)"},
-    "service_path_resolution": {"source": "ps eww 서비스 PID의 PATH", "claude": true, "codex": true, "claude-agent-acp": true, "node": true, "model_calls": 0},
-    "observe_60s": {"tasks": 0, "approvals": 0, "conversations": 0, "seen": 0, "quarantine": 0, "workspaces": 0, "config_hash_unchanged": true, "telegram_started": true},
+    "boot": {
+      "pid_equals_launchd_service_pid": true,
+      "entry": "설치본 bin/pace.ts daemon run",
+      "started_after_fix": "521e3b8 재설치 뒤 pace daemon start로 기동(강제 종료 뒤 재기동 결함 수정 실측)"
+    },
+    "service_path_resolution": {
+      "source": "ps eww 서비스 PID의 PATH",
+      "claude": true,
+      "codex": true,
+      "claude-agent-acp": true,
+      "node": true,
+      "model_calls": 0
+    },
+    "observe_60s": {
+      "tasks": 0,
+      "approvals": 0,
+      "conversations": 0,
+      "seen": 0,
+      "quarantine": 0,
+      "workspaces": 0,
+      "config_hash_unchanged": true,
+      "telegram_started": true
+    },
     "installed_copy_identical": "bin/**·src/**·package.json 바이트 동일(rebase 뒤)",
     "verdict": "pass",
-    "pending": "캡틴 확인: 이전 PC 읽기 요청 발송·응답 여부"
+    "pending": null,
+    "captain_previous_pc_read": "캡틴 답(2026-11-23): 이전 PC에서 읽기 요청을 보낸 적 없음"
   }
 }

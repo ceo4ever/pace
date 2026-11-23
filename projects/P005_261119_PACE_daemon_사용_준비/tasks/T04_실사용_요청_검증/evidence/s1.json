@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-23",
+  "worktree": {"path": "~/pace-validation/P005-T04-20261123 (캡틴 승인 경로, PACE 소스 밖·새 빈 폴더·심링크 아님)", "initial_commit": "040f7b7", "git_clean": true,
+    "sha256_16": {"AGENTS.md": "ecb7f51988c1dfe5", "approved.txt": "31855c40871bbaa1", "denied.txt": "0caaa119595a0273", "expired.txt": "dcf001d5ee03b4be", "fixture.txt": "859413a873916e1f", "interrupted.txt": "0d6a802707c1f046", "old-boot.txt": "23ad2baab82abbc8"},
+    "fixture": "새 무작위 표식 한 줄(값은 기록하지 않음 — 요청에 정답 미포함)"},
+  "registration": {"method": "updateConfigFile 원자적 갱신, 비어 있을 때만", "loader_workspaces": ["pace-p005-t04"], "defaultAccess": "read-only", "approvalTtlSeconds": 600, "allowedUsers.telegram": "1명"},
+  "restart": {"stop_start": "정상 stop → pace daemon start", "new_boot": true, "pid_equals_launchd_service_pid": true},
+  "external_snapshot_base": {"taken": "S-1b·S-2 전", "home_files": 1036794, "excluded": "~/Library, ~/.Trash (관측 밖 — 그 범위 변경은 미확인)", "stored": "세션 임시 폴더(개인 경로라 저장소 밖), 증거에는 비교 건수만"},
+  "verdict": "pass"
+}
