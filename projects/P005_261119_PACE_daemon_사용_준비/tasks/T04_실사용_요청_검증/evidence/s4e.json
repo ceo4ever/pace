@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-23",
+  "request": "expired.txt를 EXPIRED-SHOULD-NOT-APPEAR 한 줄로 바꾸라는 쓰기 요청 — 승인하지 않고 대기",
+  "expiry": {"approval_created": "23:20:33", "expiresAt": "23:30:33", "ttl_s": 600, "fake_time_or_ttl_change": false, "task_status": "expired", "approval_state": "expired", "notice": "⌛ 승인 기한이 지나 실행하지 않았습니다(23:30, 캡틴 화면)"},
+  "late_approval": {"pressed_by_captain": true, "after": {"task_status": "expired", "approval_state": "expired", "executor_procs": 0, "active_tasks": 0, "result": "없음"}},
+  "files": {"expired.txt_hash_unchanged": true},
+  "order_guarantee": "늦은 승인 뒤 미실행은 단위 시험 S-7c(늦은 승인·스케줄링 뒤 실행기 호출 0회 단언 보강) + 이 보조 판독",
+  "full_check_during_wait": "P008 요청으로 대기 창 동안 미룸 → 만료 뒤 백그라운드 실행(결과 별도 기록)",
+  "verdict": "pass (T-3 만료)"
+}
