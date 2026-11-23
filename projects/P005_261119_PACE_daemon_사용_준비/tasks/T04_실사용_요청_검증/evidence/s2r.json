@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-23",
+  "request": "캡틴이 같은 토픽에서 '파일을 다시 열지 말고 직전 답을 그대로 말해 주세요.'",
+  "task": {"status": "done", "access": "read-only", "target.chain": "default", "duration_s": 3},
+  "resume_evidence": {
+    "answer_equals_marker": true,
+    "result_via_absent": true,
+    "saved_session_agent_claude": true,
+    "saved_session_id_same_as_after_S2": true,
+    "session_transcript_grew": true,
+    "new_session_file_in_worktree_folder": false,
+    "code_basis": "이어가기 분기의 ACP 실행기는 session/resume 성공 뒤에만 프롬프트를 보내고, 실패하면 runner가 체인 폴백(result.via 기록)으로 간다(src/agent/acp-executor.ts·src/daemon/runner.ts)",
+    "telegram_view": "두 번째 답에 '처리:' 줄 없음(이어가기 분기 표시와 일치)"
+  },
+  "worktree": {"git_status_clean": true, "fixture_hash_unchanged": true},
+  "outside_changes": {"protected_files_unchanged": true, "in_window_changes": 9, "not_allowed": 0},
+  "verdict": "pass — T-1 세션 재개 확인(코드 근거 + 실측 관측)"
+}
