@@ -75,3 +75,4 @@
 - [문서 표 SECURITY 적용 범위 정렬](문서-표-security-적용-범위-정렬.md) — 정의서 문서 표의 docs/SECURITY.md 적용 범위를 민감 경로 표와 맞춘다(src/test-runner/·skills/pace-playbook-maker/tools/·src/project/situation.ts 누락)
 - [서브 문서 내부 구조 정리](서브-문서-내부-구조-정리.md) — 원문 그대로 옮긴 DAEMON.md(한 문단)·DASHBOARD.md(절 없음)·TESTING 검사 선택(한 문장)을 절로 나눠 찾기 쉽게 — 정의서 크기 여유 6%도 함께 본다
 - [정의서 측정 도구 제공](정의서-측정-도구-제공.md) — pace-project-init의 정의서 측정(크기·절·비고·미등록 폴더·문서·서브 문서)을 CLI나 스킬 도구로 제공 — 지금은 analysis.md에 재는 법만 있다
+- [daemon 설정 PC 이전](daemon-설정-pc-이전.md) — daemon 설정 내보내기·가져오기로 새 PC 설치를 토큰 입력 하나로 줄인다

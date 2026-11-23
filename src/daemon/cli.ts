@@ -37,6 +37,8 @@ function probe(port: number, timeoutMs = 800): Promise<boolean> {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export interface DaemonCliDeps {
+  /** launchd plist에 넣을 PATH(시험 주입, 기본은 현재 PATH) */
+  path?: string;
   /** 외부 명령 실행자(reg·launchctl·로그인 등) — 시험은 가짜를 넣는다 */
   runner?: CommandRunner;
   /** 터미널에서 질문할 수 있는지(시험 주입) */
@@ -69,7 +71,7 @@ export async function daemonCommand(args: string[], deps: DaemonCliDeps = {}): P
   const home = paceHome();
   const usage = "pace daemon run|start|status|stop [--force]|logs [-n N]|release <경로>|install [--yes] [--start] [--agents claude,codex] [--login] [--install-adapters]|uninstall [--yes]|telegram init --chat-id <id> [--api-base <url>]|telegram reset-offset --yes";
   const runningProbe = deps.isRunning ?? (() => probe(activeInstancePort(home)));
-  const autostartEnv = (): AutostartEnv => ({ platform: deps.platform ?? process.platform, runner: deps.runner ?? runCommand, home, defaultHome: defaultDataHome(), nodePath: deps.nodePath ?? process.execPath, binPath: deps.binPath ?? fileURLToPath(new URL("../../bin/pace.ts", import.meta.url)), launchAgentsDir: deps.launchAgentsDir });
+  const autostartEnv = (): AutostartEnv => ({ platform: deps.platform ?? process.platform, runner: deps.runner ?? runCommand, home, defaultHome: defaultDataHome(), nodePath: deps.nodePath ?? process.execPath, binPath: deps.binPath ?? fileURLToPath(new URL("../../bin/pace.ts", import.meta.url)), launchAgentsDir: deps.launchAgentsDir, path: "path" in deps ? deps.path : process.env.PATH });
   switch (sub) {
     case "run":
       if (rest.length > 0) throw new DaemonUsageError(usage);

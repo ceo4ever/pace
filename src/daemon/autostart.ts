@@ -24,6 +24,8 @@ export interface AutostartEnv {
   binPath: string;
   /** macOS LaunchAgents 폴더(시험용으로 바꾼다) */
   launchAgentsDir?: string;
+  /** 등록 때의 PATH — launchd는 시스템 기본 PATH만 주므로 plist에 넣어 실행기(claude·codex·ACP 어댑터)를 찾게 한다 */
+  path?: string;
 }
 
 export interface PlanStep { description: string; command: string; args: string[] }
@@ -54,8 +56,11 @@ export function buildLauncher(env: Pick<AutostartEnv, "nodePath" | "binPath" | "
   return Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(`${lines.join("\r\n")}\r\n`, "utf16le")]);
 }
 
-export function buildPlist(env: Pick<AutostartEnv, "nodePath" | "binPath" | "home" | "defaultHome">): string {
-  const environment = env.home !== env.defaultHome ? `<key>EnvironmentVariables</key><dict><key>PACE_HOME</key><string>${xmlEscape(env.home)}</string></dict>\n` : "";
+const plistPathEntry = (path: string | undefined) => (path ? `<key>PATH</key><string>${xmlEscape(path)}</string>` : "");
+
+export function buildPlist(env: Pick<AutostartEnv, "nodePath" | "binPath" | "home" | "defaultHome" | "path">): string {
+  const vars = `${plistPathEntry(env.path)}${env.home !== env.defaultHome ? `<key>PACE_HOME</key><string>${xmlEscape(env.home)}</string>` : ""}`;
+  const environment = vars ? `<key>EnvironmentVariables</key><dict>${vars}</dict>\n` : "";
   return `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>Label</key><string>${LAUNCHD_LABEL}</string>\n<key>ProgramArguments</key><array><string>${xmlEscape(env.nodePath)}</string><string>${xmlEscape(env.binPath)}</string><string>daemon</string><string>run</string></array>\n${environment}<key>RunAtLoad</key><true/>\n<key>KeepAlive</key><false/>\n</dict></plist>\n`;
 }
 
@@ -103,6 +108,8 @@ export function ownsRunValue(home: string, value: string): boolean {
 }
 
 const PLIST_HOME = /<key>\s*PACE_HOME\s*<\/key>\s*<string>([^<]*)<\/string>/;
+const PLIST_PATH = /<key>\s*PATH\s*<\/key>/;
+const PLIST_ENV = /<key>\s*EnvironmentVariables\s*<\/key>\s*<dict>/;
 const PLIST_ARGS = /<key>\s*ProgramArguments\s*<\/key>\s*<array>[\s\S]*?<\/array>/;
 
 /** plist가 PACE daemon 등록이고 이 데이터 폴더의 것인가(기본 폴더는 PACE_HOME 환경값이 없다) */
@@ -212,8 +219,15 @@ export function refreshAutostart(env: AutostartEnv): string | null {
     // plist 전체를 다시 쓰지 않고 실행 인자만 바꾼다 — 사용자가 더한 launchd 설정은 남긴다
     const block = PLIST_ARGS.exec(buildPlist(env))![0];
     const existing = PLIST_ARGS.exec(current);
-    if (!existing || existing[0] === block) return null;
-    writeFileSync(plist, current.replace(existing[0], () => block));
+    if (!existing) return null;
+    let next = current.replace(existing[0], () => block);
+    // PATH가 없는 옛 등록은 실행기를 찾지 못한다 — PATH만 더하고 이미 있는 값(사용자 설정)은 둔다
+    if (env.path && !PLIST_PATH.test(next)) {
+      const entry = plistPathEntry(env.path);
+      next = PLIST_ENV.test(next) ? next.replace(PLIST_ENV, (m) => `${m}${entry}`) : next.replace(/<key>\s*RunAtLoad\s*<\/key>/, (m) => `<key>EnvironmentVariables</key><dict>${entry}</dict>\n${m}`);
+    }
+    if (next === current) return null;
+    writeFileSync(plist, next);
     return "daemon 자동 실행 등록의 경로를 새 설치본으로 갱신했다(다음 로그인부터 적용)";
   }
   return null;

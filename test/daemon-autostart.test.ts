@@ -147,6 +147,35 @@ test("S-7m macOS 재설치: 옛 경로 plist는 새 경로로, plist가 없거�
   assert.equal(s.sys.calls.filter((c) => c.command === "launchctl").length, 0);
 });
 
+test("S-6p macOS: plist에 등록 때의 PATH를 넣어 launchd에서도 실행기를 찾는다", async () => {
+  const s = setup("darwin"); chain(s.home);
+  assert.equal(await s.run(["install", "--yes"], { path: "/Users/u/.local/bin:/usr/bin:/bin" }), 0);
+  const xml = readFileSync(plistPath({ launchAgentsDir: s.launchAgentsDir }), "utf8");
+  assert.match(xml, /<key>EnvironmentVariables<\/key><dict><key>PATH<\/key><string>\/Users\/u\/\.local\/bin:\/usr\/bin:\/bin<\/string><key>PACE_HOME<\/key>/);
+});
+
+test("S-6q macOS: PATH가 없으면 EnvironmentVariables에 PATH를 넣지 않는다", async () => {
+  const s = setup("darwin"); chain(s.home);
+  assert.equal(await s.run(["install", "--yes"], { path: undefined }), 0);
+  assert.ok(!readFileSync(plistPath({ launchAgentsDir: s.launchAgentsDir }), "utf8").includes("<key>PATH</key>"));
+});
+
+test("S-7p macOS 재설치: PATH 없는 옛 plist에 PATH를 더하고, 이미 있는 PATH는 바꾸지 않는다", () => {
+  const s = setup("darwin");
+  const env = (path: string): AutostartEnv => ({ ...envOf(s, "darwin", "/home/u/.pace/app/bin/pace.ts"), path });
+  const plist = plistPath({ launchAgentsDir: s.launchAgentsDir });
+  mkdirSync(dirname(plist), { recursive: true });
+  writeFileSync(plist, `<plist><dict><key>Label</key><string>io.pace.daemon</string><key>ProgramArguments</key><array><string>${NODE}</string><string>/home/u/.pace/app/bin/pace.ts</string><string>daemon</string><string>run</string></array><key>EnvironmentVariables</key><dict><key>PACE_HOME</key><string>${s.home}</string></dict><key>RunAtLoad</key><true/></dict></plist>`);
+  assert.match(refreshAutostart(env("/a:/usr/bin")) ?? "", /갱신했다/, "같은 실행 경로여도 PATH가 없으면 갱신");
+  assert.match(readFileSync(plist, "utf8"), /<dict><key>PATH<\/key><string>\/a:\/usr\/bin<\/string><key>PACE_HOME<\/key>/);
+  assert.equal(refreshAutostart(env("/b:/usr/bin")), null, "이미 있는 PATH는 사용자 설정으로 보고 두기");
+  assert.ok(readFileSync(plist, "utf8").includes("/a:/usr/bin"));
+  writeFileSync(plist, `<plist><dict><key>Label</key><string>io.pace.daemon</string><key>ProgramArguments</key><array><string>${NODE}</string><string>/home/u/.pace/app/bin/pace.ts</string><string>daemon</string><string>run</string></array>\n<key>RunAtLoad</key><true/></dict></plist>`);
+  const s2: AutostartEnv = { ...env("/c"), defaultHome: s.home };
+  assert.match(refreshAutostart(s2) ?? "", /갱신했다/, "EnvironmentVariables가 없으면 만든다");
+  assert.match(readFileSync(plist, "utf8"), /<key>EnvironmentVariables<\/key><dict><key>PATH<\/key><string>\/c<\/string><\/dict>\n<key>RunAtLoad<\/key>/);
+});
+
 test("지원하지 않는 플랫폼은 등록하지 않고 직접 실행을 안내한다", async () => {
   const s = setup("linux"); chain(s.home);
   assert.equal(await s.run(["install", "--yes"]), 1);
