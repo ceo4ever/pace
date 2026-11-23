@@ -1,0 +1,7 @@
+{
+  "date": "2026-11-23",
+  "action": "캡틴이 기존 PACE 검증 토픽(설치 때 고른 그룹 안)에서 /bind pace-p005-t04 — 봇 응답 '결속했다: pace-p005-t04'",
+  "observed": {"bound_topics": 1, "bound_workspace": "pace-p005-t04", "other_topics_changed": false, "tasks": 0, "approvals": 0, "boot_unchanged": true},
+  "note": "토픽·그룹 식별자는 기록하지 않음. @봇 없이 보낸 /bind도 처리됨(봇이 그룹 관리자). 21:59~22:20 사이 getUpdates fetch failed 3건 — 결속은 정상 처리",
+  "verdict": "pass"
+}
