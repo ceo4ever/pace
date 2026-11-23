@@ -51,9 +51,9 @@
 |---|---|
 | `src/agent/verify.ts`·`src/agent/verify-cli.ts`(신규)·`src/cli.ts`·`src/agent/contract.ts` | 재검토 프롬프트(원장 자동 기준점), 원장·단계, 새 종료 코드, 기록 명령(`review-note`) |
 | `src/agent/review-log.ts`(신규) | 원장 읽기·쓰기·단계 계산 |
-| `test/agent-verify*.test.ts` | 위 기준 단위 시험 |
+| `test/agent-review-log.test.ts`(신규)·`test/project-dev-skill.test.ts` | 위 기준 단위 시험·스킬 시나리오 구조 검사 |
 | `docs/AGENT-CALL.md` | verify 재검토·원장·단계·종료 코드 |
-| `skills/pace-project-dev/SKILL.md`·`references/{task-steps,reviewer,tools,coordinator}.md` | 진단·사용자 결정 절차, 재검토 모드 사용 |
+| `skills/pace-project-dev/SKILL.md`·`skills/pace-project-dev/references/task-steps.md`·`skills/pace-project-dev/references/reviewer.md`·`skills/pace-project-dev/references/tools.md`·`skills/pace-project-dev/references/coordinator.md`·`skills/pace-project-dev/evals/scenarios.md` | 진단·사용자 결정 절차, 재검토 모드 사용, 시나리오 S7 |
 | `README.md` | 사용자 명령 예시(있으면 한 줄) |
 
 ## 태스크
@@ -72,4 +72,5 @@
 | 2026-11-23 13:08 | (자체 판단) T01: 재검토 기준점을 호출자 --previous 대신 원장 자동 선택으로(오래된 기록 재검토 방지), 기록은 review-records 자동 저장, 진단 뒤 첫 검토는 전체 — 사전 검토 1차 blocking 반영 |
 | 2026-11-23 13:34 | (자체 판단) T01: 재검토에도 현재 산출물 전체를 맥락으로 준다 — 범위는 판정 지시로 좁힘(reviewer 1·2차 #1 불수용 이유: 해소 판단에 전체 맥락 필요); 결정 근거가 사람 원문인지는 PM 책임(T-5 합의) 유지 |
 | 2026-11-23 14:13 | (사용자 결정) T01: 사용자 결정(evidence/user-decision-post-1.md)에 따라 작성자 전체 재검토로 6건 보완: 큰 변경 거친 비교(막다른 길 제거), 원장 없는 기록 자동 복구(pending=fail·interrupted, 기준점 제외), --out 대소문자 무시, 남은 잠금 PID 판정, 판정 단어 변형 인식, 임시 파일 이름 고유화 — reviewer 추가 검토 없이 tester·전체 검사로 마감 |
+| 2026-11-23 17:09 | (자체 판단) 정본 목록 표기를 패턴(test/agent-verify*, references/{…})에서 실제 경로로 — finish 정본 반영 검사가 패턴을 경로로 읽지 못함 |
 

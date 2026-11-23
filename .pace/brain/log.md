@@ -56,3 +56,4 @@
 ## [2026-11-21] update | 백로그 대시보드 자동 갱신과 Git 경계 (.pace/brain/pages/concept/백로그-대시보드-자동-갱신과-git-경계.md)
 ## [2026-11-21] update | Canvas 스킬 묶음 설치 경계 (.pace/brain/pages/concept/canvas-추출-도구-봉인과-설치-경계.md)
 ## [2026-11-21] ingest | 정의서 크기·분리 기준과 다운사이즈 검증 (.pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md)
+## [2026-11-23] ingest | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)

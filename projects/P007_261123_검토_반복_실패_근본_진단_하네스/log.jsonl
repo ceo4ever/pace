@@ -13,3 +13,5 @@
 {"ts":"2026-11-23T08:08:29.852Z","p":"P007","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-23T08:08:36.152Z","p":"P007","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-23T08:08:36.152Z","p":"P007","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-23T08:09:31.619Z","p":"P007","type":"gate","by":"cli","msg":"finish: contract","ok":false,"data":{"finish":1}}
+{"ts":"2026-11-23T08:09:44.817Z","p":"P007","type":"change","by":"agent","msg":"정본 목록 표기를 패턴(test/agent-verify*, references/{…})에서 실제 경로로 — finish 정본 반영 검사가 패턴을 경로로 읽지 못함","src":"자체 판단"}
