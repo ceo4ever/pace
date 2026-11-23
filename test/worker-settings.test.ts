@@ -7,7 +7,7 @@ import { readWorkerSettings, resolveWorkerSettings, setWorkerSettings } from "..
 
 test("작업자 설정 우선순위와 초기화", () => {
   const env = { PACE_HOME: tempDir("pace-worker-") };
-  assert.deepEqual(resolveWorkerSettings("codex", undefined, undefined, env), { model: "gpt-6.1-sol", effort: undefined });
+  assert.deepEqual(resolveWorkerSettings("codex", undefined, undefined, env), { model: "gpt-6.2-sol", effort: undefined });
   assert.equal(resolveWorkerSettings("claude", undefined, undefined, env).model, "claude-opus-5-5");
   setWorkerSettings("codex", "model", "custom", env);
   setWorkerSettings("codex", "effort", "high", env);

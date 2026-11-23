@@ -225,5 +225,5 @@ PACE_HOME="$(mktemp -d)" ./bin/pace.ts boot --host plain   # 실제 ~/.pace 대�
 
 백로그는 `pace backlog new "이름"`, 브리프(brief)는 `pace backlog brief BL261025_01 "이름"`으로 만듭니다. `backlogs/BL{YYMMDD}_{NN}_이름/BACKLOG.md`가 개요이고 `BR{NN}_이름.md`가 브리프입니다. `pace project new "이름" --from BL261025_01`은 백로그 하나를 프로젝트 하나로, BR01을 T01로 연결합니다. 완료 백로그에는 브리프를 덧붙이지 않고 새 백로그를 만듭니다.
 
-작업자 모델은 `pace worker show`로 조회하고 `pace worker set codex model gpt-6.1-sol`, `pace worker set claude effort high`처럼 변경한다. `pace worker reset claude effort`는 해당 항목을 배포 기본값으로 되돌린다. `pace project start P001 --model <모델> --effort <값>`은 한 실행만 덮어쓰며 `--effort default`는 공통 effort 설정을 무시하고 도구 기본값을 쓴다. 설정은 `PACE_HOME/worker-settings.json`에 보관하여 재설치해도 유지된다.
+작업자 모델은 `pace worker show`로 조회하고 `pace worker set codex model gpt-6.2-sol`, `pace worker set claude effort high`처럼 변경한다. `pace worker reset claude effort`는 해당 항목을 배포 기본값으로 되돌린다. `pace project start P001 --model <모델> --effort <값>`은 한 실행만 덮어쓰며 `--effort default`는 공통 effort 설정을 무시하고 도구 기본값을 쓴다. 설정은 `PACE_HOME/worker-settings.json`에 보관하여 재설치해도 유지된다.
 설정 파일이 손상되면 PACE를 종료한 뒤 `PACE_HOME/worker-settings.json`을 다른 이름으로 옮겨 원본을 보존하고 `pace worker show`로 초기값을 확인한 다음 원하는 설정을 다시 입력한다. 기본 `PACE_HOME`은 `~/.pace`이다. 설정 파일에 심볼릭 링크는 사용할 수 없다.
