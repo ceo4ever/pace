@@ -38,6 +38,7 @@
 | 에이전트 호출 | `src/agent/` | TypeScript | `pace agent setup`·`run`·`verify` — 다른 제공자 에이전트를 `-p`·ACP로 부르는 호출 계약·체인·폴백 · [AGENT-CALL](AGENT-CALL.md#에이전트-호출) |
 | 검사 선택 | `src/test-runner/`, `.pace/test-map.json` | TypeScript·Node·Python unittest·vitest | `pace test changed·file·unit·all` — 변경 관련 단위·지정 단위·선언 전체 검사(불확실하면 전체) · [TESTING](TESTING.md#검사-선택) |
 | 공통 | `src/core/` | TypeScript | 경로·파일·frontmatter · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
+| 저장소 팀 | `src/team/`, `src/core/worker-tiers.ts`, `templates/team/` | TypeScript·Markdown·TOML | 팀 원본 생성·목록·호스트 정의 동기화와 어긋남 검사 · [TEAM](TEAM.md) |
 | 메모리 | `src/memory/` | TypeScript | 프로필·프로젝트 공용 저장소 · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
 | 프로필 | `src/profile/` | TypeScript | 프로필 생성·복제, 온보딩 질문 원본 · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
 | 프로젝트 | `src/project/` | TypeScript | 상황 판별, 브레인, 작업 하네스(`harness.ts`) · [WORK-PROCESS](WORK-PROCESS.md) |
@@ -100,7 +101,8 @@
 | 문서 | 설명 | 용도 | 적용 범위 | 참조 시점 |
 |---|---|---|---|---|
 | `AGENTS.md` | 일하는 법 요약과 길 안내 | — | 전체 | 항상 (자동) |
-| `docs/SECURITY.md` | 민감 경로와 보안 체크리스트 | security | `src/setup/**`, `scripts/**`, `src/boot.ts`, `src/core/fsutil.ts`, `src/project/**`, `src/memory/**`, `src/profile/**`, `src/scout/**`, `src/intent/**` | 작업 시 |
+| `docs/SECURITY.md` | 민감 경로와 보안 체크리스트 | security | `src/setup/**`, `scripts/**`, `src/boot.ts`, `src/core/fsutil.ts`, `src/core/worker-tiers.ts`, `src/team/**`, `src/project/**`, `src/memory/**`, `src/profile/**`, `src/scout/**`, `src/intent/**` | 작업 시 |
+| `docs/TEAM.md` | 팀 원본·생성물·모델 매핑·보존/권한 경계 | spec | `src/team/**`, `src/core/worker-tiers.ts`, `templates/team/**` | 작업 시 |
 | `README.md` | 소개·설치·사용·OPAL에서 넘어올 때 (사용자용) | — | — | 요청 시 |
 | `skills/pace-project-init/references/` | 정의서·백로그 형식, 분석 방법 | convention | `docs/**`, `backlogs/**`, `skills/pace-project-init/**` | 작업 시 |
 | `skills/pace-project-dev/references/` | 테스트·E2E·리뷰·보안 기준 | test | 전체 | 작업 시 |

@@ -1,0 +1,271 @@
+{
+  "contract_source": "BR01 요청 단위 도달 분류, main ab34132",
+  "scope": "보존된 P002 question 16건 전부에 우선순위 적용; coordinator_answered 4는 별도 축이며 도달 미확인과 중복 합산하지 않음",
+  "grouping": "handoffs 이전이며 별도 전달 question 행이 없는 원래 question별 안정적인 legacy 요청 ID. 원문·비밀 복사 없음",
+  "records": [
+    {
+      "request_id": "legacy:P002:question:4",
+      "question_line": 4,
+      "question_at": "2026-11-23T08:09:09.252Z",
+      "source_recipient_classification": "coordinator",
+      "coordinator_answered": true,
+      "classification": "unknown",
+      "captain_reply_reference": null,
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "코디네이터 답/안내 전달 문구만으로는 캡틴 답 또는 to:captain 성공 전송 증거를 확인하지 않음"
+    },
+    {
+      "request_id": "legacy:P002:question:9",
+      "question_line": 9,
+      "question_at": "2026-11-23T08:10:39.849Z",
+      "source_recipient_classification": "coordinator",
+      "coordinator_answered": true,
+      "classification": "unknown",
+      "captain_reply_reference": null,
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "코디네이터 답/안내 전달 문구만으로는 캡틴 답 또는 to:captain 성공 전송 증거를 확인하지 않음"
+    },
+    {
+      "request_id": "legacy:P002:question:13",
+      "question_line": 13,
+      "question_at": "2026-11-23T08:45:14.775Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 16,
+        "basis": "답 16행 캡틴 waiver와 결정 17행 및 waiver 증거 파일",
+        "evidence_level": "legacy_summary"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:24",
+      "question_line": 24,
+      "question_at": "2026-11-23T08:55:12.731Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 25,
+        "basis": "답 25행 캡틴 판정 해석과 결정 26행",
+        "evidence_level": "legacy_summary"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:28",
+      "question_line": 28,
+      "question_at": "2026-11-23T08:59:52.725Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 29,
+        "basis": "답 29행 캡틴 근본 해결 지시와 결정 30행",
+        "evidence_level": "legacy_summary"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:32",
+      "question_line": 32,
+      "question_at": "2026-11-23T09:09:23.319Z",
+      "source_recipient_classification": "coordinator",
+      "coordinator_answered": true,
+      "classification": "unknown",
+      "captain_reply_reference": null,
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "코디네이터 답/안내 전달 문구만으로는 캡틴 답 또는 to:captain 성공 전송 증거를 확인하지 않음"
+    },
+    {
+      "request_id": "legacy:P002:question:36",
+      "question_line": 36,
+      "question_at": "2026-11-23T09:11:20.728Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 37,
+        "basis": "답 37행 캡틴 단일 항목 확인과 결정 38행",
+        "evidence_level": "legacy_summary"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:41",
+      "question_line": 41,
+      "question_at": "2026-11-23T09:16:17.721Z",
+      "source_recipient_classification": "unknown",
+      "coordinator_answered": false,
+      "classification": "unknown",
+      "captain_reply_reference": null,
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "수신자와 연결된 캡틴 답 또는 to:captain 성공 영수증이 확인되지 않음; 안내 전달 문구는 실제 전달 증거가 아님"
+    },
+    {
+      "request_id": "legacy:P002:question:43",
+      "question_line": 43,
+      "question_at": "2026-11-23T12:18:14.628Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 44,
+        "basis": "답 44행 캡틴 플레이 후 답 수신",
+        "evidence_level": "legacy_summary"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:45",
+      "question_line": 45,
+      "question_at": "2026-11-23T12:24:15.069Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 46,
+        "basis": "답 46행 캡틴 수정 1회 결정과 결정 47행",
+        "evidence_level": "legacy_summary"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:50",
+      "question_line": 50,
+      "question_at": "2026-11-23T12:30:19.940Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 51,
+        "basis": "답 51행 캡틴 F5 횟수·결정 유지와 결정 52행",
+        "evidence_level": "legacy_summary"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:61",
+      "question_line": 61,
+      "question_at": "2026-11-23T12:53:18.663Z",
+      "source_recipient_classification": "coordinator",
+      "coordinator_answered": true,
+      "classification": "unknown",
+      "captain_reply_reference": null,
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "코디네이터 답/안내 전달 문구만으로는 캡틴 답 또는 to:captain 성공 전송 증거를 확인하지 않음"
+    },
+    {
+      "request_id": "legacy:P002:question:66",
+      "question_line": 66,
+      "question_at": "2026-11-23T12:57:59.316Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": null,
+        "basis": "msg_2f52cd385ba9 캡틴 Studio 사용 승인; 로그 answer 누락",
+        "evidence_level": "orca_reply_reference"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:68",
+      "question_line": 68,
+      "question_at": "2026-11-23T13:18:40.794Z",
+      "source_recipient_classification": "unknown",
+      "coordinator_answered": false,
+      "classification": "unknown",
+      "captain_reply_reference": null,
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "수신자와 연결된 캡틴 답 또는 to:captain 성공 영수증이 확인되지 않음; 안내 전달 문구는 실제 전달 증거가 아님"
+    },
+    {
+      "request_id": "legacy:P002:question:70",
+      "question_line": 70,
+      "question_at": "2026-11-23T13:39:44.065Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 71,
+        "basis": "답 71 및 msg_eb8179645414 캡틴 재플레이 답 수신",
+        "evidence_level": "orca_reply_reference"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    },
+    {
+      "request_id": "legacy:P002:question:72",
+      "question_line": 72,
+      "question_at": "2026-11-23T14:30:34.642Z",
+      "source_recipient_classification": "captain",
+      "coordinator_answered": false,
+      "classification": "reached_reply",
+      "captain_reply_reference": {
+        "event_answer_line": 73,
+        "basis": "답 73·결정 74 및 msg_3e98a0045e8c 최종 진행 선택",
+        "evidence_level": "orca_reply_reference"
+      },
+      "successful_captain_delivery_records": [],
+      "failed_captain_delivery_records": [],
+      "reason": "연결된 캡틴 답 근거 있음"
+    }
+  ],
+  "counts": {
+    "reached_reply": 10,
+    "reached_delivery": 0,
+    "transmission_failed": 0,
+    "unknown": 6
+  },
+  "captain_reached_requests": 10,
+  "separate_merge_approval": {
+    "request_id": "legacy:P002:merge:85",
+    "event_line": 85,
+    "overlaps_question": false
+  },
+  "approval_question_overlap_lines": [
+    13,
+    24,
+    28,
+    36,
+    45,
+    50,
+    66,
+    72
+  ],
+  "confirmed_intervention_lower_bound_excluding_unobserved_manual": 11,
+  "total_interventions": null,
+  "limits": [
+    "기존 수신자 분류 10/4/2와 도달 분류 10/0/0/6은 다른 축",
+    "과거 성공 전송 증거를 새로 만들어 넣지 않음; 연결되지 않은 옛 기록은 미확인",
+    "코디네이터 답변 확인 4건도 캡틴 도달 근거는 없어 unknown, 캡틴 필요/의도 여부를 뜻하지 않음",
+    "캡틴 손작업 총량은 기존 원장처럼 미확인; 원본의 캡틴 개입 총합으로 과장하지 않음"
+  ],
+  "legacy_evidence_policy": "handoffs 이전 수기 기준선은 연결된 project.log의 캡틴 답 요약을 신뢰한 legacy_summary 분류다. 원문 응답·전송 영수증 실측과 구분하며, to 필드 또는 질문 의도만으로 도달로 보지 않는다.",
+  "counts_observation": "두 전송 분류의 0은 보존 자료에서 그 분류로 판정할 근거가 0건이라는 뜻이다. legacy 전송 영수증은 수집되지 않았으므로 실제 성공·실패 전송 횟수가 0회라는 측정값이 아니다. 연결 답 없는 6건은 unknown으로 보존한다."
+}

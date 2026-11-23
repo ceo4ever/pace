@@ -1,0 +1,51 @@
+{
+  "positive": {
+    "exit_code": 0,
+    "report": {
+      "success": true,
+      "strict": true,
+      "target": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-schema-C29N8L/agents",
+      "manifest": null,
+      "contents": [],
+      "provides": null,
+      "hosts": null,
+      "advice": [],
+      "directory": null
+    },
+    "stderr": ""
+  },
+  "negative": {
+    "exit_code": 1,
+    "report": {
+      "success": false,
+      "strict": true,
+      "target": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-schema-C29N8L/agents",
+      "manifest": null,
+      "contents": [
+        {
+          "file": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-schema-C29N8L/agents/inspect.md",
+          "type": "agent",
+          "errors": [],
+          "warnings": [
+            {
+              "path": "description",
+              "message": "No description in frontmatter. A description helps users and Claude understand when to use this agent.",
+              "code": null
+            }
+          ],
+          "notes": [],
+          "gatingHooks": [],
+          "wasm": [],
+          "modules": []
+        }
+      ],
+      "provides": null,
+      "hosts": null,
+      "advice": [],
+      "directory": null
+    },
+    "stderr": ""
+  },
+  "detected_missing_description": true,
+  "scope": "서브에이전트 frontmatter 정적 검증. 실제 모델 요청·effort 적용은 검증하지 않음"
+}

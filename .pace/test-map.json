@@ -44,6 +44,23 @@
       "tests": ["test/adopt-opal.test.ts", "test/adopt-opal-e2e.test.ts", "test/adopt-opal-docs.test.ts"],
       "runner": { "kind": "node-test", "cwd": "." },
       "requires": []
+    },
+    {
+      "id": "team",
+      "sources": [
+        "src/team/**/*.ts",
+        "src/core/worker-tiers.ts",
+        "templates/team/**/*"
+      ],
+      "tests": [
+        "test/team.test.ts",
+        "test/worker-settings.test.ts"
+      ],
+      "runner": {
+        "kind": "node-test",
+        "cwd": "."
+      },
+      "requires": []
     }
   ],
   "common": [

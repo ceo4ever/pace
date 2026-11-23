@@ -28,3 +28,16 @@
 {"ts":"2026-11-23T15:22:38.497Z","p":"P009","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-23T15:22:38.996Z","p":"P009","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-23T15:22:38.996Z","p":"P009","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-23T15:23:11.534Z","p":"P009","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-23T15:30:49.663Z","p":"P009","t":"T02","type":"decision","by":"agent","msg":"등급 매핑은 기존 worker 설정과 같은 PACE_HOME의 별도 파일에 두어 옛 판독기를 보존하고, 생성물에 유효 매핑 지문을 기록해 원본·설정·내용 차이를 구별한다","src":"자체 판단"}
+{"ts":"2026-11-23T15:30:49.829Z","p":"P009","t":"T02","type":"review","by":"agent","msg":"reviewer fail blocking 1 should_fix 5 — 생성 입력 재현성·옛 설정 호환 지적을 계획에서 보완, 구현 전 재검토","ref":"tasks/T02_팀_원본_형식과_도구별_동기화/pre-review-output.json","data":{"blocking":1,"should_fix":5,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-23T15:33:20.384Z","p":"P009","t":"T02","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — 원본+매핑 스냅숏·설정 별도 파일 계획 통과, 복합 차이 판정과 독립 파서 세부를 보완 후 최종 검토","ref":"tasks/T02_팀_원본_형식과_도구별_동기화/pre-review-output-2.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-23T15:35:39.452Z","p":"P009","t":"T02","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 4 — 생성 입력·매핑 차이·옛 판독기 호환 사전 계획 통과, 구현 상세·이식성·권한 한계를 독립 2단계 대조한다","ref":"tasks/T02_팀_원본_형식과_도구별_동기화/pre-review-output-3.json","data":{"blocking":0,"should_fix":4,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-23T15:43:12.954Z","p":"P009","t":"T02","type":"decision","by":"agent","msg":"native model/effort 생략·상속 대신 의도 매핑을 파일에서 검토할 수 있는 스냅숏을 선택; 실제 적용은 T03·T04 실측으로 구별하고 다른 환경은 동일 매핑 설정 또는 settings 차이 실패를 명시적으로 처리한다","src":"자체 판단"}
+{"ts":"2026-11-23T15:43:13.130Z","p":"P009","t":"T02","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2 — 결정 요청·JSON 분류·활성 매핑 지문·이식성 계약 보완 통과, native 적용 미확인·전략 대안은 문서와 결정에 명시","ref":"tasks/T02_팀_원본_형식과_도구별_동기화/pre-review-output-4.json","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-23T15:58:57.648Z","p":"P009","type":"decision","by":"agent","msg":"BR09 승인으로 T09 소통 계약을 등록; 실행 순서는 T01→T02→T03→T04→T05→T09→T06→T07→T08, T09는 BR09 최종 독립 판정 확인 뒤 구현한다","src":"사용자 결정"}
+{"ts":"2026-11-23T16:17:19.545Z","p":"P009","t":"T02","type":"decision","by":"agent","msg":"main ab34132의 최종 BR09·BR02·BR01 계약을 안전한 3-way로 반영; 실행 전 위임 근거 대조·이탈/불명확 보류 책임을 T02 원본·템플릿·가이드·두 생성물 검증에 추가한다","src":"사용자 결정","ref":"tasks/T02_팀_원본_형식과_도구별_동기화/evidence/main-contract-import.json"}
+{"ts":"2026-11-23T23:00:57.197Z","p":"P009","t":"T02","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-23T23:09:06.579Z","p":"P009","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T23:09:13.687Z","p":"P009","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-23T23:09:13.687Z","p":"P009","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}

@@ -1,0 +1,6 @@
+{
+  "list_columns": "pass",
+  "expected_row": "| quality | reviewer | 검토, 마감 | high | Studio, shared-pipe |",
+  "actual": "| 이름 | 역할 | 단계 | 등급 | 자원 |\n|---|---|---|---|---|\n| quality | reviewer | 검토, 마감 | high | Studio, shared-pipe |\n",
+  "repeated_sync_bytes": "pass"
+}

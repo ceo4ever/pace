@@ -3,6 +3,9 @@ import { dashboardState as dashboardPresence } from './project/dashboard-layout.
 import { generateDashboard, refreshDashboard } from "./project/dashboard.ts";
 import { initDashboard, isProtectedInitTarget } from "./project/dashboard-init.ts";
 import { readWorkerSettings, resolveWorkerSettings, setWorkerSettings } from "./core/worker-settings.ts";
+import { setWorkerTier, teamTierTable } from "./core/worker-tiers.ts";
+import { createTeamMember, loadTeam, teamRoot } from "./team/store.ts";
+import { syncTeam } from "./team/sync.ts";
 import { BacklogError, newBacklog, newBrief } from "./project/backlog.ts";
 import { newRun } from "./scout/run.ts";
 import { renderRun, schemaPath } from "./scout/report.ts";
@@ -153,7 +156,8 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace agent verify --author-agent claude|codex --target <파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록>]   다른 제공자 에이전트의 읽기 전용 교차 검증 (task: 구현 전 TASK 사전 검토, 미실행이면 종료 10과 질문). 대상 폴더 REVIEW-LOG.jsonl에 판정을 남기고, 직전이 fail이면 그 검토 원문·바뀐 줄로 재검토하며, 연속 3회 fail이면 진단·진단 뒤 fail이면 분류·결정 기록 전까지 종료 16
   pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary <글> [--file <근거>] | --decision --by pm|user --choice <글> --summary <글> --file <결정 원문> | --void --record review-records/R<n>.json --summary <글> --file <근거>)   반복 실패의 근본 진단·PM/사용자 결정·도구 결함으로 무효인 검토를 검토 원장에 기록
   pace project new "<이름>" [--from <BL 폴더 또는 앞부분>]   프로젝트 폴더·PROJECT.md (main)
-  pace worker show | set <도구> <model|effort> <값> | reset <도구> <model|effort>
+  pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>
+  pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]
   pace project start <P###> [--model <모델>] [--effort <값|default>] [--agent <도구>] [--no-launch|--launch]   정의 커밋 + worktree(../<저장소>.wt/P###) (main). Orca 안이면 작업자 세션을 띄우고 이 세션이 코디네이터
   pace project task <P###> "<이름>"              태스크 폴더·TASK.md·태스크 표 행 (worktree)
   pace project check <P###> <T##>                커밋 게이트 확인 — TASK-CLOSE (worktree)
@@ -192,12 +196,21 @@ export async function main(argv: string[], deps: MainDeps = {}): Promise<number>
       const [sub, agent, field, value] = rest;
       if (sub === "show" && rest.length === 1) {
         const settings = readWorkerSettings();
-        process.stdout.write(JSON.stringify({ settings, effective: { codex: resolveWorkerSettings("codex", undefined, undefined), claude: resolveWorkerSettings("claude", undefined, undefined) } }, null, 2) + "\n");
-      } else if (sub === "set" && agent && field && value !== undefined && rest.length === 4) setWorkerSettings(agent, field, value);
-      else if (sub === "reset" && agent && field && rest.length === 3) setWorkerSettings(agent, field, undefined);
-      else throw new UsageError("pace worker show | set <도구> <model|effort> <값> | reset <도구> <model|effort>");
+        const effective = { codex: resolveWorkerSettings("codex", undefined, undefined), claude: resolveWorkerSettings("claude", undefined, undefined) };
+        let teamTiers: ReturnType<typeof teamTierTable> | null = null;
+        let teamTiersError: string | undefined;
+        try { teamTiers = teamTierTable(); } catch (error) { teamTiersError = error instanceof Error ? error.message : String(error); }
+        process.stdout.write(JSON.stringify({ settings, effective, teamTiers, ...(teamTiersError ? { teamTiersError } : {}) }, null, 2) + "\n");
+        if (teamTiersError) return 2;
+      } else if (sub === "set" && agent && field && value !== undefined && rest.length === 4) {
+        if (field.startsWith("tier.")) setWorkerTier(agent, field, value); else setWorkerSettings(agent, field, value);
+      } else if (sub === "reset" && agent && field && rest.length === 3) {
+        if (field.startsWith("tier.")) setWorkerTier(agent, field, undefined); else setWorkerSettings(agent, field, undefined);
+      }
+      else throw new UsageError("pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>");
       return 0;
     }
+    case "team": return teamCommand(rest);
     case "test": {
       const result = await executeTest(process.cwd(), rest);
       process.stdout.write(result.text + "\n");
@@ -962,6 +975,41 @@ async function agentCommand(args: string[]): Promise<number> {
     process.stdout.write(JSON.stringify(errorPayload(error), null, 2) + "\n");
     process.stderr.write(`${error.code}: ${error.message}\n`);
     return error.exitCode;
+  }
+}
+
+function teamCommand(args: string[]): number {
+  try {
+    const { values, positionals } = parseArgs({ args, options: { role: { type: "string" }, check: { type: "boolean" }, json: { type: "boolean" } }, allowPositionals: true, strict: true });
+    const [sub, name] = positionals;
+    if (!((sub === "new" && positionals.length === 2 && values.role && !values.check && !values.json) ||
+          (sub === "list" && positionals.length === 1 && values.role === undefined && !values.check && !values.json) ||
+          (sub === "sync" && positionals.length === 1 && values.role === undefined && (!values.json || values.check)))) throw new UsageError("pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]");
+    const root = teamRoot(process.cwd());
+    if (sub === "new") {
+      const member = createTeamMember(root, name!, values.role!);
+      process.stdout.write(`팀 원본 생성: ${member.source}\n`);
+    } else if (sub === "list") {
+      process.stdout.write(["| 이름 | 역할 | 단계 | 등급 | 자원 |", "|---|---|---|---|---|", ...loadTeam(root).map((member) => `| ${member.name} | ${member.role} | ${member.stage.join(", ").replaceAll("|", "\\|") || "미지정"} | ${member.tier} | ${member.resources.join(", ").replaceAll("|", "\\|") || "없음"} |`)].join("\n") + "\n");
+    } else {
+      const result = syncTeam(root, { check: values.check });
+      if (values.json) {
+        process.stdout.write(JSON.stringify({ ...result, ok: result.differences.length === 0 }) + "\n");
+        return result.differences.length ? 1 : 0;
+      }
+      if (values.check && result.differences.length) {
+        const labels = { missing: "파일 없음", source: "원본 차이", settings: "매핑 설정 차이", content: "생성물 내용 차이", orphan: "원본 없는 관리 생성물" };
+        for (const item of result.differences) process.stdout.write(`${labels[item.kind]}: ${item.path}\n`);
+        return 1;
+      }
+      process.stdout.write(`팀 ${result.members}명 · ${values.check ? "두 호스트 생성물 일치" : "두 호스트 생성물 동기화"}\n`);
+    }
+    return 0;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (args.includes("--json")) process.stdout.write(JSON.stringify({ ok: false, error: message }) + "\n");
+    else process.stderr.write(`team: ${message}\n`);
+    return 2;
   }
 }
 

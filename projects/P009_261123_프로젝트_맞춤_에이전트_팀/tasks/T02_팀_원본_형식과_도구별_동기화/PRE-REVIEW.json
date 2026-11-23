@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "d6fb3d06a25cb381a9f042124fdd166449fcc1fd4bbfadfd8b59a23760c10b34",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "pre-review-output.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "35fe21829592b12d1b7d9519a0f331126deeaf5cb39e92dea8b5e6d61236b987",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "pre-review-output-2.json",
+      "continuity": "changed",
+      "reason": "verify 원장이 직전 fail 원문과 변경분을 새 Claude 맥락에 전달"
+    },
+    {
+      "hash": "14457ab33220ea01d595fcba0b0a7de9aaad920c12da39ba922000c1c57aa998",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "pre-review-output-3.json",
+      "continuity": "changed",
+      "reason": "pass 후 계획 세부 보완으로 verify 새 전체 검토, 별도 Claude 맥락"
+    },
+    {
+      "hash": "75bc6802f3b292e6e6a80e904615da1bc0f18c69dc453ffc099956dc0703b8dd",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "pre-review-output-4.json",
+      "continuity": "changed",
+      "reason": "사전 2단계의 계약 상세 보완 후 새 전체 검토; 초기 구현은 R3 pass 이후 시작했고 R4 pending 동안 추가 구현 중지"
+    },
+    {
+      "hash": "cdbce1daa958a12ab1bc71e9e5cd1d895991bf87e2aa975d4a80b7de366ef1ce",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "pre-review-output-5.json",
+      "continuity": "changed",
+      "reason": "main의 승인된 BR02 실행 전 대조 책임 추가로 새 전체 사전 검토"
+    },
+    {
+      "hash": "ed6294201fe85293a762d77507969f5101b4b33f69097d7246f250f98c62ba06",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "pre-review-output-6.json",
+      "continuity": "changed",
+      "reason": "새 실행 전 대조 계약의 불변 문장 검사·약화 거부와 결정 요청 연결을 구체화한 뒤 전체 재검토"
+    }
+  ]
+}

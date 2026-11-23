@@ -1,0 +1,30 @@
+[
+  {
+    "kind": "positive-file",
+    "path": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T02-native-bie15oif/.claude/agents/inspect.md",
+    "exit_code": 1,
+    "stdout": "{\n  \"success\": false,\n  \"strict\": true,\n  \"target\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T02-native-bie15oif/.claude/agents/inspect.md\",\n  \"manifest\": {\n    \"file\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T02-native-bie15oif/.claude/agents/inspect.md\",\n    \"type\": \"plugin\",\n    \"errors\": [\n      {\n        \"path\": \"json\",\n        \"message\": \"Invalid JSON syntax: JSON Parse error: Invalid number\",\n        \"code\": null\n      }\n    ],\n    \"warnings\": [],\n    \"notes\": [],\n    \"gatingHooks\": [],\n    \"wasm\": [],\n    \"modules\": []\n  },\n  \"contents\": [],\n  \"provides\": null,\n  \"hosts\": null,\n  \"advice\": [],\n  \"directory\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "negative-file",
+    "path": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce/agents/bad.md",
+    "exit_code": 1,
+    "stdout": "{\n  \"success\": false,\n  \"strict\": true,\n  \"target\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce/agents/bad.md\",\n  \"manifest\": {\n    \"file\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce/agents/bad.md\",\n    \"type\": \"plugin\",\n    \"errors\": [\n      {\n        \"path\": \"json\",\n        \"message\": \"Invalid JSON syntax: JSON Parse error: Invalid number\",\n        \"code\": null\n      }\n    ],\n    \"warnings\": [],\n    \"notes\": [],\n    \"gatingHooks\": [],\n    \"wasm\": [],\n    \"modules\": []\n  },\n  \"contents\": [],\n  \"provides\": null,\n  \"hosts\": null,\n  \"advice\": [],\n  \"directory\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "negative-agents",
+    "path": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce/agents",
+    "exit_code": 1,
+    "stdout": "{\n  \"success\": false,\n  \"strict\": true,\n  \"target\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce/agents\",\n  \"manifest\": null,\n  \"contents\": [\n    {\n      \"file\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce/agents/bad.md\",\n      \"type\": \"agent\",\n      \"errors\": [],\n      \"warnings\": [\n        {\n          \"path\": \"description\",\n          \"message\": \"No description in frontmatter. A description helps users and Claude understand when to use this agent.\",\n          \"code\": null\n        }\n      ],\n      \"notes\": [],\n      \"gatingHooks\": [],\n      \"wasm\": [],\n      \"modules\": []\n    }\n  ],\n  \"provides\": null,\n  \"hosts\": null,\n  \"advice\": [],\n  \"directory\": null\n}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "negative-root",
+    "path": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce",
+    "exit_code": 1,
+    "stdout": "{\n  \"success\": false,\n  \"strict\": true,\n  \"target\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce\",\n  \"manifest\": {\n    \"file\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-native-negative-PDQLce\",\n    \"type\": \"plugin\",\n    \"errors\": [\n      {\n        \"path\": \"directory\",\n        \"message\": \"No manifest found in directory. Expected .claude-plugin/marketplace.json or .claude-plugin/plugin.json\",\n        \"code\": null\n      }\n    ],\n    \"warnings\": [],\n    \"notes\": [],\n    \"gatingHooks\": [],\n    \"wasm\": [],\n    \"modules\": []\n  },\n  \"contents\": [],\n  \"provides\": null,\n  \"hosts\": null,\n  \"advice\": [],\n  \"directory\": null\n}\n",
+    "stderr": ""
+  }
+]

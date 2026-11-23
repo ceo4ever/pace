@@ -54,7 +54,7 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
 
 ## 질문 수신자와 캡틴 개입
 
-작업자의 question·escalation은 --to coordinator로 기록한다. 코디네이터가 대신 답한 질문은 캡틴 개입이 아니다. 캡틴에게 실제 전달할 때만 코디네이터가 같은 범위에 --type question --by coordinator --to captain으로 한 건 기록하고 --ref로 프로젝트 내부 질문 연결 파일을 가리킨다. 연결 파일은 원질문의 로그 행·시각·태스크와 전달 시각을 매핑하며 원문·비밀을 복사하지 않는다. 같은 요청을 coordinator와 captain 양쪽에서 캡틴 개입으로 중복 집계하지 않는다. 캡틴 답을 받으면 코디네이터가 전달 질문과 같은 범위에 --type answer --by coordinator로 전달 대기를 닫고 나서 작업자에게 reply한다. 작업자는 원질문에 대해 --type answer --by agent를 한 번 기록한다. question 2행에는 answer 2행이 대응하며, 코디네이터가 대신 답한 경우는 원질문·작업자 answer 각 1행뿐이다. answer에는 --to를 붙이지 않는다.
+작업자의 question·escalation은 --to coordinator로 기록한다. 코디네이터가 대신 답한 질문은 캡틴 개입이 아니다. 캡틴 전달을 시도할 때 코디네이터가 같은 범위에 --type question --by coordinator --to captain으로 한 건 기록하고 --ref로 프로젝트 내부 질문 연결 파일을 가리킨다. 연결 파일은 원질문의 로그 행·시각·태스크와 전달 시각을 매핑하며 원문·비밀을 복사하지 않는다. 같은 요청을 coordinator와 captain 양쪽에서 캡틴 개입으로 중복 집계하지 않는다. 캡틴 답을 받으면 코디네이터가 전달 질문과 같은 범위에 --type answer --by coordinator로 전달 대기를 닫고 나서 작업자에게 reply한다. 작업자는 원질문에 대해 --type answer --by agent를 한 번 기록한다. question 2행에는 answer 2행이 대응하며, 코디네이터가 대신 답한 경우는 원질문·작업자 answer 각 1행뿐이다. answer에는 --to를 붙이지 않는다.
 
 --to는 question·escalation에서만 허용한다. 생략한 과거 명령도 유효하지만 수신자별 비교에서는 미확인으로 남기며 0건으로 추정하지 않는다. answer에는 --to를 붙이지 않는다. 기존 stats의 질문 수는 수신자와 관계없이 question·escalation을 합친 기존 의미를 유지한다.
 
@@ -65,10 +65,12 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
 3. 캡틴 답을 받은 코디네이터: project log P001 T01 --type answer --by coordinator --msg "캡틴 답 요약" --ref tasks/T01_이름/evidence/question-links.md
 4. Orca reply를 수신한 작업자: project log P001 T01 --type answer --by agent --msg "수신 답 요약"
 
-연결 파일은 원질문 로그 행·시각·태스크와 전달 질문/답 로그 행·시각을 표로 남긴다. escalation도 같은 수명으로 기록한다. 위 예시는 기존 stats에서 질문 사건 2·답 사건 2이며, 캡틴 개입 비교에서는 captain 수신 1건이다. 기존 stats는 요청 중복을 제거한 개입 지표가 아니라 사건 수이므로 두 수치를 혼용하지 않는다. 수신자별 자동 통계 출력은 T06에서 다루며, T01은 원문 없는 기록 근거와 수동 집계 정의를 제공한다.
+연결 파일은 원질문 로그 행·시각·태스크와 전달 질문/답 로그 행·시각을 표로 남긴다. escalation도 같은 수명으로 기록한다. 위 예시는 기존 stats에서 질문 사건 2·답 사건 2이며, 수신자 행수로는 captain1이다. 실제 캡틴 답 또는 성공 전송 증거가 있어야 도달1로 센다. 기존 stats는 요청 중복을 제거한 개입 지표가 아니라 사건 수이므로 두 수치를 혼용하지 않는다. 수신자별 자동 통계 출력은 T06에서 다루며, T01은 원문 없는 기록 근거와 수동 집계 정의를 제공한다.
 
 `--ref`는 프로젝트 디렉터리 기준이다. 프로젝트 질문은 `evidence/question-links.md`, 태스크 질문은 `tasks/T##_이름/evidence/question-links.md`에 파일을 만들고 실제 경로를 인자로 쓴다. 아래 표의 사건 행 번호는 프로젝트 `log.jsonl`의 1부터 시작하는 줄 번호다. CLI는 파일 존재나 연결 의미를 검사하지 않으므로 코디네이터가 전달·답 기록 후 실제 행과 대조한다. FIFO 대기 집계의 짝을 개별 질문의 답 연결로 재사용하지 않는다.
 
 | 요청 식별자 | 태스크(프로젝트 질문이면 생략) | 원질문 행·시각 | 전달 행·시각 | 코디네이터 답 행·시각 | 작업자 답 행·시각 |
 |---|---|---|---|---|---|
 | q-1 | T01 | 10 · ISO 시각 | 11 · ISO 시각 | 12 · ISO 시각 | 13 · ISO 시각 |
+
+도달은 수신자 의도와 구별한다. 같은 요청의 project log와 소통 기록을 요청 식별자로 묶어 캡틴 답이 있으면 도달, 없고 to:captain 성공 전송(메시지 ID/전송 수단 성공 응답)이 있으면 도달, 없고 실패 전송만 있으면 전송 실패, 그 밖은 미확인이다. 로그에 captain만 적은 것은 도달이 아니다. 연결 파일에는 전송 시도 결과·성공 메시지/응답 또는 캡틴 답 출처도 연결하며, coordinator로 보낸 성공 영수증을 captain 도달 증거로 쓰지 않는다. 같은 요청의 실패 시도는 별도 시도 수이고 성공 뒤 도달은1건이다. 원문은 질문 요약 로그에 복사하지 않고 원문 위치로 참조한다.

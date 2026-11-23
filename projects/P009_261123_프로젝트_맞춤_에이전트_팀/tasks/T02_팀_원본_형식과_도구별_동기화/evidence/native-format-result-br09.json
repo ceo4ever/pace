@@ -1,0 +1,98 @@
+{
+  "fixture_root": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T02-native-v9ju4117",
+  "temporary_pace_home": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T02-home-i6wc0qlg",
+  "commands": [
+    {
+      "args": [
+        "team",
+        "new",
+        "captain",
+        "--role",
+        "lead"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "team",
+        "new",
+        "builder",
+        "--role",
+        "maker"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "team",
+        "new",
+        "inspect",
+        "--role",
+        "reviewer"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "team",
+        "sync",
+        "--check",
+        "--json"
+      ],
+      "exit_code": 1
+    },
+    {
+      "args": [
+        "team",
+        "sync"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "team",
+        "sync",
+        "--check",
+        "--json"
+      ],
+      "exit_code": 0
+    },
+    {
+      "args": [
+        "worker",
+        "show"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "parsed": [
+    {
+      "name": "captain",
+      "role": "lead",
+      "tier": "high",
+      "tomllib": "pass",
+      "ruby_yaml": "pass",
+      "body_and_metadata": "pass",
+      "execution_check": "pass"
+    },
+    {
+      "name": "builder",
+      "role": "maker",
+      "tier": "medium",
+      "tomllib": "pass",
+      "ruby_yaml": "pass",
+      "body_and_metadata": "pass",
+      "execution_check": "pass"
+    },
+    {
+      "name": "inspect",
+      "role": "reviewer",
+      "tier": "high",
+      "tomllib": "pass",
+      "ruby_yaml": "pass",
+      "body_and_metadata": "pass",
+      "execution_check": "pass"
+    }
+  ],
+  "scope": "형식·의도 매핑·실행 전 대조 책임 전달 검증. 실제 호스트 적용/권한 집행은 검증하지 않음"
+}

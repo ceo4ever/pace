@@ -1,0 +1,120 @@
+{
+  "upstream": "ab341321eac0c7ec9918a4d7e95ad04133992956",
+  "merge_base": "e7c7d24a63cc74c5cb0bf8d022bbac02b9a10ad1",
+  "backup": "/Volumes/Data/AiStudio/workspace/pace/.git/worktrees/P009/pace/P009-contract-import-20261124011221",
+  "files": [
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BACKLOG.md",
+      "previous_sha256": "45d3a7b03a8320cbfc7389a502f6e04bed84a004e65dd1d1d0c244799db43553",
+      "upstream_sha256": "bbf79735e0ced4b17de8444a64421b7990892a32f321a62f2eddfb9a2f1f5427",
+      "merged_sha256": "1045c01604ce860b68e8e97b44f053835d057350ff1a01b713ade159358cc9e6",
+      "local_changes_preserved": true
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BR01_역할_적재_실측과_도입_전_기준선.md",
+      "previous_sha256": "59800b539c5510f132532ce22f52076372ae139bb1c4115878abbf489c90d14d",
+      "upstream_sha256": "76a59f0f81ec6a89259f08ff25302dbff2e656ac56830daecca2888605f76b5a",
+      "merged_sha256": "da87c76cbfa6a74c5941b645da94665f3c3b4d4dcfe0cf7cc0e931483bac5be3",
+      "local_changes_preserved": true
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BR02_팀_원본_형식과_도구별_동기화.md",
+      "previous_sha256": "3538e5f3377ae99be019ce5b35afad67aabf16c6fa693851386738bafeb5c79a",
+      "upstream_sha256": "ce0539f71dd27dfbe83de3607ce5852be0158f88f53e45ddab40ceb3cc18caab",
+      "merged_sha256": "ce0539f71dd27dfbe83de3607ce5852be0158f88f53e45ddab40ceb3cc18caab",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BR06_팀_측정과_회고.md",
+      "previous_sha256": "88c51a63fb38fdafe49c3cef44b8165aeb1a5dc667495c0dd659e83c92f24477",
+      "upstream_sha256": "bc3f47c862e8f31d110c288b428ad0f8f75add654c36b426a46a7720673cf30f",
+      "merged_sha256": "bc3f47c862e8f31d110c288b428ad0f8f75add654c36b426a46a7720673cf30f",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BR08_첫_적용(roblox-studio_이전·새_저장소).md",
+      "previous_sha256": "72c5bf818596542efbfd4b809a7a187720b7e92a205ec56cedebf8d18e35eb5c",
+      "upstream_sha256": "1b219c611bedde21028d4dbec94a11151136435f2f468cdc6036fd2bbca1e13f",
+      "merged_sha256": "1b219c611bedde21028d4dbec94a11151136435f2f468cdc6036fd2bbca1e13f",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BR09_에이전트_소통_계약(봉투_JSON과_본문_markdown).md",
+      "previous_sha256": null,
+      "upstream_sha256": "2b38a9f0bf059d3b2d9180a2333cbcb828a0ba4ececa81562ef064000fe8952a",
+      "merged_sha256": "2b38a9f0bf059d3b2d9180a2333cbcb828a0ba4ececa81562ef064000fe8952a",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/REVIEW-LOG.jsonl",
+      "previous_sha256": null,
+      "upstream_sha256": "3af02b10219e3fac3ca090665c3e5fd33d7383b39db5f6a87fb7e099356190fc",
+      "merged_sha256": "3af02b10219e3fac3ca090665c3e5fd33d7383b39db5f6a87fb7e099356190fc",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/review-records/R1.json",
+      "previous_sha256": null,
+      "upstream_sha256": "44175e7c5bd321b46fd78697e3fb77411ac508371f7c10205cadffbf2e9e5bd3",
+      "merged_sha256": "44175e7c5bd321b46fd78697e3fb77411ac508371f7c10205cadffbf2e9e5bd3",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/review-records/R2.json",
+      "previous_sha256": null,
+      "upstream_sha256": "ac820e5d464c7d7a53a36784dd97e65a6a9e09ccd7a10268a3c4ca68c832b80f",
+      "merged_sha256": "ac820e5d464c7d7a53a36784dd97e65a6a9e09ccd7a10268a3c4ca68c832b80f",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/review-records/R3.json",
+      "previous_sha256": null,
+      "upstream_sha256": "d4f6db46769ddca36e53e35db36175a0bf969d976bae65d2b364a01788cc8832",
+      "merged_sha256": "d4f6db46769ddca36e53e35db36175a0bf969d976bae65d2b364a01788cc8832",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/review-records/R4.json",
+      "previous_sha256": null,
+      "upstream_sha256": "fa53a9484ab46c97cc2cefb9c0afdc925e0a37e76aea51ffc2ccb39a2f0e0de1",
+      "merged_sha256": "fa53a9484ab46c97cc2cefb9c0afdc925e0a37e76aea51ffc2ccb39a2f0e0de1",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/review-records/R5.json",
+      "previous_sha256": null,
+      "upstream_sha256": "bd3498ee7d79399464829491c4a092bfd735a86357d18e9b4667b55fa1aa5400",
+      "merged_sha256": "bd3498ee7d79399464829491c4a092bfd735a86357d18e9b4667b55fa1aa5400",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/review-records/R6.json",
+      "previous_sha256": null,
+      "upstream_sha256": "b1da329fa85a8fde7adb982c81aee39b2ede2b8ff63c5922dd27bcc30bb409bb",
+      "merged_sha256": "b1da329fa85a8fde7adb982c81aee39b2ede2b8ff63c5922dd27bcc30bb409bb",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/review-records/R7.json",
+      "previous_sha256": null,
+      "upstream_sha256": "e6956a5c8ddb7ddda18b2a375e383fe0d895131a97d067fd9be85b893cc0bbaa",
+      "merged_sha256": "e6956a5c8ddb7ddda18b2a375e383fe0d895131a97d067fd9be85b893cc0bbaa",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/reviews/BR09-decision-1.md",
+      "previous_sha256": null,
+      "upstream_sha256": "b77645b66ec7bbdc0a4185fafba5d7bec45b15b9941d0e6340ff98c1e974d277",
+      "merged_sha256": "b77645b66ec7bbdc0a4185fafba5d7bec45b15b9941d0e6340ff98c1e974d277",
+      "local_changes_preserved": false
+    },
+    {
+      "path": "backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/reviews/BR09-diagnosis-1.md",
+      "previous_sha256": null,
+      "upstream_sha256": "cdca0e60725549ecaa77c082abe8e9e139082eced15baf8ea463192367690850",
+      "merged_sha256": "cdca0e60725549ecaa77c082abe8e9e139082eced15baf8ea463192367690850",
+      "local_changes_preserved": false
+    }
+  ],
+  "method": "per-file three-way content merge; main ancestry integration deferred until T02 commit"
+}

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "claude",
+    "plugin",
+    "validate",
+    "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T02-native-bie15oif/.claude/agents",
+    "--strict",
+    "--json"
+  ],
+  "version": "2.1.330 (Claude Code)",
+  "exit_code": 0,
+  "stdout": "{\n  \"success\": true,\n  \"strict\": true,\n  \"target\": \"/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T02-native-bie15oif/.claude/agents\",\n  \"manifest\": null,\n  \"contents\": [],\n  \"provides\": null,\n  \"hosts\": null,\n  \"advice\": [],\n  \"directory\": null\n}\n",
+  "stderr": "",
+  "isolated_home": true,
+  "parent_orca_env_removed": true,
+  "model_request": false
+}

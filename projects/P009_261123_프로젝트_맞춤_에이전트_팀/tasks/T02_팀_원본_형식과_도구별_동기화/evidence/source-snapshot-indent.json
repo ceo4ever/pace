@@ -1,0 +1,17 @@
+{
+  ".pace/test-map.json": "6ee063eb8096057bd143bbad17e24b5cebd6fef56b83612001674f1c6fc917c8",
+  "README.md": "e1e4346231a9852a5a434fc77932b26d8c4e668cb7936870c7bbf030e1c15cde",
+  "docs/README.md": "d9823c799a4628872bd05d312344ba1888dd2ca893eab6162c008ef8d4e76157",
+  "docs/SECURITY.md": "8c40a011daeeb7dc80cc82a35edbbed36f1a7036a753d9bb7b7d6d20539cef40",
+  "docs/WORK-PROCESS.md": "61318e2167a11e6866c5e7ed97820c00ec17cafee678f9247ddffb437a0ed7ba",
+  "skills/pace-project-dev/references/coordinator.md": "5fb7d046df41d6e15c9cdfc292b9214b94b5d0d1259c76dae20e7a03e18f4955",
+  "src/cli.ts": "dc7ab6c97b8af14bc6d808807911e60c86b1e12a671f5cdb7061a90efa1d9f28",
+  "test/project-log.test.ts": "9f595631736c757725bf806650cb8d034b6a54531c95908b27b04b0e09d92a53",
+  "src/core/worker-tiers.ts": "a35ee6d2be063bd85441109560e46705e3bc82e629239e0edecd3d51daa2e113",
+  "src/team/model.ts": "3c23887ecac8764786bed65823f3083eb93dd0192e6ce6d1f75cc1b9baee11bb",
+  "src/team/store.ts": "7bc61e027cf7a49b74a672234d949e8368eca1bd8b2f918dc2889e4c8198ed5e",
+  "src/team/sync.ts": "cf545fdef80c7eed9266aea6bd336264683053c962b1892df067110a60573f6b",
+  "templates/team/member.md": "201b2f7af351a7258cf0aa4bf8eb7292c0b32e267e10caf02dc5547e70a17699",
+  "docs/TEAM.md": "fff73a2670aa940cf5f334d7ab50c7f02b5aa5d8d44ddc95a06b15165c7f92f3",
+  "test/team.test.ts": "590c09faa040875193bbc10193932d2438e39eee0fc0ea35f2490256e2d187cf"
+}

@@ -1,0 +1,16 @@
+{
+  "command": "PACE_SKIP_BROWSER_E2E=1 npm run check",
+  "exit_code": 0,
+  "tests": 1048,
+  "pass": 1031,
+  "fail": 0,
+  "skipped": 17,
+  "check_sha256": "dd85b66cfcb08274eabf55b207f20a5f1246ffda8591af7f382254e2f461bcbc",
+  "temporary_raw_sha256": "dd85b66cfcb08274eabf55b207f20a5f1246ffda8591af7f382254e2f461bcbc",
+  "same_bytes": true,
+  "source_snapshot": "source-snapshot-indent.json",
+  "source_changes_after_check": [
+    "docs/TEAM.md: v1 Markdown 판독 한계 공개만 추가; 런타임 코드·시험 불변"
+  ],
+  "scope": "PM 실행/파일 대조 영수증, 독립 검토자의 원본 접근 한계를 대신 독립 확인으로 주장하지 않음"
+}

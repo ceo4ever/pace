@@ -1,0 +1,14 @@
+{
+  "files": {
+    "src/cli.ts": "dc7ab6c97b8af14bc6d808807911e60c86b1e12a671f5cdb7061a90efa1d9f28",
+    "src/core/worker-tiers.ts": "a35ee6d2be063bd85441109560e46705e3bc82e629239e0edecd3d51daa2e113",
+    "src/team/model.ts": "cea8ce7da1334386d0fda6d732ba69c0b0a4c63d9e3ef951d72ea1a12bb3f41f",
+    "src/team/store.ts": "7bc61e027cf7a49b74a672234d949e8368eca1bd8b2f918dc2889e4c8198ed5e",
+    "src/team/sync.ts": "cf545fdef80c7eed9266aea6bd336264683053c962b1892df067110a60573f6b",
+    "templates/team/member.md": "83e0a0f7f189f0cbee98559f3fb9ed43f598a98e073f390f67d1b25eb39c71ae",
+    "test/team.test.ts": "79dc2bcc414d3f0801a6dbddd619ef59737677effa8fddc826c9b256cce7c80d",
+    "docs/TEAM.md": "a4e8edafc72bf50e434d53539f1d33f12299476be20e44a39510141912af10b8"
+  },
+  "unit_result": "14 pass, 0 fail",
+  "native_format_result": "tomllib3·Ruby YAML3·본문메타3 pass"
+}

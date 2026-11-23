@@ -52,3 +52,5 @@
 should_fix 처리: 최신 코드 검토의 미응답 경고와 비교표 주석은 BR06 범위인 T06 인계로 남긴다. by는 기록자이고 to는 수신자여서 일반 직접 CLI 호출을 허용하며, 기계적 중복 검증 없이 연결 근거를 사람이 대조하는 현재 계약을 유지한다. 별도 forward 사건 종류는 과거 종류 소비자와의 호환 범위를 늘리므로 기존 question/escalation과 합집합 대기를 유지했고, 이후 수신자별 지표에서 사건 수와 개입 수를 구분한다. 일반 escalation의 T01 경로는 예시이며 실제 T## 경로로 바꾼다. 스킬과 실행 파일 버전이 섞이면 새 옵션이 거부될 수 있어 재설치는 main에서 함께 수행한다.
 
 최종 2단계: [tester](evidence/tester-stage2-settled.json) pass blocking0·should_fix0, [reviewer](evidence/reviewer-stage2-settled.json) pass blocking0·목표 달성. 1단계의 시험 미실행/부분 달성은 2단계에서 실제 시험 원문과 전체 관측 근거를 추가해 달성으로 판단한 것으로, 작성자 주장만으로 번복하지 않았다. 독립 검토자의 외부 원본 접근 제한은 [원본 해시 대조](evidence/baseline-original-hash-check.json)로 PM이 보완했으며 독립 직접 검증으로 바꾸어 쓰지 않는다.
+
+계약 후속 변경: BR09 승인으로 BR01 도달 분류가 요청/답·전송 근거 기준으로 바뀌었다. 기존 T01 판정과 원장은 역사적 증거로 보존하고 최신 비교 입력과 미확인 범위는 [도달 정의 후속 대조](evidence/reachability-contract-update.md) 및 [P002 요청별 재분류](evidence/baseline-roblox-reachability-v2.json)를 따른다. 수신자 captain 행수는 도달 확정값이 아니다.

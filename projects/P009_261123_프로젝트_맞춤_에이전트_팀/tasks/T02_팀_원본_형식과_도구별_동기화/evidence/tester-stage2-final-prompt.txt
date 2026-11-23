@@ -1,0 +1,5 @@
+같은 tester 2단계 재검토다. 직전 tester-stage2.json fail 원문을 보존하고 T-5/S-7 미확인을 재대조한다. 소스 구현·TASK·시험 기준은 직전 이후 바뀌지 않았다. 다음 저장소 안 일반 파일의 정확한 절대 경로로 Read를 시도한다:
+/Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T02_팀_원본_형식과_도구별_동기화/evidence/check.txt
+/Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T02_팀_원본_형식과_도구별_동기화/evidence/secret-scan.txt
+/Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T02_팀_원본_형식과_도구별_동기화/evidence/legacy-captain-replies-redacted.json
+check.txt는 /tmp 파일과 같은 바이트다. 최종 tests1048/pass1031/fail0/skipped17/duration179412.516, 비밀 검사3031개파일 통과 원문이다. 직접 읽지 못하면 한계를 적고 인라인 요약만으로 직접 확인했다고 쓰지 말라. legacy 응답은 PM이 원본 메일과 ID/연결을 대조하여 캡틴 답/결정 식별 문구만 가림 발췌했다. 원본 전체를 독립 직접 읽었다고 주장하지 말라. 기준별 다섯 항목과 최종 목표 달성·한계·pass/fail을 다시 판정한다. 파일 편집 금지. reviewer 2단계는 별도로 진행 중이며 tester가 다른 reviewer 결과를 대신 판정하지 않는다.

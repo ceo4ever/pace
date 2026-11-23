@@ -1,0 +1,15 @@
+{
+  "files": {
+    "src/cli.ts": "dc7ab6c97b8af14bc6d808807911e60c86b1e12a671f5cdb7061a90efa1d9f28",
+    "src/core/worker-tiers.ts": "a35ee6d2be063bd85441109560e46705e3bc82e629239e0edecd3d51daa2e113",
+    "src/team/model.ts": "9ab11d7dea394994c7cdf5e687679b602ad6d8d6a8de84b200fbfb9007c67c84",
+    "src/team/store.ts": "7bc61e027cf7a49b74a672234d949e8368eca1bd8b2f918dc2889e4c8198ed5e",
+    "src/team/sync.ts": "cf545fdef80c7eed9266aea6bd336264683053c962b1892df067110a60573f6b",
+    "templates/team/member.md": "201b2f7af351a7258cf0aa4bf8eb7292c0b32e267e10caf02dc5547e70a17699",
+    "test/team.test.ts": "d16d03449257ba34ba1ee0840a3a19e1d7dcf6f251d00d7fa05574f64328eec0",
+    "docs/TEAM.md": "855826b6582e4754b86c1dfe38b772403268a1c842b10a8e74d5bdcd82524652"
+  },
+  "unit_result": "15 pass, 0 fail",
+  "native_format_result": "tomllib3·Ruby YAML3·본문메타3 pass",
+  "contract_source": "BR02/BR09 ab34132, TASK PRE R6"
+}

@@ -75,7 +75,7 @@ test("project log: 캡틴 전달 질문과 원질문의 답을 각각 닫으면 
     assert.equal(stats.project.questionWaitMs, 21000, "대기는 10초부터 작업자가 답을 수신한 31초까지만 열린다");
     assert.equal(stats.eventCounts.questions, 2, "기존 stats는 전체 질문 사건 수다");
     assert.equal(stats.eventCounts.answers, 2);
-    assert.equal(events.filter((e) => e.to === "captain").length, 1, "캡틴 개입 수는 전달 한 건이다");
+    assert.equal(events.filter((e) => e.to === "captain").length, 1, "captain 수신 질문 사건은1건이다. 실제 도달은 답/전송 근거로 별도 판정한다");
   }
 });
 test("project log: 다른 기록자가 최초 생성한 파일에도 현재 사건을 남긴다", () => {

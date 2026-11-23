@@ -1,0 +1,39 @@
+{
+  "source_sha256": "0d32b35a420367c3daf923cd14dd341e5cf144a2c4207e7914c1ceeeef6c6bc1",
+  "scope": "원본 메일의 ID·연결·캡틴 답 식별 문구만 보존, 사용자 원문·상세 지시는 가림; PM이 원본 대조했고 독립 검토자는 가림 발췌까지만 직접 읽을 수 있음",
+  "records": [
+    {
+      "id": "msg_3e98a0045e8c",
+      "type": "status",
+      "thread_id": "msg_35f8b2ba05cf",
+      "from_handle": "run:run_435cd275b889",
+      "to_handle": "dispatch:ctx_8d73f39fe6e3",
+      "created_at": "2026-11-23T14:35:48Z",
+      "delivered_at": "2026-11-23T14:35:49Z",
+      "body_redacted": "캡틴 결정(2026-11-23, 원문 선택): [사용자 원문·후속 지시 가림]",
+      "body_sha256": "d9b95e7183aa6130796aeff50fea2d6cb75bd16acd9c96824c05101b88e26c97"
+    },
+    {
+      "id": "msg_eb8179645414",
+      "type": "status",
+      "thread_id": "msg_388bb156ab3d",
+      "from_handle": "run:run_435cd275b889",
+      "to_handle": "dispatch:ctx_8d73f39fe6e3",
+      "created_at": "2026-11-23T14:29:34Z",
+      "delivered_at": "2026-11-23T14:29:34Z",
+      "body_redacted": "[캡틴 재플레이 답 원문 — 2026-11-23, 요약 금지] [사용자 원문·후속 지시 가림]",
+      "body_sha256": "e1147ca8afdfd8377ff63f093769c65e3fc87d571580a31d847e066660c51bbc"
+    },
+    {
+      "id": "msg_2f52cd385ba9",
+      "type": "status",
+      "thread_id": "msg_bd350cb5a8b8",
+      "from_handle": "run:run_435cd275b889",
+      "to_handle": "dispatch:ctx_8d73f39fe6e3",
+      "created_at": "2026-11-23T12:58:34Z",
+      "delivered_at": "2026-11-23T12:58:35Z",
+      "body_redacted": "캡틴 답(원문 선택): [사용자 원문 가림]. 잠금 승인 — [후속 지시 가림]",
+      "body_sha256": "4ce555efb0d2518afe1c6f690ffd04a28738bd0251ae6afb6944e2f930ae7dce"
+    }
+  ]
+}

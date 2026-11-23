@@ -1,0 +1,25 @@
+{
+  "text": "# T02 독립 tester 1단계 첫 판단\n\n## 세션·노출 기록\n- **자동 부트**: SessionStart 훅이 \"pace agent가 호출한 자식 세션 — 부트 생략\"이라는 메시지만 주입했고, 메모리나 프로필은 올라오지 않았습니다.\n- **git 상태(시작 시점)**: 브랜치는 `project/P009`이고 HEAD는 `a00ae51`(T01)입니다. 수정된 파일은 `src/cli.ts`, `docs/*`, `README.md`, PROJECT.md·log.jsonl 등이고, 추적되지 않는 파일은 `src/team/`, `src/core/worker-tiers.ts`, `templates/team/`, `test/team.test.ts`, `docs/TEAM.md`, T02 폴더입니다. T02 산출은 아직 커밋되지 않았습니다.\n- **git 상태(종료 시점)**: 다시 확인하려 했지만 `git status`가 승인 대기로 막혀 확인하지 못했습니다. 저는 파일을 편집하지 않았고, 테스트는 임시 폴더만 썼습니다.\n- **읽은 자료**: 지정 범위만 읽었습니다. `src/team/{model,store,sync}.ts`, `src/core/worker-tiers.ts`, `src/core/worker-settings.ts`의 `resolveWorkerSettings`·`setWorkerSettings` 부분, `src/cli.ts` diff, `templates/team/member.md`, `docs/TEAM.md`, 테스트 2개, 근거 폴더의 `native-format-result.json`, fixture 파일 목록과 `claude/inspect.md`·`codex/inspect.toml` 앞부분, `unit-pass.txt`입니다.\n- **읽지 않은 자료**: TASK, PROJECT, 백로그, test-map, 그리고 같은 폴더의 review-records·pre-review·자체 판정 파일은 열지 않았습니다. `ls`로 파일 이름은 보였습니다.\n\n## 실행한 시험\n`node --test test/team.test.ts test/worker-settings.test.ts`를 돌려 **13건 모두 통과, 실패 0**을 확인했습니다. `unit-pass.txt`의 12건 결과에 `worker tiers: constructor 이름은 상속 객체 대신 자기 설정에 저장한다`가 추가돼 통과했습니다.\n\n## T02 산출의 목표 정합 (원본 한 벌 → 두 호스트 정의 생성, 어긋남 검출)\n\n| 항목 | 판정 | 관측 근거 |\n|---|---|---|\n| 원본 한 벌(`.pace/team/<name>.md`)과 엄격한 스키마 | **달성** | `parseTeamSource`가 필수·중복·모르는 키, 이름 불일치, 역할·등급, 목록 형식, 필수 본문 절 5개, 64KiB 상한, 제어문자를 검사합니다. schema 테스트가 실패 사례 20여 개로 확인합니다. |\n| Claude·Codex 정의 생성 | **달성(형식 수준)** | `renderTeamMember`가 `.claude/agents/*.md`(YAML frontmatter)와 `.codex/agents/*.toml`을 만듭니다. 두 파일에 같은 역할 메타와 원문 본문이 들어갑니다. fixture 3명에 대해 tomllib와 Ruby YAML 파싱이 통과했다고 기록돼 있고, 제가 fixture 출력을 직접 봐도 같은 내용이었습니다. |\n| 어긋남 검출 | **달성** | 검출 종류는 missing·source·settings·content·orphan 다섯 가지입니다. 매핑이 바뀌어도 이전 매핑으로 다시 만들어 비교하므로 손수정이 가려지지 않습니다(settings와 content가 함께 나오는 테스트가 있음). 표지 해시가 손상되면 content로 잡힙니다. CRLF만 다른 경우는 일치로 봅니다. `--check`는 mkdir도 쓰기도 하지 않습니다. 종료 코드는 0, 1, 2로 나뉩니다. |\n| 사용자 파일 보존과 경로 안전 | **달성(단일 프로세스 범위)** | 같은 경로의 사용자 소유 파일, 링크, 하드링크는 거부합니다. 모든 사전 검사가 끝난 뒤에야 씁니다. 관리 고아는 자동으로 지우지 않고 종료 2로 거부합니다. 무관한 native 파일은 그대로 둡니다. 동시 디렉터리 교체 방어는 하지 않는다고 문서에 명시돼 있습니다. |\n| 등급 → model/effort 매핑 | **달성(의도값)** | `worker-tiers.json`을 별도 파일로 둬서 기존 `worker-settings.json`의 바이트가 바뀌지 않습니다(테스트로 확인). 사용하지 않는 등급을 바꿔도 생성 입력이 아닙니다. `constructor`는 `Object.hasOwn`으로 막았고, `__proto__`는 `agentValid`에서 거부됩니다. |\n\n## 상위 목적 효과 — 미확인 영역\n- **호스트 실제 적용: 미확인.** 근거 파일의 scope에 \"실제 호스트 적용/권한 집행은 검증하지 않음\"이라고 스스로 적혀 있습니다. 확인된 것은 파서 수준의 형식 유효성뿐입니다. Claude가 `effort` 필드를 실제로 반영하는지, Codex가 이 TOML을 custom agent로 불러와 `model_reasoning_effort`를 따르는지는 관측되지 않았습니다. `docs/TEAM.md`도 T01에서 effort가 high로 선언됐지만 실제로는 medium이었다고 기록하고 있어, 이 부분은 미확인으로 남습니다.\n- **권한 집행: 해당 없음(설계상 비집행).** tools는 안내일 뿐이고 native tools 필드를 생략합니다. 따라서 reviewer도 쓰기 도구를 상속받습니다. 문서가 이 점을 분명히 밝히고 있습니다.\n- **팀 명단 → 실제 작업자 선택**은 T02 범위가 아니며, 문서에도 자동 선택되지 않는다고 적혀 있습니다.\n\n## 관측된 경미한 점 (차단 아님)\n- `resolveWorkerSettings`는 `defaults[agent]?.model` 등 기존 코드에서 hasOwn 검사를 하지 않습니다. `constructor`에 등급 override가 없으면 model이 undefined가 되어 거부될 뿐이고, sync는 claude·codex만 쓰므로 실제 영향은 없습니다.\n- `developer_instructions`의 본문 앞에 빈 줄이 하나 더 들어갑니다. 결정적으로 생성되므로 검출에는 영향이 없습니다.\n- 관리 표지는 진위 서명이 아니라서 위조된 표지를 관리 파일로 취급할 수 있습니다. 문서에 명시돼 있습니다.\n\n## 한계\n- 지정된 두 테스트 외에는 별도 실험(CLI 실물 실행, 호스트 로딩)을 하지 않았습니다.\n- fixture 파싱 결과는 근거 파일의 기록을 믿은 것이고, 제가 다시 돌리지는 않았습니다.\n- 종료 시점 git 상태는 확인하지 못했습니다.\n\n**정리**: T02 산출 목표(원본 한 벌 → Claude·Codex 정의 생성과 어긋남 검출)는 형식과 의도 매핑 수준에서 달성됐습니다. 상위 목적의 실제 효과(호스트가 이 정의를 불러와 model/effort를 적용하는지, 권한 집행)는 아직 미확인입니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "ce5611be-530d-40bd-a984-382b615f5fd3",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 94511,
+  "usage": {
+    "input_tokens": 14,
+    "output_tokens": 6473
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}
