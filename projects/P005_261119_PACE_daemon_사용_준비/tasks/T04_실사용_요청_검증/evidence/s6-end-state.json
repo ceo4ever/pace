@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-24",
+  "full_check": "S-4e 대기 창 뒤 1회 — P005 worktree npm run check(임시 PACE_HOME, PACE_SKIP_BROWSER_E2E=1) 종료 0, 1033개 통과 1016·실패 0(s4e.json)",
+  "installed_identity": "설치본 bin/**·src/**·package.json = P005 작업본 바이트 동일(S-6 직전 재대조)",
+  "end_state": {
+    "topic_read_restored": "토픽 /read → state.json 대화 접근 read-only(등록 해제 전)",
+    "workspace_unregistered": "검증 workspace 등록 해제(updateConfigFile) → stop/start",
+    "after_restart": {
+      "1_conversation_access": "read-only",
+      "2_loader_workspaces": 0,
+      "3_new_boot": "PID 55995 = launchd 서비스 PID",
+      "4_config_vs_S0_intent": {"defaultAccess": "일치", "approvalTtlSeconds": "일치", "maxConcurrent": "일치", "defaultChain": "일치", "allowedUsers.telegram": "1명", "workspaces": "0(S-0 상태)"},
+      "4_protected_files": "config·secrets·profiles 해시·권한: config.json만 차이 — 기준(S-1 등록 뒤)에서 검증 workspace 항목을 뺀 것과 바이트 일치(현재 내용+그 항목을 같은 직렬화로 다시 만들면 기준 해시와 같음), 나머지 동일",
+      "5_general_status": "08:31:02 전송 → 1초 내 수신·응답(기기 현황). /workspaces → '등록된 워크스페이스가 없다'. /status의 pace-p005-t04 줄은 등록이 아니라 작업 이력(core overview byWorkspace)에서 나온 것"
+    }
+  },
+  "outside_changes_final": {
+    "method": "S-2 직전 기준 스냅숏 대비 최종 스냅숏, 17개 작업 구간(createdAt~updatedAt+5초) 안 변경만",
+    "in_windows": 85,
+    "allowed_or_expected": "daemon 상태·Claude 세션·작업사본 대상 파일·Claude 런타임 파일",
+    "other": "54건 — .gemini·.npm·.codex(체인이 codex를 부르지 않음, 동시에 돌던 다른 세션), .claude backups·plugins·cache·shell-snapshots(Claude 런타임 — 셸 도구 실행 흔적 포함), 프로필 메모리 2건(다른 세션 roblox-studio P003이 만든 규칙 — 검증 세션 기록에는 부트 주입 언급만, memory add 호출 없음), 작업사본 .git 객체(작업사본 안, 새 커밋 없음)",
+    "not_observed": "~/Library·휴지통·홈 밖, 수정 시각·크기가 같은 내용 변경, 구간 사이에 생겼다 지워진 파일(R6 should_fix 한계)"
+  },
+  "telegram_notes": "S-5 전후 getUpdates fetch failed 반복, General에 '(결과 일부를 전달하지 못했다)' 08:24 1건 — 네트워크 불안정 시기, 복구 알림은 outbox 재시도로 도달",
+  "verdict": "pass (T-5 종료 상태·운영 복원) — 독립 tester·reviewer는 TASK-CLOSE 단계에서"
+}
