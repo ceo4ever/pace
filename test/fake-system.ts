@@ -28,6 +28,10 @@ export class FakeSystem {
   started = 0;
   wscriptFails = false;
   loadFails = false;
+  /** launchd에 항목이 로드돼 있는지(launchctl list <label> 성공 여부) */
+  loaded = false;
+  /** 실제 macOS처럼 이미 로드된 항목의 load가 "Load failed"를 내면서도 종료 코드 0을 낸다 */
+  loadFailsWithZero = false;
 
   readonly runner: CommandRunner = (command, args, options) => {
     this.calls.push({ command, args, inherit: options?.inherit === true });
@@ -49,7 +53,16 @@ export class FakeSystem {
         if (args[0] === "/Delete") { if (this.legacyDeleteDenied) return fail("오류: 액세스가 거부되었습니다."); this.legacyTask = false; return ok(); }
         break;
       case "wscript.exe": if (this.wscriptFails) return fail("스크립트를 실행할 수 없다"); this.started += 1; return ok();
-      case "launchctl": if (args[0] === "load" || args[0] === "start") { if (args[0] === "load" && this.loadFails) return fail("already loaded"); this.started += 1; return ok(); } return args[0] === "unload" && this.unloadFails ? fail("Could not find specified service") : ok();
+      case "launchctl":
+        if (args[0] === "list") return this.loaded ? ok(`{ "Label" = "${args[1]}"; };`) : fail(`Could not find service "${args[1]}" in domain for port`);
+        if (args[0] === "load") {
+          if (this.loadFails) return fail("already loaded");
+          if (this.loaded && this.loadFailsWithZero) return { status: 0, stdout: "", stderr: "Load failed: 5: Input/output error\n" };
+          this.loaded = true; this.started += 1; return ok();
+        }
+        if (args[0] === "start") { this.started += 1; return ok(); }
+        if (args[0] === "unload") { if (this.unloadFails) return fail("Could not find specified service"); this.loaded = false; return ok(); }
+        return ok();
       case "claude":
         if (!this.claude.installed) return { status: null, stdout: "", stderr: "ENOENT", notFound: true };
         if (args[0] === "--version") return ok("2.1.322 (Claude Code)\n");

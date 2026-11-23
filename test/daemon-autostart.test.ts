@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { daemonCommand } from "../src/daemon/cli.ts";
-import { buildLauncher, launcherPath, plistPath, refreshAutostart, RUN_VALUE, type AutostartEnv } from "../src/daemon/autostart.ts";
+import { buildLauncher, launcherPath, plistPath, refreshAutostart, RUN_VALUE, startDaemonNow, type AutostartEnv } from "../src/daemon/autostart.ts";
 import { FakeSystem } from "./fake-system.ts";
 import { tempDir } from "./helpers.ts";
 
@@ -261,4 +261,18 @@ test("다른 데이터 폴더의 기존 시작 항목은 보존한다", async ()
 test("--agents에 모르는 이름이면 --yes 없이도 사용 오류", async () => {
   const s = setup();
   await assert.rejects(() => s.run(["install", "--agents", "gemini"]), /--agents는/);
+});
+
+test("S-6r macOS 다시 시작: 이미 로드된 항목은 load(실패해도 종료 0) 대신 launchctl start로 시작한다", () => {
+  const s = setup("darwin");
+  const env = envOf(s, "darwin");
+  assert.equal(startDaemonNow(env).ok, true, "처음에는 load");
+  assert.deepEqual(s.sys.calls.filter((c) => c.command === "launchctl" && c.args[0] !== "list").map((c) => c.args[0]), ["load"]);
+  // 강제 종료 뒤: 항목은 로드된 채 프로세스만 없다 — 실제 launchctl load는 "Load failed"를 내고 종료 0
+  s.sys.loadFailsWithZero = true;
+  const before = s.sys.started;
+  s.sys.calls.length = 0;
+  assert.equal(startDaemonNow(env).ok, true);
+  assert.equal(s.sys.started - before, 1, "다시 시작 요청이 실제로 한 번 간다");
+  assert.ok(s.sys.calls.some((c) => c.command === "launchctl" && c.args[0] === "start"), "로드된 항목은 launchctl start");
 });

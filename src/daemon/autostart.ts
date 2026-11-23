@@ -190,9 +190,11 @@ export function startDaemonNow(env: AutostartEnv): ApplyResult {
     const plist = plistPath(env);
     if (existsSync(plist) && !plistOwnedBy(env, readFileSync(plist, "utf8"))) return { ok: false, lines: ["기존 launchd 항목의 소유권을 확인할 수 없어 실행하지 않는다"] };
     if (!existsSync(plist)) { mkdirSync(dirname(plist), { recursive: true }); writeFileSync(plist, buildPlist(env)); }
-    let r = env.runner("launchctl", ["load", plist]);
-    // 이미 로드된 항목이면 load가 실패할 수 있다 — 바로 시작을 요청한다
-    if (r.status !== 0) r = env.runner("launchctl", ["start", LAUNCHD_LABEL]);
+    // 강제 종료 뒤에는 항목이 로드된 채 프로세스만 없다. 이때 macOS launchctl load는 "Load failed"를 내면서도 종료 0이라
+    // 결과로 판단하지 않고 로드 여부를 먼저 본다 — 로드돼 있으면 start, 아니면 load(RunAtLoad가 시작)
+    const loaded = env.runner("launchctl", ["list", LAUNCHD_LABEL]).status === 0;
+    let r = loaded ? env.runner("launchctl", ["start", LAUNCHD_LABEL]) : env.runner("launchctl", ["load", plist]);
+    if (!loaded && (r.status !== 0 || /Load failed/i.test(`${r.stdout}\n${r.stderr}`))) r = env.runner("launchctl", ["start", LAUNCHD_LABEL]);
     if (r.status !== 0) return { ok: false, lines: [`실패: launchctl — ${failText(r)}`] };
     return { ok: true, lines: ["백그라운드 시작을 요청했다"] };
   }
