@@ -2,7 +2,7 @@
 
 - 프로젝트: [P005](../../PROJECT.md) · 백로그: [BL261116_02 PACE daemon 사용 준비](../../../../backlogs/BL261116_02_PACE_daemon_사용_준비/BACKLOG.md)
 - 상태: 진행
-- 사전 검토: v3 (macOS 새 PC 재개에 맞춰 전체 재정리 — v2 검토 9회의 지적 반영)
+- 사전 검토: v4 (v3 검토 11회 fail → [반복 실패 진단](evidence/diagnosis-v3.md): 실패 분기 열거를 "멈추고 보고" 규칙 하나로 · R1 fail 뒤 [캡틴 결정](evidence/user-decision-v4.md): 고치고 범위 재검토 1회 → R2 fail(blocking 1·should_fix 1) 반영 뒤 결정대로 waiver)
 
 <!--
 개발 업무의 예시 형식. 형식·추적 정본: pace-project-dev의 references/document-shape.md.
@@ -47,7 +47,7 @@
 | ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |
 |---|---|---|---|---|---|---|
 | S-0 | check | T-1·T-5 | 이 PC에 daemon 설정 없음. 캡틴 확인(2026-11-23): Windows daemon 정지(11/22 15:02) 뒤 봇에 명령·요청을 보낸 적 없음 — 그 전 업데이트는 Windows가 받아 확인 처리했으므로 Telegram에 실행될 묵은 명령이 없다 | 캡틴이 별도 터미널에서 대화형 `pace daemon install` — 체인 유지, 기기 이름 기본값, 봇 토큰 입력→getMe, 그룹에 메시지 하나를 보내 기존 검증 그룹 선택, 허용 사용자로 캡틴 한 명 선택, workspace 등록 안 함 | 시크릿 파일 소유자 전용 권한, 선택한 chat이 기존 검증 그룹(제목·포럼 여부를 캡틴이 확인), 허용 사용자 1, defaultAccess read-only, approvalTtlSeconds 600, maxConcurrent 2, workspace 0, launchd 등록 | 토큰·식별자 원문은 캡틴만 입력하고 main은 읽거나 기록하지 않는다(개수·키 존재·권한만). S-0s 이상 판단의 기준은 설치 뒤 해시가 아니라 **설치가 의도한 값**이다: device 기본값, allowedUsers.telegram 1명, workspaces 0, defaultAccess read-only, approvalTtlSeconds 600, maxConcurrent 2, defaultChain default — 첫 폴링이 RunAtLoad로 설치 반환 전에 시작될 수 있으므로 키별로 이 값과 대조하고 키 이름·개수·일치 여부만 기록한다 |
-| S-0s | e2e | T-1·T-5 | S-0 뒤 launchd 로드로 daemon 기동(RunAtLoad) | 첫 폴링 뒤 60초 관찰 | 작업 0·workspace 0·config 다른 키 불변, 설치 중 보낸 발견용 메시지는 실행 없이 처리, launchd 서비스 PID=daemon PID, 서비스 PID로 확인한 실제 daemon 프로세스 환경(`ps eww -p <PID>`의 PATH)으로 `env -i PATH=<그 값> /bin/sh -c "command -v claude codex claude-agent-acp node"`가 넷 모두 실행 파일 경로를 냄(모델 호출 없음) | 작업·workspace가 생기면 즉시 stop하고 이벤트·시각·건수로 보고. 프로세스 환경을 확인할 수 없거나 넷 중 하나라도 해석에 실패하면 S-1로 가지 않고 멈춘다. 캡틴에게 이전 PC의 읽기 요청 발송·응답 여부를 확인해 기록 |
+| S-0s | e2e | T-1·T-5 | S-0 뒤 launchd 로드로 daemon 기동(RunAtLoad) | 첫 폴링 뒤 60초 관찰 | 작업 0·workspace 0·config 다른 키 불변, 설치 중 보낸 발견용 메시지는 실행 없이 처리, launchd 서비스 PID=daemon PID, 서비스 PID로 확인한 실제 daemon 프로세스 환경(`ps eww -p <PID>`의 PATH)으로 `env -i PATH=<그 값> /bin/sh -c "command -v claude codex claude-agent-acp node"`가 넷 모두 실행 파일 경로를 냄(모델 호출 없음) | 의도값과 어긋나거나, 작업·workspace가 생기거나, 프로세스 환경을 확인할 수 없거나 넷 중 하나라도 해석에 실패하면 [멈추고 보고](#예상-밖일-때-멈추고-보고-진단)(S-1로 가지 않음). 묵은 업데이트 부재는 S-0 캡틴 확인과 이 대조로 판정하고, 그 밖은 제약으로 기록한다. 캡틴에게 이전 PC의 읽기 요청 발송·응답 여부를 확인해 기록 |
 | S-1 | check | T-1·T-5 | 캡틴이 작업사본 경로 승인 | 전용 합성 Git 작업사본 생성(새 무작위 fixture), config에 그 workspace 한 항목만 원자적 등록 → stop/start | 다른 설정 보존, 로더가 그 workspace만 인식, 초기 접근 read-only, 새 boot | 경로는 PACE 소스 checkout 밖·비어 있는 새 폴더·심링크 아님. 파일 해시·최초 커밋을 evidence에 남김 |
 | S-1b | e2e | T-1 | S-1 뒤 | 캡틴이 검증 토픽에서 `/bind@<봇> pace-p005-t04` | 그 토픽만 workspace에 결속, 다른 토픽 무변경 | 결속 대상 이름·개수만 기록 |
 | S-2 | e2e | T-1 | 결속 토픽, read-only | 캡틴이 봇 메시지에 답장해 `fixture.txt 파일을 읽고 파일 내용만 그대로 답해 주세요. 파일은 변경하지 마세요.` | done, 응답이 파일의 무작위 표식과 일치, target.chain=default·result.via가 claude/acp(또는 폴백이면 그 경로를 기록), 파일·Git 불변 | 요청에 정답 미포함 |
@@ -56,10 +56,10 @@
 | S-4d | e2e | T-3 | /write 유지 | `denied.txt` 쓰기 요청 → 캡틴이 실제 거절 | denied·거절 알림, running 전이 없음, 파일 불변 | 미실행 근거는 단위 시험 S-7c(거절 뒤 실행기 호출 0회) + 보조 판독 |
 | S-4e | e2e | T-3 | /write 유지 | `expired.txt` 쓰기 요청 → 승인하지 않고 실제 expiresAt(약 600초) 경과 → 늦게 승인 버튼 | expired·만료 알림, 늦은 승인 거부, running 없음, 파일 불변 | 가짜 시간·상태 편집·TTL 변경 없음. 대기 중 S-6 전체 검사 1회를 병행. 미실행 근거는 S-7c(늦은 승인 뒤 0회 단언 보강) + 보조 판독 |
 | S-4r | e2e | T-3 | S-4e expired 뒤, 다른 실행 작업 없음 | `old-boot.txt` 쓰기 요청 → 승인 대기 중 정상 stop→start → 캡틴이 이전 버튼 | stop 완료 직후·start 전(TTL이 남은 상태)에 state.json에서 그 승인이 invalidated, 새 boot에서 이전 버튼이 거부되며, 자동 실행 없음·파일 불변 | 이전 boot·새 boot와 승인을 연결. 정상 정지의 무효화를 TTL 만료와 구별해 기록 |
-| S-5 | e2e | T-4 | 다른 작업 없음 | `interrupted.txt` 쓰기 요청(먼저 무해한 셸 명령으로 현재 폴더 목록을 확인한 뒤 파일을 바꾸라고 지시) → 승인 직전 `/pending`으로 같은 시작 승인의 두 번째 버튼을 받아 둠 → 한쪽으로 시작 승인 → 셸 도구 승인 버튼이 오면 누르지 않고 대기 → 그동안 running·실행기 자손·프로세스 그룹 고정 → daemon PID에만 SIGKILL → 고정한 자손 소멸 확인(남으면 같은 PID·시작 시각일 때만 종료) → `pace daemon start` | 복구 뒤 그 작업 needs_review·복구 알림·경로 quarantine·자동 재실행 없음, 대기 중이던 도구 승인 무효, launchd가 저절로 재기동하지 않음, `interrupted.txt` 불변 또는 변경 여부 기록 | 도구 승인 대기로 작업을 running에 붙잡아 중단 시점을 정한다. 셸 승인이 오지 않고 먼저 끝나면 미실측으로 보고. 회수 판정은 중단 전 고정한 프로세스 그룹·자손의 중단 뒤 소멸 관측으로 하고, 불명확하면 T-4 회수는 미확인·격리 유지 |
+| S-5 | e2e | T-4 | 다른 작업 없음 | `interrupted.txt` 쓰기 요청(먼저 무해한 셸 명령으로 현재 폴더 목록을 확인한 뒤 파일을 바꾸라고 지시) → 승인 직전 `/pending`으로 같은 시작 승인의 두 번째 버튼을 받아 둠 → 한쪽으로 시작 승인 → 셸 도구 승인 버튼이 오면 누르지 않고 대기 → 그동안 running·실행기 자손·프로세스 그룹 고정 → daemon PID에만 SIGKILL → 고정한 자손 소멸 확인(남으면 같은 PID·시작 시각일 때만 종료) → `pace daemon start` | 복구 뒤 그 작업 needs_review·복구 알림·경로 quarantine·자동 재실행 없음, 대기 중이던 도구 승인 무효, launchd가 저절로 재기동하지 않음, `interrupted.txt` 불변 또는 변경 여부 기록 | 도구 승인 대기로 작업을 running에 붙잡아 중단 시점을 정한다. 셸 승인이 오지 않고 먼저 끝나면 미실측으로 보고. SIGKILL 직전 state.json에서 그 도구 승인이 같은 작업의 pending임을 확인해 둔다(복구 직후 invalidated와 쌍). 회수 판정은 중단 전 고정한 프로세스 그룹·자손의 중단 뒤 소멸 관측으로 하고, 불명확하면 T-4 회수는 미확인·격리 유지 |
 | S-5g | e2e | T-4 | S-5 뒤 격리 유지 | ① 캡틴이 /read 전환 뒤 같은 토픽에서 안전한 읽기 요청 ② 받아 둔 두 번째 승인 버튼을 누름 | ① 접수되고 같은 작업 ID의 대기 알림을 받은 뒤에도 queued·격리 유지, running 전이·실행기 기동 없음 ② 이전 기동 승인으로 거부되고 재실행 없음(이미 approved인 시작 승인의 재사용 거부 증거) | ①은 접수부터 재판독까지 다른 preparing·running이 0일 때만 판정(실행 상한 대기와 구별), 5분 안에 대기 알림이 없으면 미확인. 대기한 시험 작업은 release 전에 /cancel로 종결 확인. 복구가 대기 중 승인(S-5의 도구 승인)을 무효화하는 것은 복구 직후 state.json 판독과 단위 시험 S-12(`test/daemon-recovery.test.ts`)로 연결 |
 | S-5q | check | T-4·T-5 | S-5g 뒤 | 파일·자손 검토 결과를 캡틴에게 제시 → 별도 승인이 있을 때만 `pace daemon release <경로>` | 회수·검토 증명 전 격리 유지, release해도 needs_review는 done으로 바뀌지 않고 재실행 없음 | 회수가 불확실하면 release하지 않고 격리 유지를 보고 |
-| S-6 | check | T-1~T-5 | 실측 끝(또는 정리 경로) | 작업본 `npm run check` 1회(임시 PACE_HOME), 설치본 일치 재대조, 종료 상태 복원 확인, 새 독립 tester·reviewer | 검사 종료 0, 설치본 일치, 종료 상태(아래) 충족, 독립 pass | 종료 상태: 시험 토픽 /read 복원 → 검증 workspace 등록 해제 → stop/start 새 boot → 등록 해제 **전에** 시험 토픽 `/read` 응답과 state.json의 그 대화 접근 모드 read-only 확인 → 재기동 뒤 새 boot에서 ① 같은 대화의 저장된 접근 모드가 read-only ② 로드된 workspace 목록(설정·로더 판독과 General `/workspaces`)에 검증 등록 없음 ③ General `/status` 정상 응답을 각각 확인(토픽 `/status`는 등록 해제 뒤 거절될 수 있어 판정에 쓰지 않음), launchd 등록·서비스 PID=daemon PID |
+| S-6 | check | T-1~T-5 | 실측 끝(또는 캡틴이 정한 복구 뒤) | 작업본 `npm run check` 1회(임시 PACE_HOME), 설치본 일치 재대조, 종료 상태 복원 확인, 새 독립 tester·reviewer | 검사 종료 0, 설치본 일치, 종료 상태(아래) 충족, 독립 pass | 종료 상태(알려진 정상 상태에서 시작): 시험 토픽 `/read` → state.json의 그 대화 접근 모드 read-only 확인 → 검증 workspace 등록 해제 → stop/start 새 boot → 판정은 파일·프로세스 판독으로: ① 같은 대화의 저장된 접근 모드 read-only ② config·로더에 검증 workspace 없음 ③ 새 boot ID·launchd 서비스 PID=daemon PID ④ 새 boot에서 캡틴이 새로 보낸 General `/status`에 2분 안에 응답(Telegram 채널 동작 — 어댑터 시작 실패는 daemon을 내리지 않으므로 ①~③만으로는 못 잡는다). `/workspaces` 응답은 보조. T-4 자동 재실행 없음은 실사용 판독(파일 불변·queued 유지)이 짧은 재실행을 놓칠 수 있어 단위 시험 S-12(`test/daemon-recovery.test.ts` 복구 뒤 실행기 호출 목록 불변)를 이 전체 검사로 연결해 판정한다. 비밀 없는 증거: 캡틴이 로컬에서 증거 묶음(evidence·TASK-CLOSE)을 토큰·chat·사용자·토픽 식별자·세션 ID·보낸 메시지 원문과 대조해 일치 0건임을 확인하고 건수만 남긴다(main은 원문을 받지 않는다) |
 
 ## 접근
 
@@ -83,17 +83,14 @@ S-0 → S-0s → S-1 → S-1b → S-2 → S-2r → S-3 → S-4d → S-4e(대기 
 - 승인한 쓰기가 실제 running이고 실행기 자손이 생긴 때만 강제 중단한다. 정상 stop으로 대체하지 않는다. 강제 종료는 daemon PID에만 SIGKILL로 하고, 고아가 된 자손은 고정한 PID·시작 시각이 같을 때만 종료한다.
 - 제품은 OS와 무관하게 회수 미확인·quarantine을 내는 것이 정상 기대이며 기본 reaper를 바꾸지 않는다. 회수·파일 검토를 제시하고 캡틴이 별도로 승인할 때만 release한다. release해도 needs_review를 done으로 바꾸지 않고 재실행하지 않는다.
 
-### 정리 경로
-**S-0s에서 이상(예상 밖 작업·workspace·설정 변경)을 검출해 멈춘 경우는 아래 정리를 적용하지 않는다** — daemon을 정지 상태로 두고 S-0 직후 기록한 기준 설정과 차이를 확인해 캡틴에게 보고하며, 캡틴이 복구 범위를 정한 뒤에만 재기동한다.
+### 예상 밖일 때: 멈추고 보고 ([진단](evidence/diagnosis-v3.md))
+실패 분기마다 정리 절차를 미리 열거하지 않는다. 어느 단계에서든 계획에 없는 관측(예상 밖 작업·workspace·설정 변경, 명령 해석 실패, 시간 초과, 기대와 다른 상태·응답)이 나오면:
 
-그 밖의 단계에서 실패·시간 초과로 멈추면 아래 순서로 정리한다. 각 상태는 판독으로 확인하고, 정리 도중 실패는 이벤트·시각·건수와 오류 문구(비밀 제거)로 main에 올린다.
+1. 더 진행하지 않고 캡틴에게 즉시 알린다. daemon은 그 상태로 두거나(내려갔으면 내려간 채) 멈춘다 캡틴은 알림을 받으면 승인 버튼을 더 누르지 않는다. **write_start가 승인된 쓰기가 끝나지 않은 상태(preparing·running)로 있으면** — preparing은 판독 직후 running으로 넘어갈 수 있고 일반 정지는 그 사이 시작된 작업에도 완료 유예를 주므로 — 일반 `stop`(최대 300초 완료 유예)을 쓰지 않고 S-5와 같은 강제 중단(그 시점 자손·프로세스 그룹 고정 → daemon PID에만 SIGKILL → 고정한 자손 소멸 확인, 남으면 같은 PID·시작 시각일 때만 종료)으로 쓰기를 즉시 끊는다. 승인된 쓰기가 없으면(승인 대기 쓰기는 버튼을 누르지 않으므로 시작되지 않는다) `pace daemon stop`. 재기동·/cancel·등록 해제·release·접근 모드 변경은 스스로 하지 않는다.
+2. config(키 이름·개수·의도값 일치만), state.json(작업·승인·대화 접근 모드·격리), 프로세스(daemon·고정한 자손)를 **읽기만** 해서 단계·이벤트·시각·건수로 캡틴에게 보고한다(비밀 제거).
+3. 복구 행동은 캡틴이 보고를 보고 정한다. 정한 복구와 그 결과(회수 미확인이면 격리 유지 포함)를 TASK-CLOSE에 남기고, 정상 상태로 돌아오면 S-6 종료 절차로 마친다. 복구할 수 없으면 운영 복원 미달로 기록한다.
 
-1. **daemon이 내려가 있으면** 재기동 전에 마지막 저장 상태를 읽는다. 실행 중(running)이던 작업이 있으면 읽기·쓰기 모두 고정한 자손의 소멸부터 확인한다(자손을 특정할 근거가 없으면 회수 미확인으로 기록). 그다음 `pace daemon start`로 새 boot를 띄우고, 실행 중이던 작업이 있었던 경우에만 같은 작업의 복구 상태(읽기 interrupted, 쓰기 needs_review)와 격리 저장을 확인한다. 회수 미확인이면 격리를 유지한다. 승인 대기·정상 종료·활성 작업 없음이면 그 상태(expired·invalidated 등)를 그대로 기록한다. 재기동이 불가능하면 운영 복원 미달로 기록하고 멈춘다.
-2. **활성·대기 시험 작업**이 있으면 /cancel로 종결을 확인한다(결속 전이면 해당 없음).
-3. **토픽이 결속돼 있으면** 시험 토픽을 /read로 복원하고, 응답과 state.json의 대화 접근 모드가 read-only인지 확인한다. S-0~S-1b 중이라 결속이 없으면 이 단계는 건너뛴다.
-4. **검증 workspace가 등록돼 있으면** 등록을 해제하고 stop/start로 새 boot를 띄운 뒤 S-6 종료 상태 방식으로 확인한다(결속이 없으면 `/status` 대신 설정·로더 판독으로 확인).
-
-회수 미확인 격리는 유지한다. 접근 모드는 대화 상태에 저장되므로 재기동·등록 해제만으로 read-only 복원을 가정하지 않는다.
+미리 정하는 정리는 알려진 정상 상태에서 시작하는 S-6 종료 절차 하나다. 접근 모드는 대화 상태에 저장되므로 재기동·등록 해제만으로 read-only 복원을 가정하지 않는다.
 
 ### 기준 문서
 AGENTS.md·docs/README.md 보안/환경·`docs/DAEMON.md`·PROJECT P-4·BR04. 독립 사전 검토 pass 전에는 workspace·config·토픽 변경, 실제 요청·버튼, 모델 실행, 기동 중단·재시작을 하지 않는다(S-0의 Telegram 설정과 S-0s 첫 기동도 사전 pass 뒤).

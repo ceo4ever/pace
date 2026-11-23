@@ -24,14 +24,16 @@
 - [Windows 설치 스킬 교체 EPERM](windows-설치-스킬-교체-eperm.md) — Windows 설치가 스킬 폴더 교체 중 EPERM으로 실패하면 잠근 프로세스를 확인하고 재시도·이름 바꾼 뒤 지우기를 검토한다
 - [Windows 실제 ACP 세션 환경 검증](windows-실제-acp-세션-환경-검증.md) — Windows 실제 Claude ACP 세션에서 Git Bash 위치 환경과 요청 흐름을 검증한다
 - [daemon-store S-15 간헐 실패 — Windows 제외 포트 범위](daemon-store-s-15-간헐-실패-windows-제외-포트-범위.md) — 임시 PACE_HOME의 해시 인스턴스 포트가 Windows 제외 범위면 listen EACCES 실패 — 다음 후보 포트로 넘어가게 고침
-- [codex 같은 세션 재검토 불가](codex-같은-세션-재검토-불가.md) — pace agent run codex p 모드가 --resume을 지원하지 않아 reviewer 지침의 같은 세션 재검토를 못 한다 — 재개 지원 또는 지침 대안 정리
 - [main 직접 finish 브레인 반영 검사 모순](main-직접-finish-브레인-반영-검사-모순.md) — main 직접 프로젝트 finish가 커밋 안 한 변경만 보고 브레인 반영을 판정해, 브레인을 고친 main 직접 프로젝트는 통과 불가 — 프로젝트 번호 커밋도 보게 고친다
 - [playbook-guard 임시 폴더 시험 병렬 경합](playbook-guard-임시-폴더-시험-병렬-경합.md) — playbook-guard 저장 경계 시험이 공용 tmpdir의 pace-playbook-* 증가로 판정해 병렬 실행 때 다른 시험 파일의 임시 폴더를 잡고 실패 — 시험 전용 임시 루트로 격리
 - [Canvas 미리보기 소유 Chrome 관찰 간헐 실패](canvas-미리보기-소유-chrome-관찰-간헐-실패.md) — intent-preview 실제 렌더 시험이 Windows에서 간헐 'owned Chrome not observed' — 감시자 관찰 방식을 보강한다
 - [changed check timeout 시험 부하 민감](changed-check-timeout-시험-부하-민감.md) — test/changed-test.test.ts 'changed check timeout and parent OS termination …'이 전체 검사 부하에서 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
 - [daemon 초기 준비 확인 실패 관측](daemon-초기-준비-확인-실패-관측.md) — Windows daemon 초기 소유자 확인 실패가 재발하면 원문과 시점을 확보해 원인을 구분한다
 - [Windows 루트 교체 검사 skip](windows-루트-교체-검사-skip.md) — Windows의 루트 교체 훅 skip 원인을 확인해 실제 경로 재검증 시험의 실행 가능성을 점검한다
+- [2단계 검토 판정 원장 미반영](2단계-검토-판정-원장-미반영.md) — goal-review 2단계(작업 문서 받은 뒤 호스트 판정) blocking이 검토 원장에 안 들어가 1단계 pass·2단계 blocking 반복이 반복 실패 단계로 안 잡힌다 — 최종 판정 확정 절차를 설계한다
 - [ACP 쓰기 편집 경로 미대조](acp-쓰기-편집-경로-미대조.md) — ACP 쓰기 모드에서 편집 도구 자동 허용이 경로를 대조하지 않아 작업사본 밖 편집도 승인 없이 허용될 수 있다 — 워크트리 안 경로만 자동 허용하게 고친다
+- [Gateway 인증 시간 초과 시험 부하 민감](gateway-인증-시간-초과-시험-부하-민감.md) — test/daemon-process.test.ts Gateway 인증 시간 초과·미인증 연결 상한 시험이 전체 검사 부하에서 간헐 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
+- [telegram-flow S-4b 단독 실행 실패](telegram-flow-s-4b-단독-실행-실패.md) — test/telegram-flow.test.ts S-4b가 --test-name-pattern 단독 실행에서 항상 실패(파일 전체는 통과) — 앞 시험에 기대는 숨은 의존을 끊는다
 
 ## 할 일
 
@@ -81,3 +83,4 @@
 - [서브 문서 내부 구조 정리](서브-문서-내부-구조-정리.md) — 원문 그대로 옮긴 DAEMON.md(한 문단)·DASHBOARD.md(절 없음)·TESTING 검사 선택(한 문장)을 절로 나눠 찾기 쉽게 — 정의서 크기 여유 6%도 함께 본다
 - [정의서 측정 도구 제공](정의서-측정-도구-제공.md) — pace-project-init의 정의서 측정(크기·절·비고·미등록 폴더·문서·서브 문서)을 CLI나 스킬 도구로 제공 — 지금은 analysis.md에 재는 법만 있다
 - [daemon 설정 PC 이전](daemon-설정-pc-이전.md) — daemon 설정 내보내기·가져오기로 새 PC 설치를 토큰 입력 하나로 줄인다
+- [ask_user 단계 지적 크기 기준](ask-user-단계-지적-크기-기준.md) — reviewer.md 반복 실패 절의 ask_user를 지적 크기로 가른다 — 작고 분명·범위 불변이면 PM이 고쳐 재검토 1회 뒤 waiver, 목적·범위·방향·위험만 사용자 결정
