@@ -72,11 +72,15 @@ test("S-4 같은 update 재전달(offset 저장 전 크래시)은 새 Daemon·�
 });
 
 test("S-4b 저장 실패는 offset 유지·재시도로 복구 뒤 정확히 1회 수락, 5회 연속 실패는 메타데이터만 보류(본문·토큰 미저장)", async () => {
-  const t = await tgHarness();
+  // 재시도 간격을 시험이 정한다 — 기본(5ms·잠자기 20ms 상한)이면 "재시도 중" 판독 전에 5회 문턱을 넘어 보류·offset 진행으로 바뀌는 경합이 생긴다
+  const t = await tgHarness({ adapter: { retryDelayMs: 200, sleep: (ms) => sleep(ms) } });
   try {
     t.h.store.failWrites = true;
+    const polls = t.mock.offsets.length;
     t.mock.text(CHAT, 11, U1, "복구될 요청", { message_id: 7100 });
-    await until(() => t.mock.offsets.length >= 4, 4000, "재시도");
+    // 빈 폴링이 아니라 이 update를 받은 뒤의 재요청을 기다린다(받기 1회 + 재시도 1회 이상, 5회 문턱 전)
+    await until(() => t.mock.offsets.length >= polls + 2, 4000, "재시도");
+    assert.equal(t.adapter.state.held.length, 0, "아직 보류 전");
     assert.equal(t.adapter.state.offset, 0, "offset 유지");
     t.h.store.failWrites = false;
     await until(() => t.h.runner.started.includes("복구될 요청"), 4000, "복구 뒤 수락");
@@ -99,7 +103,7 @@ test("S-4b 저장 실패는 offset 유지·재시도로 복구 뒤 정확히 1�
     t.mock.text(CHAT, undefined, U1, `/held clear ${t.adapter.state.held[0]!.update_id}`);
     await until(() => t.adapter.state.held.length === 0, 4000, "/held clear");
     t.h.runner.release("다시 보냄");
-  } finally { await t.stop(); }
+  } finally { t.h.store.failWrites = false; await t.stop(); } // 주입을 끄고 정리 — 실패 시 정리의 저장 오류가 원래 실패를 가리지 않게
 });
 
 test("S-4c stopping은 offset 유지·폴링 중단(재기동 뒤 다시 수락)", async () => {
