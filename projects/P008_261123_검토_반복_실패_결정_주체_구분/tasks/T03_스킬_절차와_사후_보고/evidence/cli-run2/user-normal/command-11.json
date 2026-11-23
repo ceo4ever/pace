@@ -1,0 +1,17 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "project",
+    "log",
+    "P001",
+    "--type",
+    "question",
+    "--by",
+    "agent",
+    "--msg",
+    "합성 normal 단계 승인 입력 연결"
+  ],
+  "status": 1,
+  "stdout": "",
+  "stderr": "pace: git rev-parse --abbrev-ref HEAD 실패: fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]'\n"
+}

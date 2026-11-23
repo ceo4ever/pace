@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+const fs=require('node:fs'),p=require('node:path');process.stdin.resume();process.stdin.on('end',()=>{const d=__dirname,c=p.join(d,'count.txt');fs.writeFileSync(c,String(Number(fs.readFileSync(c,'utf8'))+1));console.log(JSON.stringify({type:'result',result:fs.readFileSync(p.join(d,'reply.txt'),'utf8'),modelUsage:{'claude-fixture':{}},is_error:false}));});

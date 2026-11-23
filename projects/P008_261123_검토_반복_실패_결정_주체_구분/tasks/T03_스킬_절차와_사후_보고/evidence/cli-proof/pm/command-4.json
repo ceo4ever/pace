@@ -1,0 +1,18 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "agent",
+    "verify",
+    "--author-agent",
+    "codex",
+    "--kind",
+    "task",
+    "--target",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof/pm/TASK.md",
+    "--purpose",
+    "합성 CLI 계약 시험 — 실제 모델/사용자 승인 아님"
+  ],
+  "status": 16,
+  "stdout": "{\n  \"ran\": false,\n  \"reason\": \"검토 반복 실패 단계\",\n  \"escalation\": {\n    \"stage\": \"diagnose\",\n    \"consecutive_fails\": 3,\n    \"last_decision_by\": null,\n    \"next\": \"같은 대상에서 연속 3회 fail — 지적별 수정을 멈추고 원인 층(structure/planning/design/other)을 진단한다. 근본 조치 전에 합의된 목적·범위와 실제 영향을 확인해 분류한다. 심각한 오류·보안·합의 변경이면 조치 전 사용자 결정을 받는다. 일반 갭은 PM이 근본 조치·재검증 후 사후 보고한다. 분류 정본: skills/pace-project-dev/references/reviewer.md의 반복 실패 절. `pace agent review-note --target /Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof/pm/TASK.md --diagnosis --layer <층> --summary \\\"<진단·조치>\\\" [--file <진단 증거·승인 연결>]`로 기록한다. 진단 뒤 첫 검토는 새 기준 전체 검토다.\"\n  }\n}\n",
+  "stderr": ""
+}

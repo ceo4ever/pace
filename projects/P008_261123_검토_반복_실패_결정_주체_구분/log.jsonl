@@ -33,3 +33,14 @@
 {"ts":"2026-11-23T15:07:08.506Z","p":"P008","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-23T15:07:08.506Z","p":"P008","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
 {"ts":"2026-11-23T15:07:35.852Z","p":"P008","t":"T02","type":"review","by":"agent","msg":"tester pass blocking0·41건·변이4종 검출; reviewer 2단계 pass blocking0 should_fix0; main 반영 뒤 규칙 선언 전체1036건 fail0, 전후 러너0","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-23T15:07:37.402Z","p":"P008","t":"T03","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-23T15:24:15.678Z","p":"P008","t":"T03","type":"question","by":"agent","msg":"T03 전체 검사 전용 실행창 요청; 현재 P005 러너 관측, 기존 검사 유지와 다른 프로세스 비개입"}
+{"ts":"2026-11-23T15:25:00.725Z","p":"P008","t":"T03","type":"answer","by":"agent","msg":"기존 P005 검사 종료와 다른 러너 없음 확인 뒤 T03 검사·커밋·finish 순으로 진행, 최대12분 창 또는 종료 통보까지 새 검사 보류"}
+{"ts":"2026-11-23T15:25:00.899Z","p":"P008","t":"T03","type":"decision","by":"agent","msg":"독립 판정 회수 뒤 기존 러너 종료를 확인한 실행창에서 T03 전체 검사와 finish를 순차 실행하고 완료·실패 즉시 알림, 다른 프로세스 비개입","src":"main 판단"}
+{"ts":"2026-11-23T15:29:59.388Z","p":"P008","t":"T03","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-23T15:30:22.466Z","p":"P008","t":"T03","type":"decision","by":"agent","msg":"G 전제와 일반질문 경로를 바로잡고 보안지적 홈 shebang을 portable로 가림, 전체 행동세트·CLI 재실행으로 확인; 새 횟수상한은 합의밖 note로 유지","src":"자체 판단"}
+{"ts":"2026-11-23T15:30:47.140Z","p":"P008","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T15:30:47.306Z","p":"P008","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T15:32:20.730Z","p":"P008","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T15:32:20.900Z","p":"P008","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-23T15:32:20.900Z","p":"P008","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}

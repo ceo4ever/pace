@@ -78,3 +78,16 @@ test("SKILL.md와 references 문서의 상대 링크가 모두 실제 파일을 
   }
   assert.ok(count >= 20, `링크 ${count}개`);
 });
+
+test('반복 실패는 영향 분류 정본 하나로 연결하고 옛 무조건 사용자 경로를 남기지 않는다', () => {
+  const reviewer = readFileSync(join(skillDir, 'references/reviewer.md'), 'utf8');
+  for (const part of ['모든 수정 직전', '확인한 것과 남은 불확실성', '--decision --by pm', '--decision --by user', 'TASK-CLOSE 리뷰 절과 사용자 보고', 'normal 단계에서 새 위험', 'unknown(미확인)']) assert.ok(reviewer.includes(part), part);
+  for (const file of ['SKILL.md', 'references/task-steps.md', 'references/tools.md', 'references/coordinator.md']) {
+    const text = readFileSync(join(skillDir, file), 'utf8');
+    assert.match(text, /reviewer\.md#반복-실패-진단과-사용자-결정/);
+    assert.doesNotMatch(text, /진단 뒤에도 fail이면 사용자 결정|진단 뒤에도 fail일 때/);
+  }
+  assert.match(reviewer, /^## 반복 실패: 진단과 사용자 결정$/m);
+  const scenarios = readFileSync(join(skillDir, 'evals/scenarios.md'), 'utf8');
+  for (const id of ['E', 'E′', 'H', 'J']) assert.ok(scenarios.includes(`| ${id} |`));
+});

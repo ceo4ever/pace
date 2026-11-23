@@ -1,0 +1,9 @@
+✔ 반복 실패는 영향 분류 정본 하나로 연결하고 옛 무조건 사용자 경로를 남기지 않는다 (0.939792ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 66.069667

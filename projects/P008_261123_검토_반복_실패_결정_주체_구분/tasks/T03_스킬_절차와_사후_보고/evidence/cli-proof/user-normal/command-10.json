@@ -1,0 +1,21 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "agent",
+    "review-note",
+    "--target",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof/user-normal/TASK.md",
+    "--decision",
+    "--by",
+    "user",
+    "--choice",
+    "x",
+    "--summary",
+    "합성",
+    "--file",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof/user-normal/approval.md"
+  ],
+  "status": 2,
+  "stdout": "{\n  \"is_error\": true,\n  \"error\": {\n    \"code\": \"invalid_request\",\n    \"message\": \"결정은 진단 뒤에도 fail인 ask_user 단계일 때만 기록한다(지금 normal)\"\n  }\n}\n",
+  "stderr": ""
+}

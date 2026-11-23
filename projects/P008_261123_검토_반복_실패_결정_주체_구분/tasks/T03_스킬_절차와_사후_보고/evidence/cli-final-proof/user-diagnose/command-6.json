@@ -1,0 +1,18 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "agent",
+    "verify",
+    "--author-agent",
+    "codex",
+    "--kind",
+    "task",
+    "--target",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-final-proof/user-diagnose/TASK.md",
+    "--purpose",
+    "합성 CLI 계약 시험 — 실제 모델/사용자 승인 아님"
+  ],
+  "status": 0,
+  "stdout": "{\n  \"ran\": true,\n  \"cross\": true,\n  \"verifier\": \"claude\",\n  \"result\": {\n    \"text\": \"합성 보완 확인\\npass\",\n    \"agent\": \"claude\",\n    \"mode\": \"p\",\n    \"model\": {\n      \"value\": \"claude-fixture\",\n      \"source\": \"reported\"\n    },\n    \"provider\": {\n      \"value\": \"anthropic\",\n      \"source\": \"model\"\n    },\n    \"access\": \"read-only\",\n    \"enforcement\": \"claude --tools Read,Grep,Glob (내장 도구 목록 제한)\",\n    \"session_id\": null,\n    \"stop_reason\": null,\n    \"is_error\": false,\n    \"duration_ms\": 26,\n    \"usage\": {\n      \"input_tokens\": null,\n      \"output_tokens\": null\n    },\n    \"raw_path\": null,\n    \"process_cleanup\": \"verified\"\n  },\n  \"last_decision_by\": null,\n  \"review\": {\n    \"target\": \"TASK.md\",\n    \"hash\": \"2b97a5ed64703f362f1754737d332e66d665080b5254f9ecfa95a20d8cca6dd5\",\n    \"verdict\": \"pass\",\n    \"rereview_of\": null,\n    \"record\": \"review-records/R4.json\"\n  }\n}\n",
+  "stderr": ""
+}

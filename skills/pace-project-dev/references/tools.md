@@ -33,7 +33,7 @@
 
 - 호스트의 새 세션·Orca 호출은 해당 호스트가 노출한 모델·effort 옵션과 기본값을 따른다. `pace worker` 설정이나 `project start`의 작업자 설정이 reviewer에 자동 적용된다고 가정하지 않는다. 실제 사용한 도구·설정·보고된 제공자를 확인한다.
 - `pace agent run --mode p`는 Claude와 Codex에 `--model`, `--effort`를 전달한다. 생략하면 PACE은 값을 지정하지 않고 실행 도구의 기본값을 쓴다. Codex p는 사용자 설정을 무시한다. Claude p의 `--resume`은 지원하지만 Codex p의 resume는 지원하지 않아 오류다. 호스트 세션 재개 가능 여부는 별도로 확인한다.
-- `pace agent verify`는 `--model`을 받지만 `--effort`는 받지 않는다 (`src/cli.ts`, `src/agent/verify.ts`). 생략 시 모델은 실행 도구 기본값이며 effort는 지정할 수 없다. 같은 세션 재개는 하지 않는 대신, 대상 폴더 원장(`REVIEW-LOG.jsonl`)의 직전 fail이 있으면 그 원문과 바뀐 줄로 자동 재검토하고, 세 번째 연속 fail·진단 뒤 fail을 기록한 **그 호출**이 종료 0과 `escalation.stage`(diagnose·ask_user)를 내고, 이미 열린 단계에서 다음 호출은 종료 16으로 막힌다(`review-note`로 진단·결정 기록, [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)). 교차 제공자는 결과의 실제 제공자 또는 보고된 모델로 확인한다. `--allow-same-provider` 대체 결과는 교차가 아니다. 이 CLI의 일반 교차 검증 미실행·질문 계약과 태스크의 미검토 시 구현 중단 절차를 혼동하지 않는다.
+- `pace agent verify`는 `--model`을 받지만 `--effort`는 받지 않는다 (`src/cli.ts`, `src/agent/verify.ts`). 생략 시 모델은 실행 도구 기본값이며 effort는 지정할 수 없다. 같은 세션 재개 대신 원장의 직전 fail 원문·바뀐 줄로 자동 재검토한다. escalation 신호와 종료 16의 해석·분류·결정·보고는 [반복 실패 정본](reviewer.md#반복-실패-진단과-사용자-결정)을 따른다. 교차 제공자는 결과의 실제 제공자 또는 보고된 모델로 확인한다. `--allow-same-provider` 대체 결과는 교차가 아니다. 이 CLI의 일반 교차 검증 미실행·질문 계약과 태스크의 미검토 시 구현 중단 절차를 혼동하지 않는다.
 
 ## SKILL.md에서 옮긴 문장
 

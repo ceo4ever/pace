@@ -1,0 +1,19 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "agent",
+    "review-note",
+    "--target",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-run2/user-diagnose/TASK.md",
+    "--diagnosis",
+    "--layer",
+    "design",
+    "--summary",
+    "합성 원인 층 조치",
+    "--file",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-run2/user-diagnose/diagnosis.md"
+  ],
+  "status": 0,
+  "stdout": "{\n  \"ok\": true,\n  \"entry\": {\n    \"type\": \"diagnosis\",\n    \"at\": \"2026-11-23T15:16:01.523Z\",\n    \"target\": \"TASK.md\",\n    \"layer\": \"design\",\n    \"summary\": \"합성 원인 층 조치\",\n    \"file\": \"/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-run2/user-diagnose/diagnosis.md\"\n  },\n  \"stage\": \"normal\"\n}\n",
+  "stderr": ""
+}

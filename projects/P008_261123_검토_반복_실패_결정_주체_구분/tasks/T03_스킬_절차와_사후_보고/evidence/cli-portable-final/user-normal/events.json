@@ -1,0 +1,115 @@
+[
+  {
+    "order": 0,
+    "type": "edit",
+    "label": "합성 검토 지적 반영",
+    "before": "8f31d93ed2c853f19bbdc932787b78af9f36f93a137d38f3a7952b82dca4bf57",
+    "after": "107460198610fd5db22242c91e0f5ee2fdd3fb173fe52707e3d809c273f8ec7a"
+  },
+  {
+    "order": 1,
+    "type": "edit",
+    "label": "합성 검토 지적 반영",
+    "before": "107460198610fd5db22242c91e0f5ee2fdd3fb173fe52707e3d809c273f8ec7a",
+    "after": "c9e86da23c4f1f701cab0ebf5ff485e05b0f54ea4e602befa583771b9d9fd5dc"
+  },
+  {
+    "order": 2,
+    "type": "signal",
+    "stage": "diagnose",
+    "exit": 0
+  },
+  {
+    "order": 3,
+    "type": "classify",
+    "phase": "diagnose",
+    "actor": "pm"
+  },
+  {
+    "order": 4,
+    "type": "negative-block-probe",
+    "stage": "diagnose",
+    "exit": 16
+  },
+  {
+    "order": 5,
+    "type": "edit",
+    "label": "진단 근본 조치",
+    "before": "c9e86da23c4f1f701cab0ebf5ff485e05b0f54ea4e602befa583771b9d9fd5dc",
+    "after": "2b97a5ed64703f362f1754737d332e66d665080b5254f9ecfa95a20d8cca6dd5"
+  },
+  {
+    "order": 6,
+    "type": "signal",
+    "stage": "ask_user",
+    "exit": 0
+  },
+  {
+    "order": 7,
+    "type": "classify",
+    "phase": "ask_user",
+    "actor": "pm"
+  },
+  {
+    "order": 8,
+    "type": "negative-block-probe",
+    "stage": "ask_user",
+    "exit": 16
+  },
+  {
+    "order": 9,
+    "type": "edit",
+    "label": "결정 뒤 근본 조치",
+    "before": "2b97a5ed64703f362f1754737d332e66d665080b5254f9ecfa95a20d8cca6dd5",
+    "after": "c2e3b91b28ec9c8175cc1a4f0d01d7077d0ec7372512ab6119226357c26fcfdd"
+  },
+  {
+    "order": 10,
+    "type": "signal",
+    "stage": "normal",
+    "exit": 0
+  },
+  {
+    "order": 11,
+    "type": "classify",
+    "phase": "normal",
+    "actor": "user",
+    "reason": "합성 새 위험"
+  },
+  {
+    "order": 12,
+    "type": "question",
+    "hash": "c2e3b91b28ec9c8175cc1a4f0d01d7077d0ec7372512ab6119226357c26fcfdd",
+    "report": [
+      "합성 대상",
+      "실패 추이",
+      "design 층 진단",
+      "미승인 영향",
+      "선택지",
+      "추천·이유"
+    ]
+  },
+  {
+    "order": 13,
+    "type": "approval",
+    "hash": "c2e3b91b28ec9c8175cc1a4f0d01d7077d0ec7372512ab6119226357c26fcfdd",
+    "file": "approval.md",
+    "synthetic": true
+  },
+  {
+    "order": 14,
+    "type": "edit",
+    "label": "normal 단계 합성 승인 뒤 첫 조치",
+    "before": "c2e3b91b28ec9c8175cc1a4f0d01d7077d0ec7372512ab6119226357c26fcfdd",
+    "after": "cb2942731345ea915f6945457cd7cbf4bdc2f0ec414c5818234057cab4ec5926"
+  },
+  {
+    "order": 15,
+    "type": "report",
+    "repeated": "합성 누락",
+    "layer": "design",
+    "changed": "공통 원인을 채우거나 덜어냄",
+    "reverified": "실제 소스 CLI pass",
+    "synthetic": true
+  }
+]

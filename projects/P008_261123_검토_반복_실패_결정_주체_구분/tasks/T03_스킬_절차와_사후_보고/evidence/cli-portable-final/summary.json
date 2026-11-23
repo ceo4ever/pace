@@ -1,0 +1,30 @@
+[
+  {
+    "kind": "pm",
+    "passed": true,
+    "fixture_executor": true,
+    "approval_checked": false,
+    "negative_rejected": false
+  },
+  {
+    "kind": "user-diagnose",
+    "passed": true,
+    "fixture_executor": true,
+    "approval_checked": true,
+    "negative_rejected": true
+  },
+  {
+    "kind": "user-after-diagnosis",
+    "passed": true,
+    "fixture_executor": true,
+    "approval_checked": true,
+    "negative_rejected": true
+  },
+  {
+    "kind": "user-normal",
+    "passed": true,
+    "fixture_executor": true,
+    "approval_checked": true,
+    "negative_rejected": true
+  }
+]

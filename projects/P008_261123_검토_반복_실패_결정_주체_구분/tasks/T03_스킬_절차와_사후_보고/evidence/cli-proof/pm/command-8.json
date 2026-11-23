@@ -1,0 +1,21 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "agent",
+    "review-note",
+    "--target",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof/pm/TASK.md",
+    "--decision",
+    "--by",
+    "pm",
+    "--choice",
+    "근본 조치 후 재검증",
+    "--summary",
+    "합성 분류·조치",
+    "--file",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof/pm/decision.md"
+  ],
+  "status": 0,
+  "stdout": "{\n  \"ok\": true,\n  \"entry\": {\n    \"type\": \"decision\",\n    \"at\": \"2026-11-23T15:19:10.579Z\",\n    \"target\": \"TASK.md\",\n    \"by\": \"pm\",\n    \"choice\": \"근본 조치 후 재검증\",\n    \"summary\": \"합성 분류·조치\",\n    \"file\": \"/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof/pm/decision.md\"\n  },\n  \"stage\": \"normal\"\n}\n",
+  "stderr": ""
+}

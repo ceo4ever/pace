@@ -1,0 +1,18 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "agent",
+    "verify",
+    "--author-agent",
+    "codex",
+    "--kind",
+    "task",
+    "--target",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof-final/user-after-diagnosis/TASK.md",
+    "--purpose",
+    "합성 CLI 계약 시험 — 실제 모델/사용자 승인 아님"
+  ],
+  "status": 0,
+  "stdout": "{\n  \"ran\": true,\n  \"cross\": true,\n  \"verifier\": \"claude\",\n  \"result\": {\n    \"text\": \"F1 [blocking] 합성 누락\\nfail\",\n    \"agent\": \"claude\",\n    \"mode\": \"p\",\n    \"model\": {\n      \"value\": \"claude-fixture\",\n      \"source\": \"reported\"\n    },\n    \"provider\": {\n      \"value\": \"anthropic\",\n      \"source\": \"model\"\n    },\n    \"access\": \"read-only\",\n    \"enforcement\": \"claude --tools Read,Grep,Glob (내장 도구 목록 제한)\",\n    \"session_id\": null,\n    \"stop_reason\": null,\n    \"is_error\": false,\n    \"duration_ms\": 53,\n    \"usage\": {\n      \"input_tokens\": null,\n      \"output_tokens\": null\n    },\n    \"raw_path\": null,\n    \"process_cleanup\": \"verified\"\n  },\n  \"last_decision_by\": null,\n  \"review\": {\n    \"target\": \"TASK.md\",\n    \"hash\": \"c9e86da23c4f1f701cab0ebf5ff485e05b0f54ea4e602befa583771b9d9fd5dc\",\n    \"verdict\": \"fail\",\n    \"rereview_of\": \"review-records/R2.json\",\n    \"record\": \"review-records/R3.json\"\n  },\n  \"escalation\": {\n    \"stage\": \"diagnose\",\n    \"consecutive_fails\": 3,\n    \"last_decision_by\": null,\n    \"next\": \"같은 대상에서 연속 3회 fail — 지적별 수정을 멈추고 원인 층(structure/planning/design/other)을 진단한다. 근본 조치 전에 합의된 목적·범위와 실제 영향을 확인해 분류한다. 심각한 오류·보안·합의 변경이면 조치 전 사용자 결정을 받는다. 일반 갭은 PM이 근본 조치·재검증 후 사후 보고한다. 분류 정본: skills/pace-project-dev/references/reviewer.md의 반복 실패 절. `pace agent review-note --target /Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-proof-final/user-after-diagnosis/TASK.md --diagnosis --layer <층> --summary \\\"<진단·조치>\\\" [--file <진단 증거·승인 연결>]`로 기록한다. 진단 뒤 첫 검토는 새 기준 전체 검토다.\"\n  }\n}\n",
+  "stderr": ""
+}

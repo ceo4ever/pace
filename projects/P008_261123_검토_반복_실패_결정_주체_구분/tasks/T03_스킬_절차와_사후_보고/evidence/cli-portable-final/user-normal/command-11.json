@@ -1,0 +1,17 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "project",
+    "log",
+    "P001",
+    "--type",
+    "question",
+    "--by",
+    "agent",
+    "--msg",
+    "합성 normal 단계 승인 질문"
+  ],
+  "status": 0,
+  "stdout": "사건 기록\n",
+  "stderr": ""
+}

@@ -1,0 +1,18 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "agent",
+    "verify",
+    "--author-agent",
+    "codex",
+    "--kind",
+    "task",
+    "--target",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-paths/pm/TASK.md",
+    "--purpose",
+    "합성 CLI 계약 시험 — 실제 모델/사용자 승인 아님"
+  ],
+  "status": 7,
+  "stdout": "{\n  \"is_error\": true,\n  \"error\": {\n    \"code\": \"agent_failed\",\n    \"message\": \"claude 종료 코드 1: file:///Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_%EA%B2%80%ED%86%A0_%EB%B0%98%EB%B3%B5_%EC%8B%A4%ED%8C%A8_%EA%B2%B0%EC%A0%95_%EC%A3%BC%EC%B2%B4_%EA%B5%AC%EB%B6%84/tasks/T03_%EC%8A%A4%ED%82%AC_%EC%A0%88%EC%B0%A8%EC%99%80_%EC%82%AC%ED%9B%84_%EB%B3%B4%EA%B3%A0/evidence/cli-path\"\n  }\n}\n",
+  "stderr": ""
+}

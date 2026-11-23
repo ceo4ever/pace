@@ -1,0 +1,32 @@
+{
+  "rejected": true,
+  "events": [
+    {
+      "order": 5,
+      "type": "question",
+      "hash": "c9e86da23c4f1f701cab0ebf5ff485e05b0f54ea4e602befa583771b9d9fd5dc",
+      "report": [
+        "합성 대상",
+        "실패 추이",
+        "design 층 진단",
+        "미승인 영향",
+        "선택지",
+        "추천·이유"
+      ]
+    },
+    {
+      "type": "edit",
+      "before": "c9e86da23c4f1f701cab0ebf5ff485e05b0f54ea4e602befa583771b9d9fd5dc",
+      "after": "ad8688f49e06e0421ec8e98c335e92e0d01a679e4ea220608f169ed32038e8bb"
+    },
+    {
+      "type": "approval",
+      "hash": "ad8688f49e06e0421ec8e98c335e92e0d01a679e4ea220608f169ed32038e8bb"
+    },
+    {
+      "type": "edit",
+      "before": "ad8688f49e06e0421ec8e98c335e92e0d01a679e4ea220608f169ed32038e8bb",
+      "after": "236a2430f08b65a39ed400ede3c4585116892d6d13e1aecabb08b3d9ebc35e00"
+    }
+  ]
+}

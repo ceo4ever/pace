@@ -1,0 +1,11 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "project",
+    "new",
+    "합성 감사"
+  ],
+  "status": 0,
+  "stdout": "프로젝트 생성: projects/P001_261124_합성_감사/PROJECT.md\n목적·재료·기준을 채우고 출처를 착수 결정으로 바로 실행: pace project start P001\n",
+  "stderr": ""
+}

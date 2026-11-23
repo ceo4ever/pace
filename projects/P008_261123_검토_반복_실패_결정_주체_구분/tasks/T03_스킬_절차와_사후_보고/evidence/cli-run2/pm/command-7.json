@@ -1,0 +1,18 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "agent",
+    "verify",
+    "--author-agent",
+    "codex",
+    "--kind",
+    "task",
+    "--target",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-run2/pm/TASK.md",
+    "--purpose",
+    "합성 CLI 계약 시험 — 실제 모델/사용자 승인 아님"
+  ],
+  "status": 16,
+  "stdout": "{\n  \"ran\": false,\n  \"reason\": \"검토 반복 실패 단계\",\n  \"escalation\": {\n    \"stage\": \"ask_user\",\n    \"consecutive_fails\": 4,\n    \"last_decision_by\": null,\n    \"next\": \"진단 뒤에도 fail — ask_user는 호환을 위한 결정 필요 단계 이름이며 주체를 자동 지정하지 않는다. 매 수정 전에 지적·조치의 영향을 분류한다(정본: skills/pace-project-dev/references/reviewer.md 반복 실패 절). 일반 갭은 PM 결정: 분류 이유·조치를 근거 파일에 남기고 근본 조치 → 전체 재검증 → 사후 보고한다. 심각한 오류·보안·목적·범위 변경은 고치기 전 사용자 결정: 실패 추이·진단·남은 지적·선택지와 추천을 보고하고 사람 결정 원문을 보존한다. `pace agent review-note --target /Volumes/Data/AiStudio/workspace/pace.wt/P008/projects/P008_261123_검토_반복_실패_결정_주체_구분/tasks/T03_스킬_절차와_사후_보고/evidence/cli-run2/pm/TASK.md --decision --by pm|user --choice \\\"<선택>\\\" --summary \\\"<사유>\\\" --file <분류·조치 또는 사용자 원문>`으로 기록한다. PM 결정은 waiver가 아니며 재검증한다.\"\n  }\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,11 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "project",
+    "new",
+    "합성 감사"
+  ],
+  "status": 1,
+  "stdout": "",
+  "stderr": "pace: new는 main 브랜치에서 실행한다 (지금 master)\n"
+}

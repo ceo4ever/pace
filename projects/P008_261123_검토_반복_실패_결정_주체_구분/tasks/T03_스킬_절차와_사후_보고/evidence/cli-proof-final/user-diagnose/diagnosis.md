@@ -1,0 +1,1 @@
+합성 design 층 근본 조치. [합성 승인 원문](approval.md)

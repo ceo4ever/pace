@@ -1,0 +1,25 @@
+{
+  "text": "## P008 보안 검토 결과: **pass** (blocking 0건)\n\n전체 diff 파일 `/tmp/p008-security-full.diff`는 읽기 권한이 거부돼 보지 못했습니다. 그래서 diff 대신 worktree의 현재 소스, `docs/SECURITY.md`, `references/security.md`, T03 e2e 스크립트 2개, evidence를 직접 읽고 판단했습니다. 파일은 고치지 않았고 테스트도 돌리지 않았습니다.\n\n### 범위별 확인 내용\n\n- **TASK 증명 범위·사전 검토 게이트:** 막혀야 할 경우가 모두 막힙니다. [확인: `src/project/pre-review.ts:6-52`, `:71-73`, `src/project/harness.ts:1089`]\n  - 형식 표지가 v2인데 증명 범위 절이나 판정 주체가 없으면 게이트와 verify가 같은 함수로 거부합니다.\n  - 표지가 중복되거나 지원하지 않는 버전이면 `invalid`로 보고 거부합니다.\n  - 주석이나 코드 블록 안에 쓴 표지는 표지로 세지 않습니다.\n- **waiver는 사용자만 가능:** `by !== 'user'`이면 거부합니다. waiver는 TASK 해시, 근거 파일(심볼릭 링크 거부), 실행된 검토 기록에 묶여 있고, 마지막 검토가 pass이면 거부합니다. PM 결정 기록은 PRE-REVIEW 게이트와 다른 경로라서 waiver로 쓰일 수 없습니다. [확인: `pre-review.ts:109-120`, `test/pre-review.test.ts:168`]\n- **결정 기록(review-note):** [확인: `src/agent/verify-cli.ts:224`, `:248-257`]\n  - `--by`는 `pm` 또는 `user`만 받고 `--decision`에서만 쓸 수 있습니다.\n  - 결정은 `ask_user` 단계에서만 기록됩니다.\n  - 근거 파일은 비어 있지 않은 일반 파일이어야 하고, 검토 대상 파일 자체는 근거로 쓸 수 없습니다.\n- **옛 기록 호환:** `by`가 없는 옛 결정은 `unknown`으로 읽고 `user`로 추정하지 않습니다. `by` 값이 잘못된 줄이 있으면 원장 손상으로 보고 멈춥니다. [확인: `src/agent/review-log.ts:67`, `:121`]\n- **합성 fixture와 프로세스 실행:** 위험한 동작은 없었습니다. [확인: `e2e/cli-paths.mjs:39`, `:93-110`, `e2e/doc-negative.mjs:9-23`]\n  - 모든 실행은 `spawnSync`에 인자를 배열로 넘깁니다. 셸 문자열을 이어 붙이는 곳은 없습니다.\n  - `PACE_HOME`은 격리된 폴더로 지정되고, 가짜 `claude`가 PATH 맨 앞에 옵니다.\n  - `rmSync`로 지우는 대상은 `mkdtemp`로 직접 만든 임시 폴더뿐입니다.\n  - 사용자 승인 원문은 \"합성 — 실제 사람 승인 아님\"이라고 명시돼 있습니다.\n- **비밀 노출:** T03을 포함한 프로젝트 폴더 전체에서 키·토큰·개인키 패턴과 사용자 식별 값은 0건입니다. evidence 안의 `session_id`는 모두 `null`입니다.\n\n### should_fix (1건)\n\n1. **evidence 실행 파일 첫 줄에 로컬 홈 경로와 사용자명이 기록됨**\n   - 위치: `evidence/{cli-paths,cli-run2,cli-final,cli-final-proof,cli-proof,cli-proof-final}/*/bin/claude:1` (21개 파일)\n   - 원인: `cli-paths.mjs:35`가 `#!${process.execPath}`를 써서, 실제 Node 설치 경로가 그대로 저장됩니다. 비밀은 아니지만 개인 식별 정보입니다.\n   - 고칠 방법: 스크립트에서 첫 줄을 `#!/usr/bin/env node`로 바꾸고 evidence를 다시 생성합니다. 또는 커밋 전에 `bin/` 폴더를 evidence에서 빼거나, 그 줄을 `<node>`로 가립니다.\n   - 같이 하면 좋은 것: evidence의 `command-*.json`과 `REVIEW-LOG.jsonl`에 worktree 절대 경로가 361곳 들어 있습니다. 비밀은 아니므로, 위 작업과 함께 상대 경로로 바꾸는 것을 권합니다.\n\n### handoff (남은 한계 — 문서에 이미 적혀 있음)\n\n1. **v2 표지를 지우면 새 규칙을 피할 수 있음:** 표지가 없으면 옛 형식으로 처리되므로, 새 TASK에서 표지를 지우면 증명 범위 게이트를 우회합니다. `WORK-PROCESS.md:18`과 `reviewer.md:13`에 진정성 한계로 적혀 있습니다. 나중에 막으려면, TASK를 만들 때 형식을 기록해 두고 게이트가 그 기록과 대조하는 방법이 있습니다.\n2. **`--by user` 진정성과 사용자 결정 강제를 기계가 확인하지 않음:**\n   - `--by user`의 근거 파일이 실제 사람의 결정인지 기계가 확인하지 않습니다(`verify-cli.ts:254`의 주석이 PM 책임이라고 명시). waiver와 달리 TASK 해시에도 묶이지 않습니다.\n   - PM 결정으로 진단 → 결정 사이클을 반복할 수 있어서, \"중대한 변경은 사용자 결정\"이라는 규칙은 스킬 절차로만 지켜집니다.\n3. **e2e가 부모 환경 변수를 그대로 넘김:** `cli-paths.mjs:37`이 `...process.env`를 상속하고, `:96`의 임시 저장소 `git commit`은 전역 git 설정과 훅을 그대로 씁니다. 가짜 `claude`가 쓰였다는 것은 evidence의 모델 이름(`claude-fixture`)으로 확인했습니다. 다만 가짜 `claude`가 실제로 호출됐는지를 스크립트가 매번 단언하지는 않습니다(호출 횟수 파일은 차단 확인 때만 비교). 내보내는 내용이 합성뿐이라 실제 위험은 낮습니다.\n4. **원장의 `file` 필드가 받은 경로를 그대로 저장함:** 절대 경로가 그대로 남습니다. P008 이전부터 있던 동작입니다.\n\n결론: blocking은 없고 P008의 보안 기준을 충족합니다. 커밋 전에 should_fix 1건(evidence의 홈 경로)만 정리하시면 됩니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": null,
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 95557,
+  "usage": {
+    "input_tokens": 26,
+    "output_tokens": 10218
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

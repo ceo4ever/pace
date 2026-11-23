@@ -1,0 +1,2 @@
+F1 [blocking] 합성 누락
+fail

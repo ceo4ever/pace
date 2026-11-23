@@ -1,0 +1,17 @@
+{
+  "fixture_executor": true,
+  "args": [
+    "project",
+    "log",
+    "P001",
+    "--type",
+    "question",
+    "--by",
+    "agent",
+    "--msg",
+    "합성 normal 단계 승인 입력 연결"
+  ],
+  "status": 1,
+  "stdout": "",
+  "stderr": "pace: 프로젝트를 찾지 못했다: P001 (/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-p008-audit-vWu7dF/projects)\n"
+}

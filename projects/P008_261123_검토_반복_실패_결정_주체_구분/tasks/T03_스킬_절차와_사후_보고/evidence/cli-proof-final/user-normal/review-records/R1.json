@@ -1,0 +1,37 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "F1 [blocking] 합성 누락\nfail",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-fixture",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": null,
+    "is_error": false,
+    "duration_ms": 167,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "8f31d93ed2c853f19bbdc932787b78af9f36f93a137d38f3a7952b82dca4bf57",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# 합성 TASK (실제 사용자 승인 아님)\n- TASK 형식: v2\n## 목적\n합성 경로 검증\n## 증명 범위\n- 판정 주체: 합성 입력과 테스트\n- 포함: 원장·파일 순서\n- 범위 밖: 실제 서비스·사용자 데이터\n## 기준\nT-1 합성\n"
+  }
+}
