@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-24",
+  "operator": "캡틴 위임으로 PACE 코디네이터가 Orca 브라우저 Telegram Web에서 캡틴 계정으로 요청·버튼 수행",
+  "attempt_1": {"task": "t-65748165", "request": "ls -la 후 interrupted.txt를 Edit로 변경", "result": "미실측 — ls -la가 PACE 승인 없이 실행돼 11초 만에 완료(쓰기는 승인 범위, interrupted.txt=INTERRUPTED-SHOULD-NOT-APPEAR). 강제 종료는 실행 중 작업이 없을 때 이뤄져 영향 없음(재기동만 확인). 원인 조사는 s5-probe-shell-permission.json"},
+  "attempt_2": {
+    "task": "t-049f72b2",
+    "request": "Edit 말고 셸 printf 'INTERRUPTED-2\\n' > interrupted.txt",
+    "pending_copy": "시작 승인 전 /pending으로 같은 시작 승인 두 번째 버튼 확보(S-5g ②용, 누르지 않음), 원래 메시지 버튼으로 승인",
+    "before_kill": {"task": "running", "write_start": "approved", "tool_approval": "pending(Bash printf … > interrupted.txt)", "interrupted.txt_hash": "a70cf9168748b92f(S-5 1차 뒤 값)"},
+    "pinned_descendants": 4,
+    "kill": "daemon PID에만 SIGKILL 08:24:37",
+    "descendants_after_kill": "4개 모두 소멸(같은 PID·시작 시각 대조, 추가 종료 불필요)",
+    "launchd_auto_restart": false,
+    "saved_state_before_restart": {"task": "running", "tool_approval": "pending", "quarantine": 0},
+    "after_restart": {"new_boot": true, "task": "needs_review", "note": "daemon 강제 종료로 중단됨 — 자동 재실행하지 않음", "tool_approval": "invalidated", "quarantine": "검증 작업사본 경로 1건(이전 기동에서 실행 중이던 작업의 회수 미확인)", "running": 0, "executor_procs": 0},
+    "notice": "복구 알림 첫 전송 fetch failed → outbox 재시도로 08:25 토픽에 도달('…강제 종료로 중단됐습니다…확인 필요'), outbox 0",
+    "interrupted.txt": "변경 없음(a70c… 유지)"
+  },
+  "unit_link": "복구 뒤 자동 재실행 없음·대기 승인 무효의 분기별 근거는 S-12(전체 검사로 연결)",
+  "verdict": "pass (T-4 중단 복구)"
+}
