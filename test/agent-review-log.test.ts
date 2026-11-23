@@ -4,7 +4,7 @@ import { chmodSync, existsSync, linkSync, mkdirSync, readFileSync, readdirSync, 
 import { join } from "node:path";
 import { AgentError, normalizeResult, type Executor } from "../src/agent/contract.ts";
 import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
-import { lineDiff, parseVerdict, reviewStage, type LedgerEntry, type ReviewEntry } from "../src/agent/review-log.ts";
+import { lineDiff, parseVerdict, readLedger, reviewStage, type LedgerEntry, type ReviewEntry } from "../src/agent/review-log.ts";
 import { runPace, tempDir } from "./helpers.ts";
 
 /** 받은 프롬프트를 기록하고 정해진 결과를 차례로 돌려주는 가짜 codex 실행기 */
@@ -38,6 +38,60 @@ function harness() {
 
 const FIRST = /이전 지적과 그 대응 문서는 받거나 읽지 않는다/;
 const REREVIEW = /판정 범위: 직전 검토의 blocking이 해소됐는지/;
+
+test('결정 주체 pm/user 필수·근거·옛 결정 unknown과 단계 호환', async () => {
+  for (const by of ['pm', 'user', 'legacy']) {
+    const h = harness();
+    for (let i = 1; i <= 3; i++) { h.set(`v${i}\n`); await h.verify('F1 [blocking] gap\nfail'); }
+    const diagnosis = await h.note(['--diagnosis', '--layer', 'design', '--summary', '갭']);
+    assert.equal(diagnosis.code, 0);
+    const opened = await h.verify('F1 [blocking] 남은 갭\nfail');
+    assert.equal(opened.code, 0);
+    assert.equal(opened.json.escalation.stage, 'ask_user');
+    assert.match(opened.json.escalation.next, /PM|pm/);
+    assert.match(opened.json.escalation.next, /사전|고치기 전/);
+    const evidence = join(h.dir, 'choice.md'); writeFileSync(evidence, '분류 이유와 조치 / 합성 사용자 원문');
+    const args = ['--decision', '--choice', '고치고 재검토', '--summary', '사유', '--file', evidence];
+    const before = readFileSync(join(h.dir, 'REVIEW-LOG.jsonl'), 'utf8');
+    for (const actor of [[], ['--by', 'admin'], ['--by', 'unknown']]) {
+      assert.equal((await h.note([...args, ...actor])).code, 2);
+      assert.equal(readFileSync(join(h.dir, 'REVIEW-LOG.jsonl'), 'utf8'), before);
+    }
+    for (const actor of ['pm', 'user']) {
+      for (const bad of ['', '  \n']) {
+        writeFileSync(evidence, bad);
+        assert.equal((await h.note([...args, '--by', actor])).code, 2);
+      }
+      assert.equal((await h.note([...args.slice(0, -2), '--file', h.target, '--by', actor])).code, 2);
+    }
+    writeFileSync(evidence, '분류 이유와 조치 / 합성 승인 원문');
+    if (by === 'legacy') {
+      const old = { type: 'decision', at: '', target: 'TASK.md', choice: '옛 선택', summary: '옛 기록', file: evidence };
+      writeFileSync(join(h.dir, 'REVIEW-LOG.jsonl'), before + JSON.stringify(old) + '\n');
+      assert.equal(reviewStage(readLedger(h.target), 'TASK.md').last_decision_by, 'unknown');
+      assert.equal(readLedger(h.target).at(-1)?.type, 'decision');
+    } else {
+      const noted = await h.note([...args, '--by', by]);
+      assert.equal(noted.code, 0);
+      assert.equal(noted.json.entry.by, by);
+    }
+    const info = reviewStage(readLedger(h.target), 'TASK.md');
+    assert.equal(info.stage, 'normal'); assert.equal(info.consecutive_fails, 0); assert.equal(info.base, null);
+    const full = await h.verify('pass');
+    assert.equal(full.json.review.rereview_of, null);
+    assert.equal(full.json.last_decision_by, by === 'legacy' ? 'unknown' : by);
+    assert.doesNotMatch(h.prompts.at(-1)!, REREVIEW);
+    const raw = readFileSync(join(h.dir, 'REVIEW-LOG.jsonl'), 'utf8');
+    const lines = raw.trim().split('\n').map(line => JSON.parse(line));
+    const decision = lines.find((e) => e.type === 'decision');
+    decision.by = 'admin';
+    writeFileSync(join(h.dir, 'REVIEW-LOG.jsonl'), lines.map(e => JSON.stringify(e)).join('\n') + '\n');
+    assert.throws(() => readLedger(h.target), /손상/);
+  }
+  const h = harness(); h.set('v1');
+  assert.equal((await h.note(['--diagnosis', '--by', 'pm', '--layer', 'design', '--summary', 'x'])).code, 2);
+  assert.equal((await h.note(['--void', '--by', 'user', '--summary', 'x'])).code, 2);
+});
 
 test('v2 구조 누락을 채운 뒤에는 억제됐던 목적·안전까지 전체 검토한다', async () => {
   const h = harness();
@@ -166,7 +220,7 @@ test("S-5 3회 fail → 진단 → 진단 뒤 fail → 사용자 결정 → 재�
   assert.equal(h.prompts.length, calls);
 
   const decision = join(h.dir, "decision.md"); writeFileSync(decision, "캡틴: 예외 승인으로 진행");
-  assert.equal((await h.note(["--decision", "--choice", "예외 승인", "--summary", "세부 갈래만 남음", "--file", decision])).code, 0);
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "예외 승인", "--summary", "세부 갈래만 남음", "--file", decision])).code, 0);
   const resumed = await h.verify("g\npass");
   assert.equal(resumed.code, 0);
   assert.doesNotMatch(h.prompts.at(-1)!, REREVIEW, "결정 뒤 첫 검토도 전체");
@@ -235,20 +289,20 @@ test("S-8 review-note는 단계 안에서만, 결정은 비어 있지 않은 근
   await h.verify("a\nfail"); h.set("v2\n"); await h.verify("b\nfail"); h.set("v3\n"); await h.verify("c\nfail");
   const empty = join(h.dir, "empty.md"); writeFileSync(empty, "");
   const real = join(h.dir, "decision.md"); writeFileSync(real, "캡틴 결정 원문");
-  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", real])).code, 2, "diagnose에서 결정 거부(근거가 정상이어도)");
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "x", "--summary", "y", "--file", real])).code, 2, "diagnose에서 결정 거부(근거가 정상이어도)");
   assert.equal((await h.note(["--diagnosis", "--layer", "nope", "--summary", "x"])).code, 2, "층 이름 검사");
   assert.equal(h.ledger().length, 3, "거부 때 원장 불변");
   assert.equal((await h.note(["--diagnosis", "--layer", "structure", "--summary", "검토 방식"])).code, 0);
   await h.verify("d\nfail");
-  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", empty])).code, 2, "빈 결정 원문 거부");
-  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y"])).code, 2, "결정 원문 필수");
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "x", "--summary", "y", "--file", empty])).code, 2, "빈 결정 원문 거부");
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "x", "--summary", "y"])).code, 2, "결정 원문 필수");
   const blank = join(h.dir, "blank.md"); writeFileSync(blank, "  \n");
-  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", blank])).code, 2, "공백뿐인 원문 거부");
-  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", h.dir])).code, 2, "폴더 거부");
-  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", h.target])).code, 2, "검토 대상 자체 거부");
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "x", "--summary", "y", "--file", blank])).code, 2, "공백뿐인 원문 거부");
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "x", "--summary", "y", "--file", h.dir])).code, 2, "폴더 거부");
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "x", "--summary", "y", "--file", h.target])).code, 2, "검토 대상 자체 거부");
   assert.equal((await h.note(["--diagnosis", "--layer", "design", "--summary", "x"])).code, 2, "ask_user에서 진단 거부");
   assert.equal(h.ledger().length, 5);
-  assert.equal((await h.note(["--decision", "--choice", "x", "--summary", "y", "--file", real])).code, 0);
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "x", "--summary", "y", "--file", real])).code, 0);
 });
 
 test("S-9 --out이 대상·원장 경로면 실행하지 않는다", async () => {

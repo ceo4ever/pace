@@ -18,7 +18,7 @@ export interface VerifyCliDeps {
 }
 
 export const VERIFY_USAGE = "pace agent verify --author-agent claude|codex --target <산출물 파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록 파일>]";
-export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary "<진단·조치>" [--file <근거>] | --decision --choice "<선택>" --summary "<사유>" --file <사용자 결정 원문> | --void --record review-records/R<n>.json --summary "<도구 결함>" --file <근거>)';
+export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary "<진단·조치>" [--file <근거>] | --decision --by pm|user --choice "<선택>" --summary "<사유>" --file <분류·조치 또는 사용자 원문> | --void --record review-records/R<n>.json --summary "<도구 결함>" --file <근거>)';
 
 const ESCALATION_EXIT = errorCodes.review_escalation;
 
@@ -65,7 +65,7 @@ function clearPending(recordFile: string): void {
 }
 
 function escalation(info: StageInfo, target: string) {
-  return { stage: info.stage, consecutive_fails: info.consecutive_fails, next: escalationNext(info.stage, target, info.consecutive_fails) };
+  return { stage: info.stage, consecutive_fails: info.consecutive_fails, last_decision_by: info.last_decision_by, next: escalationNext(info.stage, target, info.consecutive_fails) };
 }
 
 /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
@@ -186,7 +186,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     // 필수 기록(기록 파일·원장)이 확정된 뒤에만 보조 사본을 쓴다
     if (out !== undefined) writeOrLedgerError(out, JSON.stringify(record, null, 2) + "\n", "--out 사본");
     const after = reviewStage(readLedger(target), name);
-    const output: Record<string, unknown> = { ...outcome, review: { target: name, hash, verdict, rereview_of: review.rereview_of, record: recordName } };
+    const output: Record<string, unknown> = { ...outcome, last_decision_by: after.last_decision_by, review: { target: name, hash, verdict, rereview_of: review.rereview_of, record: recordName } };
     if (recovered.length) output.recovered = recovered;
     if (verdict === "unknown") output.warning = "결과 마지막 줄에서 pass·fail 판정을 찾지 못했다(unknown) — 연속 실패 수에 넣지 않는다. 원문을 확인한다";
     if (after.stage !== "normal") output.escalation = escalation(after, target);
@@ -213,7 +213,7 @@ function contentFile(path: string): boolean {
 export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Promise<number> {
   const { values } = parseArgs({
     args,
-    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, void: { type: "boolean" }, record: { type: "string" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" } },
+    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, by: { type: "string" }, void: { type: "boolean" }, record: { type: "string" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" } },
     strict: true,
   });
   const now = deps.now ?? (() => new Date());
@@ -221,6 +221,7 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
   try {
     const target = realTarget(req(values.target, REVIEW_NOTE_USAGE));
     if ([values.diagnosis, values.decision, values.void].filter(Boolean).length !== 1) throw new AgentError("invalid_request", `--diagnosis·--decision·--void 중 하나만 — ${REVIEW_NOTE_USAGE}`);
+    if (values.by !== undefined && !values.decision) throw new AgentError('invalid_request', '--by는 --decision에서만 사용한다');
     const summary = req(values.summary, REVIEW_NOTE_USAGE).trim();
     if (!summary) throw new AgentError("invalid_request", "--summary가 비었다");
     const name = targetName(target);
@@ -244,14 +245,16 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
       if (values.file !== undefined && !contentFile(values.file)) throw new AgentError("invalid_request", `근거 파일이 없거나 비었다: ${values.file}`);
       entry = { type: "diagnosis", at: now().toISOString(), target: name, layer, summary, ...(values.file !== undefined ? { file: values.file } : {}) };
     } else {
-      if (info.stage !== "ask_user") throw new AgentError("invalid_request", `사용자 결정은 진단 뒤에도 fail인 ask_user 단계일 때만 기록한다(지금 ${info.stage})`);
+      if (info.stage !== "ask_user") throw new AgentError("invalid_request", `결정은 진단 뒤에도 fail인 ask_user 단계일 때만 기록한다(지금 ${info.stage})`);
+      const by = req(values.by, REVIEW_NOTE_USAGE);
+      if (by !== 'pm' && by !== 'user') throw new AgentError('invalid_request', '--by는 pm|user');
       const choice = req(values.choice, REVIEW_NOTE_USAGE).trim();
       const file = req(values.file, REVIEW_NOTE_USAGE);
       if (!choice) throw new AgentError("invalid_request", "--choice가 비었다");
-      // 근거 파일이 사람의 결정 원문인지는 도구가 보장하지 않는다 — PM이 책임진다(pace-project-dev 스킬)
-      if (!contentFile(file)) throw new AgentError("invalid_request", `사용자 결정 원문 파일이 없거나 비었다: ${file}`);
-      if (realpathSync(file) === target) throw new AgentError("invalid_request", "검토 대상 자체를 사용자 결정 원문으로 쓸 수 없다");
-      entry = { type: "decision", at: now().toISOString(), target: name, choice, summary, file };
+      // pm 분류·조치 및 user 결정 원문의 내용·진정성은 PM 책임이다(pace-project-dev 스킬)
+      if (!contentFile(file)) throw new AgentError("invalid_request", `결정 근거 파일이 없거나 비었다: ${file}`);
+      if (realpathSync(file) === target) throw new AgentError("invalid_request", "검토 대상 자체를 결정 근거로 쓸 수 없다");
+      entry = { type: "decision", at: now().toISOString(), target: name, by, choice, summary, file };
     }
     try { appendLedger(target, entry); } catch (error) { throw new LedgerError(`원장 기록에 실패했다: ${(error as Error).message}`); }
     const after = reviewStage(readLedger(target), name);

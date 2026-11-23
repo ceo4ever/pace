@@ -1,6 +1,6 @@
 # BR02 verify 결정 단계와 결정 주체 기록
 
-- 상태: 대기
+- 상태: 완료
 - 백로그: [BL261123_02_검토_반복_실패_결정_주체_구분](BACKLOG.md)
 
 <!-- 개발 업무의 예시. 형식·추적 정본: pace-project-dev의 references/document-shape.md. -->

@@ -1,0 +1,30 @@
+status=1
+✖ 결정 주체 pm/user 필수·근거·옛 결정 unknown과 단계 호환 (10.340333ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.758167
+
+✖ failing tests:
+
+test at test/agent-review-log.test.ts:42:1
+✖ 결정 주체 pm/user 필수·근거·옛 결정 unknown과 단계 호환 (10.340333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 'pm'
+  
+      at TestContext.<anonymous> (file:///private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-p008-mutation-u1r3st/test/agent-review-log.test.ts:76:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'pm',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+

@@ -1,0 +1,11 @@
+status=0
+✔ 결정 주체 pm/user 필수·근거·옛 결정 unknown과 단계 호환 (31.733041ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.112125
+

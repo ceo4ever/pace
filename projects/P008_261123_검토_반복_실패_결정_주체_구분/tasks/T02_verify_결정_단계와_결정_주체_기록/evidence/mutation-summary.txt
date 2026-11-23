@@ -1,0 +1,4 @@
+legacy-as-user: detected
+legacy-rejected: detected
+missing-by-default: detected
+actor-not-stored: detected

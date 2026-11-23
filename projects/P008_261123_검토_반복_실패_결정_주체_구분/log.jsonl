@@ -18,3 +18,18 @@
 {"ts":"2026-11-23T14:31:48.087Z","p":"P008","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-23T14:31:48.087Z","p":"P008","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
 {"ts":"2026-11-23T14:31:58.128Z","p":"P008","t":"T01","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0; reviewer 최종 pass blocking 0; 선언 전체 1035건 중 실패0, 기존 검사 실패 원문·이슈 보존","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-23T14:32:09.210Z","p":"P008","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-23T14:45:19.118Z","p":"P008","t":"T02","type":"question","by":"agent","msg":"T02 선언 전체 검사가 기존 S4b 및 menu 불안정으로 실패했고 main 전체 검사 동시 실행을 확인함; main 검사 종료 뒤 P008 선언 검사를 실행하도록 순서 조정 문의"}
+{"ts":"2026-11-23T14:47:33.250Z","p":"P008","t":"T02","type":"answer","by":"agent","msg":"코디네이터가 main 전체 검사 러너 종료를 확인함; 현재 T02 작업본에서 선언 npm run check 재실행, 통과 후 마감·T03 진행하며 동시실행 인과는 미확인으로 유지한다"}
+{"ts":"2026-11-23T14:47:33.422Z","p":"P008","t":"T02","type":"decision","by":"agent","msg":"main 검사 종료 확인 뒤 동일 T02 작업본의 선언 전체 검사를 재실행한다; 범위·선언은 유지하고 인과를 단정하지 않는다","src":"main 판단"}
+{"ts":"2026-11-23T14:52:46.808Z","p":"P008","t":"T02","type":"question","by":"agent","msg":"T02 선언 3차는 변경 밖 timeout 및 temp-lifecycle 2건 실패; 도중 main 러너 재개를 확인했고 현재 둘 종료, 다음 P008 검사 동안 추가 main 검사를 보류하는 실행 창 조정 요청"}
+{"ts":"2026-11-23T14:53:59.555Z","p":"P008","t":"T02","type":"answer","by":"agent","msg":"코디네이터가 main/P005 전체 검사 보류 창을 조정함; T02 작업·증거 보존 후 main 반영, 새 규칙에 따라 브라우저 미변경 범위는 PACE_SKIP_BROWSER_E2E=1 선언 전체 검사 1회와 시작·종료 러너 관측을 기록한다"}
+{"ts":"2026-11-23T14:53:59.714Z","p":"P008","t":"T02","type":"decision","by":"agent","msg":"T02 변경과 증거를 백업한 뒤 main의 기존 시험 수정·Orca E2E 규칙을 반영한다; 충돌 보존 불확실 시 중단하고 검사 skip 범위를 명시한다","src":"main 판단"}
+{"ts":"2026-11-23T14:56:21.066Z","p":"P008","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T15:02:00.873Z","p":"P008","t":"T02","type":"question","by":"agent","msg":"main 반영·보존 후 새 규칙 검사 1회는 daemon-store 포트 충돌1fail; 시작 러너0·종료P009 1 관측, 인과미확인. 종료 결과와 P009 포함 다음 실행창 조정 요청"}
+{"ts":"2026-11-23T15:03:09.568Z","p":"P008","t":"T02","type":"answer","by":"agent","msg":"코디네이터가 P009 및 main/P005 후속 전체검사 보류를 요청함; 기존 러너 종료·다른 러너 없음 확인 즉시 규칙 검사1회, 시작종료 러너·포트 기록, 무동시 실패 시 전체 재실행 중지 후 작은 재현만 보고한다"}
+{"ts":"2026-11-23T15:03:09.724Z","p":"P008","t":"T02","type":"decision","by":"agent","msg":"P009 기존 러너 종료와 전후 관측을 확인한 검증창에서 검사1회를 실행하며 다른 프로세스·실사용 daemon은 건드리지 않는다","src":"main 판단"}
+{"ts":"2026-11-23T15:07:08.343Z","p":"P008","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T15:07:08.506Z","p":"P008","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-23T15:07:08.506Z","p":"P008","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-23T15:07:35.852Z","p":"P008","t":"T02","type":"review","by":"agent","msg":"tester pass blocking0·41건·변이4종 검출; reviewer 2단계 pass blocking0 should_fix0; main 반영 뒤 규칙 선언 전체1036건 fail0, 전후 러너0","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":1,"pass":1,"fail":0}}

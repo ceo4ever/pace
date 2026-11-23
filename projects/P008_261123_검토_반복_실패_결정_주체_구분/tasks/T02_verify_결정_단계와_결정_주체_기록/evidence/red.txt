@@ -1,0 +1,28 @@
+✖ 결정 주체 pm/user 필수·근거·옛 결정 unknown과 단계 호환 (7.558666ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 91.55375
+
+✖ failing tests:
+
+test at test/agent-review-log.test.ts:42:1
+✖ 결정 주체 pm/user 필수·근거·옛 결정 unknown과 단계 호환 (7.558666ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /PM|pm/. Input:
+  
+  '진단 뒤에도 fail — 더 고치기 전에 사용자에게 실패 유형·고친 층·남은 지적의 성격·선택지(추천 포함)를 설명하고 결정을 받는다. 결정 원문을 파일로 남긴 뒤 `pace agent review-note --target /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-a9cPP2/pace-rl-aG0I89/TASK.md --decision --choice "<선택>" --summary "<사유>" --file <결정 원문>`으로 기록한다.'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P008/test/agent-review-log.test.ts:51:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '진단 뒤에도 fail — 더 고치기 전에 사용자에게 실패 유형·고친 층·남은 지적의 성격·선택지(추천 포함)를 설명하고 결정을 받는다. 결정 원문을 파일로 남긴 뒤 `pace agent review-note --target /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-a9cPP2/pace-rl-aG0I89/TASK.md --decision --choice "<선택>" --summary "<사유>" --file <결정 원문>`으로 기록한다.',
+    expected: /PM|pm/,
+    operator: 'match',
+    diff: 'simple'
+  }

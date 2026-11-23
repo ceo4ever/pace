@@ -165,7 +165,7 @@ test('사용자 게이트 예외: 실행된 검토가 pass에 못 미쳐도 사�
   assert.ok(reviewIssues(dir, task).length, '예외 없이 fail이면 막는다');
   save({ ...base, waiver });
   assert.deepEqual(reviewIssues(dir, task), []);
-  save({ ...base, waiver: { ...waiver, by: 'agent' } });
+  save({ ...base, waiver: { ...waiver, by: 'pm' } });
   assert.match(reviewIssues(dir, task).join(), /사용자 결정만/);
   save({ ...base, waiver: { ...waiver, reason: ' ' } });
   assert.ok(reviewIssues(dir, task).length);

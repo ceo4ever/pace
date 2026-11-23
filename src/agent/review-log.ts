@@ -5,7 +5,7 @@ import { basename, dirname, join } from "node:path";
 // 검토 원장 (P007 T01): 같은 대상의 독립 검토가 거듭 fail할 때 땜질 반복을 끊는다.
 //  - verify가 실행될 때마다 대상 폴더의 REVIEW-LOG.jsonl에 판정을 자동으로 남긴다(작성자 수작업 없음).
 //  - 재검토 기준점은 호출자가 아니라 원장이 정한다: 마지막 pass·decision·diagnosis 뒤 구간의 가장 최근 fail 검토.
-//  - 연속 fail 3회면 근본 진단(diagnose), 진단 뒤에도 fail이면 사용자 결정(ask_user) 전까지 다음 검토를 막는다.
+//  - 연속 fail 3회면 근본 진단(diagnose), 진단 뒤 fail이면 결정 주체 분류·기록(역사적 이름 ask_user) 전까지 막는다.
 // 원장에는 대상 원문·검토 원문·비밀·세션 ID를 넣지 않는다(원문은 review-records/의 기록 파일에).
 
 export const LEDGER_FILE = "REVIEW-LOG.jsonl";
@@ -36,7 +36,8 @@ export interface ReviewEntry {
   interrupted?: true;
 }
 export interface DiagnosisEntry { type: "diagnosis"; at: string; target: string; layer: Layer; summary: string; file?: string }
-export interface DecisionEntry { type: "decision"; at: string; target: string; choice: string; summary: string; file: string }
+export type DecisionBy = 'pm' | 'user';
+export interface DecisionEntry { type: "decision"; at: string; target: string; choice: string; summary: string; file: string; /** 옛 항목의 생략은 unknown이며 user로 추정하지 않는다. */ by?: DecisionBy }
 /** 검토 도구 결함(프롬프트·옵션·열람 불가 등)으로 무효인 검토 — 횟수·기준점에서 뺀다. 대상은 그대로여도 다시 검토할 수 있게 한다 */
 export interface VoidEntry { type: "void"; at: string; target: string; record: string; summary: string; file: string }
 export type LedgerEntry = ReviewEntry | DiagnosisEntry | DecisionEntry | VoidEntry;
@@ -44,6 +45,8 @@ export type LedgerEntry = ReviewEntry | DiagnosisEntry | DecisionEntry | VoidEnt
 export type Stage = "normal" | "diagnose" | "ask_user";
 export interface StageInfo {
   stage: Stage;
+  /** 이 대상의 마지막 결정 주체. 과거 기록의 미기재는 unknown, 결정 이력 없음은 null. 현재 승인 권한이 아니다. */
+  last_decision_by: DecisionBy | 'unknown' | null;
   /** 마지막 pass·decision 뒤 연속 fail 수(unknown은 세지 않는다) */
   consecutive_fails: number;
   /** 재검토 기준점 — 마지막 pass·decision·diagnosis 뒤 구간의 가장 최근 fail 검토. 없으면 처음 검토 */
@@ -61,7 +64,7 @@ function validEntry(v: Record<string, unknown>): boolean {
   if (!isStr(v.target) || !isStr(v.at)) return false;
   if (v.type === "review") return isStr(v.kind) && isStr(v.hash) && ["pass", "fail", "unknown"].includes(v.verdict as string) && isStr(v.verifier) && (v.provider === null || isStr(v.provider)) && (v.rereview_of === null || isStr(v.rereview_of)) && isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.result_hash) && HEX64.test(v.result_hash) && (v.interrupted === undefined || (v.interrupted === true && v.verdict === "fail"));
   if (v.type === "diagnosis") return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" && (v.file === undefined || isStr(v.file));
-  if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "";
+  if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "" && (v.by === undefined || v.by === 'pm' || v.by === 'user');
   if (v.type === "void") return isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.summary) && v.summary.trim() !== "" && isStr(v.file) && v.file !== "";
   return false;
 }
@@ -114,7 +117,8 @@ export function reviewStage(entries: readonly LedgerEntry[], targetName: string)
   let stage: Stage = "normal";
   if (diagIndex < 0) { if (fails >= DIAGNOSE_AFTER) stage = "diagnose"; }
   else if (afterDiag.some((e) => e.type === "review" && e.verdict === "fail")) stage = "ask_user";
-  return { stage, consecutive_fails: fails, base };
+  const last = [...mine].reverse().find((e): e is DecisionEntry => e.type === 'decision');
+  return { stage, consecutive_fails: fails, base, last_decision_by: last ? last.by ?? 'unknown' : null };
 }
 
 /** 같은 원장의 검토·기록을 직렬화한다(배타 생성). 잠겨 있으면 멈춘다 */
@@ -162,10 +166,10 @@ export function targetName(target: string): string { return basename(target); }
 
 export function escalationNext(stage: Stage, target: string, fails: number): string {
   if (stage === "diagnose") {
-    return `같은 대상에서 연속 ${fails}회 fail — 지적별 수정을 멈춘다. 실패들을 모아 원인 층(structure 구조·도구·검토 방식 / planning 목표·범위·전제 / design 계획과 환경·제품 동작의 어긋남 / other)을 진단하고 그 층에서 근본적으로 고친 뒤 \`pace agent review-note --target ${target} --diagnosis --layer <층> --summary "<진단·조치>" [--file <진단 문서>]\`로 기록한다. 진단 뒤 첫 검토는 새 기준의 전체 검토다.`;
+    return `같은 대상에서 연속 ${fails}회 fail — 지적별 수정을 멈추고 원인 층(structure/planning/design/other)을 진단한다. 근본 조치 전에 합의된 목적·범위와 실제 영향을 확인해 분류한다. 심각한 오류·보안·합의 변경이면 조치 전 사용자 결정을 받는다. 일반 갭은 PM이 근본 조치·재검증 후 사후 보고한다. 분류 정본: skills/pace-project-dev/references/reviewer.md의 반복 실패 절. \`pace agent review-note --target ${target} --diagnosis --layer <층> --summary "<진단·조치>" [--file <진단 증거·승인 연결>]\`로 기록한다. 진단 뒤 첫 검토는 새 기준 전체 검토다.`;
   }
   if (stage === "ask_user") {
-    return `진단 뒤에도 fail — 더 고치기 전에 사용자에게 실패 유형·고친 층·남은 지적의 성격·선택지(추천 포함)를 설명하고 결정을 받는다. 결정 원문을 파일로 남긴 뒤 \`pace agent review-note --target ${target} --decision --choice "<선택>" --summary "<사유>" --file <결정 원문>\`으로 기록한다.`;
+    return `진단 뒤에도 fail — ask_user는 호환을 위한 결정 필요 단계 이름이며 주체를 자동 지정하지 않는다. 매 수정 전에 지적·조치의 영향을 분류한다(정본: skills/pace-project-dev/references/reviewer.md 반복 실패 절). 일반 갭은 PM 결정: 분류 이유·조치를 근거 파일에 남기고 근본 조치 → 전체 재검증 → 사후 보고한다. 심각한 오류·보안·목적·범위 변경은 고치기 전 사용자 결정: 실패 추이·진단·남은 지적·선택지와 추천을 보고하고 사람 결정 원문을 보존한다. \`pace agent review-note --target ${target} --decision --by pm|user --choice "<선택>" --summary "<사유>" --file <분류·조치 또는 사용자 원문>\`으로 기록한다. PM 결정은 waiver가 아니며 재검증한다.`;
   }
   return "";
 }
