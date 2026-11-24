@@ -7,3 +7,10 @@
 
 - **기존 workspace 발견**: 마법사 완료 뒤 config에 `pace`(PACE 소스 저장소 자체) workspace 1건 — 의도값 0과 다름. "멈추고 보고" 규칙대로 daemon을 강제 중단(자손 없음)하고 보고, 캡틴 결정(선택 1)으로 그 항목만 삭제. 기동 약 2분 동안 처리 메시지 0(`seen` 0)·작업·승인·토픽 0, 저장소 변경 없음. 출처는 11/22 설정에 이미 있던 항목(그때 config에 `workspaces` 키가 있었고 크기가 맞음)으로 추정하나, 마법사가 현재 git 폴더를 기본 제안하므로 오늘 등록 가능성도 남아 미확정. 삭제 전 config 사본은 세션 임시 폴더에만 보관(저장소 밖).
 - **제품 결함 — 강제 종료 뒤 재기동 불가(macOS)**: 로드된 launchd 항목에 `launchctl load`가 "Load failed: 5"를 내면서도 종료 0이라 `pace daemon start`의 `launchctl start` 대체 경로가 실행되지 않았다. S-5(SIGKILL → `pace daemon start`)가 바로 이 경로에 의존한다. 사전 검토 17회가 놓치고 실사용이 잡았다 — T04가 할 일을 한 사례. PATH 수정 선례대로 main 작은 일 `521e3b8`(로드 여부를 `launchctl list`로 보고 start/load, 시험 S-6r RED→GREEN, 전체 검사 1032개 실패 0)로 고치고 재설치, P005를 rebase해 설치본 일치를 다시 확인.
+
+## S-5 조사 보안 결함과 수정 (2026-11-24)
+
+- **발견**: 읽기 전용 대화(Claude ACP plan 모드)가 작업사본 밖 표식 파일을 PACE 승인 없이 셸 `cat`으로 읽어 Telegram으로 답했다(`s5-probe-shell-permission.json` 프로브 5). TASK 재료의 "ACP 격리 재검증"은 쓰기만 봤고 바깥 읽기는 보지 않았다 — 실사용이 잡은 두 번째 제품 결함.
+- **처리**: 보안이라 캡틴에게 사전 보고 → 캡틴 결정 "작은 수정이면 먼저 고친 뒤 마감". main 작은 일 `a3dfdbd`(읽기 전용 모드 plan → default, 시험·문서·브레인, 전체 검사 1037개 실패 0) → 독립 검토(Codex) fail(blocking 2: OS 수준 경계 부재, PACE 읽기 MCP의 프로필 메모리 조회) → 캡틴 결정 "추천대로": 작은 수정 확정, blocking 2건은 `BL261124_02`(8517e23). 재설치·재기동 뒤 Telegram 재시험 통과(`s7-readonly-fix.json`).
+- **남는 한계**: 수정 전 대화에 이미 들어간 바깥 내용은 이어간 대화에서 모델 기억으로 다시 나올 수 있다(재시험 첫 요청에서 관측 — 새 읽기 아님, 새 표식으로 구분). 차단은 어댑터 권한 요청에 기대며 OS 수준 경계가 아니다(BL261124_02 BR01).
+- **운영 함정**: `pace daemon stop` 직후 `start`가 한 번 무시됨(서비스 미기동, 두 번째 start로 기동) — 이슈로 기록.

@@ -1,0 +1,20 @@
+{
+ "date": "2026-11-24",
+ "why": "실측 뒤 독립 reviewer(Codex, review-records/R7) blocking: S-3 2차(성공 쓰기)의 승인 전 미실행·콜백 수신·결과 알림 도달 기록 부재 — 기존 기록(state.json·Telegram 토픽)에서 비식별로 보강, 재실행 없음",
+ "task": "t-e1fd4062",
+ "approval_wait": {
+  "write_start_created_with_task": true,
+  "decided_after_created_s": 7,
+  "same_boot": true,
+  "decision_path": "src/daemon/core.ts decideLocked — 승인은 요청자(채널·대화·사용자) 일치 확인 뒤에만 approved가 되고, 그때 작업이 awaiting_approval→queued로 바뀐다. 이 작업 승인의 requester.user == 작업 origin.user (boolean True), 값은 기록 안 함",
+  "callback": "직접 관측 출처: 캡틴이 자기 Telegram 화면 캡처를 코디네이터 세션에 붙여 넣음(2026-11-23 14:17Z, 대화 기록 — 이미지 원본은 저장소에 넣지 않음). 화면 순서: 캡틴 계정의 요청(로컬 11:16) → '승인 요청 — 쓰기 시작 … 작업 t-e1fd4062'(버튼이 제거된 상태 = 처리된 승인) → '✅ 작업 t-e1fd4062 완료'. 같은 구간 캡틴이 1차(t-39216e5a)에서 '버튼옴'이라 알리고 직접 조작 중이었다. Gateway 관리자 승인 경로는 이 구간에 쓰지 않았다 — 코디네이터는 gateway 토큰 사용(캡틴 대행)을 거부했고[확인: 대화 기록], 다른 Gateway 클라이언트를 띄운 일은 없다[추정: Gateway 접속은 로그에 남지 않아 기계 기록으로는 증명 못 함]"
+ },
+ "not_run_before_approval": {
+  "start_snapshot": "작업 시작 스냅숏(승인 뒤·실행기 호출 직전, core 실행 준비)의 작업사본 트리 해시 = 최초 커밋 040f7b7의 트리 해시 → 실행 직전까지 approved.txt 포함 파일 무변경",
+  "order_guarantee": "승인 전 미실행의 순서 보장은 단위 시험 S-7·S-22·S-8c(TASK 사용자 결정대로 실사용 판독은 보조)"
+ },
+ "result_notice": {
+  "telegram_topic_search": "검증 토픽 검색으로 봇 메시지 '✅ 작업 t-e1fd4062 완료 …(approved.txt를 Edit로 바꿨다는 본문)' 1건 확인(2026-11-24 Orca 브라우저, 캡틴 계정)",
+  "state_outbox_pending": 0
+ }
+}

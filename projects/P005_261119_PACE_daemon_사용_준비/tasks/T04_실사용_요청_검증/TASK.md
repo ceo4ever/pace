@@ -1,8 +1,9 @@
 # T04 실사용 요청 검증
 
 - 프로젝트: [P005](../../PROJECT.md) · 백로그: [BL261116_02 PACE daemon 사용 준비](../../../../backlogs/BL261116_02_PACE_daemon_사용_준비/BACKLOG.md)
-- 상태: 진행
-- 사전 검토: v4 (v3 검토 11회 fail → [반복 실패 진단](evidence/diagnosis-v3.md): 실패 분기 열거를 "멈추고 보고" 규칙 하나로 · R1~R3 fail 뒤 [진단 2](evidence/diagnosis-v4.md): 이상 시 정지 방식을 상태 판독으로 고르지 않고 항상 강제 중단 — 독립 사전 검토 pass 뒤 실측)
+- 상태: 완료
+- 사전 검토: v1
+- TASK 판: v4 (v3 검토 11회 fail → [반복 실패 진단](evidence/diagnosis-v3.md): 실패 분기 열거를 "멈추고 보고" 규칙 하나로 · R1~R3 fail 뒤 [진단 2](evidence/diagnosis-v4.md): 이상 시 정지 방식을 상태 판독으로 고르지 않고 항상 강제 중단 — 독립 사전 검토 pass 뒤 실측)
 
 <!--
 개발 업무의 예시 형식. 형식·추적 정본: pace-project-dev의 references/document-shape.md.

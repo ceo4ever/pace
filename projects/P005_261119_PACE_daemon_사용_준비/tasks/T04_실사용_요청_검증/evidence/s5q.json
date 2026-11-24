@@ -1,9 +1,27 @@
 {
-  "date": "2026-11-24",
-  "review_presented_to": "캡틴 위임으로 PACE 코디네이터가 판단(사후 보고)",
-  "reap": {"pinned_descendants": 4, "vanished_after_kill": 4, "executor_procs_now": 0, "product_view": "procs 미보고라 회수 미확인·격리가 정상 기대(설계)"},
-  "file_review": {"interrupted.txt": "S-5 강제 종료 직전 해시와 같음 — 요청된 셸 쓰기 미실행", "others": "S-3 approved.txt 외 불변, 새 파일·새 커밋 없음"},
-  "decision": "회수·파일 검토 근거 충분 → release",
-  "release": {"command": "pace daemon release <검증 작업사본>", "quarantine_after": 0, "log": "quarantine_released by=operator", "t-049f72b2_status": "needs_review 유지(done으로 바뀌지 않음)", "rerun": false},
-  "verdict": "pass (T-4 별도 승인 뒤 격리 해제)"
+ "date": "2026-11-24",
+ "review_presented_to": "캡틴 위임으로 PACE 코디네이터가 판단(사후 보고)",
+ "reap": {
+  "pinned_descendants": 4,
+  "vanished_after_kill": 4,
+  "executor_procs_now": 0,
+  "product_view": "procs 미보고라 회수 미확인·격리가 정상 기대(설계)"
+ },
+ "file_review": {
+  "interrupted.txt": "S-5 강제 종료 직전 해시와 같음 — 요청된 셸 쓰기 미실행",
+  "others": "S-3 approved.txt 외 불변, 새 파일·새 커밋 없음"
+ },
+ "decision": "회수·파일 검토 근거 충분 → release(캡틴 위임 적용 — 별도 승인 아님, correction_2026-11-24 참조)",
+ "release": {
+  "command": "pace daemon release <검증 작업사본>",
+  "quarantine_after": 0,
+  "log": "quarantine_released by=operator",
+  "t-049f72b2_status": "needs_review 유지(done으로 바뀌지 않음)",
+  "rerun": false
+ },
+ "verdict": "pass (T-4 별도 승인 뒤 격리 해제)",
+ "correction_2026-11-24": {
+  "decision_basis": "'별도 승인'이 아니라 캡틴 위임의 적용이다 — 위임 원문 '…제우스가 나대신 의사결정해줘. 사후 보고를 해주고'(S-5 단계와 뒤처리). release만 따로 확인받지는 않았다",
+  "file_review_baseline": "최초 커밋 대비: approved.txt(S-3 승인된 쓰기), interrupted.txt(S-5 1차 승인된 Edit → INTERRUPTED-SHOULD-NOT-APPEAR) 두 파일 변경, 나머지 5개 최초 해시. 2차 강제 중단 직전 대비: interrupted.txt 해시 a70c… 그대로(요청된 셸 쓰기 미실행), 변경 0"
+ }
 }

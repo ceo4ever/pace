@@ -60,6 +60,23 @@
       "evidence": "review-records/R6.json",
       "continuity": "changed",
       "reason": "자동 재검토 rereview_of review-records/R5.json(codex -p 새 세션에 직전 원문·바뀐 줄 전달)"
+    },
+    {
+      "hash": "d85c4b8025fc1d5cf9a2f50b9e4820657d8f1eb176ae68d54f8ce7be2c8d839e",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "review-records/R14.json",
+      "continuity": "new",
+      "reason": "실측 뒤 마감 게이트가 머리 줄 '- 사전 검토: v4 (…)'를 마커로 읽어 거부 — 마커를 v1로 고치고 설명은 'TASK 판' 줄로 옮김(내용 불변). R6 pass 뒤 대상이 바뀌어 원장 새 구간의 전체 검토"
     }
-  ]
+  ],
+  "waiver": {
+    "by": "user",
+    "date": "2026-11-24",
+    "reason": "마커 형식 한 줄 수정(내용은 R6 pass와 같음) 뒤 실측 완료 계획의 전체 재검토 R14 blocking 3건 — 캡틴 결정으로 예외, 3건은 TASK-CLOSE 한계와 후속 이슈로",
+    "evidence": "evidence/user-decision-waiver.md",
+    "hash": "d85c4b8025fc1d5cf9a2f50b9e4820657d8f1eb176ae68d54f8ce7be2c8d839e"
+  }
 }

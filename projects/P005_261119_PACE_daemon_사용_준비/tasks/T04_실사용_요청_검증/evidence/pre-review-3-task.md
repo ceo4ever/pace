@@ -16,7 +16,7 @@
     },
     "access": "read-only",
     "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
-    "session_id": "01a2057e-d5e2-7c42-aee1-034ca5e8da26",
+    "session_id": "<가림>",
     "stop_reason": "completed",
     "is_error": false,
     "duration_ms": 97812,

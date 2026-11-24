@@ -126,3 +126,7 @@
 {"ts":"2026-11-23T09:34:14.995Z","p":"P005","t":"T04","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
 {"ts":"2026-11-23T12:50:38.597Z","p":"P005","t":"T04","type":"decision","by":"agent","msg":"S-0 뒤 config에 PACE 소스 저장소 workspace(pace) 1건 발견 — 강제 중단·보고 뒤 캡틴 결정으로 그 항목만 삭제(작업·수신 0건, 출처 11/22 설정 또는 마법사 제안 미확정)","src":"사용자 결정"}
 {"ts":"2026-11-23T12:50:38.781Z","p":"P005","t":"T04","type":"change","by":"agent","msg":"macOS 강제 종료 뒤 pace daemon start가 기동 못 하는 제품 결함 발견(로드된 항목 launchctl load가 실패해도 종료 0) — PATH 수정 선례대로 main 작은 일 521e3b8로 고치고 재설치·rebase","src":"자체 판단"}
+{"ts":"2026-11-24T04:14:46.753Z","p":"P005","t":"T04","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
+{"ts":"2026-11-24T04:23:50.400Z","p":"P005","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-24T04:23:57.541Z","p":"P005","t":"T04","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-24T04:23:57.541Z","p":"P005","t":"T04","type":"task_done","by":"cli","msg":"done","ok":true}
