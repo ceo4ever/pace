@@ -825,6 +825,15 @@ test("비밀 노출 탐지: JSON·Bearer·JWT는 잡고, 환경 변수 이름 �
   assert.deepEqual(findSecrets(dir).sort(), ["a.json", "b.har", "c"]);
 });
 
+test("비밀 노출 탐지: 코드 파일의 코드 표현식은 넘기고 리터럴은 잡는다 — 같은 표현식도 문서·설정에서는 잡는다", () => {
+  const dir = tempDir("pace-secret-code-");
+  const expr = "const token = out.TELEGRAM_BOT_TOKEN, chat = out.TELEGRAM_CHAT_ID;\nconst secret = readTelegramSecret(home);\n";
+  write(join(dir, "run.mjs"), expr);
+  write(join(dir, "note.md"), expr);
+  write(join(dir, "leak.mjs"), 'const token = "123456789:AAEabcdefghijklmnopqrstuvwxyz012345";\n');
+  assert.deepEqual(findSecrets(dir).sort(), ["leak.mjs", "note.md"]);
+});
+
 /** 호출 인자를 기록하는 가짜 orca. mode=fail이면 worker-start가 실패한다. */
 function fakeOrca(mode: "ok" | "fail" | "runId" = "ok"): { bin: string; log: string; preload: string } {
   const dir = tempDir("pace-fake-orca-");

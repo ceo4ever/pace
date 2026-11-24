@@ -4,7 +4,7 @@ import { generateDashboard, refreshDashboard } from "./dashboard.ts";
 import { resolveWorkerSettings } from "../core/worker-settings.ts";
 import { assertBacklogPath, listBriefs, resolveBacklog } from "./backlog.ts";
 import { memoDateTime, recordEvent } from "./event-log.ts";
-import { hasSecret } from "./secrets.ts";
+import { hasSecret, isCodeFile } from "./secrets.ts";
 export { hasSecret } from "./secrets.ts";
 import { assertMetricsDestination, refreshProjectMetrics, metricsSummaryIssues } from "./metrics-report.ts";
 import { recordMetric, metricDir, failureReason } from "./metrics.ts";
@@ -1132,7 +1132,8 @@ export function findSecrets(dir: string): string[] {
     const bytes = readFileSync(file);
     if (bytes.subarray(0, 8000).includes(0)) continue; // 바이너리(스크린샷 등)
     const text = bytes.toString("utf8");
-    if (hasSecret(text)) found.push(relative(dir, file));
+    // 코드 파일은 코드 표현식 오탐만 뺀다(사용자 결정 — secret-scan과 같은 규칙), 리터럴은 그대로 잡는다
+    if (hasSecret(text, { code: isCodeFile(file) })) found.push(relative(dir, file));
   }
   return found;
 }
