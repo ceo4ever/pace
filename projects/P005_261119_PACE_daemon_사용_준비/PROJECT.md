@@ -1,6 +1,6 @@
 # P005 PACE daemon 사용 준비
 
-- 상태: 병합 대기
+- 상태: 완료
 - 규모: L(태스크 4개)
 - 출처: [BL261116_02 PACE daemon 사용 준비](../../backlogs/BL261116_02_PACE_daemon_사용_준비/BACKLOG.md)
 - 브랜치: `project/P005` · worktree: `../pace.wt/P005/`
