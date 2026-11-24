@@ -24,9 +24,9 @@ test("ACP 정상 흐름: 청크를 모으고 읽기 전용 모드를 확인한 �
   assert.deepEqual(r.usage, { input_tokens: 11, output_tokens: 22 });
   assert.equal(r.session_id, "sess-1");
   assert.deepEqual(r.model, { value: "fake-model", source: "reported" });
-  assert.match(r.enforcement, /read-only|plan/);
+  assert.match(r.enforcement, /ACP 모드 default .*강제 거절\(어댑터가 묻는 요청\)/);
   assert.match(logged, /recv initialize .*"clientCapabilities":\{\}/, "빈 clientCapabilities");
-  assert.match(logged, /set_mode .*"modeId":"plan"/, "claude 어댑터는 plan 모드");
+  assert.match(logged, /set_mode .*"modeId":"default"/, "claude 어댑터는 default 모드 — plan은 밖 읽기를 권한 요청 없이 실행");
   assert.match(logged, /stdin-eof/);
   assert.match(logged, /session\/new .*"settingSources":\[\].*"allowDangerouslySkipPermissions":false/, "설정 격리·우회 금지 전달");
 });

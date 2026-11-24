@@ -6,7 +6,7 @@ tags: [agent, acp, claude, codex, security, daemon]
 sources: [실측:2026-11-12, code:src/agent/acp-executor.ts]
 related: [pace-agent-호출-함정-실측]
 created: 2026-11-12
-updated: 2026-11-16
+updated: 2026-11-24
 status: active
 ---
 
@@ -15,6 +15,8 @@ status: active
 | 항목 | 판정 | 구분 | 근거·요지 |
 |---|---|---|---|
 | Claude ACP 읽기 전용(plan 모드)·권한 거부 | 조건부 됨(관찰 범위: 작업 폴더 + 이벤트가 드러낸 경로, 홈·설정 전체 쓰기 없음은 미확인) | 실측 | plan에서 Write·git commit 요청 → 작업 폴더에 파일·커밋 없음, 권한 요청은 `switch_mode`("Approve Plan")뿐이고 거부하자 stopReason `cancelled`. 단 plan 모드는 **작업 폴더 밖 `~/.claude/plans/*.md`에 계획 파일을 쓴다**(권한 요청 없이 tool_call kind=edit). 이번 시나리오에서 작업 폴더 변경이 없었다는 관찰일 뿐 읽기 전용 보장이 아니며, 홈·설정 쓰기 부재는 탐지하지 못했다 |
+| Claude ACP plan 모드의 작업 폴더 밖 읽기 | **무승인 실행 — 읽기 전용에 쓰지 않는다** | 실측(2026-11-24, macOS, 0.81.1) | plan에서 Read 도구(절대 경로)·셸 `cat ../파일`·grep이 권한 요청 없이 작업 폴더 밖 파일을 읽어 답에 실었다. 그래서 읽기 전용은 `default` 모드로 바꿨다(P005 T04 발견) |
+| Claude ACP default 모드 읽기 전용(PACE 강제 거절) | 됨(관찰 범위: 아래 명령) | 실측(2026-11-24, macOS, 0.81.1) | 밖 읽기(Read 절대 경로·밖을 가리키는 심볼릭 링크·`cd .. && cat`·`$HOME` 절대 경로 cat·`cat 안; cat 밖`·`find .. -exec head`·`git -C ..`)와 쓰기(Write·Edit·`echo > 파일`)·서브에이전트의 밖 읽기·쓰기가 모두 `session/request_permission`으로 와 거절, 파일 변경 없음. 작업 폴더 안 Read는 권한 요청 없이 됨. 핵심 4종은 2회 반복 같은 결과 |
 | Claude ACP default·acceptEdits 모드에서 쓰기 거부 | 됨 | 실측 | Write(kind=edit)·Bash(kind=execute)가 모두 `session/request_permission`으로 와서 reject_once → 파일 생성 없음(시험한 두 요청의 거부 효과이며 모든 변경 경로의 통제를 뜻하지 않는다). acceptEdits도 이 실측에서는 Write·Bash 모두 요청이 왔다(모드 전환 동작은 불명 — 쓰지 않음) |
 | codex-acp 읽기 전용·권한 거부 | 안 됨(기존) | 실측(기존) | 1.13.1 read-only 모드에서도 touch 성공. `codex-acp`는 이 PC에 없어 이번에 재측정 못 함 — 최신 버전 재확인 필요 → 가정 |
 | codex exec -p 읽기 전용 | 조건부 됨 | 실측(기존) | `--sandbox read-only --ignore-user-config` + approval_policy=never 함께(0.166.0). 0.167.1 재측정은 안 함 |

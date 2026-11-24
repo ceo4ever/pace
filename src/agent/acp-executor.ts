@@ -29,7 +29,8 @@ export interface AcpAdapter {
   resumeMethod?: "session/resume";
 }
 
-export const claudeAcp: AcpAdapter = { agent: "claude", command: "claude-agent-acp", args: [], readOnlyModes: ["plan"], readOnlyVersions: ["0.81.1"], writeTools: ["Edit", "Write", "MultiEdit"], effortConfig: true, resumeMethod: "session/resume", sessionMeta: { claudeCode: { options: { settingSources: [], allowDangerouslySkipPermissions: false } } } };
+// 읽기 전용은 plan이 아니라 default 모드 — plan은 읽기 도구(Read·읽기 셸)를 작업 폴더 밖까지 권한 요청 없이 실행한다. default에서는 시험한 밖 읽기·쓰기가 권한 요청으로 와서 결정표가 강제 거절했다(실측 2026-11-24, macOS, 0.81.1). 차단은 어댑터가 권한을 묻는 데 기대며 OS 수준 경계는 아니다
+export const claudeAcp: AcpAdapter = { agent: "claude", command: "claude-agent-acp", args: [], readOnlyModes: ["default"], readOnlyVersions: ["0.81.1"], writeTools: ["Edit", "Write", "MultiEdit"], effortConfig: true, resumeMethod: "session/resume", sessionMeta: { claudeCode: { options: { settingSources: [], allowDangerouslySkipPermissions: false } } } };
 export const codexAcp: AcpAdapter = { agent: "codex", command: "codex-acp", args: [], readOnlyModes: ["read-only"], readOnlyVersions: [], writeTools: [] }; // 실측: codex-acp 1.13.1의 read-only 모드·-c 설정으로도 touch가 성공함
 
 const ACP_CAPS: Capabilities = { models: true, effort: false, systemPrompt: false, resume: false, writeAccess: true };
@@ -387,7 +388,7 @@ export function createAcpExecutor(adapter: AcpAdapter, options: { command?: stri
               if (!request.resume) throw error;
               throw new AgentError("read_only_unenforceable", `이어간 세션의 읽기 전용 모드를 다시 설정하지 못했다: ${error instanceof Error ? error.message : String(error)}`, { started: false });
             }
-            enforcement = `ACP 모드 ${mode} 설정(어댑터가 수락) + 권한 요청 기본 거절`;
+            enforcement = `ACP 모드 ${mode} 설정(어댑터가 수락) + 권한 요청 강제 거절(어댑터가 묻는 요청)`;
           }
           if (hooks?.paceMcp) enforcement += ` · MCP ${MCP_SERVER_NAME} 서버 ${request.access}(요청에서 생성)`;
           if (hooks?.onPermission) enforcement += request.access === "read-only" ? " · 콜백=안전장치(실측 조합, 허용을 낮추기만 가능)" : " · 콜백=정책 위임(강제 미확인)";

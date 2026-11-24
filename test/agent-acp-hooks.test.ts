@@ -53,6 +53,7 @@ test("S-8 결정표: 읽기 전용은 읽기 MCP 도구만 허용, 변경·편�
   assert.equal(await permit(`permx:other:${MCP_ADD}`, "read-only", hooks), "no");
   assert.equal(await permit("permx:execute:Bash", "read-only", hooks), "no");
   assert.equal(await permit("permx:edit:Edit", "read-only", hooks), "no");
+  assert.equal(await permit("permx:read:Read", "read-only", hooks), "no", "default 모드에서 권한 요청으로 오는 읽기(작업 폴더 밖)는 강제 거절");
   assert.equal(await permit(`permx:other:${MCP_READ}`, "read-only"), "no", "paceMcp 없이는 MCP 도구도 거절(현재 정책)");
   // 쓰기: 변경 MCP 도구와 편집 도구는 기본 허용
   assert.equal(await permit(`permx:other:${MCP_ADD}`, "write", hooks), "yes");
