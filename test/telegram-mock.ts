@@ -9,7 +9,7 @@ import { createServer, type IncomingMessage, type Server } from "node:http";
 
 export interface Call { method: string; params: Record<string, unknown>; at: number; files?: { name: string; size: number; text: string }[] }
 
-export interface Fault { status?: number; body?: unknown; times?: number; hang?: boolean; delayMs?: number }
+export interface Fault { status?: number; body?: unknown; times?: number; hang?: boolean; drop?: boolean; delayMs?: number; wait?: Promise<void> }
 
 export class MockTelegram {
   server!: Server;
@@ -18,12 +18,14 @@ export class MockTelegram {
   private updates: Record<string, unknown>[] = [];
   private nextUpdateId = 1;
   private nextMessageId = 1000;
-  private nextThread = 500;
+  private nextThread: number;
   private faults = new Map<string, Fault>();
   /** 응답을 막고 있는 요청 — close 때 풀어 준다 */
   private hanging = new Set<() => void>();
   /** 마지막으로 받은 getUpdates offset들 */
   offsets: (number | undefined)[] = [];
+
+  constructor(firstThread = 500) { this.nextThread = firstThread; }
 
   get base(): string { return `http://127.0.0.1:${this.port}`; }
 
@@ -98,7 +100,9 @@ export class MockTelegram {
     if (f) {
       if (f.times !== undefined) { f.times--; if (f.times <= 0) this.faults.delete(method); }
       if (f.delayMs) await new Promise((r) => setTimeout(r, f.delayMs));
+      if (f.wait) await f.wait;
       if (f.hang) { await new Promise<void>((r) => { this.hanging.add(r); }); return; }
+      if (f.drop) { res.destroy(); return; }
       if (f.status !== undefined) { reply(f.status, f.body ?? { ok: false, error_code: f.status, description: "mock fault" }); return; }
     }
     switch (method) {
@@ -117,6 +121,7 @@ export class MockTelegram {
       case "answerCallbackQuery": case "setMyCommands": case "sendChatAction": reply(200, { ok: true, result: true }); return;
       case "createForumTopic": reply(200, { ok: true, result: { message_thread_id: this.nextThread++, name: params.name } }); return;
       case "getMe": reply(200, { ok: true, result: { id: 1, is_bot: true, username: "mockbot" } }); return;
+      case "getChat": reply(200, { ok: true, result: { id: Number(params.chat_id), is_forum: true, title: "시험 포럼" } }); return;
       default: reply(404, { ok: false, error_code: 404, description: "Not Found" });
     }
   }

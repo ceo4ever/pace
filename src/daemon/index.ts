@@ -6,6 +6,7 @@ import { acquireInstance, clearStopRequest, InstanceBusyError, makeLogger, remov
 import { createChainRunner } from "./runner.ts";
 import { StateError, StateStore } from "./store.ts";
 import { createTelegramAdapter, makeTelegramRedactor, promoteStoredLegacyBinding, readTelegramSecret, type TelegramAdapter, type TelegramSecret } from "./telegram/index.ts";
+import { forumProof, topicIsBound } from "./telegram/provisioning.ts";
 import { workspaceLinkStatus } from "./workspace.ts";
 import type { ChannelAdapter, Runner, Task } from "./types.ts";
 
@@ -76,12 +77,21 @@ export async function runDaemon(o: RunDaemonOptions): Promise<number> {
     await daemon.start();
     gateway = new Gateway({
       daemon, token: ensureGatewayToken(home), port: config.gateway.port, log,
-      workspaceAdd: async (request) => {
+      workspaceAdd: async (request, forum) => {
         const entry = await daemon!.registerWorkspace(request, (legacy) => {
           if (telegram) telegram.promoteLegacyWorkspace(legacy.name, request.registryId);
           else promoteStoredLegacyBinding(home, legacy.name, request.registryId);
         });
-        return { bound: telegram?.isWorkspaceBound(entry) ?? false };
+        const bound = telegram?.isWorkspaceBound(entry) ?? false;
+        if (forum === undefined) return { bound };
+        if (!telegram || telegram.status !== "running" || !secret) return { bound, topic: "unavailable" };
+        let current: TelegramSecret | null = null;
+        try { current = readTelegramSecret(home); } catch { /* 확인되지 않은 포럼에는 생성하지 않는다 */ }
+        if (!current || forum !== forumProof(secret) || forum !== forumProof(current)) {
+          return { bound, topic: "unconfirmed-forum" };
+        }
+        const topic = await telegram.ensureWorkspaceTopic(entry, true);
+        return { bound: topicIsBound(topic), topic };
       },
     });
     await gateway.listen();

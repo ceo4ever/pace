@@ -1,0 +1,25 @@
+{
+  "text": "# P010 T02 계약 대조 결과\n\n**blocking 0건, 판정: pass**\n\n대조한 것은 TASK·PROJECT·BR02의 기준과 현재 `test/daemon-topics.test.ts`입니다. 코드는 정적으로 읽기만 했고 시험은 실행하지 않았습니다. 실제 서비스와 사용자 홈에는 접근하지 않았고 파일도 고치지 않았습니다. 경로 포함 `/new` 정책과 P-5 실사용은 사용자 미결이라 대상에서 뺐습니다.\n\n## 1단계 지적의 해결 여부\n\n| 1단계 지적 | 현재 시험 | 판단 |\n|---|---|---|\n| 1. 응답 목적 토픽과 승인 알림 | 시험 3의 `test/daemon-topics.test.ts:214-215`가 첫 조회 답이 `message_thread_id === thread`인 호출에 있는지 확인합니다. 표식이 든 모든 송신이 그 토픽으로만 갔는지도 `every`로 확인합니다. 쓰기 승인 프롬프트는 `:220`에서 같은 토픽으로 갔는지, `reply_markup`과 \"승인 요청\" 문구가 있는지 확인합니다. `awaiting_approval`만 보던 공백은 메워졌습니다. | 해결 |\n| 2. 승인 포럼 확인 불가(proof null) | 시험 2의 `:127-134`에서 `getChat`이 `is_forum:false`를 돌려줍니다. 그러면 설정은 남고 \"토픽 미결속\"과 \"포럼을 대조할 수 없다\"가 출력되며 `createForumTopic`은 0회입니다. 확인 뒤 시크릿이 바뀌는 경우(`:136-150`)도 따로 있습니다. | 해결 |\n| 3. Gateway의 Telegram 확정 거부 | 시험 5의 `:281-289`가 CLI를 통해 Gateway `workspace_add`로 확정 거부를 일으킵니다. 거부 본문의 값이 비노출인지, 권한 부족(`/토픽 관리 권한/`)과 포럼 꺼짐(`/토픽\\(포럼\\)이 꺼져/`)이 출력되는지 확인합니다. 의도가 지워지고(`provisioning === undefined`) 같은 이름의 재시도가 `토픽 결속 완료`로 끝나는 것도 봅니다. | 해결 |\n\n## 기준별 대조\n\n| 기준 | 근거 | 결과 |\n|---|---|---|\n| T-1 | 시험 1(`:40-82`)이 생성 1회와 `{chat_id, name}` 키만 쓰는 것을 봅니다. 시험 2가 정지·어댑터 불가·포럼 불일치에서 설정과 결속을 따로 알리는지 봅니다. | 충족 |\n| T-2 | 시험 4가 응답 유실, General 합류(`telegram_topic_request_joined`), 다른 add 병행, 재요청을 다룹니다. 시험 5가 결과 불명과 저장 실패 뒤 재기동에서도 생성 호출 수가 그대로인지, `/bind` 안내가 나오는지 봅니다. 시험 6이 진행 중 정지를 다룹니다. | 충족 |\n| T-3 | 시험 3이 설정 이름만 결속하고 등록부 전용 이름과 이전된 등록은 거부하는지 봅니다. 허용되지 않은 chat·사용자, 인증 없음·Origin 거부, read-only 조회, 쓰기 승인 대기를 모두 봅니다. | 충족 (경로 포함 제외) |\n| T-4 | 하위 폴더에서 add한 뒤 첫 조회가 표식에 답합니다. `hiddenValues`가 출력·daemon 로그·송신 본문에서 home·경로·TOKEN·CHAT를, 숫자 경계 정규식으로 thread 번호를 검사합니다. 오류 본문에는 임의 형식으로 값을 넣어 두었습니다. | 충족 |\n| S-3의 \"다른 ID는 bind 거부\" | `:340-350`에서 등록 ID가 어긋나면 `/bind`가 거부되고 의도가 유지됩니다. | 충족 |\n\n## non-blocking 잔여\n\n- 승인 프롬프트의 목적지 확인은 `some`입니다. General로 새지 않았다는 부정 단언은 표식 답변에만 있습니다.\n- proof null 시험은 `is_forum:false` 경우만 다룹니다. `getChat` 자체가 실패하는 경우는 같은 분기로 보이지만 별도 시험이 없습니다.\n- Telegram `/new` 경로에서 권한 부족·포럼 꺼짐 결과를 확인하는 시험은 이 파일에 없습니다. 이번 지적은 Gateway 경로였고, 이 파일에서는 CLI→Gateway 경로로 확인됩니다.\n- 시험 5는 `fs.renameSync`를 프로세스 전역에서 바꿔 끼웁니다. `finally`로 복원하고 `node --test`가 파일 단위로 격리하므로 현재는 문제가 없습니다.\n- 1단계의 note 4~6(구버전 상태 귀속, 의도 기록 뒤 daemon 사망 안내, 레거시 합류 조건)은 시험 변화가 없어 그대로입니다.\n\n## 미결 사항\n\n- 경로 포함 `/new` 정책과 P-5 실사용(사용자 승인·실측 증거)은 별도로 남아 있습니다.\n- T02 `TASK.md`의 상태는 아직 \"진행\"이고 `PROJECT.md`의 커밋 칸도 비어 있습니다. 이번 대조는 그 상태를 바꾸지 않았습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-sonnet-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "cd31f151-fdee-4d0e-8f05-b40f92068919",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 30048,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 4075
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

@@ -5,6 +5,7 @@ import type { Socket } from "node:net";
 import { join } from "node:path";
 import type { Daemon } from "./core.ts";
 import type { ApprovalPrompt, Block, ChannelAdapter, ChannelSink } from "./types.ts";
+import type { TopicState } from "./telegram/provisioning.ts";
 import { isWorkspaceAddRequest, workspaceErrorText, type WorkspaceAddRequest } from "./workspace.ts";
 
 // Gateway API 골격 (BR04) — 로컬 WebSocket + 토큰 인증. 127.0.0.1만 바인딩, node:http upgrade + RFC6455 부분집합을 직접 구현(의존성 0).
@@ -124,7 +125,7 @@ export interface GatewayOptions {
   log?: (event: string, fields?: Record<string, unknown>) => void;
   /** 연결별 송신 버퍼 상한(바이트) — 넘으면 느린 소비자로 보고 닫는다 */
   maxBufferedBytes?: number;
-  workspaceAdd?: (request: WorkspaceAddRequest) => Promise<{ bound: boolean }>;
+  workspaceAdd?: (request: WorkspaceAddRequest, forum: string | null | undefined) => Promise<{ bound: boolean; topic?: TopicState }>;
 }
 
 export class Gateway {
@@ -232,11 +233,13 @@ export class Gateway {
       }
       case "workspace_add": {
         const add = this.o.workspaceAdd;
-        if (!add || !isWorkspaceAddRequest(msg.workspace)) {
+        const forum = msg.forum;
+        if (!add || !isWorkspaceAddRequest(msg.workspace) ||
+          (forum !== undefined && forum !== null && (typeof forum !== "string" || !/^[a-f0-9]{64}$/.test(forum)))) {
           reply({ type: "error", error: "유효한 워크스페이스 승인 정보가 필요하다" });
           return;
         }
-        try { reply({ type: "ack", result: { ok: true, ...await add(msg.workspace) } }); }
+        try { reply({ type: "ack", result: { ok: true, ...await add(msg.workspace, forum) } }); }
         catch (error) { reply({ type: "ack", result: { ok: false, reason: workspaceErrorText(error) } }); }
         return;
       }

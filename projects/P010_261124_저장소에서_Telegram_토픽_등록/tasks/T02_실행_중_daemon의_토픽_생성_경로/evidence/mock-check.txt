@@ -1,0 +1,104 @@
+T02 공통 구현 · 모의 환경
+
+변경 전: node --test test/daemon-topics.test.ts · 1건 실패. 설정 반영 완료 뒤 토픽 미결속.
+
+node --test test/daemon-topics.test.ts test/daemon-workspace.test.ts test/telegram-flow.test.ts test/telegram-use.test.ts
+ℹ suites 0
+ℹ pass 59
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14694.0405
+
+포럼 승인 중 변경 시험 보강 뒤 node --test test/daemon-topics.test.ts
+✔ 저장소 하위 폴더에서 로컬 add 뒤 실행 중 포럼에 결속되고 첫 조회가 표식에 답한다 (1038.878875ms)
+✔ 정지·어댑터 미설정·포럼 변경은 설정 반영과 토픽 결속을 구분한다 (3164.578083ms)
+✔ General은 daemon 설정 이름만 노출하고 미허용 chat·사용자와 쓰기 승인 경계를 유지한다 (1009.212083ms)
+✔ 응답 유실·General 경합·다른 add가 겹쳐도 설정과 토픽이 한 번씩 남는다 (1006.333542ms)
+✔ 확정 실패는 의도를 지우고, 응답 불명·결속 저장 실패는 재기동 뒤에도 생성하지 않는다 (3017.344125ms)
+✔ 생성 호출이 진행 중인 상태에서 멈추면 기동 뒤에도 같은 요청을 재발행하지 않는다 (2009.063583ms)
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11450.3125
+
+전체 검사 1차: General 도움말에 새 형식을 추가했고 기존 F-8 단언이 이를 허용하지 않았다.
+ℹ tests 1055
+ℹ suites 0
+ℹ pass 1037
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+신규·기존 사용법을 모두 단언하도록 보강한 뒤 서식 시험 10건 통과. 전체 검사 재실행 중.
+
+목적 토픽·식별자 비노출 보강 뒤 타입 검사 및 집중 검사 6개 파일
+ℹ suites 0
+ℹ pass 83
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15191.129917
+
+전체 검사 두 번째 실행에서는 S-19d 기기 설정 쓰기가 포트 점유 경로로 중단됐다. 같은 파일은 집중 검사에서 통과했다. 점유 프로세스는 확인하지 않았다. 전체 검사 재실행 중.
+
+PACE_SKIP_BROWSER_E2E=1 npm run check -- -- --test-concurrency=4
+
+ℹ suites 0
+ℹ pass 1038
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 185925.866208
+
+타입 검사와 마지막 분기 보강 뒤 node --test test/daemon-topics.test.ts
+
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12441.449875
+
+마지막 공통 소스와 시험 기준 전체 재확인: PACE_SKIP_BROWSER_E2E=1 npm run check -- -- --test-concurrency=4
+
+ℹ suites 0
+ℹ pass 1038
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 180142.856541
+종료 코드 0.
+
+정책 변경 전 S-9g: 경로 포함 호출에서 로컬 명령 안내를 확인하지 못해 실패(exit 1).
+
+
+정책 적용 뒤 PACE_SKIP_BROWSER_E2E=1 npm run check -- -- --test-concurrency=4
+ℹ suites 0
+ℹ pass 1037
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 190479.203625
+
+최종 입력 경계와 기존 설정 무변경 집중 검사
+✔ General은 daemon 설정 이름만 노출하고 미허용 chat·사용자와 쓰기 승인 경계를 유지한다 (2052.039791ms)
+✔ S-9g General /new에 경로나 추가 인자가 있으면 검증·등록·토픽 변경 없이 로컬 명령을 안내한다 (44.063ms)
+✔ S-9k /new로 선택한 워크스페이스의 승인 경로 확인이 지연돼도 다음 명령을 처리한다 (326.257ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2217.208625

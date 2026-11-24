@@ -227,15 +227,3 @@ test("S-7b 경로에 토큰 형태가 든 설정은 거부된다(설정 로드·
   assert.equal(hasTokenShape("/srv/ok/project"), false);
   void symlinkSync;
 });
-
-test("S-20c addWorkspace는 파일 시스템을 호출하지 않고(선해결 인수), 같은 이름·같은 경로는 멱등, 다른 경로·토큰형 경로는 거부", async () => {
-  const h = await harness({ workspaces: ["a"] });
-  const entry = { name: "n1", path: join(h.home, "ws", "n1") };
-  mkdirSync(entry.path, { recursive: true });
-  assert.equal(h.daemon.addWorkspace(entry, { real: entry.path, dev: "1", ino: "2" }), "added");
-  assert.deepEqual(h.daemon.workspaceRootInfo("n1"), { real: entry.path, dev: "1", ino: "2" });
-  assert.equal(h.daemon.addWorkspace(entry, { real: entry.path, dev: "9", ino: "9" }), "exists");
-  assert.deepEqual(h.daemon.workspaceRootInfo("n1"), { real: entry.path, dev: "1", ino: "2" }, "기존 항목은 다시 해석하지 않는다");
-  assert.throws(() => h.daemon.addWorkspace({ name: "n1", path: join(h.home, "other") }, { real: "x", dev: "1", ino: "1" }), /다른 경로/);
-  assert.throws(() => h.daemon.addWorkspace({ name: "n2", path: `/p/${TOKEN}` }, { real: "x", dev: "1", ino: "1" }), /비밀 형태/);
-});

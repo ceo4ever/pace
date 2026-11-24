@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "fc211c2eda4869ecf64196e0593b134103c58590e76e120585b1a5bdb568895c",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "d287cdafbdbfed39d6c11fe6cf8e8b61fb956d90d131fc9ed100f5845c676dc7",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "계약과 시험 보강 뒤 새 독립 검토"
+    },
+    {
+      "hash": "13ae998f1eef05f50a2b2e4022760c51fe4857c759eab51b166a8901a1f3ebc6",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "사용자 권한 결정 명문화 후 독립 검토"
+    }
+  ]
+}

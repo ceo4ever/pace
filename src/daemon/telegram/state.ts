@@ -24,6 +24,8 @@ export function topicName(binding: TopicBinding): string {
 
 export interface TelegramState {
   version: 1;
+  /** 포럼별 토픽 번호를 재사용하지 않도록 연결한 포럼의 지문 */
+  forumKey?: string;
   /** 마지막으로 처리한 update_id + 1 */
   offset: number;
   /** 마지막으로 update를 받은 시각(ms) — 장기 무수신 재동기화 판단 */
@@ -48,6 +50,7 @@ function validate(v: unknown): TelegramState {
   if (typeof v !== "object" || v === null || Array.isArray(v)) return bad("객체가 아니다");
   const o = v as Record<string, unknown>;
   if (o.version !== 1) bad("지원하지 않는 version");
+  if (o.forumKey !== undefined && (typeof o.forumKey !== "string" || !/^[a-f0-9]{64}$/.test(o.forumKey))) bad("forumKey");
   if (!Number.isInteger(o.offset) || (o.offset as number) < 0) bad("offset");
   if (typeof o.lastUpdateAt !== "number") bad("lastUpdateAt");
   for (const k of ["topics", "provisioning"]) if (typeof o[k] !== "object" || o[k] === null || Array.isArray(o[k])) bad(k);

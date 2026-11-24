@@ -59,3 +59,6 @@
 ## [2026-11-23] ingest | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
 ## [2026-11-24] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
 ## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-24] update | Telegram 어댑터 설계 함정 (.pace/brain/pages/synthesis/telegram-어댑터-설계-함정.md)
+## [2026-11-24] query | Telegram 토픽 생성 의도·결속 복구를 조회해 Gateway·Bot API 응답 유실의 경계를 기존 설계 함정 페이지에 보강했다
+## [2026-11-24] update | Telegram 어댑터 설계 함정 (.pace/brain/pages/synthesis/telegram-어댑터-설계-함정.md)

@@ -6,6 +6,7 @@ import { loadConfig } from "./config.ts";
 import { gatewayTokenFile } from "./gateway.ts";
 import { acquireInstance, InstanceBusyError, readLockInfo, readStatus } from "./instance.ts";
 import { makeTelegramRedactor, promoteStoredLegacyBinding, readTelegramSecret, telegramStateFile, TelegramApi } from "./telegram/index.ts";
+import { forumKey, forumProof, isTopicState, topicIsBound, topicStateText, type TopicState } from "./telegram/provisioning.ts";
 import { loadTelegramState } from "./telegram/state.ts";
 import { approveWorkspacePlan, persistRegisteredWorkspace, planWorkspaceAdd, WorkspaceError, workspaceErrorText, workspaceLinkStatus, type WorkspacePlan } from "./workspace.ts";
 
@@ -32,19 +33,19 @@ function gitRoot(cwd: string): string {
   throw new WorkspaceError("현재 폴더의 git 최상위를 확인할 수 없다 — 경로를 지정한다");
 }
 
-async function forumTitle(options: WorkspaceCliOptions): Promise<string> {
+async function resolveForum(options: WorkspaceCliOptions): Promise<{ title: string; proof: string | null }> {
   try {
     const secret = readTelegramSecret(options.home);
-    if (!secret) return "Telegram 미설정";
+    if (!secret) return { title: "Telegram 미설정", proof: null };
     const redact = makeTelegramRedactor(secret);
     const api = new TelegramApi({ token: secret.token, base: secret.apiBase, fetchImpl: options.telegramFetch, redact, totalMs: 2500 });
     const chat = await api.call<{ id?: number; is_forum?: boolean; title?: string }>("getChat", { chat_id: secret.chatId });
-    if (String(chat.id) === secret.chatId && chat.is_forum && typeof chat.title === "string") {
+    if (String(chat.id) === secret.chatId && chat.is_forum === true && typeof chat.title === "string") {
       const title = redact(chat.title).replaceAll(secret.chatId, "[식별자 제거됨]").replace(/[\p{C}\p{Zl}\p{Zp}]/gu, " ").trim().slice(0, 160);
-      if (title) return title;
+      if (title) return { title, proof: forumProof(secret) };
     }
   } catch { /* 제목 확인 실패에는 API 오류 원문을 표시하지 않는다 */ }
-  return "포럼 이름 확인 불가";
+  return { title: "포럼 이름 확인 불가", proof: null };
 }
 
 export async function daemonWorkspaceCommand(args: string[], options: WorkspaceCliOptions): Promise<number> {
@@ -65,14 +66,16 @@ export async function daemonWorkspaceCommand(args: string[], options: WorkspaceC
     if (parsed.positionals.length > 1) throw new WorkspaceError(WORKSPACE_USAGE);
     const path = parsed.positionals[0] === undefined ? gitRoot(options.cwd) : resolve(options.cwd, parsed.positionals[0]);
     const plan = planWorkspaceAdd(home, path, parsed.values.name);
+    let forum: Awaited<ReturnType<typeof resolveForum>> | undefined;
     if (!parsed.values.yes) {
       out(`워크스페이스: ${plan.name}`);
       out(`실경로: ${JSON.stringify(plan.real)}`);
       out(plan.registryId ? "전역 등록부: 기존 활성 등록 사용" : "전역 등록부: 새 활성 등록");
       out(`.pace/AGENT.md: ${plan.definitionId ? "기존 정의 사용" : "새로 생성"}`);
-      out(`접근: read-only · 토픽: ${plan.name} · 포럼: ${await forumTitle(options)}`);
+      forum = await resolveForum(options);
+      out(`접근: read-only · 토픽: ${plan.name} · 포럼: ${forum.title}`);
       if (!options.interactive) { out("계획을 확인한 뒤 --yes로 실행한다"); return 0; }
-      if (!await options.ask("이 저장소를 daemon에 추가할까요?")) { out("취소했다"); return 0; }
+      if (!await options.ask("이 저장소를 daemon에 추가하고 실행 중이면 확인한 포럼에 결속할까요?")) { out("취소했다"); return 0; }
     }
     const approve = () => {
       const request = approveWorkspacePlan(home, plan);
@@ -83,8 +86,11 @@ export async function daemonWorkspaceCommand(args: string[], options: WorkspaceC
     try { owner = await acquireInstance(home); }
     catch (error) {
       if (!(error instanceof InstanceBusyError)) throw error;
-      const result = await addViaGateway(home, approve);
-      out(`${plan.name} — 설정 반영 완료 · 토픽 ${result.bound ? "결속 완료" : "미결속"}`);
+      const result = await addViaGateway(home, approve, (forum ?? await resolveForum(options)).proof);
+      const report = result.topic && !topicIsBound(result.topic) ? topicStateText(result.topic, plan.name) : undefined;
+      const binding = result.bound ? (result.topic === "bound" ? "결속 완료" : "기존 결속") : "미결속";
+      out(`${plan.name} — 설정 반영 완료 · 토픽 ${binding}`);
+      if (report) out(report);
       return 0;
     }
     let binding = "미결속";
@@ -93,7 +99,10 @@ export async function daemonWorkspaceCommand(args: string[], options: WorkspaceC
       persistRegisteredWorkspace(home, request, (legacy) => promoteStoredLegacyBinding(home, legacy.name, request.registryId));
       try {
         const saved = loadTelegramState(telegramStateFile(home));
-        if (saved && Object.values(saved.topics).some((topic) => typeof topic !== "string" && topic.name === request.name && topic.registryId === request.registryId)) binding = "기존 결속";
+        const secret = readTelegramSecret(home);
+        if (saved && (!saved.forumKey || (secret && saved.forumKey === forumKey(secret))) &&
+          Object.values(saved.topics).some((topic) => typeof topic !== "string" && topic.name === request.name && topic.registryId === request.registryId)) binding = "기존 결속";
+        else if (saved?.forumKey && (!secret || saved.forumKey !== forumKey(secret))) binding = "상태 확인 불가";
       } catch { binding = "상태 확인 불가"; }
     } finally { await owner.release(); }
     out(`${plan.name} — 설정 기록 완료(다음 daemon 기동 때 반영) · 토픽 ${binding}`);
@@ -106,7 +115,7 @@ export async function daemonWorkspaceCommand(args: string[], options: WorkspaceC
   }
 }
 
-function addViaGateway(home: string, approve: () => ReturnType<typeof approveWorkspacePlan>): Promise<{ bound: boolean }> {
+function addViaGateway(home: string, approve: () => ReturnType<typeof approveWorkspacePlan>, forum: string | null): Promise<{ bound: boolean; topic?: TopicState }> {
   const lock = readLockInfo(home);
   const status = readStatus(home);
   if (!status || status.state !== "running" || !lock || status.bootId !== lock.bootId || status.pid !== lock.pid ||
@@ -122,7 +131,7 @@ function addViaGateway(home: string, approve: () => ReturnType<typeof approveWor
     const socket = new WebSocket(`ws://127.0.0.1:${status.gatewayPort}`);
     let sent = false;
     let settled = false;
-    const finish = (result: { bound: boolean } | Error) => {
+    const finish = (result: { bound: boolean; topic?: TopicState } | Error) => {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
@@ -131,9 +140,9 @@ function addViaGateway(home: string, approve: () => ReturnType<typeof approveWor
       else done(result);
     };
     const disconnected = () => finish(new WorkspaceError(sent
-      ? "Gateway의 설정 반영 결과를 확인할 수 없다 — 같은 workspace add로 확인한다"
+      ? "Gateway의 설정 반영과 토픽 결속 결과를 확인할 수 없다 — 같은 workspace add로 확인한다"
       : "실행 소유자의 Gateway에 연결하지 못했다"));
-    const timer = setTimeout(disconnected, 8000);
+    let timer = setTimeout(disconnected, 8000);
     socket.onopen = () => socket.send(JSON.stringify({ type: "auth", token }));
     socket.onclose = disconnected;
     socket.onerror = disconnected;
@@ -143,10 +152,12 @@ function addViaGateway(home: string, approve: () => ReturnType<typeof approveWor
         const reply = JSON.parse(String(event.data));
         if (reply?.type === "ready" && !sent && reply.bootId === lock.bootId) {
           const workspace = approve();
-          socket.send(JSON.stringify({ type: "workspace_add", id: "workspace-add", workspace }));
+          socket.send(JSON.stringify({ type: "workspace_add", id: "workspace-add", workspace, forum }));
           sent = true;
+          clearTimeout(timer);
+          timer = setTimeout(disconnected, 38_000);
         } else if (reply?.type === "ack" && sent && reply.id === "workspace-add" && reply.result?.ok === true) {
-          finish({ bound: reply.result.bound === true });
+          finish({ bound: reply.result.bound === true, ...(isTopicState(reply.result.topic) ? { topic: reply.result.topic } : {}) });
         } else if (reply?.type === "ack" || reply?.type === "error" || reply?.type === "ready") {
           finish(new WorkspaceError("Gateway에서 워크스페이스를 거부했다 — 등록부와 daemon 설정을 확인한다"));
         }

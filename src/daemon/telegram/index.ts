@@ -7,6 +7,7 @@ import type { Daemon } from "../core.ts";
 import { makeRedactor, type Redactor } from "../secrets.ts";
 import { TelegramApi } from "./api.ts";
 import { TelegramAdapter, type TelegramAdapterOptions, type TelegramHost } from "./adapter.ts";
+import { forumKey } from "./provisioning.ts";
 import { loadTelegramState, promoteLegacyBinding, saveTelegramState } from "./state.ts";
 
 // Telegram 결선 — 시크릿 읽기·쓰기, 호스트(코어·설정과의 연결) 구현, 어댑터 생성.
@@ -64,7 +65,6 @@ export function createTelegramHost(o: { daemon: Daemon; home: string; config: Da
     overview: () => daemon.overview(),
     workspaces: () => config.workspaces,
     workspaceRootInfo: (name) => daemon.workspaceRootInfo(name, false),
-    registerLegacyWorkspace: (entry, root) => daemon.registerLegacyWorkspace(entry, root, home),
     matchesLegacyBinding(entry, id) {
       const approved = daemon.workspaceRootInfo(entry.name);
       if (!approved) return false;
@@ -84,6 +84,7 @@ export function createTelegramAdapter(o: { daemon: Daemon; home: string; config:
   return new TelegramAdapter({
     api,
     chatId: o.secret.chatId,
+    forumKey: forumKey(o.secret),
     host: createTelegramHost(o),
     redact: o.redact,
     log: o.log,

@@ -341,7 +341,7 @@ test("이동 뒤 옛 디렉터리가 남아 있어도 접수·조회·대기 실
     assert.match(collision.output, /--name/);
     const again = await cli(["add", newRoot, "--yes"]);
     assert.equal(again.code, 0, again.output);
-    assert.match(again.output, /결속 완료/);
+    assert.match(again.output, /설정 반영 완료.*토픽 기존 결속/);
     assert.deepEqual(Object.keys(loadConfig(home).workspaces.find((entry) => entry.name === "project")!.worktrees), ["main"]);
     mock.text(CHAT, 11, U1, "new-root");
     await until(() => mock.texts().some((line) => line.includes("NEW-MARKER")), 4000, "같은 토픽의 새 경로 조회");

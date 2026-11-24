@@ -1,0 +1,25 @@
+{
+  "text": "## P010 T02 독립 tester 1단계 보고\n\n소스(`src/daemon/`)와 `docs/DAEMON.md`만 정적으로 읽었습니다. 아무것도 실행하지 않았고 파일도 고치지 않았습니다. 사본에 테스트가 없어 아래는 모두 코드 독해 결과이며 실행으로 확인한 것은 없습니다.\n\n### 관측 (코드에서 확인)\n\n**1. 단일 토픽 결속**\n- `ensureWorkspaceTopic`은 이름별 `topicRequests`로 동시 `/new`와 Gateway 요청을 한 요청에 합칩니다 (`adapter.ts:446-459`). 등록 ID가 다르면 `conflict`를 돌려줍니다.\n- 이미 결속됐거나 같은 이름의 결속이 있으면 새로 만들지 않습니다 (`adapter.ts:472-473`).\n- `/bind`의 검증과 `commit`은 `await` 없이 이어서 실행됩니다 (`adapter.ts:503-510`). 그래서 서로 다른 토픽에서 동시에 `/bind`를 보내도 둘째는 \"이미 다른 토픽에 결속\" 응답을 받습니다. 생성 요청이 처리 중일 때도 `/bind`는 거절됩니다 (`adapter.ts:502`).\n- 결속은 `{name, registryId}`로 저장되고 조회 때 현재 등록과 대조합니다. 맞지 않으면 토픽 입력을 처리하지 않습니다 (`adapter.ts:167-176`, `adapter.ts:375-376`).\n\n**2. 응답 유실·재기동**\n- `createForumTopic`을 호출하기 전에 `provisioning` 생성 의도를 먼저 저장합니다 (`adapter.ts:476`). 저장이 실패하면 토픽을 만들지 않습니다 (`intent-write-failed`).\n- 응답이 유실되거나 모호하면 `unknown`을 돌려주고 의도를 지우지 않습니다. 재시도는 `unknown`으로 막히고, 새 토픽을 만들지 않습니다. 해당 토픽에서 `/bind`로만 이어갑니다.\n- Telegram이 확정 거절한 경우에만 의도를 지우고 재요청을 허용합니다 (`adapter.ts:487-490`).\n- `commit`은 저장이 실패하면 메모리 상태를 되돌립니다 (`adapter.ts:148-153`). 상태 파일이 손상되면 기동을 거부하고, 포럼 지문(`forumKey`)이 다르면 기동을 거부합니다 (`adapter.ts:229-234`).\n\n**3. 유효한 조회**\n- 저장된 결속 토픽이 등록과 맞는지 매번 대조합니다. 경로, 등록 ID, 디렉터리 신원(dev/ino)이 바뀌면 거부합니다 (`workspace.ts:41-63`).\n\n### 목적과 어긋나 보이는 점\n\n**A. General에서 임의 경로 등록이 가능합니다 (가장 중요).**\n- `/new <이름> <절대경로>`는 허용 사용자가 채팅에서 임의의 절대경로를 입력하면 `registerLegacyWorkspace`가 config에 기록하고 바로 토픽을 만듭니다 (`adapter.ts:418-442`, `core.ts:1006-1017`).\n- 이 경로에는 Git 저장소 확인과 CLI 승인 계획이 없습니다. 등록부(registry)와 `registryId`도 없습니다.\n- 확인한 검증은 경로가 디렉터리인지, 비밀 형태 문자열이 없는지, 워커가 실경로를 해석하는지뿐입니다.\n- `docs/DAEMON.md:18`은 General `/new`를 \"이미 daemon에 추가된 워크스페이스\" 용으로만 설명합니다. 그러나 `GENERAL_HELP`는 경로 형식을 계속 안내합니다 (`adapter.ts:75`).\n- 이는 \"승인된 로컬 저장소만 결속\"과 \"General에는 설정 노출 목록만 허용\"에 반합니다. 문서와 코드가 어긋난 상태입니다.\n- 의도된 호환 동작인지는 S-외 결정일 수 있어 판정하지 않고 표시만 합니다.\n\n**B. 이전 방식(등록 ID 없는) 항목은 매 요청의 승인 경로 검증을 건너뜁니다.**\n- 이 항목들은 `/bind`에서 `workspaceRootAvailable` 확인이 빠지고 (`adapter.ts:501`, `ws.registryId &&` 조건), `workspaceLinkStatus`는 \"기존 설정\"으로만 표시합니다.\n- 문서가 \"기존 방식으로 동작\"이라고 한 범위이지만, 목적에 비추면 약한 구간입니다.\n\n**C. 결속 해제 경로가 없습니다.**\n- 결속된 토픽이 Telegram에서 삭제되면 `already-bound`로 영구히 막힙니다. 코드에서 해제나 재결속 명령을 찾지 못했습니다.\n\n### 미확인 (이번 호출에서 검증하지 못함)\n- `rejectedTopicState`와 `TelegramApiError.definite`의 분류 정확성. \"응답 유실\"과 \"확정 거절\"을 가르는 핵심인데 열어 보지 않았습니다 (`api.ts`).\n- `/bind`를 처리하는 도중 `await` 사이에 config가 바뀌는 경쟁. `workspaceRootAvailable` 뒤 동기 구간만 확인했습니다.\n- Gateway 쪽 `workspace add` 흐름 (`gateway.ts`, `workspace-cli.ts`)과 `forumProof` 대조. 읽지 않았습니다.\n- 실제 Telegram 동작, 재기동 시나리오, 부하 상황의 동시 입력. 모두 실행하지 않았습니다.\n- 사본에 테스트가 없어 기존 회귀 범위는 알 수 없습니다.\n\n### 판정 (1단계)\n단일 토픽 결속과 응답 유실·재기동 안전성은 설계상 근거가 있습니다. 반면 **A는 목적 위반 가능성이 높아 2단계에서 우선 확인할 항목**입니다. 확인 방법은 `/new <이름> <경로>` 경로의 실제 동작을 재현하는 것이고, 필요하면 General이 설정에 노출된 목록만 받도록 막아야 합니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-sonnet-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "0af7581f-25b7-45fd-85dc-271c34b00c06",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 41002,
+  "usage": {
+    "input_tokens": 16,
+    "output_tokens": 4867
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

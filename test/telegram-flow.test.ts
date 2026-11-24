@@ -22,7 +22,7 @@ function bare(o: { mock: MockTelegram; sink?: Partial<ChannelSink>; marker?: boo
   let marker = o.marker ?? false;
   const host: TelegramHost = {
     device: "box", isAllowed: (a) => (o.allowed ? o.allowed(a.user) : true), pendingApprovals: () => [], overview: () => ({ device: "box", running: 0, queued: 0, quarantined: 0, byWorkspace: {} }),
-    workspaces: () => [{ name: "a", path: dir, worktrees: { main: dir } }], workspaceRootInfo: () => null, registerLegacyWorkspace: async () => undefined,
+    workspaces: () => [{ name: "a", path: dir, worktrees: { main: dir } }], workspaceRootInfo: () => null,
     flushOutbox: async () => undefined, hasPriorActivity: () => o.prior ?? false, readMarker: () => marker, writeMarker: () => { marker = true; seen.markerWrites++; }, stateFile: file,
   };
   const sink: ChannelSink = {
@@ -340,23 +340,22 @@ test("S-9b 미허용 사용자의 자체 명령·미등록 토픽·버튼은 설
   } finally { await t.stop(); }
 });
 
-test("S-9 /new: 검증·설정 기록·코어 등록·토픽 생성·표 등록, 재전달은 중복 토픽 없음, 이후 그 토픽에서 실행", async () => {
-  const t = await tgHarness();
+test("S-9 /new: 설정된 이름 검증·토픽 생성·표 등록, 재전달은 중복 토픽 없음, 이후 그 토픽에서 실행", async () => {
+  const t = await tgHarness({ hk: { workspaces: ["a", "b", "proj"] } });
   try {
-    const dir = join(t.home, "ws", "proj"); mkdirSync(dir, { recursive: true });
-    t.mock.text(CHAT, undefined, U1, `/new proj ${dir}`, { message_id: 7600 });
+    t.mock.text(CHAT, undefined, U1, "/new proj", { message_id: 7600 });
     await until(() => t.mock.texts().some((x) => x.includes("등록 완료")), 6000, "/new");
     assert.equal(t.mock.sent("createForumTopic").length, 1);
     const topic = Object.entries(t.adapter.state.topics).find(([, w]) => w === "proj")![0];
-    assert.ok(JSON.parse(readFileSync(join(t.home, "daemon", "config.json"), "utf8")).workspaces.some((w: { name: string }) => w.name === "proj"));
+    assert.equal(existsSync(join(t.home, "daemon", "config.json")), false, "General은 설정을 쓰지 않는다");
     assert.ok(t.h.daemon.workspaceRootInfo("proj"));
     // 같은 update 재전달(새 update·같은 message_id) — 중복 토픽이 만들어지지 않는다
-    t.mock.text(CHAT, undefined, U1, `/new proj ${dir}`, { message_id: 7600 });
+    t.mock.text(CHAT, undefined, U1, "/new proj", { message_id: 7600 });
     await until(() => t.mock.texts().some((x) => x.includes("이미 등록")), 4000, "멱등");
     assert.equal(t.mock.sent("createForumTopic").length, 1);
-    // 상대 경로·다른 경로 중복·이름 오류 거부
+    // 경로를 넣은 호출 거부
     t.mock.text(CHAT, undefined, U1, "/new rel ./x");
-    await until(() => t.mock.texts().some((x) => x.includes("절대 경로")), 4000, "상대 경로");
+    await until(() => t.mock.texts().some((x) => x.includes("pace daemon workspace add")), 4000, "상대 경로");
     t.mock.text(CHAT, Number(topic), U1, "새 프로젝트 질문");
     await until(() => t.h.runner.started.includes("새 프로젝트 질문"), 6000, "새 토픽 실행");
     assert.equal(t.h.runner.jobs.find((j) => j.prompt === "새 프로젝트 질문")!.target.workspace, "proj");
@@ -366,25 +365,23 @@ test("S-9 /new: 검증·설정 기록·코어 등록·토픽 생성·표 등록,
 
 test("S-9j 토픽 생성 확정 실패는 의도를 지우고 재시도되며, 결과 불명은 의도를 유지해 /bind로 복구한다(다른 이름의 /new와 무관)", async () => {
   const mock = await new MockTelegram().start();
-  const t = await tgHarness({ mock, adapter: { api: new TelegramApi({ token: TOKEN, base: mock.base, redact, perCallMs: 120, totalMs: 300 }) } });
+  const t = await tgHarness({ mock, hk: { workspaces: ["a", "b", "x", "y"] }, adapter: { api: new TelegramApi({ token: TOKEN, base: mock.base, redact, perCallMs: 120, totalMs: 300 }) } });
   try {
-    const dirX = join(t.home, "ws", "x"); const dirY = join(t.home, "ws", "y");
-    mkdirSync(dirX, { recursive: true }); mkdirSync(dirY, { recursive: true });
     mock.fault("createForumTopic", { status: 400, body: { ok: false, error_code: 400, description: "not enough rights to create a topic" } });
-    mock.text(CHAT, undefined, U1, `/new x ${dirX}`);
+    mock.text(CHAT, undefined, U1, "/new x");
     await until(() => mock.texts().some((x) => x.includes("토픽을 만들지 못했다")), 6000, "확정 실패");
     assert.equal(t.adapter.state.provisioning.x, undefined, "확정 실패는 의도 삭제");
     mock.fault("createForumTopic", null);
-    mock.text(CHAT, undefined, U1, `/new x ${dirX}`);
+    mock.text(CHAT, undefined, U1, "/new x");
     await until(() => mock.texts().some((x) => x.includes("등록 완료: x")), 6000, "원인 해소 뒤 재시도");
     // 결과 불명(응답 없음)
     mock.fault("createForumTopic", { hang: true });
-    mock.text(CHAT, undefined, U1, `/new y ${dirY}`);
+    mock.text(CHAT, undefined, U1, "/new y");
     await until(() => mock.texts().some((x) => x.includes("결과를 확인하지 못했다")), 6000, "결과 불명");
     assert.equal(t.adapter.state.provisioning.y, true);
     mock.fault("createForumTopic", null);
     // 다른 이름의 /new는 x/y 의도에 영향이 없고, 같은 y의 /new는 자동 재시도하지 않는다
-    mock.text(CHAT, undefined, U1, `/new y ${dirY}`);
+    mock.text(CHAT, undefined, U1, "/new y");
     await until(() => mock.texts().filter((x) => x.includes("결과를 확인하지 못했다")).length >= 2, 6000, "자동 재시도 안 함");
     assert.equal(mock.sent("createForumTopic").filter((c) => c.params.name === "y").length, 1);
     // 수동 토픽에서 /bind y
@@ -395,36 +392,49 @@ test("S-9j 토픽 생성 확정 실패는 의도를 지우고 재시도되며, �
   } finally { await t.stop(); }
 });
 
-test("S-9g /new: 설정 기록 뒤 코어 등록 실패는 안내만 하고 update를 소비하며, 같은 /new 재입력이 복구한다", async () => {
-  const t = await tgHarness();
+test("S-9g General /new에 경로나 추가 인자가 있으면 검증·등록·토픽 변경 없이 로컬 명령을 안내한다", async () => {
+  const t = await tgHarness({ hk: { workspaces: ["a", "b", "g"] } });
   try {
-    const dir = join(t.home, "ws", "g"); mkdirSync(dir, { recursive: true });
-    const daemon = t.h.daemon;
-    const real = daemon.addWorkspace.bind(daemon);
-    let fail = true;
-    daemon.addWorkspace = (e, r) => { if (fail) throw new Error("등록 실패"); return real(e, r); };
-    t.mock.text(CHAT, undefined, U1, `/new g ${dir}`);
-    await until(() => t.mock.texts().some((x) => x.includes("반영하지 못했다")), 6000, "반영 실패");
-    // 안내는 처리 도중 보내고 offset은 처리가 끝난 뒤 진행한다 — 안내 직후 판독하면 부하에서 경합한다
-    await until(() => t.adapter.state.offset > 0, 4000, "update는 소비");
-    fail = false;
-    t.mock.text(CHAT, undefined, U1, `/new g ${dir}`);
-    await until(() => t.mock.texts().some((x) => x.includes("등록 완료: g")), 6000, "재입력 복구");
+    const { fs: verification, o: { host } } = t.adapter as unknown as { fs: { run: () => Promise<unknown> }; o: { host: TelegramHost } };
+    let validates = 0;
+    let lookups = 0;
+    const workspaces = host.workspaces;
+    host.workspaces = () => { lookups++; return workspaces(); };
+    verification.run = async () => { validates++; return { ok: false, error: "not_called" }; };
+    const config = structuredClone(t.h.config.workspaces);
+    const topics = structuredClone(t.adapter.state.topics);
+    const intents = structuredClone(t.adapter.state.provisioning);
+    const wrong = [
+      `/new g ${t.h.dirs.g}`, `/new other "${t.h.dirs.g} a"`, "/new g  ./elsewhere", "/new g ..", "/new g ~/a",
+      `/new ${t.h.dirs.g}`, "/new", `/new ${"g".repeat(41)}`, "/new g\npath", "/new 저장소",
+    ];
+    for (const command of wrong) t.mock.text(CHAT, undefined, U1, command);
+    await until(() => t.mock.texts().filter((x) => x.includes("pace daemon workspace add") && x.includes("/new")).length === wrong.length, 4000, "로컬 명령 안내");
+    assert.equal(validates, 0);
+    assert.equal(lookups, 0, "입력이 거부되면 daemon 설정의 이름도 읽지 않는다");
+    assert.equal(t.mock.sent("createForumTopic").length, 0);
+    assert.deepEqual(t.h.config.workspaces, config);
+    const saved = loadTelegramState(stateFile(t.home))!;
+    assert.deepEqual(saved.topics, topics);
+    assert.deepEqual(saved.provisioning, intents);
+    assert.equal(existsSync(join(t.home, "projects")), false);
+    assert.equal(existsSync(join(t.home, "daemon", "config.json")), false);
+    assert.equal(t.mock.texts().some((x) => x.includes(t.h.dirs.g!)), false);
   } finally { await t.stop(); }
 });
 
-test("S-9k /new 경로 검증 워커가 반환하지 않아도 마감 안에 거부되고 승인 콜백·명령이 계속 처리된다", async () => {
+test("S-9k /new로 선택한 워크스페이스의 승인 경로 확인이 지연돼도 다음 명령을 처리한다", async () => {
   process.env.PACE_TELEGRAM_FSWORKER_TEST = JSON.stringify({ hang: "validate" });
-  const t = await tgHarness({ adapter: { fsTimeoutMs: 300 } });
+  const t = await tgHarness({ hk: { workspaces: ["a", "b", "h"] }, adapter: { fsTimeoutMs: 300 } });
   try {
-    const dir = join(t.home, "ws", "h"); mkdirSync(dir, { recursive: true });
     const t0 = Date.now();
-    t.mock.text(CHAT, undefined, U1, `/new h ${dir}`);
+    t.mock.text(CHAT, undefined, U1, "/new h");
     t.mock.text(CHAT, 11, U1, "/status");
-    await until(() => t.mock.texts().some((x) => x.includes("지연돼 등록하지 않았다")), 4000, "거부");
+    await until(() => t.mock.texts().some((x) => x.includes("승인 경로를 확인할 수 없다")), 4000, "거부");
     await until(() => t.mock.texts().some((x) => x.includes("대상")), 4000, "뒤따른 명령 처리");
     assert.ok(Date.now() - t0 < 3000);
-    assert.equal(t.h.config.workspaces.some((w) => w.name === "h"), false);
+    assert.equal(t.mock.sent("createForumTopic").length, 0);
+    assert.equal(t.h.config.workspaces.some((w) => w.name === "h"), true);
   } finally { delete process.env.PACE_TELEGRAM_FSWORKER_TEST; await t.stop(); }
 });
 
@@ -666,7 +676,7 @@ test("S-9c(루트) 기동 뒤 워크스페이스 루트가 교체되면 조회�
 
 test("구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 의도를 함께 되돌린다", async () => {
   const mock = await new MockTelegram().start();
-  const t = await tgHarness({ mock });
+  const t = await tgHarness({ mock, hk: { workspaces: ["a", "b", "n3"] } });
   try {
     const a = t.adapter as unknown as { save: () => void };
     const real = a.save.bind(a);
@@ -681,7 +691,6 @@ test("구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 
     assert.equal(t.adapter.state.provisioning.a2, true, "생성 의도가 복원된다");
     // /new — createForumTopic 성공 뒤 저장 실패 → 결과 불명 경로(의도 유지, 표 미등록)
     a.save = real;
-    const dir = join(t.home, "ws", "n3"); mkdirSync(dir, { recursive: true });
     let injected = 0;
     a.save = () => {
       // 앞선 /bind의 offset 저장과 순서가 겹쳐도 ⑤ 표 저장에서만 한 번 실패한다.
@@ -693,7 +702,7 @@ test("구현 후 리뷰 1차: /bind·/new 저장 실패는 토픽 표와 생성 
       }
       real();
     };
-    mock.text(CHAT, undefined, U1, `/new n3 ${dir}`);
+    mock.text(CHAT, undefined, U1, "/new n3");
     await until(() => mock.texts().some((x) => x.includes("저장하지 못했다") && x.includes("/bind n3")), 6000, "/new 저장 실패");
     assert.equal(Object.values(t.adapter.state.topics).includes("n3"), false, "메모리에서만 등록된 채 남지 않는다");
     assert.equal(t.adapter.state.provisioning.n3, true);
@@ -720,7 +729,7 @@ test("구현 후 리뷰 1차: 조회 도중 루트가 통째로 바뀌면 거부
 });
 
 test("구현 후 리뷰 2차: /held clear·/new 확정 실패 정리의 저장 실패도 메모리를 되돌려 이후 저장에 섞이지 않는다", async () => {
-  const t = await tgHarness();
+  const t = await tgHarness({ hk: { workspaces: ["a", "b", "q1"] } });
   try {
     const a = t.adapter as unknown as { save: () => void };
     const real = a.save.bind(a);
@@ -734,11 +743,10 @@ test("구현 후 리뷰 2차: /held clear·/new 확정 실패 정리의 저장 �
     assert.equal(loadTelegramState(stateFile(t.home))!.held.length >= 0, true);
     // /new 확정 실패 + 의도 삭제 저장 실패 → 의도 유지
     a.save = real;
-    const dir = join(t.home, "ws", "q1"); mkdirSync(dir, { recursive: true });
     t.mock.fault("createForumTopic", { status: 400, body: { ok: false, error_code: 400, description: "no rights" } });
     let calls = 0;
     a.save = () => { calls++; if (calls === 2) throw new Error("디스크"); real(); }; // ③ 의도 저장 성공, 확정 실패 정리 저장 실패
-    t.mock.text(CHAT, undefined, U1, `/new q1 ${dir}`);
+    t.mock.text(CHAT, undefined, U1, "/new q1");
     await until(() => t.mock.texts().some((x) => x.includes("토픽을 만들지 못했다")), 6000, "확정 실패");
     assert.equal(t.adapter.state.provisioning.q1, true, "저장 실패 시 의도가 메모리에도 유지된다");
   } finally { await t.stop(); }
@@ -751,10 +759,9 @@ test("구현 후 리뷰 3차: 보류 요약 객체 롤백·워크스페이스 �
   trimHeld([...prev, mk(100, false)]);
   assert.equal(JSON.stringify(prev), snapshot, "trimHeld는 입력(롤백 대상)을 바꾸지 않는다");
   // 'constructor' 이름
-  const t = await tgHarness();
+  const t = await tgHarness({ hk: { workspaces: ["constructor"] } });
   try {
-    const dir = join(t.home, "ws", "ctor"); mkdirSync(dir, { recursive: true });
-    t.mock.text(CHAT, undefined, U1, `/new constructor ${dir}`);
+    t.mock.text(CHAT, undefined, U1, "/new constructor");
     await until(() => t.mock.texts().some((x) => x.includes("등록 완료: constructor")), 6000, "이름 constructor 등록");
     assert.equal(t.mock.sent("createForumTopic").length, 1);
     t.mock.text(CHAT, undefined, U1, "/status");

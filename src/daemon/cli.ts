@@ -169,7 +169,7 @@ export async function daemonCommand(args: string[], deps: DaemonCliDeps = {}): P
         try {
           let prev = null;
           try { prev = loadTelegramState(telegramStateFile(home)); } catch { /* 손상 — 토픽 표는 잃는다(/bind로 다시 결속) */ }
-          const next = { ...emptyTelegramState(), topics: prev?.topics ?? {}, provisioning: prev?.provisioning ?? {}, held: prev?.held ?? [] };
+          const next = { ...emptyTelegramState(), forumKey: prev?.forumKey, topics: prev?.topics ?? {}, provisioning: prev?.provisioning ?? {}, held: prev?.held ?? [] };
           saveTelegramState(telegramStateFile(home), next);
         } finally { await owner.release(); }
         out("offset을 초기화했다");

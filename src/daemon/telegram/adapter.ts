@@ -1,12 +1,12 @@
-import { isAbsolute } from "node:path";
 import type { ApprovalPrompt, Actor, Block, ChannelAdapter, ChannelCaps, ChannelSink, IngestResult } from "../types.ts";
 import { WORKSPACE_NAME, type WorkspaceEntry } from "../config.ts";
-import { hasTokenShape, type Redactor } from "../secrets.ts";
-import { type WorkspaceRoot, WorkspaceError, workspaceErrorText } from "../workspace.ts";
+import type { Redactor } from "../secrets.ts";
+import { sameWorkspaceRoot, WorkspaceError } from "../workspace.ts";
 import { TelegramApi, TelegramApiError } from "./api.ts";
 import { FsWorker } from "./fsworker.ts";
 import { plainFromHtml } from "./markdown.ts";
 import { approvalKeyboard, approvalText, CALLBACK_RE, escapeHtml, renderBlocks } from "./render.ts";
+import { topicStateText, type TopicState } from "./provisioning.ts";
 import { emptyTelegramState, loadTelegramState, promoteLegacyBinding, saveTelegramState, topicName, trimHeld, type HeldRecord, type TelegramState, TelegramStateError, type TopicBinding } from "./state.ts";
 
 // Telegram 포럼 토픽 어댑터 (P035 T05, BR05). 채널 규격만 구현하고 코어를 모른다.
@@ -21,7 +21,6 @@ export interface TelegramHost {
   overview(): { device: string; running: number; queued: number; quarantined: number; byWorkspace: Record<string, { running: number; queued: number }> };
   workspaces(): WorkspaceEntry[];
   workspaceRootInfo(name: string): { real: string; dev: string; ino: string } | null;
-  registerLegacyWorkspace(entry: { name: string; path: string }, resolved: WorkspaceRoot): Promise<void>;
   matchesLegacyBinding?(entry: WorkspaceEntry, id: string): boolean;
   flushOutbox(): Promise<void>;
   /** 코어 상태에 이전 telegram 운영 흔적(대화·작업)이 있는가 */
@@ -35,6 +34,7 @@ export interface TelegramHost {
 export interface TelegramAdapterOptions {
   api: TelegramApi;
   chatId: string;
+  forumKey?: string;
   host: TelegramHost;
   redact: Redactor;
   now?: () => number;
@@ -69,13 +69,14 @@ export function commandHelp(title: string, rows: readonly (readonly [string, str
 
 const GENERAL_HELP: readonly (readonly [string, string])[] = [
   ["/workspaces", "워크스페이스·토픽 목록"],
-  ["/new `<이름> <절대경로>`", "워크스페이스 등록과 토픽 생성"],
+  ["/new `<이름>`", "daemon에 이미 추가한 워크스페이스의 토픽 생성"],
   ["/status", "기기 현황(LLM 없이 즉시)"],
   ["/held", "보류된 요청 보기"],
   ["/held clear `<update_id>`", "보류 기록 지우기"],
   ["/help", "이 도움말"],
 ];
 const GENERAL_FOOTER = "General에서는 명령만 받는다 — 질문·작업은 프로젝트 토픽에서 보낸다.";
+const LOCAL_WORKSPACE_ADD = "새 저장소를 등록하려면 로컬에서 `pace daemon workspace add`를 실행한다.";
 
 const TOPIC_HELP: readonly (readonly [string, string])[] = [
   ["/status", "현황(LLM 없이 즉시)"],
@@ -93,16 +94,11 @@ const TOPIC_HELP: readonly (readonly [string, string])[] = [
 ];
 const TOPIC_FOOTER = "그 밖의 문장은 에이전트에게 보내는 질문입니다.";
 
-/** 토픽 생성 거절의 흔한 원인을 원문 대신 해결 방법으로 안내한다(모르는 원인은 null — 원문 오류를 보인다) */
-function topicCreateAdvice(error: TelegramApiError): string | null {
-  const d = error.message;
-  if (/not enough rights|rights to create|CHAT_ADMIN_REQUIRED|administrator rights|manage topics/i.test(d)) {
-    return ["봇에 토픽 관리 권한이 없어 토픽을 만들지 못했다.", "그룹 설정 → 관리자 → 이 봇 → **토픽 관리** 권한을 켠다.", "같은 명령을 다시 보내면 이어서 만든다 — /new `<이름> <절대경로>`"].join("\n");
-  }
-  if (/not a forum|topics? (are |is )?(disabled|not enabled)|forum.*(disabled|not enabled)/i.test(d)) {
-    return ["이 그룹은 토픽(포럼)이 꺼져 있어 토픽을 만들지 못했다.", "그룹 설정 → 토픽(Topics)을 켠 뒤 같은 명령을 다시 보낸다.", "다시 보내는 명령 — /new `<이름> <절대경로>`"].join("\n");
-  }
-  return null;
+/** API 원문에는 경로와 식별자가 들어갈 수 있어 결과 코드만 전달한다. */
+function rejectedTopicState(error: TelegramApiError): TopicState {
+  if (/not enough rights|rights to create|CHAT_ADMIN_REQUIRED|administrator rights|manage topics/i.test(error.message)) return "permission";
+  if (/not a forum|topics? (are |is )?(disabled|not enabled)|forum.*(disabled|not enabled)/i.test(error.message)) return "not-forum";
+  return "rejected";
 }
 
 function isParseError(error: unknown): boolean {
@@ -116,6 +112,7 @@ export class TelegramAdapter implements ChannelAdapter {
   readonly caps: ChannelCaps = { maxLength: Number.POSITIVE_INFINITY, canEdit: false, buttons: true, richBlocks: true, commandPrefix: "/", typing: true };
   private botUsername: string | undefined;
   private readonly typingState = new Map<string, { timer: NodeJS.Timeout; inflight: boolean; pauseUntil: number; warned: boolean }>();
+  private readonly topicRequests = new Map<string, { registryId?: string; result: Promise<TopicState> }>();
   readonly stats = { rejectedUsers: 0, ignored: 0, held: 0 };
   state!: TelegramState;
   /** 폴링 상태: running · conflict(다른 기기가 같은 토큰을 씀) · unauthorized · stopped */
@@ -150,7 +147,7 @@ export class TelegramAdapter implements ChannelAdapter {
     const snap = structuredClone({ topics: this.state.topics, provisioning: this.state.provisioning, held: this.state.held });
     mutate();
     try { this.save(); return true; }
-    catch (error) { this.state.topics = snap.topics; this.state.provisioning = snap.provisioning; this.state.held = snap.held; this.log("commit_failed", { error: this.errText(error) }); return false; }
+    catch { this.state.topics = snap.topics; this.state.provisioning = snap.provisioning; this.state.held = snap.held; this.log("commit_failed", { reason: "state_write" }); return false; }
   }
 
   promoteLegacyWorkspace(name: string, id: string): void {
@@ -230,7 +227,14 @@ export class TelegramAdapter implements ChannelAdapter {
     catch (error) { throw new TelegramStateError(`${(error as Error).message} — 자동으로 비우지 않는다. 확인 뒤 \`pace daemon telegram reset-offset --yes\`로 초기화한다`); }
     const marker = host.readMarker();
     if (loaded) {
+      if (loaded.forumKey && this.o.forumKey && loaded.forumKey !== this.o.forumKey) {
+        throw new TelegramStateError("저장된 토픽 결속의 포럼이 설정과 다르다. 운영자가 기존 결속 상태를 확인해야 한다");
+      }
       this.state = loaded;
+      if (!loaded.forumKey && this.o.forumKey) {
+        loaded.forumKey = this.o.forumKey;
+        this.save();
+      }
       if (!marker) host.writeMarker(); // 둘 중 하나만 저장된 채 종료된 경우 복구
       return;
     }
@@ -238,6 +242,7 @@ export class TelegramAdapter implements ChannelAdapter {
       throw new TelegramStateError("Telegram offset 파일이 없는데 이전 운영 흔적이 있어 시작하지 않는다(재전달 중복 방지). 의도한 초기화라면 `pace daemon telegram reset-offset --yes`");
     }
     this.state = emptyTelegramState();
+    this.state.forumKey = this.o.forumKey;
     this.save();
     host.writeMarker();
   }
@@ -390,7 +395,7 @@ export class TelegramAdapter implements ChannelAdapter {
 
   private workspacesText(): string {
     const rows = this.o.host.workspaces().map((w) => `- \`${w.name}\` (${Object.keys(w.worktrees).join(", ")}) — ${this.isWorkspaceBound(w) ? "토픽 결속" : "토픽 없음"}${Object.hasOwn(this.state.provisioning, w.name) ? " [생성 결과 불명: 토픽에서 /bind]" : ""}`);
-    return rows.length ? ["**워크스페이스**", ...rows].join("\n") : "등록된 워크스페이스가 없다.\n/new `<이름> <절대경로>` — 등록하고 토픽을 만든다";
+    return rows.length ? ["**워크스페이스**", ...rows].join("\n") : `등록된 워크스페이스가 없다.\n${LOCAL_WORKSPACE_ADD}`;
   }
 
   private async heldCommand(conv: string, rest: string): Promise<void> {
@@ -407,42 +412,70 @@ export class TelegramAdapter implements ChannelAdapter {
 /held clear \`<update_id>\` — 기록 지우기` : "보류된 요청이 없다");
   }
 
-  /** /new <이름> <절대경로> — 재개 가능한 단계(검증 → 설정 기록·코어 등록 → 토픽 의도 → 생성 → 표 등록) */
+  /** 경로 생략은 daemon 설정의 공개 목록에 있는 대상만 사용한다. */
   private async newCommand(conv: string, rest: string): Promise<void> {
-    const m = /^(\S+)\s+(.+)$/.exec(rest);
-    if (!m) { await this.say(conv, "사용법\n/new `<이름> <절대경로>` — 워크스페이스 등록과 토픽 생성"); return; }
-    const name = m[1]!;
-    const path = m[2]!.trim();
-    if (!WORKSPACE_NAME.test(name)) { await this.say(conv, "이름은 영문·숫자·_.- 40자 이내"); return; }
-    if (!isAbsolute(path)) { await this.say(conv, "경로는 절대 경로여야 한다"); return; }
-    if (hasTokenShape(path)) { await this.say(conv, "경로에 비밀 형태 문자열이 있어 등록하지 않는다"); return; }
-    if (Object.values(this.state.topics).some((binding) => topicName(binding) === name)) { await this.say(conv, `이미 등록돼 있다: ${name}`); return; }
-    const v = await this.fs.run({ op: "validate", path }, this.o.fsTimeoutMs ?? 5000);
-    if (!v.ok || !("real" in v)) {
-      const why = !v.ok && (v.error === "timeout" || v.error === "busy") ? "경로 확인이 지연돼 등록하지 않았다" : `경로를 확인하지 못했다(${v.ok ? "unknown" : v.error})`;
-      await this.say(conv, why); return;
+    if (!WORKSPACE_NAME.test(rest)) {
+      await this.say(conv, `사용법\n/new \`<이름>\` — daemon에 추가된 워크스페이스의 토픽 생성\n${LOCAL_WORKSPACE_ADD}`);
+      return;
     }
-    // ② 설정 기록(멱등) + 코어 등록
-    try { await this.o.host.registerLegacyWorkspace({ name, path }, v); }
-    catch (error) { await this.say(conv, workspaceErrorText(error)); return; }
-    // ③ 토픽 의도
-    if (Object.hasOwn(this.state.provisioning, name)) { await this.say(conv, `토픽 생성 결과를 확인하지 못했다 — 포럼에서 토픽을 확인하고 그 토픽 안에서 /bind ${name}`); return; }
-    if (!this.commit(() => { this.state.provisioning[name] = true; })) { await this.say(conv, "상태를 저장하지 못해 토픽을 만들지 않았다"); return; }
-    // ④ 생성
-    try {
-      const r = await this.o.api.call<{ message_thread_id: number }>("createForumTopic", { chat_id: this.chatIdValue(), name });
-      // 저장 실패 시 commit이 표·의도를 함께 되돌린다 — 결과 불명 경로(의도 유지)로 일관되게 남는다
-      const current = this.o.host.workspaces().find((entry) => entry.name === name);
-      if (!this.commit(() => { this.state.topics[String(r.message_thread_id)] = current ? this.bindingFor(current) : name; delete this.state.provisioning[name]; })) { await this.say(conv, `토픽은 만들었으나 저장하지 못했다 — 그 토픽에서 /bind ${name}`); return; }
-      await this.say(conv, `등록 완료: ${name} → 토픽 결속`);
-    } catch (error) {
-      if (error instanceof TelegramApiError && error.definite) {
-        // 확정 실패 — 요청이 적용되지 않았다. 의도 삭제 저장이 실패하면 commit이 의도를 되돌려 유지한다(/bind 경로가 안전)
-        this.commit(() => { delete this.state.provisioning[name]; });
-        await this.say(conv, topicCreateAdvice(error) ?? `토픽을 만들지 못했다: ${this.errText(error)} — 원인을 해소하고 같은 /new를 다시 보내 달라`);
-      } else {
-        await this.say(conv, `토픽 생성 결과를 확인하지 못했다 — 포럼에서 토픽을 확인하고 그 토픽 안에서 /bind ${name}`);
+    const ws = this.o.host.workspaces().find((entry) => entry.name === rest);
+    if (!ws) { await this.say(conv, `daemon에 등록된 워크스페이스가 아니다: ${rest}`); return; }
+    await this.say(conv, topicStateText(await this.ensureWorkspaceTopic(ws), ws.name));
+  }
+
+  /** Gateway와 General이 쓰는 공통 생성 경로. 검증한 CLI 승인 요청은 코어에서 이미 신원을 대조했다. */
+  ensureWorkspaceTopic(ws: WorkspaceEntry, rootVerified = false): Promise<TopicState> {
+    if (this.stopped || this.status !== "running") return Promise.resolve("unavailable");
+    const existing = this.topicRequests.get(ws.name);
+    if (existing) {
+      const intent = this.currentIntent(ws.name);
+      if (existing.registryId !== ws.registryId && !(existing.registryId === undefined && intent === ws.registryId)) {
+        return Promise.resolve("conflict");
       }
+      this.log("topic_request_joined", { workspace: ws.name });
+      return existing.result;
+    }
+    const result = this.createWorkspaceTopic(ws, rootVerified).catch((): TopicState => {
+      this.log("topic_request_failed", { workspace: ws.name });
+      return this.currentIntent(ws.name) === undefined ? "unavailable-workspace" : "unknown";
+    }).finally(() => this.topicRequests.delete(ws.name));
+    this.topicRequests.set(ws.name, { registryId: ws.registryId, result });
+    return result;
+  }
+
+  private currentIntent(name: string): true | string | undefined {
+    return Object.hasOwn(this.state.provisioning, name) ? this.state.provisioning[name] : undefined;
+  }
+
+  private async createWorkspaceTopic(ws: WorkspaceEntry, rootVerified: boolean): Promise<TopicState> {
+    const { name, registryId } = ws;
+    if (!rootVerified && !await this.workspaceRootAvailable(ws)) return "unavailable-workspace";
+    if (this.stopped || this.status !== "running") return "unavailable";
+    const current = this.o.host.workspaces().find((item) => item.name === name);
+    if (!current || current.registryId !== registryId || current.path !== ws.path) return "unavailable-workspace";
+    if (this.isWorkspaceBound(current)) return "already-bound";
+    if (Object.values(this.state.topics).some((binding) => topicName(binding) === name)) return "conflict";
+    const intent = this.currentIntent(name);
+    if (intent !== undefined) return intent === (registryId ?? true) ? "unknown" : "conflict";
+    if (!this.commit(() => { this.state.provisioning[name] = registryId ?? true; })) return "intent-write-failed";
+    const unknown = (reason: "api_uncertain" | "invalid_result" | "thread_in_use" | "intent_changed"): TopicState => {
+      this.log("topic_result_unknown", { reason });
+      return "unknown";
+    };
+    try {
+      const topic = await this.o.api.call<{ message_thread_id: number; name: string }>("createForumTopic", { chat_id: this.chatIdValue(), name });
+      if (topic?.name !== name || !Number.isSafeInteger(topic.message_thread_id) || topic.message_thread_id <= 1) return unknown("invalid_result");
+      const thread = String(topic.message_thread_id);
+      if (Object.hasOwn(this.state.topics, thread)) return unknown("thread_in_use");
+      const entry = this.o.host.workspaces().find((item) => item.name === name);
+      if (!entry || this.currentIntent(name) !== (entry.registryId ?? true)) return unknown("intent_changed");
+      return this.commit(() => { this.state.topics[thread] = this.bindingFor(entry); delete this.state.provisioning[name]; })
+        ? "bound" : "binding-write-failed";
+    } catch (error) {
+      if (!(error instanceof TelegramApiError) || !error.definite) return unknown("api_uncertain");
+      // 확정 거부의 정리 저장이 실패하면 기존 의도가 유지돼 중복 요청을 막는다.
+      this.commit(() => { delete this.state.provisioning[name]; });
+      return rejectedTopicState(error);
     }
   }
 
@@ -453,10 +486,11 @@ export class TelegramAdapter implements ChannelAdapter {
       const name = rest.split(/\s+/)[0] ?? "";
       const ws = this.o.host.workspaces().find((w) => w.name === name);
       if (!ws) await this.say(conv, `등록된 워크스페이스가 아니다: ${name || "(이름 없음)"}`);
-      else if (ws.registryId && !await this.registeredRootAvailable(ws)) await this.say(conv, "워크스페이스의 활성 등록을 확인할 수 없다");
+      else if (ws.registryId && !await this.workspaceRootAvailable(ws)) await this.say(conv, "워크스페이스의 활성 등록을 확인할 수 없다");
+      else if (this.topicRequests.has(name)) await this.say(conv, "토픽 생성 요청을 처리 중이다. 결과를 확인한 뒤 /bind를 다시 보낸다");
       else if (Object.values(this.state.topics).some((binding) => topicName(binding) === name)) await this.say(conv, "그 워크스페이스는 이미 다른 토픽에 결속돼 있다");
       else {
-        const intent = Object.hasOwn(this.state.provisioning, name) ? this.state.provisioning[name] : undefined;
+        const intent = this.currentIntent(name);
         if (intent !== undefined && intent !== (ws.registryId ?? true)) {
           await this.say(conv, "토픽 생성 의도와 현재 워크스페이스 등록이 일치하지 않는다");
           return { kind: "done" };
@@ -466,15 +500,17 @@ export class TelegramAdapter implements ChannelAdapter {
       }
       return { kind: "done" };
     }
-    await this.say(conv, ["이 토픽은 등록되지 않았다.", "/bind `<워크스페이스 이름>` — 이미 만든 토픽이면 여기서 결속", "General에서 /new `<이름> <절대경로>` — 워크스페이스와 토픽을 새로 만든다"].join("\n"));
+    await this.say(conv, ["이 토픽은 등록되지 않았다.", "/bind `<워크스페이스 이름>` — 이미 만든 토픽이면 여기서 결속", "General에서 /new `<이름>` — daemon에 추가된 워크스페이스의 토픽 생성", LOCAL_WORKSPACE_ADD].join("\n"));
     return { kind: "done" };
   }
 
-  private async registeredRootAvailable(ws: WorkspaceEntry): Promise<boolean> {
+  private async workspaceRootAvailable(ws: WorkspaceEntry): Promise<boolean> {
     const root = this.o.host.workspaceRootInfo(ws.name);
     const home = this.o.host.registryHome;
-    if (!root || !ws.registryId || !home) return false;
-    return (await this.fs.run({ op: "validate", path: root.real, registration: { home, registryId: ws.registryId, root } }, this.o.fsTimeoutMs ?? 5000)).ok;
+    if (!root || (ws.registryId && !home)) return false;
+    const registration = ws.registryId && home ? { home, registryId: ws.registryId, root } : undefined;
+    const result = await this.fs.run({ op: "validate", path: ws.path, registration }, this.o.fsTimeoutMs ?? 5000);
+    return result.ok && "real" in result && sameWorkspaceRoot(root, result);
   }
 
   // ---- 등록 토픽 ----

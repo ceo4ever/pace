@@ -67,28 +67,27 @@ test("U-3 모르는 명령은 토픽 도움말로 답하고(코어의 다른 도
 });
 
 test("N-1 /new의 토픽 권한 부족·포럼 꺼짐은 원문 오류 대신 해결 방법을 안내한다(같은 /new로 이어 간다)", async () => {
-  const t = await tgHarness();
+  const t = await tgHarness({ hk: { workspaces: ["newws", "newws2", "newws3"] } });
   try {
-    const dir = join(t.home, "ws", "newws"); mkdirSync(dir, { recursive: true });
     t.mock.fault("createForumTopic", { status: 400, body: { ok: false, error_code: 400, description: "Bad Request: not enough rights to create a topic" }, times: 1 });
-    t.mock.text(CHAT, undefined, U1, `/new newws ${dir}`);
+    t.mock.text(CHAT, undefined, U1, "/new newws");
     await until(() => reply(t).length >= 1, 5000, "권한 안내");
     const text = reply(t)[0]!;
     assert.match(text, /^봇에 토픽 관리 권한이 없어 토픽을 만들지 못했다\.\n그룹 설정 → 관리자 → 이 봇 → <b>토픽 관리<\/b> 권한을 켠다\.\n/);
     assert.ok(!/Bad Request|not enough rights/.test(text), "원문 오류를 그대로 보이지 않는다");
     for (const line of text.split("\n")) assert.ok((line.match(/(?:^|[\s(>])\/[a-z]+/g) ?? []).length <= 1, line);
     // 권한을 준 뒤 같은 /new로 이어 간다
-    t.mock.text(CHAT, undefined, U1, `/new newws ${dir}`);
+    t.mock.text(CHAT, undefined, U1, "/new newws");
     await until(() => reply(t).some((x) => x.includes("등록 완료")), 5000, "이어서 등록");
     // 포럼이 꺼진 그룹
-    const dir2 = join(t.home, "ws", "newws2"); mkdirSync(dir2, { recursive: true });
     t.mock.fault("createForumTopic", { status: 400, body: { ok: false, error_code: 400, description: "Bad Request: the chat is not a forum" }, times: 1 });
-    t.mock.text(CHAT, undefined, U1, `/new newws2 ${dir2}`);
+    t.mock.text(CHAT, undefined, U1, "/new newws2");
     await until(() => reply(t).some((x) => x.includes("토픽(포럼)이 꺼져")), 5000, "포럼 안내");
-    // 모르는 원인은 원문 오류를 보인다
-    const dir3 = join(t.home, "ws", "newws3"); mkdirSync(dir3, { recursive: true });
-    t.mock.fault("createForumTopic", { status: 400, body: { ok: false, error_code: 400, description: "Bad Request: something else" }, times: 1 });
-    t.mock.text(CHAT, undefined, U1, `/new newws3 ${dir3}`);
-    await until(() => reply(t).some((x) => x.includes("토픽을 만들지 못했다: ") && x.includes("something else")), 5000, "원문 오류");
+    // 모르는 원인은 로컬 경로·식별자를 담을 수 있으므로 고정 안내를 쓴다
+    const dir3 = t.h.dirs.newws3!;
+    t.mock.fault("createForumTopic", { status: 400, body: { ok: false, error_code: 400, description: `Bad Request: something else ${dir3}` }, times: 1 });
+    t.mock.text(CHAT, undefined, U1, "/new newws3");
+    await until(() => reply(t).some((x) => x.includes("Telegram이 토픽 생성을 거부해")), 5000, "고정 오류 안내");
+    assert.ok(!reply(t).join("\n").includes(dir3) && !reply(t).join("\n").includes("something else"));
   } finally { await t.stop(); }
 });

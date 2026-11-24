@@ -149,17 +149,3 @@ export function persistRegisteredWorkspace(home: string, request: WorkspaceAddRe
   const worktrees = previous && (!previous.registryId || previous.path === root.real) ? previous.worktrees : {};
   return { name: request.name, path: root.real, registryId: request.registryId, registryIdentity, worktrees: { ...worktrees, main: root.real } };
 }
-
-/** 기존 Telegram 경로 지정 흐름의 설정 쓰기. 소유 daemon 안에서만 호출한다. */
-export function persistLegacyWorkspace(home: string, entry: { name: string; path: string }): void {
-  const raw = readRawConfigFile(home);
-  const config = parseConfig(raw);
-  const previous = config.workspaces.find((workspace) => workspace.name === entry.name);
-  if (previous) {
-    if (previous.path !== entry.path || previous.registryId) throw new WorkspaceError("같은 이름의 워크스페이스가 이미 있다");
-    return;
-  }
-  updateConfigFile(home, (configRaw) => {
-    configRaw.workspaces = [...(configRaw.workspaces as unknown[] ?? []), entry];
-  });
-}

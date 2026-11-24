@@ -120,7 +120,8 @@ test("F-8 명령 안내·사용법·미등록 토픽 안내는 명령 한 줄에
     assert.ok(t.mock.sent().every((c) => c.params.parse_mode === "HTML"));
     const joined = texts.join("\n§\n");
     // General 도움말: 제목 굵게 + 명령 한 줄 + 인자 code
-    assert.match(joined, /<b>General 명령<\/b>\n\/workspaces — [^\n]+\n\/new <code>&lt;이름&gt; &lt;절대경로&gt;<\/code> — [^\n]+\n\/status — /);
+    assert.match(joined, /<b>General 명령<\/b>\n\/workspaces — [^\n]+\n\/new <code>&lt;이름&gt;<\/code> — [^\n]+\n\/status — /);
+    assert.doesNotMatch(joined, /절대경로/);
     assert.match(joined, /\/held clear <code>&lt;update_id&gt;<\/code> — /);
     // 토픽 도움말: 마지막 한 줄은 에이전트 질문 안내
     const topicHelp = texts.find((x) => x.startsWith("<b>명령</b>") && x.includes("/backlog"))!;
@@ -149,7 +150,8 @@ test("F-9 서버가 HTML을 거절(can't parse entities)하면 태그를 지운 
     await until(() => t.mock.sent().some((c) => c.params.parse_mode === undefined && String(c.params.text).includes("General 명령")), 4000, "평문 재전송");
     const plain = t.mock.sent().find((c) => c.params.parse_mode === undefined && String(c.params.text).includes("General 명령"))!;
     assert.ok(!/<\/?(b|code|i)>/.test(String(plain.params.text)));
-    assert.ok(String(plain.params.text).includes("/new <이름> <절대경로> — "), "평문에서는 엔티티가 복원된다");
+    assert.ok(String(plain.params.text).includes("/new <이름> — "), "평문에서는 이름 사용법의 엔티티가 복원된다");
+    assert.ok(!String(plain.params.text).includes("절대경로"));
   } finally { await t.stop(); }
 });
 

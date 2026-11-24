@@ -5,7 +5,7 @@ import { changedParts, summarizeChange, takeSnapshot, type Snapshot } from "../a
 import type { DaemonConfig, WorkspaceEntry } from "./config.ts";
 import { hasTokenShape, type Redactor } from "./secrets.ts";
 import { StateStore } from "./store.ts";
-import { approvedWorkspaceRoot, persistLegacyWorkspace, persistRegisteredWorkspace, sameWorkspaceRoot, WorkspaceError, workspaceErrorText, type WorkspaceAddRequest, type WorkspaceRoot } from "./workspace.ts";
+import { approvedWorkspaceRoot, persistRegisteredWorkspace, sameWorkspaceRoot, WorkspaceError, workspaceErrorText, type WorkspaceAddRequest } from "./workspace.ts";
 import {
   ACTIVE_STATUSES,
   type Access, type Actor, type Approval, type ApprovalKind, type ApprovalPrompt, type Block, type ChannelAdapter, type ChannelCaps, type ChannelSink, type Conversation,
@@ -962,20 +962,6 @@ export class Daemon implements ChannelSink {
     return r ? { ...r } : null;
   }
 
-  /** 선해결된 새 워크스페이스를 등록한다 — 파일 시스템을 호출하지 않는다(워커가 검증한 {real,dev,ino}를 받는다). 같은 이름·같은 경로는 멱등, 다른 경로는 거부 */
-  addWorkspace(entry: { name: string; path: string; worktrees?: Record<string, string> }, resolved: { real: string; dev: string; ino: string }): "added" | "exists" {
-    if (hasTokenShape(resolved.real) || hasTokenShape(entry.path)) throw new Error("경로에 비밀 형태 문자열이 있어 등록하지 않는다");
-    const existing = this.o.config.workspaces.find((w) => w.name === entry.name);
-    if (existing) {
-      if (lockKeyOf(existing.path) !== lockKeyOf(entry.path)) throw new Error("같은 이름의 워크스페이스가 다른 경로로 이미 있다");
-      if (!this.allowedRoots.has(`${entry.name}/main`)) this.allowedRoots.set(`${entry.name}/main`, { ...resolved }); // config에는 있으나 코어에 없던 상태 복구
-      return "exists";
-    }
-    this.o.config.workspaces.push({ name: entry.name, path: entry.path, worktrees: { main: entry.path, ...(entry.worktrees ?? {}) } });
-    this.allowedRoots.set(`${entry.name}/main`, { ...resolved }); // 기존 항목은 다시 해석하지 않는다
-    return "added";
-  }
-
   registerWorkspace(request: WorkspaceAddRequest, promoteLegacy: (entry: WorkspaceEntry) => void): Promise<WorkspaceEntry> {
     return this.tx(() => {
       if (this.stopping || !this.o.home) throw new WorkspaceError("daemon이 워크스페이스를 추가할 수 없는 상태다");
@@ -1000,19 +986,6 @@ export class Daemon implements ChannelSink {
       }
       this.allowedRoots.set(`${entry.name}/main`, { real: request.real, dev: request.dev, ino: request.ino });
       return entry;
-    });
-  }
-
-  registerLegacyWorkspace(entry: { name: string; path: string }, root: WorkspaceRoot, home: string): Promise<void> {
-    return this.tx(() => {
-      if (this.stopping) throw new WorkspaceError("daemon이 정지 중이다");
-      const previous = this.o.config.workspaces.find((workspace) => workspace.name === entry.name);
-      if (previous && (previous.registryId || lockKeyOf(previous.path) !== lockKeyOf(entry.path))) {
-        throw new WorkspaceError("같은 이름의 워크스페이스가 이미 있다");
-      }
-      persistLegacyWorkspace(home, entry);
-      try { this.addWorkspace(entry, root); }
-      catch { throw new WorkspaceError("설정에는 기록됐으나 반영하지 못했다 — 같은 /new를 다시 보낸다"); }
     });
   }
 
