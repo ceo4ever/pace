@@ -1,0 +1,37 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "## 1단계 독립 목표 대조\n\n- **목표 정합성 — 달성.** 현재 저장소를 전역 등록부에서 확인하고, 미등록이면 등록한 뒤, 운영 중인 daemon에서 Telegram 토픽을 생성·결속한다는 목표는 캡틴의 운영 인수 목적과 맞는다. 전역 등록부에서 저장소의 신원을 확인하고 원격에 노출할 대상은 명시적으로 추가한다는 결정도 목표까지 추적된다. `BACKLOG.md:11,20–21`, `BR01:14–25`, `BR02:14–24`\n- **브리프의 목표 달성·검증 설계 — 미달.** BR01에서 등록부 연결을 정하고 BR02에서 실행 중 결속을 완성하는 순서는 타당하다. 현재 완료 기준에는 설정 쓰기 경합, 등록부와 토픽의 신원 일치, 이동 후 재등록을 판정할 조건이 빠져 있다. **실제 운영 달성은 미확인**이다. 문서와 코드만 대조했으며 daemon과 Telegram은 실행하지 않았다.\n- **올릴 단계 — 계획·설계.** 아래 blocking을 BR01·BR02의 공통 계약과 완료 기준에서 먼저 해소한다. 기존 원격 `/new`의 권한 범위나 오프라인 완료 범위를 바꾸려면 캡틴에게 확인한다.\n\n## 지적\n\n1. **blocking — 실행 중인 daemon과 CLI가 같은 설정을 쓴다.** BR02는 CLI가 설정을 기록한 뒤 Gateway를 호출하고, Gateway에서도 설정 기록을 재사용하도록 한다. 현재 Telegram `/new`와 CLI의 설정 갱신은 각각 파일을 읽고 수정한 뒤 원자적으로 교체한다. 두 쓰기가 겹치면 한쪽 변경을 잃을 수 있다. 백로그가 `telegram.json`에서 피하려던 경합이 `config.json`에 남는다. **최소 보완** — 실행 중에는 daemon이 워크스페이스 설정을 직렬화해 기록하고, 정지 중에는 CLI가 인스턴스 소유권을 확보한 구간에서만 기록하도록 BR01부터 계약을 맞춘다. 응답 유실과 동시 요청에서 설정 유실과 중복 토픽이 없음을 검증한다. `BACKLOG.md:18,21`, `BR01:24–25`, `BR02:14–18,30`, `src/daemon/config.ts:138`, `src/daemon/telegram/index.ts:64`, `src/daemon/cli.ts:114`\n\n2. **blocking — Gateway의 경로 검증만으로 전역 등록부가 정본이 되지 않는다.** `realpath·dev·ino`는 디렉터리를 확인한다. 전역 `workspace list`는 활성 상태와 `.pace/AGENT.md`의 등록 ID도 검증한다. BR01의 경로 검색만 따르면 비활성 후보나 정의가 깨진 항목을 재사용할 수 있고, BR02에는 daemon이 요청을 해당 등록 ID와 대조한다는 조건이 없다. **최소 보완** — daemon이 등록 ID로 유효한 활성 항목과 현재 경로를 확인한 뒤에만 설정·코어·토픽을 변경한다. 비활성 후보의 등록 경로, 정의 불일치와 요청 경로 불일치의 거부를 완료 기준에 넣는다. `BR01:15–20,29–36`, `BR02:14–15,21–22`, `src/cli.ts:274`, `src/project/workspace-registry.ts:135,168,218,245`\n\n3. **blocking — 이동한 저장소와 기존 토픽을 다시 결속하는 규칙이 없다.** BR01은 재기동 시 이동 항목을 제외하고 다시 `add`하라고 한다. 현재 토픽표는 이름으로만 결속하고, `/new`는 같은 이름의 결속이 있으면 경로 확인 전에 종료한다. 설정과 코어도 같은 이름의 다른 경로를 거부한다. 이 경로를 그대로 재사용하면 재등록이 막히거나, 이름만으로 기존 토픽을 잘못 재사용할 수 있다. 옛 경로가 그대로 유효하면 daemon이 재기동할 때까지 그 경로에 대한 접근도 남을 수 있다. **최소 보완** — 실행 중 이동을 언제 감지해 이전 경로를 차단할지 정하고, 같은 등록 ID의 명시적 재등록과 다른 ID의 이름 충돌을 구분한다. 옛 경로가 남은 상태의 이동, 재기동, 재등록, 기존 토픽의 첫 읽기까지 검증한다. `BR01:19–21,35`, `BR02:17,30`, `src/daemon/telegram/adapter.ts:340,392,409`, `src/daemon/telegram/index.ts:67`, `src/daemon/core.ts:396,935`\n\n4. **should_fix — 원격 등록 권한과 포럼에 보내는 데이터 범위를 명시한다.** 기존 `/new <이름> <절대경로>`는 허용된 Telegram 사용자가 로컬 경로를 추가할 수 있다. 새 CLI의 명시적 노출 규칙이 이 기존 경로에도 적용되는지는 문서에서 결정되지 않았다. 읽기 전용이어도 봇이 읽은 내용을 포럼에 보낼 수 있으며, 봇의 요청자 허용 목록과 포럼에서 응답을 볼 수 있는 사람의 범위는 별개다. **최소 보완** — 기존 `/new`에 적용할 권한 경계를 명시하고, 로컬 확인에 게시될 토픽 이름과 대상 포럼을 드러낸다. 새 등록 요청의 Bot API 본문·응답·로그에 로컬 절대경로와 토큰이 포함되지 않는지 검증한다. `BACKLOG.md:20`, `BR01:22–23`, `BR02:19–24,32–34`, `src/daemon/telegram/adapter.ts:310,347,384,407,503,555`\n\n5. **should_fix — 실사용 검증을 캡틴이 요청한 진입점부터 시작한다.** BR02의 실제 봇 확인은 토픽 생성과 첫 읽기를 다루지만 CLI에서 시작한다. 저장소 안의 에이전트가 자연어 요청을 받고 현재 저장소를 찾아 명령을 실행하는 단계가 빠져 있다. **최소 보완** — 등록부에 없는 테스트 저장소의 하위 디렉터리에서 에이전트에게 원문 요청을 하고, 최상위 저장소 선택, 전역 등록, 토픽 결속, 그 저장소에만 둔 식별값의 읽기 응답까지 확인한다. 오프라인이거나 Telegram 어댑터를 사용할 수 없는 경우에는 설정 반영과 토픽 결속 상태를 각각 보고하도록 한다. `BACKLOG.md:11`, `BR01:14,24`, `BR02:18,33,35`, `src/daemon/index.ts:70–76`\n\n6. **note — 전략은 실행 중 Gateway와 오프라인 등록으로 나눌 수 있다.** 기존 `release`가 사용하는 소유권 확인과 Gateway 연결 패턴을 활용하면 실행 중에는 daemon이 전 과정을 소유하고, 정지 중에는 CLI가 설정을 준비할 수 있다. General의 `/new <이름>` 단축형도 별도 편의 기능으로 추적할 수 있다. 현재 `/bind`는 이미 존재하는 토픽을 결속하므로 BR01의 “`/bind`로 만든다”는 문구를 고친다. `BR01:24`, `BR02:19`, `src/daemon/cli.ts:114,184`, `src/daemon/telegram/adapter.ts:424`\n\n**읽은 범위.** 호스트가 제공한 상위 목적, 검토 지시, `AGENTS.md` 지침, 첨부 `BACKLOG.md` 본문을 받았다. 디스크에서 `BACKLOG.md`·BR01·BR02, `docs/README.md`·`docs/DAEMON.md`, 지정된 코드 6개를 읽었다. 연결 확인을 위해 `src/daemon/index.ts`·`instance.ts`·`core.ts`·`telegram/index.ts`·`telegram/api.ts`의 관련 구간과 `docs/SECURITY.md`·`src/daemon/install-wizard.ts`의 검색 일치행을 확인했다. 검토 기록 파일명은 목록에 노출됐으며 본문은 열지 않았다. 작업 문서는 제공받거나 읽지 않았다. 이번 호출에서 자동 부트 출력이나 메모리 본문을 확인하거나 별도로 조회한 바 없다. 이 기록은 관찰한 노출 범위이며 호스트 수준의 접근 차단이나 격리를 보증하지 않는다. 파일 수정과 커밋 없이 동일 검토자가 1단계만 수행했다.\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 86053,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 77949
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "BACKLOG.md",
+    "hash": "ed08e18560d335c5037c1e1e812d4e3240c41838743755ecc40ea049fdb7658a",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# BL261124_03 저장소에서 Telegram 토픽 등록\n\n- 상태: 대기\n- 작성: 2026-11-24\n- 프로젝트 기준 경로: projects/\n\n<!-- 개발 업무의 예시 형식. 형식·추적 정본: pace-project-dev의 references/document-shape.md. -->\n\n## 목표\n\n캡틴이 어떤 저장소에서든 에이전트에게 \"이 저장소 Telegram 토픽 등록해줘\"라고 하면, 에이전트가 **명령 한 줄로** 그 저장소를 daemon 워크스페이스로 등록하고 포럼 토픽까지 만들어 결속한다. 브라우저로 Telegram에 `/new <이름> <절대경로>`를 직접 보내지 않아도 된다.\n\n- **상위 목적**: 자리를 비워도 Telegram으로 이 PC의 PACE에 조회·작업을 맡긴다(BL261116_02, P005 병합). 남은 운영 인수 첫 단계가 \"운영 워크스페이스 등록·토픽 결속\"인데, 지금 경로는 Telegram General의 `/new`뿐이다. 그래서 저장소 안의 에이전트 세션에서는 할 수 없고(브라우저 자동화로 캡틴 계정을 대신 쓰는 방법뿐), 경로를 손으로 적어야 한다.\n- **근거(2026-11-24 확인)**:\n  - daemon 워크스페이스는 `~/.pace/daemon/config.json`의 `{name, path}` 복사본이다. 전역 등록부(`pace workspace register|list|move`, 등록 ID·이름·경로)와 이어져 있지 않다. 등록부에서 `move`해도 daemon 경로는 그대로다.\n  - `pace daemon` CLI에는 워크스페이스 추가 명령이 없다(`src/daemon/cli.ts`).\n  - 실행 중 daemon의 로컬 Gateway는 `send`·`cancel`·`approve`·`release`·`subscribe`만 받는다(`src/daemon/gateway.ts`). daemon은 설정을 기동 때만 읽는다.\n  - 토픽 생성(`createForumTopic`)과 결속 표(`telegram.json` topics)는 실행 중 어댑터만 다룬다(`src/daemon/telegram/adapter.ts` newCommand). 다른 프로세스가 같은 파일을 쓰면 경합한다.\n  - 전역 등록은 대상 저장소에 `.pace/AGENT.md`를 만든다(`registerWorkspace`) — 저장소에 파일이 생기는 부작용이다.\n- **고른 길**: 전역 등록부를 기준(정본)으로 삼는다(캡틴 제안). 등록부에 없으면 등록부터 하고, daemon에는 **명시적으로 추가한 저장소만** 노출한다. 토픽 생성은 실행 중 daemon에 새 Gateway 명령으로 맡겨 `/new`와 같은 검증·기록·생성 경로를 탄다.\n- **버린 길**: (1) 브라우저로 캡틴 계정을 대신 써서 `/new` 보내기 — Orca 밖에서 안 되고 매번 계정 대행이 필요하다. (2) CLI가 Telegram API로 직접 토픽을 만들고 `telegram.json`을 쓰기 — 실행 중 daemon과 파일 경합. (3) 등록부의 모든 저장소를 자동으로 daemon에 노출 — 원격 접근 범위가 등록부 용도(프로젝트 역할 등)에 끌려간다.\n\n## 진행 현황\n\n| 브리프 | 상태 | 선행 | 프로젝트 | 비고 |\n|---|---|---|---|---|\n| [BR01 전역 등록부 기준 daemon 워크스페이스 추가](BR01_전역_등록부_기준_daemon_워크스페이스_추가.md) | 대기 | — | — | |\n| [BR02 실행 중 daemon의 토픽 생성 경로](BR02_실행_중_daemon의_토픽_생성_경로.md) | 대기 | BR01 | — | BR01의 설정 기록 위에 토픽 생성을 얹는다 |\n\n## 결정·기록\n\n<!-- 작성일시는 로컬 시각 YYYY-MM-DD HH:mm(프로젝트 결정·진행 메모와 같은 형식), 아래에 한 줄씩 덧붙인다. 끝난 백로그에는 브리프를 덧붙이지 않는다. 새 묶음은 새 백로그로 만든다. -->\n\n| 작성일시 | 내용 |\n|---|---|\n| 2026-11-24 16:05 | 백로그 생성 — 캡틴 요청(\"저장소에서 제우스에게 토픽 등록해줘 하면 현재 저장소를 등록\", \"전역 등록부 기준으로 등록, 등록 안 돼 있으면 등록도\", \"1번으로 진행\": 백로그 → 검토 1회 → 프로젝트) |\n"
+  }
+}
