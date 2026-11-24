@@ -1,0 +1,25 @@
+{
+  "text": "## 2단계 독립 계약 대조: P010 T01\n\n**최종 판정: pass (blocking 0건)**\n\n읽은 파일은 PROJECT.md, BR01, T01 TASK.md, `test/daemon-workspace.test.ts` 전문입니다. 확인용으로 `src/daemon/workspace.ts:40-63`, `config.ts` grep, `docs/DAEMON.md:22`, `telegram-flow.test.ts`의 S-9g 부분도 읽었습니다. 구현자 자체 판정과 `evidence/`는 열지 않았고, 테스트는 실행하지 않았습니다. Bash 도구가 없어 기존 테스트의 diff도 보지 못했습니다.\n\n### 목적과 T-1~T-4 대조\n\n| 기준 | 계약 | 시험 근거 | 결과 |\n|---|---|---|---|\n| T-1 | 하위 폴더에서 git 루트를 고르고, 확인 화면에 이름·실경로·등록/AGENT 생성·read-only·토픽·포럼 이름을 보인다. 거절과 `--yes` 누락은 변경이 없다. | 시험 1이 미리보기에서 루트, \"새 활성 등록\", \"AGENT.md: 새로 생성\", read-only, 토픽, `--yes`를 확인하고 무변경을 검사한다. 시험 3은 대화형 거절 시 포럼 제목 표시와 무변경, 토큰 미노출을 확인한다. | 충족 |\n| T-2 | 기존 활성 항목은 ID와 이름을 재사용한다. 잘못된 이름·충돌·비활성·정의 불일치·경로 불일치는 설정을 바꾸지 않는다. 반복 add는 멱등이고 list에는 경로가 없다. | 시험 2가 `--name` 요구, 재시도 재사용, 등록부 무변경, 비활성 후보, 이름 충돌, 복제 정의(\"다른 경로\"), AGENT ID 불일치, 설정 바이트 동일을 확인한다. list는 시험 1이 확인한다. | 충족 |\n| T-3 | 정지 중에는 포트를 잡고 쓴다. 실행 중에는 인증된 소유자가 직렬로 기록한다. 소유권·인증·저장 실패는 성공으로 보고하지 않는다. 설정 반영과 토픽 결속을 구분해 보고한다. | 시험 4가 포트 소유 중 기동과 add 거부를 확인한다. 시험 7이 무토큰 1008 종료, Origin 403, 병렬 add 직렬화, 즉시 `/use`, 설정 경로를 디렉터리로 바꾼 저장 실패, 복구 뒤 재시도를 확인한다. 로그에 경로·토큰이 없음도 확인한다. | 충족 |\n| T-4 | 이동·무효 항목은 그 항목만 제외한다. 옛 경로가 남아 있어도 접수와 조회를 거부한다. 같은 ID의 add만 이동을 반영하고, 다른 ID와 옛 토픽 재연결은 거부한다. ID 없는 설정은 호환한다. | 시험 8이 옛·새·legacy 세 경로에 서로 다른 표식을 두고 확인한다. 대기 중이던 작업은 `failed`가 되고 `prompts`는 `[\"hold\"]`뿐이다. 재기동에서 \"project 제외\"를 확인하고, legacy는 응답하고, 다른 ID 토픽 13은 차단된다. 다른 ID 이름 충돌은 거부된다. 같은 ID로 다시 add하면 `NEW-MARKER`로 답하고 `createForumTopic`은 0회다. 사용자 지정 워크트리는 `[\"main\"]`으로 초기화된다. 마지막에 `/bind project`가 다른 ID로 향해도 결속이 바뀌지 않는다. 시험 6은 같은 경로에 복제된 디렉터리를 재기동에서 제외한다. | 충족 |\n\n목적의 세 요소도 모두 시험에 연결됩니다. 포트 소유자만 설정을 쓰고, 승인한 ID·경로·파일 신원만 받으며, 이동한 옛 경로를 차단합니다.\n\n시험 5는 정지 중 동일 경로 승인만 ID 없는 기존 결속을 보강하고, 다른 경로는 거부한다는 TASK 접근 항목도 확인합니다.\n\n### 테스트 비약화\n\n- 새 시험 파일은 약화할 대상이 없고, 단언은 위 표처럼 구체적입니다. 예를 들어 `prompts`가 `[\"hold\"]`인지, 옛 경로 파일이 읽히지 않았는지, 설정 바이트가 같은지를 봅니다.\n- 기존 S-9g(`telegram-flow.test.ts:398`)는 \"반영하지 못했다\", \"update 소비\", \"재입력 복구\" 단언을 모두 유지합니다. 실패 주입 지점만 `daemon.addWorkspace`로 바뀌었고, 이는 더 깊은 실제 경로입니다. 1단계의 판단에 동의합니다.\n- telegram-flow 나머지 시그니처 변경과 마법사 시험의 \"추가만 있음\"은 diff를 못 봐서 독립 확인하지 못했습니다. 이 부분은 1단계 진술을 그대로 인용합니다.\n\n### 설정 권한 경계\n\n- 포트 소유자만 쓴다는 규칙은 시험 4와 시험 7이 직접 확인합니다.\n- 인증·Origin 경계는 시험 7이 확인합니다.\n- 승인 신원은 `registeredWorkspaceRoot`(`workspace.ts:41-54`)가 활성 여부, 등록부 경로, AGENT ID, 전후 `dev`/`ino`를 확인합니다. `approvedWorkspaceRoot`는 여기에 승인 때 고정한 identity를 더 대조합니다.\n\n### 1단계 지적 등급 변동\n\n| 1단계 지적 | 변동 | 근거 |\n|---|---|---|\n| `registryIdentity` 선택값 (should_fix) | **note로 하향** | BR01 §등록부 대조는 활성 항목, AGENT ID 일치, 경로 일치만 요구하고 inode는 요구하지 않습니다. inode는 TASK 접근에서 추가한 강화입니다. `registryId`가 붙은 설정은 이 기능이 처음 만들므로 identity 없는 `registryId` 설정은 CLI 경로로는 생기지 않습니다. 기존 호환(`registryId` 없는 항목)은 영향이 없습니다. 손으로 쓴 설정에 한정되는 선택적 강화입니다. |\n| `docs/DAEMON.md` 재시작 안내 (should_fix) | **note로 하향** | 문장은 `docs/DAEMON.md:22`에 그대로 있고, 실행 중 install이 쓰기를 거부하는 동작과 어긋나 보입니다. 다만 BR01·T-1~T-4가 요구하는 문서 항목(승인·이동·결속·Gateway, 시험 2가 확인)은 모두 충족합니다. 이 문장은 install 안내에 대한 것이라 계약 범위 밖입니다. 마감 전에 고치면 좋습니다. |\n| busy 거부·`reset-offset` 시험 부재 (should_fix) | **유지** (non-blocking) | `withStoppedDaemon` 호출 3곳(`install-wizard.ts:98,222,289`)과 `reset-offset`(`cli.ts:160`)은 grep에서 시험에 busy 거부 케이스가 없습니다. 설정 권한 경계가 이번 목적이라 회귀 위험이 남습니다. 다만 BR01 완료 기준의 \"정지 중 기록과 동시 기동\" 경합은 시험 4가 덮고, S-3은 add 경로를 요구하므로 합격선은 아닙니다. |\n\n1단계의 나머지 note 세 건(`/new` legacy 등록, `workspaceProblem` 동기 읽기, 사용자 지정 워크트리)은 변동이 없습니다. 특히 사용자 지정 워크트리는 TASK 접근이 \"자동 변환하지 않는다\"고 명시했고 시험 8이 확인합니다.\n\n### 한계\n\n- 시험을 실행하지 않았습니다. 정적 대조뿐이며 `check.txt` 같은 증거 파일도 읽지 않았습니다.\n- 기존 시험 파일의 diff는 확인하지 못했습니다.\n- 1단계의 미확인 항목(`telegram init`·`uninstall` 쓰기, `readAgentFile` 심볼릭 링크, Windows 경로)은 이 단계에서도 열지 않았습니다.\n\n### 요약\n\n- **판정:** pass\n- **blocking:** 0\n- **should_fix:** 1건(busy 거부·`reset-offset` 시험)\n- **note:** 6건(1단계 note 3건과 하향된 2건 포함)",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-sonnet-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "94cc7fdd-0555-4ada-bb3d-c72fd2bd0185",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 54730,
+  "usage": {
+    "input_tokens": 14,
+    "output_tokens": 7065
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

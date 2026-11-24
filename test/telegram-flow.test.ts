@@ -22,7 +22,7 @@ function bare(o: { mock: MockTelegram; sink?: Partial<ChannelSink>; marker?: boo
   let marker = o.marker ?? false;
   const host: TelegramHost = {
     device: "box", isAllowed: (a) => (o.allowed ? o.allowed(a.user) : true), pendingApprovals: () => [], overview: () => ({ device: "box", running: 0, queued: 0, quarantined: 0, byWorkspace: {} }),
-    workspaces: () => [{ name: "a", path: dir, worktrees: { main: dir } }], workspaceRootInfo: () => null, persistWorkspace: () => undefined, addWorkspace: () => "added",
+    workspaces: () => [{ name: "a", path: dir, worktrees: { main: dir } }], workspaceRootInfo: () => null, registerLegacyWorkspace: async () => undefined,
     flushOutbox: async () => undefined, hasPriorActivity: () => o.prior ?? false, readMarker: () => marker, writeMarker: () => { marker = true; seen.markerWrites++; }, stateFile: file,
   };
   const sink: ChannelSink = {
@@ -399,10 +399,10 @@ test("S-9g /new: 설정 기록 뒤 코어 등록 실패는 안내만 하고 upda
   const t = await tgHarness();
   try {
     const dir = join(t.home, "ws", "g"); mkdirSync(dir, { recursive: true });
-    const host = (t.adapter as unknown as { o: { host: TelegramHost } }).o.host;
-    const real = host.addWorkspace.bind(host);
+    const daemon = t.h.daemon;
+    const real = daemon.addWorkspace.bind(daemon);
     let fail = true;
-    host.addWorkspace = (e, r) => { if (fail) throw new Error("등록 실패"); return real(e, r); };
+    daemon.addWorkspace = (e, r) => { if (fail) throw new Error("등록 실패"); return real(e, r); };
     t.mock.text(CHAT, undefined, U1, `/new g ${dir}`);
     await until(() => t.mock.texts().some((x) => x.includes("반영하지 못했다")), 6000, "반영 실패");
     // 안내는 처리 도중 보내고 offset은 처리가 끝난 뒤 진행한다 — 안내 직후 판독하면 부하에서 경합한다

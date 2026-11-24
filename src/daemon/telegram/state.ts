@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { writeFileAtomic } from "../../core/fsutil.ts";
+import { isWorkspaceId } from "../../project/workspace-registry.ts";
 
 // Telegram 어댑터 상태 — PACE_HOME/daemon/telegram.json. 변경마다 원자적 쓰기, 손상은 시작 거부.
 
@@ -15,6 +16,12 @@ export interface HeldRecord {
   droppedCount?: number;
 }
 
+export type TopicBinding = string | { name: string; registryId: string };
+
+export function topicName(binding: TopicBinding): string {
+  return typeof binding === "string" ? binding : binding.name;
+}
+
 export interface TelegramState {
   version: 1;
   /** 마지막으로 처리한 update_id + 1 */
@@ -22,9 +29,9 @@ export interface TelegramState {
   /** 마지막으로 update를 받은 시각(ms) — 장기 무수신 재동기화 판단 */
   lastUpdateAt: number;
   /** thread_id → 워크스페이스 이름 */
-  topics: Record<string, string>;
+  topics: Record<string, TopicBinding>;
   /** 토픽 생성 의도(워크스페이스 이름별) — 결과 불명 상태를 보존한다 */
-  provisioning: Record<string, true>;
+  provisioning: Record<string, true | string>;
   held: HeldRecord[];
 }
 
@@ -49,8 +56,13 @@ function validate(v: unknown): TelegramState {
     const r = h as Record<string, unknown> | null;
     if (typeof r !== "object" || r === null || !Number.isInteger(r.update_id) || typeof r.notified !== "boolean" || typeof r.reason !== "string") bad("held 항목");
   }
-  for (const [k, v] of Object.entries(o.topics as Record<string, unknown>)) if (!/^[0-9]+$/.test(k) || typeof v !== "string") bad("topics");
-  for (const [, v] of Object.entries(o.provisioning as Record<string, unknown>)) if (v !== true) bad("provisioning");
+  for (const [key, value] of Object.entries(o.topics as Record<string, unknown>)) {
+    if (!/^[0-9]+$/.test(key)) bad("topics");
+    if (typeof value === "string") continue;
+    const binding = value as Partial<Exclude<TopicBinding, string>> | null;
+    if (!binding || typeof binding.name !== "string" || !isWorkspaceId(binding.registryId)) bad("topics");
+  }
+  for (const value of Object.values(o.provisioning as Record<string, unknown>)) if (value !== true && !isWorkspaceId(value)) bad("provisioning");
   return o as unknown as TelegramState;
 }
 
@@ -64,6 +76,21 @@ export function loadTelegramState(file: string): TelegramState | null {
 
 export function saveTelegramState(file: string, state: TelegramState): void {
   writeFileAtomic(file, JSON.stringify(state));
+}
+
+/** 같은 디렉터리로 확인한 기존 설정을 등록 ID가 있는 형식으로 올릴 때 호출한다. */
+export function promoteLegacyBinding(state: TelegramState, name: string, registryId: string): boolean {
+  let changed = false;
+  for (const [thread, binding] of Object.entries(state.topics)) {
+    if (binding !== name) continue;
+    state.topics[thread] = { name, registryId };
+    changed = true;
+  }
+  if (Object.hasOwn(state.provisioning, name) && state.provisioning[name] === true) {
+    state.provisioning[name] = registryId;
+    changed = true;
+  }
+  return changed;
 }
 
 /** 보류 기록을 상한에 맞춘다 — 안내를 마친 가장 오래된 기록부터 지우고, 전부 미통지면 오래된 것들을 요약 기록 하나로 합쳐 안내 의무를 잃지 않는다 */

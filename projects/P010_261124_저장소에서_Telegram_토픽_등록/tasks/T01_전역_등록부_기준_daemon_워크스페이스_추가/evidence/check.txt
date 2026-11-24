@@ -1,0 +1,15 @@
+PACE_SKIP_BROWSER_E2E=1 npm run check
+
+ℹ suites 0
+ℹ pass 1032
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 294144.160209
+
+독립 집중 검사: tester-orca-r3.md (63개 통과).
+
+node ./bin/pace.ts help
+
+  pace daemon workspace add [<경로>] [--name <이름>] [--yes] | workspace list   저장소를 읽기 전용 daemon 워크스페이스로 추가하고 등록 연결을 확인

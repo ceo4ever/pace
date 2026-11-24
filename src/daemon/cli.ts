@@ -19,6 +19,8 @@ import { readTelegramSecret, telegramStateFile, writeTelegramSecret } from "./te
 import { emptyTelegramState, loadTelegramState, saveTelegramState } from "./telegram/state.ts";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { daemonWorkspaceCommand, WORKSPACE_USAGE } from "./workspace-cli.ts";
+import { WorkspaceError } from "./workspace.ts";
 
 // `pace daemon …` — run · status · stop [--force] · logs · release · install · uninstall
 
@@ -76,6 +78,13 @@ export async function daemonCommand(args: string[], deps: DaemonCliDeps = {}): P
     case "run":
       if (rest.length > 0) throw new DaemonUsageError(usage);
       return runDaemon({ home });
+    case "workspace":
+      try {
+        return await daemonWorkspaceCommand(rest, { home, cwd: deps.cwd ?? process.cwd(), out, interactive: deps.interactive ?? isInteractive(), ask: deps.ask ?? askYesNo, telegramFetch: deps.telegramFetch });
+      } catch (error) {
+        if (error instanceof WorkspaceError) throw new DaemonUsageError(error.message);
+        throw error;
+      }
     case "start": {
       if (rest.length > 0) throw new DaemonUsageError(usage);
       return startDaemon({ env: autostartEnv(), out, isRunning: runningProbe, pollMs: deps.pollMs, pollTries: deps.pollTries });
@@ -151,10 +160,18 @@ export async function daemonCommand(args: string[], deps: DaemonCliDeps = {}): P
       if (action === "reset-offset") {
         const { values } = parseArgs({ args: targs, options: { yes: { type: "boolean" } }, strict: true });
         if (!values.yes) { out("offset을 0으로 초기화하면 오래된 update가 다시 올 수 있다(재전달 중복은 코어 수신 기록 범위까지만 막는다). 확인했으면 --yes"); return 0; }
-        let prev = null;
-        try { prev = loadTelegramState(telegramStateFile(home)); } catch { /* 손상 — 토픽 표는 잃는다(/bind로 다시 결속) */ }
-        const next = { ...emptyTelegramState(), topics: prev?.topics ?? {}, held: prev?.held ?? [] };
-        saveTelegramState(telegramStateFile(home), next);
+        let owner;
+        try { owner = await acquireInstance(home); }
+        catch (error) {
+          if (error instanceof InstanceBusyError) throw new DaemonUsageError("daemon을 정지한 뒤 offset을 초기화한다");
+          throw error;
+        }
+        try {
+          let prev = null;
+          try { prev = loadTelegramState(telegramStateFile(home)); } catch { /* 손상 — 토픽 표는 잃는다(/bind로 다시 결속) */ }
+          const next = { ...emptyTelegramState(), topics: prev?.topics ?? {}, provisioning: prev?.provisioning ?? {}, held: prev?.held ?? [] };
+          saveTelegramState(telegramStateFile(home), next);
+        } finally { await owner.release(); }
         out("offset을 초기화했다");
         return 0;
       }
@@ -177,7 +194,7 @@ export async function daemonCommand(args: string[], deps: DaemonCliDeps = {}): P
         { yes: values.yes, uninstall: sub === "uninstall", agents, login: values.login, installAdapters: values["install-adapters"], start: values.start });
     }
     default:
-      throw new DaemonUsageError(usage);
+      throw new DaemonUsageError(`${usage}\n${WORKSPACE_USAGE}`);
   }
 }
 

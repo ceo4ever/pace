@@ -1,11 +1,13 @@
 import { chmodSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { writeFileAtomic } from "../../core/fsutil.ts";
-import { configFile, parseConfig, secretsDir, type DaemonConfig } from "../config.ts";
+import { secretsDir, type DaemonConfig } from "../config.ts";
+import { registeredWorkspaceRoot, sameWorkspaceRoot } from "../workspace.ts";
 import type { Daemon } from "../core.ts";
 import { makeRedactor, type Redactor } from "../secrets.ts";
 import { TelegramApi } from "./api.ts";
 import { TelegramAdapter, type TelegramAdapterOptions, type TelegramHost } from "./adapter.ts";
+import { loadTelegramState, promoteLegacyBinding, saveTelegramState } from "./state.ts";
 
 // Telegram 결선 — 시크릿 읽기·쓰기, 호스트(코어·설정과의 연결) 구현, 어댑터 생성.
 
@@ -46,35 +48,29 @@ export function makeTelegramRedactor(secret: TelegramSecret | null): Redactor {
   return makeRedactor(secret ? [secret.token] : []);
 }
 
-function readRawConfig(home: string): Record<string, unknown> {
-  const file = configFile(home);
-  if (!existsSync(file)) return {};
-  try { return JSON.parse(readFileSync(file, "utf8")) as Record<string, unknown>; } catch { throw new Error("config.json을 읽을 수 없다"); }
+export function promoteStoredLegacyBinding(home: string, name: string, registryId: string): void {
+  const file = telegramStateFile(home);
+  const state = loadTelegramState(file);
+  if (state && promoteLegacyBinding(state, name, registryId)) saveTelegramState(file, state);
 }
 
 export function createTelegramHost(o: { daemon: Daemon; home: string; config: DaemonConfig; secret: TelegramSecret }): TelegramHost {
   const { daemon, home, config } = o;
   return {
     device: config.device,
+    registryHome: home,
     isAllowed: (actor) => daemon.isAllowed(actor),
     pendingApprovals: (from) => daemon.pendingApprovals(from),
     overview: () => daemon.overview(),
-    workspaces: () => config.workspaces.map((w) => ({ name: w.name, path: w.path, worktrees: w.worktrees })),
-    workspaceRootInfo: (name) => daemon.workspaceRootInfo(name),
-    persistWorkspace(entry) {
-      const raw = readRawConfig(home);
-      const list = Array.isArray(raw.workspaces) ? [...(raw.workspaces as Record<string, unknown>[])] : [];
-      const found = list.find((w) => w.name === entry.name);
-      if (found) {
-        if (found.path !== entry.path) throw new Error("같은 이름의 워크스페이스가 다른 경로로 이미 있다");
-        return; // 멱등
-      }
-      list.push({ name: entry.name, path: entry.path });
-      const next = { ...raw, workspaces: list };
-      parseConfig(next); // 저장 전에 검증(토큰형 경로·중복 이름 등)
-      writeFileAtomic(configFile(home), JSON.stringify(next, null, 2));
+    workspaces: () => config.workspaces,
+    workspaceRootInfo: (name) => daemon.workspaceRootInfo(name, false),
+    registerLegacyWorkspace: (entry, root) => daemon.registerLegacyWorkspace(entry, root, home),
+    matchesLegacyBinding(entry, id) {
+      const approved = daemon.workspaceRootInfo(entry.name);
+      if (!approved) return false;
+      try { return sameWorkspaceRoot(registeredWorkspaceRoot(home, approved.real, id), approved); }
+      catch { return false; }
     },
-    addWorkspace: (entry, resolved) => daemon.addWorkspace(entry, resolved),
     flushOutbox: () => daemon.flushOutbox(),
     hasPriorActivity: () => daemon.hasChannelActivity("telegram"),
     readMarker: () => { try { return readTelegramSecret(home)?.initializedAt !== undefined; } catch { return false; } },

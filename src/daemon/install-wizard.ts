@@ -4,6 +4,7 @@ import { loadChainConfig, resolveChain } from "../agent/chain.ts";
 import { type SetupOptions, type SetupOutcome } from "../agent/setup.ts";
 import { applyAutostart, buildAutostartPlan, describePlan, startDaemonNow, type AutostartEnv } from "./autostart.ts";
 import { defaultDeviceName, normalizeDeviceName, readRawConfigFile, updateConfigFile } from "./config.ts";
+import { acquireInstance, InstanceBusyError } from "./instance.ts";
 import { makeRedactor } from "./secrets.ts";
 import { readTelegramSecret, writeTelegramSecret } from "./telegram/index.ts";
 
@@ -13,6 +14,16 @@ import { readTelegramSecret, writeTelegramSecret } from "./telegram/index.ts";
 
 export interface BotApi {
   call<T = unknown>(method: string, params?: Record<string, unknown>): Promise<T>;
+}
+
+async function withStoppedDaemon<T>(home: string, apply: () => T): Promise<T> {
+  let owner;
+  try { owner = await acquireInstance(home); }
+  catch (error) {
+    if (error instanceof InstanceBusyError) throw new Error("daemon 실행 중 — 설정을 바꾸려면 정지 후 install을 다시 실행한다");
+    throw error;
+  }
+  try { return apply(); } finally { await owner.release(); }
 }
 
 export interface WizardDeps {
@@ -84,7 +95,10 @@ async function offerDevice(deps: WizardDeps, home: string): Promise<boolean> {
   const answer = (await deps.askLine(`이 기기의 이름(알림·상태에 표시, 영문·숫자·_.-, Enter=${fallback}):`, fallback)).trim();
   const device = NAME_FORMAT.test(answer) ? answer : normalizeDeviceName(answer);
   if (device !== answer) deps.out(`형식에 맞게 ${device}로 정했다`);
-  updateConfigFile(home, (c) => { c.device = device; });
+  await withStoppedDaemon(home, () => updateConfigFile(home, (c) => {
+    if (c.device !== undefined) throw new Error("확인 중 기기 이름이 설정됐다 — install을 다시 실행한다");
+    c.device = device;
+  }));
   deps.out(`기기 이름: ${device}`);
   return true;
 }
@@ -205,16 +219,23 @@ async function offerTelegram(deps: WizardDeps, home: string): Promise<boolean> {
     else if (userId !== "") out("사용자 ID 형식이 올바르지 않아 허용 사용자는 추가하지 않는다");
   }
 
-  writeTelegramSecret(home, { token, chatId });
+  await withStoppedDaemon(home, () => {
+    let current = null;
+    try { current = readTelegramSecret(home); } catch { /* 승인받은 새 설정으로 손상된 파일을 교체한다 */ }
+    if (current) throw new Error("확인 중 Telegram 설정이 추가됐다 — install을 다시 실행한다");
+    writeTelegramSecret(home, { token, chatId });
+    if (allowed.length > 0) {
+      updateConfigFile(home, (c) => {
+        const users = (typeof c.allowedUsers === "object" && c.allowedUsers !== null && !Array.isArray(c.allowedUsers) ? c.allowedUsers : {}) as Record<string, unknown>;
+        const list = Array.isArray(users.telegram) ? (users.telegram as unknown[]).map(String) : [];
+        for (const id of allowed) if (!list.includes(id)) list.push(id);
+        users.telegram = list;
+        c.allowedUsers = users;
+      });
+    }
+  });
   out("Telegram 시크릿을 저장했다(토큰은 표시하지 않는다)");
   if (allowed.length > 0) {
-    updateConfigFile(home, (c) => {
-      const users = (typeof c.allowedUsers === "object" && c.allowedUsers !== null && !Array.isArray(c.allowedUsers) ? c.allowedUsers : {}) as Record<string, unknown>;
-      const list = Array.isArray(users.telegram) ? (users.telegram as unknown[]).map(String) : [];
-      for (const id of allowed) if (!list.includes(id)) list.push(id);
-      users.telegram = list;
-      c.allowedUsers = users;
-    });
     out(`허용 사용자를 config.json의 allowedUsers.telegram에 저장했다(${allowed.length}명)`);
   } else out("허용 사용자가 없어 지금은 모든 요청이 거부된다 — config.json의 allowedUsers.telegram에 사용자 ID를 넣는다");
   return true;
@@ -264,7 +285,15 @@ async function offerWorkspace(deps: WizardDeps, home: string): Promise<boolean> 
     out(NAME_FORMAT.test(name) ? `이름 ${name}은 이미 쓰고 있다` : "이름 형식이 올바르지 않다");
     name = (await deps.askLine("다른 이름:", "")).trim();
   }
-  try { updateConfigFile(home, (c) => { const ws = Array.isArray(c.workspaces) ? (c.workspaces as unknown[]) : []; ws.push({ name, path }); c.workspaces = ws; }); }
+  try {
+    await withStoppedDaemon(home, () => updateConfigFile(home, (c) => {
+      const list = Array.isArray(c.workspaces) ? (c.workspaces as { name?: unknown; path?: unknown }[]) : [];
+      if (list.some((entry) => entry.name === name || (typeof entry.path === "string" && samePath(entry.path, path)))) {
+        throw new Error("확인 중 같은 이름 또는 경로가 설정됐다 — install을 다시 실행한다");
+      }
+      c.workspaces = [...list, { name, path }];
+    }));
+  }
   catch (error) { out(`워크스페이스를 저장하지 못했다: ${String((error as Error).message)}`); return false; }
   out(`워크스페이스 ${name}를 등록했다(${path})`);
   let hasTelegram = false;

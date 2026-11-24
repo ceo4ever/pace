@@ -2,9 +2,10 @@ import { randomBytes } from "node:crypto";
 import { realpathSync, statSync } from "node:fs";
 import { isAbsolute, relative, resolve } from "node:path";
 import { changedParts, summarizeChange, takeSnapshot, type Snapshot } from "../agent/snapshot.ts";
-import type { DaemonConfig } from "./config.ts";
+import type { DaemonConfig, WorkspaceEntry } from "./config.ts";
 import { hasTokenShape, type Redactor } from "./secrets.ts";
 import { StateStore } from "./store.ts";
+import { approvedWorkspaceRoot, persistLegacyWorkspace, persistRegisteredWorkspace, sameWorkspaceRoot, WorkspaceError, workspaceErrorText, type WorkspaceAddRequest, type WorkspaceRoot } from "./workspace.ts";
 import {
   ACTIVE_STATUSES,
   type Access, type Actor, type Approval, type ApprovalKind, type ApprovalPrompt, type Block, type ChannelAdapter, type ChannelCaps, type ChannelSink, type Conversation,
@@ -16,6 +17,7 @@ import {
 
 export interface DaemonOptions {
   config: DaemonConfig;
+  home?: string;
   store: StateStore;
   runner: Runner;
   bootId?: string;
@@ -156,6 +158,8 @@ export class Daemon implements ChannelSink {
   reloadAllowed(): void {
     this.allowedRoots = new Map();
     for (const ws of this.o.config.workspaces) {
+      const problem = this.workspaceProblem(ws);
+      if (problem) { this.log("workspace_excluded", { workspace: ws.name, reason: problem }); continue; }
       for (const [name, path] of Object.entries(ws.worktrees)) {
         try {
           const real = realpathSync.native(path);
@@ -164,6 +168,16 @@ export class Daemon implements ChannelSink {
         } catch { /* 기동 때 확인되지 않은 경로는 허용 목록에 없다 */ }
       }
     }
+  }
+
+  private workspaceProblem(entry: WorkspaceEntry): string | null {
+    if (!entry.registryId) return null;
+    if (!this.o.home) return "전역 등록부 위치를 확인할 수 없다";
+    try {
+      const root = approvedWorkspaceRoot(this.o.home, entry);
+      const expected = this.allowedRoots.get(`${entry.name}/main`);
+      return expected && !sameWorkspaceRoot(root, expected) ? "승인한 디렉터리가 바뀌었다 — workspace add로 다시 승인한다" : null;
+    } catch (error) { return workspaceErrorText(error); }
   }
 
   /** 비밀 제거 — 길이 자르기보다 먼저 적용한다(잘린 토큰 조각이 남지 않게) */
@@ -386,7 +400,7 @@ export class Daemon implements ChannelSink {
     const key = this.convKey(a);
     let c = this.state.conversations[key];
     if (!c) {
-      const first = this.o.config.workspaces[0];
+      const first = this.o.config.workspaces.find((ws) => this.allowedRoots.has(`${ws.name}/main`) && !this.workspaceProblem(ws));
       c = { workspace: first?.name ?? "", worktreeName: "main", chain: this.o.config.defaultChain, access: "read-only" };
       this.state.conversations[key] = c;
     }
@@ -396,6 +410,12 @@ export class Daemon implements ChannelSink {
   private resolveTarget(conv: Conversation): Target | string {
     const ws = this.o.config.workspaces.find((w) => w.name === conv.workspace);
     if (!ws) return conv.workspace ? `등록되지 않은 워크스페이스: ${conv.workspace}` : "등록된 워크스페이스가 없다(설정 workspaces)";
+    const problem = this.workspaceProblem(ws);
+    if (problem) return problem;
+    if (ws.registryId && !Object.hasOwn(ws.worktrees, conv.worktreeName)) {
+      conv.worktreeName = "main";
+      delete conv.saved;
+    }
     const path = ws.worktrees[conv.worktreeName];
     if (!path) return `등록되지 않은 워크트리: ${conv.worktreeName}`;
     const root = this.allowedRoots.get(`${ws.name}/${conv.worktreeName}`);
@@ -711,6 +731,15 @@ export class Daemon implements ChannelSink {
   }
 
   private checkIdentity(task: Task): string | null {
+    const ws = this.o.config.workspaces.find((entry) => entry.name === task.target.workspace);
+    if (ws?.registryId) {
+      const problem = this.workspaceProblem(ws);
+      if (problem) return problem;
+      const allowed = this.allowedRoots.get(`${ws.name}/${task.target.worktreeName}`);
+      if (!allowed || !sameWorkspaceRoot(allowed, { real: task.target.worktree, dev: task.target.dev, ino: task.target.ino })) {
+        return "target_changed: 승인한 워크스페이스가 작업을 받은 뒤 바뀌었다";
+      }
+    }
     try {
       const real = realpathSync.native(task.target.worktree);
       const st = statSync(real, { bigint: true });
@@ -925,8 +954,10 @@ export class Daemon implements ChannelSink {
 
   // ---- T05: 채널 어댑터 보조 ----
 
-  /** 기동 때(또는 addWorkspace) 확정해 메모리에 둔 워크스페이스 main 실경로·식별자 — 파일 시스템 호출 없음 */
-  workspaceRootInfo(name: string): { real: string; dev: string; ino: string } | null {
+  /** Telegram 파일 워커가 등록부를 별도로 확인하는 경우에만 저장된 신원을 그대로 넘긴다. */
+  workspaceRootInfo(name: string, revalidate = true): { real: string; dev: string; ino: string } | null {
+    const ws = this.o.config.workspaces.find((entry) => entry.name === name);
+    if (!ws || (revalidate && this.workspaceProblem(ws))) return null;
     const r = this.allowedRoots.get(`${name}/main`);
     return r ? { ...r } : null;
   }
@@ -943,6 +974,46 @@ export class Daemon implements ChannelSink {
     this.o.config.workspaces.push({ name: entry.name, path: entry.path, worktrees: { main: entry.path, ...(entry.worktrees ?? {}) } });
     this.allowedRoots.set(`${entry.name}/main`, { ...resolved }); // 기존 항목은 다시 해석하지 않는다
     return "added";
+  }
+
+  registerWorkspace(request: WorkspaceAddRequest, promoteLegacy: (entry: WorkspaceEntry) => void): Promise<WorkspaceEntry> {
+    return this.tx(() => {
+      if (this.stopping || !this.o.home) throw new WorkspaceError("daemon이 워크스페이스를 추가할 수 없는 상태다");
+      const existing = this.o.config.workspaces.find((entry) => entry.name === request.name);
+      if (existing && !existing.registryId) {
+        const expected = this.allowedRoots.get(`${existing.name}/main`);
+        if (!expected || !sameWorkspaceRoot(expected, request)) throw new WorkspaceError("기존 설정과 승인한 디렉터리 신원이 다르다 — --name을 지정한다");
+      }
+      const entry = persistRegisteredWorkspace(this.o.home, request, promoteLegacy);
+      const previousRoot = this.allowedRoots.get(`${entry.name}/main`);
+      if (previousRoot && !sameWorkspaceRoot(previousRoot, request)) {
+        for (const conv of Object.values(this.state.conversations)) {
+          if (conv.workspace !== entry.name) continue;
+          conv.worktreeName = "main";
+          delete conv.saved;
+        }
+      }
+      if (existing) this.o.config.workspaces.splice(this.o.config.workspaces.indexOf(existing), 1, entry);
+      else this.o.config.workspaces.push(entry);
+      if (existing?.path !== entry.path && existing?.registryId) {
+        for (const name of Object.keys(existing.worktrees)) this.allowedRoots.delete(`${entry.name}/${name}`);
+      }
+      this.allowedRoots.set(`${entry.name}/main`, { real: request.real, dev: request.dev, ino: request.ino });
+      return entry;
+    });
+  }
+
+  registerLegacyWorkspace(entry: { name: string; path: string }, root: WorkspaceRoot, home: string): Promise<void> {
+    return this.tx(() => {
+      if (this.stopping) throw new WorkspaceError("daemon이 정지 중이다");
+      const previous = this.o.config.workspaces.find((workspace) => workspace.name === entry.name);
+      if (previous && (previous.registryId || lockKeyOf(previous.path) !== lockKeyOf(entry.path))) {
+        throw new WorkspaceError("같은 이름의 워크스페이스가 이미 있다");
+      }
+      persistLegacyWorkspace(home, entry);
+      try { this.addWorkspace(entry, root); }
+      catch { throw new WorkspaceError("설정에는 기록됐으나 반영하지 못했다 — 같은 /new를 다시 보낸다"); }
+    });
   }
 
   /** 이 채널의 이전 운영 흔적(대화·작업)이 상태에 있는가 — 어댑터가 offset 유실을 구분하는 데 쓴다 */

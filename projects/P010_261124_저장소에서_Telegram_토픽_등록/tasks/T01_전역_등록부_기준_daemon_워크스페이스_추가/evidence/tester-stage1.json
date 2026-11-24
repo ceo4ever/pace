@@ -1,0 +1,25 @@
+{
+  "text": "# T01 1단계 관측 기록\n\n읽은 범위는 `docs/DAEMON.md`와 `src/daemon/{workspace,workspace-cli,config,core,gateway,index}.ts`입니다. `core.ts`, `gateway.ts`, `index.ts`는 관련 구간만 읽었습니다. `telegram/*`, `project/workspace-registry.ts`, `instance.ts`는 grep 결과만 봤습니다. 파일은 수정하지 않았고 실행이나 테스트도 하지 않았습니다.\n\n## 1. 목표 대조\n\n각 항목은 코드에서 관측한 내용입니다. 동작을 실행해서 확인한 것은 아닙니다.\n\n| 목표 | 코드 관측 | 근거 |\n|---|---|---|\n| 사용자 승인 대상만 추가 | `--yes`가 없으면 계획만 출력하고, 대화형이면 `[y/N]`로 묻습니다. 승인 직전에 `approveWorkspacePlan`이 `planWorkspaceAdd`를 다시 계산해 경로·신원·등록 ID·정의 ID가 달라졌으면 거부합니다. | `workspace-cli.ts:68-81`, `workspace.ts:101-109` |\n| 등록 ID로 고정 | 설정 항목에 `registryId`를 저장하고, 중복 ID와 형식 오류는 `parseConfig`가 거부합니다. 같은 ID에 다른 이름을 쓰면 거부합니다. | `config.ts:100-105`, `workspace.ts:64` |\n| 승인 경로로 고정 | `registeredWorkspaceRoot`가 등록부의 `path`와 요청 경로가 같은지, 실경로(`realpath`)와도 같은지 확인합니다. | `workspace.ts:41-50` |\n| 파일 신원(dev/ino)으로 고정 | `workspaceRoot`가 dev/ino를 기록합니다. 코어는 `allowedRoots`에 저장해 두고 `checkIdentity`와 `workspaceProblem`에서 다시 비교합니다. | `workspace.ts:27-35`, `core.ts:173-181`, `core.ts:729-737` |\n| 이동 후 옛 경로 차단 | 등록부 경로가 바뀌면 `candidate.path !== path`로 \"등록부 경로가 바뀌었다\" 오류가 납니다. 시작 시 해당 워크스페이스는 제외 메시지가 나옵니다. 작업 실행 전에는 `checkIdentity`가 이를 확인합니다. | `workspace.ts:44`, `index.ts:71-75`, `core.ts:732` |\n| 동일 ID 재승인 뒤 같은 결속 유지 | `matchingEntry`가 ID로 기존 항목을 찾아 재사용합니다. Telegram 결속은 `{name, registryId}`로 저장돼 이름이 아닌 ID로 판정합니다. 경로가 바뀌면 `worktrees`를 삭제하는데, 문서의 \"워크트리 재지정\" 설명과 일치합니다. | `workspace.ts:62-76`, `workspace.ts:131`, `telegram/state.ts:19`, `telegram/adapter.ts:164-171` |\n| ID 없는 기존 설정 지원 | `registryId`는 선택 필드입니다. `workspaceProblem`은 ID가 없으면 null을 반환하고 `workspaceLinkStatus`는 \"기존 설정\"을 반환합니다. 같은 디렉터리의 ID 없는 항목은 승격(`promoteLegacy`)하거나 별칭으로 충돌 안내를 합니다. | `config.ts:16`, `core.ts:174`, `workspace.ts:53`, `workspace.ts:67-71` |\n| 설정 기록은 인스턴스 소유자만 | CLI는 `acquireInstance`로 소유권을 얻어야 `persistRegisteredWorkspace`를 부릅니다. 소유자가 이미 있으면(`InstanceBusyError`) 인증된 Gateway `workspace_add`로 소유 daemon이 기록합니다. `core.registerWorkspace`는 직렬 처리기(`tx`) 안에서 실행됩니다. | `workspace-cli.ts:83-98`, `core.ts:975-983`, `gateway.ts:233-241` |\n\n## 2. 한계와 우려\n\n1. **차단 시점**: 코드에서 확인한 차단 지점은 `checkIdentity`(prepare 단계)와 시작 시 로그뿐입니다. 요청 접수 단계의 대상 고정이 같은 검사를 쓰는지는 `core.ts`의 수신 구간을 읽지 않아 확인하지 못했습니다.\n2. **TOCTOU**: 확인 시점과 사용 시점 사이에 디렉터리가 교체될 가능성은 dev/ino 재비교로 줄였습니다. 다만 `registeredWorkspaceRoot` 안에서 `verifyWorkspaceRegistration`과 `workspaceRoot`는 별개 호출이어서 둘 사이에 간격이 있습니다.\n3. **Gateway 경로의 등록부 쓰기 주체**: 소유자가 있는 경우에도 `approve()`는 CLI 프로세스에서 실행됩니다. 여기서 `registerWorkspace`가 전역 등록부에 새 항목을 만들 수 있습니다. \"설정 기록\"은 소유자만 한다는 목표에는 맞지만, 전역 등록부 기록의 주체까지 소유자로 제한되지는 않습니다. 이것을 목표 위반으로 볼지는 합의된 목표의 해석에 달려 있습니다.\n4. **`registerLegacyWorkspace`/`persistLegacyWorkspace`**: `registryId`가 있는 이름이면 거부하고 있습니다. 하지만 기존 `/new` 경로 흐름이 신원 검증을 어디까지 하는지는 `telegram/*`를 읽지 않아 확인하지 못했습니다.\n5. **이중 기록 순서**: `persistRegisteredWorkspace`는 결속 승격을 설정 쓰기보다 먼저 합니다. 설정 쓰기가 실패하면 결속만 승격된 상태가 남을 수 있습니다. 코드 주석은 의도적이라고 설명하지만 복구 동작은 확인하지 못했습니다.\n6. **사용자 지정 워크트리**: 이동 후 `worktrees`를 삭제하면 `allowedRoots` 항목도 지웁니다(`core.ts:986-988`). 이 정리가 모든 경로에서 일관되는지는 미확인입니다.\n\n## 3. 목표 달성 판정\n\n**판정 보류**입니다. 1단계는 코드 읽기만 했고 실행 증거가 없습니다. 모든 목표 항목에 대응하는 구현이 있다는 데까지만 말할 수 있습니다. 달성했다고는 판정하지 않습니다.\n\n## 4. 미확인 (이 단계에서 증명할 수 없는 것)\n\n- 실제 `pace workspace move` 후 옛 경로 요청이 거부되는지\n- 이동 후 동일 ID 재승인에서 Telegram 토픽 결속이 실제로 유지되는지\n- ID 없는 기존 `config.json`으로 daemon이 기동하고 동작하는지\n- 동시 `workspace add`나 소유자 경합에서 설정이 깨지지 않는지\n- `workspace-registry.ts`의 `findWorkspaceRegistration`/`verifyWorkspaceRegistration`/`registerWorkspace`의 실제 동작. 코드를 읽지 않았습니다.\n- 수신 시점 대상 고정의 차단 동작\n- 문서와 구현의 일치 여부 중 위 항목들\n\n2단계 자료(테스트, TASK 문서)를 받으면 위 항목을 실행으로 확인할 수 있습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-sonnet-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "c230177e-ffcd-45d7-9119-f581a24273ef",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 40161,
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 4323
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

@@ -5,7 +5,8 @@ import { ensureGatewayToken, Gateway } from "./gateway.ts";
 import { acquireInstance, clearStopRequest, InstanceBusyError, makeLogger, removeLockInfo, stopRequested, writeLockInfo, writeStatus } from "./instance.ts";
 import { createChainRunner } from "./runner.ts";
 import { StateError, StateStore } from "./store.ts";
-import { createTelegramAdapter, makeTelegramRedactor, readTelegramSecret, type TelegramSecret } from "./telegram/index.ts";
+import { createTelegramAdapter, makeTelegramRedactor, promoteStoredLegacyBinding, readTelegramSecret, type TelegramAdapter, type TelegramSecret } from "./telegram/index.ts";
+import { workspaceLinkStatus } from "./workspace.ts";
 import type { ChannelAdapter, Runner, Task } from "./types.ts";
 
 // `pace daemon run` 본체 — 인스턴스 포트 → 설정·상태 → 코어 → Gateway. 정지 요청 파일·시그널을 받으면 drain으로 끝난다.
@@ -48,6 +49,7 @@ export async function runDaemon(o: RunDaemonOptions): Promise<number> {
   const log = makeLogger(home);
   let gateway: Gateway | null = null;
   let daemon: Daemon | null = null;
+  let telegram: TelegramAdapter | null = null;
   let heartbeat: NodeJS.Timeout | null = null;
   let poll: NodeJS.Timeout | null = null;
   const startedAt = Date.now();
@@ -65,14 +67,34 @@ export async function runDaemon(o: RunDaemonOptions): Promise<number> {
     const redact = makeTelegramRedactor(secret);
     writeLockInfo(home, { pid: process.pid, startedAt, bootId, port: instance.port });
     clearStopRequest(home); // 이전 기동의 정지 요청이 남아 있어도 이번 기동을 멈추지 않는다
-    daemon = new Daemon({ config, store, runner: o.runner ?? createChainRunner({ home, redact }), bootId, redact, reap: o.reap ?? defaultReap, log, ...o.coreExtra });
+    daemon = new Daemon({ home, config, store, runner: o.runner ?? createChainRunner({ home, redact }), bootId, redact, reap: o.reap ?? defaultReap, log, ...o.coreExtra });
+    for (const entry of config.workspaces) {
+      if (!entry.registryId) continue;
+      const link = workspaceLinkStatus(home, entry);
+      if (link !== "활성 등록") out(`워크스페이스 ${entry.name} 제외 — ${link}`);
+    }
     await daemon.start();
-    gateway = new Gateway({ daemon, token: ensureGatewayToken(home), port: config.gateway.port, log });
+    gateway = new Gateway({
+      daemon, token: ensureGatewayToken(home), port: config.gateway.port, log,
+      workspaceAdd: async (request) => {
+        const entry = await daemon!.registerWorkspace(request, (legacy) => {
+          if (telegram) telegram.promoteLegacyWorkspace(legacy.name, request.registryId);
+          else promoteStoredLegacyBinding(home, legacy.name, request.registryId);
+        });
+        return { bound: telegram?.isWorkspaceBound(entry) ?? false };
+      },
+    });
     await gateway.listen();
     await daemon.addAdapter(gateway.adapter);
     for (const adapter of o.adapters ?? []) await daemon.addAdapter(adapter);
     if (secret) {
-      try { await daemon.addAdapter(createTelegramAdapter({ daemon, home, config, secret, redact, log })); log("telegram_started", {}); out("Telegram 어댑터 시작"); }
+      try {
+        const adapter = createTelegramAdapter({ daemon, home, config, secret, redact, log });
+        await daemon.addAdapter(adapter);
+        telegram = adapter;
+        log("telegram_started", {});
+        out("Telegram 어댑터 시작");
+      }
       catch (error) { log("telegram_start_failed", { error: redact(String((error as Error).message)).slice(0, 300) }); out(`pace: Telegram 어댑터를 시작하지 못했다 — ${redact(String((error as Error).message)).slice(0, 300)}`); }
     }
     const status = (state: "running" | "stopping" | "stopped") => {

@@ -5,6 +5,7 @@ import { join, resolve } from "node:path";
 import { daemonCommand } from "../src/daemon/cli.ts";
 import { launcherPath, RUN_VALUE } from "../src/daemon/autostart.ts";
 import { normalizeDeviceName } from "../src/daemon/config.ts";
+import { acquireInstance } from "../src/daemon/instance.ts";
 import { readTelegramSecret } from "../src/daemon/telegram/index.ts";
 import { FakeSystem } from "./fake-system.ts";
 import { tempDir } from "./helpers.ts";
@@ -59,6 +60,17 @@ const TOKEN = `123456789:${"A".repeat(35)}`;
 const withChain = (s: { chainFile: string }) => writeFileSync(s.chainFile, JSON.stringify({ chains: { default: { steps: [{ agent: "codex", mode: "p" }] } } }));
 const readConfig = (home: string) => JSON.parse(readFileSync(join(home, "daemon", "config.json"), "utf8"));
 const NO_OPTIONAL: Rule = [/Telegram 채널|워크스페이스|지금 바로/, false];
+
+test("daemon이 설정 쓰기 포트를 소유하면 install은 기기 설정을 덮어쓰지 않는다", async () => {
+  const s = setup({ interactive: true, running: [true], rules: [NO_OPTIONAL] });
+  withChain(s);
+  const owner = await acquireInstance(s.home);
+  try {
+    assert.equal(await s.run(["install", "--yes"]), 0);
+    assert.equal(existsSync(join(s.home, "daemon", "config.json")), false);
+    assert.match(s.out.join("\n"), /설정을 바꾸려면 정지 후 install/);
+  } finally { await owner.release(); }
+});
 
 test("S-19 대화형 수동 입력 — 시크릿·허용 사용자를 저장하고(토큰은 출력·질문에 없다), 거절하면 건너뛰고, 형식이 틀리면 API 없이 건너뛴다", async () => {
   const s = setup({ interactive: true, secret: TOKEN, bot: fakeBot({ getMe: { first_name: "봇", username: "pace_bot" }, getWebhookInfo: { url: "" } }),

@@ -5,6 +5,7 @@ import type { Socket } from "node:net";
 import { join } from "node:path";
 import type { Daemon } from "./core.ts";
 import type { ApprovalPrompt, Block, ChannelAdapter, ChannelSink } from "./types.ts";
+import { isWorkspaceAddRequest, workspaceErrorText, type WorkspaceAddRequest } from "./workspace.ts";
 
 // Gateway API 골격 (BR04) — 로컬 WebSocket + 토큰 인증. 127.0.0.1만 바인딩, node:http upgrade + RFC6455 부분집합을 직접 구현(의존성 0).
 // 프로토콜 부분집합: 클라이언트→서버 프레임은 마스킹 필수·FIN=1 단일 텍스트 프레임·핑/퐁/닫기, 페이로드 ≤1MB·UTF-8 검증. 그 밖은 닫는다.
@@ -116,7 +117,15 @@ export class Conn {
   }
 }
 
-export interface GatewayOptions { daemon: Daemon; token: string; port: number; log?: (event: string, fields?: Record<string, unknown>) => void; /** 연결별 송신 버퍼 상한(바이트) — 넘으면 느린 소비자로 보고 닫는다 */ maxBufferedBytes?: number }
+export interface GatewayOptions {
+  daemon: Daemon;
+  token: string;
+  port: number;
+  log?: (event: string, fields?: Record<string, unknown>) => void;
+  /** 연결별 송신 버퍼 상한(바이트) — 넘으면 느린 소비자로 보고 닫는다 */
+  maxBufferedBytes?: number;
+  workspaceAdd?: (request: WorkspaceAddRequest) => Promise<{ bound: boolean }>;
+}
 
 export class Gateway {
   private readonly o: GatewayOptions;
@@ -219,6 +228,16 @@ export class Gateway {
       case "release": {
         if (typeof msg.path !== "string") { reply({ type: "error", error: "path가 필요하다" }); return; }
         reply({ type: "ack", result: { ok: await this.o.daemon.release(msg.path) } });
+        return;
+      }
+      case "workspace_add": {
+        const add = this.o.workspaceAdd;
+        if (!add || !isWorkspaceAddRequest(msg.workspace)) {
+          reply({ type: "error", error: "유효한 워크스페이스 승인 정보가 필요하다" });
+          return;
+        }
+        try { reply({ type: "ack", result: { ok: true, ...await add(msg.workspace) } }); }
+        catch (error) { reply({ type: "ack", result: { ok: false, reason: workspaceErrorText(error) } }); }
         return;
       }
       case "subscribe": {

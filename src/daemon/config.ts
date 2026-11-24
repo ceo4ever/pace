@@ -4,6 +4,7 @@ import { writeFileAtomic } from "../core/fsutil.ts";
 import { join } from "node:path";
 import { isAbsolute } from "node:path";
 import { hasTokenShape } from "./secrets.ts";
+import { isWorkspaceId } from "../project/workspace-registry.ts";
 
 // 기기 설정 — PACE_HOME/daemon/config.json. 알 수 없는 키·범위 밖 값은 기동을 거부한다(조용히 무시하지 않음).
 
@@ -12,9 +13,13 @@ export class DaemonConfigError extends Error {}
 export interface WorkspaceEntry {
   name: string;
   path: string;
+  registryId?: string;
+  registryIdentity?: { dev: string; ino: string };
   /** 이름 → 워크트리 경로. "main"은 항상 workspace path */
   worktrees: Record<string, string>;
 }
+
+export const WORKSPACE_NAME = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,39}$/;
 
 export interface DaemonConfig {
   device: string;
@@ -84,14 +89,26 @@ export function parseConfig(input: unknown): DaemonConfig {
   if (raw.workspaces !== undefined) {
     if (!Array.isArray(raw.workspaces)) bad("workspaces는 배열");
     const names = new Set<string>();
+    const registryIds = new Set<string>();
     cfg.workspaces = (raw.workspaces as unknown[]).map((w, i) => {
       const e = w as Record<string, unknown>;
       if (typeof e !== "object" || e === null) return bad(`workspaces[${i}]가 객체가 아니다`);
-      if (typeof e.name !== "string" || !/^[A-Za-z0-9][A-Za-z0-9_.-]{0,39}$/.test(e.name)) bad(`workspaces[${i}].name이 올바르지 않다`);
+      if (typeof e.name !== "string" || !WORKSPACE_NAME.test(e.name)) bad(`workspaces[${i}].name이 올바르지 않다`);
       if (names.has(e.name as string)) bad(`workspaces 이름 중복: ${e.name}`);
       names.add(e.name as string);
       if (typeof e.path !== "string" || !isAbsolute(e.path)) bad(`workspaces[${i}].path는 절대 경로`);
       if (hasTokenShape(e.path as string)) bad(`workspaces[${i}].path에 비밀 형태 문자열이 있다(저장 시 제거되면 격리 키가 어긋난다)`);
+      const registryId = e.registryId;
+      if (registryId !== undefined) {
+        if (!isWorkspaceId(registryId)) return bad(`workspaces[${i}].registryId가 올바르지 않다`);
+        if (registryIds.has(registryId)) bad("workspaces 등록 ID 중복");
+        registryIds.add(registryId);
+      }
+      const identity = e.registryIdentity as WorkspaceEntry["registryIdentity"];
+      if (identity !== undefined && (
+        !registryId || !identity || typeof identity.dev !== "string" || !/^\d+$/.test(identity.dev) ||
+        typeof identity.ino !== "string" || !/^\d+$/.test(identity.ino)
+      )) bad(`workspaces[${i}].registryIdentity가 올바르지 않다`);
       const worktrees: Record<string, string> = { main: e.path as string };
       if (e.worktrees !== undefined) {
         const wt = e.worktrees as Record<string, unknown>;
@@ -103,7 +120,7 @@ export function parseConfig(input: unknown): DaemonConfig {
           worktrees[n] = p as string;
         }
       }
-      return { name: e.name as string, path: e.path as string, worktrees };
+      return { name: e.name as string, path: e.path as string, worktrees, ...(registryId !== undefined ? { registryId } : {}), ...(identity !== undefined ? { registryIdentity: identity } : {}) };
     });
   }
   return cfg;

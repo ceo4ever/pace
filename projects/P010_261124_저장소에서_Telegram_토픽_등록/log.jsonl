@@ -1,1 +1,14 @@
 {"ts":"2026-11-24T07:10:59.254Z","p":"P010","type":"question","by":"coordinator","msg":"General의 경로 포함 /new에 활성 전역 등록부 검증을 적용할지 사용자 결정 요청"}
+{"ts":"2026-11-24T07:11:11.123Z","p":"P010","type":"start","by":"cli","msg":"start: codex · launch launched","ok":true,"src":"지금 세션","data":{}}
+{"ts":"2026-11-24T07:11:11.124Z","p":"P010","type":"decision","by":"cli","msg":"착수 결정 — 출처에 따라 바로 수행","src":"[BL261124_03_저장소에서_Telegram_토픽_등록](../../backlogs/BL261124_0","ref":"PROJECT.md"}
+{"ts":"2026-11-24T07:11:29.918Z","p":"P010","t":"T01","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-24T07:12:53.262Z","p":"P010","t":"T01","type":"question","by":"agent","msg":"독립 사전·사후 검토의 실행 주체와 검토 도구 사용 허용 범위 확인"}
+{"ts":"2026-11-24T07:13:21.421Z","p":"P010","t":"T01","type":"answer","by":"agent","msg":"워크트리 PM이 비밀 없는 자료로 독립 검토를 진행하고 운영 시험과 /new 권한은 사용자 결정을 기다린다"}
+{"ts":"2026-11-24T07:13:21.586Z","p":"P010","t":"T01","type":"decision","by":"agent","msg":"워크트리 PM이 독립 검토를 주관하며 검토 입력은 프로젝트 파일과 비밀 없는 시험 증거로 한정","src":"main 판단"}
+{"ts":"2026-11-24T07:15:44.016Z","p":"P010","t":"T01","type":"review","by":"agent","msg":"사전 reviewer pass blocking 0 should_fix 5","ref":"tasks/T01_전역_등록부_기준_daemon_워크스페이스_추가/review-records/R1.json","data":{"blocking":0,"should_fix":5,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-24T07:32:56.619Z","p":"P010","t":"T01","type":"review","by":"agent","msg":"사후 reviewer 두 단계 pass blocking 0 should_fix 0","ref":"tasks/T01_전역_등록부_기준_daemon_워크스페이스_추가/evidence/reviewer-stage2.json","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-24T07:43:09.129Z","p":"P010","t":"T01","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 · 로컬 63개 및 T-1~T-4 통과","ref":"tasks/T01_전역_등록부_기준_daemon_워크스페이스_추가/evidence/tester-orca-r3.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-24T07:43:09.652Z","p":"P010","t":"T01","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 · 보강 시험 계약 대조","ref":"tasks/T01_전역_등록부_기준_daemon_워크스페이스_추가/evidence/reviewer-r3-stage2.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-24T07:46:23.065Z","p":"P010","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-24T07:46:23.256Z","p":"P010","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-24T07:46:23.256Z","p":"P010","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}

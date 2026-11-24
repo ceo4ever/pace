@@ -18,6 +18,10 @@ export interface WorkspaceCandidate {
 
 const ID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
+export function isWorkspaceId(value: unknown): value is string {
+  return typeof value === "string" && ID.test(value);
+}
+
 function registryDir(home: string, create: boolean): string {
   const dir = join(home, "projects");
   if (create && !existsSync(dir)) mkdirSync(dir, { recursive: true });
@@ -132,13 +136,14 @@ export function activateCandidate(home: string, id: string, maxChars: number): W
 }
 
 /** 활성 레코드는 정의를 먼저 검증하고 마지막에 원자적으로 생성한다. */
-export function registerWorkspace(home: string, input: Omit<WorkspaceCandidate, "id" | "active">, maxChars: number): WorkspaceCandidate {
+export function registerWorkspace(home: string, input: Omit<WorkspaceCandidate, "id" | "active">, maxChars: number, allowInactiveCandidate = true): WorkspaceCandidate {
   const path = canonicalPath(input.path);
   if (!input.name.trim()) throw new Error("이름이 비었다");
   if ([path, input.name, input.summary].some((v) => hasSecret(v))) throw new Error("비밀로 보이는 값을 등록할 수 없다");
   const dir = registryDir(home, true);
   const existing = listCandidates(home).find((candidate) => samePath(candidate, path));
   if (existing?.active) throw new Error("중복 워크스페이스 경로");
+  if (existing && !allowInactiveCandidate) throw new Error("비활성 워크스페이스 후보는 추가할 수 없다");
   const paceDir = join(path, ".pace");
   if (!existsSync(paceDir)) mkdirSync(paceDir);
   const stat = lstatSync(paceDir);
@@ -219,6 +224,31 @@ function assertCandidateDefinition(candidate: WorkspaceCandidate, maxChars: numb
   const text = readAgentFile(candidate.path, maxChars);
   if (validateAgentDefinition(text, maxChars).workspaceId !== candidate.id) throw new Error("AGENT와 등록부 ID가 일치하지 않는다");
   return text;
+}
+
+export function findWorkspaceRegistration(home: string, root: string): WorkspaceCandidate | null {
+  const path = canonicalPath(root);
+  const matches = listCandidates(home).filter((candidate) => samePath(candidate, path));
+  if (matches.length > 1) throw new Error("워크스페이스 등록이 중복되었다");
+  return matches[0] ?? null;
+}
+
+export function readWorkspaceRegistration(home: string, id: string): WorkspaceCandidate | null {
+  const file = candidateFile(registryDir(home, false), id);
+  try { return readCandidate(file, id); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return null; throw error; }
+}
+
+export function workspaceDefinitionId(root: string, maxChars: number): string | null {
+  try { lstatSync(join(root, ".pace", "AGENT.md")); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return null; throw error; }
+  return validateAgentDefinition(readAgentFile(root, maxChars), maxChars).workspaceId;
+}
+
+export function verifyWorkspaceRegistration(candidate: WorkspaceCandidate, path: string, maxChars: number): void {
+  if (!candidate.active) throw new Error("비활성 워크스페이스 등록");
+  if (candidate.path !== path || canonicalPath(path) !== path) throw new Error("등록부 경로가 바뀌었다 — workspace add로 다시 승인한다");
+  assertCandidateDefinition(candidate, maxChars);
 }
 
 /** 등록·활성화된 현재 워크스페이스의 검증된 정의만 돌려준다. */
