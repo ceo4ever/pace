@@ -1,0 +1,31 @@
+{
+  "id": "a15d9e52-1ccf-4e1e-8298-93a802e6df4a",
+  "ok": true,
+  "result": {
+    "repo": {
+      "id": "b0b75edb-4193-4c44-85be-b8f6193c0c64",
+      "path": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-claude-UC8A4V/app",
+      "displayName": "app",
+      "badgeColor": "#737373",
+      "addedAt": 1795481930753,
+      "kind": "git",
+      "externalWorktreeVisibilityLegacy": false,
+      "externalWorktreeVisibility": "show",
+      "upstream": null,
+      "gitRemoteIdentity": null,
+      "gitUsername": "",
+      "hookSettings": {
+        "mode": "auto",
+        "setupRunPolicy": "run-by-default",
+        "setupAgentStartupPolicy": "start-immediately",
+        "scripts": {
+          "setup": "",
+          "archive": ""
+        }
+      }
+    }
+  },
+  "_meta": {
+    "runtimeId": "cb6baaeb-4058-4c7c-aed1-6cd37b0640d5"
+  }
+}

@@ -15,3 +15,7 @@
 - 스택·형식: TypeScript
 
 `pace mcp --workspace <경로> --access read-only|write` — ACP 세션에 `mcpServers`로 주입되는 stdio MCP 서버. 워크스페이스·접근 권한은 기동 때 고정하고 도구마다 서버가 강제한다: 읽기 전용이면 변경 도구(`memory_add`) 직접 호출도 거부, 다른 워크스페이스·링크·하드링크·상한 초과 거부(`safefs.ts`의 `scan` 앞뒤 비교). 도구: 메모리 조회·추가, 프로젝트·백로그 조회, 브레인 검색. 쓰기 세션과 다른 세션의 동시 실행 금지는 호출자(daemon)의 전제
+
+## 프로젝트의 팀 구성원 선택
+
+`pace project start P123 --agent codex --role builder`에서 agent는 도구, role은 저장소 팀 구성원 이름이다. `team new --role maker`의 role은 역할 종류다. 프로젝트 작업자는 원본을 읽는 prompt와 명시적인 model/effort 인자를 받으며, 이 경로는 native subagent 선택·권한 집행과 다르다. 기존 worktree 재실행은 `--launch`를 쓰고, 선택·재현·시작 기록의 전달/실제 관측 구별은 [TEAM](TEAM.md#프로젝트-작업자-역할)을 따른다.

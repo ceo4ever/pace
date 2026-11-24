@@ -1,0 +1,17 @@
+{
+  "marker": "P009-T03-claude-148226ae",
+  "role": "probe-maker",
+  "roleHash": "c7a0832013876c7a8ed92222eaa0f33a9e5ea461c80b8f8ff888ed97fc17538c",
+  "files": ["score.ts", "score.test.ts"],
+  "test": {
+    "command": "node --test score.test.ts",
+    "node": "v24.22.3",
+    "tests": 3,
+    "pass": 3,
+    "fail": 0
+  },
+  "initial": {
+    "commandVPace": "/Users/lucas/.pace/bin/pace",
+    "PACE_HOME": "없음"
+  }
+}

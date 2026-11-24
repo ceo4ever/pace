@@ -1,3 +1,4 @@
+import { validStartRole, type StartRoleRecord } from "./role-record.ts";
 import { appendFileSync, constants, openSync, closeSync, fstatSync, lstatSync, readFileSync } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
 import { writeFileAtomic } from "../core/fsutil.ts";
@@ -9,6 +10,7 @@ export type LogRecipient = "captain" | "coordinator";
 export interface ProjectEvent {
   ts: string; p: string; t?: string; type: LogType; by: LogActor; msg: string;
   to?: LogRecipient;
+  role?: StartRoleRecord;
   ok?: boolean; src?: string; ref?: string; data?: Record<string, number>;
 }
 export class ProjectLogError extends Error {}
@@ -16,6 +18,7 @@ function validText(text: unknown, limit: number): text is string {
   return typeof text === "string" && text.trim().length > 0 && text.length <= limit && !/[\r\n\x00-\x1f\x7f]/.test(text) && !hasSecret(text);
 }
 export function validateEvent(event: ProjectEvent): void {
+  if (event.role !== undefined && (event.type !== "start" || !validStartRole(event.role))) throw new ProjectLogError("역할 기록은 start의 유효한 전달 설정이어야 한다");
   if (event.to !== undefined && (!["question", "escalation"].includes(event.type) || !["captain", "coordinator"].includes(event.to))) throw new ProjectLogError("수신자는 question·escalation의 captain|coordinator만 허용한다");
   if (!/^P\d{3}$/.test(event.p) || (event.t !== undefined && !/^T\d{2}$/.test(event.t)) || !LOG_TYPES.includes(event.type) || !["cli", "agent", "coordinator", "user"].includes(event.by)) throw new ProjectLogError("사건 번호·종류·작성자가 올바르지 않다");
   if (!/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/.test(event.ts) || !Number.isFinite(Date.parse(event.ts))) throw new ProjectLogError("사건 시각은 시간대를 포함한 ISO여야 한다");
@@ -53,7 +56,7 @@ function openLog(path: string, write: boolean, retries = 0): number {
 export function recordEvent(dir: string, event: ProjectEvent): boolean {
   try {
     validateEvent(event); assertDir(dir);
-    const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
+    const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
     const fd = openLog(join(dir, "log.jsonl"), true);
     try {
       const stat = fstatSync(fd); if (!stat.isFile() || stat.nlink !== 1) throw new ProjectLogError("로그는 일반 파일이어야 한다");

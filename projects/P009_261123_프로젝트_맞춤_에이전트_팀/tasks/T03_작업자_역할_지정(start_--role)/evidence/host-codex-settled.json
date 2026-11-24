@@ -1,0 +1,218 @@
+{
+  "id": "8bd4f679-80e4-4ef5-93c7-971b3f3a352c",
+  "ok": true,
+  "result": {
+    "dispatch": {
+      "id": "ctx_37fdf8cbc599",
+      "runId": "run_5133381ff64d",
+      "taskId": "task_6aaab1072e09",
+      "task_id": "task_6aaab1072e09",
+      "contractVersion": 1,
+      "assigneeHandle": "term_1f931de4-7fcb-496f-ac9c-6db048fc6844",
+      "assigneePaneKey": "8f46bbaf-be20-4b99-bbde-e29c2113283f:9b486401-b4f6-4ad2-a972-8f5336bbb540",
+      "processIncarnation": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001@@96d3b151:e28a6eb4-6dbf-4df2-8360-13ca461429e9",
+      "capabilityRevokedAt": "2026-11-23T23:56:56.511Z",
+      "retryOfDispatchId": null,
+      "creatorDispatchId": "ctx_53dd604b534f",
+      "followUpOf": null,
+      "hostScope": {
+        "kind": "local",
+        "hostId": "local"
+      },
+      "status": "completed",
+      "failureCount": 0,
+      "lastFailure": null,
+      "terminationReason": null,
+      "depth": 2,
+      "dispatchedAt": "2026-11-23 23:54:13",
+      "completedAt": "2026-11-23T23:56:56.511Z",
+      "createdAt": "2026-11-23 23:54:13",
+      "lastHeartbeatAt": null
+    },
+    "worker": {
+      "dispatchId": "ctx_37fdf8cbc599",
+      "runtimeEpoch": "cb6baaeb-4058-4c7c-aed1-6cd37b0640d5",
+      "state": "succeeded",
+      "stage": "settled",
+      "worktreeId": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001",
+      "agentTerminalHandle": "term_1f931de4-7fcb-496f-ac9c-6db048fc6844",
+      "setupState": "not_applicable",
+      "effects": [
+        {
+          "kind": "worktree",
+          "action": "reused",
+          "id": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001"
+        },
+        {
+          "kind": "setup",
+          "action": "not_applicable",
+          "state": "not_applicable"
+        },
+        {
+          "kind": "terminal",
+          "role": "agent",
+          "action": "created",
+          "id": "term_1f931de4-7fcb-496f-ac9c-6db048fc6844",
+          "surface": "visible"
+        },
+        {
+          "kind": "dispatch_input",
+          "role": "agent",
+          "id": "term_1f931de4-7fcb-496f-ac9c-6db048fc6844",
+          "state": "accepted"
+        }
+      ],
+      "residualResources": [
+        {
+          "kind": "terminal",
+          "role": "agent",
+          "action": "created",
+          "id": "term_1f931de4-7fcb-496f-ac9c-6db048fc6844",
+          "surface": "visible"
+        }
+      ],
+      "startOptions": {
+        "worktree": "path:/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001",
+        "mode": {
+          "mode": "terminal",
+          "preferred": "terminal",
+          "reason": "user_default",
+          "detail": "Started a terminal agent worker, the default for new agent tabs in your settings."
+        },
+        "resolvedWorktreeId": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001",
+        "name": null,
+        "repo": null,
+        "baseBranch": null,
+        "terminal": null,
+        "agent": "codex",
+        "launch": {
+          "requested": {
+            "agent": "codex",
+            "model": "gpt-6.2-sol",
+            "effort": "medium"
+          },
+          "effective": {
+            "agent": "codex",
+            "model": "gpt-6.2-sol",
+            "effort": "medium"
+          }
+        },
+        "timeoutMs": 600000,
+        "setup": "not_applicable",
+        "setupSource": "existing_worktree"
+      },
+      "lastError": null,
+      "createdAt": "2026-11-23 23:54:13",
+      "updatedAt": "2026-11-23T23:56:56.511Z"
+    },
+    "projection": {
+      "id": "ctx_37fdf8cbc599",
+      "dispatchId": "ctx_37fdf8cbc599",
+      "taskId": "task_6aaab1072e09",
+      "runId": "run_5133381ff64d",
+      "role": "worker",
+      "parent": {
+        "taskId": "task_e4aa5d317c6e"
+      },
+      "provider": {
+        "id": "codex",
+        "model": "gpt-6.2-sol"
+      },
+      "host": {
+        "kind": "local",
+        "id": "local"
+      },
+      "workspace": {
+        "id": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001",
+        "kind": "folder_or_worktree"
+      },
+      "stage": {
+        "worker": "succeeded",
+        "dispatch": "completed",
+        "detail": "settled",
+        "activity": "done"
+      },
+      "outcome": "succeeded",
+      "liveness": {
+        "verdict": "live",
+        "observedAt": 1795478221795,
+        "source": "agent_status"
+      },
+      "evidence": {
+        "durable": true,
+        "liveStatus": "fresh",
+        "lastObservedAt": 1795478221795
+      },
+      "resource": {
+        "state": "owned",
+        "id": "wtr_418256da8e99",
+        "ownerDispatchId": "ctx_37fdf8cbc599",
+        "releaseState": "not_requested",
+        "terminalState": "reclaimable"
+      },
+      "autoReleaseAt": "2026-11-23T23:58:56Z",
+      "nextAction": {
+        "kind": "none",
+        "argv": []
+      },
+      "attention": {
+        "categories": [],
+        "requiresAction": false
+      }
+    },
+    "terminal": {
+      "handle": "term_1f931de4-7fcb-496f-ac9c-6db048fc6844",
+      "ptyId": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001@@96d3b151",
+      "incarnationId": "e28a6eb4-6dbf-4df2-8360-13ca461429e9",
+      "orphaned": false,
+      "worktreeId": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001",
+      "worktreePath": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001",
+      "branch": "refs/heads/project/P001",
+      "tabId": "8f46bbaf-be20-4b99-bbde-e29c2113283f",
+      "leafId": "9b486401-b4f6-4ad2-a972-8f5336bbb540",
+      "title": "작성 P009 T03 관측 산출물 | P001",
+      "paneTitle": "worker-task_6aaab1072e09",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1795478221817,
+      "preview": "ivate/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001 · 작성 P009 T03 관\n측 산출물 · Full Access · Context 6% used · weekly 82% left\n← for agents · ? for shortcuts                                                                                 ⚠ 1 warning · f2 to view",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    },
+    "observation": {
+      "status": "live",
+      "exactWorker": true,
+      "agentWait": null
+    },
+    "terminalResource": {
+      "id": "wtr_418256da8e99",
+      "ownershipState": "owned",
+      "releaseState": "not_requested",
+      "retainedReason": null,
+      "terminalHandle": "term_1f931de4-7fcb-496f-ac9c-6db048fc6844",
+      "worktreeId": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001",
+      "endpointId": "cb6baaeb-4058-4c7c-aed1-6cd37b0640d5",
+      "endpointIncarnation": "4af15781-6dfb-4b4c-87b4-ef5bbf829bfd::/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-jjKIAl/app.wt/P001@@96d3b151:e28a6eb4-6dbf-4df2-8360-13ca461429e9",
+      "originDispatchId": "ctx_37fdf8cbc599",
+      "ownerDispatchId": "ctx_37fdf8cbc599",
+      "releaseRequestedAt": null,
+      "releaseCompletedAt": null,
+      "releaseError": null,
+      "recoveryAttemptCount": 0,
+      "lastRecoveryAt": null,
+      "autoReleaseAt": "2026-11-23T23:58:56Z",
+      "archive": {
+        "source": null,
+        "status": null
+      }
+    },
+    "autoReleaseAt": "2026-11-23T23:58:56Z",
+    "coordinatedFrom": null
+  },
+  "_meta": {
+    "runtimeId": "cb6baaeb-4058-4c7c-aed1-6cd37b0640d5"
+  }
+}

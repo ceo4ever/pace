@@ -1,0 +1,82 @@
+✖ project role: role-free legacy PROJECT may be large and hardlinked (535.101167ms)
+✖ project role: normalization guidance names CRLF to LF UTF-8 SHA256 (342.904208ms)
+✖ project role: unsafe settings reach semantic preflight and never create a worker (2468.470959ms)
+✖ project role: secret-looking member names never reach logs or diagnostics (493.044792ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3938.58775
+
+✖ failing tests:
+
+test at test/project-role.test.ts:190:1
+✖ project role: role-free legacy PROJECT may be large and hardlinked (535.101167ms)
+  AssertionError [ERR_ASSERTION]: pace: 팀 경로는 링크 없는 단일 링크 일반 파일이어야 한다: projects/P001_261124_role-test/PROJECT.md
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/project-role.test.ts:195:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/project-role.test.ts:199:1
+✖ project role: normalization guidance names CRLF to LF UTF-8 SHA256 (342.904208ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /CRLF.*LF.*UTF-8.*SHA256/. Input:
+  
+  '먼저 .pace/team/builder.md를 읽고 팀 구성원 builder의 정의대로 일한다(시작 검증 SHA256 b87ad262d283b585e6f838aaa7782162cca216cc3f5e40c5d6ff98504d5ab599). 원본을 읽을 수 없거나 지문이 다르거나 역할을 적재하지 못하면 일반 역할로 대신 수행하지 말고 보류하여 코디네이터에게 올린다. model/effort는 실행 인자로 별도 전달한 요청값이며 tools는 안내이고 권한 제한이 적용된 것은 아니다.'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/project-role.test.ts:202:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '먼저 .pace/team/builder.md를 읽고 팀 구성원 builder의 정의대로 일한다(시작 검증 SHA256 b87ad262d283b585e6f838aaa7782162cca216cc3f5e40c5d6ff98504d5ab599). 원본을 읽을 수 없거나 지문이 다르거나 역할을 적재하지 못하면 일반 역할로 대신 수행하지 말고 보류하여 코디네이터에게 올린다. model/effort는 실행 인자로 별도 전달한 요청값이며 tools는 안내이고 권한 제한이 적용된 것은 아니다.',
+    expected: /CRLF.*LF.*UTF-8.*SHA256/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/project-role.test.ts:205:1
+✖ project role: unsafe settings reach semantic preflight and never create a worker (2468.470959ms)
+  AssertionError [ERR_ASSERTION]: C1 control
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/project-role.test.ts:222:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/project-role.test.ts:226:1
+✖ project role: secret-looking member names never reach logs or diagnostics (493.044792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/project-role.test.ts:231:45)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

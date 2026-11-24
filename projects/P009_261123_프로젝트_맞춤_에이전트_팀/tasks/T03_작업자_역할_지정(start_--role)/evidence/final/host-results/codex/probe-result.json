@@ -1,0 +1,15 @@
+{
+  "marker": "P009-T03-codex-10876868",
+  "role": "probe-maker",
+  "files": ["score.ts", "score.test.ts"],
+  "test": {
+    "command": "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node --test score.test.ts",
+    "exitCode": 0,
+    "passed": 3,
+    "failed": 0
+  },
+  "initialEnvironment": {
+    "command -v pace": "/Users/lucas/.pace/bin/pace",
+    "PACE_HOME": null
+  }
+}

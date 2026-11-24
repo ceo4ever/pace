@@ -1,0 +1,17 @@
+{
+  "base_main": "ab341321eac0c7ec9918a4d7e95ad04133992956",
+  "integrated": true,
+  "commits": [
+    "8238355 feat(P009/T02): 팀 원본과 Claude·Codex 동기화 및 등급 설정",
+    "d55e71e feat(P009/T01): 역할 적재 실측과 수신자 로그·도입 전 기준선",
+    "fd8f92c test(playbook): 승인 전후 캡처 viewport 고정과 해시 거부 검증"
+  ],
+  "conflict_resolution": "main 정책과 P009 수신자 계약 모두 유지, brain 로그 병합, 메모리 목차·대시보드는 CLI 재생성, 작업 worktree status는 P009 유지",
+  "full_check": {
+    "tests": 1053,
+    "pass": 1036,
+    "fail": 0,
+    "skipped": 17,
+    "raw_sha256": "9e811db4be4b66a23d235077b508cbdbc5193fa86fee8729bfd5f77e03cf4c4a"
+  }
+}

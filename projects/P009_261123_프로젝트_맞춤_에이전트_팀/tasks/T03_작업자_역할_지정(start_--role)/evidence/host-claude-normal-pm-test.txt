@@ -1,0 +1,11 @@
+✔ 정상 값은 곱을 반환한다 (0.275667ms)
+✔ 0을 보존한다 (0.044792ms)
+✔ 음수를 보존한다 (0.038917ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60.59575

@@ -14,6 +14,8 @@
 
 ## 지표와 사건 기록
 
+프로젝트 작업자 역할은 `start --role <팀 구성원 이름>` > PROJECT 머리의 `작업자 역할` > 없음으로 고른다. 기존 worktree에 명시 역할을 적용하려면 `--launch`가 필요하다. 원본 적재와 tier 인자·시작 기록의 요청/관측 구별·재개/복구 경계는 [TEAM의 프로젝트 작업자 역할](TEAM.md#프로젝트-작업자-역할)을 따른다. 역할 미지정은 기존 경로이고 자동 lead는 없다.
+
 - 지표: `pace project stats P### [--json]` — 프로젝트·태스크 시간, 도구별 토큰, 게이트 실패, 리뷰 지적 수·개선 후보. main에서도 소유 worktree를 조회한다. `projects/P###_…/log.jsonl`은 커밋하는 사건 기록(`{ts,p,t?,type,by,msg,ok?,src?,ref?,data?,to?}` — 시간대 포함 ISO·작성자 cli/agent/coordinator/user·짧은 메시지·수치 data)이며 기록 오류는 명령을 막지 않는다. finish·merge는 프로젝트의 `METRICS.md`(프로젝트 기준·태스크 기준·태스크 밖 집계)와 `projects/METRICS.md`(비교표)를 자동 생성한다. PROJECT-CLOSE `## 지표`는 METRICS.md 링크와 에이전트 해석 1~3줄이며 누락 시 finish 실패. 개선 후보를 메모리·브레인으로 올릴지는 사람이 고른다
 - 새 TASK의 `TASK 형식: v2`는 증명 범위와 비어 있지 않은 판정 주체를 요구한다(기준·테스트 앞 배치는 템플릿 관례이며 게이트의 순서 검사는 아니다). 게이트·verify·수동 reviewer는 같은 표지로 나누며 표지 없는 옛 TASK에는 새 규칙을 강제하지 않는다. 구조 검사와 의미 판정의 경계는 reviewer.md의 TASK 증명 범위 절을 따른다. 표지 제거·허위 기록의 우회와 의미·진정성은 기계가 보증하지 않는다.
 - 새 태스크의 `사전 검토: v1`은 `PRE-REVIEW.json`의 마지막 판정·대상 해시·증거를 check/done/finish에서 확인한다. 작성법과 교차 대체 조건은 `skills/pace-project-dev/references/reviewer.md`의 사전 검토 기록 v1을 따른다. 과거 마커 없는 태스크는 기존 방식이며, 마커와 기록 삭제·허위 기록 우회 및 검토 의미·실제 선행 시점은 기계가 보증하지 않는다.

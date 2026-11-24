@@ -1,0 +1,28 @@
+[
+  {
+    "agent": "claude",
+    "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-claude-UC8A4V/app",
+    "home": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-claude-UC8A4V/pace-home",
+    "worktree": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-claude-UC8A4V/app.wt/P001",
+    "projectDir": "P001_261124_P009-T03-claude-final-probe",
+    "role": "probe-maker",
+    "marker": "P009-T03-claude-ff0e00d5",
+    "role_sha256": "82dddd49979009889df6ed81ce1622997e271850afacc187b796b3a8900fa625",
+    "source_cli": "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+    "remote": "",
+    "placement": "local"
+  },
+  {
+    "agent": "codex",
+    "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-eJxbxA/app",
+    "home": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-eJxbxA/pace-home",
+    "worktree": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-eJxbxA/app.wt/P001",
+    "projectDir": "P001_261124_P009-T03-codex-final-probe",
+    "role": "probe-maker",
+    "marker": "P009-T03-codex-10876868",
+    "role_sha256": "f3920f0ecde912a3ccbfb6f7910edfc9d8a5de7547a90dfc623d00d5e32d4677",
+    "source_cli": "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+    "remote": "",
+    "placement": "local"
+  }
+]

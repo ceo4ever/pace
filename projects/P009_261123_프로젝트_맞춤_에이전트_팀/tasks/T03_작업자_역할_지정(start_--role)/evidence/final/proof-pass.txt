@@ -1,0 +1,1 @@
+pass: two real host artifacts/tests, source-only markers, actual runtime models/effort, all 10 messages, handoffs/no signoff, settled outcomes and nondefault low effort

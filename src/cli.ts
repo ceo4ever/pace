@@ -668,6 +668,7 @@ function projectCommand(args: string[]): number {
       yes: { type: "boolean" },
       base: { type: "string" },
       agent: { type: "string" },
+      role: { type: "string" },
       model: { type: "string" },
       effort: { type: "string" },
       json: { type: "boolean" },
@@ -682,6 +683,7 @@ function projectCommand(args: string[]): number {
       launch: { type: "boolean" },
     },
   });
+  if (values.role !== undefined && sub !== "start") throw new UsageError("project --role은 start의 팀 구성원 이름이다");
   const cwd = values.cwd ?? process.cwd();
   const out = (text: string) => process.stdout.write(`${text}\n`);
   const need = (n: number, usage: string) => {
@@ -699,7 +701,7 @@ function projectCommand(args: string[]): number {
       }
       case "start": {
         need(1, "pace project start <P###>");
-        const r = startProject(repo(), positionals[0]!, { launch: !values["no-launch"], relaunch: values.launch, agent: values.agent, model: values.model, effort: values.effort });
+        const r = startProject(repo(), positionals[0]!, { launch: !values["no-launch"], relaunch: values.launch, agent: values.agent, role: values.role, model: values.model, effort: values.effort });
         if (!r.created && r.launch === null) {
           out(`이미 있음 — 이어서: ${r.ref.worktree} (작업자 세션을 다시 띄우려면 --launch)`);
           return 0;

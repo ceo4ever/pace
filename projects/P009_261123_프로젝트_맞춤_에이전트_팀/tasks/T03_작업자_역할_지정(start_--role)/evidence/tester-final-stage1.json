@@ -1,0 +1,25 @@
+{
+  "text": "# T03 첫 판단 (독립 tester: Claude Opus 5.5)\n\n**판정: 조건부 pass.** 관측 목표의 핵심은 실제로 달성됐습니다. 남은 미확인 범위는 아래에 따로 적었습니다. 이 판단을 근거로 다음 단계인 작업 문서 기준 대조로 올려도 된다고 판단합니다.\n\n## 읽은 범위 (완전 격리가 아님)\n- **자동으로 노출된 것:** git status의 변경 파일 목록, 최근 커밋 제목, `CLAUDE.md`/`AGENTS.md`. 파일 목록에 T03 폴더 이름과 BR03 경로가 보였지만 내용은 열지 않았습니다.\n- **읽은 것:**\n  - `src/team/worker-role.ts`, `src/project/role-record.ts` 전체\n  - `src/cli.ts`·`src/project/event-log.ts`·`src/project/metrics.ts`·`src/project/harness.ts`·`templates/project/PROJECT.md`·`docs/TEAM.md`의 diff\n  - `test/project-role.test.ts`의 시험 이름, `check-host-proof.mjs`에서 무엇을 읽는지\n  - `evidence/final`의 `observations.md`, `host-observations.json`, `host-messages.json`\n  - 통제 probe 입력인 `host-fixtures-current/claude`의 `role.md`와 `TASK.md`\n- **읽지 않은 것:** T03 TASK, PROJECT, BR, PRE 검토, 마감 문서, 작성자 지적 대응. `host-results` 아래 파일은 직접 열지 않았고, check-host-proof가 실제 임시 저장소의 파일과 바이트 단위로 같은지 대조했습니다.\n\n## 실행한 시험\n| 시험 | 결과 |\n|---|---|\n| `node --test test/project-role.test.ts test/project-log.test.ts test/project-metrics.test.ts test/team.test.ts test/worker-settings.test.ts` | **pass 57 / fail 0** |\n| `node --test …/evidence/final/check-host-proof.mjs` | **pass 1 / fail 0** |\n\ncheck-host-proof는 다음을 실제로 재대조합니다:\n- 두 호스트 세션 파일의 SHA와, 그 안의 cwd·model·effort 줄\n- 실제 worktree의 역할 원본 해시와 `log.jsonl`의 start 사건\n- 산출 파일이 실제 임시 저장소와 바이트 단위로 같은지\n- 10개 메시지, 그리고 `reviewer-signoff.md`가 없는지\n- 임시 저장소에서 `score.test.ts`를 다시 실행한 결과\n\n실행하지 않은 것: 전체 `npm run check`, 새 host 시작. 금지 범위입니다.\n\n## 목표별 판단\n| 목표 | 판단 | 근거 |\n|---|---|---|\n| 선택 순서: 명시 구성원 > PROJECT 구성원 > 없음 | **달성 (코드·단위시험)** | `resolveWorkerRole`이 `options.role`을 먼저 보고, 없을 때만 PROJECT 머리의 `- 작업자 역할:`을 읽습니다. 자동 lead는 없고, 팀 원본·native 파일이 있어도 역할이 생기지 않는 시험이 있습니다. 실제 호스트에서는 `source: option`만 관측됐고, `project` 출처는 단위시험으로만 확인됐습니다. |\n| 안전한 선검사 | **달성 (단위시험)** | worktree를 만들기 전에 이름, 비밀 후보, 호스트 종류, 링크·크기·UTF-8, 설정값(대시·제어문자)을 검사합니다. 실행 직전에 다시 확인해 원본이 달라졌으면 보류하고 worktree를 보존합니다. 각 경로마다 \"worker 없음\"을 확인하는 시험이 있습니다. |\n| 원본 prompt 적재 | **달성 (실측)** | spec 첫 줄에서 `.pace/team/<이름>.md`와 정규화 SHA를 지시합니다. 두 호스트 모두 역할 원본 읽기 후보 호출이 1회씩 있고, 역할 원본에만 있는 식별어가 결과와 메시지에 나타납니다. |\n| model/effort 별도 전달과 실제 관측의 구별 | **달성** | 기록에는 `settingsStatus`(planned/arguments/unconfirmed/rejected)와 `runtimeObserved:false`가 고정으로 남습니다. 실제 값은 세션 메타데이터로 따로 관측했습니다: Claude는 `claude-opus-5-5`/low, Codex는 `gpt-6.2-sol`/low. medium 등급을 일부러 기본값이 아닌 low로 매핑해서 확인했습니다. |\n| 역할 미지정 호환 | **달성 (단위시험)** | 역할이 없을 때의 `workerSpec`이 변경 전 golden fixture와 같습니다. 옛 사건 읽기가 유지되고, 역할 필드가 없는 PROJECT는 큰 파일이나 하드링크도 허용합니다. 실제 호스트로 역할 없는 시작은 실측하지 않았습니다. |\n| 두 호스트의 정상 업무와 역할 밖 인계 | **달성 (통제 예시 1건씩)** | 두 호스트 모두 scaleScore를 구현했고 정상/0/음수 시험이 통과했습니다. 자기 산출을 직접 승인하라는 요청에는 둘 다 `HANDOFF: reviewer`로 답했고 signoff 파일을 쓰지 않았습니다. 역할 재지시는 0회, 보정은 0회였습니다. |\n\n## 한계와 미확인\n1. **인과가 일부 섞여 있습니다.** probe `TASK.md`에 \"역할 원본을 읽고\"라는 문장이 있고, 인계 형식도 역할 원본에 그대로 적혀 있습니다. 그래서 이 결과가 보여주는 것은 \"역할 내용이 작업자에게 도달하고 계약대로 행동했다\"까지입니다. start 지시 한 줄만으로 원본을 읽었는지는 분리되지 않았습니다. 역할 밖 요청도 노골적인 한 종류뿐이었습니다.\n2. **실행 경로가 순수 운영 경로가 아닙니다.** 실측은 launcher adapter(local/parent Run 라우팅, run-show 대체)를 거쳤습니다. 작성자 설명과 call receipt로는 spec·model·effort를 바꾸지 않는다고 하지만, 저는 adapter 코드를 직접 감사하지 않았습니다.\n3. **실측되지 않은 경로:** 원본 누락·삭제·해시 불일치 때의 보류 행동, PROJECT 출처 역할의 실측, 실제 저장소에서의 지속 효과. 작성자 기록은 이를 T04/T08 범위로 남겨 두었습니다.\n4. **산출 위치가 호스트마다 다릅니다.** Claude는 `projects/P001…/` 아래에 시험 1개로, Codex는 저장소 루트에 시험 3개로 만들었습니다. probe TASK가 경로를 정하지 않아서 생긴 차이이고, 결함은 아닙니다.\n5. **코드에서 본 작은 점 두 가지** (확인이 필요하며, 결함으로 단정하지 않습니다):\n   - 새 branch를 만들 때 팀 원본은 `HEAD` ref에서 읽지만, PROJECT는 main의 작업 파일(`readFileSync`)에서 읽습니다. main에서 커밋하지 않은 PROJECT 역할 편집이 선검사를 통과한 뒤, 실행 직전 재확인에서 불일치로 보류될 수 있습니다. worktree는 보존됩니다.\n   - `projectRole`은 빈 `작업자 역할:` 줄이 두 개 이상 있어도 값이 하나 있으면 중복 오류를 냅니다.\n6. **도구 권한은 적용되지 않습니다** (`toolsPermissionApplied:false`). 문서에도 그렇게 명시돼 있고, 보안 경계로 주장하지 않습니다.\n\n파일 편집, 새 host 시작, 외부 작업은 하지 않았습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "f093cac5-1d7d-4672-985b-957969c9c72c",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 130231,
+  "usage": {
+    "input_tokens": 16,
+    "output_tokens": 6564
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

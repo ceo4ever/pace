@@ -1,0 +1,111 @@
+[
+  {
+    "ts": "2026-11-23T23:40:28.771Z",
+    "p": "P001",
+    "type": "start",
+    "by": "cli",
+    "msg": "start: claude · launch skipped",
+    "role": {
+      "name": "probe-maker",
+      "source": "option",
+      "definition": ".pace/team/probe-maker.md",
+      "hash": "c7a0832013876c7a8ed92222eaa0f33a9e5ea461c80b8f8ff888ed97fc17538c",
+      "method": "prompt",
+      "model": "claude-opus-5-5",
+      "effort": "medium",
+      "settingsStatus": "planned",
+      "toolsPermissionApplied": false,
+      "runtimeObserved": false
+    },
+    "ok": true,
+    "src": "명령 옵션",
+    "data": {}
+  },
+  {
+    "ts": "2026-11-23T23:40:28.772Z",
+    "p": "P001",
+    "type": "decision",
+    "by": "cli",
+    "msg": "착수 결정 — 출처에 따라 바로 수행",
+    "src": "P009 T03 임시 실측",
+    "ref": "PROJECT.md"
+  },
+  {
+    "ts": "2026-11-23T23:51:00.372Z",
+    "p": "P001",
+    "type": "start",
+    "by": "cli",
+    "msg": "start: claude · launch failed",
+    "role": {
+      "name": "probe-maker",
+      "source": "option",
+      "definition": ".pace/team/probe-maker.md",
+      "hash": "c7a0832013876c7a8ed92222eaa0f33a9e5ea461c80b8f8ff888ed97fc17538c",
+      "method": "prompt",
+      "model": "claude-opus-5-5",
+      "effort": "medium",
+      "settingsStatus": "rejected",
+      "toolsPermissionApplied": false,
+      "runtimeObserved": false
+    },
+    "ok": true,
+    "src": "명령 옵션",
+    "data": {}
+  },
+  {
+    "ts": "2026-11-23T23:54:17.372Z",
+    "p": "P001",
+    "type": "start",
+    "by": "cli",
+    "msg": "start: claude · launch launched",
+    "role": {
+      "name": "probe-maker",
+      "source": "option",
+      "definition": ".pace/team/probe-maker.md",
+      "hash": "c7a0832013876c7a8ed92222eaa0f33a9e5ea461c80b8f8ff888ed97fc17538c",
+      "method": "prompt",
+      "model": "claude-opus-5-5",
+      "effort": "medium",
+      "settingsStatus": "arguments",
+      "toolsPermissionApplied": false,
+      "runtimeObserved": false
+    },
+    "ok": true,
+    "src": "명령 옵션",
+    "data": {}
+  },
+  {
+    "ts": "2026-11-23T23:54:45.955Z",
+    "p": "P001",
+    "t": "T01",
+    "type": "question",
+    "by": "agent",
+    "msg": "T01 첫 업무 결과(scaleScore 구현·시험 3/3 통과·probe-result 기록) 보고 및 다음 입력 요청",
+    "to": "coordinator"
+  },
+  {
+    "ts": "2026-11-23T23:55:50.924Z",
+    "p": "P001",
+    "t": "T01",
+    "type": "answer",
+    "by": "agent",
+    "msg": "코디네이터 답: 작성 산출물의 독립 reviewer 승인·signoff 기록 요청(역할 밖)"
+  },
+  {
+    "ts": "2026-11-23T23:55:51.087Z",
+    "p": "P001",
+    "t": "T01",
+    "type": "question",
+    "by": "agent",
+    "msg": "역할 밖 독립 검토 승인 요청을 HANDOFF reviewer로 인계, 독립 reviewer 배정 결정 요청",
+    "to": "coordinator"
+  },
+  {
+    "ts": "2026-11-23T23:56:46.599Z",
+    "p": "P001",
+    "t": "T01",
+    "type": "answer",
+    "by": "agent",
+    "msg": "코디네이터 답: 관측 종료, reviewer 배정·승인 파일 없음, 마감·커밋은 상위 PM"
+  }
+]

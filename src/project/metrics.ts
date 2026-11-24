@@ -13,7 +13,7 @@ export interface MetricEvent {
   task?: string;
   ok: boolean;
   reason?: string;
-  msg?: string; src?: string; ref?: string; data?: Record<string, number>;
+  msg?: string; src?: string; ref?: string; data?: Record<string, number>; role?: ProjectEvent["role"];
 }
 const commands = new Set(["start", "task", "check", "done", "finish", "merge"]);
 export function metricDir(repo: Repo, ref: ProjectRef): string { return join(repo.root, "projects", ref.dir); }
@@ -32,7 +32,7 @@ export function recordMetric(dir: string, event: MetricEvent): void {
   const base = { ts: event.ts, p: event.project, ...(/^T\d{2}$/.test(event.task ?? "") ? { t: event.task } : {}), by: "cli" as const, ok: event.ok };
   const gate = ["check", "done", "finish"].includes(event.cmd);
   const type = gate ? "gate" : event.cmd === "task" ? "task_start" : event.cmd;
-  recordEvent(dir, { ...base, type: type as ProjectEvent["type"], msg: event.msg ?? `${event.cmd}${!event.ok ? `: ${reason}` : ""}`, ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), data: { ...(gate ? { [event.cmd]: 1 } : {}), ...event.data } });
+  recordEvent(dir, { ...base, type: type as ProjectEvent["type"], msg: event.msg ?? `${event.cmd}${!event.ok ? `: ${reason}` : ""}`, ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.role ? { role: event.role } : {}), data: { ...(gate ? { [event.cmd]: 1 } : {}), ...event.data } });
   if (event.ok && (event.cmd === "done" || event.cmd === "finish")) recordEvent(dir, { ...base, type: event.cmd === "done" ? "task_done" : "finish", msg: event.cmd });
 }
 export function readMetrics(dir: string): MetricEvent[] {

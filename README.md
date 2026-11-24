@@ -17,7 +17,7 @@
 - **프로필 = 독립 에이전트**: 프로필마다 정체성(`SOUL.md`), 사용자 정보(`USER.md`), 메모리(개인 규칙 포함), 스킬, 설정을 따로 가진다. 운영 규칙(`RULES.md`)은 모든 프로필에 같고 PACE와 함께 갱신된다.
 - **기본 구성만**: 실행은 각 LLM 도구의 기능(계획 모드, 서브에이전트, 스킬, MCP)을 그대로 쓴다(제공자가 다른 에이전트가 필요할 때만 `pace agent`).
 - **작업 하네스**: 업무를 프로젝트(`projects/P###`)와 태스크로 수행한다. `pace project`가 번호·worktree·게이트(태스크 check, 마감 finish, 병합 merge)를, `pace-project-dev` 스킬이 계약(목적·재료·기준)과 테스트·리뷰·보안 기준을 맡는다. Orca 안에서는 worktree 작업자 세션을 띄우고 main 세션이 코디네이터가 된다.
-- **저장소 팀**: `pace team new athena --role lead`로 `.pace/team` 원본을 만들고 `team list`, `team sync`, `team sync --check --json`으로 Claude·Codex 정의를 관리한다. 등급 매핑과 사용자 파일 보존·권한 경계는 [팀 사용법](docs/TEAM.md)을 따른다. 실제 호스트의 역할·model/effort 적용과 권한 집행은 별도 실측 대상이다.
+- **저장소 팀**: `pace team new athena --role lead`로 `.pace/team` 원본을 만들고 `team list`, `team sync`, `team sync --check --json`으로 Claude·Codex 정의를 관리한다. `pace project start P123 --role athena`로 프로젝트 작업자의 팀 구성원을 지정한다. 등급 매핑·재시작·사용자 파일 보존·권한 경계는 [팀 사용법](docs/TEAM.md)을 따른다. 실제 호스트의 역할·model/effort 적용과 권한 집행은 별도 실측 대상이다.
 - **Canvas 읽기·와이어프레임**: Canvas Studio가 배포한 묶음을 `skills/pace-canvas-skills/` 경로로 통째 설치하고, 에이전트에는 `canvas-read`(Canvas 문서에서 프레임·요소를 정보와 이미지로 꺼냄)·`canvas-wireframe`(좌표 없는 명세로 편집 가능한 `.canvas.json`을 만들고 겹침·잘림을 검사) 두 스킬 입구가 보인다. 묶음 본문·배포 식별자·해시는 Canvas Studio 배포본 그대로 두고 설치 경로만 PACE 이름을 쓴다. 도구는 Node 22 이상과 렌더에 설치된 Google Chrome(또는 `CHROME_PATH`)이 필요하다. 앱 확인과 사람 편집은 수행 여부를 구분해 보고한다.
 - **의도 파악 기획**: `pace-intent` 스킬이 한 줄 요청이나 아이디어에서 목적을 찾아(프로젝트 문서·메모리·브레인·URL·검색 수집 → 한 번에 한 질문 인터뷰) 빈틈 없는 기획으로 만들고, 크기에 맞게 대화·프로젝트·백로그로 넘긴다. 화면 기획은 편집 가능한 Canvas와 유스케이스·IA·흐름·시퀀스·기능 명세 HTML을 사용하며 `pace intent verify`로 의미 연결을 검사한다. `pace intent preview <폴더> [--root <제품 저장소>]`는 Canvas 제품 프레임과 명시한 이동으로 이미지 미리보기를 만들고, `--verify`는 그 출처와 파일이 최신인지 확인한다.
 

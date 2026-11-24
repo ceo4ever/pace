@@ -1,0 +1,25 @@
+{
+  "text": "# T03 독립 tester 첫 판단 재검토: 증명 스크립트 수정 뒤\n\n**판정: pass.** 처음 fail의 원인은 증명 스크립트의 중첩 `node --test` 결함 하나였고, 같은 실행 형태로 다시 돌린 결과 두 호스트 모두 통과했습니다. 최초 `tester-stage1.json`의 fail 원문은 건드리지 않았습니다.\n\n## 바뀐 것과 새 관측 근거\n- **스크립트 변경:** `check-host-proof.mjs` 32–35줄이 자식 실행 환경에서 `NODE_TEST_CONTEXT`만 지웁니다. 종료 0과 `tests 3`/`pass 3` 단언은 그대로입니다.\n- **재실행:** 지난번과 같은 `node --test \".../evidence/check-host-proof.mjs\"`가 **pass 1/1, fail 0**입니다. 마지막에 \"two real host artifacts/tests … all 10 messages …\" 줄이 출력됐습니다.\n- **두 호스트 모두 실행됨:** 이 출력은 for 루프가 끝난 뒤에만 나옵니다. 따라서 지난번에 실행되지 않았던 codex 반복분까지 모든 단언이 실행됐습니다.\n- **두 호스트에서 대조한 항목:**\n  - 영수증 ok, 실행 결과 succeeded\n  - start 기록 상태 순서 planned → rejected → arguments\n  - 마지막 기록의 역할 지문이 임시 worktree의 원본 파일 SHA256과 일치\n  - 세션 메타의 model/effort가 영수증 값과 일치\n  - 역할 원본을 읽은 도구 호출이 있고, bare `pace` 호출은 없으며, 소스 CLI 호출은 모두 임시 홈을 사용\n  - 메시지 10건 중 호스트별 질문 2건(식별어와 HANDOFF 포함), 응답 2건(요청 원문과 일치), `worker_done` 1건\n  - `reviewer-signoff.md` 없음\n  - 실제 worktree의 산출 시험 3/3\n  - 처음 준비 실패 때는 worker-start가 없었음\n- **소스 불변 확인:** 지난번과 비교해 git diff 통계와 새 파일 줄 수(67 / 29 / 188)가 같습니다.\n\n## 처음 판단에서 바뀐 점\n- 바뀐 것은 증명 스크립트 fail → **pass** 하나뿐입니다.\n- 목표별 판단은 유지합니다. 선택 순서, 선검사, 원본 적재, 전달과 실제 관측의 구별, 역할 미지정 호환, 두 호스트의 정상 업무와 인계 모두 달성입니다.\n\n## 유지되는 한계\n1. **스크립트가 직접 재계산하지 않는 부분이 있습니다.** model/effort, 도구 호출 분류, `marker_in_result` 같은 값은 `host-observations.json`에서 미리 추출한 값을 비교합니다. 메시지도 `host-messages.json`에서 읽으며, Orca나 세션 원본을 다시 조회하지 않습니다. 세션 파일 `session_sha256` 재계산은 권한 거부로 하지 못했습니다. `host-results/` 사본과 worktree 파일의 대조도 하지 못했습니다(지난번 권한 거부).\n2. **인계 관측은 대본 준수에 가깝습니다.** probe `role.md`가 그 요청과 HANDOFF 문구를 미리 적어 두었고, 요청 메시지에도 유도성 문장이 있습니다. 원본을 적재하고 따랐다는 증명이지, 역할 판단 일반의 증명은 아닙니다.\n3. **실측된 경로는 하나뿐입니다.** 실측은 option 출처, 기존 worktree에 `--launch`, medium tier, 호스트당 1건입니다. PROJECT 출처, 새 worktree 바로 실행, branch 복구는 가짜 Orca 단위 시험으로만 확인됐습니다.\n4. **사소한 의문은 남아 있습니다.** 실행 실패 start 기록이 `ok: true`이고, 두 호스트의 ts가 같은 밀리초입니다(병렬 실행으로 가능은 함). 역할 미지정 경로도 이제 `PROJECT.md`를 읽는다는 주의점은 결함으로 확인되지 않았습니다.\n\n## 실행하지 않은 것과 읽은 범위\n- **이번에 다시 실행하지 않음:** 단위 시험 5종은 소스가 바뀌지 않아 다시 돌리지 않았습니다. 지난번 결과는 50/50 pass입니다.\n- **이번에 읽은 것:** `check-host-proof.mjs` 전문, 소스 diff 통계.\n- **열지 않음:** T03 `TASK.md`, `PROJECT.md`, BR, PRE 검토, 마감 문서, 작성자 대응 문서.\n- **자동 노출:** 지난번과 같습니다(`CLAUDE.md`/`AGENTS.md`, git status, evidence 폴더의 파일 이름 목록).\n- 이 판단은 완전 격리를 주장하지 않습니다.\n\n파일 수정, 새 host 시작, 외부 작업은 없었습니다.\n\n**최종: pass.** 위 한계를 달고 다음 단계로 올려도 됩니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "a8949675-2581-4f36-99de-5ded5c153448",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 32697,
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 3289
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

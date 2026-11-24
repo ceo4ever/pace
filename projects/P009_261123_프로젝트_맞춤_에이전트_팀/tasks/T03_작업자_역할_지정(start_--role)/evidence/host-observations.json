@@ -1,0 +1,723 @@
+{
+  "hosts": [
+    {
+      "agent": "claude",
+      "dispatch": "ctx_0f72f8b3bc82",
+      "session_source": "/Users/lucas/.claude/projects/-private-var-folders-0k-n9rvmztx6xs3xvjsvf0qqzdw0000gn-T-pace-P009-T03-claude-aosfGN-app-wt-P001/49ab03dd-68ae-4714-8a63-de06bd48db20.jsonl",
+      "session_sha256": "80018524343660a28bd2f5e9bc073bff3736541df4f3b0c873b631dc30513742",
+      "role_source_sha256": "c7a0832013876c7a8ed92222eaa0f33a9e5ea461c80b8f8ff888ed97fc17538c",
+      "marker": "P009-T03-claude-148226ae",
+      "marker_in_result": true,
+      "role_in_result": true,
+      "signoff_exists": false,
+      "models": [
+        "claude-opus-5-5"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "metadata": [
+        {
+          "line": 28,
+          "field": "message.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 29,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 37,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 38,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 39,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 49,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 57,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 58,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 59,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 66,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 77,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 78,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 79,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 83,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 87,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 94,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 102,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 108,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 109,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 110,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 116,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 124,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 129,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 130,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 131,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 137,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 144,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 149,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 150,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 151,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 152,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 158,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 166,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 171,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 172,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 178,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 185,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 190,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 191,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 197,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 205,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        },
+        {
+          "line": 210,
+          "field": "params.output_config.effort",
+          "effort": "medium"
+        },
+        {
+          "line": 211,
+          "field": "message.model",
+          "model": "claude-opus-5-5"
+        }
+      ],
+      "observed_tool_calls": [
+        {
+          "line": 39,
+          "tool": "Bash",
+          "input_sha256": "187c427136a4f8115af310a4c8e23d86f4691abff3d7f6c0bd6e815356433865",
+          "role_read_candidate": true,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 47,
+          "tool": "Bash",
+          "input_sha256": "cb08d52c8de424f71f86f429dce643fb795439931956b7f86df9330330af6435",
+          "role_read_candidate": true,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 59,
+          "tool": "Bash",
+          "input_sha256": "aa61469e474217e4b74ba5c1c049dc3d42666c22ba9fa87fb541ba024b395454",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 65,
+          "tool": "Bash",
+          "input_sha256": "378548d565e1fbd342c539f4760a7f80c520ba5c5f25b079eefd89a8f7591c14",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 79,
+          "tool": "Write",
+          "input_sha256": "2c29b4a6200b540b39507485097a7718ded7abdee8ffa8b10f22c27401258382",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 83,
+          "tool": "Write",
+          "input_sha256": "b2a49edc526e0ef3d3ed32f31a250dcf54f3267fe002d6c3f40c9dc35381a2f8",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 87,
+          "tool": "Bash",
+          "input_sha256": "219b6c595e91cf74680fb84400e020e5920c249ebc3fca5a1181bac75e5da280",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 92,
+          "tool": "Write",
+          "input_sha256": "2c29b4a6200b540b39507485097a7718ded7abdee8ffa8b10f22c27401258382",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 92,
+          "tool": "Write",
+          "input_sha256": "b2a49edc526e0ef3d3ed32f31a250dcf54f3267fe002d6c3f40c9dc35381a2f8",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 92,
+          "tool": "Bash",
+          "input_sha256": "77b24766c113a3b8df0b4686e60a15d93ca2d7b7b03048c78d3b093bee5f8a05",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 102,
+          "tool": "Write",
+          "input_sha256": "6f46fe261ea3bd726aaee70431c39e160c130b0cd296e61a6ef05e198655b7f1",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 110,
+          "tool": "Bash",
+          "input_sha256": "3e9a522260cade446fa168f43c6cf7d55e445e0c2439fa113de47ef9b3b35eed",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 115,
+          "tool": "Bash",
+          "input_sha256": "9c80f4a9257afca78e324054ca4d9836b982ff8327889a4f2bed22564bc11795",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 124,
+          "tool": "Bash",
+          "input_sha256": "dde6d28118850fabfbfd62db86b129fb8ec68e9efd82dc3b801bf1f519d96058",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 144,
+          "tool": "Bash",
+          "input_sha256": "d505851831a46953bfe2436c6202b5bd8f062ae2c2366b4bc66fa434bc34006a",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 152,
+          "tool": "Bash",
+          "input_sha256": "5a0c12f6730697fac0b0331df6665220739f7f45bd7c09c2e1ff0329fbf78a49",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 157,
+          "tool": "Bash",
+          "input_sha256": "60c938b6fd254f7bfc96c7a03437b9f731249ba8f5dee44ede7a106729f1ed7c",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 166,
+          "tool": "Bash",
+          "input_sha256": "3d0f4c138b5ab6080a398c908eb69f242d0678a17ce40352089087f8c850686f",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 185,
+          "tool": "Bash",
+          "input_sha256": "d505851831a46953bfe2436c6202b5bd8f062ae2c2366b4bc66fa434bc34006a",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 191,
+          "tool": "Bash",
+          "input_sha256": "b9139d24d8f508cd9e597fd5fa59eaf58f7e583364e0c6206bf0d77d87f7c20e",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 196,
+          "tool": "Bash",
+          "input_sha256": "a5bfb93089f2967978662f3aa17d42d61109ef1d3a327272ee32a5ca42383867",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 205,
+          "tool": "Bash",
+          "input_sha256": "c2b7ea7f05668fd0ac5aeb0f694f4c15fa71a50bd9c7c3635cc060ad59096ab4",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        }
+      ],
+      "start_events": [
+        {
+          "ts": "2026-11-23T23:40:28.771Z",
+          "p": "P001",
+          "type": "start",
+          "by": "cli",
+          "msg": "start: claude · launch skipped",
+          "role": {
+            "name": "probe-maker",
+            "source": "option",
+            "definition": ".pace/team/probe-maker.md",
+            "hash": "c7a0832013876c7a8ed92222eaa0f33a9e5ea461c80b8f8ff888ed97fc17538c",
+            "method": "prompt",
+            "model": "claude-opus-5-5",
+            "effort": "medium",
+            "settingsStatus": "planned",
+            "toolsPermissionApplied": false,
+            "runtimeObserved": false
+          },
+          "ok": true,
+          "src": "명령 옵션",
+          "data": {}
+        },
+        {
+          "ts": "2026-11-23T23:51:00.372Z",
+          "p": "P001",
+          "type": "start",
+          "by": "cli",
+          "msg": "start: claude · launch failed",
+          "role": {
+            "name": "probe-maker",
+            "source": "option",
+            "definition": ".pace/team/probe-maker.md",
+            "hash": "c7a0832013876c7a8ed92222eaa0f33a9e5ea461c80b8f8ff888ed97fc17538c",
+            "method": "prompt",
+            "model": "claude-opus-5-5",
+            "effort": "medium",
+            "settingsStatus": "rejected",
+            "toolsPermissionApplied": false,
+            "runtimeObserved": false
+          },
+          "ok": true,
+          "src": "명령 옵션",
+          "data": {}
+        },
+        {
+          "ts": "2026-11-23T23:54:17.372Z",
+          "p": "P001",
+          "type": "start",
+          "by": "cli",
+          "msg": "start: claude · launch launched",
+          "role": {
+            "name": "probe-maker",
+            "source": "option",
+            "definition": ".pace/team/probe-maker.md",
+            "hash": "c7a0832013876c7a8ed92222eaa0f33a9e5ea461c80b8f8ff888ed97fc17538c",
+            "method": "prompt",
+            "model": "claude-opus-5-5",
+            "effort": "medium",
+            "settingsStatus": "arguments",
+            "toolsPermissionApplied": false,
+            "runtimeObserved": false
+          },
+          "ok": true,
+          "src": "명령 옵션",
+          "data": {}
+        }
+      ],
+      "completion": "succeeded"
+    },
+    {
+      "agent": "codex",
+      "dispatch": "ctx_37fdf8cbc599",
+      "session_source": "/Users/lucas/.codex/sessions/2026/11/24/rollout-2026-11-24T08-54-16-01a20ad4-ef08-7e90-b91f-0fa4d4892bc0.jsonl",
+      "session_sha256": "1a667da691c6af18d2bd1eb190f3d7d4b91ba97dc70233c5af1a618b09f88509",
+      "role_source_sha256": "2bef12d48bb5f7479175b70ac45a5a5b72cba11f56b9776e9f13a10c8fd14d44",
+      "marker": "P009-T03-codex-4dcdb8a6",
+      "marker_in_result": true,
+      "role_in_result": true,
+      "signoff_exists": false,
+      "models": [
+        "gpt-6.2-sol"
+      ],
+      "efforts": [
+        "medium"
+      ],
+      "metadata": [
+        {
+          "line": 10,
+          "field": "turn_context",
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        {
+          "line": 61,
+          "field": "turn_context",
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        {
+          "line": 83,
+          "field": "turn_context",
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        }
+      ],
+      "observed_tool_calls": [
+        {
+          "line": 18,
+          "tool": "exec",
+          "input_sha256": "c74363ddea0e8283c8e30f2e9529808557ba2ef40030f1f0ce710725882aab3a",
+          "role_read_candidate": true,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 23,
+          "tool": "exec",
+          "input_sha256": "fa02db5159f217358a68809f969667f35e04922b81665403fad1d0d16d886724",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 31,
+          "tool": "exec",
+          "input_sha256": "6f68d612775a529bd33de43189e4250e0dff634da2b296f785b2bd662ddca132",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 37,
+          "tool": "exec",
+          "input_sha256": "bc6d386b2161bab0f2d7d5beb399d72e00198969569a099f6117545ddcb4100f",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 43,
+          "tool": "exec",
+          "input_sha256": "0aa6e74168a847aa417e34ee1f0a4e85f91f7c78ae114421fbe770ba14c02ae4",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 49,
+          "tool": "exec",
+          "input_sha256": "4a64ad6a54384b718865b6005d5e3a40d57eb1ee431a43c75f0a60e36eaf3412",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 66,
+          "tool": "exec",
+          "input_sha256": "2a91cc92d02c0ea6461055416fda7ece838d133f193b51ba599a6d9706f89903",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 71,
+          "tool": "exec",
+          "input_sha256": "d7dc6a7643e38b1ff0c5c94cba61b3b0785cf68fa3eb61261c613eaef1854505",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 88,
+          "tool": "exec",
+          "input_sha256": "2a91cc92d02c0ea6461055416fda7ece838d133f193b51ba599a6d9706f89903",
+          "role_read_candidate": false,
+          "source_cli_candidate": false,
+          "temporary_pace_home_in_input": false,
+          "bare_pace_candidate": false
+        },
+        {
+          "line": 93,
+          "tool": "exec",
+          "input_sha256": "d4b19483ad00800141bd674b1eb7f3ff9507dd30eeec9cdc64636fe2619bed1b",
+          "role_read_candidate": false,
+          "source_cli_candidate": true,
+          "temporary_pace_home_in_input": true,
+          "bare_pace_candidate": false
+        }
+      ],
+      "start_events": [
+        {
+          "ts": "2026-11-23T23:40:29.582Z",
+          "p": "P001",
+          "type": "start",
+          "by": "cli",
+          "msg": "start: codex · launch skipped",
+          "role": {
+            "name": "probe-maker",
+            "source": "option",
+            "definition": ".pace/team/probe-maker.md",
+            "hash": "2bef12d48bb5f7479175b70ac45a5a5b72cba11f56b9776e9f13a10c8fd14d44",
+            "method": "prompt",
+            "model": "gpt-6.2-sol",
+            "effort": "medium",
+            "settingsStatus": "planned",
+            "toolsPermissionApplied": false,
+            "runtimeObserved": false
+          },
+          "ok": true,
+          "src": "명령 옵션",
+          "data": {}
+        },
+        {
+          "ts": "2026-11-23T23:51:00.372Z",
+          "p": "P001",
+          "type": "start",
+          "by": "cli",
+          "msg": "start: codex · launch failed",
+          "role": {
+            "name": "probe-maker",
+            "source": "option",
+            "definition": ".pace/team/probe-maker.md",
+            "hash": "2bef12d48bb5f7479175b70ac45a5a5b72cba11f56b9776e9f13a10c8fd14d44",
+            "method": "prompt",
+            "model": "gpt-6.2-sol",
+            "effort": "medium",
+            "settingsStatus": "rejected",
+            "toolsPermissionApplied": false,
+            "runtimeObserved": false
+          },
+          "ok": true,
+          "src": "명령 옵션",
+          "data": {}
+        },
+        {
+          "ts": "2026-11-23T23:54:19.984Z",
+          "p": "P001",
+          "type": "start",
+          "by": "cli",
+          "msg": "start: codex · launch launched",
+          "role": {
+            "name": "probe-maker",
+            "source": "option",
+            "definition": ".pace/team/probe-maker.md",
+            "hash": "2bef12d48bb5f7479175b70ac45a5a5b72cba11f56b9776e9f13a10c8fd14d44",
+            "method": "prompt",
+            "model": "gpt-6.2-sol",
+            "effort": "medium",
+            "settingsStatus": "arguments",
+            "toolsPermissionApplied": false,
+            "runtimeObserved": false
+          },
+          "ok": true,
+          "src": "명령 옵션",
+          "data": {}
+        }
+      ],
+      "completion": "succeeded"
+    }
+  ],
+  "source_unchanged_after_live_probe": true,
+  "protected_pace_known_metadata_unchanged": true,
+  "recorded_probe_messages": 10,
+  "preflight_failures_without_worker": [
+    "Initial per-host routing adapter used ORCA_ENVIRONMENT=local, which run-current rejected before worker-start. Preserved in unsuffixed start results/calls. Retry adapter queries the explicitly assigned parent Run with real run-show and adds local/from/run routing; it never changes role spec/model/effort."
+  ],
+  "launched_worker_attempts": 2,
+  "normal_work_and_handoff": "Two medium-tier makers; one controlled example per host, no general productivity or permission-enforcement claim.",
+  "manual_role_reinstructions": 0,
+  "required_correction_moments": 0,
+  "counting_basis": "All five mail messages per host (first work ask, outside request, handoff ask, end request, done), source-only markers, actual files/tests, no signoff; no missing attempt excluded. Initial preflight errors had no worker or host session.",
+  "limitations": [
+    "Local/supervision routing adapter is explicit in call receipts; code under test is source project start --role.",
+    "Role is prompt guidance, toolsPermissionApplied=false; no sandbox claim.",
+    "Tool-call inputs are classified with line numbers and SHA only, not copied; metadata is an allowlisted extraction from the two cwd-matched controlled sessions.",
+    "Known protected PACE metadata subset unchanged; not a full-home content audit or attribution of concurrent changes.",
+    "One positive case per host. Missing/deleted role behavior and ongoing real-repository effects remain T04/T08."
+  ]
+}

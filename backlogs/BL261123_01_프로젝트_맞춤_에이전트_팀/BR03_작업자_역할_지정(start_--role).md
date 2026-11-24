@@ -1,6 +1,6 @@
 # BR03 작업자 역할 지정(start --role)
 
-- 상태: 대기
+- 상태: 완료
 - 백로그: [BL261123_01_프로젝트_맞춤_에이전트_팀](BACKLOG.md)
 
 <!-- 개발 업무의 예시. 형식·추적 정본: pace-project-dev의 references/document-shape.md. -->

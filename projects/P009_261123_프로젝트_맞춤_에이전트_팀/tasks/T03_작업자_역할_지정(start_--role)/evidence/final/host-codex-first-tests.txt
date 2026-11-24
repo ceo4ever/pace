@@ -1,0 +1,11 @@
+✔ multiplies positive scores (0.308417ms)
+✔ returns zero when either input is zero (0.051334ms)
+✔ preserves the sign of a negative product (0.044041ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71.972667

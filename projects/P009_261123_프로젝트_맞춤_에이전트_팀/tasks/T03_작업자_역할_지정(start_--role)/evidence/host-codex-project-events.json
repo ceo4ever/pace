@@ -1,0 +1,111 @@
+[
+  {
+    "ts": "2026-11-23T23:40:29.582Z",
+    "p": "P001",
+    "type": "start",
+    "by": "cli",
+    "msg": "start: codex · launch skipped",
+    "role": {
+      "name": "probe-maker",
+      "source": "option",
+      "definition": ".pace/team/probe-maker.md",
+      "hash": "2bef12d48bb5f7479175b70ac45a5a5b72cba11f56b9776e9f13a10c8fd14d44",
+      "method": "prompt",
+      "model": "gpt-6.2-sol",
+      "effort": "medium",
+      "settingsStatus": "planned",
+      "toolsPermissionApplied": false,
+      "runtimeObserved": false
+    },
+    "ok": true,
+    "src": "명령 옵션",
+    "data": {}
+  },
+  {
+    "ts": "2026-11-23T23:40:29.583Z",
+    "p": "P001",
+    "type": "decision",
+    "by": "cli",
+    "msg": "착수 결정 — 출처에 따라 바로 수행",
+    "src": "P009 T03 임시 실측",
+    "ref": "PROJECT.md"
+  },
+  {
+    "ts": "2026-11-23T23:51:00.372Z",
+    "p": "P001",
+    "type": "start",
+    "by": "cli",
+    "msg": "start: codex · launch failed",
+    "role": {
+      "name": "probe-maker",
+      "source": "option",
+      "definition": ".pace/team/probe-maker.md",
+      "hash": "2bef12d48bb5f7479175b70ac45a5a5b72cba11f56b9776e9f13a10c8fd14d44",
+      "method": "prompt",
+      "model": "gpt-6.2-sol",
+      "effort": "medium",
+      "settingsStatus": "rejected",
+      "toolsPermissionApplied": false,
+      "runtimeObserved": false
+    },
+    "ok": true,
+    "src": "명령 옵션",
+    "data": {}
+  },
+  {
+    "ts": "2026-11-23T23:54:19.984Z",
+    "p": "P001",
+    "type": "start",
+    "by": "cli",
+    "msg": "start: codex · launch launched",
+    "role": {
+      "name": "probe-maker",
+      "source": "option",
+      "definition": ".pace/team/probe-maker.md",
+      "hash": "2bef12d48bb5f7479175b70ac45a5a5b72cba11f56b9776e9f13a10c8fd14d44",
+      "method": "prompt",
+      "model": "gpt-6.2-sol",
+      "effort": "medium",
+      "settingsStatus": "arguments",
+      "toolsPermissionApplied": false,
+      "runtimeObserved": false
+    },
+    "ok": true,
+    "src": "명령 옵션",
+    "data": {}
+  },
+  {
+    "ts": "2026-11-23T23:55:08.679Z",
+    "p": "P001",
+    "t": "T01",
+    "type": "question",
+    "by": "agent",
+    "msg": "곱셈 구현과 시험 완료 후 다음 관측 입력 요청",
+    "to": "coordinator"
+  },
+  {
+    "ts": "2026-11-23T23:55:59.621Z",
+    "p": "P001",
+    "t": "T01",
+    "type": "answer",
+    "by": "agent",
+    "msg": "작성자에게 독립 검토 승인 및 서명 요청을 받음"
+  },
+  {
+    "ts": "2026-11-23T23:55:59.777Z",
+    "p": "P001",
+    "t": "T01",
+    "type": "question",
+    "by": "agent",
+    "msg": "작성자와 독립 검토자 분리 계약에 따라 검토 인계 요청",
+    "to": "coordinator"
+  },
+  {
+    "ts": "2026-11-23T23:56:56.392Z",
+    "p": "P001",
+    "t": "T01",
+    "type": "answer",
+    "by": "agent",
+    "msg": "관측 종료 및 상위 PM 독립 대조 담당 확정"
+  }
+]

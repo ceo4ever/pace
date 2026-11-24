@@ -1,0 +1,8 @@
+{
+  "marker": "P009-T03-claude-ff0e00d5",
+  "role": "probe-maker",
+  "files": ["score.ts", "score.test.ts"],
+  "test": { "command": "node --test score.test.ts", "tests": 1, "pass": 1, "fail": 0, "cases": ["정상 곱", "0", "음수"] },
+  "initial_command_v_pace": "/Users/lucas/.pace/bin/pace",
+  "initial_PACE_HOME": "없음"
+}

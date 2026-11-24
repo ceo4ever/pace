@@ -1,0 +1,9 @@
+✔ 등록된 worktree가 사라져도 기존 경로를 안내한다 (787.686917ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 906.60775

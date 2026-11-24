@@ -1,0 +1,10 @@
+pass: two real host artifacts/tests, source-only markers, actual runtime models/effort, all 10 messages, handoffs/no signoff, settled outcomes and preserved preflight failures
+✔ projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T03_작업자_역할_지정(start_--role)/evidence/check-host-proof.mjs (204.641917ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 207.908959

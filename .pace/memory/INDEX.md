@@ -38,7 +38,9 @@
 - [직접 CLI 관측의 Orca 수명 보고 상속](직접-cli-관측의-orca-수명-보고-상속.md) — 중첩 Codex 실측은 Orca 세션 환경을 격리하고 부모 작업 종료로 오인되지 않는지 확인한다
 - [daemon stop 직후 start 무시](daemon-stop-직후-start-무시.md) — macOS에서 pace daemon stop 직후 start가 서비스를 띄우지 않음 — stop이 종료 확인 전에 반환하는지, launchctl start가 종료 중 작업에 걸리는지 확인한다
 - [dashboard-init 정션 시험 부하 민감](dashboard-init-정션-시험-부하-민감.md) — test/dashboard-init.test.ts '상위 정션 아래 모호한 cwd도 형제 저장소를 바꾸지 않는다'가 전체 검사 부하에서 실패 — 단독 5회 통과, 비교 스냅숏에 .git 파일이 들어가 부하 중 내용이 바뀌는지 확인한다(BL261124_01 BR01 대상)
+- [dashboard-init-형제-스냅숏-간헐-실패](dashboard-init-형제-스냅숏-간헐-실패.md) — dashboard-init의 형제 저장소 불변 스냅숏이 전체 검사에서 간헐 실패하면 원문·단독·무변경 재실행을 대조해 원인을 찾는다
 - [T04 사후 사전검토 지적 3건](t04-사후-사전검토-지적-3건.md) — daemon 승인·복구 검증 보강 3건 — 만료 시각 지난 pending 승인 콜백 단위 시험, 부분 쓰기 뒤 강제 중단 복구 실측, 강제 종료 직전 daemon 소유권 대조
+- [역할-지문-crlf-호스트-대조](역할-지문-crlf-호스트-대조.md) — Windows CRLF checkout에서 역할 지문 정규화와 정상 원본 보류 여부를 실제 호스트로 확인한다
 
 ## 할 일
 

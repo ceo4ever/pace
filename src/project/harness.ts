@@ -1,3 +1,4 @@
+import { resolveWorkerRole, roleInstruction, startRoleRecord, type WorkerRole } from "../team/worker-role.ts";
 import { reviewIssues } from "./pre-review.ts";
 import { shellState } from "./shell-result.ts";
 import { generateDashboard, refreshDashboard } from "./dashboard.ts";
@@ -542,6 +543,10 @@ export interface StartOptions {
   choice?: AgentChoice;
   /** 이미 있는 worktree에도 작업자 세션을 띄운다(명시했을 때만 — 중복 세션 방지) */
   relaunch?: boolean;
+  role?: string;
+  /** 내부 사전 검증 결과. 런타임 적용 관측은 아니다. */
+  roleChoice?: WorkerRole;
+  roleChecked?: boolean;
   agent?: string;
   model?: string;
   effort?: string;
@@ -626,8 +631,8 @@ export function detectAgent(env: NodeJS.ProcessEnv): { agent: string; guessed: b
   return { agent: "claude", guessed: true };
 }
 
-export function workerSpec(ref: ProjectRef, worktree: string): string {
-  return [
+export function workerSpec(ref: ProjectRef, worktree: string, role?: WorkerRole): string {
+  const original = [
     `${ref.id} ${ref.name} 프로젝트를 이어서 수행한다. 작업 위치(worktree): ${worktree} (브랜치 ${ref.branch}).`,
     `projects/${ref.dir}/PROJECT.md의 태스크 표에서 대기·진행 중인 다음 태스크부터, 태스크마다 TASK.md → 구현 → 테스트 → TASK-CLOSE.md → pace project check → 커밋 순서로 진행한다.`,
     `질문 직전에 pace project log ${ref.id} [T##] --type question --by agent --to coordinator --msg "질문 요약"을 기록하고, 답을 받은 직후 같은 범위에 --type answer --by agent --msg "답 요약"을 기록한다. 태스크 질문이면 [T##]를 실제 번호로 바꾸고 프로젝트 질문이면 생략한다. 원문·비밀은 남기지 않는다.`,
@@ -636,6 +641,7 @@ export function workerSpec(ref: ProjectRef, worktree: string): string {
     "되돌리기 어렵거나 밖으로 나가는 행동(푸시·배포·삭제·외부 전송)은 하지 않는다. 병합은 main에서 사람이 승인한다.",
     `모든 태스크가 끝나면 pace project finish ${ref.id}를 통과시킨 뒤 worker_done을 보낸다.`,
   ].join("\n");
+  return role ? `${roleInstruction(role)}\n${original}` : original;
 }
 
 function runCommand(command: string, args: string[], cwd: string, env: NodeJS.ProcessEnv, timeout = 120_000): { ok: boolean; json: unknown; output: string; timedOut: boolean } {
@@ -658,13 +664,21 @@ export function launchWorker(ref: ProjectRef, worktree: string, cwd: string, opt
   const agent = choice.agent;
   const guess = choice.source === "추정" ? " — 도구를 알 수 없어 claude로 추정, --agent·PROJECT.md `- 작업자:`·정의서 `작업자 도구:`로 지정" : "";
   const from = ` (${choice.source}${guess})`;
-  const resolved = resolveWorkerSettings(agent, options.model, options.effort, env);
+  let role = options.roleChoice;
+  if (options.roleChecked || options.role !== undefined) {
+    const current = resolveWorkerRole(worktree, `projects/${ref.dir}/PROJECT.md`, { role: options.role, agent, model: options.model, effort: options.effort, env });
+    if (options.roleChecked && (current?.member.name !== role?.member.name || current?.member.hash !== role?.member.hash || JSON.stringify(current?.settings) !== JSON.stringify(role?.settings))) {
+      throw new HarnessError("역할 원본/설정이 준비 뒤 달라졌다 — worktree는 보존했다. 원본/커밋을 확인하고 start --launch로 재시도하세요");
+    }
+    role = current;
+  }
+  const resolved = role?.settings ?? resolveWorkerSettings(agent, options.model, options.effort, env);
   const quote = (s: string) => `'${s.replace(/'/g, `'\\''`)}'`;
   const flags = [...(resolved.model ? ["--model", resolved.model] : []), ...(resolved.effort ? ["--effort", resolved.effort] : [])];
   const manualFlags = agent === "codex"
     ? [...(resolved.model ? ["--model", resolved.model] : []), ...(resolved.effort ? ["--config", `model_reasoning_effort=${JSON.stringify(resolved.effort)}`] : [])]
     : flags;
-  const manual = `cd ${quote(worktree)} && ${[agent, ...manualFlags].map(quote).join(" ")}`;
+  const manual = `cd ${quote(worktree)} && ${[agent, ...manualFlags, ...(role ? [workerSpec(ref, worktree, role)] : [])].map(quote).join(" ")}`;
   if (options.launch === false) return { status: "skipped", detail: `--no-launch — 작업자 도구 ${agent}${from}`, manual };
   const orca = orcaCommand(env);
   if (orca === null) return { status: "skipped", detail: `Orca 밖 — 새 세션을 직접 연다, 작업자 도구 ${agent}${from}`, manual };
@@ -679,7 +693,7 @@ export function launchWorker(ref: ProjectRef, worktree: string, cwd: string, opt
   }
   const started = runCommand(
     orca,
-    ["orchestration", "worker-start", "--spec", workerSpec(ref, worktree), "--task-title", `${ref.id} ${ref.name}`, "--worktree", `path:${worktree}`, "--agent", agent, ...flags, "--timeout-ms", "600000", "--json"],
+    ["orchestration", "worker-start", "--spec", workerSpec(ref, worktree, role), "--task-title", `${ref.id} ${ref.name}`, "--worktree", `path:${worktree}`, "--agent", agent, ...flags, "--timeout-ms", "600000", "--json"],
     cwd,
     env,
     660_000,
@@ -744,11 +758,21 @@ function installCommitHook(repo: Repo): void {
   }
 }
 
-function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { ref: ProjectRef; created: boolean; setup: string | null; launch: LaunchResult | null; choice?: AgentChoice } {
+function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { ref: ProjectRef; created: boolean; setup: string | null; launch: LaunchResult | null; choice?: AgentChoice; roleChoice?: WorkerRole } {
   if (repo.inWorktree) throw new HarnessError("start는 main 체크아웃에서 실행한다");
   requireBase(repo, "start");
   const ref = findProject(repo, id);
   const existing = worktreeOf(repo, ref.branch);
+  if (existing !== null && options.role !== undefined && !options.relaunch) throw new HarnessError("기존 worktree에 역할을 적용하려면 start --role <팀 이름> --launch를 함께 사용하세요");
+  const restoring = existing === null && branchExists(repo, ref.branch);
+  // Merely showing an existing path must still work when the checkout moved.
+  const roleChecked = existing === null || !!options.relaunch;
+  const roleChoice = roleChecked ? resolveWorkerRole(existing ?? repo.root, `projects/${ref.dir}/PROJECT.md`, {
+    role: options.role, ref: existing ? undefined : restoring ? ref.branch : "HEAD", projectRef: restoring ? ref.branch : undefined,
+    agent: () => { options.choice ??= resolveAgent(repo, ref, options); return options.choice.agent; },
+    model: options.model, effort: options.effort, env: options.env,
+  }) : undefined;
+  options = { ...options, roleChoice, roleChecked };
   if (existing === null || options.relaunch) {
     options = { ...options, choice: resolveAgent(repo, ref, options) };
     resolveWorkerSettings(options.choice!.agent, options.model, options.effort, options.env);
@@ -767,7 +791,7 @@ function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { 
       const inWorktree = readFileSync(existingPath, "utf8");
       if (inWorktree === backlogChange.text || alreadyInProgress(inWorktree)) {
         const launch = options.relaunch ? launchWorker(ref, existing, repo.root, options) : null;
-        return { ref: { ...ref, worktree: existing }, created: false, setup: null, launch, choice: options.choice };
+        return { ref: { ...ref, worktree: existing }, created: false, setup: null, launch, choice: options.choice, ...(options.roleChoice ? { roleChoice: options.roleChoice } : {}) };
       }
     }
   }
@@ -776,7 +800,7 @@ function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { 
   // 이미 존재하는 worktree라도 연결 BL이 동기화되지 않았다면 준비부터 복구한다.
   if (existing !== null && !backlogChange) {
     const launch = options.relaunch ? launchWorker(ref, existing, repo.root, options) : null;
-    return { ref: { ...ref, worktree: existing }, created: false, setup: null, launch, choice: options.choice };
+    return { ref: { ...ref, worktree: existing }, created: false, setup: null, launch, choice: options.choice, ...(options.roleChoice ? { roleChoice: options.roleChoice } : {}) };
   }
   // 복구도 작업자 실행 경로이므로 변경 전에 선택과 설정을 검증한다.
   if (!options.choice) {
@@ -818,7 +842,7 @@ function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { 
   }
   if ((backlogChange || !branchAlreadyExists) && !gitOk(worktree, ["merge", "--ff-only", repo.base])) throw new HarnessError("main의 백로그 커밋은 기록됐으나 worktree 반영에 실패했다 — worktree 변경을 보존하고 확인 후 start를 재시도한다");
   const launch = launchWorker(ref, worktree, repo.root, options);
-  return { ref: { ...ref, worktree }, created: existing === null, setup, launch, choice: options.choice };
+  return { ref: { ...ref, worktree }, created: existing === null, setup, launch, choice: options.choice, ...(options.roleChoice ? { roleChoice: options.roleChoice } : {}) };
 }
 
 function addTaskRaw(repo: Repo, id: string, name: string): { ref: ProjectRef; taskId: string; path: string } {
@@ -1637,7 +1661,7 @@ export function formatReport(report: Report): string {
 }
 
 // Public boundaries record one event; internal validation is not a separate command.
-function emitMetric(repo: Repo, id: string, cmd: import("./metrics.ts").MetricCommand, ok: boolean, task?: string, reason?: string, details: Pick<import("./metrics.ts").MetricEvent, "msg" | "src" | "ref" | "data"> = {}): void {
+function emitMetric(repo: Repo, id: string, cmd: import("./metrics.ts").MetricCommand, ok: boolean, task?: string, reason?: string, details: Pick<import("./metrics.ts").MetricEvent, "msg" | "src" | "ref" | "data" | "role"> = {}): void {
   try {
     const ref = findProject(repo, id);
     const worktree = !repo.inWorktree && (cmd !== "merge" || !ok) ? worktreeOf(repo, ref.branch) : null;
@@ -1648,11 +1672,11 @@ function emitMetric(repo: Repo, id: string, cmd: import("./metrics.ts").MetricCo
 function observed<T>(repo: Repo, id: string, cmd: import("./metrics.ts").MetricCommand, task: string | undefined, fn: () => T, committed = false): T {
   try {
     const result = fn();
-    const report = result as { ok?: boolean; issues?: string[]; taskId?: string; ref?: ProjectRef; created?: boolean; choice?: AgentChoice; launch?: LaunchResult | null };
+    const report = result as { ok?: boolean; issues?: string[]; taskId?: string; ref?: ProjectRef; created?: boolean; choice?: AgentChoice; launch?: LaunchResult | null; roleChoice?: WorkerRole };
     const ok = report.ok !== false;
     if (!committed || !ok) {
       const target = cmd === "start" && report.ref ? { ...repo, root: report.ref.worktree } : repo;
-      const details = cmd === "start" && ok ? { msg: `start: ${report.choice?.agent ?? "resume"} · launch ${report.launch?.status ?? "existing"}`, ...(report.choice ? { src: report.choice.source } : {}) } : {};
+      const details = cmd === "start" && ok ? { msg: `start: ${report.choice?.agent ?? "resume"} · launch ${report.launch?.status ?? "existing"}`, ...(report.choice ? { src: report.choice.source } : {}), ...(report.roleChoice ? { role: startRoleRecord(report.roleChoice, report.launch?.status === "launched" ? "arguments" : report.launch?.status === "unknown" ? "unconfirmed" : report.launch?.status === "failed" ? "rejected" : "planned") } : {}) } : {};
       emitMetric(target, id, cmd, ok, report.taskId ?? task, ok ? undefined : failureReason(report.issues?.join(" ") ?? ""), details);
       if (cmd === "start" && ok && report.created && report.ref) {
         const dir = metricDir(target, report.ref);

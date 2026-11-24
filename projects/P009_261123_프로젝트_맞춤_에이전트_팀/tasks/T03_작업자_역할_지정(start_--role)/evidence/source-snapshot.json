@@ -1,0 +1,17 @@
+{
+  ".pace/test-map.json": "2964eeee42d410682bb323b9e4cac143e849fa63e7240d45f064b5c700c31ca8",
+  "README.md": "f574509dda46d6282e7444eb1a74e87c09952c23ce08aa76d74daa369a52a951",
+  "docs/AGENT-CALL.md": "edd819033aa7e05b96325d0aa3c2e9bddec53c4b74445d59262d0c7810aab525",
+  "docs/SECURITY.md": "31aa716a7cc88ac50fcda26d15900f3140530bfa08e5e9777a14f7f0f55cb7f8",
+  "docs/TEAM.md": "ea9b5d317af24705e9ebf6265fd78290cc3d5a67a3330e6f4b601c533a8c9114",
+  "docs/WORK-PROCESS.md": "b0294ef7d12b2d3ce84c407ff96ea95c8bd4bd58ff92f6b0a7590873a23bd9ba",
+  "src/cli.ts": "9df45684b5a7f8ee137b89057b7754013e621d81e13a1b44f26db9e461f7cd9d",
+  "src/project/event-log.ts": "e81a3c1fe3fb170d31ba5a759da9c94d73d993e25f4eb063fff09dd83b5a834b",
+  "src/project/harness.ts": "f4c8a72acabba902a75b8b8e4998aa0e5ba2966e72d67092b07745e81051ac2c",
+  "src/project/metrics.ts": "8c8277c82a471f3b4254fde716d58ca21ac5e3af1f18991854307849207b95e9",
+  "src/project/role-record.ts": "4a1facd0ec9b2856312aa7de3b4aba8583a86ea9be691d2a5424f4afd959a231",
+  "src/team/worker-role.ts": "1206fdad3587d99aca54ad1bf2bca2f1288a6a4b54c5886e62eeccf66034c8fe",
+  "templates/project/PROJECT.md": "6d3bf4efa274a6c37ad6dab8612df5e64ec11827977cf61fad9852548f8a9dad",
+  "test/fixtures/worker-spec-before-role.txt": "b16a3063469205031ab1eb14017e4804c53155df3ca994686eff2dfb028c0f8a",
+  "test/project-role.test.ts": "4b29d1538e2fd95513db1d6e33ca49c542497663b6bc957d78328d1723cfd650"
+}

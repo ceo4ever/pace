@@ -41,3 +41,13 @@
 {"ts":"2026-11-23T23:09:06.579Z","p":"P009","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-23T23:09:13.687Z","p":"P009","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-23T23:09:13.687Z","p":"P009","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-23T23:10:17.524Z","p":"P009","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-23T23:10:31.709Z","p":"P009","t":"T03","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-23T23:15:05.438Z","p":"P009","t":"T03","type":"decision","by":"agent","msg":"역할 적용 오인을 막기 위해 기존 worktree의 명시 role은 launch를 요구하고 기존 branch 복구의 실제 ref를 선검사한다; 모든 실측 시도와 수동 보정을 보존한다","src":"자체 판단"}
+{"ts":"2026-11-23T23:15:20.601Z","p":"P009","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-24T01:08:19.098Z","p":"P009","t":"T03","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-24T01:08:26.655Z","p":"P009","t":"T03","type":"note","by":"agent","msg":"TASK-CLOSE 작성 전 게이트를 잘못 호출해 문서 없음 1건으로 거부됨; 제품 시험 실패와 구별하고 문서·최종 판정 확보 뒤 정상 순서로 재검사한다"}
+{"ts":"2026-11-24T01:12:19.531Z","p":"P009","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-24T01:12:32.649Z","p":"P009","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-24T01:12:32.649Z","p":"P009","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-24T01:12:45.188Z","p":"P009","t":"T03","type":"review","by":"agent","msg":"최종 tester/reviewer 두 단계 pass, blocking 0 · should_fix 5: 최신 증거·PROJECT 선택 경계·절대 source CLI·비밀검사 연결 반영, CRLF 실제 호스트 후속 등록; 관련57·전체1074 실패0, 두 host low 실측 대조 완료","data":{"blocking":0,"should_fix":5,"tester":1,"reviewer":1,"pass":1,"fail":0}}

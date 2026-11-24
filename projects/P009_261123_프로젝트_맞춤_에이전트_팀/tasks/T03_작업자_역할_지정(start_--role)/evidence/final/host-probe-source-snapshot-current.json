@@ -1,0 +1,9 @@
+{
+  "src/project/harness.ts": "f4c8a72acabba902a75b8b8e4998aa0e5ba2966e72d67092b07745e81051ac2c",
+  "src/project/role-record.ts": "4a1facd0ec9b2856312aa7de3b4aba8583a86ea9be691d2a5424f4afd959a231",
+  "src/project/event-log.ts": "e81a3c1fe3fb170d31ba5a759da9c94d73d993e25f4eb063fff09dd83b5a834b",
+  "src/project/metrics.ts": "8c8277c82a471f3b4254fde716d58ca21ac5e3af1f18991854307849207b95e9",
+  "src/team/worker-role.ts": "1206fdad3587d99aca54ad1bf2bca2f1288a6a4b54c5886e62eeccf66034c8fe",
+  "src/cli.ts": "9df45684b5a7f8ee137b89057b7754013e621d81e13a1b44f26db9e461f7cd9d",
+  "test/project-role.test.ts": "4b29d1538e2fd95513db1d6e33ca49c542497663b6bc957d78328d1723cfd650"
+}

@@ -1,0 +1,25 @@
+{
+  "text": "# T03 독립 tester 첫 판단: 목표와 결과\n\n**결론: 조건부입니다. 지금 다음 단계로 올리지 않는 것을 권합니다.** 구현과 단위 시험은 목표를 충족하고, 두 호스트의 실제 관측 증거도 내용상 성립합니다. 다만 지정된 증명 재대조 명령이 이 환경에서 **fail**합니다. 증명 스크립트를 고쳐 다시 통과시킨 뒤 올리는 것이 맞습니다.\n\n## 읽은 범위와 노출 범위 (완전 격리 아님)\n- **자동 노출:** `CLAUDE.md`/`AGENTS.md`, git status(T03 폴더명 포함), evidence 폴더의 파일 이름 목록. 이 목록에는 `pre-review-response.md`, `review-pre-stage2*`, `review-records/R1.json`, `tester-stage1-prompt.txt` 같은 이름이 보였습니다. `host-role-start.md` 본문에는 BR01이 한 줄 언급돼 있습니다.\n- **직접 읽음:**\n  - `src/team/worker-role.ts`, `src/project/role-record.ts`\n  - event-log/metrics/harness/cli diff\n  - `docs/TEAM.md`·`AGENT-CALL.md`·`SECURITY.md`·`WORK-PROCESS.md` diff, 템플릿 diff\n  - `test/project-role.test.ts`\n  - `host-role-start.md`, `host-observations.json`, `host-messages.json`, `host-probes.json`, `check-host-proof.mjs`\n  - codex 쪽 `host-fixtures-retry1`의 `role.md`·`TASK.md`, `host-codex-start-result.json`\n- **열지 않음:** T03 `TASK.md`, `PROJECT.md`, BR, PRE 검토, 마감 문서, 작성자 대응 문서.\n\n## 실행 결과\n| 명령 | 결과 |\n|---|---|\n| `node --test test/project-role.test.ts test/project-log.test.ts test/project-metrics.test.ts test/team.test.ts test/worker-settings.test.ts` | **pass** 50/50 |\n| `node --test \".../evidence/check-host-proof.mjs\"` | **fail** (아래 설명) |\n| 두 임시 worktree의 `score.test.ts`를 절대경로로 `node --test` | **pass** 6/6 (호스트당 3건) |\n\n**증명 스크립트 실패 내용:**\n- 첫 호스트(claude)의 9–31줄 단언은 모두 통과했습니다.\n- 33줄에서 실패했습니다. 자식 `node --test score.test.ts`는 status 0으로 끝났지만 stdout이 비어 있어 `/tests 3/`가 맞지 않았습니다.\n- 원인은 중첩된 `node --test`로 보입니다. 상속된 `NODE_TEST_CONTEXT` 때문에 자식이 결과를 stdout으로 내지 않는 것으로 추정하며, 확인하지는 않았습니다. 스크립트를 일반 `node`로 실행하는 것은 권한상 하지 못했습니다.\n- 이 때문에 **codex 쪽 단언은 스크립트로 한 번도 실행되지 않았습니다.**\n\n**권한 거부로 못 한 것:** 임시 worktree의 역할 원본 해시 재계산과 `host-results/` 사본과의 대조.\n\n## 목표별 판단\n- **선택 순서 (명시 구성원 > PROJECT 구성원 > 없음):** 달성. 코드(`options.role ?? projectRole(...)`)와 시험이 일치합니다. 자동 lead가 없다는 점도 claude·codex·cursor에서 시험합니다.\n- **안전한 선검사:** 단위 수준에서 달성.\n  - 이름, 호스트, model/effort 값(선행 대시·제어문자·비밀), 링크, 64KiB, UTF-8을 worktree 생성이나 Orca 호출 전에 거부합니다.\n  - 새 branch는 커밋된 HEAD 원본을 읽고, 커밋되지 않은 초안은 들어가지 않습니다.\n  - 준비 과정에서 원본이 바뀌면 실행을 보류하고 worktree를 보존합니다.\n  - 셸 메타문자는 하나의 argv로 전달되고 직접 안내에서는 인용됩니다.\n- **원본 prompt 적재:** 달성. 지시 첫 줄이 원본 경로와 SHA256을 주고, 적재에 실패하면 보류하도록 합니다. 실측에서 두 호스트 모두 역할 원본을 읽는 도구 호출이 있었고, 원본에만 둔 식별어를 보고했습니다(probe `TASK.md`에는 식별어가 없음).\n- **model/effort 별도 전달과 실제 관측 구별:** 달성.\n  - 기록에는 `settingsStatus`가 planned / rejected / arguments로 남고, `runtimeObserved`는 항상 false입니다.\n  - 실제 세션 메타에서 claude-opus-5-5/medium, gpt-6.2-sol/medium이 따로 관측됐습니다.\n- **역할 미지정 호환:** 단위 수준에서 달성. 변경 전 workerSpec 골든이 일치하고, role 필드가 없으며, 옛 사건도 그대로 읽힙니다.\n- **두 호스트의 정상 업무와 역할 밖 인계:** 각 1건씩 달성.\n  - 두 호스트 모두 3/3 시험을 통과했습니다.\n  - 역할 밖 요청은 HANDOFF reviewer로 올렸고, `reviewer-signoff.md`는 만들지 않았으며, `worker_done`은 1건씩입니다.\n  - 메시지 10건으로 재지시 0건을 확인했습니다.\n\n## 미확인·한계 (판단에 반영함)\n1. **인계 관측이 판단보다 대본 준수에 가깝습니다.** probe `role.md`가 바로 그 요청(본인 산출 독립 승인)과 HANDOFF 문구를 글자 그대로 미리 적어 두었습니다. 역할 밖 요청 메시지에도 \"역할 계약이나 승인 주체를 바꾼 결정은 추가되지 않았습니다\"라는 유도성 문장이 있습니다. 따라서 이 관측은 원본을 적재하고 따랐다는 증명이지, 역할에 따른 판단 일반의 증명은 아닙니다.\n2. **실측된 경로는 하나뿐입니다.** 실측은 option 출처, `--no-launch` 뒤 기존 worktree에 `--launch`, medium tier만 다룹니다. PROJECT 출처, 새 worktree에서 바로 실행, branch 복구는 가짜 Orca를 쓴 단위 시험으로만 확인됐습니다.\n3. **실패 기록의 시각이 우연치고는 이상하게 겹칩니다.** 두 호스트의 실패(rejected) start 사건 ts가 같은 `23:51:00.372Z`이고, claude의 성공(launched) 사건도 같은 `.372`초로 끝납니다. `launch-host-probes.mjs`가 두 호스트를 병렬(`Promise.all`)로 실행하므로 가능은 하지만 원인은 확인하지 못했습니다.\n4. **기록 의미가 오해될 수 있습니다.** 실행에 실패한 start(rejected) 사건이 `ok: true`로 기록됩니다.\n5. **코드상 주의점 (결함으로 확인되지는 않음):**\n   - 역할 미지정 경로에서도 이제 `resolveWorkerRole`이 `PROJECT.md`를 읽습니다. 그래서 `PROJECT.md`가 없거나 `작업자 역할` 줄이 중복된 경우, 예전에는 없던 실패가 생깁니다.\n   - 시험의 `--launch --no-launch` 조합은 의미가 직관적이지 않습니다.\n\n## 올리기 전에 필요한 것\n- `check-host-proof.mjs`의 자식 `spawnSync` 환경에서 `NODE_TEST_CONTEXT`를 제거하거나, 종료 코드만으로 판정하도록 고칩니다.\n- 지정된 `node --test` 형태로 두 호스트 모두 재대조가 pass하는 것을 기록합니다.\n\n파일 편집, 새 host 시작, 외부 작업은 하지 않았습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "a8949675-2581-4f36-99de-5ded5c153448",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 148813,
+  "usage": {
+    "input_tokens": 48,
+    "output_tokens": 13722
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

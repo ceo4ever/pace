@@ -19,3 +19,5 @@
 | `skills/pace-playbook-maker/tools/` | 실제 서비스 화면·응답의 값을 읽고 캡처·승인·지도·실행 기록·이력을 쓴다 — 값 비기록(쓰기 전 민감 형식 검사), 가림 fail-closed(추출 값의 다른 노출 위치 검사 포함), 승인은 단계·행동·원본 해시와 계정·업무에 결속, 되돌릴 수 없는 행동은 수행 전 기록·조회로 판정(중복 0), 복구 반영은 저널로 원자적 |
 
 체크리스트: `pace-project-dev` 스킬 `references/security.md`의 기본 체크리스트 + 위 민감 경로. 셸 실행은 인자 배열(`spawnSync`) — 예외는 정의서에 선언한 명령의 `sh -c` 실행과 Windows 온보딩의 LLM CLI 실행(`src/setup/onboard.ts`, `shell: win32`), 비밀 값은 환경 변수 이름만, 테스트는 실제 사용자 홈·Orca·도구 설정을 건드리지 않는다.
+
+프로젝트 역할 실행(`src/team/worker-role.ts`, `src/project/role-record.ts`)은 체크아웃될 Git blob 또는 실행 worktree의 일반 원본만 읽는다. Git 조회에 필터·훅을 사용하지 않고 크기·UTF-8·파일 종류와 실제 실행 직전 지문을 검사한다. model/effort와 원본 지침을 셸로 평가하지 않으며 start의 role 객체는 안전한 제한 필드만 기록한다. 역할 파일을 편집해 재시작할 수 있으므로 역할은 보안 경계가 아니고 prompt/tools 안내로 권한 차단을 주장하지 않는다. 실제 Orca 실측은 명시적으로 격리된 임시 저장소와 PACE_HOME에서 수행하며 초기 환경 상속을 별도로 관측한다.

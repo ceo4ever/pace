@@ -114,4 +114,18 @@ native model/effort를 생략해 부모 설정을 상속하는 방법은 환경 
 
 관리 표지는 진위 서명이 아니다. 사용자가 같은 표지를 붙인 파일은 관리 파일로 취급될 수 있으므로 표지를 위조하지 않는다. 팀 파일에는 비밀을 넣지 않는다.
 
+## 프로젝트 작업자 역할
+
+`pace project start P123 --role builder --agent codex`는 팀 구성원 이름 `builder`를 선택한다. `team new --role maker`의 역할 종류와 다르다. 선택 순서는 start의 `--role` > PROJECT 머리의 `- 작업자 역할:` > 없음이다. 자동 lead는 없으며, 팀 원본과 native 생성물이 있어도 역할 미지정 경로는 기존과 같다. 역할 실행은 Claude·Codex를 지원한다. 다른 도구는 역할을 빼거나 `--agent claude|codex`를 선택한다.
+
+새 worktree는 기본으로 실행하며 `--no-launch`는 준비와 역할 포함 직접 실행 안내까지만 한다. 기존 worktree에 작업자를 다시 띄울 때는 `--launch`를 쓴다. 기존 worktree에 `--role`만 주면 적용했다고 오인하지 않도록 거부한다. 역할 옵션 없이 기존 경로를 안내하는 단순 재개는 작업자를 띄우지 않으며, 폴더가 이동한 경우에도 기존 안내를 유지한다.
+
+새 branch의 역할은 체크아웃될 HEAD의 커밋된 원본에서 읽는다. main의 커밋되지 않은 역할 편집은 자동 반영하지 않는다. 기존 branch 복구는 그 ref의 원본·PROJECT를 미리 검사하고, 기존 worktree 재실행은 실제 실행 checkout의 원본·PROJECT를 쓴다. 도구 선택은 기존 main PROJECT/저장소/세션 규칙을 유지하므로 도구와 역할의 출처가 다를 수 있다. 준비·병합이 끝난 실행 직전에 원본/선택/설정을 다시 확인한다. 달라지면 실행을 보류하고 worktree를 보존하므로 원본/커밋을 확인한 뒤 `start --launch`로 재시도한다. 역할 원본과 역할 필드를 실제로 선택한 PROJECT는 64KiB 이하 UTF-8 일반 파일이어야 한다. 역할 필드가 없으면 PROJECT 탐색은 기존 읽기 방식을 유지해 큰 파일·하드링크에 이 제한을 새로 적용하지 않는다. 명시 role은 PROJECT 역할 필드보다 우선한다.
+
+두 호스트 모두 시작 지시 첫 줄에서 `.pace/team/<이름>.md`를 읽는다. 시작 지문은 CRLF를 LF로 정규화한 UTF-8 텍스트의 SHA256이며 지시문에도 계산 기준을 넣는다. native subagent는 최상위 Orca 작업자 선택과 다르고, 공유 settings 교체는 동시 실행에 간섭하므로 쓰지 않는다(T01 실측). 각 model/effort 필드는 명시 start 옵션 > tier 해석 순이다. tier의 model은 tier override → 일반 worker model/기본값, effort는 tier override → tier 문자열이며 일반 worker effort가 덮지 않는다. 명시 `--effort default`는 기존 의미대로 effort 인자를 생략한다. 값은 비밀·선행 대시·Unicode 제어/서식 문자 없는 well-formed 문자열(1024자 이하)이며, 공백·셸 메타문자는 한 argv 값으로 전달하고 직접 안내에서는 인용한다. 시작 구성원 이름도 비밀 후보를 거부해 진단·기록에 넣지 않는다. 모델별 실제 지원은 호스트 결과로 확인한다.
+
+start 사건의 선택 `role` 객체에는 name/source(option 또는 project), definition(상대 경로), hash(시작 검증 지문), method(prompt), model/effort, settingsStatus, toolsPermissionApplied(false), runtimeObserved(false)를 기록한다. settingsStatus는 planned(직접 안내/미실행), arguments(Orca 인자 전달), unconfirmed(실행 응답 불명), rejected(실행 실패)다. **전달은 실제 적용이 아니다.** 런타임 model/effort·적재 행동은 별도 세션 관측으로 확인하고 불일치·미확인은 이슈와 후속 검증으로 남긴다. 시작 지문은 이후의 동시 편집까지 고정하지 않는다. 도구 권한은 적용하지 않으며 역할 정의 자체도 보안 경계가 아니다.
+
+역할 없는 옛 사건은 그대로 읽는다. 잘못된 role 객체가 붙은 사건은 기존 잘못된 to와 같은 엄격 정책으로 행 전체가 제외되므로 손상 기록을 통계의 0으로 해석하지 않는다. 지침 원문·인증정보를 role 객체에 넣지 않는다. 실제 업무의 지속 효과와 원본 미적재/삭제 뒤 보류 행동은 추가 관측 대상이다.
+
 **tools 지침은 권한 제한이 아니다.** native tools 필드를 생략하므로 부모 도구를 상속하며 reviewer도 쓰기 도구를 가질 수 있다. 실제 읽기 전용 등은 호스트 실행 인자/권한 설정으로 집행한다. 기존 native tools 제한이 있는 저장소는 이전 전에 제한을 확인하고 보존할 방법을 정한다. T02는 기존 foreign 정의를 자동 이전하지 않는다. 실제 이전·적용은 T08에서 별도 확인한다.

@@ -1,0 +1,13 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+const root = resolve(import.meta.dirname, '../../../../..');
+const git = (args) => { const r = spawnSync('git', args, { cwd: root, encoding: 'utf8' }); if (![0, 1].includes(r.status)) throw Error(r.stderr); return r.stdout; };
+const paths = new Set([...git(['diff', '--name-only']).trim().split('\n'), ...git(['ls-files', '--others', '--exclude-standard']).trim().split('\n')].filter((path) => /^(?:src\/|test\/|docs\/|templates\/)/.test(path) || ['README.md', '.pace/test-map.json'].includes(path)));
+let diff = git(['diff', '--', ...paths]);
+for (const path of paths) if (git(['ls-files', '--', path]).trim() === '') diff += git(['diff', '--no-index', '--', '/dev/null', path]);
+diff += '\n\nObserved host result (controlled probe, not author TASK/CLOSE):\n' + readFileSync(join(import.meta.dirname, 'final/observations.md'), 'utf8');
+for (const file of ['host-observations.json', 'host-messages.json']) diff += `\n\nfinal/${file}:\n` + readFileSync(join(import.meta.dirname, 'final', file), 'utf8');
+writeFileSync(join(import.meta.dirname, 'impl-diff.patch'), diff);
+writeFileSync(join(import.meta.dirname, 'source-snapshot.json'), JSON.stringify(Object.fromEntries([...paths].sort().map((path) => [path, createHash('sha256').update(readFileSync(join(root, path))).digest('hex')])), null, 2) + '\n');

@@ -1,0 +1,15 @@
+{
+  "marker": "P009-T03-codex-4dcdb8a6",
+  "role": "probe-maker",
+  "files": ["score.ts", "score.test.ts", "probe-result.json"],
+  "test": {
+    "command": "node --test score.test.ts",
+    "exitCode": 0,
+    "passed": 3,
+    "failed": 0
+  },
+  "initialEnvironment": {
+    "command -v pace": "/Users/lucas/.pace/bin/pace",
+    "PACE_HOME": "없음"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "70e037858be559db01a1244ecbe42154f245bb4387dfa9c56a186ee2e547404b",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "25fbd9fa8bb6df049872778a5fc4bf0a797ef204c11ded34a8fee27d0e7d0e72",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "pass 뒤 계획 세부 명확화로 다른 Claude 맥락 전체 검토; R1의 PROJECT 선열람은 독립 목표 첫 판단으로 쓰지 않고 R2/R3는 TASK만 열람"
+    },
+    {
+      "hash": "7d3ea8924448355ea0592ae005421fc738f69e5d63367d84ccef77cab244ae29",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "pass 뒤 계획 세부 명확화로 다른 Claude 맥락 전체 검토; R1의 PROJECT 선열람은 독립 목표 첫 판단으로 쓰지 않고 R2/R3는 TASK만 열람"
+    }
+  ]
+}

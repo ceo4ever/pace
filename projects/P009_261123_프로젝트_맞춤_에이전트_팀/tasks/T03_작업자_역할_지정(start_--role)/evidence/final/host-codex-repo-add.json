@@ -1,0 +1,29 @@
+{
+  "id": "619b36ba-5025-406d-bd50-24ae20046f7d",
+  "ok": true,
+  "result": {
+    "repo": {
+      "id": "d2ca89a2-98bc-4cb8-91ce-4a1378c20d21",
+      "path": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T03-codex-eJxbxA/app",
+      "displayName": "app",
+      "badgeColor": "#737373",
+      "addedAt": 1795481931080,
+      "kind": "git",
+      "externalWorktreeVisibilityLegacy": false,
+      "gitUsername": "",
+      "hookSettings": {
+        "mode": "auto",
+        "setupRunPolicy": "run-by-default",
+        "setupAgentStartupPolicy": "start-immediately",
+        "scripts": {
+          "setup": "",
+          "archive": ""
+        }
+      },
+      "externalWorktreeVisibility": "hide"
+    }
+  },
+  "_meta": {
+    "runtimeId": "cb6baaeb-4058-4c7c-aed1-6cd37b0640d5"
+  }
+}

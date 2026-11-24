@@ -64,3 +64,5 @@
 ## [2026-11-24] update | Telegram 어댑터 설계 함정 (.pace/brain/pages/synthesis/telegram-어댑터-설계-함정.md)
 ## [2026-11-24] update | 프로젝트 지표 해석과 세션 기록 함정 (.pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md)
 ## [2026-11-24] update | 프로젝트 지표 해석과 세션 기록 함정 (.pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md)
+## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
