@@ -6,4 +6,4 @@ created: 2026-10-22
 updated: 2026-11-24
 ---
 
-P005 finish 진행: 모든 태스크 완료, PROJECT-CLOSE 독립 목표 대조 pass(R2, P-3 macOS 기준 변경·P-2 인정은 캡틴 결정). 다음: 캡틴 병합 승인 → 병합 후 macOS 재로그온 자동 기동 인수·운영 워크스페이스 등록. 후속: BL261124_02, 이슈 t04-사후-사전검토-지적-3건·daemon-stop-직후-start-무시·dashboard-init-정션-시험-부하-민감
+P005 병합 완료(6462341). 병합 후 인수(캡틴): macOS 재로그온 launchd 자동 기동·Node 버전 대조, 운영 워크스페이스 등록·토픽 결속·첫 조회 새 세션 확인, 부재 중 재기동(KeepAlive)·쓰기 승인 주체·전송 실패 대응 결정. 후속: BL261124_02, BL261124_01, 이슈 t04-사후-사전검토-지적-3건·daemon-stop-직후-start-무시·dashboard-init-정션-시험-부하-민감. P009 진행 중. 원격 origin/project/P005 브랜치는 남아 있음(삭제는 캡틴 확인)
