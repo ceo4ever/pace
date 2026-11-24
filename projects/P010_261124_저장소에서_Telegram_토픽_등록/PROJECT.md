@@ -1,6 +1,6 @@
 # P010 저장소에서 Telegram 토픽 등록
 
-- 상태: 병합 대기
+- 상태: 완료
 - 규모: L(태스크 2개)
 - 출처: [BL261124_03_저장소에서_Telegram_토픽_등록](../../backlogs/BL261124_03_저장소에서_Telegram_토픽_등록/BACKLOG.md)
 - 브랜치: `project/P010` · worktree: `../pace.wt/P010/`
