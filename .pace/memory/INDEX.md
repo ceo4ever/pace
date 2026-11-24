@@ -87,3 +87,4 @@
 - [정의서 측정 도구 제공](정의서-측정-도구-제공.md) — pace-project-init의 정의서 측정(크기·절·비고·미등록 폴더·문서·서브 문서)을 CLI나 스킬 도구로 제공 — 지금은 analysis.md에 재는 법만 있다
 - [daemon 설정 PC 이전](daemon-설정-pc-이전.md) — daemon 설정 내보내기·가져오기로 새 PC 설치를 토큰 입력 하나로 줄인다
 - [ask_user 단계 지적 크기 기준](ask-user-단계-지적-크기-기준.md) — reviewer.md 반복 실패 절: 진단 뒤 fail도 PM이 근본 조치(채우기·덜어내기) 뒤 재검증하고 사후 보고 — 사용자 사전 결정은 심각한 오류·보안·목적·범위 변경만
+- [사람 식별자 user·owner 통일](사람-식별자-user-owner-통일.md) — 결정 주체 user(review-note·LogActor·waiver)와 수신자 owner(P009 --to)를 owner로 통일하고 user는 옛 값으로 읽기 검토
