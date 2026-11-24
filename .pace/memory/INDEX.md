@@ -31,7 +31,8 @@
 - [2단계 검토 판정 원장 미반영](2단계-검토-판정-원장-미반영.md) — goal-review 2단계(작업 문서 받은 뒤 호스트 판정) blocking이 검토 원장에 안 들어가 1단계 pass·2단계 blocking 반복이 반복 실패 단계로 안 잡힌다 — 최종 판정 확정 절차를 설계한다
 - [Gateway 인증 시간 초과 시험 부하 민감](gateway-인증-시간-초과-시험-부하-민감.md) — test/daemon-process.test.ts Gateway 인증 시간 초과·미인증 연결 상한 시험이 전체 검사 부하에서 간헐 실패 — 단독은 통과, 시간 여유나 부하 독립 판정으로 고친다
 - [Orca 메뉴 경로 복구 전체 검사 불안정](orca-메뉴-경로-복구-전체-검사-불안정.md) — 전체 검사에서 메뉴 경로 승인 뒤 screen-mismatch가 반복되면 단독 실행과 비교하고 실패 원문을 보존한다
-- [ACP 읽기 전용 작업사본 밖 읽기 무승인](acp-읽기-전용-작업사본-밖-읽기-무승인.md) — 읽기 전용 대화에서 Claude ACP가 셸 cat으로 작업사본 밖 파일을 PACE 승인 없이 읽고 Telegram으로 보냄 — plan 모드 자체 허용 추정, 쓰기 모드는 바깥 접근만 승인 요청. 캡틴 결정 대기
+- [daemon stop 직후 start 무시](daemon-stop-직후-start-무시.md) — macOS에서 pace daemon stop 직후 start가 서비스를 띄우지 않음 — stop이 종료 확인 전에 반환하는지, launchctl start가 종료 중 작업에 걸리는지 확인한다
+- [dashboard-init 정션 시험 부하 민감](dashboard-init-정션-시험-부하-민감.md) — test/dashboard-init.test.ts '상위 정션 아래 모호한 cwd도 형제 저장소를 바꾸지 않는다'가 전체 검사 부하에서 실패 — 단독 5회 통과, 비교 스냅숏에 .git 파일이 들어가 부하 중 내용이 바뀌는지 확인한다(BL261124_01 BR01 대상)
 
 ## 할 일
 
