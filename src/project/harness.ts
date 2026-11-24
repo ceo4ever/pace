@@ -5,6 +5,8 @@ import { generateDashboard, refreshDashboard } from "./dashboard.ts";
 import { resolveWorkerSettings } from "../core/worker-settings.ts";
 import { assertBacklogPath, listBriefs, resolveBacklog } from "./backlog.ts";
 import { memoDateTime, recordEvent } from "./event-log.ts";
+import { handoffPrivacyIssues } from "./handoff-private.ts";
+import { collectHandoffs } from "./handoff-report.ts";
 import { hasSecret, isCodeFile } from "./secrets.ts";
 export { hasSecret } from "./secrets.ts";
 import { assertMetricsDestination, refreshProjectMetrics, metricsSummaryIssues } from "./metrics-report.ts";
@@ -1281,6 +1283,12 @@ function finishProjectRaw(repo: Repo, id: string): Report {
   const dir = join(projectsRoot(repo.root), ref.dir);
   const backlogChange = mainDirect ? backlogStateChange(repo, projectPath, project, "완료") : null;
   const projectRel = relativeGitPath(repo.root, dir);
+  issues.push(...handoffPrivacyIssues(repo.root));
+  try {
+    const handoffs = collectHandoffs(repo.root, ref.id, projectRel);
+    if (handoffs?.open.length) notes.push(`경고: 열린 위임 ${handoffs.open.length}건 (partial/blocked 포함): ${handoffs.open.join(", ")}`);
+    if (handoffs?.missingBodies) notes.push(`경고: 로컬 본문 ${handoffs.missingBodies}건 없음 — metadata-only, 원문 재감사 불가`);
+  } catch { issues.push("소통 원장/로컬 본문 손상 또는 미지원 형식; finish 보류"); }
   const backlogRel = backlogChange ? relativeGitPath(repo.root, backlogChange.path) : null;
   guardPartialProjectStages(repo.root, projectRel);
   if (backlogRel) requireCleanBacklog(repo.root, backlogRel);

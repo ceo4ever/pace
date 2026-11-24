@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "syntheticOnly": true,
+  "source": [
+    {
+      "path": "src/cli.ts",
+      "sha256": "ab26bdedb4bff417ec4e4890e95eba6ee69f7b64ef364c2a379011bc7aa2e284"
+    },
+    {
+      "path": "src/project/event-log.ts",
+      "sha256": "8ee7dcfa9e0cb4d4f5c5466d6993270e2ddb3964e9cb093aa760f05aab80a190"
+    },
+    {
+      "path": "src/project/handoff-report.ts",
+      "sha256": "95e859dfdd48721a323447ce0df5ca085e80bb898ebb2f83c4bffae8b1fcf053"
+    }
+  ],
+  "exits": {
+    "question": 0,
+    "answer": 0,
+    "invalidKind": 1,
+    "stats": 0
+  },
+  "eventCounts": {
+    "decisions": 0,
+    "changes": 0,
+    "reviews": 0,
+    "questions": 1,
+    "answers": 1
+  },
+  "requests": {
+    "total": 1,
+    "captain_reply": 0,
+    "captain_delivery": 0,
+    "failed_only": 0,
+    "unconfirmed": 1,
+    "unlinkedLogEvents": 0,
+    "items": [
+      {
+        "requestId": "synthetic-business-one",
+        "reach": "unconfirmed"
+      }
+    ]
+  },
+  "externalTransports": 0
+}

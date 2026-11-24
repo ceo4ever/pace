@@ -1,0 +1,38 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# T09 참여 소통 원장 재검토 (목표/결과 대조)\n\n## 노출 범위\n- **받은 입력:** 직전 검토 원문, 바뀐 줄, `impl-diff.patch` 전문.\n- **추가로 확인한 것:** grep으로 두 가지를 확인했다.\n  - `test/helpers.ts:79`: `spawnTestChild`가 있다.\n  - `src/cli.ts:787`, `src/project/metrics-report.ts:56,106`, `src/project/harness.ts:1555`: `collectDashboard`·`refreshProjectMetrics`를 어디서 부르는지.\n- **자동으로 들어온 것:** CLAUDE.md/AGENTS.md, git status(파일 이름 목록), 최근 커밋 제목, \"부트 생략\" 훅 문구. 모두 이름 수준이라 판단에 쓰지 않았다.\n- **읽지 않은 것:** TASK·PROJECT·브리프·마감·PM 결론·evidence의 다른 파일·메모리.\n- **검토 주체:** 바뀌지 않았다. 같은 제공자(Claude)가 독립 검토자로 재검토했다.\n- **실행하지 않은 것:** `npm run check`. 아래 판단은 코드를 읽고 내린 것이다.\n- 읽기 전용이라는 것이 작업 문서 접근 차단이나 완전 격리를 뜻하지는 않는다.\n\n## 첫 판단 (목표 대조)\n- **목표가 상위 목적과 맞는가:** 맞다. 직전 판단과 같다.\n- **목표 달성:** 직전 blocking 기준으로는 **달성**이다. B1이 해소됐고, 원장이 영구히 잠기는 경로가 막혔다.\n  - S1과 S2는 연결이 끊기는 지점이 해소됐다.\n  - S3은 손대지 않았다. 바뀐 줄에서 새 should_fix가 하나 생겼다(R1).\n  - 사람 출처의 진위, 자연어 범위, 두 호스트 실제 효과, 실제 Orca 응답 형식은 여전히 **미확인**이다.\n- **다음 단계:** 구현 보완(should_fix). 목표·범위를 바꿀 필요는 없다.\n\n## 직전 지적의 해소 여부\n\n**B1: 해소됨**\n- `holdGuard`는 이제 `writing()`이 불린 뒤에만 guard를 보존한다.\n  - `writing()`은 `append`에서 크기 확인 뒤, open 직전에 불린다.\n  - privacy 쪽에서는 `atomicText` 직전에 불린다.\n- 그 앞 단계의 오류는 종류와 관계없이 `cleanup=true` 상태라 guard를 정리한다. 앞 단계는 `read`, `validateTransition`, `loadTeamMember`, `regularBytes` ENOENT, `capture`다.\n- 정상 반환 뒤에도 정리된다.\n- 시험이 세 경우 뒤에 다음 record가 성공하는지 확인한다. 세 경우는 미등록 agent, 없는 계획 파일, 없는 증거 파일이다.\n- `EEXIST`만 `HandoffGuardBusy`로 구분한 것도 맞다.\n\n**S1: 해소됨**\n- 등록 때 `policySnapshotHash`는 내부에서만 채워진다. 사용자가 넣으면 거부한다.\n- 재확인 때는 로컬 사본과 현재 파일을 비교해 두 가지를 확인한다.\n  - 선택한 plan이 같은가.\n  - `declaredBy`(작성자)가 같은가.\n- 새 위임 등록은 여전히 파일 전체 지문을 확인한다.\n- 시험이 네 경우를 확인한다: 무관한 plan 추가 뒤 ready true, 작성자 변경 시 false, 선택 plan 변경 시 false, 복원 뒤 done/close 성공.\n\n**S2: 대체로 해소됨**\n- 미확인 intent는 이제 `unconfirmed`에 모으고 건너뛴다. 다른 정상 보완은 계속하며 CLI는 2를 반환한다.\n- 남은 점은 N5를 본다.\n\n**S3: 미해소, should_fix 유지**\n- `collectDashboard`가 여전히 `collectHandoffs`를 감싸지 않는다(`metrics-report.ts:56`).\n- 그래서 원장이 손상되거나 git 확인에 실패하면 `pace project stats`(`cli.ts:787`)와 merge 뒤 `refreshProjectMetrics`(`harness.ts:1555`)가 통째로 실패한다.\n\n**N1: 해소** — `ls-files`를 추가했다. 다만 이 변경이 아래 R1을 만들었다.\n**N4: 해소** — 외부 경로에서 unconfirmed 뒤 sent/failed를 한 번 더 기록할 수 있다.\n\n## 새 지적\n\n**R1 (should_fix) — 이미 추적 중인 정상 파일을 실수로 넣으면 finish가 영구히 막힌다**\n- 바뀐 줄 `handoff-private.ts`의 `handoffPrivacyIssues`에 `git ls-files` 결과가 더해졌다.\n- 그런데 `readPrivateInput`은 저장소 안의 경로라면 그 파일이 이미 추적 중이어도 보호 목록에 넣는다.\n- 예를 들어 `--body-file projects/P123_…/PROJECT.md`나 `docs/README.md`를 실수로 지정한 경우:\n  - 원문이 새로 유출된 것이 아니다. 그 내용은 이미 Git에 있다.\n  - 그런데도 그 worktree의 finish가 계속 \"staging 금지\"로 막힌다.\n- 해제 방법은 두 가지뿐이다.\n  - 안내대로 정상 파일을 저장소 밖으로 옮긴다(파괴적).\n  - 문서에 없는 방법으로 `staging-protection.json`을 직접 고친다.\n- **고칠 방향:**\n  - 기록 시점에 이미 추적 중(`ls-files --error-unmatch`)인 경로는 보호 목록에 넣지 않는다. 또는 등록 시점의 HEAD blob과 다를 때만 차단한다.\n  - 보호 해제 절차를 문서에 적는다.\n  - 추적 중인 파일로 시험을 추가한다.\n\n**N5 (note) — 오래된 미확인 intent가 영구히 2를 낸다. 잘린 intent는 여전히 전체를 막는다**\n- 첫 번째: 미확인 intent를 확인 처리하거나 격리할 수단이 없다. 한 번 남으면 그 자원의 `reconcile-resource`는 계속 2를 반환해 새 이상과 옛 이상을 구분할 수 없다.\n  - 운영자가 reconcile보다 수동 복구를 먼저 하면 문제가 더 커진다. 상태 쓰기 뒤, applied 기록 전에 중단된 실제 적용 사건이 영구히 unconfirmed로만 남는다.\n- 두 번째: intent 파일은 rename 없이 `wx`로 직접 쓰인다(`durable`). 잘려서 JSON 파싱에 실패하거나 \"자원 intent 손상\"이면 여전히 throw해서 전체를 멈춘다.\n- 둘 다 S2와 같은 유형이지만, 이번에 바뀌지 않은 부분이라 note로만 남긴다.\n\n**N6 (note) — privacy.guard 복구 절차가 문서에 없다**\n- privacy.guard가 남으면 이제 finish를 보류한다. 쓰기 중에 실패하거나 프로세스가 중단되면 남을 수 있다.\n- 그런데 HANDOFF.md의 수동 복구 절차는 `ledger.guard`만 설명한다.\n\n**N7 (note) — 정정 뒤 같은 제안을 다시 승인하는 경로가 막혀 있다**\n- 같은 승인 제안으로 만든 두 번째 위임은 영구히 금지된다.\n- 그래서 approve → correct → (같은 제안) 재approve 순서라면 새 위임을 만들 수 없고, 새 제안 ID가 필요하다.\n- 의도라면 문서에 한 줄 적는 것이 좋다.\n\n**N8 (note) — 정정 뒤 readiness 시험은 정정 감지를 확인하지 못한다**\n- 시험의 `readiness(\"approved-delegate\").ready === false`는 scope_check가 없어도 false다.\n- 그래서 정정을 감지하는 경로를 검증하지 못한다. within scope_check를 기록한 뒤 false가 되는지 봐야 의미가 있다.\n\n**N9 (note) — 직전 N2·N3는 그대로다**\n- N2: `captainAnswer`의 ref 근거가 약하다.\n- N3: `read`가 O(n²)이다.\n\n## 묻는 것에 대한 답\n1. **목표 정합:** 정합한다. 직전 blocking이었던 지속 운용 단절(B1)은 해소됐다. S1·S2 수정으로 종결 연결과 사건 보완도 이어진다.\n2. **다른 전략:** 보호 목록은 \"등록 시점에 추적되지 않은 경로\"로 좁힐 수 있었다(R1). 미확인 intent에는 acknowledge/격리 표시를 두는 길이 있었다(N5).\n3. **빠진 것:**\n   - stats에서 handoff 절만 따로 격리하는 처리(S3).\n   - 추적 파일 오입력 시험(R1).\n   - 잘린 intent 시험.\n   - privacy.guard 복구 문서.\n4. **결정 추적:** 아래 결정은 문서(HANDOFF.md)와 코드와 시험이 서로 맞고 목표까지 추적된다.\n   - 쓰기 전 검증 오류는 guard를 정리하고, 쓰기 중 오류는 보존한다.\n   - 선택 plan 단위로 계약을 재확인한다.\n   - 미확인 intent는 보고한다.\n   - 외부 영수증은 뒤늦게 확정할 수 있다.\n   - 캡틴 경로를 쓰려면 캡틴 수신 메시지가 먼저 있어야 한다.\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": "28d5d5a5-8c0c-46ee-ad4b-31665d02715b",
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 98033,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 10103
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "impl-diff.patch",
+    "hash": "fd5e5210902040cb1c33367a07ecfa8a31d814561d37006e2b22eb6ff010adc1",
+    "verdict": "pass",
+    "rereview_of": "review-records/R1.json",
+    "record": "review-records/R2.json"
+  }
+}

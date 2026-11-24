@@ -1,0 +1,25 @@
+{
+  "text": "# T09 사전 검토 2단계: 계획 대조와 독립 판정\n\n1단계 판단과 같은 결론입니다. **blocking은 없습니다.** 다만 1단계에서 보지 못한 should_fix가 2건 있습니다. 구현 전 단계라 판단은 계획 수준까지입니다.\n\n## 자동으로 들어온 맥락\n- CLAUDE.md/AGENTS.md 지침이 자동으로 들어왔습니다.\n- git status 스냅샷: 브랜치 project/P009, T01~T05 커밋. T09 폴더는 아직 추적되지 않습니다.\n- 부트 훅: \"자식 세션 — 부트 생략\".\n- 호스트가 첨부한 사용자 계정 정보는 쓰지 않았습니다.\n- 저는 같은 Anthropic(Opus 5.5)의 새 맥락입니다. 1단계 검토자를 이어받은 것도, 새 블라인드 검토도 아닙니다. 1단계 판단을 먼저 읽었기 때문에 블라인드가 아닙니다.\n\n## 직접 열람한 것\n- `pre-review-output-2.json`: `result.text` 첫 판단과 review snapshot을 읽었고 수정하지 않았습니다.\n- TASK.md (118줄)\n- PROJECT.md\n- BR09 전문\n- BR01 26~28행: 요청 단위 도달 분류\n- BACKLOG.md: 불변식·도달 관련 행만 검색했습니다.\n- `evidence/pre-review-response.md`, `evidence/storage-decision-summary.md`\n- `log.jsonl`: T09 관련 행만 검색했습니다.\n- `src/project/event-log.ts`: 로그를 남기는 주체(LogActor)와 받는 사람(LogRecipient) 타입만 확인했습니다.\n\nOrca 메시지 원문(msg_e85f76458952 등)은 열람하지 않았습니다. 할 수 없었고, 복제 금지 지시도 있었습니다.\n\n## 독립 판정\n\n**1. 기록 없는 송신: 달성(계획 수준)**\n- 기록을 먼저 남긴 뒤에만 보냅니다(T-4).\n  - S-4는 선기록에 실패하면 호출 0, 전송 결과를 sent/failed/unconfirmed로 나누는 기대값을 고정했습니다.\n  - started/unconfirmed/sent 상태의 자동 재발송은 거부합니다.\n- 사람 채널은 `prepare-external`로 원장과 시도를 먼저 기록합니다(response SF1/2).\n- 참여 경로 밖의 직접 전송은 범위 밖으로 명시했고, BR08/T08 감사로 넘겼습니다. BR09 불변식 5의 \"기록에 실패하면 보내지 않는다\"와 맞습니다.\n\n**2. 잘못된 해석: 달성(계획 수준)**\n- 위임 근거(basis) approved/input/contract/none 네 가지 모두 정확 일치 규칙이나 거부 규칙에 묶였습니다. S-2에는 \"종료 코드 2, 원장 행 0\" 반례가 있습니다.\n- 수신자가 범위를 모를 때(hold)는 ready 1을 반환하고 done 결과를 거부합니다.\n- 계획 계약 파일(`handoff-plans.json`)은 같은 사용자가 고칠 수 있다는 한계가 남습니다. 이를 줄이려고 작성 신고, 계약 지문·planId, scope_check의 세 항목 대조를 필수로 둡니다(response SF3).\n- TASK는 이것을 인증이라고 주장하지 않습니다. 이 한계는 증명 범위에서 받아들일 만합니다.\n\n**3. 부분 종결: 달성(계획 수준)**\n- 지정 판정 주체(decisionOwner)가 done 결과와 유효 증거를 확인했을 때만 닫힙니다(close).\n- partial/blocked 결과나 다른 판정자는 닫지 못합니다.\n- 철회 기능은 두지 않습니다.\n- S-3과 finish 필수 경고가 이를 뒷받침합니다. 불변식 4와 맞습니다.\n\n**4. 원문 로컬 보존: 달성(계획 수준)**\n- 원문 본문은 Git common dir 아래 로컬 전용 파일로 두고, 저장소에는 metadata·지문·출처만 버전 관리합니다.\n- working tree 안의 원문 입력은 거부하고, finish는 `git add -A` 전에 보호 목록을 검사합니다. separate-git-dir 배치도 막습니다.\n- 시험은 HEAD/index/ls-files에 원문 marker가 없음을 확인합니다.\n- 새 clone에서는 감사 불가로 표시하고 경고합니다.\n\n**5. 보존 결정의 출처 구별: 확인**\n- `storage-decision-summary.md`, `log.jsonl` 81행(answer)과 82행(decision, src \"main 판단\"), PROJECT 83행, TASK 101행은 모두 두 가지를 구별합니다.\n  - 사용자 요청: 기존 log 요약 보존\n  - 코디네이터 지시: B(별도 승인 전 로컬 보존) 설계\n- 어디에서도 사람의 원문 Git 승인으로 주장하지 않습니다.\n- 메일 원문은 복제하지 않았고, 메시지 ID만 참조합니다.\n\n**6. BR09 설계 질문 ①~⑤: 확인**\n- TASK 접근 ①~⑤ 절이 각 질문에 답합니다.\n- finish는 경고 필수에 차단은 없음으로 정했습니다. 이는 BR09가 T09에 맡긴 선택입니다.\n\n## 미확인\n- 코디네이터 B 지시의 실제 원문 내용(Orca 메시지)과 요약의 일치는 열람하지 않아 확인하지 못했습니다.\n- `handoff-plans.json`이 실제 합의안인지는 TASK 설계상 PM·수신자·T08 감사의 몫입니다.\n- 실제 동작은 구현 전이라 확인할 수 없습니다.\n\n## 올릴 단계\n계획대로 구현에 들어가도 됩니다. 아래 should_fix 2건을 TASK에 반영한 뒤 시작하기를 권합니다. 재검토는 필요 없습니다.\n\n## 지적\n\n**[should_fix 1] BR01 ①의 \"캡틴 답\"을 판별하는 규칙이 없음 (TASK 72행, S-6)**\n- 현재 `event-log`의 answer는 `by`가 agent, coordinator, user 중 하나입니다.\n  - 실제 81행 answer는 `by: agent`가 사용자 답을 전달한 기록입니다.\n- BR01은 코디네이터가 대신 답한 것을 캡틴 개입으로 세지 않는다고 명시합니다.\n- 그런데 TASK는 requestId로 묶인 답 가운데 무엇이 ①인지 정하지 않았습니다. 예: `decision_reply`에 from=captain과 출처가 있는 경우, 또는 log answer에 `by:user`/출처가 있는 경우.\n- 이대로 두면 코디네이터의 자체 답이 \"도달\"로 과대 집계될 수 있습니다(불변식 7).\n- S-6에 필요한 반례:\n  - 같은 requestId에 코디네이터 자체 답만 있으면 ①이 아니다.\n  - 출처 없는 대리 답은 미확인이다.\n\n**[should_fix 2] BR09 완료 기준의 \"불변식 1~7 ↔ 장치 ↔ 시험 대응 표\"가 명시되지 않음**\n- 대응은 T-1~T-6과 S-1~S-8에서 유추할 수는 있습니다.\n- 하지만 BR09는 불변식마다 장치와 시험을 대응시킨 표를 요구합니다.\n- 불변식 열 또는 짧은 표 하나를 추가하면 됩니다.\n\n**[note 1] 고른 선택이 TASK 본문 밖에 있음**\n- S-4 97행에는 route 기대값이 아직 \"거부하거나 미확인\"으로 남아 있습니다.\n- 고른 선택(Orca route의 actor=captain은 2로 거부)은 `pre-review-response.md`에만 있습니다.\n- tester와 reviewer가 TASK만 보고 판정하지 않도록 TASK에서 response를 참조하게 해야 합니다.\n\n**[note 2] `prepare-external`은 새 하위 명령임**\n- TASK 68행의 명령 목록(record/check/list/ready/send/receipt)에 없습니다.\n- 기준은 바뀌지 않지만, 문서와 CLI 범위에 포함시켜야 합니다.\n\n**[note 3] PROJECT 83행 출처 라벨이 \"(main 판단)\"임**\n- B 설계는 코디네이터 지시이므로 \"코디네이터 지시 · main 기록\" 같은 라벨이 출처를 더 정확히 드러냅니다.\n- 사용자 승인으로 오인될 표현은 없습니다.\n\n**[note 4] 1단계 note 5~7은 유효함**\n- 알려진 경로만 보호한다는 점, 짧은 원문은 지문으로 추측될 수 있다는 점, 옛 상태 파일 호환이 해당합니다.\n- response 9·11행이 각각 문서화와 시험으로 다루겠다고 했습니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "616deaff-2674-4295-9cee-517ac082b808",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 78510,
+  "usage": {
+    "input_tokens": 16,
+    "output_tokens": 8469
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

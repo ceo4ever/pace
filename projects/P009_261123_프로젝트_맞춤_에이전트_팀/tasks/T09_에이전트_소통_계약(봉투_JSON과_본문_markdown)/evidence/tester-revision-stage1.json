@@ -1,0 +1,25 @@
+{
+  "text": "# T09 독립 tester 1차 판단 (재확인): 현재 소스·시험 기준\n\n**판정: 통과 쪽.** 앞서 낸 blocking 1건은 해소됐고 새 blocking은 없습니다. 남은 should_fix는 2건이며 둘 다 심각도가 낮습니다. 요청하신 시나리오 7개는 모두 현재 시험이 검출하고, 코드 경로로도 확인했습니다.\n\n## 이번에 읽은 범위와 오염 여부\n- **다시 읽음:**\n  - `handoff-state.ts`, `handoff-delivery.ts`, `handoff-store.ts`, `resource-events.ts`, `handoff-resources.ts` (전체)\n  - `handoff-private.ts:1-40`, `handoff-cli.ts:20-39`, `handoff-report.ts:14-38`\n  - `resource-lock.ts`·`resource-cli.ts`의 diff (지난번과 같음)\n  - `docs/HANDOFF.md`에서 관련 줄\n  - `test/team-handoff.test.ts`의 93–300행, 380–440행\n- **이번에 새로 읽은 금지 문서는 없습니다.** TASK, PROJECT, 브리프, PM 결론, evidence, 메모리는 읽지 않았습니다. 자동 주입된 맥락도 지난번과 같아서 오염은 없습니다.\n- **실행:** `node --test test/team-handoff.test.ts test/team-lock.test.ts` → **43/43 통과** (지난번 37개에서 6개 늘었음). 전체 `npm run check`는 돌리지 않았습니다.\n- 별도 재현 스크립트는 지난번처럼 실행 승인이 필요해 돌리지 않았습니다. 아래 판단은 새 시험의 실제 통과 결과와 코드 경로를 근거로 합니다.\n\n## 요청 시나리오별 결과 (이번에 새로 관측한 변화)\n\n| 시나리오 | 현재 동작 | 근거 |\n|---|---|---|\n| 잘못된 policy, `null` policy | **수정됨 (이전 blocking 해소).** input 근거에서 `fields(basis.policy, [\"ref\",\"hash\",\"planId\"])`가 `null`·`false`·`{}`를 거부합니다 | `handoff-state.ts:106`, 시험 `input-null-policy`(:86) |\n| 일반 검증 오류 뒤 정상 기록 | **수정됨.** guard는 원장에 쓰기 시작하기 전까지 어떤 예외에서도 회수됩니다. 쓰기가 시작된 뒤 실패할 때만 남깁니다 | `handoff-private.ts:21-30`, `handoff-store.ts:41`, 시험 :387-400 (미등록 agent, 계약 파일 없음, 증거 없음 → guard 없음 → 다음 기록 성공) |\n| 같은 승인 두 번 사용 | **수정됨 (이전 should_fix 2 해소).** 같은 제안 ref를 쓰는 approved 위임이 이미 있으면 거부합니다 | `handoff-state.ts:99`, 시험 :110 |\n| 이후 정정 | 정정이 들어오면 새 위임을 거부하고, 이미 있는 위임도 `ready`가 false가 됩니다 | :102-103, 시험 :113-115 |\n| 무관한 plan 추가 vs 선택 plan 변경 | **새 동작.** 파일 지문이 바뀌어도 등록 때 보존한 로컬 사본과 비교해 선택 plan과 작성자가 같으면 유지합니다. 작성자나 선택 plan의 proofScope가 바뀌면 보류합니다. 새 위임은 여전히 파일 전체 지문을 요구합니다(사용자가 snapshot metadata를 넣는 것은 금지됨) | `policy()` :33-42, 시험 :402-414 |\n| 미적용 intent와 applied가 섞인 경우 | **수정됨 (이전 should_fix 4 해소).** 미확인 intent는 `unconfirmed` 목록으로 보고하고 건너뛴 뒤 나머지 보완을 계속합니다 | `resource-events.ts:38`, 시험 :248-253 (reconciled 1, unconfirmed 1) |\n| 유한 guard 경합 | **수정됨 (이전 should_fix 3 완화).** `HandoffGuardBusy`일 때만 최대 1초 재시도하고, 다른 오류는 바로 전파합니다 | `handoff-resources.ts:12-18`, 시험 :416-424 (80ms 경합 → 획득, 자원 guard 없음) |\n| 뒤늦은 외부 영수증 확정 | **새 동작.** external 경로에서 started → unconfirmed 다음에만 최종 sent/failed를 1회 추가할 수 있습니다. 이 단계는 전송을 다시 실행하지 않습니다(`deliveryReceipt`는 기록만 함). Orca 경로에서는 허용하지 않습니다 | `handoff-state.ts:156-157`, 시험 :180-181 |\n\n그 밖에 새로 확인한 변경:\n- captain에게 보내는 전송은 메시지 수신자가 `captain`이어야 합니다(`handoff-delivery.ts:20`). 지난번 지적 5의 \"to가 coordinator인 요청을 captain 도달로 집계\" 경로가 막혔습니다.\n- close는 가장 최근 결과만 종결할 수 있습니다. 뒤에 blocked가 오면 그 앞의 done은 무효입니다(:139-140, 시험 :133).\n- payload 지문(`payloadHash`)을 started 행에 남기고, 본문 누락 감사 대상에도 넣습니다.\n\n## 남은 should_fix\n\n**1. 캡틴 답의 근거 파일 검사가 여전히 약합니다** (`handoff-report.ts:14-17`, 지난번 지적과 같음, 변경 없음)\n- `by:\"user\"`인 answer는 `ref`가 프로젝트 폴더 안의 비어 있지 않은 *아무 파일*이어도 `captain_reply`가 됩니다. `PROJECT.md`는 항상 있으므로 그것만 가리켜도 통과합니다.\n- `--by user`는 누구나 지정할 수 있습니다.\n- 시험(:280)도 임의로 만든 파일(`receipt.md`) 하나로 통과합니다.\n- 문서(`HANDOFF.md:80`)의 \"실제 근거 파일\" 표현보다 검사가 약합니다. 따라서 \"요청 중복 없는 캡틴 도달\" 지표가 부풀려질 수 있습니다.\n- **수정 방향:** ref를 로컬 본문 지문이나 특정 경로로 제한합니다. 아니면 이 한계를 문서에 명시합니다.\n\n**2. 원장 guard가 1초를 넘게 잡혀 있거나 남은 잔여 guard면, 자원 잠금이 여전히 수동 복구 hold로 번집니다** (낮음)\n- 경합 확인이 자원 상태를 쓴 *뒤* callback에서 일어납니다.\n- 그래서 1초 안에 풀리지 않으면 active 상태와 자원 guard가 남습니다. 앞선 기록이 크래시로 guard를 남긴 경우, 또는 증거 파일(최대 32×16MiB)의 지문을 계산하느라 오래 걸리는 기록이 그런 예입니다.\n- 문서가 의도한 동작이고(:78, :84) 빈도는 크게 줄었습니다. 다만 `--project` 잠금 전에 원장 guard를 미리 확인하면 상태를 쓰기 전에 실패시킬 수 있습니다.\n\n## 참고 (blocking이나 should_fix는 아님)\n- `reconcile-resource`는 오래된 미적용 intent가 하나라도 남아 있으면 항상 종료 코드 2를 냅니다. 그런 intent를 정리하는 절차는 없습니다. 출력에 `reconciled`와 `unconfirmed`가 나뉘어 있어 정보 손실은 없습니다.\n- 중복 위임 방지가 제안 ID 기준입니다. 같은 requestId의 원 요청과 중계(relay)가 각각 승인되면 위임 2건이 가능합니다. 다만 캡틴 답 기록이 2개 필요합니다.\n- `holdGuard`에서 owner.json 쓰기 자체가 실패하면 소유자 없는 guard가 남습니다. 디스크 오류 같은 드문 경우입니다.\n\n## 한계 (보장된 것으로 쓰지 않음)\n- actor, `captain`, sourceRef, reportedBy, scope_check의 boolean은 참여자가 신고한 값입니다. 사람 인증도, 자연어 의미 판정도 아닙니다.\n- 뒤늦은 sent 확정도 보고자가 신고한 값입니다.\n- 실제 Orca나 사람 채널로의 전달, 두 호스트에서의 실제 업무 효과는 관측하지 않았습니다. 모든 시험은 가짜 전송기와 합성 임시 자료를 씁니다.\n- 실제 외부 호출이나 작업본 수정은 하지 않았습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "2b3d87c8-2e58-44b3-a88f-17eac89057dc",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 119541,
+  "usage": {
+    "input_tokens": 22,
+    "output_tokens": 10119
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

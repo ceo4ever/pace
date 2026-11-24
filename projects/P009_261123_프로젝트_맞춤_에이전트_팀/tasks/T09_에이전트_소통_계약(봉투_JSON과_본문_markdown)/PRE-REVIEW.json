@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "975b35498b3d7060d630ddf281a0c9ad415b84a367ad49bce6dcbc4847f1db7b",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "716271f167aacd0b78ff1d4087c8203806f7388f4b5aa431a19a82a046944ec4",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "자동 재검토·R1 우회 basis와 로컬 보존/실패 수명 보완"
+    },
+    {
+      "hash": "4799a7b4a07ae264b71074a8e85e2867e2c6c05d34599bed2987cdc4b0f89942",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "R2 pass 뒤 불변식 대응표/답 출처 판별 보완의 새 전체 검토"
+    }
+  ]
+}

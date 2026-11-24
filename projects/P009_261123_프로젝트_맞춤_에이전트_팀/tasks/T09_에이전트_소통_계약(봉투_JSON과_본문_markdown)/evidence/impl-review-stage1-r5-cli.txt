@@ -1,0 +1,38 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# 1단계 독립 목표 대조: P009/T09 참여 소통 원장 patch 검토\n\n판정을 먼저 말씀드리면 blocking은 없고, should_fix 3건과 note 몇 건이 있습니다. 상위 목적 기준으로 **구조적 연결은 달성**, 실제 Orca·사람 채널에서의 효과는 **미확인**입니다.\n\n## 노출 범위와 독립성\n\n- **자동으로 주입된 것:** `CLAUDE.md`/`AGENTS.md`, git status 스냅샷, SessionStart 훅(\"부트 생략\")이 들어왔습니다. git status에서는 T09 태스크 폴더와 메모리 파일 `대시보드-형제-보존-시험의-간헐-실패.md`의 **이름만** 보였고 내용은 열지 않았습니다. 이것은 산출물 판단에 영향을 주지 않는다고 봅니다.\n- **읽지 않은 것:** TASK, PROJECT, 브리프, 마감 문서, PM 검사결론, evidence 폴더의 다른 파일, 메모리 본문.\n- **추가로 직접 읽은 것:**\n  - `src/project/event-log.ts`, `src/project/metrics.ts`, `src/project/harness.ts`에서 `.ref`가 쓰이는 줄\n  - `src/team/resource-lock.ts`에서 `this.commit(` 호출부 (204, 224, 236줄)\n  - `projects/P001~P004/log.jsonl`의 `ref` 값 (P009 작업 문서는 포함하지 않음)\n- **검토 주체:** Claude(claude-opus-5-5), 읽기 전용, 1단계만 수행했습니다. 셸 실행 도구가 없어서 시험과 실제 Orca 호출은 돌리지 않았습니다.\n\n## 1. 목표가 상위 목적과 맞는가, 결과가 목표를 이루는가\n\n목표의 각 요소는 상위 목적의 네 가지 혼동(원문과 해석, 승인 재사용, 근거 없는 완료, 기록 없는 전송)에 하나씩 대응하므로 정합합니다.\n\n| 관측 목표 | 판정 | 근거와 한계 |\n|---|---|---|\n| 원문과 출처를 로컬에 온전히 보존 | 달성(구조) | `PrivateHandoffBodies.capture`가 bytes를 정규화 없이 SHA256 이름으로 Git common dir에 저장합니다. 원장에는 hash만 남고, 시험에서 CRLF 원문 일치와 ledger에 원문이 없음을 확인합니다. 다만 출처(`sourceRef`)와 actor는 참여자가 신고한 값이며 인증되지 않습니다. |\n| 특정 제안 승인 → 계획 → 수신 대조 → 결과 → 지정 판정자 종결 연결 | 달성(구조) | 연결 장치는 다음과 같습니다. 제안 digest 결합, 최신 답이 approve인지 확인, 같은 제안의 중복 위임 금지, scope_check의 basisHash, done이면 within 상태와 실제 증거 지문 요구, close는 `decisionOwner`와 현재 최신 결과만 허용. 단 `from`은 신고값이므로 \"지정 판정자가 실제로 확인했다\"는 것은 보장되지 않습니다. |\n| 기록 실패 시 전송하지 않음 | 달성(Orca 경로) | `sendDelivery`는 started를 fsync한 뒤에만 transport를 호출합니다. 성공 후 기록이 실패하면 unconfirmed와 `sentMayHaveOccurred`로 남깁니다. 사람 채널은 prepare-external 뒤 사람이 직접 보내므로 기술적으로 강제되지 않습니다(문서에 명시). |\n| 실제 적용된 자원 사건 | 달성(`--project`를 붙인 경우) | 순서는 intent → 상태 쓰기(transitionId) → applied → 원장입니다. 상태 쓰기에 실패한 intent는 승격하지 않습니다(시험 있음). |\n| 요청 중복 없이 캡틴 도달 확인 | 부분 달성 | requestId로 중복을 제거하고 Orca 성공은 캡틴 도달에서 제외합니다. 하지만 아래 S1 때문에 캡틴 답이 과대 집계될 수 있습니다. |\n| 기존 짧은 로그 요약 유지 | 달성 | requestId를 붙이기 전과 후의 golden 비교 시험이 있습니다. |\n| 원문을 별도 승인 없이 Git에 넣지 않음 | 달성(알려진 경로 한정) | 원문은 common dir에만 둡니다. 원내 입력은 거부하고 staging 보호 목록에 넣어 finish 전에 차단합니다. separate-git-dir도 거부합니다. 미등록 복사본은 막지 못하며 문서에 명시돼 있습니다. |\n\n## 지적\n\n**S1 — should_fix: by:user answer가 아무 파일이나 ref로 가리키면 캡틴 답으로 집계됩니다**\n- 위치: `src/project/handoff-report.ts:14-17`의 `captainAnswer`.\n- 이 함수는 `by:user`이고 ref 파일이 비어 있지 않기만 하면 `captain_reply`로 분류합니다. 기존 로그 ref는 `PROJECT.md`처럼 일반 문서를 가리키는 경우가 흔합니다(P001, P002, P004 `log.jsonl`에서 확인). 그래서 `--by user --ref PROJECT.md`만으로 캡틴 도달 1순위로 올라갑니다.\n- 문서는 ref가 \"짧은 영수증\"이어야 한다고 하지만 형식 검사가 전혀 없습니다.\n- ref 기준 경로도 일정하지 않습니다. 기존 로그에는 저장소 기준 경로(`projects/P003…/evidence`, `src/…`)가 섞여 있는데, 이 함수는 프로젝트 폴더 기준으로만 해석합니다.\n- 결과적으로 \"근거 없는 캡틴 도달\" 지표가 부풀려집니다.\n- 수정 방향: 영수증 형식(예: decision_reply ID나 응답 지문 필드)을 검사하거나, 이 경로를 \"신고·미대조\"라는 별도 범주로 분리합니다.\n\n**S2 — should_fix: 실제 Orca CLI 계약이 확인되지 않았습니다**\n- 위치: `src/team/handoff-delivery.ts`의 `orcaTransport`.\n- 다음 사항을 모두 가정한 상태이고, 시험은 fake 실행기로만 합니다.\n  - 인자: `orchestration send --environment local --type handoff --body-file … --json`\n  - 응답 형태: `{ok, result.message_id}`\n- 실제 Orca와 맞지 않으면 모든 전송이 failed나 unconfirmed가 됩니다. unconfirmed가 되면 같은 메시지를 다시 보낼 수 없게 막힙니다.\n- 두 호스트(Claude/Codex)에서의 실측이 필요합니다.\n\n**S3 — should_fix: 원장 하나가 손상되면 stats와 merge 지표가 실패합니다**\n- `collectDashboard`가 `collectHandoffs`의 예외를 그대로 올리므로, 원장 한 행이 손상되거나 로컬 본문 하나가 변조되면 `pace project stats` 전체와 merge 후 지표 갱신이 실패합니다.\n- 이전에는 stats가 실패하지 않던 경로라서 가용성이 후퇴했습니다. 문서에 한계로 적혀 있지만, finish는 별도로 차단하므로 stats는 소통 절만 \"손상\"으로 표시하고 나머지는 내는 방식이 목적(정상 수치로 숨기지 않기)과 충돌하지 않습니다.\n\n**N1 — note: 원장 읽기 비용이 큽니다**\n- `HandoffStore.read()`는 매번 전체 원장을 다시 재생하고 `rows.some/filter`를 반복해 O(n²)입니다.\n- `record`, `readiness`, `audit`, `collectHandoffs`가 각각 read를 다시 호출하므로 32MiB 한도 근처에서는 느려집니다. 후속 설계 대상으로 문서에 명시돼 있습니다.\n\n**N2 — note: 미확인 intent가 영구히 남습니다**\n- 상태 쓰기에 실패한 intent는 이후 정상 획득이 있어도 unconfirmed로 계속 남습니다(시험이 그렇게 확인합니다).\n- 따라서 `reconcile-resource`는 운영자가 수동으로 정리하기 전까지 계속 종료 코드 2를 냅니다. 의도된 보수적 설계이지만 운영 소음이 생깁니다.\n\n**N3 — note: 같은 메시지를 다른 경로로 보낼 수 없습니다**\n- 한 메시지에 started/sent/unconfirmed 시도가 하나라도 있으면 다른 target으로의 정당한 전송도 막힙니다. 이 경우 새 메시지나 relay를 만들어야 하는데, 이 운영 규칙은 문서에서 암묵적입니다.\n\n**N4 — note: 짧은 metadata에도 업무 문장이 들어갈 수 있습니다**\n- `sourceRef`(240자), `target`, `proofScope` 같은 짧은 metadata에는 업무 문장을 넣을 수 있고, 이것이 Git에 들어갑니다.\n- 패턴으로 차단하지 않고 지침에 의존합니다. 문서에 명시돼 있고 목표 범위 안의 한계입니다.\n\n## 2. 전략에 다른 길이 있었는가\n\n- **저장 위치:** 원문을 Git common dir에 두면 worktree 간에 공유되고 버전 관리에서 제외되는 두 조건을 함께 만족합니다. gitignored 폴더나 `PACE_HOME`보다 합리적인 선택입니다.\n- **대안:** 전송 선기록, 승인 digest, 자원 intent 저널을 하나의 원장에 모두 묶지 않고 단계적으로 도입할 수 있었습니다. 예를 들어 1차로 원문 보존과 승인-위임-종결만, 2차로 전송과 자원을 붙이는 식입니다. 현재는 약 700줄의 밀도 높은 코드와 수동 guard 복구 절차가 한 번에 들어와서 운영 부담과 검토 표면이 큽니다. 상위 목적에는 맞지만 비용 대비 범위는 2단계에서 계획 문서와 함께 확인할 가치가 있습니다.\n\n## 3. 빠진 것\n\n- 실제 Orca와 두 호스트에서의 실측 (S2)\n- 캡틴 답 영수증의 형식 검증 (S1)\n- 자연어 범위 판정과 사람 출처의 진위 검증. 이것은 구조적으로 불가능하다고 명시돼 있고, 범위 밖으로 정당하게 둔 것입니다.\n\n## 4. 결정이 목표까지 추적되는가\n\n| 결정 | 이어지는 목표 |\n|---|---|\n| bodyHash 결합, 제안 digest, 최신 답 검사, 중복 위임 금지 | 승인 재사용 방지 |\n| done이면 within과 실제 증거 지문, close는 판정자와 최신 결과 | 근거 없는 완료 방지 |\n| started를 먼저 fsync하고 불명 전송은 재발송 금지 | 기록 없는 전송 방지 |\n| 원문 bytes와 `interpretation`/`of` 구분 | 원문과 해석 혼동 방지 |\n\n결정 대부분이 목표까지 추적됩니다. 다만 S1의 `captainAnswer` 분류 규칙은 \"캡틴 도달 확인\"이라는 목표를 충분히 뒷받침하지 못합니다.\n\n## 다음 단계로 넘길 것\n\n- **2단계 (작업 문서 대조):** S1 분류 규칙과 S2 실측 계획이 TASK의 증명 범위에서 어떻게 다뤄졌는지 확인합니다.\n- **계획:** 실측 태스크가 있는지 확인합니다.\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": "8de701ae-169c-4430-a169-d3d03805839c",
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 115348,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 11679
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "impl-diff.patch",
+    "hash": "5ff807b18aa4b84880c1b5dbb55831338462a37a7fadc43cd3f650f64c22a610",
+    "verdict": "pass",
+    "rereview_of": null,
+    "record": "review-records/R5.json"
+  }
+}

@@ -228,3 +228,5 @@ PACE_HOME="$(mktemp -d)" ./bin/pace.ts boot --host plain   # 실제 ~/.pace 대�
 
 작업자 모델은 `pace worker show`로 조회하고 `pace worker set codex model gpt-6.2-sol`, `pace worker set claude effort high`처럼 변경한다. `pace worker reset claude effort`는 해당 항목을 배포 기본값으로 되돌린다. `pace project start P001 --model <모델> --effort <값>`은 한 실행만 덮어쓰며 `--effort default`는 공통 effort 설정을 무시하고 도구 기본값을 쓴다. 설정은 `PACE_HOME/worker-settings.json`에 보관하여 재설치해도 유지된다.
 설정 파일이 손상되면 PACE를 종료한 뒤 `PACE_HOME/worker-settings.json`을 다른 이름으로 옮겨 원본을 보존하고 `pace worker show`로 초기값을 확인한 다음 원하는 설정을 다시 입력한다. 기본 `PACE_HOME`은 `~/.pace`이다. 설정 파일에 심볼릭 링크는 사용할 수 없다.
+
+업무 인계는 `pace team handoff record P123 --file header.json --body-file -`로 등록한다. 원문은 로컬에 보존하고 승인·위임·결과·종결과 전송 시도를 연결한다. [소통 사용법과 보존 한계](docs/HANDOFF.md)를 먼저 확인한다.

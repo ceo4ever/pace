@@ -102,6 +102,7 @@
 |---|---|---|---|---|
 | `AGENTS.md` | 일하는 법 요약과 길 안내 | — | 전체 | 항상 (자동) |
 | `docs/SECURITY.md` | 민감 경로와 보안 체크리스트 | security | `src/setup/**`, `scripts/**`, `src/boot.ts`, `src/core/fsutil.ts`, `src/core/worker-tiers.ts`, `src/team/**`, `src/project/**`, `src/memory/**`, `src/profile/**`, `src/scout/**`, `src/intent/**` | 작업 시 |
+| `docs/HANDOFF.md` | 원문 로컬 보존·승인/위임/종결·전송 선기록·요청 집계 | spec | `src/team/handoff-*.ts`, `src/project/handoff-*.ts`, `src/team/resource-events.ts` | 작업 시 |
 | `docs/TEAM.md` | 팀 원본·생성물·모델 매핑·보존/권한 경계 | spec | `src/team/**`, `src/core/worker-tiers.ts`, `templates/team/**` | 작업 시 |
 | `README.md` | 소개·설치·사용·OPAL에서 넘어올 때 (사용자용) | — | — | 요청 시 |
 | `skills/pace-project-init/references/` | 정의서·백로그 형식, 분석 방법 | convention | `docs/**`, `backlogs/**`, `skills/pace-project-init/**` | 작업 시 |

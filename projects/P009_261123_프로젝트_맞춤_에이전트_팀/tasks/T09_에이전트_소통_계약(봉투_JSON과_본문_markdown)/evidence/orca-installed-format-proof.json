@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "proofType": "installed formatting functions evaluated with synthetic data",
+  "liveSend": false,
+  "runtimeAcknowledgmentObserved": false,
+  "externalTransports": 0,
+  "inspectedFiles": [
+    {
+      "path": "/Applications/Orca.app/Contents/Resources/app.asar.unpacked/out/cli/orchestration/messages/message-send-handler.js",
+      "sha256": "47c4e8cbe4a9bac170c3bb5fc68ec321bd5cd79125dee2b9a1ea1ab09a727068"
+    },
+    {
+      "path": "/Applications/Orca.app/Contents/Resources/app.asar.unpacked/out/cli/orchestration/agent-view.js",
+      "sha256": "01b839fd870eaf1e09b71c54ec27447c94dc3324846f858a2ce586e3badb23b6"
+    }
+  ],
+  "syntheticFormattedResult": {
+    "ok": true,
+    "result": {
+      "messageId": "msg_synthetic_fixture"
+    }
+  },
+  "limitation": "The installed CLI output shape is observed from its real formatter. This is not a live orchestration receipt, authorization check, or proof of human delivery. The adapter accepts this messageId shape and still holds opaque or unsupported results."
+}

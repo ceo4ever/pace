@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "change": "Documentation-only appliedAt terminology correction after final check; intent preparation timestamp, not confirmation-completion time. Runtime code/tests unchanged.",
+  "before": {
+    "path": "docs/HANDOFF.md",
+    "sha256": "ef10ebf7212a2cc3136600ab236722943bd1bb2006852e4e4ba2d51f36f79d71"
+  },
+  "after": {
+    "path": "docs/HANDOFF.md",
+    "sha256": "a83a53788050b74c835d7de59960f62c40464f74b1aa6b0228e465dd18301e1f"
+  },
+  "unchangedOtherFiles": 25,
+  "wholeCheckExit": 0,
+  "wholeCheckUnchangedDuringRun": true,
+  "reason": "Addresses tester-final-stage2 should_fix1 without changing protocol/runtime/test behavior; the pre-correction full-run receipt is preserved and is not falsely claimed to hash the corrected documentation."
+}

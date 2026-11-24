@@ -1,0 +1,134 @@
+# T09 에이전트 소통 계약(봉투 JSON과 본문 markdown)
+
+- 프로젝트: [P009](../../PROJECT.md)
+- 상태: 완료
+- 사전 검토: v1
+- TASK 형식: v2
+
+## 목적
+
+참여 경로 안에서 원문과 확인되지 않은 해석을 섞어 실행하거나, 위임과 결과를 기록 없이 주고받거나, 부분 결과를 완료로 닫는 일을 막는다. BR09의 불변식1~7을 검사·기록되는 참여 프로토콜로 만들고 기존 전송 수단은 유지한다.
+
+## 재료
+
+- BR09 원문을 이 worktree에서 읽었고 main ab34132 포함·최종 R7 pass·현재 본문 해시 일치를 실제 대조했다. PROJECT P-3/P-4/P-5와 실행 순서 T05→T09→T06을 따른다.
+- 직전 T05 TASK-CLOSE의 실제 acquire/release/reclaim 연결과 안전 보류. 현재 resource-lock.ts의 audit는 상태 쓰기 전 기록이므로 그대로 실제 적용 증거로 수입하지 않는다.
+- roblox-studio tools/handoff.mjs를 읽기만 했다. pilot는 긴 원문·승인 사슬·종결 주체를 강제하지 않아 참고만 하고 기존 로그/스크립트를 이 태스크에서 바꾸지 않는다.
+- src/project/event-log.ts는 짧은 요약 사건이며 오류가 기존 명령을 막지 않는다. metrics-report.ts의 Dashboard와 harness.ts의 finish notes, statsRepo의 소유 checkout 해석을 연결한다. 별도 handoffs 기록 오류는 전송을 막는다는 차이를 보존한다.
+- docs/WORK-PROCESS.md·AGENT-CALL.md·SECURITY.md·TEAM.md, TypeScript/verification 색인 및 보안 체크리스트. 브레인 검색의 요청 단위 도달 정의를 BR01과 직접 대조했다.
+
+## 증명 범위
+
+- 판정 주체: 이 태스크의 마감은 PM이 실제 검사와 별도 tester/reviewer 두 단계 판정을 회수해 판단한다. 자동 API/실제 source CLI·임시 Git 프로젝트 시험이 구조·ID/지문 사슬·상태·미발송·집계를 판정한다. 지정 판정 주체는 기록된 증명 범위의 실제 증거를 검토해 종결을 판단한다. 캡틴 입력/확인의 실제 사람 정체성·원문 출처의 진실성과 자연어 범위의 같음은 신고·근거를 실제 출처와 대조할 참여자/현장 감사의 책임이며 자동 판정으로 주장하지 않는다.
+- 포함: 원문 bytes 보존과 출처, 특정 제안에만 묶인 승인, 수신자의 실행 전 대조/보류 기록, done 결과와 지정 판정자 종결, 기록 선행 전송과 실패/불명 수명, 실제 적용된 자원 사건, 같은 요청의 중복 없는 도달 분류, stats/finish 연결·보안·옛 호출 호환.
+- 범위 밖: Orca/모델 인증 체계·새 전송 서비스·임의 직접 도구 호출 가로채기·자연어 의미 자동 판단·사람 이름의 인증·악의적인 같은 사용자 파일/프로그램 교체 방어. 실제 두 호스트 업무 추적과 캡틴 출처/범위 감사는 BR08/T08, 측정/회고 확장은 T06이다. 필수 보안·실패 시 보류는 제외하지 않는다.
+
+## 기준
+
+| # | 완료 기준 |
+|---|---|
+| T-1 | 짧은 JSON 머리와 별도 로컬 전용 markdown 본문을 검사·저장하고 캡틴 원문을 해석과 분리해 온전히 bytes/지문·출처와 보존한다. 400자 초과 원문도 잘리지 않으며 안전 한도 초과/비밀 후보는 저장·발송 전에 거부한다. |
+| T-2 | 원문→해석 확인 요청→캡틴 승인/정정/거절→위임을 특정 ID/지문으로 연결한다. 확인 전·다른 제안 승인 재사용·승인 지시/계획을 바꾼 위임은 거부한다. 수신자의 범위 대조 기록이 없거나 hold면 실행 가능 상태/done 결과로 진행할 수 없다. |
+| T-3 | 위임의 수신자 결과를 연결하고 partial/blocked로 닫히지 않으며, 지정 판정 주체가 done 결과와 증명 범위의 증거를 확인했다고 기록한 경우만 종결한다. 다른 판정자의 종결·다른 위임/결과 연결은 거부한다. |
+| T-4 | 원장과 전송 시도 선기록이 성공한 뒤에만 참여 전송 경로가 호출된다. 실패·불명·최종 영수증 쓰기 실패를 구별하고 자동 중복 발송하지 않는다. 실제 잠금 적용 사건만 원장에 들어가고 사용자가 lock 사건을 꾸며 넣는 입력은 거부한다. |
+| T-5 | 공유 requestId로 project log와 handoffs를 한 요청으로 묶어 BR01 도달 우선순위를 따른다. 수신 의도와 실제 route를 분리해 coordinator 성공 영수증을 캡틴 도달로 세지 않는다. stats에 종류/에이전트별 위임·결과·종결·결정 요청과 열린 위임을 내고 finish는 partial/blocked 포함 열린 위임을 반드시 경고한다. |
+| T-6 | 임시 프로젝트에서 정상 source CLI 사슬·stats·finish 경고와 모든 불변식의 통과/거부와 실제 finish가 로컬 본문을 스테이징하지 않음을 확인한다. 전체/비밀 검사·독립 tester/reviewer 두 단계를 통과하며 기존 역할 없는 실행·질문 로그·옛 stats의 사건 의미를 유지한다. |
+
+## 테스트
+
+| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |
+|---|---|---|---|---|---|---|
+| S-1 | unit/CLI | T-1 | 긴 한글/CRLF/비ASCII 원문·본문, 잘못된 header/경로 | 원문 등록·재읽기·변조 | 원문 bytes 그대로·출처/지문, 중복키/미지원/비밀/링크/크기 거부 | 독립 기대 bytes/hash와 실제 CLI·외부 sentinel |
+| S-2 | unit/CLI | T-2 | Play 4번→제안 Play 4판→승인/정정/거절 | 확인 전·승인 제안 ID 바꿈·Play1번+4판/판정계획 변경 위임 | 잘못된 기록은2로 거부·미기록, 수신자 의미 대조 불명은 scope_check hold로 기록·ready 비0, 같은 승인/계획만 수락 | 긍정/부정 상태 사슬·수신자 대조 ready/hold |
+| S-3 | unit/CLI | T-3 | 위임+scope check+done/partial/blocked 결과 | 비판정자·다른 결과·증거 없는/변조된 종결 | 지정자+done+유효 증거만 닫힘, 나머지는 열린 상태 | 실제 파일 증거·ID/hash·상태 반복/중복 시험 |
+| S-4 | unit/CLI | T-4 | 원장·본문·시도·영수증 쓰기 실패, 동시 기록/중복 ID | 계수기 전송 대역과 가짜 Orca CLI 실행 | 선기록 실패 호출0, 성공 후 기록 실패는 불명·재발송 보류, 정상 재시도는 별도 시도 | 실제 프로세스 sentinel·동시 writer·실패 주입 |
+| S-5 | unit/CLI | T-4 | T05 장치 정상 획득/해제/회수와 probe/쓰기 실패 | --project 연결·사용자 lock 입력 | 적용 완료한 장치 사건만 자동 기록, 미적용/사용자 위조 거부; 기록 실패시 다음 명령 실행 없음 | 실제 자원 래퍼+임시 프로젝트 및 장치 실패 대조 |
+| S-6 | unit/CLI | T-5 | 같은 requestId·캡틴 답/캡틴 route 성공/실패만/근거 없음 | log+handoffs 교차·코디네이터 route 성공·실패재시도 | 요청은1, 우선순위/route대로 도달·전송실패·미확인, legacy 미연결은 별도 미확인 | BR01 네 분류·모순/중복·수신의도 반례 |
+| S-7 | e2e | T-5/T-6 | 임시 Git 프로젝트의 정상 CLI | 원문→확인→위임→대조→결과→종결 및 열린 partial/blocked·stats·finish | 모든 사슬 기록, 종류/에이전트·종결 통계, finish 열린 위임 경고 필수 | 실제 source CLI/격리 PACE_HOME·가짜 전송·선언 검사 명령 |
+| S-8 | check | T-6 | 최종 변경 | 관련·전체·비밀 검사와 독립 검토 | 실패0, docs/템플릿/coordinator 안내·옛 호환 유지 | PACE_SKIP_BROWSER_E2E=1 npm run check·secret-scan |
+
+## 접근
+
+### ① 사슬과 자동/수동 경계
+
+머리는 protocol=pace-handoff/v=1, kind/id/from/to와 선택 task/requestId, 로컬 본문 참조이며 저장 시 at/bodyHash를 고정한다. actor는 captain/coordinator, agent:구성원, project:P###로 구별한다. 종류는 captain_input·decision_request·decision_reply·delegate·scope_check·result·close·status와 내부 delivery/resource_event다. 모르는 필드·중복키·잘못된 종류/참조는 거부한다.
+
+captain_input은 전체 원문 본문과 source.ref(원문 위치)를 가지며 해석 칸을 섞지 않는다. interpretation인 decision_request는 of=원문 ID, requestId, 제안 본문과 실행/판정 계획(task·수신자·proofScope·decisionOwner)을 가진다. proposalHash는 그 ID/원문/본문/계획을 모두 묶는다. decision_reply는 captain 신고와 원문 출처, 정확한 제안 ID/proposalHash와 approve|correct|reject를 요구한다. 정정/거절은 승인이 아니며 정정 제안은 새 확인 사슬로 간다.
+
+delegate의 approved basis는 제안+승인 ID를 가리키고 본문·실행/판정 계획이 정확히 같아야 한다. 예시의 추가 지시나 다른 계획은 자동 거부한다. input basis는 원문 본문과 아래 계획 계약의 instructionHash에 모두 정확히 일치할 때만 허용한다. contract basis도 같은 계획 계약의 본문 지문·계획을 정확히 대조한다. 계약 경로·지문과 당시 사본을 로컬에 고정한다. 원문/계약의 자연어가 위임 계획을 실제 포함하는지, 판단 기준을 바꾸지 않았는지는 수신자가 직접 대조한다. scope_check는 해당 수신자만 작성하며 위임과 근거의 지문을 묶어 within|hold와 대조 근거 본문을 남긴다. 대조가 없거나 hold이면 ready는 비0이고 done 결과를 거부한다. 이것은 기록된 대조의 존재/일치 장치이며 NLP나 실제 도구 호출을 가로채는 권한 장치가 아니다.
+
+### ② 근거 없음의 경계
+
+basis:none 실행 위임은 거부한다. 근거를 찾기 위한 status/일반 decision_request는 실행하지 않는다는 상태와 이유를 본문에 남길 수 있다. 원문을 고쳐 옮기거나 미확인 해석으로 범위를 바꾸려면 확인 사슬을 거친다. T08은 실제 출처·보류 기록과 실제 행동을 감사한다. 파일/표지만으로 승인과 의미의 진실성을 인증했다고 하지 않는다.
+
+### ③ 전송 시도·route·요청 ID
+
+정본 metadata는 소유 project worktree의 projects/P###_…/handoffs.jsonl이다. 원문·상세 본문·계약 사본·전송 payload는 Git common dir 아래 pace/handoffs/<project-key>/에 내용 지문으로 고정한 로컬 전용 markdown으로 두고 저장소에는 복제하지 않는다. JSON 머리는16KiB, 본문은2MiB, 원장은32MiB의 명시 안전 한도를 두고 초과하면 전체 거부(절대 자르지 않음). project log는 계속 요약만 남긴다. 원문 출처·승인자와 본문이 실제 사용자 것인지는 현장 감사 대상이다.
+
+pace team handoff의 record/check/list/ready/send/receipt와 라이브러리 recordAndSend가 정상 참여 경로다. send는 메시지·시도 started를 먼저 내구 기록하고 guard를 푼 뒤 기존 Orca CLI를 호출한다. --json 결과의 실제 메시지 ID/명시 성공 응답은 sent, 명시 거절/실행 전 실패는 failed, timeout/모호함/최종 기록 실패는 unconfirmed다. 실제 전송 뒤 기록 실패는 sent 가능성을 반환하고 자동 재발송하지 않는다. started/불명 시도는 영수증 확인 전 재시도를 거부한다. failed만 새 시도 ID로 재시도한다. 시작·최종 시도 기록 주체는 송신 wrapper이며 수동 receipt 보완은 주체·출처를 기록한다. 원시 stdout/stderr/비밀은 저장하지 않는다.
+
+project의 handoff-routes.json은 actor→기존 수신 주소·전송 수단과 확인 근거를 명시한다. Orca는 에이전트 간 전송이므로 Orca ack를 사람 captain 직접 도달로 표시하지 않는다. captain 도달은 실제 캡틴 답 또는 기존 사람 채널의 성공 근거를 별도 시도로 기록한 경우만 분류한다. 전송은 로컬 Orca의 명시 단일 route만 지원하며 remote/bot/group/worker_done 등 생명주기 신호는 보내지 않는다. actor to 의도와 실제 routeActor/target을 각각 기록한다. captain 의도 메시지를 coordinator route로 전달한 성공은 captain 도달 근거가 아니다. route와 actor/source는 같은 사용자 협력 프로토콜의 신고이며 사람 인증이 아니다.
+
+project log --request-id를 question/escalation/answer에 선택 추가한다(기존 생략 호환). 같은 ID는 relays/답/시도를 묶고 모순된 root의 재사용은 거부한다. legacy ID 없음은 임의 짝짓기하지 않고 미연결 미확인으로 남긴다. 집계는 BR01 그대로 캡틴 답→실제 captain route 성공→captain 전송 실패만→그 밖 미확인 순서다. coordinator 성공·미전송 intent·불명 시도를 캡틴 도달로 승격하지 않는다. 기존 eventCounts/대기 시간은 사건 수 의미를 유지한다.
+
+### ④ 종결과 자기 신고 한계
+
+result는 해당 delegate 수신자·ID를 가리키고 done|partial|blocked, 증거 경로/지문을 남긴다. close는 저장된 decisionOwner와 같은 actor가 done 결과·해당 proofScope·유효 증거를 확인했다고 기록해야 한다. partial/blocked나 다른 주체·위임·결과는 닫지 못한다. 이름과 확인/판정은 자기 신고이며 인증이나 증거 의미의 자동 평가가 아니다. 같은 계정이 원장/프로그램을 바꾸는 위조까지 막는다고 주장하지 않는다. T07 설계와 T08 현장 독립 검토가 실제 역할/출처/품질을 감사한다.
+
+### ⑤ finish와 소스 구성
+
+열린 위임은 partial/blocked를 포함해 finish notes에 필수 경고한다. 추가 차단은 하지 않는다(브리프가 허용한 선택). 다만 손상/미지원 원장은 열린 위임을 알 수 없으므로 오류로 보고하며 정상0으로 숨기지 않는다. 프로젝트의 실제 목표 미달은 형식 finish 경고 여부와 별개로 PM이 마감을 막는다. stats의 handoffs 항목은 위임·결과·종결·결정 요청을 from 에이전트별로 내고 요청 단위 도달을 따로 낸다. 원장/새 requestId가 없는 옛 프로젝트의 기존 JSON/사건 의미는 유지한다. T06은 이 집계 기반을 확장한다.
+
+src/team/handoff-*.ts와 src/project/handoffs*.ts에 스키마/불변 본문·원장·상태·전송을 분리하고 CLI·event-log·metrics-report·harness를 연결한다. 링크/하드링크/UTF-8/크기·비밀·정규 경계 검사, 짧은 배타 guard와 원자 파일 교체, fsync된 원장 선기록을 쓴다. 동시 writer·부분 쓰기·기존 ID 충돌은 성공으로 숨기지 않는다. 전송은 원장 guard 밖에서 하고 완료 영수증을 다시 guard 안에 기록해 잠금 hook과 역순 교착을 피한다. 기존 pilot 로그는 이 정본으로 자동 변환/덮어쓰기하지 않는다.
+
+T05에는 상태 쓰기 성공 후 applied 확인본·로컬 재조정 outbox와 선택 --project callback을 추가한다. 기존 사전 audit는 의도 자료로 남기고, 실제 적용 확인 뒤의 acquire/release/reclaim만 resource_event로 자동 생성한다. CLI 사용자 입력의 resource_event는 거부한다. hook의 프로젝트 기록 실패는 이미 적용된 상태를 되돌리지 않고 guard를 남겨 다음 사용자 명령 실행을 보류한다. 구체적 실패 수명은 아래 R1 보완을 따른다. 이전 실제 fixture의 source SHA는 T05 시점 근거로 유지한다.
+
+문서는 docs/HANDOFF.md·TEAM·WORK-PROCESS·SECURITY·정의서·README, coordinator 규칙과 신규 팀 템플릿의 실행 전 안내를 갱신한다. 기존 고정 실행 전 대조 문단과 역할 없는 workerSpec는 바꾸지 않는다. 이 태스크는 실제 외부 메시지를 보내지 않고 가짜 Orca 실행기로 전송/실패를 실측한다(정상 전송 수단 변경 없음). 실제 호스트·현장 감사는 T08이다.
+
+
+## 사전 R1 보완: 우회 basis 검출·로컬 보존·실패 수명
+
+### 계획 계약과 고정 기대값
+
+input/contract의 계획은 송신자가 임의 지정하지 않는다. 해당 프로젝트의 handoff-plans.json(version1/plans)에 id·task·assignee·decisionOwner·proofScope(기준/절 참조)·instructionHash만 두고, 위임이 선택한 계약 파일 지문/planId와 본문/수신자/판정자/증명 참조가 모두 같아야 한다. 상세 지시 본문은 로컬 전용이다. 계획 계약이 실제 프로젝트 합의 안인지의 의미·권한은 PM/수신자가 원본 출처와 대조하며, 파일 표지를 사람 승인 인증이라고 하지 않는다. confirmed 제안은 같은 필드와 본문 지문을 proposalHash로 직접 묶는다.
+
+S-2에 다음을 필수 반례로 추가한다: input 원문과 다른 본문·다른 계획/판정자·계획 없음→기록2/행 추가0; contract 지문/본문/판정자/증명 참조 변경→2/행0; basis:none delegate→2/행0. 같은 input+계획/contract+계획/승인 제안은 수락한다. 승인 없는 제안·다른 제안 승인 재사용·판정 계획 변조도2/행0이다. 수신자가 아닌 scope_check는2/행0이고, 수신자가 실제 범위 모름을 알린 hold는 기록0/ready1/done 결과 거부다. ready가 실행을 가로채는 보안 경계라는 주장은 하지 않는다.
+
+S-4의 고정 기대값은 명시 성공 ID/응답→sent0, 명시 거절/실행 전 실패→failed1, timeout/모호한 출력/실제 성공 뒤 영수증 기록 실패→unconfirmed2다. started/unconfirmed/sent의 자동 재시도는2/실제 전송0, failed만 새 시도 ID로 재시도한다. fake Orca CLI와 API 계수기 양쪽에서 검사한다. Orca coordinator 성공을 captain 성공으로 바꾸는 route 입력은 거부하거나 captain 집계 미확인으로 남기고 실제 사람 채널 근거와 섞지 않는다.
+
+### 로컬 전용 보존 결정과 finish 보호
+
+코디네이터는 사용자의 기존 log.jsonl 요약 보존 지시와 원문 Git 승인을 구별하여 B(별도 승인 전 로컬 보존)로 설계하라고 지시했다. project log의 결정·질문·답 요약/주체·출처·요청 참조는 계속 버전 관리한다. handoffs 원장도 짧은 구조 metadata·로컬 본문 content ID/지문·출처 locator만 버전 관리한다. 상세 원문을 metadata 칸에 넣지 않으며, 원문/제안/결과/판정의 상세 본문·계약 사본과 전송 payload는 Git common dir의 로컬 전용 파일이다. 사용자 원문을 별도 승인 없이 Git으로 승격하거나 자동 삭제하지 않는다. 일반 대화/인증 파일을 수집하지 않고 명시 등록한 업무 자료만 처리한다.
+
+--body-file은 저장소 밖 또는 안전한 로컬 Git 메타데이터 위치의 명시한 단일 일반 파일을 받는다. working tree 안의 원문/상세 body 입력은 저장 전에 거부하고, 같은 저장소의 해당 경로를 로컬 staging 보호 목록에 등록한다. finish는 알려진 raw 입력 경로가 아직 스테이징 대상이면 git add -A 전에 거부한다. 사용자 파일을 자동 이동/삭제하지 않는다. 로컬 body 저장 위치도 어느 working tree에서 추적될 수 있는 separate-git-dir 배치면 쓰지 않는다. Git 공통 폴더와 조상/일반 파일/단일 링크/UTF-8/크기·비밀 경계를 검사한다.
+
+S-1/S-7/S-8은 로컬 본문이 400자 넘게 bytes 그대로 남고 실제 finish/HEAD/index/ls-files에 원문 marker·본문 파일이 없음을 확인한다. 원문을 working tree에 둔 부정 사례는 등록·finish가 안전 거부되고 원본 파일은 그대로다. 새 clone/로컬 body 없음은 metadata만 읽는 stats에서 감사 불가를 표시하고 finish가 경고한다; ready/send/close는 필요한 원문 대조가 불가능하므로 보류한다. body 지문 변조나 손상/미지원 metadata 원장은 stats/finish 오류이며 정상0으로 숨기지 않는다. 다른 clone의 원문 재감사 불가와 백업/삭제는 사용자가 따로 결정할 로컬 보존 한계로 SECURITY·HANDOFF에 명시한다.
+
+### 장치 적용 뒤 기록 실패와 복구
+
+자원 transition은 상태 쓰기 전 intent와 전이 ID·다음 상태 지문을 로컬에 내구 기록하고 상태에 그 전이 ID를 묶는다. 상태 쓰기 성공 뒤 applied 확인본을 만들고, 그 뒤만 프로젝트 resource_event로 기록한다. 사전 audit/미적용 intent는 handoffs로 승격하지 않는다. callback 기록 성공을 확인하기 전에는 자원 작업 명령을 시작하지 않는다.
+
+acquire hook 실패: 실제 새 lease는 pre-start/active이며 guard와 로컬 pending 적용 사건을 남기고 명령 호출0으로 반환2다. release hook 실패: 실제 lease는 inactive 그대로이고 원복하지 않으며 guard·pending release를 남긴다. reclaim hook 실패: 새 lease/획득 ID는 active/pre-start 그대로이고 old→new 전이를 pending으로 남기며 새 명령 호출0이다. applied 파일 쓰기 실패는 intent와 실제 상태의 전이 ID/지문이 맞는지 확인하기 전에는 사건을 확정하지 않는다.
+
+reconcile-resource는 로컬 실제 applied/상태와 대조한 사건만 같은 ID로 원장에 보완하며 중복을 만들지 않는다. guard를 자동 삭제하거나 작업을 재실행하지 않는다. 보완 뒤에도 운영자가 소유자/그룹/자원과 경합을 확인하고 별도 승인 후 T05 수동 복구 절차를 따른다. S-5는 acquire/release/reclaim 각각의 hook 실패·실제 상태·pending/원장 상태와 정상/중복 보완, 미적용 intent 거부를 시험한다. 정상 T05 --project 생략 경로는 호환한다.
+
+### 철회와 태스크 판정 주체
+
+T09는 partial/blocked 위임을 완료로 닫는 철회 기능을 추가하지 않는다. 포기/대체도 원래 위임이 완료됐다는 증거가 아니므로 열린 상태/finish 경고에 남기고, 별도 합의가 필요한 취소 수명은 후속 설계로 남긴다. 이는 불변식4를 약화하지 않는 보수적 선택이다. 이 제품의 decisionOwner와 별개로, 이 태스크의 마감 판정은 PM이 실제 검사와 독립 tester/reviewer 결과를 합쳐 하고 합의/사용자 데이터 선택은 코디네이터를 통해 확인한다.
+
+
+## 불변식 대응과 2단계 세부 판정
+
+| BR09 불변식 | 장치 | 시험 |
+|---|---|---|
+| 1 원문 보존 | 로컬 content ID/bytes·출처·지문, 해석 별도 record, Git 미스테이징 | S-1·S-7·S-8 |
+| 2 해석 확인 | 특정 제안/원문/본문/계획을 묶은 proposalHash·승인 ID와 basis 정확 일치 | S-2 |
+| 3 실행 전 대조 | 수신자 scope_check의 instruction/decisionOwner/proofScope와 ready/done gate | S-2·S-3 |
+| 4 위임 종결 | 지정 decisionOwner·done 결과·증명 참조/증거 지문 확인, partial/blocked 열린 상태 | S-3·S-7 |
+| 5 기록 선행 | 내구 원장/started 선기록→guard 밖 기존 전송→최종 receipt·불명 재발송 차단 | S-4·S-7 |
+| 6 실제 잠금 사건 | T05 실제 state transition/applied 확인본·pending/reconcile, 사용자 resource_event 거부 | S-5 |
+| 7 집계 일치 | shared requestId·실제 route·캡틴 답 근거 우선, 기존 사건 수 별도 | S-6·S-7 |
+
+should_fix의 고정 선택은 evidence/pre-review-response.md를 함께 읽는다. CLI에는 prepare-external과 reconcile-resource도 포함한다. Orca actor=captain route 입력은2로 거부하며 정상 coordinator route 성공은 captain 집계 미확인이다. 사람 채널 성공 receipt는 주체·출처·실제 성공 응답 지문/ID를 필요로 하고 출처가 없으면2로 거부한다.
+
+BR01 ①의 캡틴 답은 from=captain과 출처가 유효한 decision_reply, 또는 같은 requestId의 by:user answer와 실제 존재하는 근거 ref가 있을 때로 한정한다. by:agent/coordinator의 자체/대리 요약 답·사용자 결정이라는 src 표지만으로는 캡틴 답으로 승격하지 않는다. S-6에 코디네이터 자체 답만 있는 경우와 출처 없는 대리 답은 도달이 아닌 미확인이라는 반례를 둔다. 이는 사람 인증이 아니라 기록된 출처/주체의 판별이며 실제 진위는 T08 감사다. 새 clone의 metadata-only 집계는 로컬 원문 재감사 여부와 구별해 표시한다.

@@ -1,0 +1,4 @@
+빠진 것:
+- P009 T09: 증거 파일이 없다 — evidence/check-sealed.txt와
+- P009 T09: 증거 파일이 없다 — evidence/check-sealed-receipt.json으로
+실패

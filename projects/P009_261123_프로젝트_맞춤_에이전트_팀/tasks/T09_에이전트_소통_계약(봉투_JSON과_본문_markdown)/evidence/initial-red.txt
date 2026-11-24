@@ -1,0 +1,31 @@
+✖ 긴 합성 캡틴 원문은 로컬 bytes로 남고 버전 관리 원장에는 본문이 들어가지 않는다 (473.081375ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 559.470334
+
+✖ failing tests:
+
+test at test/team-handoff.test.ts:26:1
+✖ 긴 합성 캡틴 원문은 로컬 bytes로 남고 버전 관리 원장에는 본문이 들어가지 않는다 (473.081375ms)
+  AssertionError [ERR_ASSERTION]: team: Unknown option '--file'. To specify a positional argument starting with a '-', place it at the end of the command after '--', as in '-- "--file"
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-handoff.test.ts:32:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

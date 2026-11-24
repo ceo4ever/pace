@@ -1,0 +1,38 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# 1단계 독립 목표 대조 — T09 참여 소통 원장 (impl-diff.patch)\n\n## 무엇을 보았나와 맥락 노출 범위\n- **읽은 것:** 요청에 들어 있던 patch 전문. 확인용으로 `src/team/store.ts`(`safeTeamPath`·`readTeamFile`·`loadTeamMember`), `src/team/resource-lock.ts:69-77`, `src/project/harness.ts:1405-1434`와 `1535-1564`도 읽었다. `src/cli.ts`·`src/project/metrics-report.ts`는 grep으로 호출 위치만 찾았다.\n- **자동으로 들어온 것:** CLAUDE.md/AGENTS.md(프로젝트 공통 규칙), git status(T09 태스크 폴더 이름 등 파일 목록), 최근 커밋 제목, \"부트 생략\" 훅 문구.\n- **읽지 않은 것:** TASK·PROJECT·브리프·마감·PM 검사 결론·evidence 폴더의 다른 파일·메모리.\n- **오염 여부:** git status와 커밋 제목은 폴더·파일 이름 수준이라 판단 근거가 되지 않았다. 읽기 전용이라는 것이 작업 문서 접근 차단이나 완전 격리를 뜻하지는 않는다.\n- **실행하지 않은 것:** 시험(`npm run check`)은 돌리지 않았다. 아래 판단은 코드를 읽고 내린 것이다.\n\n## 첫 판단\n- **목표와 상위 목적이 맞는가:** 맞다. 원문 보존, 특정 제안 승인, 수신자 대조, 판정자 종결, 기록 선행 전송, 요청 집계는 모두 상위 목적의 네 가지 혼동(원문/해석, 승인 재사용, 근거 없는 완료, 기록 없는 전송)에 바로 대응한다.\n- **목표 달성:** **부분 달성.**\n  - **달성:** 구조 연결, 전송 선기록, 원문 로컬 보존, 옛 stats 형태 유지는 코드와 시험으로 확인된다. 근거: started를 fsync한 뒤 전송(`handoff-delivery.ts` prepare→transport), 지문에 묶인 승인(`proposalDigest`), 마지막 답 확인, 범위 확인과 증거가 필요한 done, decisionOwner의 close.\n  - **미달:** 흔한 입력 실수 하나로 원장 전체가 수동 복구 전까지 잠긴다(B1). 시간이 지나면 계획과 자원 보완 경로가 막힌다(S1, S2). 실제 운용에서 연결이 끊긴다.\n  - **미확인:** 사람 출처의 진위, 자연어 범위 판정, 두 호스트 실제 업무 효과, 실제 Orca 응답 형식.\n- **다음에 올릴 단계:** 구현. B1·S1·S2를 고친다. 목표·범위를 바꿀 필요는 없다.\n\n## 지적\n\n**B1 (blocking) — 일반 Error가 나면 원장 guard가 영구히 남는다**\n- `handoff-private.ts`의 `holdGuard`는 `HandoffError`일 때만 guard를 정리한다.\n- 그런데 `record` 안의 검증 과정은 append 전에 일반 Error를 낼 수 있다.\n  - `validateTransition`이 부르는 `loadTeamMember`(`store.ts:58-60`): `agent:<오타>`면 `throw new Error`.\n  - `evidence()`·`policy()`가 부르는 `regularBytes`: 증거 파일이나 계획 파일이 없으면 `lstatSync`가 ENOENT.\n  - `safeTeamPath`의 경로 오류.\n- 결과:\n  - `ledger.guard`가 남아 그 프로젝트의 모든 record/send/receipt가 \"guard 경합/중단\"으로 막힌다.\n  - 문서상 이 guard는 운영자 승인으로만 수동 복구한다.\n  - CLI는 \"검증/저장 실패\"만 출력해서 사용자는 잠긴 줄도 모른다.\n  - `--project` 잠금의 `onApplied`도 막혀 자원 guard까지 연쇄로 남는다.\n- 시험은 HandoffError 경로만 다룬다. \"행을 남기지 않는다\"는 시험은 통과하지만, 다음 기록이 가능한지는 확인하지 않는다.\n- **고칠 방향:** 쓰기 전 검증 실패는 guard를 정리하고, append·fsync 중 실패만 보존한다. 또는 검증 오류를 HandoffError로 감싼다. 미등록 agent, 없는 증거 파일, 없는 계획 파일 뒤에도 다음 record가 성공하는지 시험을 추가한다.\n\n**S1 (should_fix) — 계획 파일 전체 지문 때문에 이전 위임이 막힌다**\n- delegate의 `policy` 근거는 `handoff-plans.json` 파일 전체의 해시로 묶인다.\n- ready/done/close 때 `validateTransition`이 현재 파일 지문을 다시 확인한다.\n- 그래서 새 계획을 하나 추가하는 것만으로 열려 있던 input/contract 위임이 모두 다음 상태가 된다.\n  - ready가 영구히 false다.\n  - done 결과를 기록할 수 없다.\n  - close할 수 없다.\n- 철회 기능이 없으므로 이 위임들은 finish 경고에 계속 남는다.\n- 계획을 처음에 모두 확정하지 않는 한 상위 목적의 \"결과 → 지정 판정자 종결\" 연결이 끊긴다.\n- **고칠 방향:** 선택한 plan 항목의 canonical 지문으로 대조한다. 또는 등록 때 보존한 로컬 사본으로 대조하고, 현재 파일과 다르면 경고만 한다.\n\n**S2 (should_fix) — 확인 못 한 intent 하나가 reconcile 전체를 영구히 막는다**\n- `reconcileResourceEvents`는 applied도 없고 현재 상태와도 맞지 않는 intent를 만나면 throw한다.\n- 이런 intent는 두 경우에 생긴다.\n  - 상태 쓰기에 실패한 경우.\n  - 상태는 썼지만 applied 직전에 중단됐고, 이후 수동 복구와 새 획득으로 상태가 바뀐 경우.\n- 이 intent가 영구히 남아 같은 자원의 `reconcile-resource`가 더는 동작하지 않는다. 다른 정상 intent의 보완도 함께 막힌다. 시험 \"상태 쓰기에 실패한 intent…\"는 이 throw를 정상으로 고정하고 있다.\n- **고칠 방향:** 미확인 intent는 승격하지 말고 건너뛰거나 격리 표시한 뒤 보고한다. 나머지는 계속 처리한다.\n\n**S3 (should_fix) — stats·merge가 원장 오류에 같이 실패한다**\n- `collectDashboard`가 `collectHandoffs`를 감싸지 않고 부른다. 원장이 손상되거나 git 확인에 실패하면 `pace project stats`와 merge 뒤 `refreshProjectMetrics`(`harness.ts:1555`)가 통째로 실패한다.\n- finish는 차단을 의도했으니 괜찮다. 하지만 기존 지표 조회까지 원장 상태에 묶이는 것은 \"기존 요약 유지\" 목표와 어긋난다.\n- merge는 ff 이후 복원 경로가 있지만 재시도 부담이 생긴다.\n- **고칠 방향:** stats는 handoff 절만 \"손상/확인 불가\"로 표시하고 나머지는 그대로 출력한다.\n\n**N1 (note) — 원문 staging 방어는 finish 시점에만 있다**\n- 에이전트가 태스크 커밋에서 `git add -A`를 하면 보호 목록에 있는 원내 원문 파일이 이미 커밋된다. finish의 `git status`에는 더 이상 보이지 않아 탐지되지 않는다.\n- 문서가 \"DLP 아님\"이라고 한계를 밝히고 있다. 다만 `pace project done`이나 check에서도 같은 검사를 하면 비용이 적게 든다.\n\n**N2 (note) — 캡틴 답 집계를 자기 신고로 부풀릴 수 있다**\n- `captainAnswer`는 `--by user` 신고에 비어 있지 않은 아무 `ref` 파일만 있으면 캡틴 답으로 센다(PROJECT.md도 된다). decision_reply의 `from: captain`도 자기 신고다.\n- 문서에 신고 한계가 적혀 있다. 하지만 \"캡틴 도달\"이라는 지표 이름에 비해 근거가 약하다. ref를 handoff 본문 지문이나 sourceRef로 제한하는 길을 고려할 만하다.\n\n**N3 (note) — read 비용이 원장 크기에 비례해 커진다**\n- `HandoffStore.read()`는 호출마다 모든 행의 전이를 재검증하고, 본문(최대 2MiB)을 읽어 지문을 낸다. `rows.some` 중첩 때문에 O(n²)다.\n- record·send·receipt마다 이 read를 다시 부른다. 32MiB 한도 근처에서는 느려진다.\n\n**N4 (note) — 외부 경로 영수증은 한 번만 받는다**\n- 외부 영수증으로 unconfirmed를 한 번 기록하면 나중에 실제 sent를 확인해도 기록할 수 없다(`prior.length !== 1`).\n- 재발송 금지 원칙과는 맞지만, 도달 집계가 영구히 \"미확인\"으로 남는다.\n\n## 묻는 것에 대한 답\n1. **목표 정합:** 맞다. 결과는 구조상 목표를 이루지만, B1·S1·S2 때문에 지속 운용에서 달성되지 않는다.\n2. **다른 전략:**\n   - 계약은 파일 전체가 아니라 plan 단위로 지문을 잡는다.\n   - guard는 \"쓰기 전 검증\"과 \"쓰기 중 실패\"로 나눠 다룬다.\n   - 미확인 intent는 격리 큐로 보낸다.\n   - staging 검사는 done/check 단계로 앞당긴다.\n3. **빠진 것:**\n   - 일반 Error 경로에 대한 시험.\n   - 계획 파일이 바뀐 뒤 이전 위임을 종결하는 시험.\n   - 미확인 intent 뒤의 reconcile 시험.\n   - main에서 worktree 프로젝트 stats를 조회하는 시험.\n   - 두 참여자가 동시에 record하는 시험.\n4. **결정 추적:** 문서와 코드의 결정(로컬 B 보존, 선기록, Orca ≠ 캡틴, 판정자 종결, 경고만 하고 차단하지 않음)은 목표까지 추적된다. 다만 \"현재 계약 재확인\"은 파일 전체 지문으로 구현되어 종결 연결이라는 목표와 충돌한다(S1).\n\nfail",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": "1b1e1900-6c42-4744-a5e4-33d3ad29c5be",
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 128196,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 11899
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "impl-diff.patch",
+    "hash": "6505f18d015f5c0cda1c481c3443d5ee9e9189a715f0456697f7cb51a95b4cb0",
+    "verdict": "fail",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  }
+}

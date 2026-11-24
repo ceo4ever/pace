@@ -69,3 +69,7 @@
 ## [2026-11-24] query | T04 team verify 설계 전 작업 하네스 역할 지시·전달/관측 구별과 세션 훅 경계를 검색; T03 roleInstruction 재사용 및 기술적 읽기 차단 음성 대조를 계획한다
 ## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
 ## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-24] ingest | 참여 소통 원장의 증명 경계 (.pace/brain/pages/concept/참여-소통-원장의-증명-경계.md)
+## [2026-11-24] update | 참여 소통 원장의 증명 경계 (.pace/brain/pages/concept/참여-소통-원장의-증명-경계.md)
+## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-24] update | T09 실제 코드·합성 CLI/finish 근거로 원문 로컬 보존과 신고/인증, 승인/종결·선기록·장치 적용 경계를 개념 페이지로 남겼다

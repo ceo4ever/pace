@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "runner": "run-tester.mjs stage2",
+  "outcome": "timeout",
+  "timeoutMs": 300000,
+  "verdict": null,
+  "cleanupUnconfirmed": false,
+  "evidenceSource": "actual exec session14188 exit1: AgentError timeout from src/agent/p-executor.ts:204; original complete model output was not returned, no verdict reconstructed",
+  "continuity": "same first-stage session had been resumed; next attempt will resume it again"
+}

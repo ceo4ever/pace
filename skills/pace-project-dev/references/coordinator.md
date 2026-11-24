@@ -78,3 +78,9 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
 ## 공유 자원 요청
 
 자원 요청 질문은 문장으로 동시 사용을 허락하는 대신 `pace team lock <자원> --by <담당> -- <작업 명령>`으로 답한다. 원본 resources와 resources.md의 scope·확인 방법 및 같은 PACE_HOME을 대조한다. 잠금은 참여 호출만 직렬화한다. 소유자/자식 그룹 종료와 자원 미사용 중 하나라도 모르면 다음 작업을 보류하고 확인을 요청한다. 확인기가 없는 자원은 실제 coordinator/captain 확인 근거를 전달해 unlock하며 단순 heartbeat 만료나 자기 선언으로 승인을 만들어내지 않는다. 실제 승인과 수동 회수 근거를 사건에 연결하고, 외부 잠금 파일의 PID로 프로세스를 종료하지 않는다. 자세한 CLI·안전 복구는 docs/TEAM.md의 공유 자원 잠금 절을 따른다.
+
+## 참여 소통 원장과 로컬 보존
+
+프로젝트가 docs/HANDOFF.md의 원장을 쓰면 같은 업무 요청에 --request-id를 공유한다. 원문과 상세 답/결과/판정은 Git common dir의 로컬 본문에 온전히 보존하고 log.jsonl에는 기존 요약·결정 주체·출처/요청 참조만 남긴다. 원문 Git 보존은 별도 사용자 승인 없이 하지 않는다. 캡틴의 조건부/모호한 답은 승인으로 단정하지 않는다. coordinator 자체 답이나 Orca 에이전트 전송 성공은 캡틴 도달이 아니다. 실제 사람 채널은 prepare-external 선기록 뒤 기존 호스트 도구로 전달하고 출처·응답 지문/ID의 receipt를 연결한다. 기록 실패나 불명 전송은 자동 재시도하지 않는다. 지정 decisionOwner만 done 증거/범위를 확인해 close하며 열린 위임은 finish 경고에 남긴다. 자원 --project 연결 실패는 실제 상태를 원복하지 않고 pending/guard를 보존하며 reconcile-resource도 guard 회수/작업 재개를 하지 않는다.
+
+by:user answer의 --ref 파일에는 짧은 출처 위치 영수증·응답 식별자·지문만 둔다. 실제 사람의 답 원문이나 상세 해석을 프로젝트 파일에 복사하지 않는다. 원문은 로컬 decision_reply 본문으로 등록하고 ref에는 해당 ID/지문과 출처를 연결한다. 이 ref의 존재·신고 주체만으로 실제 사람 응답을 인증하지 않으며 현장 감사에서 대조한다.

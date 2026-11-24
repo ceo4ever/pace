@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "reason": "The first review snapshots contain the intentional synthetic negative credential test; Unicode JSON spelling preserves every parsed value and review hash while exact original bytes remain gzip archived. Detector and exclusions unchanged; never applied to actual secrets.",
+  "rows": [
+    {
+      "file": "impl-review-stage1.json",
+      "archive": "impl-review-stage1.json.original.gz",
+      "originalHash": "6b6a8c9be101d1cce456f97a4299e24ab26cd0e123085aa3eda9db2e619a9546",
+      "parsedValueUnchanged": true,
+      "classification": "explicit synthetic negative-test fixture, not actual credential"
+    },
+    {
+      "file": "review-records/R1.json",
+      "archive": "review-records/R1.json.original.gz",
+      "originalHash": "6b6a8c9be101d1cce456f97a4299e24ab26cd0e123085aa3eda9db2e619a9546",
+      "parsedValueUnchanged": true,
+      "classification": "explicit synthetic negative-test fixture, not actual credential"
+    }
+  ]
+}

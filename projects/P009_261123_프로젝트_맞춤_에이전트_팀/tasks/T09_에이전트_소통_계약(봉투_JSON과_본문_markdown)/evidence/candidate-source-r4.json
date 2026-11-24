@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "at": "2026-11-24T06:23:35.848Z",
+  "base": "9213c3fa5de6ab6985a88d4868f10ffd0df2112f",
+  "files": [
+    {
+      "path": ".pace/test-map.json",
+      "sha256": "df4f36b2edaf5b42eb8df46bead917bd600a9100f841f361e6f98cd2bbabafe9"
+    },
+    {
+      "path": "README.md",
+      "sha256": "da28f57618de24b5e1dd4fb42deaa5fb49e113dfa03aeb62815f7136bebd7057"
+    },
+    {
+      "path": "docs/HANDOFF.md",
+      "sha256": "d771679d9feb751e3ae85fe5ad90d14a311fc16b77f51ab87dc15d6c637e913f"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "9d02ab4b481ca1490ec509b0a039ba9df33cf92684a6b467f9db663df29e294b"
+    },
+    {
+      "path": "docs/SECURITY.md",
+      "sha256": "a93b17b6f3978c7e48fc48f54b663cf9c9c5afb7036a4dc25427236284f350ac"
+    },
+    {
+      "path": "docs/TEAM.md",
+      "sha256": "26fcc379d4e9439f007ad46d99e6abe99c7eb7c50eca3de2cd606e7f2c393497"
+    },
+    {
+      "path": "docs/WORK-PROCESS.md",
+      "sha256": "43e5f31a91b59f70e6755acff904ea44ef515107530136a3a18306e6fedbca20"
+    },
+    {
+      "path": "skills/pace-project-dev/references/coordinator.md",
+      "sha256": "0d4d32f34f2135e44996434e480a1840e519b6914cc48540a1c670e959b7ae80"
+    },
+    {
+      "path": "src/cli.ts",
+      "sha256": "ab26bdedb4bff417ec4e4890e95eba6ee69f7b64ef364c2a379011bc7aa2e284"
+    },
+    {
+      "path": "src/project/event-log.ts",
+      "sha256": "8ee7dcfa9e0cb4d4f5c5466d6993270e2ddb3964e9cb093aa760f05aab80a190"
+    },
+    {
+      "path": "src/project/handoff-files.ts",
+      "sha256": "ebb482dd716bcafb22f2289006ce5de58b9bf30a6461804c973cc85083d0a6c8"
+    },
+    {
+      "path": "src/project/handoff-private.ts",
+      "sha256": "f2b2640aa429914616d1c5f95dbe71ccd6126ca87cdf210fab2861f6711c079a"
+    },
+    {
+      "path": "src/project/handoff-report.ts",
+      "sha256": "95e859dfdd48721a323447ce0df5ca085e80bb898ebb2f83c4bffae8b1fcf053"
+    },
+    {
+      "path": "src/project/handoff-store.ts",
+      "sha256": "33296bdcb9bc76a822eb70931e0e8c7dbd747537aef663dd93228423f3616064"
+    },
+    {
+      "path": "src/project/harness.ts",
+      "sha256": "07e2f138008fe4dac1568ad06a64ea883b03e30c77f585a30914ffd4693d3bf8"
+    },
+    {
+      "path": "src/project/metrics-report.ts",
+      "sha256": "34b446d9db660d82317ea62756fff5511084aedecd25b684eb9d342517c91a3a"
+    },
+    {
+      "path": "src/team/handoff-cli.ts",
+      "sha256": "17a8aa70b87f4b3d6b61520cf6a6c6d70ad0f2818d56bd996bea85f7f70929fe"
+    },
+    {
+      "path": "src/team/handoff-delivery.ts",
+      "sha256": "0e5e72ab992e1f3d83e3c79f653a273630cb37ea3176d7772b6079c4b0079559"
+    },
+    {
+      "path": "src/team/handoff-model.ts",
+      "sha256": "a6308231425b40a369b59c3da53c910b8d4497a25c975d7ba0acf5263132dcb9"
+    },
+    {
+      "path": "src/team/handoff-resources.ts",
+      "sha256": "5b4d1c0e57db0a60064cb4864099e15aedba1d3e80f2812b96f661817bc3dd9f"
+    },
+    {
+      "path": "src/team/handoff-state.ts",
+      "sha256": "ec5cdb882791a1c01477ff0046eef0a8d635e7d6f4f801f3e4c8604c0b4344fd"
+    },
+    {
+      "path": "src/team/resource-cli.ts",
+      "sha256": "1d5b57636652b6f51bda4c831f12cf282ba209a1ed59f1204910a4338b3b6525"
+    },
+    {
+      "path": "src/team/resource-events.ts",
+      "sha256": "29dbf5f6ff6a03c636345ab81a2174b9ed9bbae0adf6a0dbdb1f3629b53e0d3a"
+    },
+    {
+      "path": "src/team/resource-lock.ts",
+      "sha256": "584f20066e5344535c5b611d5eebd934366452c8528cc75b8e48fd15a341b809"
+    },
+    {
+      "path": "templates/team/member.md",
+      "sha256": "c40d8e27a8e9c3e25a91b615bda036e0aa316a5017c403ff909edc1096dbe6b0"
+    },
+    {
+      "path": "test/team-handoff.test.ts",
+      "sha256": "250541122cd25ac8ce68faab55fb5adfc7e6bee9c33caac33a4c54779b618227"
+    }
+  ]
+}

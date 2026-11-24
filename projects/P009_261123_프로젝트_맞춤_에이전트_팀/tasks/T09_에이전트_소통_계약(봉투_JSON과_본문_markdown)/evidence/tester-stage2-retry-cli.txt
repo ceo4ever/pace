@@ -1,0 +1,1 @@
+{"model":{"value":"claude-opus-5-5","source":"reported"},"stop_reason":"end_turn","is_error":false}

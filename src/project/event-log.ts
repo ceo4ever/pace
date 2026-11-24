@@ -10,6 +10,7 @@ export type LogRecipient = "captain" | "coordinator";
 export interface ProjectEvent {
   ts: string; p: string; t?: string; type: LogType; by: LogActor; msg: string;
   to?: LogRecipient;
+  requestId?: string;
   role?: StartRoleRecord;
   ok?: boolean; src?: string; ref?: string; data?: Record<string, number>;
 }
@@ -18,6 +19,7 @@ function validText(text: unknown, limit: number): text is string {
   return typeof text === "string" && text.trim().length > 0 && text.length <= limit && !/[\r\n\x00-\x1f\x7f]/.test(text) && !hasSecret(text);
 }
 export function validateEvent(event: ProjectEvent): void {
+  if (event.requestId !== undefined && (!["question", "escalation", "answer"].includes(event.type) || !/^[a-z][a-z0-9_-]{0,95}$/.test(event.requestId))) throw new ProjectLogError("requestId는 question·escalation·answer의 짧은 식별자여야 한다");
   if (event.role !== undefined && (event.type !== "start" || !validStartRole(event.role))) throw new ProjectLogError("역할 기록은 start의 유효한 전달 설정이어야 한다");
   if (event.to !== undefined && (!["question", "escalation"].includes(event.type) || !["captain", "coordinator"].includes(event.to))) throw new ProjectLogError("수신자는 question·escalation의 captain|coordinator만 허용한다");
   if (!/^P\d{3}$/.test(event.p) || (event.t !== undefined && !/^T\d{2}$/.test(event.t)) || !LOG_TYPES.includes(event.type) || !["cli", "agent", "coordinator", "user"].includes(event.by)) throw new ProjectLogError("사건 번호·종류·작성자가 올바르지 않다");
@@ -56,7 +58,7 @@ function openLog(path: string, write: boolean, retries = 0): number {
 export function recordEvent(dir: string, event: ProjectEvent): boolean {
   try {
     validateEvent(event); assertDir(dir);
-    const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
+    const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.requestId !== undefined ? { requestId: event.requestId } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
     const fd = openLog(join(dir, "log.jsonl"), true);
     try {
       const stat = fstatSync(fd); if (!stat.isFile() || stat.nlink !== 1) throw new ProjectLogError("로그는 일반 파일이어야 한다");
@@ -95,10 +97,10 @@ export function memoDateTime(at: Date): string {
   return `${at.getFullYear()}-${pad(at.getMonth() + 1)}-${pad(at.getDate())} ${pad(at.getHours())}:${pad(at.getMinutes())}`;
 }
 const MANUAL_TYPES = new Set(["decision", "change", "review", "question", "answer", "escalation", "note"]);
-export function agentEvent(dir: string, input: { p: string; t?: string; type: string; msg: string; src?: string; ref?: string; by?: string; to?: string }): { recorded: boolean; duplicate: boolean } {
+export function agentEvent(dir: string, input: { p: string; t?: string; type: string; msg: string; src?: string; ref?: string; by?: string; to?: string; requestId?: string }): { recorded: boolean; duplicate: boolean } {
   if (!MANUAL_TYPES.has(input.type)) throw new ProjectLogError("수동 사건 종류: decision|change|review|question|answer|escalation|note");
   if (input.src !== undefined && !["사용자 결정", "루카스 결정", "main 판단", "자체 판단"].includes(input.src)) throw new ProjectLogError("출처: 사용자 결정|main 판단|자체 판단 (기존 루카스 결정 호환)");
-  const event: ProjectEvent = { ts: new Date().toISOString(), p: input.p, t: input.t, type: input.type as LogType, by: (input.by ?? "agent") as LogActor, msg: input.msg, src: input.src, ref: input.ref, ...(input.to !== undefined ? { to: input.to as LogRecipient } : {}) };
+  const event: ProjectEvent = { ts: new Date().toISOString(), p: input.p, t: input.t, type: input.type as LogType, by: (input.by ?? "agent") as LogActor, msg: input.msg, src: input.src, ref: input.ref, ...(input.to !== undefined ? { to: input.to as LogRecipient } : {}), ...(input.requestId !== undefined ? { requestId: input.requestId } : {}) };
   if (event.type === "review") {
     const count = (grade: string) => {
       const match = new RegExp(`\\b${grade}\\s*[:：]?\\s*(\\d+)`).exec(event.msg);

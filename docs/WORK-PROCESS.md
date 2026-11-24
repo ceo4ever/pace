@@ -16,7 +16,7 @@
 
 프로젝트 작업자 역할은 `start --role <팀 구성원 이름>` > PROJECT 머리의 `작업자 역할` > 없음으로 고른다. 기존 worktree에 명시 역할을 적용하려면 `--launch`가 필요하다. 원본 적재와 tier 인자·시작 기록의 요청/관측 구별·재개/복구 경계는 [TEAM의 프로젝트 작업자 역할](TEAM.md#프로젝트-작업자-역할)을 따른다. 역할 미지정은 기존 경로이고 자동 lead는 없다.
 
-- 지표: `pace project stats P### [--json]` — 프로젝트·태스크 시간, 도구별 토큰, 게이트 실패, 리뷰 지적 수·개선 후보. main에서도 소유 worktree를 조회한다. `projects/P###_…/log.jsonl`은 커밋하는 사건 기록(`{ts,p,t?,type,by,msg,ok?,src?,ref?,data?,to?}` — 시간대 포함 ISO·작성자 cli/agent/coordinator/user·짧은 메시지·수치 data)이며 기록 오류는 명령을 막지 않는다. finish·merge는 프로젝트의 `METRICS.md`(프로젝트 기준·태스크 기준·태스크 밖 집계)와 `projects/METRICS.md`(비교표)를 자동 생성한다. PROJECT-CLOSE `## 지표`는 METRICS.md 링크와 에이전트 해석 1~3줄이며 누락 시 finish 실패. 개선 후보를 메모리·브레인으로 올릴지는 사람이 고른다
+- 지표: `pace project stats P### [--json]` — 프로젝트·태스크 시간, 도구별 토큰, 게이트 실패, 리뷰 지적 수·개선 후보. main에서도 소유 worktree를 조회한다. `projects/P###_…/log.jsonl`은 커밋하는 사건 기록(`{ts,p,t?,type,by,msg,ok?,src?,ref?,data?,to?,requestId?}` — 시간대 포함 ISO·작성자 cli/agent/coordinator/user·짧은 메시지·수치 data)이며 기록 오류는 명령을 막지 않는다. finish·merge는 프로젝트의 `METRICS.md`(프로젝트 기준·태스크 기준·태스크 밖 집계)와 `projects/METRICS.md`(비교표)를 자동 생성한다. PROJECT-CLOSE `## 지표`는 METRICS.md 링크와 에이전트 해석 1~3줄이며 누락 시 finish 실패. 개선 후보를 메모리·브레인으로 올릴지는 사람이 고른다
 - 새 TASK의 `TASK 형식: v2`는 증명 범위와 비어 있지 않은 판정 주체를 요구한다(기준·테스트 앞 배치는 템플릿 관례이며 게이트의 순서 검사는 아니다). 게이트·verify·수동 reviewer는 같은 표지로 나누며 표지 없는 옛 TASK에는 새 규칙을 강제하지 않는다. 구조 검사와 의미 판정의 경계는 reviewer.md의 TASK 증명 범위 절을 따른다. 표지 제거·허위 기록의 우회와 의미·진정성은 기계가 보증하지 않는다.
 - 새 태스크의 `사전 검토: v1`은 `PRE-REVIEW.json`의 마지막 판정·대상 해시·증거를 check/done/finish에서 확인한다. 작성법과 교차 대체 조건은 `skills/pace-project-dev/references/reviewer.md`의 사전 검토 기록 v1을 따른다. 과거 마커 없는 태스크는 기존 방식이며, 마커와 기록 삭제·허위 기록 우회 및 검토 의미·실제 선행 시점은 기계가 보증하지 않는다.
 - 검토 원장 decision의 `by: pm|user`는 프로젝트 사건의 `by: agent|coordinator|user`와 별개다. 옛 결정의 주체는 unknown이며 사용자로 추정하지 않는다. 도구 계약은 AGENT-CALL, 영향 분류 정본은 reviewer.md 반복 실패 절이다.
@@ -35,3 +35,9 @@
 팀 원본은 `.pace/team`에 두고 `pace team new·list·sync`로 관리한다. 일반 worker 설정과 등급 설정 파일을 분리하며 `worker show`의 teamTiers에서 유효 대응표를 본다. `team sync --check --json`은 원본·설정·내용 차이를 구분하며 원본/출력과 권한의 계약은 [TEAM](TEAM.md)을 따른다. 역할 정의 생성만으로 프로젝트 작업자 역할이 자동 선택되지는 않는다.
 
 작업자 모델·effort는 `pace worker show`, `pace worker set <도구> <model|effort> <값>`, `pace worker reset <도구> <model|effort>`로 관리한다. 설정은 `PACE_HOME/worker-settings.json`에 저장되며 설치본 교체와 독립적이다. `project start --model ... --effort ...`는 해당 실행에서 우선하고 `--effort default`는 도구 기본값을 선택한다. 초기 모델은 Codex `gpt-6.2-sol`, Claude `claude-opus-5-5`이며 effort는 도구 기본값이다.
+
+## 소통 기록과 요청 연결
+
+`project log`의 question/escalation/answer에 선택 `--request-id`를 붙여 [참여 소통](HANDOFF.md)과 한 요청으로 묶는다. 기존 사건 수·대기 계산은 유지하며 새로운 handoffs 집계와 혼용하지 않는다. 원문·상세 답은 Git common dir에만 보존한다. 전송은 원장/started 선기록 뒤이며 기록 실패 때 보내지 않는다. finish는 partial/blocked 포함 열린 위임·누락 로컬 본문을 경고하고 손상 원장/알려진 raw staging 후보는 차단한다.
+
+by:user answer 근거 ref는 출처 위치·응답 식별자·지문만 담는 짧은 영수증이다. 답 원문과 상세 해석은 이 버전 관리 파일에 복사하지 않고 로컬 decision_reply 본문에 보존한다.

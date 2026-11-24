@@ -1,18 +1,20 @@
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { lstatSync, mkdirSync, realpathSync, renameSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { closeSync, fsyncSync, lstatSync, mkdirSync, openSync, realpathSync, renameSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { paceHome } from "../core/paths.ts";
 import { hasSecret } from "../project/secrets.ts";
 import { readTeamFile, safeTeamPath } from "./store.ts";
 import { loadResource, probeResource, resourceHash, safeResourceText, type Resource, type ResourceUse } from "./resources.ts";
 import { inspectProcess, observeGroup, processIdentity, type Liveness, type ProcessIdentity, type ProcessObservation } from "./resource-process.ts";
+import { appliedResourceEvent, prepareResourceEvent, reconcileResourceEvents, type ResourceEventSink } from "./resource-events.ts";
 
 export interface ResourceLease {
   version: 1; active: boolean; acquisitionId: string; resource: string; scope: "repo" | "machine"; definition: string;
   by: string; owner: ProcessIdentity; cwd: string; acquiredAt: number; heartbeat: number;
   phase: "pre-start" | "started" | "manual";
   child: { identity: ProcessIdentity; group: number } | null;
+  transitionId?: string;
 }
 export interface LockResult {
   outcome: "acquired" | "busy" | "hold" | "released" | "renewed" | "started" | "status";
@@ -21,6 +23,7 @@ export interface LockResult {
 }
 export interface Confirmation { by: "coordinator" | "captain"; evidence: string }
 export interface LockDeps {
+  events?: ResourceEventSink;
   home?: string; now?: () => number; self?: () => ProcessIdentity | null;
   process?: (identity: ProcessIdentity) => Liveness; group?: (group: number) => Liveness;
   probe?: (resource: Resource, cwd: string) => ResourceUse;
@@ -42,9 +45,10 @@ function writeJson(root: string, name: string, value: unknown, exclusive = false
   const text = JSON.stringify(value) + "\n";
   if (Buffer.byteLength(text) > 65536 || hasSecret(text)) throw new Error("잠금 기록 안전 검사 실패");
   const path = safeTeamPath(root, name);
-  if (exclusive) { writeFileSync(path, text, { flag: "wx", mode: 0o600 }); return; }
+  const durable = (target: string) => { const fd = openSync(target, "wx", 0o600); try { writeFileSync(fd, text); fsyncSync(fd); } finally { closeSync(fd); } };
+  if (exclusive) { durable(path); return; }
   const tmpName = `.${name}.${randomUUID()}.tmp`, tmp = safeTeamPath(root, tmpName);
-  writeFileSync(tmp, text, { flag: "wx", mode: 0o600 });
+  durable(tmp);
   safeTeamPath(root, name);
   renameSync(tmp, path);
 }
@@ -79,10 +83,12 @@ export class ResourceLock {
   readonly machineDir: string;
   readonly stateDir: string;
   readonly stateName: string;
-  readonly deps: Required<Omit<LockDeps, "home">>;
+  readonly deps: Required<Omit<LockDeps, "home" | "events">>;
+  readonly events?: ResourceEventSink;
   readonly root: string;
   private ownerCheck: ProcessObservation["reason"] | undefined;
   constructor(root: string, name: string, options: LockDeps = {}) {
+    this.events = options.events;
     this.root = root;
     this.resource = loadResource(root, name);
     this.repoDir = directory(commonGitDirectory(root), "pace/resources");
@@ -133,7 +139,7 @@ export class ResourceLock {
   private read(): ResourceLease | null {
     const data = readJson(this.stateDir, this.stateName);
     if (data === null) return null;
-    if (!record(data) || Object.keys(data).sort().join(",") !== "acquiredAt,acquisitionId,active,by,child,cwd,definition,heartbeat,owner,phase,resource,scope,version" || data.version !== 1 || typeof data.active !== "boolean" || !uuid(data.acquisitionId) || data.resource !== this.resource.name || data.scope !== this.resource.scope ||
+    if (!record(data) || Object.keys(data).filter((k) => k !== "transitionId").sort().join(",") !== "acquiredAt,acquisitionId,active,by,child,cwd,definition,heartbeat,owner,phase,resource,scope,version" || data.transitionId !== undefined && (typeof data.transitionId !== "string" || !/^transition-[a-f0-9-]{36}$/.test(data.transitionId)) || data.version !== 1 || typeof data.active !== "boolean" || !uuid(data.acquisitionId) || data.resource !== this.resource.name || data.scope !== this.resource.scope ||
         typeof data.definition !== "string" || !/^[0-9a-f]{64}$/.test(data.definition) || !safeResourceText(data.by, 64) || !identity(data.owner) || !safeResourceText(data.cwd, 4096) ||
         !Number.isSafeInteger(data.acquiredAt) || !Number.isSafeInteger(data.heartbeat) || !["pre-start", "started", "manual"].includes(data.phase as string) ||
         !(data.child === null || record(data.child) && Object.keys(data.child).sort().join(",") === "group,identity" && identity(data.child.identity) && positive(data.child.group) && data.child.group === data.child.identity.pid) ||
@@ -157,10 +163,13 @@ export class ResourceLock {
     for (const key of ["ORCA_TERMINAL_HANDLE", "ORCA_TERMINAL_ID", "ORCA_RUN_ID"]) if (safeResourceText(process.env[key], 128)) context[key] = process.env[key]!;
     writeJson(dir, `${this.deps.now()}-${randomUUID()}.json`, { action, at: this.deps.now(), resource: lease.resource, acquisitionId: lease.acquisitionId, by: lease.by, owner: lease.owner, phase: lease.phase, context, ...(confirmation ? { confirmation } : {}) }, true);
   }
-  private commit(action: string, lease: ResourceLease, confirmation?: Confirmation): void {
+  private commit(action: string, lease: ResourceLease, confirmation?: Confirmation, previousAcquisitionId?: string): void {
     this.audit(action, lease, confirmation);
+    const event = this.events && ["acquire", "release", "reclaim"].includes(action) ? prepareResourceEvent(this.events, action as "acquire" | "release" | "reclaim", lease, this.stateName, this.deps.now(), previousAcquisitionId) : null;
     writeJson(this.stateDir, this.stateName, lease);
+    if (event) appliedResourceEvent(this.events!, event);
   }
+  reconcileApplied(): { reconciled: number; unconfirmed: string[] } { return this.events ? reconcileResourceEvents(this.events, this.stateDir, this.stateName) : { reconciled: 0, unconfirmed: [] }; }
   private free(lease: ResourceLease, confirmation?: Confirmation): ResourceUse {
     const state = this.deps.probe(this.resource, lease.cwd);
     if (state === "busy") return "busy";
@@ -192,7 +201,7 @@ export class ResourceLock {
       } else if (this.resource.probe && this.deps.probe(this.resource, this.root) !== "free") return this.result("hold", "자원 미사용 확인 불가; 실행 보류", 2);
       const now = this.deps.now();
       const lease: ResourceLease = { version: 1, active: true, acquisitionId: randomUUID(), resource: this.resource.name, scope: this.resource.scope, definition: resourceHash(this.resource), by, owner, cwd: this.root, acquiredAt: now, heartbeat: now, phase: mode === "manual" ? "manual" : "pre-start", child: null };
-      this.commit("acquire", lease);
+      this.commit(old?.active && this.events ? "reclaim" : "acquire", lease, undefined, old?.active ? old.acquisitionId : undefined);
       return this.result("acquired", "참여 자원 잠금 획득", 0, lease);
     });
   }

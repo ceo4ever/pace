@@ -1,0 +1,1888 @@
+diff --git a/.pace/test-map.json b/.pace/test-map.json
+index 4cbf593..87b2a70 100644
+--- a/.pace/test-map.json
++++ b/.pace/test-map.json
+@@ -50,12 +50,14 @@
+       "sources": [
+         "src/team/**/*.ts",
+         "src/core/worker-tiers.ts",
++        "src/project/handoff-*.ts",
+         "templates/team/**/*"
+       ],
+       "tests": [
+         "test/team.test.ts",
+         "test/team-verify.test.ts",
+         "test/team-lock.test.ts",
++        "test/team-handoff.test.ts",
+         "test/project-role.test.ts",
+         "test/worker-settings.test.ts"
+       ],
+diff --git a/README.md b/README.md
+index 89864ab..457c744 100644
+--- a/README.md
++++ b/README.md
+@@ -228,3 +228,5 @@ PACE_HOME="$(mktemp -d)" ./bin/pace.ts boot --host plain   # 실제 ~/.pace 대
+ 
+ 작업자 모델은 `pace worker show`로 조회하고 `pace worker set codex model gpt-6.2-sol`, `pace worker set claude effort high`처럼 변경한다. `pace worker reset claude effort`는 해당 항목을 배포 기본값으로 되돌린다. `pace project start P001 --model <모델> --effort <값>`은 한 실행만 덮어쓰며 `--effort default`는 공통 effort 설정을 무시하고 도구 기본값을 쓴다. 설정은 `PACE_HOME/worker-settings.json`에 보관하여 재설치해도 유지된다.
+ 설정 파일이 손상되면 PACE를 종료한 뒤 `PACE_HOME/worker-settings.json`을 다른 이름으로 옮겨 원본을 보존하고 `pace worker show`로 초기값을 확인한 다음 원하는 설정을 다시 입력한다. 기본 `PACE_HOME`은 `~/.pace`이다. 설정 파일에 심볼릭 링크는 사용할 수 없다.
++
++업무 인계는 `pace team handoff record P123 --file header.json --body-file -`로 등록한다. 원문은 로컬에 보존하고 승인·위임·결과·종결과 전송 시도를 연결한다. [소통 사용법과 보존 한계](docs/HANDOFF.md)를 먼저 확인한다.
+diff --git a/docs/README.md b/docs/README.md
+index c6a46b7..0926f07 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -102,6 +102,7 @@
+ |---|---|---|---|---|
+ | `AGENTS.md` | 일하는 법 요약과 길 안내 | — | 전체 | 항상 (자동) |
+ | `docs/SECURITY.md` | 민감 경로와 보안 체크리스트 | security | `src/setup/**`, `scripts/**`, `src/boot.ts`, `src/core/fsutil.ts`, `src/core/worker-tiers.ts`, `src/team/**`, `src/project/**`, `src/memory/**`, `src/profile/**`, `src/scout/**`, `src/intent/**` | 작업 시 |
++| `docs/HANDOFF.md` | 원문 로컬 보존·승인/위임/종결·전송 선기록·요청 집계 | spec | `src/team/handoff-*.ts`, `src/project/handoff-*.ts`, `src/team/resource-events.ts` | 작업 시 |
+ | `docs/TEAM.md` | 팀 원본·생성물·모델 매핑·보존/권한 경계 | spec | `src/team/**`, `src/core/worker-tiers.ts`, `templates/team/**` | 작업 시 |
+ | `README.md` | 소개·설치·사용·OPAL에서 넘어올 때 (사용자용) | — | — | 요청 시 |
+ | `skills/pace-project-init/references/` | 정의서·백로그 형식, 분석 방법 | convention | `docs/**`, `backlogs/**`, `skills/pace-project-init/**` | 작업 시 |
+diff --git a/docs/SECURITY.md b/docs/SECURITY.md
+index 8abcce2..5534988 100644
+--- a/docs/SECURITY.md
++++ b/docs/SECURITY.md
+@@ -27,3 +27,7 @@
+ 체크리스트: `pace-project-dev` 스킬 `references/security.md`의 기본 체크리스트 + 위 민감 경로. 셸 실행은 인자 배열(`spawnSync`) — 예외는 정의서에 선언한 명령의 `sh -c` 실행과 Windows 온보딩의 LLM CLI 실행(`src/setup/onboard.ts`, `shell: win32`), 비밀 값은 환경 변수 이름만, 테스트는 실제 사용자 홈·Orca·도구 설정을 건드리지 않는다.
+ 
+ 프로젝트 역할 실행(`src/team/worker-role.ts`, `src/project/role-record.ts`)은 체크아웃될 Git blob 또는 실행 worktree의 일반 원본만 읽는다. Git 조회에 필터·훅을 사용하지 않고 크기·UTF-8·파일 종류와 실제 실행 직전 지문을 검사한다. model/effort와 원본 지침을 셸로 평가하지 않으며 start의 role 객체는 안전한 제한 필드만 기록한다. 역할 파일을 편집해 재시작할 수 있으므로 역할은 보안 경계가 아니고 prompt/tools 안내로 권한 차단을 주장하지 않는다. 실제 Orca 실측은 명시적으로 격리된 임시 저장소와 PACE_HOME에서 수행하며 초기 환경 상속을 별도로 관측한다.
++
++## 참여 소통의 로컬 원문
++
++[HANDOFF](HANDOFF.md)의 캡틴 원문·답·상세 제안/결과·판정과 계약 사본/payload는 Git common dir에만 보존한다. 버전 관리에는 짧은 metadata/출처 locator/지문과 기존 log 요약만 남긴다. 이는 별도 원문 Git 승인 전의 보수적 로컬 보존 지시이며 clone 재감사 한계를 사용자가 승인했다고 주장하지 않는다. 같은 공통 폴더의 호스트들은 본문을 대조하지만 다른 clone에는 원문이 없으므로 stats는 metadata-only, 실행/전송/종결은 대조 보류다. 백업·삭제·Git 승격은 별도 결정이다. 원내 body 입력/위험한 separate-git-dir/링크/하드링크/비밀 후보/손상을 거부하고 알려진 원내 raw staging 후보는 finish 전에 차단한다. 미등록 복사본과 악의적인 같은 계정 동시 교체를 탐지하는 경계는 아니다. 전송 성공 후 영수증 기록 실패는 미확인·재발송 금지로 남긴다. scope_check와 actor/sourceRef는 참여자의 신고이므로 사람 인증/의미 자동 판정이 아니다.
+diff --git a/docs/TEAM.md b/docs/TEAM.md
+index 9cca092..028ba20 100644
+--- a/docs/TEAM.md
++++ b/docs/TEAM.md
+@@ -190,3 +190,7 @@ repo 범위 상태는 `git rev-parse --git-common-dir` 아래 `pace/resources/`,
+ 기기 확인기는 모든 참여 저장소가 신뢰하는 공통 절대 경로를 권장한다. 이전 소유자의 작업 루트가 없어졌거나 상대 확인기를 실행할 수 없으면 자동 회수하지 않는다. 확인기가 없는 최초 획득은 이전 참여 소유자가 없다는 기록만을 근거로 하며 외부 직접 사용의 미사용까지 증명하지 않는다.
+ 
+ 명령 래퍼는 비대화형 작업을 전제로 한다. 새 세션/process group의 터미널 입력은 일반 대화형 실행과 다를 수 있다. childExitCode와 signal은 직접 bridge의 관측값이며 정상 명령 종료 코드는 전달하지만 명령이 스스로 신호로 종료하면 bridge의1과 signal=null로 남을 수 있다. 모든 하위 명령의 실제 종료 신호를 수집한다고 주장하지 않는다.
++
++## 참여 소통
++
++원문·해석·승인·위임·결과·종결은 [HANDOFF](HANDOFF.md)의 짧은 머리와 로컬 전용 본문으로 연결한다. `pace team handoff record P123 --file header.json --body-file -`로 명시 등록하고 수신자는 scope_check 후 ready를 확인한다. 기록 실패 시 참여 전송을 진행하지 않는다. 잠금에 `--project P123`을 붙이면 실제 적용 사건을 같은 원장에 남긴다. 원문 보존·집계·중단 복구와 사람 채널의 진위 한계는 HANDOFF를 따른다.
+diff --git a/docs/WORK-PROCESS.md b/docs/WORK-PROCESS.md
+index b038031..10f9e43 100644
+--- a/docs/WORK-PROCESS.md
++++ b/docs/WORK-PROCESS.md
+@@ -16,7 +16,7 @@
+ 
+ 프로젝트 작업자 역할은 `start --role <팀 구성원 이름>` > PROJECT 머리의 `작업자 역할` > 없음으로 고른다. 기존 worktree에 명시 역할을 적용하려면 `--launch`가 필요하다. 원본 적재와 tier 인자·시작 기록의 요청/관측 구별·재개/복구 경계는 [TEAM의 프로젝트 작업자 역할](TEAM.md#프로젝트-작업자-역할)을 따른다. 역할 미지정은 기존 경로이고 자동 lead는 없다.
+ 
+-- 지표: `pace project stats P### [--json]` — 프로젝트·태스크 시간, 도구별 토큰, 게이트 실패, 리뷰 지적 수·개선 후보. main에서도 소유 worktree를 조회한다. `projects/P###_…/log.jsonl`은 커밋하는 사건 기록(`{ts,p,t?,type,by,msg,ok?,src?,ref?,data?,to?}` — 시간대 포함 ISO·작성자 cli/agent/coordinator/user·짧은 메시지·수치 data)이며 기록 오류는 명령을 막지 않는다. finish·merge는 프로젝트의 `METRICS.md`(프로젝트 기준·태스크 기준·태스크 밖 집계)와 `projects/METRICS.md`(비교표)를 자동 생성한다. PROJECT-CLOSE `## 지표`는 METRICS.md 링크와 에이전트 해석 1~3줄이며 누락 시 finish 실패. 개선 후보를 메모리·브레인으로 올릴지는 사람이 고른다
++- 지표: `pace project stats P### [--json]` — 프로젝트·태스크 시간, 도구별 토큰, 게이트 실패, 리뷰 지적 수·개선 후보. main에서도 소유 worktree를 조회한다. `projects/P###_…/log.jsonl`은 커밋하는 사건 기록(`{ts,p,t?,type,by,msg,ok?,src?,ref?,data?,to?,requestId?}` — 시간대 포함 ISO·작성자 cli/agent/coordinator/user·짧은 메시지·수치 data)이며 기록 오류는 명령을 막지 않는다. finish·merge는 프로젝트의 `METRICS.md`(프로젝트 기준·태스크 기준·태스크 밖 집계)와 `projects/METRICS.md`(비교표)를 자동 생성한다. PROJECT-CLOSE `## 지표`는 METRICS.md 링크와 에이전트 해석 1~3줄이며 누락 시 finish 실패. 개선 후보를 메모리·브레인으로 올릴지는 사람이 고른다
+ - 새 TASK의 `TASK 형식: v2`는 증명 범위와 비어 있지 않은 판정 주체를 요구한다(기준·테스트 앞 배치는 템플릿 관례이며 게이트의 순서 검사는 아니다). 게이트·verify·수동 reviewer는 같은 표지로 나누며 표지 없는 옛 TASK에는 새 규칙을 강제하지 않는다. 구조 검사와 의미 판정의 경계는 reviewer.md의 TASK 증명 범위 절을 따른다. 표지 제거·허위 기록의 우회와 의미·진정성은 기계가 보증하지 않는다.
+ - 새 태스크의 `사전 검토: v1`은 `PRE-REVIEW.json`의 마지막 판정·대상 해시·증거를 check/done/finish에서 확인한다. 작성법과 교차 대체 조건은 `skills/pace-project-dev/references/reviewer.md`의 사전 검토 기록 v1을 따른다. 과거 마커 없는 태스크는 기존 방식이며, 마커와 기록 삭제·허위 기록 우회 및 검토 의미·실제 선행 시점은 기계가 보증하지 않는다.
+ - 검토 원장 decision의 `by: pm|user`는 프로젝트 사건의 `by: agent|coordinator|user`와 별개다. 옛 결정의 주체는 unknown이며 사용자로 추정하지 않는다. 도구 계약은 AGENT-CALL, 영향 분류 정본은 reviewer.md 반복 실패 절이다.
+@@ -35,3 +35,9 @@
+ 팀 원본은 `.pace/team`에 두고 `pace team new·list·sync`로 관리한다. 일반 worker 설정과 등급 설정 파일을 분리하며 `worker show`의 teamTiers에서 유효 대응표를 본다. `team sync --check --json`은 원본·설정·내용 차이를 구분하며 원본/출력과 권한의 계약은 [TEAM](TEAM.md)을 따른다. 역할 정의 생성만으로 프로젝트 작업자 역할이 자동 선택되지는 않는다.
+ 
+ 작업자 모델·effort는 `pace worker show`, `pace worker set <도구> <model|effort> <값>`, `pace worker reset <도구> <model|effort>`로 관리한다. 설정은 `PACE_HOME/worker-settings.json`에 저장되며 설치본 교체와 독립적이다. `project start --model ... --effort ...`는 해당 실행에서 우선하고 `--effort default`는 도구 기본값을 선택한다. 초기 모델은 Codex `gpt-6.2-sol`, Claude `claude-opus-5-5`이며 effort는 도구 기본값이다.
++
++## 소통 기록과 요청 연결
++
++`project log`의 question/escalation/answer에 선택 `--request-id`를 붙여 [참여 소통](HANDOFF.md)과 한 요청으로 묶는다. 기존 사건 수·대기 계산은 유지하며 새로운 handoffs 집계와 혼용하지 않는다. 원문·상세 답은 Git common dir에만 보존한다. 전송은 원장/started 선기록 뒤이며 기록 실패 때 보내지 않는다. finish는 partial/blocked 포함 열린 위임·누락 로컬 본문을 경고하고 손상 원장/알려진 raw staging 후보는 차단한다.
++
++by:user answer 근거 ref는 출처 위치·응답 식별자·지문만 담는 짧은 영수증이다. 답 원문과 상세 해석은 이 버전 관리 파일에 복사하지 않고 로컬 decision_reply 본문에 보존한다.
+diff --git a/skills/pace-project-dev/references/coordinator.md b/skills/pace-project-dev/references/coordinator.md
+index 59f3ed4..d089cb5 100644
+--- a/skills/pace-project-dev/references/coordinator.md
++++ b/skills/pace-project-dev/references/coordinator.md
+@@ -78,3 +78,9 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
+ ## 공유 자원 요청
+ 
+ 자원 요청 질문은 문장으로 동시 사용을 허락하는 대신 `pace team lock <자원> --by <담당> -- <작업 명령>`으로 답한다. 원본 resources와 resources.md의 scope·확인 방법 및 같은 PACE_HOME을 대조한다. 잠금은 참여 호출만 직렬화한다. 소유자/자식 그룹 종료와 자원 미사용 중 하나라도 모르면 다음 작업을 보류하고 확인을 요청한다. 확인기가 없는 자원은 실제 coordinator/captain 확인 근거를 전달해 unlock하며 단순 heartbeat 만료나 자기 선언으로 승인을 만들어내지 않는다. 실제 승인과 수동 회수 근거를 사건에 연결하고, 외부 잠금 파일의 PID로 프로세스를 종료하지 않는다. 자세한 CLI·안전 복구는 docs/TEAM.md의 공유 자원 잠금 절을 따른다.
++
++## 참여 소통 원장과 로컬 보존
++
++프로젝트가 docs/HANDOFF.md의 원장을 쓰면 같은 업무 요청에 --request-id를 공유한다. 원문과 상세 답/결과/판정은 Git common dir의 로컬 본문에 온전히 보존하고 log.jsonl에는 기존 요약·결정 주체·출처/요청 참조만 남긴다. 원문 Git 보존은 별도 사용자 승인 없이 하지 않는다. 캡틴의 조건부/모호한 답은 승인으로 단정하지 않는다. coordinator 자체 답이나 Orca 에이전트 전송 성공은 캡틴 도달이 아니다. 실제 사람 채널은 prepare-external 선기록 뒤 기존 호스트 도구로 전달하고 출처·응답 지문/ID의 receipt를 연결한다. 기록 실패나 불명 전송은 자동 재시도하지 않는다. 지정 decisionOwner만 done 증거/범위를 확인해 close하며 열린 위임은 finish 경고에 남긴다. 자원 --project 연결 실패는 실제 상태를 원복하지 않고 pending/guard를 보존하며 reconcile-resource도 guard 회수/작업 재개를 하지 않는다.
++
++by:user answer의 --ref 파일에는 짧은 출처 위치 영수증·응답 식별자·지문만 둔다. 실제 사람의 답 원문이나 상세 해석을 프로젝트 파일에 복사하지 않는다. 원문은 로컬 decision_reply 본문으로 등록하고 ref에는 해당 ID/지문과 출처를 연결한다. 이 ref의 존재·신고 주체만으로 실제 사람 응답을 인증하지 않으며 현장 감사에서 대조한다.
+diff --git a/src/cli.ts b/src/cli.ts
+index 9fd93e9..575c27d 100644
+--- a/src/cli.ts
++++ b/src/cli.ts
+@@ -8,6 +8,7 @@ import { createTeamMember, loadTeam, teamRoot } from "./team/store.ts";
+ import { syncTeam } from "./team/sync.ts";
+ import { verifyTeam, verifyTable } from "./team/verify.ts";
+ import { resourceCommand } from "./team/resource-cli.ts";
++import { handoffCommand } from "./team/handoff-cli.ts";
+ import { hasSecret } from "./project/secrets.ts";
+ import { BacklogError, newBacklog, newBrief } from "./project/backlog.ts";
+ import { newRun } from "./scout/run.ts";
+@@ -161,14 +162,15 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
+   pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>
+   pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]
+   pace team verify <이름> 또는 --all [--agent claude|codex]      역할 적재·고정 질문 점검
+-  pace team lock <자원> --by <담당> [-- <명령> ...] | unlock <자원> --token <토큰> | status <자원>
++  pace team lock <자원> --by <담당> [--project P###] [-- <명령> ...] | unlock <자원> --token <토큰> [--project P###] | status <자원>
++  pace team handoff record|list|check|ready|send|prepare-external|receipt|reconcile-resource P### [ID]   참여 소통 — docs/HANDOFF.md
+   pace project start <P###> [--model <모델>] [--effort <값|default>] [--agent <도구>] [--no-launch|--launch]   정의 커밋 + worktree(../<저장소>.wt/P###) (main). Orca 안이면 작업자 세션을 띄우고 이 세션이 코디네이터
+   pace project task <P###> "<이름>"              태스크 폴더·TASK.md·태스크 표 행 (worktree)
+   pace project check <P###> <T##>                커밋 게이트 확인 — TASK-CLOSE (worktree)
+   pace project done <P###> <T##>                 check 통과 시 상태 완료 — TASK.md·태스크 표·같은 번호 브리프·빈 커밋 칸 (worktree, 커밋은 직접)
+   pace project finish <P###>                     마감 하네스 → 병합 대기 (worktree에서만)
+   pace project merge <P###> [--yes]              ff 병합·정리 (main에서만, 기본은 요약만)
+-  pace project log <P###> [T##] --type <decision|change|review|question|answer|escalation|note> --msg <한 줄> [--to captain|coordinator] [--src 출처] [--ref 파일]
++  pace project log <P###> [T##] --type <decision|change|review|question|answer|escalation|note> --msg <한 줄> [--to captain|coordinator] [--src 출처] [--ref 파일] [--request-id 식별자]
+   pace project list                              프로젝트 상태·진행 태스크·worktree
+   pace project stats <P###> [--json|--write]     러닝 시간·대기·게이트 실패·도구별 토큰 (--write: METRICS.md·비교 표 다시 만들기)
+   pace onboard [--with claude|codex|gemini|cursor-agent] [-- <도구 옵션>]   온보딩을 바로 시작하며 LLM CLI 열기
+@@ -683,6 +685,7 @@ function projectCommand(args: string[]): number {
+       ref: { type: "string" },
+       by: { type: "string" },
+       to: { type: "string" },
++      "request-id": { type: "string" },
+       "no-launch": { type: "boolean" },
+       launch: { type: "boolean" },
+     },
+@@ -769,7 +772,7 @@ function projectCommand(args: string[]): number {
+         need(1, "pace project log <P###> [T##] --type <종류> --msg <한 줄> [--to captain|coordinator] [--src 출처] [--ref 파일]");
+         if (!values.type || !values.msg) throw new UsageError("log는 --type과 --msg가 필요하다");
+         const r = repo(); const ref = findProject(r, positionals[0]!); const owner = statsRepo(r, ref);
+-        const result = agentEvent(join(owner.root, "projects", ref.dir), { p: ref.id, t: positionals[1]?.toUpperCase(), type: values.type, msg: values.msg, src: values.src, ref: values.ref, by: values.by, to: values.to });
++        const result = agentEvent(join(owner.root, "projects", ref.dir), { p: ref.id, t: positionals[1]?.toUpperCase(), type: values.type, msg: values.msg, src: values.src, ref: values.ref, by: values.by, to: values.to, requestId: values["request-id"] });
+         out(result.recorded ? result.duplicate ? "이미 기록됨 (결정 표 동기화)" : "사건 기록" : "경고: 사건을 기록하지 못했다");
+         return 0;
+       }
+@@ -985,6 +988,7 @@ async function agentCommand(args: string[]): Promise<number> {
+ }
+ 
+ async function teamCommand(args: string[]): Promise<number> {
++  if (args[0] === "handoff") return handoffCommand(args.slice(1));
+   if (["lock", "unlock", "status"].includes(args[0] ?? "")) return resourceCommand(args);
+   try {
+     const { values, positionals } = parseArgs({ args, options: { role: { type: "string" }, check: { type: "boolean" }, json: { type: "boolean" }, all: { type: "boolean" }, agent: { type: "string" } }, allowPositionals: true, strict: true });
+diff --git a/src/project/event-log.ts b/src/project/event-log.ts
+index aefbd85..859fab0 100644
+--- a/src/project/event-log.ts
++++ b/src/project/event-log.ts
+@@ -10,6 +10,7 @@ export type LogRecipient = "captain" | "coordinator";
+ export interface ProjectEvent {
+   ts: string; p: string; t?: string; type: LogType; by: LogActor; msg: string;
+   to?: LogRecipient;
++  requestId?: string;
+   role?: StartRoleRecord;
+   ok?: boolean; src?: string; ref?: string; data?: Record<string, number>;
+ }
+@@ -18,6 +19,7 @@ function validText(text: unknown, limit: number): text is string {
+   return typeof text === "string" && text.trim().length > 0 && text.length <= limit && !/[\r\n\x00-\x1f\x7f]/.test(text) && !hasSecret(text);
+ }
+ export function validateEvent(event: ProjectEvent): void {
++  if (event.requestId !== undefined && (!["question", "escalation", "answer"].includes(event.type) || !/^[a-z][a-z0-9_-]{0,95}$/.test(event.requestId))) throw new ProjectLogError("requestId는 question·escalation·answer의 짧은 식별자여야 한다");
+   if (event.role !== undefined && (event.type !== "start" || !validStartRole(event.role))) throw new ProjectLogError("역할 기록은 start의 유효한 전달 설정이어야 한다");
+   if (event.to !== undefined && (!["question", "escalation"].includes(event.type) || !["captain", "coordinator"].includes(event.to))) throw new ProjectLogError("수신자는 question·escalation의 captain|coordinator만 허용한다");
+   if (!/^P\d{3}$/.test(event.p) || (event.t !== undefined && !/^T\d{2}$/.test(event.t)) || !LOG_TYPES.includes(event.type) || !["cli", "agent", "coordinator", "user"].includes(event.by)) throw new ProjectLogError("사건 번호·종류·작성자가 올바르지 않다");
+@@ -56,7 +58,7 @@ function openLog(path: string, write: boolean, retries = 0): number {
+ export function recordEvent(dir: string, event: ProjectEvent): boolean {
+   try {
+     validateEvent(event); assertDir(dir);
+-    const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
++    const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.requestId !== undefined ? { requestId: event.requestId } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
+     const fd = openLog(join(dir, "log.jsonl"), true);
+     try {
+       const stat = fstatSync(fd); if (!stat.isFile() || stat.nlink !== 1) throw new ProjectLogError("로그는 일반 파일이어야 한다");
+@@ -95,10 +97,10 @@ export function memoDateTime(at: Date): string {
+   return `${at.getFullYear()}-${pad(at.getMonth() + 1)}-${pad(at.getDate())} ${pad(at.getHours())}:${pad(at.getMinutes())}`;
+ }
+ const MANUAL_TYPES = new Set(["decision", "change", "review", "question", "answer", "escalation", "note"]);
+-export function agentEvent(dir: string, input: { p: string; t?: string; type: string; msg: string; src?: string; ref?: string; by?: string; to?: string }): { recorded: boolean; duplicate: boolean } {
++export function agentEvent(dir: string, input: { p: string; t?: string; type: string; msg: string; src?: string; ref?: string; by?: string; to?: string; requestId?: string }): { recorded: boolean; duplicate: boolean } {
+   if (!MANUAL_TYPES.has(input.type)) throw new ProjectLogError("수동 사건 종류: decision|change|review|question|answer|escalation|note");
+   if (input.src !== undefined && !["사용자 결정", "루카스 결정", "main 판단", "자체 판단"].includes(input.src)) throw new ProjectLogError("출처: 사용자 결정|main 판단|자체 판단 (기존 루카스 결정 호환)");
+-  const event: ProjectEvent = { ts: new Date().toISOString(), p: input.p, t: input.t, type: input.type as LogType, by: (input.by ?? "agent") as LogActor, msg: input.msg, src: input.src, ref: input.ref, ...(input.to !== undefined ? { to: input.to as LogRecipient } : {}) };
++  const event: ProjectEvent = { ts: new Date().toISOString(), p: input.p, t: input.t, type: input.type as LogType, by: (input.by ?? "agent") as LogActor, msg: input.msg, src: input.src, ref: input.ref, ...(input.to !== undefined ? { to: input.to as LogRecipient } : {}), ...(input.requestId !== undefined ? { requestId: input.requestId } : {}) };
+   if (event.type === "review") {
+     const count = (grade: string) => {
+       const match = new RegExp(`\\b${grade}\\s*[:：]?\\s*(\\d+)`).exec(event.msg);
+diff --git a/src/project/harness.ts b/src/project/harness.ts
+index d43c6c8..bb9ca71 100644
+--- a/src/project/harness.ts
++++ b/src/project/harness.ts
+@@ -5,6 +5,8 @@ import { generateDashboard, refreshDashboard } from "./dashboard.ts";
+ import { resolveWorkerSettings } from "../core/worker-settings.ts";
+ import { assertBacklogPath, listBriefs, resolveBacklog } from "./backlog.ts";
+ import { memoDateTime, recordEvent } from "./event-log.ts";
++import { handoffPrivacyIssues } from "./handoff-private.ts";
++import { collectHandoffs } from "./handoff-report.ts";
+ import { hasSecret } from "./secrets.ts";
+ export { hasSecret } from "./secrets.ts";
+ import { assertMetricsDestination, refreshProjectMetrics, metricsSummaryIssues } from "./metrics-report.ts";
+@@ -1280,6 +1282,12 @@ function finishProjectRaw(repo: Repo, id: string): Report {
+   const dir = join(projectsRoot(repo.root), ref.dir);
+   const backlogChange = mainDirect ? backlogStateChange(repo, projectPath, project, "완료") : null;
+   const projectRel = relativeGitPath(repo.root, dir);
++  issues.push(...handoffPrivacyIssues(repo.root));
++  try {
++    const handoffs = collectHandoffs(repo.root, ref.id, projectRel);
++    if (handoffs?.open.length) notes.push(`경고: 열린 위임 ${handoffs.open.length}건 (partial/blocked 포함): ${handoffs.open.join(", ")}`);
++    if (handoffs?.missingBodies) notes.push(`경고: 로컬 본문 ${handoffs.missingBodies}건 없음 — metadata-only, 원문 재감사 불가`);
++  } catch { issues.push("소통 원장/로컬 본문 손상 또는 미지원 형식; finish 보류"); }
+   const backlogRel = backlogChange ? relativeGitPath(repo.root, backlogChange.path) : null;
+   guardPartialProjectStages(repo.root, projectRel);
+   if (backlogRel) requireCleanBacklog(repo.root, backlogRel);
+diff --git a/src/project/metrics-report.ts b/src/project/metrics-report.ts
+index 6e81260..0055802 100644
+--- a/src/project/metrics-report.ts
++++ b/src/project/metrics-report.ts
+@@ -1,6 +1,7 @@
+ import { assertComparisonDestination, refreshMetricsIndex } from "./metrics-index.ts";
+ import { formatMetricsDocument } from "./metrics-document.ts";
+ import { readEvents } from "./event-log.ts";
++import { collectHandoffs, type HandoffReport } from "./handoff-report.ts";
+ import { constants, openSync, closeSync, fstatSync, existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
+ import { join } from "node:path";
+ import { writeFileAtomic } from "../core/fsutil.ts";
+@@ -11,7 +12,7 @@ import type { FullStats, TokenOptions } from "./tokens.ts";
+ 
+ export interface ReviewCounts { task: string; blocking: number; shouldFix: number; testerFailures: number; }
+ export interface Improvement { kind: "gate" | "review" | "handoff"; code: string; count: number; tasks: string[]; }
+-export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; }
++export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; handoffs?: HandoffReport; }
+ function section(text: string, heading: string): string {
+   const match = new RegExp(`^## ${heading}\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, "m").exec(text);
+   return (match?.[1] ?? "").replace(/<!--[\s\S]*?-->/g, "").trim();
+@@ -53,12 +54,16 @@ export function collectInsights(repo: Repo, ref: ProjectRef): { reviews: ReviewC
+   return { reviews, improvements };
+ }
+ export function collectDashboard(repo: Repo, ref: ProjectRef, options: TokenOptions = {}): Dashboard {
+-  return { ...collectProjectStats(repo, ref, options), ...collectInsights(repo, ref) };
++  const handoffs = collectHandoffs(repo.root, ref.id, `projects/${ref.dir}`);
++  return { ...collectProjectStats(repo, ref, options), ...collectInsights(repo, ref), ...(handoffs ? { handoffs } : {}) };
+ }
+ export function formatDashboard(stats: Dashboard): string {
+   const total = (key: "blocking" | "shouldFix" | "testerFailures") => stats.reviews.reduce((n, r) => n + r[key], 0);
+   const candidates = stats.improvements.map((i) => `- ${i.kind}: ${i.code} ${i.count}회${i.tasks.length ? ` (${i.tasks.join(", ")} TASK-CLOSE)` : ""}`);
+-  return `${formatProjectStats(stats)}\n\n사건 수: 결정 ${stats.eventCounts.decisions} · 변경 ${stats.eventCounts.changes} · 리뷰 ${stats.eventCounts.reviews} · 질문 ${stats.eventCounts.questions} · 답변 ${stats.eventCounts.answers}\n\n리뷰 지적: blocking ${total("blocking")} · should_fix ${total("shouldFix")} · tester fail ${total("testerFailures")}\n\n개선 후보(사람이 선택):\n${candidates.length ? candidates.join("\n") : "없음"}`;
++  const base = `${formatProjectStats(stats)}\n\n사건 수: 결정 ${stats.eventCounts.decisions} · 변경 ${stats.eventCounts.changes} · 리뷰 ${stats.eventCounts.reviews} · 질문 ${stats.eventCounts.questions} · 답변 ${stats.eventCounts.answers}\n\n리뷰 지적: blocking ${total("blocking")} · should_fix ${total("shouldFix")} · tester fail ${total("testerFailures")}\n\n개선 후보(사람이 선택):\n${candidates.length ? candidates.join("\n") : "없음"}`;
++  if (!stats.handoffs) return base;
++  const h = stats.handoffs, q = h.requests;
++  return `${base}\n\n소통: ${h.records}건 · 열린 위임 ${h.open.length}건 · ${h.auditCoverage} (본문 누락 ${h.missingBodies})\n종류: ${Object.entries(h.kinds).map(([kind, count]) => `${kind} ${count}`).join(" · ")}\n에이전트: ${Object.entries(h.agents).map(([name, counts]) => `${name} ${JSON.stringify(counts)}`).join(" · ") || "없음"}\n요청 ${q.total}: 캡틴 답(신고·출처 대조 필요) ${q.captain_reply} · 사람 경로 성공(신고) ${q.captain_delivery} · 실패만 ${q.failed_only} · 미확인 ${q.unconfirmed} · 식별자 없는 옛 질문 사건 ${q.unlinkedLogEvents}`;
+ }
+ export function replaceMetricsSection(close: string, body: string): string {
+   const generated = `## 지표\n\n<!-- pace project finish 자동 생성 -->\n\n${body.trim()}\n\n`;
+diff --git a/src/team/resource-cli.ts b/src/team/resource-cli.ts
+index da6a44f..2a3f11c 100644
+--- a/src/team/resource-cli.ts
++++ b/src/team/resource-cli.ts
+@@ -4,6 +4,7 @@ import { parseArgs } from "node:util";
+ import { fileURLToPath } from "node:url";
+ import { hasSecret } from "../project/secrets.ts";
+ import { ResourceLock, type Confirmation, type LockResult } from "./resource-lock.ts";
++import { projectResourceSink } from "./handoff-resources.ts";
+ import { processIdentity, observeProcess, type ProcessIdentity } from "./resource-process.ts";
+ import { loadTeamMember, safeTeamPath, teamRoot } from "./store.ts";
+ import { safeResourceText } from "./resources.ts";
+@@ -116,18 +117,18 @@ export async function runResourceCommand(lock: ResourceLock, by: string, argv: s
+ export async function resourceCommand(args: string[]): Promise<number> {
+   try {
+     const split = args.indexOf("--"), argv = split < 0 ? [] : args.slice(split + 1), head = split < 0 ? args : args.slice(0, split);
+-    const { values, positionals } = parseArgs({ args: head, options: { by: { type: "string" }, token: { type: "string" }, "confirmed-by": { type: "string" }, evidence: { type: "string" } }, allowPositionals: true, strict: true });
++    const { values, positionals } = parseArgs({ args: head, options: { project: { type: "string" }, by: { type: "string" }, token: { type: "string" }, "confirmed-by": { type: "string" }, evidence: { type: "string" } }, allowPositionals: true, strict: true });
+     const [sub, name] = positionals;
+     if (positionals.length !== 2 || !name || !["lock", "unlock", "status"].includes(sub!) || split >= 0 && (!argv.length || sub !== "lock")) throw new Error(usage);
+     if (sub === "lock" && (!values.by || values.token !== undefined || values["confirmed-by"] !== undefined || values.evidence !== undefined) ||
+         sub === "unlock" && (!values.token || values.by !== undefined || !!values["confirmed-by"] !== !!values.evidence) ||
+-        sub === "status" && Object.keys(values).length) throw new Error(usage);
++        sub === "status" && Object.keys(values).some((key) => key !== "project")) throw new Error(usage);
+     let confirmation: Confirmation | undefined;
+     if (values["confirmed-by"]) {
+       if (!["coordinator", "captain"].includes(values["confirmed-by"]) || !safeResourceText(values.evidence)) throw new Error("자원 확인 주체/근거 오류");
+       confirmation = { by: values["confirmed-by"] as Confirmation["by"], evidence: values.evidence! };
+     }
+-    const root = teamRoot(process.cwd()), lock = new ResourceLock(root, name);
++    const root = teamRoot(process.cwd()), lock = new ResourceLock(root, name, values.project ? { events: projectResourceSink(root, values.project) } : {});
+     if (sub === "lock") {
+       // A known team member must declare the resource. P###/other caller labels are coordination identities, not authentication.
+       if (values.by && /^[a-z][a-z0-9-]*$/.test(values.by) && existsSync(safeTeamPath(root, `.pace/team/${values.by}.md`))) {
+diff --git a/src/team/resource-lock.ts b/src/team/resource-lock.ts
+index 6e888ff..b52f6af 100644
+--- a/src/team/resource-lock.ts
++++ b/src/team/resource-lock.ts
+@@ -1,18 +1,20 @@
+ import { spawnSync } from "node:child_process";
+ import { randomUUID } from "node:crypto";
+-import { lstatSync, mkdirSync, realpathSync, renameSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
++import { closeSync, fsyncSync, lstatSync, mkdirSync, openSync, realpathSync, renameSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
+ import { dirname, join, resolve } from "node:path";
+ import { paceHome } from "../core/paths.ts";
+ import { hasSecret } from "../project/secrets.ts";
+ import { readTeamFile, safeTeamPath } from "./store.ts";
+ import { loadResource, probeResource, resourceHash, safeResourceText, type Resource, type ResourceUse } from "./resources.ts";
+ import { inspectProcess, observeGroup, processIdentity, type Liveness, type ProcessIdentity, type ProcessObservation } from "./resource-process.ts";
++import { appliedResourceEvent, prepareResourceEvent, reconcileResourceEvents, type ResourceEventSink } from "./resource-events.ts";
+ 
+ export interface ResourceLease {
+   version: 1; active: boolean; acquisitionId: string; resource: string; scope: "repo" | "machine"; definition: string;
+   by: string; owner: ProcessIdentity; cwd: string; acquiredAt: number; heartbeat: number;
+   phase: "pre-start" | "started" | "manual";
+   child: { identity: ProcessIdentity; group: number } | null;
++  transitionId?: string;
+ }
+ export interface LockResult {
+   outcome: "acquired" | "busy" | "hold" | "released" | "renewed" | "started" | "status";
+@@ -21,6 +23,7 @@ export interface LockResult {
+ }
+ export interface Confirmation { by: "coordinator" | "captain"; evidence: string }
+ export interface LockDeps {
++  events?: ResourceEventSink;
+   home?: string; now?: () => number; self?: () => ProcessIdentity | null;
+   process?: (identity: ProcessIdentity) => Liveness; group?: (group: number) => Liveness;
+   probe?: (resource: Resource, cwd: string) => ResourceUse;
+@@ -42,9 +45,10 @@ function writeJson(root: string, name: string, value: unknown, exclusive = false
+   const text = JSON.stringify(value) + "\n";
+   if (Buffer.byteLength(text) > 65536 || hasSecret(text)) throw new Error("잠금 기록 안전 검사 실패");
+   const path = safeTeamPath(root, name);
+-  if (exclusive) { writeFileSync(path, text, { flag: "wx", mode: 0o600 }); return; }
++  const durable = (target: string) => { const fd = openSync(target, "wx", 0o600); try { writeFileSync(fd, text); fsyncSync(fd); } finally { closeSync(fd); } };
++  if (exclusive) { durable(path); return; }
+   const tmpName = `.${name}.${randomUUID()}.tmp`, tmp = safeTeamPath(root, tmpName);
+-  writeFileSync(tmp, text, { flag: "wx", mode: 0o600 });
++  durable(tmp);
+   safeTeamPath(root, name);
+   renameSync(tmp, path);
+ }
+@@ -79,10 +83,12 @@ export class ResourceLock {
+   readonly machineDir: string;
+   readonly stateDir: string;
+   readonly stateName: string;
+-  readonly deps: Required<Omit<LockDeps, "home">>;
++  readonly deps: Required<Omit<LockDeps, "home" | "events">>;
++  readonly events?: ResourceEventSink;
+   readonly root: string;
+   private ownerCheck: ProcessObservation["reason"] | undefined;
+   constructor(root: string, name: string, options: LockDeps = {}) {
++    this.events = options.events;
+     this.root = root;
+     this.resource = loadResource(root, name);
+     this.repoDir = directory(commonGitDirectory(root), "pace/resources");
+@@ -133,7 +139,7 @@ export class ResourceLock {
+   private read(): ResourceLease | null {
+     const data = readJson(this.stateDir, this.stateName);
+     if (data === null) return null;
+-    if (!record(data) || Object.keys(data).sort().join(",") !== "acquiredAt,acquisitionId,active,by,child,cwd,definition,heartbeat,owner,phase,resource,scope,version" || data.version !== 1 || typeof data.active !== "boolean" || !uuid(data.acquisitionId) || data.resource !== this.resource.name || data.scope !== this.resource.scope ||
++    if (!record(data) || Object.keys(data).filter((k) => k !== "transitionId").sort().join(",") !== "acquiredAt,acquisitionId,active,by,child,cwd,definition,heartbeat,owner,phase,resource,scope,version" || data.transitionId !== undefined && (typeof data.transitionId !== "string" || !/^transition-[a-f0-9-]{36}$/.test(data.transitionId)) || data.version !== 1 || typeof data.active !== "boolean" || !uuid(data.acquisitionId) || data.resource !== this.resource.name || data.scope !== this.resource.scope ||
+         typeof data.definition !== "string" || !/^[0-9a-f]{64}$/.test(data.definition) || !safeResourceText(data.by, 64) || !identity(data.owner) || !safeResourceText(data.cwd, 4096) ||
+         !Number.isSafeInteger(data.acquiredAt) || !Number.isSafeInteger(data.heartbeat) || !["pre-start", "started", "manual"].includes(data.phase as string) ||
+         !(data.child === null || record(data.child) && Object.keys(data.child).sort().join(",") === "group,identity" && identity(data.child.identity) && positive(data.child.group) && data.child.group === data.child.identity.pid) ||
+@@ -157,10 +163,13 @@ export class ResourceLock {
+     for (const key of ["ORCA_TERMINAL_HANDLE", "ORCA_TERMINAL_ID", "ORCA_RUN_ID"]) if (safeResourceText(process.env[key], 128)) context[key] = process.env[key]!;
+     writeJson(dir, `${this.deps.now()}-${randomUUID()}.json`, { action, at: this.deps.now(), resource: lease.resource, acquisitionId: lease.acquisitionId, by: lease.by, owner: lease.owner, phase: lease.phase, context, ...(confirmation ? { confirmation } : {}) }, true);
+   }
+-  private commit(action: string, lease: ResourceLease, confirmation?: Confirmation): void {
++  private commit(action: string, lease: ResourceLease, confirmation?: Confirmation, previousAcquisitionId?: string): void {
+     this.audit(action, lease, confirmation);
++    const event = this.events && ["acquire", "release", "reclaim"].includes(action) ? prepareResourceEvent(this.events, action as "acquire" | "release" | "reclaim", lease, this.stateName, this.deps.now(), previousAcquisitionId) : null;
+     writeJson(this.stateDir, this.stateName, lease);
++    if (event) appliedResourceEvent(this.events!, event);
+   }
++  reconcileApplied(): { reconciled: number; unconfirmed: string[] } { return this.events ? reconcileResourceEvents(this.events, this.stateDir, this.stateName) : { reconciled: 0, unconfirmed: [] }; }
+   private free(lease: ResourceLease, confirmation?: Confirmation): ResourceUse {
+     const state = this.deps.probe(this.resource, lease.cwd);
+     if (state === "busy") return "busy";
+@@ -192,7 +201,7 @@ export class ResourceLock {
+       } else if (this.resource.probe && this.deps.probe(this.resource, this.root) !== "free") return this.result("hold", "자원 미사용 확인 불가; 실행 보류", 2);
+       const now = this.deps.now();
+       const lease: ResourceLease = { version: 1, active: true, acquisitionId: randomUUID(), resource: this.resource.name, scope: this.resource.scope, definition: resourceHash(this.resource), by, owner, cwd: this.root, acquiredAt: now, heartbeat: now, phase: mode === "manual" ? "manual" : "pre-start", child: null };
+-      this.commit("acquire", lease);
++      this.commit(old?.active && this.events ? "reclaim" : "acquire", lease, undefined, old?.active ? old.acquisitionId : undefined);
+       return this.result("acquired", "참여 자원 잠금 획득", 0, lease);
+     });
+   }
+diff --git a/templates/team/member.md b/templates/team/member.md
+index 7680b4c..fc42211 100644
+--- a/templates/team/member.md
++++ b/templates/team/member.md
+@@ -32,6 +32,7 @@ tools: []
+ 결정 요청에는 요청 내용·결정 주체·근거·선택지·추천과 이유를 적고, 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않는다.
+ 실행 전 대조에서 보류한 요청도 이 결정 요청 형식으로 올린다.
+ 완료 보고에는 수행 내용·검증 근거·남은 일을 기록한다.
++참여 소통 원장을 쓰는 프로젝트는 docs/HANDOFF.md를 읽고 수신한 위임의 scope_check를 먼저 기록한 뒤 ready를 확인한다. 원문·상세 답은 로컬 본문으로 보존하며 판정자가 실제 증거를 확인한 done 결과만 종결한다.
+ 
+ ## 도구 안내
+ 
+diff --git a/docs/HANDOFF.md b/docs/HANDOFF.md
+new file mode 100644
+index 0000000..309044b
+--- /dev/null
++++ b/docs/HANDOFF.md
+@@ -0,0 +1,102 @@
++# 참여 소통 원장
++
++`pace team handoff`는 명시 등록한 업무 메시지의 짧은 JSON 머리와 별도 markdown 본문을 연결한다. 실제 메시지 전달은 기존 Orca 또는 사람이 쓰는 호스트 채널이 맡는다. 직접 도구 호출을 가로채거나 사람의 정체성·자연어 해석의 동일성을 인증하지 않는다.
++
++## 원문과 보존
++
++버전 관리되는 프로젝트 `handoffs.jsonl`에는 protocol/v/id/kind/from/to/task?/requestId?/data와 p/at/seq/bodyHash/bodyRef만 남는다. 본문·캡틴 답 원문·상세 제안/결과/판정·계약 사본·전송 payload는 Git common dir의 `pace/handoffs/<프로젝트-key>/bodies/<SHA256>.md`에만 둔다. UTF-8 bytes를 그대로 보존하며 CRLF나 Unicode를 정규화하지 않는다. bodyRef는 `local:<SHA256>`이다. 기존 log.jsonl의 짧은 결정·질문·답 요약은 계속 커밋한다.
++
++이는 별도 원문 Git 승인 전의 로컬 보존(B)이며 코디네이터의 보수적 지시다. 사용자가 다른 clone 재감사 한계를 승인했다거나 원문 Git 보존을 승인했다고 해석하지 않는다. 같은 Git common dir를 공유하는 worktree와 Claude/Codex는 로컬 본문을 대조할 수 있다. 다른 clone/머신에는 본문이 따라가지 않는다. 백업·삭제·원문의 Git 승격은 별도 결정이다. 패턴 검사는 모든 민감 정보를 알아내지 못하며 짧은 metadata에도 업무 원문을 넣지 않는다. 지문만으로도 짧은 본문의 추측이 가능하므로 비밀 후보를 등록하지 않는다.
++
++`--body-file -`는 한도 안의 표준 입력을 받는다. 파일은 저장소 밖 또는 위 로컬 폴더의 단일 링크 일반 파일만 받는다. working tree 입력은 거부하고 같은 저장소에서 시도한 경로를 로컬 staging 보호 목록에 남긴다. finish는 해당 경로가 아직 staging 후보면 git add 전에 멈춘다. 파일을 자동 이동/삭제하지 않는다. 알려지지 않은 복사본까지 찾아내는 DLP는 아니다. 다른 working tree에서 추적할 수 있는 separate-git-dir 배치도 거부한다.
++
++본문 한도 2MiB, 머리 16KiB, metadata 문자열 400자(출처 locator 240자), 배열 32개, 원장 32MiB다. 중복 JSON 키, 미지원 버전, 링크/하드링크, 손상된 지문, 비밀 후보는 거부한다. 오류로 본문을 자르거나 바꿔 승인 근거로 쓰지 않는다. 본문·전송 stderr는 CLI 오류에 출력하지 않는다.
++
++## 머리와 실행 흐름
++
++```json
++{"protocol":"pace-handoff","v":1,"id":"original-one","kind":"captain_input","from":"coordinator","to":"project:P123","requestId":"request-one","data":{"sourceRef":"orca:message-id"}}
++```
++
++```sh
++pace team handoff record P123 --file header.json --body-file /outside-repo/body.md
++pace team handoff list P123
++pace team handoff check P123
++pace team handoff ready P123 delegate-one
++```
++
++actor는 captain/coordinator/agent:<실제 팀 이름>/project:P###다. 송신 주체·출처는 참여자가 보고하는 값이며 인증 서명이 아니다. 모든 record의 상세 본문은 필수다. 특히 decision_reply에는 실제 받은 답의 온전한 원문이 필요하다. 조건부·모호한 답을 자동 승인으로 분류하지 말고 hold/재확인을 요청한다.
++
++| kind | data와 판정 |
++|---|---|
++| captain_input | sourceRef. 명시 등록한 캡틴 원문과 출처 |
++| decision_request | interpretation(boolean), of?(captain_input ID), plan?, relayOf?. 해석이면 of 필수. requestId 필수. 본문에 요청·선택지·추천/이유. 같은 requestId의 중계는 relayOf와 원문/본문/계획이 같아야 한다 |
++| decision_reply | re(제안 ID), decision(approve/correct/reject), proposalHash, sourceRef. from=captain, 같은 requestId. 특정 제안 ID·원문 참조·본문/계획의 digest만 승인 |
++| delegate | basis, plan. 수신자·본문·태스크와 계획의 일치 확인 |
++| scope_check | re(위임 ID), status(within/hold), basisHash, checks:{instruction,decisionOwner,proofScope}. 위임 수신자가 송신자에게 기록. within은 세 항목 true. 상세 대조 이유는 로컬 본문 |
++| result | re(위임 ID), status(done/partial/blocked), evidence:[{path,hash}]. 위임 수신자만 기록. done은 범위 within과 실제 파일 증거 필요 |
++| close | re(위임 ID), result(결과 ID), proofScope, checked:true. 계획의 decisionOwner만 실제 증거를 확인해 done을 종결 |
++| status | re?, sourceRef?. 상태 안내. 실행 승인 근거가 아님 |
++| delivery/resource_event | 실제 전송/잠금 경로가 내부 생성. record 입력으로 위조할 수 없음 |
++
++계획은 `{id?,task?,assignee,decisionOwner,proofScope,instructionHash}`다. proofScope는 T-1 같은 기준/절 참조, instructionHash는 위임 지시의 SHA256이다. 구현 API `instructionDigest`는 위임 ID/본문/basis/plan을, `proposalDigest`는 제안 ID/of/본문/plan을 canonical JSON으로 묶는다. 동일한 문구라도 다른 제안의 승인은 재사용하지 못한다.
++
++delegate의 basis는 다음 중 하나다.
++
++| kind | 필드·조건 |
++|---|---|
++| input | ref(원문 ID), hash(원문 SHA256), policy:{ref,hash,planId}. 지시 bytes가 원문과 동일하고 계획 계약 일치 |
++| contract | ref,hash,planId. 프로젝트 계획 계약 파일/본문/배정/판정자/증명 범위 일치 |
++| approved | ref(제안 ID), approval(답 ID), hash(proposalDigest). 최신 답이 approve이며 제안의 본문/계획과 위임이 동일 |
++
++none basis로 실행 위임하지 않는다. input/contract 계획 파일은 프로젝트 `handoff-plans.json`의 `{version:1,declaredBy,plans:[...]}`이며 plan.id가 필수다. 상세 지시는 넣지 않는다. sender가 고른 ref만으로 승인되었다고 판단하지 않고 PM/수신자가 실제 계약·출처와 의미를 대조한다. 등록 시 계약 사본을 로컬에 보존하고 metadata에는 작성자·사본 지문·planId를 남긴다.
++
++`ready`는 확인된 현재 범위면0, 미대조/hold/로컬 본문 없음이면1, 원장 손상/잘못된 호출이면2다. 메시지를 먼저 수신하고 수신자가 범위를 대조할 수 있도록 delegate의 전달 자체는 scope_check 전에 가능하다. ready는 실행 도구를 기술적으로 가로채는 경계가 아니다. done/close 때도 현재 근거와 파일 지문을 재확인한다. partial/blocked는 열린 위임으로 남는다. 포기/대체를 완료로 바꾸는 철회 기능은 없다.
++
++같은 승인 제안으로 다른 위임 ID를 만들어 중복 실행하지 못한다. 같은 ID와 동일 머리/본문은 중복 행을 만들지 않는다. 누락한 동일 본문을 명시 재등록해 복원할 수 있다. 다른 내용으로 ID를 재사용하지 못한다. 로컬 사본 없는 clone에서 stats는 metadata-only와 누락 수를 표시하고 finish는 경고한다. ready/send/close는 필요한 원문 대조를 보류한다. 존재하는 본문 지문 변조나 손상 원장은 정상0으로 숨기지 않는다.
++
++등록 뒤 계약 파일에 무관한 plan이 추가돼도 로컬 사본의 선택 plan과 작성자가 현재와 같으면 기존 위임을 유지한다. 선택 plan/작성자 변경은 보류한다. 새 위임의 등록은 파일 전체 지문을 확인한다.
++
++## 기록 선행 전송
++
++```sh
++pace team handoff send P123 message-one --route-file route.json --attempt-id attempt-one
++pace team handoff prepare-external P123 message-two --route-file human-route.json --attempt-id human-one
++pace team handoff receipt P123 human-one --file receipt.json
++```
++
++route는 `{transport:"orca"|"external",actor,target,sourceRef,from}`이다. Orca는 명시한 로컬 에이전트 target(`term_…`/`run:…`/`dispatch:…`/`orca_session_id:…`)으로만 handoff를 보내며 actor=captain은 거부한다. 실제 사람 채널이 아니다. 원장과 started 영수증을 fsync한 뒤 guard 밖에서 기존 CLI를 실행한다. 명시 성공 ID/응답은 sent0, 명시 거절/실행 전 ENOENT는 failed1, timeout·모호 응답·최종 기록 실패는 unconfirmed2다. 실제 성공 후 기록 실패는 sentMayHaveOccurred=true로 표시하고 started를 남긴다. started/unconfirmed/sent는 새 ID로 자동 재발송하지 못하며 failed만 새 attemptId로 재시도한다.
++
++prepare-external은 기존 사람 채널의 전달 준비와 로컬 payloadPath만 내고 전송하지 않는다. 기존 호스트 도구를 실행한 참여자가 receipt의 phase/reportedBy/sourceRef를 기록한다. sent에는 실제 응답의 responseHash/responseId가 필요하고 선기록 출처/수신 주체를 바꾸지 못한다. 이것은 새 사람 전송 서비스나 성공 주장 인증이 아니다. 임의 자동 출력에서 성공을 추정하지 않는다.
++
++쓰기 전 검증 오류는 guard를 정리한다. 원장 쓰기/동기화 중 오류는 guard를 보존하며 중단 뒤 자동 회수하지 않는다. 로컬 ledger.guard/owner.json의 소유자를 확인하고 참여자를 중단해 파일과 마지막 행을 대조한 뒤 운영자 승인으로 수동 복구한다. 승인 없이 guard를 지우거나 불명 전송을 반복하지 않는다. 같은 계정의 악의적인 파일/프로그램 교체 방어는 제공하지 않는다.
++
++외부 경로의 unconfirmed 영수증이 뒤늦게 실제 확인되면 같은 시도에 최종 sent/failed 영수증을 추가할 수 있다. 이는 전송을 재실행하지 않는다. 캡틴 전송은 captain 수신으로 명시한 메시지/중계를 먼저 기록한다.
++
++## 자원 사건과 집계
++
++`pace team lock studio --by P123 --project P123 -- <명령>` 및 unlock의 --project는 실제 acquire/release/reclaim 후 사건을 연결한다. intent→상태의 transitionId/지문→applied 확인본→소통 원장 순서다. 선행 audit를 적용 증거로 승격하지 않는다. 프로젝트 기록 실패 시 이미 적용된 active/inactive 상태를 되돌리지 않고 guard/pending을 남기며 새 작업을 실행하지 않는다. `pace team handoff reconcile-resource P123 studio`는 applied 또는 실제 상태/전이 지문이 맞는 intent만 보완한다. 중복을 만들지 않으며 guard 삭제/작업 재개는 하지 않는다. T05의 소유자·그룹 종료/free와 별도 승인 수동 복구 후 새 획득 ID로 진행한다. --project 없는 잠금은 기존 경로다.
++
++`project log ... --request-id request-one`은 question/escalation/answer에서만 공유 식별자를 남긴다. 기존 사건 수·FIFO 대기는 그대로이고 새 handoffs 통계는 요청 ID로 별도 중복 제거한다. 캡틴 답(출처 있는 decision_reply 또는 실제 근거 파일이 있는 by:user answer) > 실제 사람 경로 성공 > 캡틴 경로 실패만 > 미확인 순이다. coordinator 자체/대리 답·사용자 결정 src 표지만으로 캡틴 답이 되지 않는다. Orca coordinator 성공도 캡틴 도달이 아니다. 식별자 없는 과거 질문은 연결 불명 사건으로 따로 남기며 시각/FIFO로 합치지 않는다.
++
++stats는 종류·agent별 기록 수, 요청별 분류와 열린 위임을 표시한다. finish는 partial/blocked를 포함한 열린 위임을 반드시 경고하되 정책상 자동 차단하지 않는다. 손상 원장·알려진 원문 staging 후보는 차단한다. 자연어 범위·실제 캡틴 출처의 현장 감사와 두 호스트 업무 관측은 별도 실행 검증 대상이다.
++
++자원 callback은 원장 guard의 짧은 경합을 최대1초 재시도한다. reconcile은 미적용/옛 intent를 승격 없이 unconfirmed 목록에 보고하고 다른 정상 applied 보완은 계속한다. 미확인이 남으면 CLI는2를 반환한다. 기록 보완이 guard 복구나 작업 재개 승인을 대신하지 않는다.
++
++## 운영 복구와 남는 한계
++
++body로 이미 깨끗하게 추적 중인 공개 파일을 잘못 지정해도 등록은 거부한다. 당시 bytes의 로컬 기준 지문을 남겨 그 공개 내용이 그대로인 경우에는 finish를 막지 않는다. 변경한 내용이나 등록 뒤 추적시킨 원문은 보호한다. 오입력 보호 목록을 해제해야 한다면 파일을 옮기거나 지우기 전에 운영자가 당시 공개 기준/실제 원문 여부와 HEAD/index/working tree를 대조하고, 별도 승인 아래 해당 로컬 항목을 보정한다. 자동 해제/삭제는 하지 않는다.
++
++privacy.guard도 ledger.guard와 같은 수동 경계다. 소유 프로세스와 참여자 중단 여부, staging-protection.json의 완전성, 원내 raw 경로와 HEAD/index/working tree를 먼저 확인하고 보호 목록을 복원한 뒤 별도 승인으로 guard를 회수한다. 불명 상태에서 finish를 우회하지 않는다.
++
++미확인 intent는 자료를 보존해 수동 조사한다. 이미 상태가 바뀌어 적용을 입증할 수 없으면 applied로 꾸미지 않는다. 미확인 목록은 자동 소거되지 않으며 잘린/손상 intent는 조사 전 전체 보완을 보류한다. 운영자가 종료/free와 다른 적용 사건을 확인한 뒤 별도 승인으로 로컬 보관 위치를 나눌 수 있지만, 이 명령은 자료 이동·guard 삭제·실행 재개를 수행하지 않는다.
++
++같은 제안으로 새 위임을 반복하지 않는다. 같은 위임은 정정/재승인과 수신 범위 확인 후 현재 근거로 재대조한다. 새 실행은 새 제안/승인을 연결한다. 내용이 달라진 새 결정 요청은 별도 요청 식별자를 사용하며, 동일 요청의 전달 중계는 relayOf로 명시한다.
++
++캡틴 답/출처 locator는 참여자의 신고다. by:user와 존재하는 ref만으로 사람의 실제 답을 인증하는 것은 아니며 PM/현장 감사가 실제 출처와 대조한다. 원장이 있는 stats는 손상/미지원 metadata나 존재하는 로컬 본문 변조를 오류로 돌려 정상 수치로 숨기지 않는다. 그 결과 해당 stats와 merge 후 지표 갱신이 실패할 수 있으며 기존 병합 후 복구 절차를 따른다. 원장 없는 옛 stats는 그대로다. 원장은 전체 전이를 재생하므로 크기 한도 부근의 비용이 증가한다. 같은 read 안에서 동일 본문 지문을 반복 읽지는 않지만 큰 원장의 인덱싱/회전은 후속 설계 대상이다.
++
++log의 by:user answer 근거 ref는 **짧은 출처 위치·응답 식별자·지문만 담은 영수증**이어야 한다. 실제 답 원문이나 상세 해석을 그 파일에 복사하지 않는다. 원문은 로컬 decision_reply 본문으로 등록하고 영수증에는 그 ID/지문·실제 출처 locator를 연결하는 방식을 권한다. ref 파일의 존재는 stats를 읽는 시점의 관측이며 파일 삭제/변경으로 분류가 달라질 수 있다. 사후 진위 감사는 이 한계를 포함해 실제 출처와 대조한다. route/source metadata도 이메일·이름·업무 문장 대신 필요한 짧은 불투명 채널 별칭/식별자만 쓴다.
++
++종류별 집계와 별도로 coordinator 및 agent:* 송신자를 에이전트별로 집계한다. captain과 장치의 project:* 주체를 에이전트 수에 넣지 않는다. 자원 사건의 header.at/seq는 원장에 들어온 시각/순서이고 data.appliedAt은 생산자가 실제 전이를 확인한 시각이다. 보완은 늦거나 다른 순서로 들어올 수 있으므로 이 둘을 혼동하지 않는다. transitionId와 상태 지문으로 로컬 applied 자료를 대조한다.
++
++전송 payload는 머리와 본문을 합쳐2MiB 한도다. 한도 근처의 본문은 기록되더라도 머리까지 합친 전송 준비가 거부될 수 있으며 그 경우 전송0이다. 원문을 잘라 맞추지 않는다. --project 전이의 transitionId 필드를 읽지 못하는 옛 설치본과 같은 잠금 상태를 섞어 쓰지 않는다. 병합 뒤 main에서 재설치·버전 일치를 확인하며 worktree에서 설치하지 않는다.
+diff --git a/src/project/handoff-files.ts b/src/project/handoff-files.ts
+new file mode 100644
+index 0000000..156710d
+--- /dev/null
++++ b/src/project/handoff-files.ts
+@@ -0,0 +1,105 @@
++import { constants, closeSync, fstatSync, fsyncSync, lstatSync, mkdirSync, openSync, readSync, realpathSync, renameSync, writeFileSync } from "node:fs";
++import { randomUUID, createHash } from "node:crypto";
++import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
++import { spawnSync } from "node:child_process";
++import { commonGitDirectory } from "../team/resource-lock.ts";
++import { safeTeamPath } from "../team/store.ts";
++import { hasSecret } from "./secrets.ts";
++
++export class HandoffError extends Error {}
++export class HandoffGuardBusy extends HandoffError {}
++export const BODY_LIMIT = 2 * 1024 * 1024;
++export const HEADER_LIMIT = 16384;
++export const LEDGER_LIMIT = 32 * 1024 * 1024;
++export const digest = (value: string | Buffer): string => createHash("sha256").update(value).digest("hex");
++export const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
++export const hashValue = (value: unknown): value is string => typeof value === "string" && /^[0-9a-f]{64}$/.test(value);
++export const shortText = (value: unknown, max = 400): value is string => typeof value === "string" && !!value.trim() && value.length <= max && value.isWellFormed() && !/[\p{Cc}\p{Cf}]/u.test(value) && !hasSecret(value);
++export const identifier = (value: unknown): value is string => shortText(value, 96) && /^[a-z][a-z0-9_-]*$/.test(value);
++export function fields(value: unknown, allowed: string[], required = allowed): asserts value is Record<string, unknown> {
++  if (!object(value) || Object.keys(value).some((key) => !allowed.includes(key)) || required.some((key) => !Object.hasOwn(value, key))) throw new HandoffError("소통 객체의 필수/허용 필드 오류");
++}
++export function within(root: string, path: string): boolean {
++  const rel = relative(root, path);
++  return !isAbsolute(rel) && rel !== ".." && !rel.startsWith(`..${sep}`);
++}
++export function gitRead(cwd: string, args: string[]): { status: number | null; stdout: string; stderr: string } {
++  const env: NodeJS.ProcessEnv = { ...process.env, LC_ALL: "C", GIT_OPTIONAL_LOCKS: "0", GIT_TERMINAL_PROMPT: "0", GIT_NO_LAZY_FETCH: "1" };
++  for (const key of ["GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_INDEX_FILE"]) delete env[key];
++  const result = spawnSync("git", ["-c", "core.fsmonitor=false", "-C", cwd, ...args], { encoding: "utf8", timeout: 5000, maxBuffer: LEDGER_LIMIT, env });
++  if (result.error || result.signal) throw new HandoffError("소통 Git 경계 확인 실패");
++  return result;
++}
++export function regularBytes(path: string, limit: number): Buffer {
++  const before = lstatSync(path);
++  if (!before.isFile() || before.isSymbolicLink() || before.nlink !== 1 || before.size > limit) throw new HandoffError("소통 파일 종류/링크/크기 오류");
++  const fd = openSync(path, constants.O_RDONLY | constants.O_NONBLOCK | (constants.O_NOFOLLOW ?? 0));
++  try {
++    const stat = fstatSync(fd), current = lstatSync(path);
++    if (!stat.isFile() || stat.nlink !== 1 || stat.dev !== before.dev || stat.ino !== before.ino || current.dev !== stat.dev || current.ino !== stat.ino || current.isSymbolicLink()) throw new HandoffError("소통 파일이 바뀌었다");
++    const buffer = Buffer.alloc(Math.min(limit + 1, stat.size + 1)); let length = 0;
++    while (length < buffer.length) { const count = readSync(fd, buffer, length, buffer.length - length, null); if (!count) break; length += count; }
++    const after = fstatSync(fd);
++    if (length > limit || after.size !== stat.size || after.mtimeMs !== stat.mtimeMs) throw new HandoffError("소통 파일 크기/읽기 중 변경 오류");
++    return buffer.subarray(0, length);
++  } finally { closeSync(fd); }
++}
++export function utf8(bytes: Buffer): string {
++  const text = bytes.toString("utf8");
++  if (!Buffer.from(text).equals(bytes) || text.includes("\0")) throw new HandoffError("소통 본문은 NUL 없는 UTF-8이어야 한다");
++  return text;
++}
++/** Duplicate JSON keys are rejected even if escaped differently; JSON.parse alone loses them. */
++export function strictJson(text: string): unknown {
++  let i = 0;
++  const white = () => { while (/\s/.test(text[i] ?? "") && i < text.length) i++; };
++  const string = (): string => {
++    const start = i++;
++    while (i < text.length) {
++      const char = text[i++];
++      if (char === "\\") { i++; continue; }
++      if (char === '"') return JSON.parse(text.slice(start, i)) as string;
++    }
++    throw new HandoffError("JSON 문자열 오류");
++  };
++  const value = (depth: number): void => {
++    if (depth > 24) throw new HandoffError("JSON 깊이 초과");
++    white(); const char = text[i];
++    if (char === "{") {
++      i++; white(); const keys = new Set<string>();
++      if (text[i] === "}") { i++; return; }
++      while (i < text.length) {
++        white(); if (text[i] !== '"') throw new HandoffError("JSON 키 오류");
++        const key = string(); if (keys.has(key)) throw new HandoffError("중복 JSON 키"); keys.add(key);
++        white(); if (text[i++] !== ":") throw new HandoffError("JSON 구분자 오류"); value(depth + 1); white();
++        if (text[i] === "}") { i++; return; }
++        if (text[i++] !== ",") throw new HandoffError("JSON 객체 오류");
++      }
++    } else if (char === "[") {
++      i++; white(); if (text[i] === "]") { i++; return; }
++      while (i < text.length) { value(depth + 1); white(); if (text[i] === "]") { i++; return; } if (text[i++] !== ",") throw new HandoffError("JSON 배열 오류"); }
++    } else if (char === '"') { string(); return; }
++    else { const match = /^(?:true|false|null|-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?)/.exec(text.slice(i)); if (match) { i += match[0].length; return; } }
++    throw new HandoffError("JSON 값 오류");
++  };
++  try { value(0); white(); if (i !== text.length) throw new Error(); return JSON.parse(text); }
++  catch (error) { if (error instanceof HandoffError) throw error; throw new HandoffError("소통 JSON 오류"); }
++}
++export function createDir(root: string, rel: string): string {
++  const dir = safeTeamPath(root, rel, true); mkdirSync(dir, { recursive: true, mode: 0o700 }); return safeTeamPath(root, rel, true);
++}
++export function atomicText(root: string, name: string, data: string | Buffer): void {
++  const target = safeTeamPath(root, name), tempName = `.write-${randomUUID()}.tmp`, temp = safeTeamPath(root, tempName);
++  const fd = openSync(temp, "wx", 0o600);
++  try { writeFileSync(fd, data); fsyncSync(fd); } finally { closeSync(fd); }
++  safeTeamPath(root, name); renameSync(temp, target);
++}
++/** Git's internal directory is local only; refuse a separate git-dir that another worktree could stage. */
++export function localHandoffBase(root: string): string {
++  const common = commonGitDirectory(root), parent = gitRead(dirname(common), ["rev-parse", "--show-toplevel"]);
++  if (parent.status === 0) {
++    const outer = realpathSync.native(parent.stdout.trim()), rel = relative(outer, common).split(sep).join("/");
++    if (within(outer, common) && rel !== ".git" && !rel.startsWith(".git/")) throw new HandoffError("Git 추적 가능 separate-git-dir에는 원문을 저장하지 않는다");
++  } else if (!/not a git repository|must be run in a work tree/i.test(parent.stderr)) throw new HandoffError("로컬 원문 저장 위치를 확인하지 못했다");
++  return safeTeamPath(common, "pace/handoffs", true);
++}
+diff --git a/src/project/handoff-private.ts b/src/project/handoff-private.ts
+new file mode 100644
+index 0000000..afa8b00
+--- /dev/null
++++ b/src/project/handoff-private.ts
+@@ -0,0 +1,131 @@
++import { existsSync, lstatSync, mkdirSync, openSync, closeSync, fsyncSync, writeFileSync, unlinkSync, rmdirSync, realpathSync } from "node:fs";
++import { dirname, relative, resolve, sep } from "node:path";
++import { safeTeamPath } from "../team/store.ts";
++import { processIdentity } from "../team/resource-process.ts";
++import { commonGitDirectory } from "../team/resource-lock.ts";
++import { atomicText, BODY_LIMIT, createDir, digest, fields, gitRead, HandoffError, HandoffGuardBusy, localHandoffBase, object, regularBytes, strictJson, utf8, within } from "./handoff-files.ts";
++import { hasSecret } from "./secrets.ts";
++
++interface BlockedSource { rootHash: string; pathHash: string; rel?: string; publicBaselineHash?: string }
++function blockedSources(base: string): BlockedSource[] {
++  const path = safeTeamPath(base, "staging-protection.json");
++  if (!existsSync(path)) return [];
++  const value = strictJson(utf8(regularBytes(path, BODY_LIMIT)));
++  fields(value, ["version", "sources"]);
++  if (value.version !== 1 || !Array.isArray(value.sources)) throw new HandoffError("원문 staging 보호 목록 손상");
++  return value.sources.map((source: unknown) => {
++    fields(source, ["rootHash", "pathHash", "rel", "publicBaselineHash"], ["rootHash", "pathHash"]);
++    if (typeof source.rootHash !== "string" || !/^[0-9a-f]{64}$/.test(source.rootHash) || typeof source.pathHash !== "string" || !/^[0-9a-f]{64}$/.test(source.pathHash) || source.rel !== undefined && typeof source.rel !== "string") throw new HandoffError("원문 staging 보호 항목 손상");
++    if (source.publicBaselineHash !== undefined && (typeof source.publicBaselineHash !== "string" || !/^[0-9a-f]{64}$/.test(source.publicBaselineHash))) throw new HandoffError("공개 추적 파일 기준 지문 손상");
++    return source as unknown as BlockedSource;
++  });
++}
++function holdGuard<T>(root: string, name: string, action: (writing: () => void) => T): T {
++  const path = safeTeamPath(root, name, true);
++  try { mkdirSync(path, { mode: 0o700 }); } catch (error) { if ((error as NodeJS.ErrnoException).code === "EEXIST") throw new HandoffGuardBusy("소통 원장 guard 경합/중단; 소유자 확인 후 재시도"); throw error; }
++  let cleanup = false;
++  try {
++    atomicText(path, "owner.json", JSON.stringify({ owner: processIdentity(process.pid), at: new Date().toISOString() }));
++    cleanup = true;
++    const result = action(() => { cleanup = false; }); cleanup = true; return result;
++  }
++  finally { if (cleanup) { safeTeamPath(path, "owner.json"); unlinkSync(resolve(path, "owner.json")); rmdirSync(path); } }
++}
++/** Explicit body input is never copied to a working tree. Attempted in-repo inputs are protected from finish. */
++export function readPrivateInput(repoRoot: string, input: string): Buffer {
++  const path = resolve(input), stat = lstatSync(path);
++  if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1) throw new HandoffError("본문 입력은 단일 링크 일반 파일이어야 한다");
++  const actual = realpathSync.native(path), parent = gitRead(dirname(actual), ["rev-parse", "--show-toplevel"]);
++  const localBase = localHandoffBase(repoRoot);
++  if (parent.status === 0) {
++    const sourceRoot = realpathSync.native(parent.stdout.trim());
++    if (within(sourceRoot, actual) && !within(localBase, actual)) {
++      if (localHandoffBase(sourceRoot) === localBase) {
++        createDir(dirname(localBase), "handoffs");
++        holdGuard(localBase, "privacy.guard", (writing) => {
++          const sources = blockedSources(localBase), rel = relative(sourceRoot, actual).split(sep).join("/");
++          const tracked = gitRead(sourceRoot, ["ls-files", "--error-unmatch", "--", rel]);
++          const status = gitRead(sourceRoot, ["status", "--porcelain=v1", "--untracked-files=all", "--", rel]);
++          const cleanPublic = tracked.status === 0 && status.status === 0 && !status.stdout;
++          let publicBaselineHash: string | undefined;
++          try {
++            if (cleanPublic) publicBaselineHash = digest(regularBytes(actual, BODY_LIMIT));
++            else if (tracked.status === 0) {
++              const head = gitRead(sourceRoot, ["show", `HEAD:${rel}`]);
++              if (head.status === 0 && Buffer.byteLength(head.stdout) <= BODY_LIMIT) publicBaselineHash = digest(head.stdout);
++            }
++          } catch { /* Still protect the attempted private path when no public baseline can be established. */ }
++          const row: BlockedSource = { rootHash: digest(sourceRoot), pathHash: digest(rel), ...(!hasSecret(rel) && rel.length <= 1024 ? { rel } : {}), ...(publicBaselineHash ? { publicBaselineHash } : {}) };
++          if (!sources.some((s) => s.rootHash === row.rootHash && s.pathHash === row.pathHash)) sources.push(row);
++          writing(); atomicText(localBase, "staging-protection.json", JSON.stringify({ version: 1, sources }));
++        });
++      }
++      throw new HandoffError("원문/상세 본문은 working tree 밖 또는 로컬 전용 Git 폴더에 둔다; 알려진 경로는 finish staging을 보류한다");
++    }
++  } else if (!within(localBase, actual) && !/not a git repository/i.test(parent.stderr)) throw new HandoffError("본문 입력의 Git 경계를 확인하지 못했다");
++  return regularBytes(actual, BODY_LIMIT);
++}
++export function handoffPrivacyIssues(repoRoot: string): string[] {
++  try {
++    // Legacy projects without any local handoff state do not adopt its storage-location policy.
++    if (!existsSync(safeTeamPath(commonGitDirectory(repoRoot), "pace/handoffs", true))) return [];
++    const base = localHandoffBase(repoRoot);
++    if (!existsSync(base)) return [];
++    if (existsSync(safeTeamPath(base, "privacy.guard", true))) return ["로컬 원문 staging 보호 기록 중단/경합; finish 보류"];
++    const rootHash = digest(realpathSync.native(repoRoot)), blocked = blockedSources(base).filter((s) => s.rootHash === rootHash);
++    if (!blocked.length) return [];
++    const result = gitRead(repoRoot, ["status", "--porcelain=v1", "-z", "--untracked-files=all"]);
++    if (result.status !== 0) throw new HandoffError("원문 staging 후보 확인 실패");
++    const paths: string[] = [], parts = result.stdout.split("\0");
++    for (let i = 0; i < parts.length; i++) {
++      const entry = parts[i]!; if (entry.length < 4) continue;
++      paths.push(entry.slice(3)); if (/[RC]/.test(entry.slice(0, 2)) && parts[i + 1]) paths.push(parts[++i]!);
++    }
++    const tracked = gitRead(repoRoot, ["ls-files", "-z"]);
++    if (tracked.status !== 0) throw new HandoffError("원문 추적 파일 확인 실패");
++    paths.push(...tracked.stdout.split("\0").filter(Boolean));
++    const hits = [...new Set(paths.filter((p) => blocked.some((b) => {
++      if (b.pathHash !== digest(p)) return false;
++      if (b.publicBaselineHash) {
++        try { if (digest(regularBytes(safeTeamPath(repoRoot, p), BODY_LIMIT)) === b.publicBaselineHash) return false; } catch { /* changed/unreadable is not the previously committed public bytes */ }
++      }
++      return true;
++    })))];
++    return hits.map((p) => `로컬 전용 원문 staging 금지: ${hasSecret(p) ? "[경로 생략]" : p} — 원문을 저장소 밖으로 옮긴 뒤 확인한다`);
++  } catch { return ["로컬 원문 staging 보호 확인 실패; finish를 진행하지 않는다"]; }
++}
++
++export class PrivateHandoffBodies {
++  readonly base: string;
++  readonly root: string;
++  constructor(repoRoot: string, project: string, dir: string) {
++    this.base = localHandoffBase(repoRoot);
++    this.root = safeTeamPath(this.base, `${project}-${digest(dir).slice(0, 16)}`, true);
++  }
++  ensure(): void {
++    createDir(dirname(this.base), "handoffs");
++    createDir(this.base, this.root.slice(this.base.length + 1));
++  }
++  locked<T>(action: (writing: () => void) => T): T { this.ensure(); return holdGuard(this.root, "ledger.guard", action); }
++  path(hash: string): string {
++    if (!/^[0-9a-f]{64}$/.test(hash)) throw new HandoffError("본문 content ID 오류");
++    return safeTeamPath(this.root, `bodies/${hash}.md`);
++  }
++  read(hash: string): Buffer | null {
++    const path = this.path(hash); if (!existsSync(path)) return null;
++    const bytes = regularBytes(path, BODY_LIMIT);
++    if (digest(bytes) !== hash) throw new HandoffError("로컬 본문 지문 불일치");
++    utf8(bytes); return bytes;
++  }
++  capture(input: Buffer | string): { hash: string; path: string } {
++    if (typeof input === "string" && !input.isWellFormed()) throw new HandoffError("본문 Unicode 오류");
++    const bytes = typeof input === "string" ? Buffer.from(input) : input;
++    const text = utf8(bytes);
++    if (!text.trim() || bytes.length > BODY_LIMIT || hasSecret(text)) throw new HandoffError("본문 비밀 후보/빈값/크기 거부; 원문을 자르거나 바꿔 승인 근거로 쓰지 않는다");
++    this.ensure(); createDir(this.root, "bodies");
++    const hash = digest(bytes), path = this.path(hash), old = this.read(hash);
++    if (!old) atomicText(resolve(this.root, "bodies"), `${hash}.md`, bytes);
++    return { hash, path };
++  }
++  journalDir(): string { this.ensure(); return createDir(this.root, "resource-events"); }
++}
+diff --git a/src/project/handoff-report.ts b/src/project/handoff-report.ts
+new file mode 100644
+index 0000000..11402fa
+--- /dev/null
++++ b/src/project/handoff-report.ts
+@@ -0,0 +1,39 @@
++import { existsSync } from "node:fs";
++import { join } from "node:path";
++import { readEvents, type ProjectEvent } from "./event-log.ts";
++import { HandoffStore } from "./handoff-store.ts";
++import { regularBytes } from "./handoff-files.ts";
++import { safeTeamPath } from "../team/store.ts";
++
++export type Reach = "captain_reply" | "captain_delivery" | "failed_only" | "unconfirmed";
++export interface HandoffReport {
++  records: number; missingBodies: number; auditCoverage: "local-bytes" | "metadata-only"; open: string[];
++  kinds: Record<string, number>; agents: Record<string, Record<string, number>>;
++  requests: { total: number; captain_reply: number; captain_delivery: number; failed_only: number; unconfirmed: number; unlinkedLogEvents: number; items: { requestId: string; reach: Reach }[] };
++}
++function captainAnswer(projectDir: string, event: ProjectEvent): boolean {
++  if (event.type !== "answer" || event.by !== "user" || !event.ref) return false;
++  try { return regularBytes(safeTeamPath(projectDir, event.ref), 2 * 1024 * 1024).length > 0; } catch { return false; }
++}
++export function collectHandoffs(root: string, project: string, projectDir: string): HandoffReport | undefined {
++  const dir = join(root, projectDir), events = readEvents(dir).filter((e) => e.p === project), ledger = join(dir, "handoffs.jsonl");
++  if (!existsSync(ledger) && !events.some((e) => e.requestId)) return undefined;
++  const store = new HandoffStore(root, project, projectDir), rows = store.read(), audit = store.audit();
++  const kinds: Record<string, number> = {}, agents: Record<string, Record<string, number>> = {};
++  for (const row of rows) {
++    kinds[row.kind] = (kinds[row.kind] ?? 0) + 1;
++    if (row.from === "coordinator" || row.from.startsWith("agent:")) { const counts = agents[row.from] ??= {}; counts[row.kind] = (counts[row.kind] ?? 0) + 1; }
++  }
++  const ids = new Set([...rows.filter((r) => r.kind === "decision_request").map((r) => r.requestId!), ...events.filter((e) => e.requestId && ["question", "escalation"].includes(e.type)).map((e) => e.requestId!)]);
++  const requests: HandoffReport["requests"] = { total: ids.size, captain_reply: 0, captain_delivery: 0, failed_only: 0, unconfirmed: 0, unlinkedLogEvents: events.filter((e) => !e.requestId && ["question", "escalation"].includes(e.type)).length, items: [] };
++  for (const id of [...ids].sort()) {
++    const group = rows.filter((r) => r.requestId === id), logs = events.filter((e) => e.requestId === id);
++    const attempts = group.filter((r) => r.kind === "delivery" && r.data.routeActor === "captain");
++    let reach: Reach = "unconfirmed";
++    if (group.some((r) => r.kind === "decision_reply" && r.from === "captain") || logs.some((e) => captainAnswer(dir, e))) reach = "captain_reply";
++    else if (attempts.some((r) => r.data.phase === "sent" && r.data.transport === "external")) reach = "captain_delivery";
++    else if (attempts.length && attempts.filter((r) => r.data.phase === "started").every((start) => attempts.some((end) => end.data.attemptId === start.data.attemptId && end.data.phase === "failed")) && attempts.some((r) => r.data.phase === "failed")) reach = "failed_only";
++    requests[reach]++; requests.items.push({ requestId: id, reach });
++  }
++  return { ...audit, kinds, agents, requests };
++}
+diff --git a/src/project/handoff-store.ts b/src/project/handoff-store.ts
+new file mode 100644
+index 0000000..cfc6715
+--- /dev/null
++++ b/src/project/handoff-store.ts
+@@ -0,0 +1,89 @@
++import { closeSync, constants, existsSync, fsyncSync, lstatSync, openSync, writeSync } from "node:fs";
++import { resolve } from "node:path";
++import { PrivateHandoffBodies } from "./handoff-private.ts";
++import { BODY_LIMIT, digest, HandoffError, LEDGER_LIMIT, regularBytes, strictJson, utf8 } from "./handoff-files.ts";
++import { safeTeamPath } from "../team/store.ts";
++import { header, stable, type HandoffHeader, type HandoffRecord } from "../team/handoff-model.ts";
++import { ready, referenced, requireBodies, validateTransition, type StateContext } from "../team/handoff-state.ts";
++
++export class HandoffStore {
++  readonly root: string;
++  readonly project: string;
++  readonly projectDir: string;
++  readonly path: string;
++  readonly bodies: PrivateHandoffBodies;
++  constructor(root: string, project: string, projectDir: string) {
++    this.root = root; this.project = project; this.projectDir = projectDir;
++    if (!/^P\d{3}$/.test(project)) throw new HandoffError("프로젝트 ID 오류");
++    this.path = safeTeamPath(root, `${projectDir}/handoffs.jsonl`);
++    this.bodies = new PrivateHandoffBodies(root, project, projectDir);
++  }
++  context(live: boolean): StateContext { return { root: this.root, projectDir: this.projectDir, bodies: this.bodies, live }; }
++  read(): HandoffRecord[] {
++    if (!existsSync(this.path)) return [];
++    safeTeamPath(this.root, `${this.projectDir}/handoffs.jsonl`);
++    const text = utf8(regularBytes(this.path, LEDGER_LIMIT));
++    if (text && !text.endsWith("\n")) throw new HandoffError("소통 원장 마지막 행이 불완전하다; 복구 확인 전 보류");
++    const rows: HandoffRecord[] = [], checkedBodies = new Set<string>();
++    for (const line of text.split("\n").filter(Boolean)) {
++      const row = header(strictJson(line), true, true) as HandoffRecord;
++      if (row.p !== this.project || row.seq !== rows.length + 1 || rows.some((r) => r.id === row.id)) throw new HandoffError("소통 원장 순번/프로젝트/중복 ID 손상");
++      validateTransition(this.context(false), rows, row);
++      // Missing local bodies are an audit limitation; a present corrupted body is an error.
++      for (const hash of this.privateHashes([row])) if (!checkedBodies.has(hash)) { this.bodies.read(hash); checkedBodies.add(hash); }
++      rows.push(row);
++    }
++    return rows;
++  }
++  private append(row: HandoffRecord, writing: () => void): void {
++    const path = safeTeamPath(this.root, `${this.projectDir}/handoffs.jsonl`), bytes = Buffer.from(JSON.stringify(row) + "\n");
++    if ((existsSync(path) ? lstatSync(path).size : 0) + bytes.length > LEDGER_LIMIT) throw new HandoffError("소통 원장 크기 한도");
++    writing();
++    const fd = openSync(path, constants.O_WRONLY | constants.O_APPEND | constants.O_CREAT | (constants.O_NOFOLLOW ?? 0), 0o600);
++    try {
++      let offset = 0;
++      while (offset < bytes.length) { const written = writeSync(fd, bytes, offset, bytes.length - offset); if (!written) throw new Error("원장 쓰기 중단"); offset += written; }
++      fsyncSync(fd);
++    } finally { closeSync(fd); }
++  }
++  record(input: unknown, body: Buffer | string, internal = false): { record: HandoffRecord; localBodyPath: string; duplicate: boolean } {
++    if (typeof body === "string" && !body.isWellFormed()) throw new HandoffError("본문 Unicode 오류");
++    const parsed = header(input, internal) as HandoffHeader;
++    if (!internal && ["policyAuthor", "policySnapshotHash", "policyPlanId"].some((key) => Object.hasOwn(parsed.data, key))) throw new HandoffError("계획 계약 확인 metadata는 내부에서만 생성한다");
++    return this.bodies.locked((writing) => {
++      const rows = this.read(), bytes = typeof body === "string" ? Buffer.from(body) : body;
++      if (bytes.length > BODY_LIMIT) throw new HandoffError("본문 크기 초과");
++      const bodyHash = digest(bytes), row: HandoffRecord = { ...structuredClone(parsed), p: this.project, at: new Date().toISOString(), seq: rows.length + 1, bodyHash, bodyRef: `local:${bodyHash}` };
++      const old = rows.find((r) => r.id === row.id);
++      if (old) {
++        const oldHeader: Record<string, unknown> = { ...old, data: { ...old.data } };
++        for (const key of ["p", "at", "seq", "bodyHash", "bodyRef"]) delete oldHeader[key];
++        for (const key of ["policyAuthor", "policySnapshotHash", "policyPlanId"]) delete (oldHeader.data as Record<string, unknown>)[key];
++        if (old.bodyHash !== bodyHash || stable(oldHeader) !== stable(parsed)) throw new HandoffError("기존 ID를 다른 머리/본문으로 덮어쓸 수 없다");
++        const stored = this.bodies.capture(bytes); return { record: old, localBodyPath: stored.path, duplicate: true };
++      }
++      validateTransition(this.context(true), rows, row);
++      const stored = this.bodies.capture(bytes);
++      header(row, true, true);
++      this.append(row, writing);
++      return { record: row, localBodyPath: stored.path, duplicate: false };
++    });
++  }
++  readiness(id: string): { ready: boolean; reason: string } {
++    const rows = this.read(), delegate = referenced(rows, id, "delegate");
++    try {
++      requireBodies(this.context(true), rows, delegate);
++      // Current plans must still match the contract captured at registration.
++      validateTransition(this.context(true), rows, structuredClone(delegate));
++      if (rows.some((r) => r.kind === "close" && r.data.re === id)) return { ready: false, reason: "이미 종결된 위임" };
++      return { ready: ready(rows, delegate), reason: ready(rows, delegate) ? "수신자 범위 확인 기록 있음" : "수신자 범위 대조 없음/hold" };
++    } catch (error) { if (error instanceof HandoffError) return { ready: false, reason: error.message }; throw error; }
++  }
++  audit(): { records: number; missingBodies: number; auditCoverage: "local-bytes" | "metadata-only"; open: string[] } {
++    const rows = this.read(), missingBodies = this.privateHashes(rows).filter((hash) => !this.bodies.read(hash)).length;
++    return { records: rows.length, missingBodies, auditCoverage: missingBodies ? "metadata-only" : "local-bytes", open: rows.filter((r) => r.kind === "delegate" && !rows.some((c) => c.kind === "close" && c.data.re === r.id)).map((r) => r.id) };
++  }
++  private privateHashes(rows: HandoffRecord[]): string[] {
++    return [...new Set(rows.flatMap((r) => [r.bodyHash, r.data.policySnapshotHash, r.data.payloadHash].filter((h): h is string => typeof h === "string")))];
++  }
++}
+diff --git a/src/team/handoff-cli.ts b/src/team/handoff-cli.ts
+new file mode 100644
+index 0000000..31821de
+--- /dev/null
++++ b/src/team/handoff-cli.ts
+@@ -0,0 +1,58 @@
++import { parseArgs } from "node:util";
++import { readSync } from "node:fs";
++import { openRepo, findProject, statsRepo } from "../project/harness.ts";
++import { HandoffStore } from "../project/handoff-store.ts";
++import { BODY_LIMIT, HEADER_LIMIT, HandoffError, regularBytes, strictJson, utf8 } from "../project/handoff-files.ts";
++import { readPrivateInput } from "../project/handoff-private.ts";
++import { deliveryReceipt, deliveryRoute, prepareDelivery, sendDelivery } from "./handoff-delivery.ts";
++import { projectResourceSink } from "./handoff-resources.ts";
++import { ResourceLock } from "./resource-lock.ts";
++
++function stdinBytes(): Buffer {
++  const buffer = Buffer.alloc(BODY_LIMIT + 1); let length = 0;
++  while (length < buffer.length) { const size = readSync(0, buffer, length, buffer.length - length, null); if (!size) break; length += size; }
++  if (length > BODY_LIMIT) throw new HandoffError("본문 표준 입력 크기 초과");
++  return buffer.subarray(0, length);
++}
++export async function handoffCommand(args: string[]): Promise<number> {
++  try {
++    const { values, positionals } = parseArgs({ args, allowPositionals: true, strict: true, options: { file: { type: "string" }, "body-file": { type: "string" }, "route-file": { type: "string" }, "attempt-id": { type: "string" }, json: { type: "boolean" } } });
++    const [command, project, id] = positionals;
++    const withId = ["ready", "send", "prepare-external", "receipt", "reconcile-resource"].includes(command ?? "");
++    if (!command || !project || !["record", "list", "check", "ready", "send", "prepare-external", "receipt", "reconcile-resource"].includes(command) || positionals.length !== (withId ? 3 : 2)) throw new HandoffError("pace team handoff record|list|check|ready|send|prepare-external|receipt|reconcile-resource P### [ID/자원]");
++    const repo = openRepo(process.cwd()), ref = findProject(repo, project), owner = statsRepo(repo, ref);
++    const store = new HandoffStore(owner.root, ref.id, `projects/${ref.dir}`);
++    const out = (value: unknown) => process.stdout.write(JSON.stringify(value) + "\n");
++    if (command === "reconcile-resource") {
++      if (Object.keys(values).some((key) => key !== "json")) throw new HandoffError("reconcile-resource에는 별도 파일/전송 옵션이 없다");
++      const lock = new ResourceLock(repo.root, id!, { events: projectResourceSink(repo.root, ref.id) });
++      const result = lock.reconcileApplied(); out({ ...result, guardRecovered: false, commandResumed: false });
++      return result.unconfirmed.length ? 2 : 0;
++    } else if (command === "send" || command === "prepare-external") {
++      if (!values["route-file"] || !values["attempt-id"] || values.file || values["body-file"]) throw new HandoffError("전송은 --route-file·--attempt-id와 등록된 메시지 ID가 필요하다");
++      const route = deliveryRoute(strictJson(utf8(regularBytes(values["route-file"], HEADER_LIMIT))));
++      if (command === "send") { const result = sendDelivery(store, id!, values["attempt-id"], route); out(result); return result.code; }
++      if (route.transport !== "external") throw new HandoffError("prepare-external은 기존 외부 경로만 준비한다");
++      const result = prepareDelivery(store, id!, values["attempt-id"], route); out({ attemptId: values["attempt-id"], payloadPath: result.payloadPath, phase: "started", transportInvoked: false });
++    } else if (command === "receipt") {
++      if (!values.file || values["body-file"] || values["route-file"] || values["attempt-id"]) throw new HandoffError("receipt P### 시도ID --file <영수증.json>");
++      out(deliveryReceipt(store, id!, strictJson(utf8(regularBytes(values.file, HEADER_LIMIT)))));
++    } else if (command === "record") {
++      if (values["route-file"] || values["attempt-id"]) throw new HandoffError("record에 전송 옵션을 지정할 수 없다");
++      if (!values.file || !values["body-file"]) throw new HandoffError("record는 --file·--body-file이 필요하다");
++      const input = strictJson(utf8(regularBytes(values.file, HEADER_LIMIT)));
++      const body = values["body-file"] === "-" ? stdinBytes() : readPrivateInput(owner.root, values["body-file"]);
++      out(store.record(input, body));
++    } else {
++      if (values.file || values["body-file"] || values["route-file"] || values["attempt-id"]) throw new HandoffError("읽기 명령에 본문/전송 입력을 지정할 수 없다");
++      if (command === "list") out(store.read());
++      else if (command === "check") out(store.audit());
++      else { const result = store.readiness(id!); out(result); return result.ready ? 0 : 1; }
++    }
++    return 0;
++  } catch (error) {
++    // Never print a body, transport stderr, or an arbitrary filesystem error path.
++    process.stderr.write(`handoff: ${error instanceof HandoffError ? error.message : "검증/저장 실패; 원문과 오류 상세는 출력하지 않는다"}\n`);
++    return 2;
++  }
++}
+diff --git a/src/team/handoff-delivery.ts b/src/team/handoff-delivery.ts
+new file mode 100644
+index 0000000..54b6f07
+--- /dev/null
++++ b/src/team/handoff-delivery.ts
+@@ -0,0 +1,72 @@
++import { spawnSync } from "node:child_process";
++import { atomicText, digest, fields, HandoffError, identifier, object, shortText, strictJson } from "../project/handoff-files.ts";
++import { HandoffStore } from "../project/handoff-store.ts";
++import { actor, sourceRef, type HandoffHeader, type HandoffRecord } from "./handoff-model.ts";
++import { referenced, requireBodies, validateTransition } from "./handoff-state.ts";
++
++export interface DeliveryRoute { transport: "orca" | "external"; actor: string; target: string; sourceRef: string; from: string }
++export function deliveryRoute(value: unknown): DeliveryRoute {
++  fields(value, ["transport", "actor", "target", "sourceRef", "from"]);
++  if (!["orca", "external"].includes(value.transport as string) || !actor(value.actor) || !sourceRef(value.sourceRef) || !shortText(value.target, 240) || !shortText(value.from, 240)) throw new HandoffError("전송 경로 형식 오류");
++  if (value.transport === "orca" && (value.actor === "captain" || !/^(?:term_|run:|dispatch:|orca_session_id:)[a-zA-Z0-9_-]+$/.test(value.target as string) || !/^(?:term_|orca_session_id:)[a-zA-Z0-9_-]+$/.test(value.from as string))) throw new HandoffError("Orca는 명시된 로컬 에이전트 경로만 허용하며 캡틴 도달 경로가 아니다");
++  return value as unknown as DeliveryRoute;
++}
++function deliveryHeader(message: HandoffRecord, attemptId: string, route: DeliveryRoute, phase: string, extra: Record<string, unknown> = {}): HandoffHeader {
++  return { protocol: "pace-handoff", v: 1, id: `${attemptId}-${phase}`, kind: "delivery", from: message.from, to: route.actor, ...(message.task ? { task: message.task } : {}), ...(message.requestId ? { requestId: message.requestId } : {}), data: { re: message.id, attemptId, phase, transport: route.transport, routeActor: route.actor, target: route.target, sourceRef: route.sourceRef, ...extra } };
++}
++export function prepareDelivery(store: HandoffStore, messageId: string, attemptId: string, inputRoute: unknown): { payloadPath: string; started: HandoffRecord; route: DeliveryRoute } {
++  if (!identifier(attemptId) || attemptId.length > 70) throw new HandoffError("전송 시도 ID 오류");
++  const route = deliveryRoute(inputRoute), rows = store.read(), message = referenced(rows, messageId);
++  if (route.actor === "captain" && message.to !== "captain") throw new HandoffError("캡틴 전달은 명시한 captain 수신 메시지/중계로 먼저 기록한다");
++  requireBodies(store.context(true), rows, message);
++  if (message.kind === "delegate") validateTransition(store.context(true), rows, structuredClone(message));
++  const raw = store.bodies.read(message.bodyHash)!;
++  // Payload is local-only and immutable for this attempt; body bytes are not normalized.
++  const payload = Buffer.concat([Buffer.from(JSON.stringify(message) + "\n\n"), raw]);
++  store.bodies.ensure();
++  const payloadHash = store.bodies.capture(payload);
++  const start = store.record(deliveryHeader(message, attemptId, route, "started", { payloadHash: payloadHash.hash }), `delivery-start:${attemptId}:${digest(payload)}`, true);
++  if (start.duplicate) throw new HandoffError("이미 기록된 전송 시도를 다시 시작하지 않는다");
++  return { payloadPath: payloadHash.path, started: start.record, route };
++}
++export function deliveryReceipt(store: HandoffStore, attemptId: string, input: unknown): HandoffRecord {
++  fields(input, ["phase", "reportedBy", "sourceRef", "responseHash", "responseId"], ["phase", "reportedBy", "sourceRef"]);
++  const rows = store.read(), started = rows.find((r) => r.kind === "delivery" && r.data.attemptId === attemptId && r.data.phase === "started");
++  if (!started || started.data.transport !== "external" || !["sent", "failed", "unconfirmed"].includes(input.phase as string) || !actor(input.reportedBy) || !sourceRef(input.sourceRef)) throw new HandoffError("명시한 외부 경로/보고자/출처의 영수증 필요");
++  const message = referenced(rows, started.data.re);
++  const route: DeliveryRoute = { transport: "external", actor: started.data.routeActor as string, target: started.data.target as string, sourceRef: started.data.sourceRef as string, from: started.from };
++  const extra: Record<string, unknown> = { reportedBy: input.reportedBy, ...(input.responseHash ? { responseHash: input.responseHash } : {}), ...(input.responseId ? { responseId: input.responseId } : {}) };
++  // Receipt source must equal the predeclared real route; no post-hoc human promotion.
++  if (input.sourceRef !== route.sourceRef) throw new HandoffError("영수증 출처와 선기록 경로 불일치");
++  return store.record(deliveryHeader(message, attemptId, route, input.phase as string, extra), `external-receipt:${attemptId}:${input.phase}`, true).record;
++}
++export interface TransportOutcome { phase: "sent" | "failed" | "unconfirmed"; responseHash?: string; responseId?: string }
++export type HandoffTransport = (route: DeliveryRoute, path: string) => TransportOutcome;
++export const orcaTransport: HandoffTransport = (route, path) => {
++  const executable = process.env.ORCA_CLI_COMMAND || (process.env.ORCA_DEV_REPO_ROOT ? "orca-dev" : process.platform === "linux" && !process.env.ORCA_TERMINAL_ID ? "orca-ide" : "orca");
++  const result = spawnSync(executable, ["orchestration", "send", "--environment", "local", "--from", route.from, "--to", route.target, "--type", "handoff", "--subject", "PACE recorded handoff", "--body-file", path, "--json"], { encoding: "utf8", timeout: 30000, maxBuffer: 65536, shell: false });
++  if (result.error) return { phase: (result.error as NodeJS.ErrnoException).code === "ENOENT" ? "failed" : "unconfirmed" };
++  if (result.signal) return { phase: "unconfirmed" };
++  try {
++    const value = strictJson(result.stdout), data = object(value) && object(value.result) ? value.result : value;
++    if (object(value) && value.ok === false) return { phase: "failed" };
++    if (object(value) && value.ok === true && object(data)) {
++      const receiptId = data.message_id ?? data.messageId ?? data.id;
++      if (shortText(receiptId, 240)) return { phase: "sent", responseHash: digest(result.stdout), responseId: receiptId };
++    }
++  } catch { /* ambiguous output is not a negative acknowledgment */ }
++  return { phase: "unconfirmed" };
++};
++export function sendDelivery(store: HandoffStore, messageId: string, attemptId: string, inputRoute: unknown, transport: HandoffTransport = orcaTransport): { phase: string; code: number; sentMayHaveOccurred?: boolean } {
++  const route = deliveryRoute(inputRoute);
++  if (route.transport !== "orca") throw new HandoffError("외부 사람 경로는 prepare-external 뒤 기존 호스트 도구와 receipt를 사용한다");
++  const prepared = prepareDelivery(store, messageId, attemptId, route);
++  let outcome: TransportOutcome;
++  // No ledger guard is held while an existing transport runs.
++  try { outcome = transport(route, prepared.payloadPath); } catch { outcome = { phase: "unconfirmed" }; }
++  try {
++    const rows = store.read(), message = referenced(rows, messageId);
++    store.record(deliveryHeader(message, attemptId, route, outcome.phase, { reportedBy: message.from, ...(outcome.responseHash ? { responseHash: outcome.responseHash } : {}), ...(outcome.responseId ? { responseId: outcome.responseId } : {}) }), `delivery-receipt:${attemptId}:${outcome.phase}`, true);
++  } catch { return { phase: "unconfirmed", code: 2, sentMayHaveOccurred: true }; }
++  return { phase: outcome.phase, code: outcome.phase === "sent" ? 0 : outcome.phase === "failed" ? 1 : 2 };
++}
+diff --git a/src/team/handoff-model.ts b/src/team/handoff-model.ts
+new file mode 100644
+index 0000000..0e85c6f
+--- /dev/null
++++ b/src/team/handoff-model.ts
+@@ -0,0 +1,40 @@
++import { validTeamName } from "./model.ts";
++import { digest, fields, hashValue, HEADER_LIMIT, HandoffError, identifier, object, shortText } from "../project/handoff-files.ts";
++
++export const MESSAGE_KINDS = ["captain_input", "decision_request", "decision_reply", "delegate", "scope_check", "result", "close", "status", "delivery", "resource_event"] as const;
++export type MessageKind = typeof MESSAGE_KINDS[number];
++export interface HandoffPlan { id?: string; task?: string; assignee: string; decisionOwner: string; proofScope: string; instructionHash: string }
++export interface HandoffHeader { protocol: "pace-handoff"; v: 1; id: string; kind: MessageKind; from: string; to: string; task?: string; requestId?: string; data: Record<string, unknown> }
++export interface HandoffRecord extends HandoffHeader { p: string; at: string; seq: number; bodyHash: string; bodyRef: string }
++export const stable = (value: unknown): string => JSON.stringify(sortValue(value));
++function sortValue(value: unknown): unknown {
++  if (Array.isArray(value)) return value.map(sortValue);
++  if (object(value)) return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([key, val]) => [key, sortValue(val)]));
++  return value;
++}
++export function actor(value: unknown): value is string {
++  return value === "captain" || value === "coordinator" || typeof value === "string" && (/^project:P\d{3}$/.test(value) || value.startsWith("agent:") && validTeamName(value.slice(6)));
++}
++export function sourceRef(value: unknown): value is string { return shortText(value, 240) && /^[a-z][a-z0-9+.-]*:\S+$/i.test(value); }
++export function plan(value: unknown): HandoffPlan {
++  fields(value, ["id", "task", "assignee", "decisionOwner", "proofScope", "instructionHash"], ["assignee", "decisionOwner", "proofScope", "instructionHash"]);
++  if (!actor(value.assignee) || !actor(value.decisionOwner) || !shortText(value.proofScope, 240) || !/^[\p{L}\p{N}][\p{L}\p{N}/_:#.,-]*$/u.test(value.proofScope) || !/[:/#-]/.test(value.proofScope) || !hashValue(value.instructionHash) || value.id !== undefined && !identifier(value.id) || value.task !== undefined && (typeof value.task !== "string" || !/^T\d{2}$/.test(value.task))) throw new HandoffError("위임 계획/판정자/증명 참조 오류");
++  return value as unknown as HandoffPlan;
++}
++function metadataStrings(value: unknown): void {
++  if (typeof value === "string" && !shortText(value, 400)) throw new HandoffError("소통 metadata는 짧은 식별/참조만 허용한다");
++  if (Array.isArray(value)) { if (value.length > 32) throw new HandoffError("metadata 배열 길이 초과"); value.forEach(metadataStrings); }
++  else if (object(value)) Object.values(value).forEach(metadataStrings);
++}
++export function header(value: unknown, internal = false, stored = false): HandoffHeader | HandoffRecord {
++  const common = ["protocol", "v", "id", "kind", "from", "to", "task", "requestId", "data"];
++  fields(value, stored ? [...common, "p", "at", "seq", "bodyHash", "bodyRef"] : common, ["protocol", "v", "id", "kind", "from", "to", "data"]);
++  if (value.protocol !== "pace-handoff" || value.v !== 1 || !identifier(value.id) || !MESSAGE_KINDS.includes(value.kind as MessageKind) || !actor(value.from) || !actor(value.to) || !object(value.data) || value.task !== undefined && (typeof value.task !== "string" || !/^T\d{2}$/.test(value.task)) || value.requestId !== undefined && !identifier(value.requestId)) throw new HandoffError("소통 머리 종류/주체/식별자 오류");
++  if (!internal && (value.kind === "delivery" || value.kind === "resource_event")) throw new HandoffError("실제 전송/자원 사건은 사용자 입력으로 만들 수 없다");
++  metadataStrings(value);
++  if (Buffer.byteLength(JSON.stringify(value)) > HEADER_LIMIT) throw new HandoffError("소통 머리 크기 초과");
++  if (stored && (typeof value.p !== "string" || !/^P\d{3}$/.test(value.p) || typeof value.at !== "string" || !/Z$/.test(value.at) || !Number.isFinite(Date.parse(value.at)) || !Number.isSafeInteger(value.seq) || (value.seq as number) < 1 || !hashValue(value.bodyHash) || value.bodyRef !== `local:${value.bodyHash}`)) throw new HandoffError("소통 저장 metadata 오류");
++  return value as unknown as HandoffHeader | HandoffRecord;
++}
++export function instructionDigest(message: HandoffRecord): string { return digest(stable({ id: message.id, bodyHash: message.bodyHash, basis: message.data.basis, plan: message.data.plan })); }
++export function proposalDigest(message: HandoffRecord): string { return digest(stable({ id: message.id, of: message.data.of ?? null, bodyHash: message.bodyHash, plan: message.data.plan ?? null })); }
+diff --git a/src/team/handoff-resources.ts b/src/team/handoff-resources.ts
+new file mode 100644
+index 0000000..1e769af
+--- /dev/null
++++ b/src/team/handoff-resources.ts
+@@ -0,0 +1,22 @@
++import { HandoffStore } from "../project/handoff-store.ts";
++import { openRepo, findProject, statsRepo } from "../project/harness.ts";
++import type { AppliedResourceEvent, ResourceEventSink } from "./resource-events.ts";
++import { HandoffGuardBusy } from "../project/handoff-files.ts";
++
++export function projectResourceSink(root: string, project: string): ResourceEventSink {
++  const repo = openRepo(root), ref = findProject(repo, project), owner = statsRepo(repo, ref);
++  const store = new HandoffStore(owner.root, ref.id, `projects/${ref.dir}`);
++  return {
++    directory: store.bodies.journalDir(),
++    onApplied(event: AppliedResourceEvent): void {
++      const deadline = Date.now() + 1000;
++      for (;;) {
++        try {
++          store.record({ protocol: "pace-handoff", v: 1, id: `resource-${event.id}`, kind: "resource_event", from: `project:${ref.id}`, to: `project:${ref.id}`, data: { transitionId: event.id, action: event.action, appliedAt: event.at, resource: event.lease.resource, holder: event.lease.by, stateHash: event.stateHash, acquisitionId: event.lease.acquisitionId, ...(event.previousAcquisitionId ? { previousAcquisitionId: event.previousAcquisitionId } : {}) } }, `resource-applied:${event.id}`, true);
++          return;
++        } catch (error) { if (!(error instanceof HandoffGuardBusy) || Date.now() >= deadline) throw error; }
++        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25);
++      }
++    },
++  };
++}
+diff --git a/src/team/handoff-state.ts b/src/team/handoff-state.ts
+new file mode 100644
+index 0000000..057b0f2
+--- /dev/null
++++ b/src/team/handoff-state.ts
+@@ -0,0 +1,166 @@
++import { existsSync } from "node:fs";
++import { isAbsolute } from "node:path";
++import { loadTeamMember, safeTeamPath } from "./store.ts";
++import { actor, instructionDigest, plan, proposalDigest, sourceRef, stable, type HandoffPlan, type HandoffRecord } from "./handoff-model.ts";
++import { digest, fields, hashValue, HandoffError, identifier, object, regularBytes, shortText, strictJson, utf8 } from "../project/handoff-files.ts";
++import type { PrivateHandoffBodies } from "../project/handoff-private.ts";
++
++export interface StateContext { root: string; projectDir: string; bodies: PrivateHandoffBodies; live: boolean }
++const fail = (message: string): never => { throw new HandoffError(message); };
++export function referenced(rows: HandoffRecord[], id: unknown, kind?: HandoffRecord["kind"]): HandoffRecord {
++  const row = rows.find((r) => r.id === id);
++  if (!row || kind && row.kind !== kind) return fail("소통 참조 ID/종류 불일치");
++  return row;
++}
++export function requireBodies(ctx: StateContext, rows: HandoffRecord[], row: HandoffRecord, seen = new Set<string>()): void {
++  if (seen.has(row.id)) return; seen.add(row.id);
++  if (!ctx.bodies.read(row.bodyHash)) fail("로컬 본문 없음: 실행/발송/종결 대조 보류");
++  for (const key of ["of", "re", "result"]) if (row.data[key]) requireBodies(ctx, rows, referenced(rows, row.data[key]), seen);
++  const basis = row.data.basis;
++  if (object(basis)) {
++    if (basis.kind === "input" || basis.kind === "approved") requireBodies(ctx, rows, referenced(rows, basis.ref), seen);
++    if (basis.kind === "approved") requireBodies(ctx, rows, referenced(rows, basis.approval), seen);
++  }
++  if (row.data.policySnapshotHash && (typeof row.data.policySnapshotHash !== "string" || !ctx.bodies.read(row.data.policySnapshotHash))) fail("로컬 계획 계약 사본 없음: 대조 보류");
++  if (row.data.payloadHash && (typeof row.data.payloadHash !== "string" || !ctx.bodies.read(row.data.payloadHash))) fail("로컬 전송 payload 없음: 대조 보류");
++}
++function samePlan(a: unknown, b: unknown): boolean { return stable(plan(a)) === stable(plan(b)); }
++export function policy(ctx: StateContext, locator: unknown, expected: HandoffPlan, bodyHash: string, snapshotHash?: unknown): { author: string; hash: string; id: string } {
++  fields(locator, ["ref", "hash", "planId"]);
++  if (typeof locator.ref !== "string" || !hashValue(locator.hash) || !identifier(locator.planId)) fail("계획 계약 참조 오류");
++  if (locator.ref !== `${ctx.projectDir}/handoff-plans.json`) fail("계획 계약은 해당 프로젝트 handoff-plans.json이어야 한다");
++  const bytes = regularBytes(safeTeamPath(ctx.root, locator.ref as string), 16384);
++  if (digest(bytes) !== locator.hash) {
++    // A later unrelated plan may be added. The selected plan and declaring actor must remain identical.
++    if (snapshotHash !== locator.hash) fail("계획 계약 지문 변경");
++    const oldBytes = ctx.bodies.read(snapshotHash as string); if (!oldBytes) fail("등록 시 계획 사본 없음");
++    const previous = strictJson(utf8(oldBytes!)), current = strictJson(utf8(bytes));
++    fields(previous, ["version", "declaredBy", "plans"]); fields(current, ["version", "declaredBy", "plans"]);
++    if (current.declaredBy !== previous.declaredBy || !Array.isArray(previous.plans) || !Array.isArray(current.plans)) fail("계획 계약 작성자/구조 변경");
++    const oldPlan = (previous.plans as unknown[]).map(plan).find((p) => p.id === locator.planId), currentPlan = (current.plans as unknown[]).map(plan).find((p) => p.id === locator.planId);
++    if (!oldPlan || !currentPlan || !samePlan(oldPlan, currentPlan)) fail("선택한 계획 계약 변경");
++  }
++  const doc = strictJson(utf8(bytes)); fields(doc, ["version", "declaredBy", "plans"]);
++  if (doc.version !== 1 || !actor(doc.declaredBy) || !Array.isArray(doc.plans) || doc.plans.length > 32) fail("계획 계약 형식 오류");
++  const plans = (doc.plans as unknown[]).map(plan), ids = plans.map((p) => p.id);
++  if (ids.some((id) => !id) || new Set(ids).size !== ids.length) fail("계획 계약 ID 중복/누락");
++  const selected = plans.find((p) => p.id === locator.planId);
++  if (!selected || !samePlan(selected, expected) || selected.instructionHash !== bodyHash) fail("계획 계약의 지시/수신자/판정자/증명 범위 불일치");
++  if (digest(bytes) === locator.hash) ctx.bodies.capture(bytes);
++  return { author: doc.declaredBy as string, hash: locator.hash as string, id: locator.planId as string };
++}
++export function ready(rows: HandoffRecord[], delegate: HandoffRecord): boolean {
++  const checks = rows.filter((r) => r.kind === "scope_check" && r.data.re === delegate.id);
++  return checks.at(-1)?.data.status === "within";
++}
++export function evidence(ctx: StateContext, value: unknown, live = ctx.live): void {
++  if (!Array.isArray(value) || value.length > 32) fail("증거 목록 형식 오류");
++  for (const item of value as unknown[]) {
++    fields(item, ["path", "hash"]);
++    if (typeof item.path !== "string" || !hashValue(item.hash) || isAbsolute(item.path) || item.path.includes("\\") || item.path.split("/").some((part) => !part || [".", "..", ".git"].includes(part))) fail("증거 경로/지문 오류");
++    if (live && digest(regularBytes(safeTeamPath(ctx.root, item.path as string), 16 * 1024 * 1024)) !== item.hash) fail("실제 증거 지문 불일치");
++  }
++}
++/** Replay validates structural provenance; live registration additionally reads current policy/evidence. */
++export function validateTransition(ctx: StateContext, rows: HandoffRecord[], row: HandoffRecord): void {
++  if (ctx.live) for (const who of [row.from, row.to]) if (who.startsWith("agent:")) loadTeamMember(ctx.root, who.slice(6));
++  const d = row.data;
++  const ref = (kind?: HandoffRecord["kind"]) => referenced(rows, d.re, kind);
++  const hasRequest = () => { if (!row.requestId) fail("결정 요청 requestId 누락"); };
++  switch (row.kind) {
++    case "captain_input":
++      fields(d, ["sourceRef"]); if (!sourceRef(d.sourceRef)) fail("캡틴 원문 출처 누락"); break;
++    case "decision_request": {
++      fields(d, ["interpretation", "of", "plan", "relayOf"], ["interpretation"]); hasRequest();
++      if (typeof d.interpretation !== "boolean") fail("해석 여부 오류");
++      if (d.interpretation || d.of) referenced(rows, d.of, "captain_input");
++      if (d.plan && plan(d.plan).instructionHash !== row.bodyHash) fail("제안 계획 지시 지문 불일치");
++      if (d.relayOf) {
++        const original = referenced(rows, d.relayOf, "decision_request");
++        if (original.requestId !== row.requestId || original.bodyHash !== row.bodyHash || stable(original.data.plan) !== stable(d.plan) || original.data.of !== d.of) fail("중계가 요청/원문/제안 계획을 바꿨다");
++      } else if (rows.some((r) => r.kind === "decision_request" && r.requestId === row.requestId)) fail("같은 요청의 중계 참조 누락");
++      break;
++    }
++    case "decision_reply": {
++      fields(d, ["re", "decision", "proposalHash", "sourceRef"]); const proposal = ref("decision_request");
++      if (row.from !== "captain" || row.requestId !== proposal.requestId || !sourceRef(d.sourceRef) || !["approve", "correct", "reject"].includes(d.decision as string) || d.proposalHash !== proposalDigest(proposal)) fail("캡틴 답 주체/출처/특정 제안 지문 오류");
++      break;
++    }
++    case "delegate": {
++      fields(d, ["basis", "plan", "policyAuthor", "policySnapshotHash", "policyPlanId"], ["basis", "plan"]);
++      const expected = plan(d.plan);
++      if (expected.assignee !== row.to || expected.instructionHash !== row.bodyHash || expected.task !== row.task) fail("위임의 본문/수신자/태스크와 계획 불일치");
++      if (!object(d.basis)) fail("위임 승인 근거 누락");
++      const basis = d.basis as Record<string, unknown>;
++      let locator: unknown;
++      if (basis.kind === "approved") {
++        fields(basis, ["kind", "ref", "approval", "hash"]);
++        if (rows.some((r) => r.kind === "delegate" && r.id !== row.id && object(r.data.basis) && r.data.basis.kind === "approved" && r.data.basis.ref === basis.ref)) fail("같은 승인 제안을 다른 위임 ID로 중복 실행하지 않는다");
++        const proposal = referenced(rows, basis.ref, "decision_request"), reply = referenced(rows, basis.approval, "decision_reply");
++        if (reply.data.re !== proposal.id || reply.data.decision !== "approve" || basis.hash !== proposalDigest(proposal) || proposal.bodyHash !== row.bodyHash || !samePlan(proposal.data.plan, expected)) fail("승인 없는/다른/변조한 제안을 위임할 수 없다");
++        const replies = rows.filter((r) => r.kind === "decision_reply" && r.data.re === proposal.id);
++        if (replies.at(-1)?.id !== reply.id) fail("이후 정정/거절된 승인은 사용할 수 없다");
++      } else if (basis.kind === "input") {
++        fields(basis, ["kind", "ref", "hash", "policy"]);
++        fields(basis.policy, ["ref", "hash", "planId"]);
++        const original = referenced(rows, basis.ref, "captain_input");
++        if (original.bodyHash !== basis.hash || original.bodyHash !== row.bodyHash) fail("원문 근거의 지시 본문 변경");
++        locator = basis.policy;
++      } else if (basis.kind === "contract") { fields(basis, ["kind", "ref", "hash", "planId"]); locator = { ref: basis.ref, hash: basis.hash, planId: basis.planId }; }
++      else fail("delegate는 input/contract/approved 근거가 필요하다");
++      if (locator) {
++        if (ctx.live) {
++          const checked = policy(ctx, locator, expected, row.bodyHash, d.policySnapshotHash);
++          d.policyAuthor = checked.author; d.policySnapshotHash = checked.hash; d.policyPlanId = checked.id;
++        } else if (!actor(d.policyAuthor) || !hashValue(d.policySnapshotHash) || !identifier(d.policyPlanId)) fail("계획 계약 보존 metadata 누락");
++      } else if (d.policyAuthor !== undefined || d.policySnapshotHash !== undefined || d.policyPlanId !== undefined) fail("승인 제안에 다른 계약 metadata를 붙일 수 없다");
++      break;
++    }
++    case "scope_check": {
++      fields(d, ["re", "status", "basisHash", "checks"]); const delegate = ref("delegate");
++      if (rows.some((r) => r.kind === "close" && r.data.re === delegate.id)) fail("종결된 위임의 범위를 다시 열 수 없다");
++      fields(d.checks, ["instruction", "decisionOwner", "proofScope"]);
++      if (row.from !== delegate.to || row.to !== delegate.from || !["within", "hold"].includes(d.status as string) || d.basisHash !== instructionDigest(delegate) || Object.values(d.checks).some((v) => typeof v !== "boolean") || d.status === "within" && Object.values(d.checks).some((v) => v !== true)) fail("수신자 범위 대조/판정 불일치");
++      if (ctx.live) requireBodies(ctx, rows, delegate);
++      break;
++    }
++    case "result": {
++      fields(d, ["re", "status", "evidence"]); const delegate = ref("delegate");
++      if (rows.some((r) => r.kind === "close" && r.data.re === delegate.id)) fail("종결된 위임에 결과를 추가할 수 없다");
++      if (row.from !== delegate.to || row.to !== delegate.from || !["done", "partial", "blocked"].includes(d.status as string)) fail("위임 수신자의 결과만 허용한다");
++      evidence(ctx, d.evidence);
++      if (d.status === "done" && (!ready(rows, delegate) || !(d.evidence as unknown[]).length)) fail("범위 확인과 실제 증거 없는 done 결과");
++      if (ctx.live && d.status === "done") { requireBodies(ctx, rows, delegate); validateTransition(ctx, rows, structuredClone(delegate)); }
++      break;
++    }
++    case "close": {
++      fields(d, ["re", "result", "proofScope", "checked"]); const delegate = ref("delegate"), result = referenced(rows, d.result, "result"), expected = plan(delegate.data.plan);
++      const latestResult = rows.filter((r) => r.kind === "result" && r.data.re === delegate.id).at(-1);
++      if (rows.some((r) => r.kind === "close" && r.data.re === delegate.id) || row.from !== expected.decisionOwner || row.to !== delegate.from || d.proofScope !== expected.proofScope || d.checked !== true || result.data.re !== delegate.id || result.data.status !== "done" || latestResult?.id !== result.id) fail("지정 판정자/증명 범위/현재 완료 결과 종결 조건 불일치");
++      if (ctx.live) { requireBodies(ctx, rows, result); evidence(ctx, result.data.evidence); validateTransition(ctx, rows, structuredClone(delegate)); if (!ready(rows, delegate)) fail("현재 수신자 범위가 hold인 위임을 닫을 수 없다"); }
++      break;
++    }
++    case "status": fields(d, ["re", "sourceRef"], []); if (d.re) ref(); if (d.sourceRef && !sourceRef(d.sourceRef)) fail("상태 출처 오류"); break;
++    case "delivery": {
++      fields(d, ["re", "attemptId", "phase", "transport", "routeActor", "target", "sourceRef", "reportedBy", "responseHash", "responseId", "payloadHash"], ["re", "attemptId", "phase", "transport", "routeActor", "target", "sourceRef"]);
++      const message = ref();
++      if (message.kind === "delivery" || message.kind === "resource_event" || !identifier(d.attemptId) || !["started", "sent", "failed", "unconfirmed"].includes(d.phase as string) || !["orca", "external"].includes(d.transport as string) || !actor(d.routeActor) || !sourceRef(d.sourceRef) || typeof d.target !== "string") fail("전송 사건 형식 오류");
++      if (d.transport === "orca" && d.routeActor === "captain") fail("Orca 에이전트 수신자를 캡틴 경로라고 기록할 수 없다");
++      const prior = rows.filter((r) => r.kind === "delivery" && r.data.attemptId === d.attemptId);
++      if (d.phase === "started") {
++        if (!hashValue(d.payloadHash)) fail("전송 payload 지문 누락");
++        if (prior.length || rows.some((r) => r.kind === "delivery" && r.data.re === message.id && r.data.phase !== "failed" && !rows.some((end) => end.kind === "delivery" && end.data.attemptId === r.data.attemptId && end.data.phase === "failed"))) fail("이미 시작/성공/불명인 메시지의 중복 발송 보류");
++      } else {
++        const start = prior[0];
++        const laterConfirmation = d.transport === "external" && prior.length === 2 && prior[1]?.data.phase === "unconfirmed" && ["sent", "failed"].includes(d.phase as string);
++        if (!start || prior.length !== 1 && !laterConfirmation || start.data.phase !== "started" || ["re", "transport", "routeActor", "target", "sourceRef"].some((key) => start.data[key] !== d[key])) fail("선기록 전송 시도/실제 경로와 영수증 불일치");
++        if (d.phase === "sent" && (!hashValue(d.responseHash) || !shortText(d.responseId, 240) || !actor(d.reportedBy))) fail("성공 응답/보고자 없는 영수증");
++      }
++      break;
++    }
++    case "resource_event":
++      fields(d, ["transitionId", "action", "appliedAt", "resource", "holder", "stateHash", "acquisitionId", "previousAcquisitionId"], ["transitionId", "action", "appliedAt", "resource", "holder", "stateHash", "acquisitionId"]);
++      if (!identifier(d.transitionId) || !["acquire", "release", "reclaim"].includes(d.action as string) || !Number.isSafeInteger(d.appliedAt) || (d.appliedAt as number) < 0 || !identifier(d.resource) || !hashValue(d.stateHash) || typeof d.acquisitionId !== "string") fail("실제 자원 사건 형식 오류");
++      break;
++  }
++}
+diff --git a/src/team/resource-events.ts b/src/team/resource-events.ts
+new file mode 100644
+index 0000000..73cf3ce
+--- /dev/null
++++ b/src/team/resource-events.ts
+@@ -0,0 +1,44 @@
++import { createHash, randomUUID } from "node:crypto";
++import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, readdirSync, writeFileSync } from "node:fs";
++import { join } from "node:path";
++import { readTeamFile, safeTeamPath } from "./store.ts";
++import type { ResourceLease } from "./resource-lock.ts";
++
++export interface AppliedResourceEvent { version: 1; id: string; action: "acquire" | "release" | "reclaim"; at: number; stateHash: string; stateName: string; lease: ResourceLease; previousAcquisitionId?: string }
++export interface ResourceEventSink { directory: string; onApplied: (event: AppliedResourceEvent) => void }
++export const leaseHash = (lease: ResourceLease): string => createHash("sha256").update(JSON.stringify(lease)).digest("hex");
++function durable(root: string, name: string, value: unknown): void {
++  const path = safeTeamPath(root, name), fd = openSync(path, "wx", 0o600);
++  try { writeFileSync(fd, JSON.stringify(value) + "\n"); fsyncSync(fd); } finally { closeSync(fd); }
++}
++export function prepareResourceEvent(sink: ResourceEventSink, action: AppliedResourceEvent["action"], lease: ResourceLease, stateName: string, at: number, previousAcquisitionId?: string): AppliedResourceEvent {
++  mkdirSync(sink.directory, { recursive: true, mode: 0o700 });
++  const id = `transition-${randomUUID()}`; lease.transitionId = id;
++  const event: AppliedResourceEvent = { version: 1, id, action, at, stateHash: leaseHash(lease), stateName, lease: structuredClone(lease), ...(previousAcquisitionId ? { previousAcquisitionId } : {}) };
++  durable(sink.directory, `${id}.intent.json`, event);
++  return event;
++}
++export function appliedResourceEvent(sink: ResourceEventSink, event: AppliedResourceEvent): void {
++  durable(sink.directory, `${event.id}.applied.json`, event);
++  sink.onApplied(event);
++}
++/** A persisted applied receipt proves the producer passed its successful state write. An intent alone must still match actual state. */
++export function reconcileResourceEvents(sink: ResourceEventSink, stateDir: string, stateName: string): { reconciled: number; unconfirmed: string[] } {
++  if (!existsSync(sink.directory)) return { reconciled: 0, unconfirmed: [] };
++  let count = 0; const unconfirmed: string[] = [];
++  for (const name of readdirSync(sink.directory).filter((n) => /^transition-[a-f0-9-]+\.intent\.json$/.test(n)).sort()) {
++    const text = readTeamFile(sink.directory, name); if (!text) throw new Error("자원 intent 읽기 실패");
++    const event = JSON.parse(text) as AppliedResourceEvent;
++    if (event.version !== 1 || event.stateName !== stateName) continue;
++    if (name !== `${event.id}.intent.json` || !["acquire", "release", "reclaim"].includes(event.action) || !event.lease || event.lease.transitionId !== event.id || leaseHash(event.lease) !== event.stateHash || event.stateName !== `${event.lease.resource}.json`) throw new Error("자원 intent 손상");
++    const appliedName = `${event.id}.applied.json`, applied = readTeamFile(sink.directory, appliedName);
++    if (applied !== null) { if (applied !== text) throw new Error("자원 applied/intent 불일치"); }
++    else {
++      const currentText = readTeamFile(stateDir, stateName), current = currentText ? JSON.parse(currentText) as ResourceLease : null;
++      if (!current || current.transitionId !== event.id || leaseHash(current) !== event.stateHash) { unconfirmed.push(event.id); continue; }
++      durable(sink.directory, appliedName, event);
++    }
++    sink.onApplied(event); count++;
++  }
++  return { reconciled: count, unconfirmed };
++}
+diff --git a/test/team-handoff.test.ts b/test/team-handoff.test.ts
+new file mode 100644
+index 0000000..745c9b7
+--- /dev/null
++++ b/test/team-handoff.test.ts
+@@ -0,0 +1,543 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { createHash } from "node:crypto";
++import { chmodSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, rmSync, symlinkSync, linkSync } from "node:fs";
++import { join, relative } from "node:path";
++import { spawnSync } from "node:child_process";
++import fs from "node:fs";
++import { syncBuiltinESMExports } from "node:module";
++import { runPace, sessionFreeEnv, spawnTestChild, tempDir } from "./helpers.ts";
++import { HandoffStore } from "../src/project/handoff-store.ts";
++import { BODY_LIMIT, HEADER_LIMIT, LEDGER_LIMIT, digest, strictJson } from "../src/project/handoff-files.ts";
++import { handoffPrivacyIssues, readPrivateInput } from "../src/project/handoff-private.ts";
++import { createTeamMember } from "../src/team/store.ts";
++import { instructionDigest, proposalDigest, type HandoffHeader, type HandoffPlan, type HandoffRecord } from "../src/team/handoff-model.ts";
++import { deliveryReceipt, prepareDelivery, sendDelivery } from "../src/team/handoff-delivery.ts";
++import { ResourceLock } from "../src/team/resource-lock.ts";
++import { projectResourceSink } from "../src/team/handoff-resources.ts";
++import { collectHandoffs } from "../src/project/handoff-report.ts";
++import { recordEvent } from "../src/project/event-log.ts";
++import { collectStats, recordMetric } from "../src/project/metrics.ts";
++import { findProject, openRepo } from "../src/project/harness.ts";
++import { once } from "node:events";
++
++function fixture() {
++  const root = tempDir("pace-handoff-"), home = tempDir("pace-handoff-home-");
++  const env = { ...sessionFreeEnv(), PACE_HOME: home };
++  const git = (...args: string[]) => spawnSync("git", ["-C", root, ...args], { env, encoding: "utf8" });
++  assert.equal(git("init", "-q", "-b", "main").status, 0);
++  assert.equal(git("config", "user.name", "Fixture").status, 0);
++  assert.equal(git("config", "user.email", "fixture@example.invalid").status, 0);
++  mkdirSync(join(root, "docs"));
++  writeFileSync(join(root, "docs/README.md"), "# Fixture\n\n## 환경\n\n- 검사: `true`\n- 보안 검사: `true`\n");
++  assert.equal(git("add", "-A").status, 0);
++  assert.equal(git("commit", "-qm", "fixture").status, 0);
++  const run = (...args: string[]) => runPace(args, { cwd: root, home });
++  const created = run("project", "new", "소통 검증"); assert.equal(created.status, 0, created.stderr);
++  const dir = join(root, "projects", readdirSync(join(root, "projects")).find((p) => p.startsWith("P001_"))!);
++  return { root, home, dir, run, git };
++}
++
++test("긴 합성 캡틴 원문은 로컬 bytes로 남고 버전 관리 원장에는 본문이 들어가지 않는다", () => {
++  const f = fixture();
++  const body = "SYNTHETIC_CAPTAIN_ONLY_LOCAL\r\n가상 업무 지시\r\n".repeat(80);
++  const header = join(f.root, "header.json");
++  writeFileSync(header, JSON.stringify({ protocol: "pace-handoff", v: 1, id: "input-one", kind: "captain_input", from: "coordinator", to: "project:P001", data: { sourceRef: "fixture:captain-original-one" } }) + "\n");
++  const result = runPace(["team", "handoff", "record", "P001", "--file", header, "--body-file", "-"], { cwd: f.root, home: f.home, input: body });
++  assert.equal(result.status, 0, result.stderr + result.stdout);
++  const response = JSON.parse(result.stdout);
++  assert.equal(readFileSync(response.localBodyPath, "utf8"), body);
++  const ledger = readFileSync(join(f.dir, "handoffs.jsonl"), "utf8");
++  assert.doesNotMatch(ledger, /SYNTHETIC_CAPTAIN_ONLY_LOCAL/);
++  const event = JSON.parse(ledger.trim());
++  assert.equal(event.bodyHash, createHash("sha256").update(body).digest("hex"));
++  assert.ok(existsSync(response.localBodyPath));
++  assert.equal(f.git("ls-files", "--others", "--exclude-standard").stdout.includes("bodies/"), false);
++});
++
++function protocolFixture() {
++  const f = fixture();
++  createTeamMember(f.root, "maker", "maker"); createTeamMember(f.root, "reviewer", "reviewer");
++  const projectDir = relative(f.root, f.dir), store = new HandoffStore(f.root, "P001", projectDir);
++  const instruction = "SYNTHETIC_FIXTURE_INSTRUCTION\r\n합성 시험만 수행한다\r\n";
++  const p: HandoffPlan = { id: "plan-one", assignee: "agent:maker", decisionOwner: "agent:reviewer", proofScope: "T-1", instructionHash: digest(instruction) };
++  const policy = { version: 1, declaredBy: "coordinator", plans: [p] };
++  const policyText = JSON.stringify(policy); writeFileSync(join(f.dir, "handoff-plans.json"), policyText);
++  const locator = { ref: `${projectDir}/handoff-plans.json`, hash: digest(policyText), planId: p.id };
++  const make = (id: string, kind: HandoffHeader["kind"], data: Record<string, unknown>, from = "coordinator", to = "agent:maker", requestId?: string): HandoffHeader => ({ protocol: "pace-handoff", v: 1, id, kind, from, to, ...(requestId ? { requestId } : {}), data });
++  const record = (h: HandoffHeader, body = instruction) => store.record(h, body).record;
++  const delegate = (id: string, basis: unknown = { kind: "contract", ...locator }) => record(make(id, "delegate", { basis, plan: p }));
++  return { ...f, store, instruction, p, locator, make, record, delegate };
++}
++function cliRecord(f: ReturnType<typeof protocolFixture>, h: HandoffHeader, body = f.instruction): HandoffRecord {
++  const path = join(f.dir, "synthetic-header.json"); writeFileSync(path, JSON.stringify(h));
++  const result = runPace(["team", "handoff", "record", "P001", "--file", path, "--body-file", "-"], { cwd: f.root, home: f.home, input: body });
++  assert.equal(result.status, 0, result.stderr); return JSON.parse(result.stdout).record;
++}
++
++test("input/contract 계획의 본문·판정자·증명 범위 변조와 none basis는 행을 남기지 않는다", () => {
++  const f = protocolFixture();
++  const original = f.record(f.make("original", "captain_input", { sourceRef: "fixture:captain-original" }));
++  const basis = { kind: "input", ref: original.id, hash: original.bodyHash, policy: f.locator };
++  f.delegate("input-ok", basis); f.delegate("contract-ok");
++  const count = f.store.read().length;
++  for (const [name, badBasis, badPlan, body] of [
++    ["none", { kind: "none" }, f.p, f.instruction],
++    ["input-body", basis, { ...f.p, instructionHash: digest("changed") }, "changed"],
++    ["input-owner", basis, { ...f.p, decisionOwner: "captain" }, f.instruction],
++    ["contract-hash", { kind: "contract", ...f.locator, hash: "0".repeat(64) }, f.p, f.instruction],
++    ["contract-proof", { kind: "contract", ...f.locator }, { ...f.p, proofScope: "T-2" }, f.instruction],
++    ["input-no-policy", { kind: "input", ref: original.id, hash: original.bodyHash }, f.p, f.instruction],
++    ["input-null-policy", { ...basis, policy: null }, f.p, f.instruction],
++    ["input-false-policy", { ...basis, policy: false }, f.p, f.instruction],
++    ["input-empty-policy", { ...basis, policy: "" }, f.p, f.instruction],
++  ] as const) {
++    assert.throws(() => f.record(f.make(name, "delegate", { basis: badBasis, plan: badPlan }), body));
++    assert.equal(f.store.read().length, count, name);
++  }
++  const lease = f.store.read()[1]!;
++  assert.equal(lease.data.policyAuthor, "coordinator");
++  assert.equal(lease.data.policySnapshotHash, f.locator.hash);
++  assert.equal(f.store.readiness("contract-ok").ready, false);
++});
++
++test("해석 승인은 특정 제안·본문·판정 계획에 묶이고 정정 뒤 재사용할 수 없다", () => {
++  const f = protocolFixture();
++  const original = f.record(f.make("original", "captain_input", { sourceRef: "fixture:original" }), "SYNTHETIC_CAPTAIN_RAW");
++  const proposal = f.record(f.make("proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "captain", "business-one"));
++  const second = f.record(f.make("other-proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "captain", "business-two"));
++  const approved = { kind: "approved", ref: proposal.id, approval: "approval", hash: proposalDigest(proposal) };
++  assert.throws(() => f.delegate("before-approval", approved));
++  const reply = f.make("approval", "decision_reply", { re: proposal.id, decision: "approve", proposalHash: proposalDigest(proposal), sourceRef: "fixture:captain-reply" }, "captain", "coordinator", "business-one");
++  assert.throws(() => f.record(reply, ""));
++  f.record(reply, "SYNTHETIC_CAPTAIN_APPROVAL_EXACT\r\n승인\r\n");
++  const delegated = f.delegate("approved-delegate", approved);
++  f.record(f.make("approved-scope", "scope_check", { re: delegated.id, status: "within", basisHash: instructionDigest(delegated), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
++  assert.equal(f.store.readiness(delegated.id).ready, true);
++  assert.throws(() => f.delegate("duplicate-approved", approved));
++  assert.throws(() => f.delegate("other-approval", { ...approved, ref: second.id, hash: proposalDigest(second) }));
++  assert.throws(() => f.record(f.make("changed-owner", "delegate", { basis: approved, plan: { ...f.p, decisionOwner: "captain" } })));
++  f.record(f.make("correction", "decision_reply", { re: proposal.id, decision: "correct", proposalHash: proposalDigest(proposal), sourceRef: "fixture:captain-correction" }, "captain", "coordinator", "business-one"), "SYNTHETIC_CORRECTION");
++  assert.throws(() => f.delegate("stale-approval", approved));
++  assert.equal(f.store.readiness("approved-delegate").ready, false);
++});
++
++test("수신자 범위 확인과 done 증거를 지정 판정자가 확인한 경우만 종결한다", () => {
++  const f = protocolFixture(), delegate = f.delegate("work-one");
++  const evidence = [{ path: "proof.txt", hash: digest("synthetic-proof") }]; writeFileSync(join(f.root, "proof.txt"), "synthetic-proof");
++  const scope = (id: string, status = "within", from = "agent:maker") => f.make(id, "scope_check", { re: delegate.id, status, basisHash: instructionDigest(delegate), checks: { instruction: true, decisionOwner: true, proofScope: true } }, from, "coordinator");
++  const result = (id: string, status: string, from = "agent:maker") => f.make(id, "result", { re: delegate.id, status, evidence }, from, "coordinator");
++  const close = (id: string, resultId: string, from = "agent:reviewer") => f.make(id, "close", { re: delegate.id, result: resultId, proofScope: "T-1", checked: true }, from, "coordinator");
++  assert.throws(() => f.record(scope("wrong-check", "within", "agent:reviewer")));
++  assert.throws(() => f.record(result("premature", "done")));
++  f.record(scope("hold", "hold")); assert.equal(f.store.readiness(delegate.id).ready, false);
++  f.record(result("partial", "partial")); assert.throws(() => f.record(close("partial-close", "partial")));
++  f.record(result("blocked", "blocked")); assert.throws(() => f.record(close("blocked-close", "blocked")));
++  assert.throws(() => f.record(result("wrong-result", "done", "agent:reviewer")));
++  f.record(scope("within")); assert.equal(f.store.readiness(delegate.id).ready, true);
++  f.record(result("done", "done"));
++  assert.throws(() => f.record(close("wrong-owner", "done", "coordinator")));
++  f.record(result("later-blocked", "blocked")); assert.throws(() => f.record(close("stale-done", "done")));
++  f.record(result("done-current", "done"));
++  writeFileSync(join(f.root, "proof.txt"), "changed-proof"); assert.throws(() => f.record(close("changed-evidence", "done-current")));
++  writeFileSync(join(f.root, "proof.txt"), "synthetic-proof"); f.record(close("close", "done-current"));
++  assert.deepEqual(f.store.audit().open, []); assert.equal(f.store.readiness(delegate.id).ready, false);
++  rmSync(join(f.root, "proof.txt")); mkdirSync(join(f.root, "proof.txt"));
++  assert.deepEqual(f.store.audit().open, [], "이후 산출물 변경이 과거의 구조적 metadata 기록을 손상시키지는 않는다");
++});
++
++test("전송 시도는 호출 전에 내구 기록되고 sent/불명/잔여 guard는 재발송하지 않는다", () => {
++  const f = protocolFixture(); f.record(f.make("question", "decision_request", { interpretation: false }, "coordinator", "captain", "request-one"));
++  const route = { transport: "orca", actor: "coordinator", target: "term_fixture", from: "term_sender", sourceRef: "fixture:orca" };
++  let calls = 0;
++  const result = sendDelivery(f.store, "question", "attempt-one", route, (_route, path) => {
++    calls++;
++    assert.equal(f.store.read().at(-1)!.data.phase, "started");
++    assert.ok(readFileSync(path, "utf8").includes("SYNTHETIC_FIXTURE_INSTRUCTION"));
++    return { phase: "sent", responseHash: digest("fixture-receipt"), responseId: "msg_fixture" };
++  });
++  assert.equal(result.code, 0); assert.equal(calls, 1);
++  assert.throws(() => sendDelivery(f.store, "question", "attempt-two", route, () => { calls++; return { phase: "sent" }; }));
++  assert.equal(calls, 1);
++  assert.throws(() => prepareDelivery(f.store, "question", "fake-human", { ...route, actor: "captain" }));
++  f.record(f.make("uncertain", "status", {}));
++  assert.equal(sendDelivery(f.store, "uncertain", "attempt-unknown", route, () => ({ phase: "unconfirmed" })).code, 2);
++  assert.throws(() => sendDelivery(f.store, "uncertain", "attempt-unknown-next", route, () => { calls++; return { phase: "failed" }; }));
++  f.record(f.make("guarded", "status", {})); mkdirSync(join(f.store.bodies.root, "ledger.guard"));
++  assert.throws(() => sendDelivery(f.store, "guarded", "guard-attempt", route, () => { calls++; return { phase: "failed" }; }));
++  assert.equal(calls, 1);
++});
++
++test("실패는 새 시도만 허용하고 성공 뒤 기록 실패는 미확인으로 남긴다", () => {
++  const f = protocolFixture(); f.record(f.make("message", "status", {}));
++  const route = { transport: "orca", actor: "coordinator", target: "term_fixture", from: "term_sender", sourceRef: "fixture:orca" };
++  assert.equal(sendDelivery(f.store, "message", "failed-attempt", route, () => ({ phase: "failed" })).code, 1);
++  const result = sendDelivery(f.store, "message", "next-attempt", route, () => {
++    mkdirSync(join(f.store.bodies.root, "ledger.guard"));
++    return { phase: "sent", responseHash: digest("synthetic-receipt"), responseId: "msg_fixture" };
++  });
++  assert.deepEqual(result, { phase: "unconfirmed", code: 2, sentMayHaveOccurred: true });
++  assert.equal(f.store.read().at(-1)!.data.phase, "started");
++});
++
++test("기존 사람 경로 준비는 발송하지 않고 명시한 실제 출처의 영수증만 수락한다", () => {
++  const f = protocolFixture(); f.record(f.make("question", "decision_request", { interpretation: false }, "coordinator", "captain", "request-one"));
++  const route = { transport: "external", actor: "captain", target: "existing-host-channel", from: "coordinator", sourceRef: "fixture:existing-human-route" };
++  prepareDelivery(f.store, "question", "external-one", route);
++  assert.throws(() => deliveryReceipt(f.store, "external-one", { phase: "sent", reportedBy: "coordinator", sourceRef: route.sourceRef }));
++  assert.throws(() => deliveryReceipt(f.store, "external-one", { phase: "sent", reportedBy: "coordinator", sourceRef: "fixture:different-route", responseHash: digest("receipt"), responseId: "fixture-response" }));
++  deliveryReceipt(f.store, "external-one", { phase: "unconfirmed", reportedBy: "coordinator", sourceRef: route.sourceRef });
++  const receipt = deliveryReceipt(f.store, "external-one", { phase: "sent", reportedBy: "coordinator", sourceRef: route.sourceRef, responseHash: digest("receipt"), responseId: "fixture-response" });
++  assert.equal(receipt.data.routeActor, "captain");
++});
++
++test("로컬 본문 없음은 metadata-only이며 변조·중복 키·미지원 원장은 오류다", () => {
++  const f = protocolFixture(); const delegate = f.delegate("work");
++  const path = f.store.bodies.path(delegate.bodyHash); rmSync(path);
++  assert.equal(f.store.audit().auditCoverage, "metadata-only"); assert.equal(f.store.readiness("work").ready, false);
++  f.delegate("work"); assert.equal(f.store.read().length, 1); assert.equal(f.store.audit().missingBodies, 0);
++  writeFileSync(path, "tampered"); assert.throws(() => f.store.audit());
++  assert.throws(() => strictJson('{"id":"one","\\u0069d":"two"}'));
++  const g = protocolFixture(); g.record(g.make("one", "status", {}));
++  writeFileSync(g.store.path, readFileSync(g.store.path, "utf8").replace('"v":1', '"v":999'));
++  assert.throws(() => g.store.audit());
++});
++
++test("본문의 원내 파일·링크·비밀과 metadata 원문을 거부하고 staging 보호를 남긴다", () => {
++  const f = protocolFixture(), raw = join(f.root, "captain-raw.md"); writeFileSync(raw, "SYNTHETIC_DO_NOT_STAGE");
++  assert.throws(() => readPrivateInput(f.root, raw)); assert.ok(handoffPrivacyIssues(f.root).some((s) => s.includes("captain-raw.md")));
++  assert.equal(readFileSync(raw, "utf8"), "SYNTHETIC_DO_NOT_STAGE");
++  const out = join(tempDir("pace-handoff-body-"), "source.md"); writeFileSync(out, "SYNTHETIC_EXTERNAL_BODY\r\n");
++  assert.equal(readPrivateInput(f.root, out).toString(), "SYNTHETIC_EXTERNAL_BODY\r\n");
++  const link = join(tempDir("pace-handoff-link-"), "source.md"); symlinkSync(out, link); assert.throws(() => readPrivateInput(f.root, link));
++  rmSync(link); linkSync(out, link); assert.throws(() => readPrivateInput(f.root, out));
++  assert.throws(() => f.record(f.make("long-metadata", "captain_input", { sourceRef: "fixture:" + "SYNTHETIC_RAW".repeat(100) })));
++  const syntheticCredential = "password" + "=" + "super-secret-fixture-value";
++  assert.throws(() => f.record(f.make("secret-body", "status", {}), syntheticCredential));
++  assert.equal(f.store.read().length, 0);
++});
++
++function resourceFixture() {
++  const f = protocolFixture();
++  writeFileSync(join(f.root, ".pace/team/resources.md"), "# 합성 시험 자원\n```json\n" + JSON.stringify({ version: 1, resources: [{ name: "studio", capacity: 1, scope: "repo", description: "합성 시험", probe: [process.execPath, "-e", "process.exit(0)"] }] }) + "\n```\n");
++  return f;
++}
++test("acquire/release/reclaim hook 실패는 실제 상태를 보존하고 applied만 중복 없이 보완한다", () => {
++  for (const action of ["acquire", "release", "reclaim"] as const) {
++    const f = resourceFixture(), sink = projectResourceSink(f.root, "P001");
++    let dead = false, broken = action === "acquire";
++    const actualCallback = sink.onApplied;
++    sink.onApplied = (event) => { if (broken) throw new Error("synthetic-record-io-failure"); actualCallback(event); };
++    const lock = new ResourceLock(f.root, "studio", { home: f.home, process: () => dead ? "dead" : "alive", probe: () => "free", events: sink });
++    let priorId: string | undefined;
++    if (action !== "acquire") { const acquired = lock.acquire("P001"); assert.equal(acquired.code, 0); priorId = acquired.lease!.acquisitionId; broken = true; }
++    if (action === "release") assert.throws(() => lock.release(priorId!, { internal: true }));
++    else { if (action === "reclaim") dead = true; assert.throws(() => lock.acquire("P001")); }
++    const state = JSON.parse(readFileSync(join(lock.stateDir, lock.stateName), "utf8"));
++    assert.equal(state.active, action !== "release"); assert.ok(state.transitionId);
++    if (action === "reclaim") assert.notEqual(state.acquisitionId, priorId);
++    assert.ok(existsSync(join(lock.repoDir, "studio.guard")));
++    const before = f.store.read().length; broken = false;
++    assert.ok(lock.reconcileApplied().reconciled >= 1); const after = f.store.read().length;
++    assert.equal(after, before + 1); lock.reconcileApplied(); assert.equal(f.store.read().length, after);
++    assert.equal(f.store.read().at(-1)!.data.action, action);
++    const applied = JSON.parse(readFileSync(join(sink.directory, `${state.transitionId}.applied.json`), "utf8"));
++    assert.equal(f.store.read().at(-1)!.data.appliedAt, applied.at, "보완 시각과 별도로 실제 생산자 전이 시각을 보존한다");
++    assert.ok(existsSync(join(lock.repoDir, "studio.guard")), "보완은 guard를 회수하거나 명령을 재실행하지 않는다");
++    assert.equal(JSON.parse(readFileSync(join(lock.stateDir, lock.stateName), "utf8")).acquisitionId, state.acquisitionId);
++  }
++});
++
++test("상태 쓰기에 실패한 intent는 applied/소통 사건으로 승격하지 않는다", () => {
++  const f = resourceFixture(), sink = projectResourceSink(f.root, "P001");
++  const lock = new ResourceLock(f.root, "studio", { home: f.home, events: sink, probe: () => "free" });
++  const rename = fs.renameSync;
++  fs.renameSync = ((from: fs.PathLike, to: fs.PathLike) => { if (to === join(lock.stateDir, lock.stateName)) throw new Error("synthetic-state-write-failure"); return rename(from, to); }) as typeof fs.renameSync;
++  syncBuiltinESMExports();
++  try { assert.throws(() => lock.acquire("P001")); } finally { fs.renameSync = rename; syncBuiltinESMExports(); }
++  assert.equal(f.store.read().length, 0);
++  assert.equal(lock.reconcileApplied().unconfirmed.length, 1); assert.equal(f.store.read().length, 0);
++  // Synthetic fixture operator recovery only: the failed producer has no command/child.
++  rmSync(join(lock.repoDir, "studio.guard"), { recursive: true }); rmSync(join(lock.machineDir, "studio.registry.guard"), { recursive: true });
++  assert.equal(lock.acquire("P001").code, 0);
++  const backfill = lock.reconcileApplied(); assert.equal(backfill.reconciled, 1); assert.equal(backfill.unconfirmed.length, 1);
++  assert.equal(f.store.read().length, 1);
++});
++
++test("source CLI --project 잠금은 실제 명령 뒤 acquire/release를 연결하고 위조 자원 입력을 막는다", () => {
++  const f = resourceFixture();
++  const result = f.run("team", "lock", "studio", "--by", "P001", "--project", "P001", "--", process.execPath, "-e", "process.exit(0)");
++  assert.equal(result.status, 0, result.stderr + result.stdout);
++  assert.deepEqual(f.store.read().map((r) => r.data.action), ["acquire", "release"]);
++  const backfill = f.run("team", "handoff", "reconcile-resource", "P001", "studio"); assert.equal(backfill.status, 0, backfill.stderr);
++  assert.equal(f.store.read().length, 2);
++  assert.throws(() => f.record(f.make("forged", "resource_event", {})));
++});
++
++test("같은 요청 log+중계는 하나이며 coordinator 답·Orca 영수증은 캡틴 도달이 아니다", () => {
++  const f = protocolFixture();
++  const log = (type: "question" | "answer", requestId: string, by: "user" | "agent" | "coordinator", extra = {}) => assert.ok(recordEvent(f.dir, { ts: new Date().toISOString(), p: "P001", type, by, requestId, msg: "합성 시험 요약", ...extra }));
++  log("question", "business-one", "agent", { to: "coordinator" }); log("answer", "business-one", "coordinator");
++  const first = f.record(f.make("question", "decision_request", { interpretation: false }, "agent:maker", "coordinator", "business-one"));
++  f.record(f.make("relay", "decision_request", { interpretation: false, relayOf: first.id }, "coordinator", "captain", "business-one"));
++  assert.throws(() => f.record(f.make("duplicate-root", "decision_request", { interpretation: false }, "coordinator", "captain", "business-one")), /중계 참조/);
++  assert.throws(() => f.record(f.make("changed-relay", "decision_request", { interpretation: false, relayOf: first.id }, "coordinator", "captain", "business-one"), "SYNTHETIC_CHANGED_RELAY"), /중계가/);
++  const route = { transport: "orca", actor: "coordinator", target: "term_fixture", from: "term_sender", sourceRef: "fixture:orca" };
++  sendDelivery(f.store, "relay", "agent-delivery", route, () => ({ phase: "sent", responseHash: digest("fixture"), responseId: "msg_fixture" }));
++  let report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!;
++  assert.equal(report.requests.total, 1); assert.equal(report.requests.unconfirmed, 1); assert.equal(report.requests.captain_reply, 0);
++  f.record(f.make("reply", "decision_reply", { re: first.id, decision: "reject", proposalHash: proposalDigest(first), sourceRef: "fixture:captain-answer" }, "captain", "coordinator", "business-one"), "SYNTHETIC_RAW_REJECTION");
++  report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!; assert.equal(report.requests.captain_reply, 1);
++  log("question", "business-two", "agent", { to: "captain" }); log("answer", "business-two", "agent", { src: "사용자 결정" });
++  log("question", "business-three", "agent", { to: "captain" }); log("answer", "business-three", "user", { ref: "absent.md" });
++  writeFileSync(join(f.dir, "receipt.md"), "Synthetic source receipt"); log("answer", "business-three", "user", { ref: "receipt.md" });
++  report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!;
++  assert.equal(report.requests.total, 3); assert.equal(report.requests.captain_reply, 2); assert.equal(report.requests.unconfirmed, 1);
++  assert.ok(recordEvent(f.dir, { ts: new Date().toISOString(), p: "P001", type: "question", by: "agent", msg: "합성 과거 미연결 질문" }));
++  report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!; assert.equal(report.requests.unlinkedLogEvents, 1); assert.equal(report.requests.total, 3);
++  const stats = f.run("project", "stats", "P001", "--json"); assert.equal(stats.status, 0, stats.stderr);
++  assert.deepEqual(JSON.parse(stats.stdout).handoffs.requests, report.requests);
++});
++
++test("실제 사람 경로의 성공·실패만·불명은 BR01 우선순위를 따르고 옛 stats 형태를 유지한다", () => {
++  const f = protocolFixture(), projectDir = relative(f.root, f.dir);
++  assert.equal(collectHandoffs(f.root, "P001", projectDir), undefined);
++  const old = JSON.parse(f.run("project", "stats", "P001", "--json").stdout); assert.equal(Object.hasOwn(old, "handoffs"), false);
++  for (const [index, phase] of ["sent", "failed", "unconfirmed"].entries()) {
++    const id = `business-${index}`; f.record(f.make(`question-${index}`, "decision_request", { interpretation: false }, "coordinator", "captain", id));
++    const route = { transport: "external", actor: "captain", target: "existing-human-channel", from: "coordinator", sourceRef: "fixture:human-receipt" };
++    prepareDelivery(f.store, `question-${index}`, `attempt-${index}`, route);
++    deliveryReceipt(f.store, `attempt-${index}`, { phase, reportedBy: "coordinator", sourceRef: route.sourceRef, ...(phase === "sent" ? { responseHash: digest("fixture-receipt"), responseId: "fixture-receipt" } : {}) });
++  }
++  const report = collectHandoffs(f.root, "P001", projectDir)!;
++  assert.equal(report.requests.captain_delivery, 1); assert.equal(report.requests.failed_only, 1); assert.equal(report.requests.unconfirmed, 1);
++  const current = JSON.parse(f.run("project", "stats", "P001", "--json").stdout);
++  assert.deepEqual(current.eventCounts, old.eventCounts);
++  assert.equal(current.project.questionWaitMs, old.project.questionWaitMs);
++  assert.equal(current.project.approvalWaitMs, old.project.approvalWaitMs);
++  assert.deepEqual(current.tasks, old.tasks);
++  const retryRoute = { transport: "external", actor: "captain", target: "existing-human-channel", from: "coordinator", sourceRef: "fixture:human-receipt" };
++  prepareDelivery(f.store, "question-1", "failed-then-success", retryRoute);
++  deliveryReceipt(f.store, "failed-then-success", { phase: "sent", reportedBy: "coordinator", sourceRef: retryRoute.sourceRef, responseHash: digest("synthetic-success-after-failure"), responseId: "fixture-late-success" });
++  const retried = collectHandoffs(f.root, "P001", projectDir)!.requests;
++  assert.equal(retried.total, 3); assert.equal(retried.failed_only, 0); assert.equal(retried.captain_delivery, 2); assert.equal(retried.unconfirmed, 1);
++});
++
++function finishFixture() {
++  const f = protocolFixture(); f.delegate("unfinished-work");
++  const projectPath = join(f.dir, "PROJECT.md");
++  writeFileSync(projectPath, readFileSync(projectPath, "utf8").replace(/\| P-1 \| <!--.*?--> \| <!--.*?--> \|/, "| P-1 | 합성 지시 기록 | 시험 |"));
++  writeFileSync(join(f.dir, "PROJECT-CLOSE.md"), "# 합성 마감 시험\n\n## 기준 대조\n\n| # | 결과 | 증거 |\n|---|---|---|\n| P-1 | 통과 | 합성 시험 |\n\n## 보안\n\n선언된 true 실행\n\n## 정본 반영\n\n| 정본 | 반영 | 비고 |\n|---|---|---|\n| `docs/README.md` | 해당 없음 | 합성 시험 |\n\n## 지표\n\n[집계](METRICS.md)\n\n합성 시험의 로컬 본문과 열린 위임을 확인한다.\n");
++  assert.equal(f.git("add", "-A").status, 0); assert.equal(f.git("commit", "-qm", "synthetic-finish-fixture").status, 0);
++  return f;
++}
++test("실제 finish는 열린 위임을 경고하며 원문을 HEAD/index에 넣지 않는다", () => {
++  const f = finishFixture();
++  const result = f.run("project", "finish", "P001"); assert.equal(result.status, 0, result.stdout + result.stderr);
++  assert.match(result.stdout, /열린 위임 1건/);
++  assert.doesNotMatch(f.git("ls-files").stdout, /bodies\/|\.git\/pace\/handoffs/);
++  assert.doesNotMatch(f.git("grep", "-n", "SYNTHETIC_FIXTURE_INSTRUCTION", "HEAD").stdout, /SYNTHETIC_FIXTURE_INSTRUCTION/);
++  assert.doesNotMatch(f.git("diff", "--cached").stdout, /SYNTHETIC_FIXTURE_INSTRUCTION/);
++  assert.equal(f.store.bodies.read(digest(f.instruction))!.toString(), f.instruction);
++});
++test("알려진 원내 raw 입력은 실제 finish가 staging 전에 보류하고 원본을 보존한다", () => {
++  const f = finishFixture(), path = join(f.dir, "raw.md"); writeFileSync(path, "SYNTHETIC_CAPTAIN_RAW_NEVER_STAGE");
++  assert.throws(() => readPrivateInput(f.root, path));
++  const result = f.run("project", "finish", "P001"); assert.equal(result.status, 1, result.stdout + result.stderr);
++  assert.match(result.stdout, /로컬 전용 원문 staging 금지/);
++  assert.equal(f.git("ls-files", "--error-unmatch", relative(f.root, path)).status, 1);
++  assert.equal(readFileSync(path, "utf8"), "SYNTHETIC_CAPTAIN_RAW_NEVER_STAGE");
++});
++
++test("source CLI는 원문→위임→수신 대조→결과→종결을 저장하고 같은 ID 재호출을 중복 집계하지 않는다", () => {
++  const f = protocolFixture();
++  const record = (h: HandoffHeader, body = f.instruction): HandoffRecord => {
++    const path = join(f.root, "synthetic-header.json"); writeFileSync(path, JSON.stringify(h));
++    const result = runPace(["team", "handoff", "record", "P001", "--file", path, "--body-file", "-"], { cwd: f.root, home: f.home, input: body });
++    assert.equal(result.status, 0, result.stderr); return JSON.parse(result.stdout).record;
++  };
++  const original = record(f.make("cli-input", "captain_input", { sourceRef: "fixture:source-cli-original" }));
++  const delegate = record(f.make("cli-delegate", "delegate", { basis: { kind: "input", ref: original.id, hash: original.bodyHash, policy: f.locator }, plan: f.p }));
++  assert.equal(f.run("team", "handoff", "ready", "P001", delegate.id).status, 1);
++  record(f.make("cli-scope", "scope_check", { re: delegate.id, status: "within", basisHash: instructionDigest(delegate), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
++  assert.equal(f.run("team", "handoff", "ready", "P001", delegate.id).status, 0);
++  writeFileSync(join(f.root, "proof.txt"), "synthetic-proof");
++  record(f.make("cli-result", "result", { re: delegate.id, status: "done", evidence: [{ path: "proof.txt", hash: digest("synthetic-proof") }] }, "agent:maker", "coordinator"));
++  const close = f.make("cli-close", "close", { re: delegate.id, result: "cli-result", proofScope: "T-1", checked: true }, "agent:reviewer", "coordinator");
++  record(close); record(close);
++  assert.equal(f.store.read().length, 5); assert.deepEqual(f.store.audit().open, []);
++});
++
++test("fake Orca 실행기는 실제 source CLI의 선기록과 정상/거절/모호 응답 수명을 확인한다", { skip: process.platform === "win32" }, () => {
++  for (const outcome of ["sent", "failed", "unconfirmed"] as const) {
++    const f = protocolFixture(); f.record(f.make("message", "status", {}));
++    const toolDir = tempDir("pace-handoff-fake-orca-"), executable = join(toolDir, "orca-fixture"), counter = join(toolDir, "calls.json");
++    const script = `#!${process.execPath}\nimport fs from 'node:fs';\nconst args=process.argv.slice(2);const rows=fs.readFileSync(${JSON.stringify(f.store.path)},'utf8').trim().split('\\n').map(JSON.parse);if(rows.at(-1).data.phase!=='started')process.exit(93);const body=args[args.indexOf('--body-file')+1];if(!fs.readFileSync(body,'utf8').includes('SYNTHETIC_FIXTURE_INSTRUCTION'))process.exit(94);fs.writeFileSync(${JSON.stringify(counter)},JSON.stringify(args));console.log(${JSON.stringify(outcome === "sent" ? '{"ok":true,"result":{"message_id":"msg_fixture"}}' : outcome === "failed" ? '{"ok":false,"error":"synthetic-rejected"}' : 'opaque-synthetic-ack')});\n`;
++    writeFileSync(executable, script); chmodSync(executable, 0o700);
++    const route = join(toolDir, "route.json"); writeFileSync(route, JSON.stringify({ transport: "orca", actor: "coordinator", target: "term_fixture", from: "term_sender", sourceRef: "fixture:orca" }));
++    const run = (attempt: string) => runPace(["team", "handoff", "send", "P001", "message", "--route-file", route, "--attempt-id", attempt], { cwd: f.root, home: f.home, env: { ORCA_CLI_COMMAND: executable } });
++    const result = run("fixture-attempt"); assert.equal(result.status, outcome === "sent" ? 0 : outcome === "failed" ? 1 : 2, result.stderr + result.stdout);
++    const args = JSON.parse(readFileSync(counter, "utf8")); assert.ok(args.includes("--environment")); assert.ok(args.includes("local")); assert.ok(args.includes("handoff"));
++    assert.equal(f.store.read().at(-1)!.data.phase, outcome);
++    if (outcome !== "failed") { rmSync(counter); assert.equal(run("repeat-attempt").status, 2); assert.equal(existsSync(counter), false); }
++  }
++});
++
++test("다른 worktree는 같은 로컬 본문을 대조하고 다른 clone은 metadata-only로 남는다", () => {
++  const f = protocolFixture(), original = f.record(f.make("source", "captain_input", { sourceRef: "fixture:common-dir" }));
++  assert.equal(f.git("add", "-A").status, 0); assert.equal(f.git("commit", "-qm", "synthetic-ledger").status, 0);
++  const worktree = join(tempDir("pace-handoff-worktree-"), "checkout"); assert.equal(f.git("worktree", "add", "--detach", worktree, "HEAD").status, 0);
++  const other = new HandoffStore(worktree, "P001", relative(f.root, f.dir));
++  assert.equal(other.bodies.path(original.bodyHash), f.store.bodies.path(original.bodyHash));
++  assert.equal(other.bodies.read(original.bodyHash)!.toString(), f.instruction);
++  const raw = join(worktree, "raw.md"); writeFileSync(raw, "SYNTHETIC_OTHER_WORKTREE_RAW");
++  assert.throws(() => readPrivateInput(f.root, raw)); assert.equal(handoffPrivacyIssues(worktree).length, 1);
++  const clone = join(tempDir("pace-handoff-clone-"), "checkout"); assert.equal(spawnSync("git", ["clone", "-q", f.root, clone], { env: sessionFreeEnv() }).status, 0);
++  const copied = new HandoffStore(clone, "P001", relative(f.root, f.dir));
++  assert.equal(copied.audit().auditCoverage, "metadata-only"); assert.equal(copied.audit().missingBodies, 1);
++});
++
++test("다른 저장소가 추적할 수 있는 separate-git-dir는 로컬 본문 저장소로 쓰지 않는다", () => {
++  const f = fixture(), nested = join(f.root, "inner"), metadata = join(f.root, "exposed-metadata");
++  assert.equal(spawnSync("git", ["init", "-q", "--separate-git-dir", metadata, nested], { env: sessionFreeEnv() }).status, 0);
++  assert.throws(() => new HandoffStore(nested, "P001", "projects/P001_fixture"), /separate-git-dir/);
++  assert.equal(existsSync(join(metadata, "pace/handoffs")), false);
++  assert.deepEqual(handoffPrivacyIssues(nested), [], "소통 상태가 없는 기존 저장소에 새 보존 정책을 강제하지 않는다");
++});
++
++test("미등록 주체·없는 계획/증거 등 쓰기 전 일반 오류는 다음 정상 기록을 막지 않는다", () => {
++  const f = protocolFixture();
++  assert.throws(() => f.record(f.make("bad-agent", "status", {}, "agent:missing")));
++  assert.equal(existsSync(join(f.store.bodies.root, "ledger.guard")), false);
++  f.record(f.make("after-agent-error", "status", {}));
++  const path = join(f.dir, "handoff-plans.json"), bytes = readFileSync(path); rmSync(path);
++  assert.throws(() => f.delegate("missing-policy"));
++  assert.equal(existsSync(join(f.store.bodies.root, "ledger.guard")), false);
++  writeFileSync(path, bytes); const delegate = f.delegate("normal-delegate");
++  f.record(f.make("scope", "scope_check", { re: delegate.id, status: "within", basisHash: instructionDigest(delegate), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
++  assert.throws(() => f.record(f.make("missing-evidence", "result", { re: delegate.id, status: "done", evidence: [{ path: "missing.txt", hash: digest("fixture") }] }, "agent:maker", "coordinator")));
++  assert.equal(existsSync(join(f.store.bodies.root, "ledger.guard")), false);
++  f.record(f.make("after-evidence-error", "status", {}));
++});
++
++test("무관한 계획 추가는 기존 위임을 유지하고 선택 계획/작성자 변경은 보류한다", () => {
++  const f = protocolFixture(), delegate = f.delegate("existing-delegate"), path = join(f.dir, "handoff-plans.json");
++  f.record(f.make("scope", "scope_check", { re: delegate.id, status: "within", basisHash: instructionDigest(delegate), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
++  const updated = { version: 1, declaredBy: "coordinator", plans: [f.p, { ...f.p, id: "other-plan", proofScope: "T-2" }] };
++  writeFileSync(path, JSON.stringify(updated)); assert.equal(f.store.readiness(delegate.id).ready, true);
++  writeFileSync(path, JSON.stringify({ ...updated, declaredBy: "captain" })); assert.equal(f.store.readiness(delegate.id).ready, false);
++  writeFileSync(path, JSON.stringify({ ...updated, plans: [{ ...f.p, proofScope: "T-3" }] })); assert.equal(f.store.readiness(delegate.id).ready, false);
++  writeFileSync(path, JSON.stringify(updated));
++  writeFileSync(join(f.root, "proof.txt"), "synthetic-proof");
++  f.record(f.make("done", "result", { re: delegate.id, status: "done", evidence: [{ path: "proof.txt", hash: digest("synthetic-proof") }] }, "agent:maker", "coordinator"));
++  f.record(f.make("close", "close", { re: delegate.id, result: "done", proofScope: "T-1", checked: true }, "agent:reviewer", "coordinator"));
++  assert.equal(f.store.audit().open.length, 0);
++});
++
++test("짧은 동시 원장 guard 경합은 자원 적용 callback이 유한 재시도한다", async () => {
++  const f = resourceFixture(), sink = projectResourceSink(f.root, "P001"), guard = join(f.store.bodies.root, "ledger.guard");
++  mkdirSync(guard);
++  const child = spawnTestChild(process.execPath, ["-e", "setTimeout(()=>require('node:fs').rmdirSync(process.argv[1]),80)", guard], { env: sessionFreeEnv(), stdio: "ignore" });
++  const exited = once(child, "exit");
++  const lock = new ResourceLock(f.root, "studio", { home: f.home, events: sink, probe: () => "free" });
++  assert.equal(lock.acquire("P001").code, 0); await exited;
++  assert.equal(f.store.read().length, 1); assert.equal(existsSync(join(lock.repoDir, "studio.guard")), false);
++});
++
++test("requestId가 없는 옛 로그의 사건 수와 FIFO 대기 golden은 바뀌지 않는다", () => {
++  const f = fixture(), repo = openRepo(f.root), ref = findProject(repo, "P001");
++  const time = (second: number) => new Date(Date.UTC(2026, 0, 1, 0, 0, second)).toISOString();
++  for (const [cmd, second] of [["start", 0], ["finish", 60]] as const) recordMetric(f.dir, { ts: time(second), project: "P001", cmd, ok: true });
++  const oldEvents = [{ ts: time(10), p: "P001", type: "question", by: "agent", msg: "합성 옛 질문" }, { ts: time(30), p: "P001", type: "answer", by: "coordinator", msg: "합성 옛 답" }] as const;
++  for (const e of oldEvents) assert.ok(recordEvent(f.dir, e));
++  const before = collectStats(repo, ref, time(60));
++  assert.equal(before.project.questionWaitMs, 20000); assert.equal(before.project.approvalWaitMs, 20000); assert.equal(before.project.workMs, 40000);
++  assert.equal(before.eventCounts.questions, 1); assert.equal(before.eventCounts.answers, 1);
++  assert.equal(collectHandoffs(f.root, "P001", relative(f.root, f.dir)), undefined);
++  const ledger = join(f.dir, "log.jsonl"), rows = readFileSync(ledger, "utf8").trim().split("\n").map((line) => JSON.parse(line));
++  writeFileSync(ledger, rows.map((e) => JSON.stringify(["question", "answer"].includes(e.type) ? { ...e, requestId: "same-business-request" } : e)).join("\n") + "\n");
++  const after = collectStats(repo, ref, time(60)); assert.deepEqual(after, before);
++  assert.equal(collectHandoffs(f.root, "P001", relative(f.root, f.dir))!.requests.total, 1);
++});
++
++test("이미 공개 추적 중인 정상 파일의 body 오입력은 거부하되 변경 없는 finish를 잠그지 않는다", () => {
++  const f = finishFixture(), path = join(f.root, "docs/README.md");
++  assert.throws(() => readPrivateInput(f.root, path)); assert.deepEqual(handoffPrivacyIssues(f.root), []);
++  const original = readFileSync(path); writeFileSync(path, "SYNTHETIC_PRIVATE_REPLACEMENT");
++  assert.equal(handoffPrivacyIssues(f.root).length, 1);
++  writeFileSync(path, original); assert.deepEqual(handoffPrivacyIssues(f.root), []);
++  const result = f.run("project", "finish", "P001"); assert.equal(result.status, 0, result.stdout + result.stderr);
++});
++
++test("본문/머리/원장 한도 초과는 source CLI에서 저장 전에 거부하고 오류에 본문을 노출하지 않는다", () => {
++  for (const target of ["body", "header", "ledger"] as const) {
++    const f = protocolFixture(), path = join(f.root, "limit-header.json"), sentinel = "SYNTHETIC_PRIVATE_ERROR_SENTINEL";
++    writeFileSync(path, JSON.stringify(f.make("limit", "status", {})));
++    let input = sentinel;
++    if (target === "body") input = sentinel + "가".repeat(Math.ceil(BODY_LIMIT / 3));
++    if (target === "header") writeFileSync(path, sentinel + "x".repeat(HEADER_LIMIT + 1));
++    if (target === "ledger") writeFileSync(f.store.path, Buffer.alloc(LEDGER_LIMIT + 1, 32));
++    const before = existsSync(f.store.path) ? digest(readFileSync(f.store.path)) : null;
++    const result = runPace(["team", "handoff", "record", "P001", "--file", path, "--body-file", "-"], { cwd: f.root, home: f.home, input });
++    assert.equal(result.status, 2, target); assert.doesNotMatch(result.stdout + result.stderr, new RegExp(sentinel));
++    assert.equal(existsSync(f.store.path) ? digest(readFileSync(f.store.path)) : null, before, "행/파일을 바꾸지 않는다");
++    assert.equal(existsSync(join(f.store.bodies.root, "ledger.guard")), false);
++  }
++});
++
++test("다른 위임의 완료 결과나 빈 done 증거를 종결에 사용할 수 없다", () => {
++  const f = protocolFixture(), a = f.delegate("work-a"), b = f.delegate("work-b");
++  writeFileSync(join(f.root, "proof.txt"), "synthetic-proof"); const evidence = [{ path: "proof.txt", hash: digest("synthetic-proof") }];
++  for (const d of [a, b]) {
++    f.record(f.make(`${d.id}-scope`, "scope_check", { re: d.id, status: "within", basisHash: instructionDigest(d), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
++    assert.throws(() => f.record(f.make(`${d.id}-empty-result`, "result", { re: d.id, status: "done", evidence: [] }, "agent:maker", "coordinator")), /증거 없는/);
++    f.record(f.make(`${d.id}-done`, "result", { re: d.id, status: "done", evidence }, "agent:maker", "coordinator"));
++  }
++  const before = f.store.read().length;
++  assert.throws(() => f.record(f.make("wrong-result-link", "close", { re: b.id, result: "work-a-done", proofScope: "T-1", checked: true }, "agent:reviewer", "coordinator")), /종결 조건/);
++  assert.equal(f.store.read().length, before); assert.equal(f.store.audit().open.length, 2);
++});
++
++test("source CLI 확인 사슬과 종류/에이전트별 집계는 실제 승인·위임·결과·종결 수와 같다", () => {
++  const f = protocolFixture();
++  const original = cliRecord(f, f.make("cli-original", "captain_input", { sourceRef: "fixture:captain-raw" }), "SYNTHETIC_CAPTAIN_ORIGINAL_FOR_APPROVAL");
++  const proposal = cliRecord(f, f.make("cli-proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "captain", "cli-business"));
++  const reply = cliRecord(f, f.make("cli-approval", "decision_reply", { re: proposal.id, decision: "approve", proposalHash: proposalDigest(proposal), sourceRef: "fixture:captain-approval" }, "captain", "coordinator", "cli-business"), "SYNTHETIC_CAPTAIN_APPROVAL\r\n");
++  const delegate = cliRecord(f, f.make("cli-approved-delegate", "delegate", { basis: { kind: "approved", ref: proposal.id, approval: reply.id, hash: proposalDigest(proposal) }, plan: f.p }));
++  cliRecord(f, f.make("cli-within", "scope_check", { re: delegate.id, status: "within", basisHash: instructionDigest(delegate), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
++  writeFileSync(join(f.root, "proof.txt"), "synthetic-proof");
++  cliRecord(f, f.make("cli-done", "result", { re: delegate.id, status: "done", evidence: [{ path: "proof.txt", hash: digest("synthetic-proof") }] }, "agent:maker", "coordinator"));
++  cliRecord(f, f.make("cli-closed", "close", { re: delegate.id, result: "cli-done", proofScope: "T-1", checked: true }, "agent:reviewer", "coordinator"));
++  const result = f.run("project", "stats", "P001", "--json"); assert.equal(result.status, 0, result.stderr); const h = JSON.parse(result.stdout).handoffs;
++  assert.deepEqual(h.kinds, { captain_input: 1, decision_request: 1, decision_reply: 1, delegate: 1, scope_check: 1, result: 1, close: 1 });
++  assert.deepEqual(h.agents, { coordinator: { captain_input: 1, decision_request: 1, delegate: 1 }, "agent:maker": { scope_check: 1, result: 1 }, "agent:reviewer": { close: 1 } });
++  assert.deepEqual(h.open, []); assert.equal(h.requests.total, 1); assert.equal(h.requests.captain_reply, 1);
++  assert.doesNotMatch(readFileSync(f.store.path, "utf8"), /SYNTHETIC_CAPTAIN_ORIGINAL_FOR_APPROVAL|SYNTHETIC_CAPTAIN_APPROVAL/);
++});
++
++test("partial/blocked 결과는 실제 finish 뒤에도 열린 위임 경고로 남는다", () => {
++  for (const status of ["partial", "blocked"] as const) {
++    const f = finishFixture();
++    cliRecord(f, f.make(`${status}-result`, "result", { re: "unfinished-work", status, evidence: [] }, "agent:maker", "coordinator"));
++    const result = f.run("project", "finish", "P001"); assert.equal(result.status, 0, result.stdout + result.stderr);
++    assert.match(result.stdout, /열린 위임 1건 \(partial\/blocked 포함\)/);
++    assert.equal(f.store.read().find((r) => r.kind === "result")!.data.status, status); assert.deepEqual(f.store.audit().open, ["unfinished-work"]);
++  }
++});
++
++test("수정한 공개 추적 파일의 오입력 뒤 HEAD 내용으로 되돌리면 finish 보호를 해소한다", () => {
++  const f = finishFixture(), path = join(f.root, "docs/README.md"), publicBytes = readFileSync(path);
++  writeFileSync(path, "SYNTHETIC_PRIVATE_MODIFICATION"); assert.throws(() => readPrivateInput(f.root, path));
++  assert.equal(handoffPrivacyIssues(f.root).length, 1); writeFileSync(path, publicBytes); assert.deepEqual(handoffPrivacyIssues(f.root), []);
++  const result = f.run("project", "finish", "P001"); assert.equal(result.status, 0, result.stdout + result.stderr);
++});
++
++test("source CLI 자원 hook 실패 때 실제 사용자 명령은 시작하지 않는다", () => {
++  const f = resourceFixture(), guard = join(f.store.bodies.root, "ledger.guard"), marker = join(f.home, "must-not-run.txt");
++  f.store.bodies.ensure(); mkdirSync(guard);
++  const result = f.run("team", "lock", "studio", "--by", "P001", "--project", "P001", "--", process.execPath, "-e", "require('node:fs').writeFileSync(process.argv[1],'SYNTHETIC_COMMAND_EXECUTED')", marker);
++  assert.equal(result.status, 2); assert.equal(existsSync(marker), false);
++  const lock = new ResourceLock(f.root, "studio", { home: f.home }), state = JSON.parse(readFileSync(join(lock.stateDir, lock.stateName), "utf8"));
++  assert.equal(state.active, true); assert.equal(state.phase, "pre-start"); assert.equal(state.child, null);
++  assert.equal(f.store.read().length, 0); assert.equal(existsSync(join(lock.repoDir, "studio.guard")), true);
++});

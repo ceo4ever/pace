@@ -4,6 +4,7 @@ import { parseArgs } from "node:util";
 import { fileURLToPath } from "node:url";
 import { hasSecret } from "../project/secrets.ts";
 import { ResourceLock, type Confirmation, type LockResult } from "./resource-lock.ts";
+import { projectResourceSink } from "./handoff-resources.ts";
 import { processIdentity, observeProcess, type ProcessIdentity } from "./resource-process.ts";
 import { loadTeamMember, safeTeamPath, teamRoot } from "./store.ts";
 import { safeResourceText } from "./resources.ts";
@@ -116,18 +117,18 @@ export async function runResourceCommand(lock: ResourceLock, by: string, argv: s
 export async function resourceCommand(args: string[]): Promise<number> {
   try {
     const split = args.indexOf("--"), argv = split < 0 ? [] : args.slice(split + 1), head = split < 0 ? args : args.slice(0, split);
-    const { values, positionals } = parseArgs({ args: head, options: { by: { type: "string" }, token: { type: "string" }, "confirmed-by": { type: "string" }, evidence: { type: "string" } }, allowPositionals: true, strict: true });
+    const { values, positionals } = parseArgs({ args: head, options: { project: { type: "string" }, by: { type: "string" }, token: { type: "string" }, "confirmed-by": { type: "string" }, evidence: { type: "string" } }, allowPositionals: true, strict: true });
     const [sub, name] = positionals;
     if (positionals.length !== 2 || !name || !["lock", "unlock", "status"].includes(sub!) || split >= 0 && (!argv.length || sub !== "lock")) throw new Error(usage);
     if (sub === "lock" && (!values.by || values.token !== undefined || values["confirmed-by"] !== undefined || values.evidence !== undefined) ||
         sub === "unlock" && (!values.token || values.by !== undefined || !!values["confirmed-by"] !== !!values.evidence) ||
-        sub === "status" && Object.keys(values).length) throw new Error(usage);
+        sub === "status" && Object.keys(values).some((key) => key !== "project")) throw new Error(usage);
     let confirmation: Confirmation | undefined;
     if (values["confirmed-by"]) {
       if (!["coordinator", "captain"].includes(values["confirmed-by"]) || !safeResourceText(values.evidence)) throw new Error("자원 확인 주체/근거 오류");
       confirmation = { by: values["confirmed-by"] as Confirmation["by"], evidence: values.evidence! };
     }
-    const root = teamRoot(process.cwd()), lock = new ResourceLock(root, name);
+    const root = teamRoot(process.cwd()), lock = new ResourceLock(root, name, values.project ? { events: projectResourceSink(root, values.project) } : {});
     if (sub === "lock") {
       // A known team member must declare the resource. P###/other caller labels are coordination identities, not authentication.
       if (values.by && /^[a-z][a-z0-9-]*$/.test(values.by) && existsSync(safeTeamPath(root, `.pace/team/${values.by}.md`))) {

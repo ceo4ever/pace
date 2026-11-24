@@ -1,0 +1,20 @@
+import { closeSync, existsSync, openSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+const root = resolve(import.meta.dirname, "../../../../.."), label = process.argv[2] ?? "final";
+if (!/^[a-z0-9-]+$/.test(label)) throw new Error("invalid check label");
+const output = resolve(import.meta.dirname, `check-${label}.txt`), receipt = resolve(import.meta.dirname, `check-${label}-receipt.json`);
+if (existsSync(output) || existsSync(receipt)) throw new Error("check artifacts already exist");
+const paths = ["src", "test", "docs", "templates/team", "skills/pace-project-dev/references/coordinator.md", ".pace/test-map.json", "README.md"];
+const git = (args) => { const p = spawnSync("git", args, { cwd: root, encoding: "utf8" }); if (p.status !== 0) throw new Error("source list failure"); return p.stdout.trim().split("\n").filter(Boolean); };
+const files = [...new Set([...git(["diff", "--name-only", "HEAD", "--", ...paths]), ...git(["ls-files", "--others", "--exclude-standard", "--", ...paths])])].sort();
+const snapshot = () => files.map((path) => ({ path, sha256: createHash("sha256").update(readFileSync(resolve(root, path))).digest("hex") }));
+const before = snapshot(), startedAt = new Date().toISOString(), fd = openSync(output, "wx", 0o600);
+let result;
+try { result = spawnSync(process.platform === "win32" ? "npm.cmd" : "npm", ["run", "check"], { cwd: root, env: { ...process.env, PACE_SKIP_BROWSER_E2E: "1" }, stdio: ["ignore", fd, fd], timeout: 1800000 }); } finally { closeSync(fd); }
+const after = snapshot(), unchanged = JSON.stringify(before) === JSON.stringify(after);
+const record = { version: 1, command: "PACE_SKIP_BROWSER_E2E=1 npm run check", startedAt, endedAt: new Date().toISOString(), exitCode: result.status, signal: result.signal, errorCode: result.error?.code ?? null, unchangedSource: unchanged, files: before };
+writeFileSync(receipt, JSON.stringify(record, null, 2) + "\n", { flag: "wx" });
+console.log(JSON.stringify({ exitCode: result.status, signal: result.signal, unchangedSource: unchanged, receipt }));
+process.exitCode = result.status === 0 && unchanged ? 0 : 1;

@@ -1,6 +1,7 @@
 import { assertComparisonDestination, refreshMetricsIndex } from "./metrics-index.ts";
 import { formatMetricsDocument } from "./metrics-document.ts";
 import { readEvents } from "./event-log.ts";
+import { collectHandoffs, type HandoffReport } from "./handoff-report.ts";
 import { constants, openSync, closeSync, fstatSync, existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { writeFileAtomic } from "../core/fsutil.ts";
@@ -11,7 +12,7 @@ import type { FullStats, TokenOptions } from "./tokens.ts";
 
 export interface ReviewCounts { task: string; blocking: number; shouldFix: number; testerFailures: number; }
 export interface Improvement { kind: "gate" | "review" | "handoff"; code: string; count: number; tasks: string[]; }
-export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; }
+export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; handoffs?: HandoffReport; }
 function section(text: string, heading: string): string {
   const match = new RegExp(`^## ${heading}\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, "m").exec(text);
   return (match?.[1] ?? "").replace(/<!--[\s\S]*?-->/g, "").trim();
@@ -53,12 +54,16 @@ export function collectInsights(repo: Repo, ref: ProjectRef): { reviews: ReviewC
   return { reviews, improvements };
 }
 export function collectDashboard(repo: Repo, ref: ProjectRef, options: TokenOptions = {}): Dashboard {
-  return { ...collectProjectStats(repo, ref, options), ...collectInsights(repo, ref) };
+  const handoffs = collectHandoffs(repo.root, ref.id, `projects/${ref.dir}`);
+  return { ...collectProjectStats(repo, ref, options), ...collectInsights(repo, ref), ...(handoffs ? { handoffs } : {}) };
 }
 export function formatDashboard(stats: Dashboard): string {
   const total = (key: "blocking" | "shouldFix" | "testerFailures") => stats.reviews.reduce((n, r) => n + r[key], 0);
   const candidates = stats.improvements.map((i) => `- ${i.kind}: ${i.code} ${i.count}회${i.tasks.length ? ` (${i.tasks.join(", ")} TASK-CLOSE)` : ""}`);
-  return `${formatProjectStats(stats)}\n\n사건 수: 결정 ${stats.eventCounts.decisions} · 변경 ${stats.eventCounts.changes} · 리뷰 ${stats.eventCounts.reviews} · 질문 ${stats.eventCounts.questions} · 답변 ${stats.eventCounts.answers}\n\n리뷰 지적: blocking ${total("blocking")} · should_fix ${total("shouldFix")} · tester fail ${total("testerFailures")}\n\n개선 후보(사람이 선택):\n${candidates.length ? candidates.join("\n") : "없음"}`;
+  const base = `${formatProjectStats(stats)}\n\n사건 수: 결정 ${stats.eventCounts.decisions} · 변경 ${stats.eventCounts.changes} · 리뷰 ${stats.eventCounts.reviews} · 질문 ${stats.eventCounts.questions} · 답변 ${stats.eventCounts.answers}\n\n리뷰 지적: blocking ${total("blocking")} · should_fix ${total("shouldFix")} · tester fail ${total("testerFailures")}\n\n개선 후보(사람이 선택):\n${candidates.length ? candidates.join("\n") : "없음"}`;
+  if (!stats.handoffs) return base;
+  const h = stats.handoffs, q = h.requests;
+  return `${base}\n\n소통: ${h.records}건 · 열린 위임 ${h.open.length}건 · ${h.auditCoverage} (본문 누락 ${h.missingBodies})\n종류: ${Object.entries(h.kinds).map(([kind, count]) => `${kind} ${count}`).join(" · ")}\n에이전트: ${Object.entries(h.agents).map(([name, counts]) => `${name} ${JSON.stringify(counts)}`).join(" · ") || "없음"}\n요청 ${q.total}: 캡틴 답(신고·출처 대조 필요) ${q.captain_reply} · 사람 경로 성공(신고) ${q.captain_delivery} · 실패만 ${q.failed_only} · 미확인 ${q.unconfirmed} · 식별자 없는 옛 질문 사건 ${q.unlinkedLogEvents}`;
 }
 export function replaceMetricsSection(close: string, body: string): string {
   const generated = `## 지표\n\n<!-- pace project finish 자동 생성 -->\n\n${body.trim()}\n\n`;
