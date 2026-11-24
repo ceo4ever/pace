@@ -1,0 +1,10 @@
+{"pass":true,"added_model_calls":0,"live_fixture_reaudited":true,"live_session_sources_reaudited":2,"archived_control_events_checked":true,"limitation":"If volatile sources are gone, archives are checked and raw-source reaudit is explicitly not claimed. Run against the T04 source snapshot; later source changes require that checkout."}
+✔ projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T04_팀_호출_검증(team_verify)/evidence/check-actual-proof.mjs (88.542875ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 91.880333

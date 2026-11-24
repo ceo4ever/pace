@@ -1,0 +1,1069 @@
+diff --git a/.pace/test-map.json b/.pace/test-map.json
+index 6627ec6..507f9d9 100644
+--- a/.pace/test-map.json
++++ b/.pace/test-map.json
+@@ -54,6 +54,7 @@
+       ],
+       "tests": [
+         "test/team.test.ts",
++        "test/team-verify.test.ts",
+         "test/project-role.test.ts",
+         "test/worker-settings.test.ts"
+       ],
+diff --git a/README.md b/README.md
+index 9e9bf38..e527b1b 100644
+--- a/README.md
++++ b/README.md
+@@ -17,7 +17,7 @@
+ - **프로필 = 독립 에이전트**: 프로필마다 정체성(`SOUL.md`), 사용자 정보(`USER.md`), 메모리(개인 규칙 포함), 스킬, 설정을 따로 가진다. 운영 규칙(`RULES.md`)은 모든 프로필에 같고 PACE와 함께 갱신된다.
+ - **기본 구성만**: 실행은 각 LLM 도구의 기능(계획 모드, 서브에이전트, 스킬, MCP)을 그대로 쓴다(제공자가 다른 에이전트가 필요할 때만 `pace agent`).
+ - **작업 하네스**: 업무를 프로젝트(`projects/P###`)와 태스크로 수행한다. `pace project`가 번호·worktree·게이트(태스크 check, 마감 finish, 병합 merge)를, `pace-project-dev` 스킬이 계약(목적·재료·기준)과 테스트·리뷰·보안 기준을 맡는다. Orca 안에서는 worktree 작업자 세션을 띄우고 main 세션이 코디네이터가 된다.
+-- **저장소 팀**: `pace team new athena --role lead`로 `.pace/team` 원본을 만들고 `team list`, `team sync`, `team sync --check --json`으로 Claude·Codex 정의를 관리한다. `pace project start P123 --role athena`로 프로젝트 작업자의 팀 구성원을 지정한다. 등급 매핑·재시작·사용자 파일 보존·권한 경계는 [팀 사용법](docs/TEAM.md)을 따른다. 실제 호스트의 역할·model/effort 적용과 권한 집행은 별도 실측 대상이다.
++- **저장소 팀**: `pace team new athena --role lead`로 `.pace/team` 원본을 만들고 `team list`, `team sync`, `team sync --check --json`으로 Claude·Codex 정의를 관리한다. `pace project start P123 --role athena`로 프로젝트 작업자의 팀 구성원을 지정한다. `pace team verify --all`은 원본 읽기와 고정 질문으로 적재를 빠르게 점검하며 의역은 확인 필요로 남긴다. 등급 매핑·재시작·사용자 파일 보존·권한 경계는 [팀 사용법](docs/TEAM.md)을 따른다. 실제 업무·권한 집행은 별도 실측 대상이다.
+ - **Canvas 읽기·와이어프레임**: Canvas Studio가 배포한 묶음을 `skills/pace-canvas-skills/` 경로로 통째 설치하고, 에이전트에는 `canvas-read`(Canvas 문서에서 프레임·요소를 정보와 이미지로 꺼냄)·`canvas-wireframe`(좌표 없는 명세로 편집 가능한 `.canvas.json`을 만들고 겹침·잘림을 검사) 두 스킬 입구가 보인다. 묶음 본문·배포 식별자·해시는 Canvas Studio 배포본 그대로 두고 설치 경로만 PACE 이름을 쓴다. 도구는 Node 22 이상과 렌더에 설치된 Google Chrome(또는 `CHROME_PATH`)이 필요하다. 앱 확인과 사람 편집은 수행 여부를 구분해 보고한다.
+ - **의도 파악 기획**: `pace-intent` 스킬이 한 줄 요청이나 아이디어에서 목적을 찾아(프로젝트 문서·메모리·브레인·URL·검색 수집 → 한 번에 한 질문 인터뷰) 빈틈 없는 기획으로 만들고, 크기에 맞게 대화·프로젝트·백로그로 넘긴다. 화면 기획은 편집 가능한 Canvas와 유스케이스·IA·흐름·시퀀스·기능 명세 HTML을 사용하며 `pace intent verify`로 의미 연결을 검사한다. `pace intent preview <폴더> [--root <제품 저장소>]`는 Canvas 제품 프레임과 명시한 이동으로 이미지 미리보기를 만들고, `--verify`는 그 출처와 파일이 최신인지 확인한다.
+ 
+diff --git a/docs/AGENT-CALL.md b/docs/AGENT-CALL.md
+index 9d63e1f..0461566 100644
+--- a/docs/AGENT-CALL.md
++++ b/docs/AGENT-CALL.md
+@@ -4,6 +4,8 @@
+ 
+ ## 에이전트 호출
+ 
++`pace team verify`는 프로젝트 작업자와 같은 원본 읽기 역할 지시를 read-only `p` 실행기에 전달하고 정의 내용을 넣지 않은 고정 질문을 대조한다. 단발 점검의 한계·종료 코드·결과 기록은 [TEAM](TEAM.md#실제-적재-빠른-점검)을 따른다. 요청 effort를 런타임 관측으로 표시하지 않는다.
++
+ - 경로: `src/agent/`
+ - 스택·형식: TypeScript
+ 
+diff --git a/docs/README.md b/docs/README.md
+index bdf6e16..1e4bcd2 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -38,7 +38,7 @@
+ | 에이전트 호출 | `src/agent/` | TypeScript | `pace agent setup`·`run`·`verify` — 다른 제공자 에이전트를 `-p`·ACP로 부르는 호출 계약·체인·폴백 · [AGENT-CALL](AGENT-CALL.md#에이전트-호출) |
+ | 검사 선택 | `src/test-runner/`, `.pace/test-map.json` | TypeScript·Node·Python unittest·vitest | `pace test changed·file·unit·all` — 변경 관련 단위·지정 단위·선언 전체 검사(불확실하면 전체) · [TESTING](TESTING.md#검사-선택) |
+ | 공통 | `src/core/` | TypeScript | 경로·파일·frontmatter · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
+-| 저장소 팀 | `src/team/`, `src/core/worker-tiers.ts`, `templates/team/` | TypeScript·Markdown·TOML | 팀 원본 생성·목록·호스트 정의 동기화와 어긋남 검사 · [TEAM](TEAM.md) |
++| 저장소 팀 | `src/team/`, `src/core/worker-tiers.ts`, `templates/team/` | TypeScript·Markdown·TOML | 원본·호스트 정의 동기화와 어긋남 검사, 고정 질문의 실제 적재 점검 · [TEAM](TEAM.md) |
+ | 메모리 | `src/memory/` | TypeScript | 프로필·프로젝트 공용 저장소 · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
+ | 프로필 | `src/profile/` | TypeScript | 프로필 생성·복제, 온보딩 질문 원본 · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
+ | 프로젝트 | `src/project/` | TypeScript | 상황 판별, 브레인, 작업 하네스(`harness.ts`) · [WORK-PROCESS](WORK-PROCESS.md) |
+diff --git a/docs/SECURITY.md b/docs/SECURITY.md
+index f7c8058..9cd16f7 100644
+--- a/docs/SECURITY.md
++++ b/docs/SECURITY.md
+@@ -1,5 +1,7 @@
+ # 보안
+ 
++`team verify`는 원본/설정 선검사 뒤 read-only 호스트를 호출한다. 결과 경로의 조상 링크·단일 링크 조건과 고유 wx 생성을 검사하며, 64KiB 초과·비밀 후보 답과 호스트 오류 원문은 저장/출력하지 않는다. 생성물/원본을 복구하거나 권한을 확대하지 않는다. 실제 음성 대조의 OS 읽기 제한은 실험 전용이며 제품 역할 권한 집행으로 주장하지 않는다.
++
+ 정의서 [`docs/README.md`](README.md)에서 옮긴 상세다. 정의서에는 한 줄 요약과 이 문서 링크만 남는다.
+ 
+ 민감 경로 — 설계에서 건드리면 PROJECT.md 보안 영향에 적고, 그 태스크 reviewer가 보안 관점을 먼저 본다. 테스트는 실패 경로(거부·오류)까지.
+diff --git a/docs/TEAM.md b/docs/TEAM.md
+index f4d04c3..bfcb1ea 100644
+--- a/docs/TEAM.md
++++ b/docs/TEAM.md
+@@ -129,3 +129,24 @@ start 사건의 선택 `role` 객체에는 name/source(option 또는 project), d
+ 역할 없는 옛 사건은 그대로 읽는다. 잘못된 role 객체가 붙은 사건은 기존 잘못된 to와 같은 엄격 정책으로 행 전체가 제외되므로 손상 기록을 통계의 0으로 해석하지 않는다. 지침 원문·인증정보를 role 객체에 넣지 않는다. 실제 업무의 지속 효과와 원본 미적재/삭제 뒤 보류 행동은 추가 관측 대상이다.
+ 
+ **tools 지침은 권한 제한이 아니다.** native tools 필드를 생략하므로 부모 도구를 상속하며 reviewer도 쓰기 도구를 가질 수 있다. 실제 읽기 전용 등은 호스트 실행 인자/권한 설정으로 집행한다. 기존 native tools 제한이 있는 저장소는 이전 전에 제한을 확인하고 보존할 방법을 정한다. T02는 기존 foreign 정의를 자동 이전하지 않는다. 실제 이전·적용은 T08에서 별도 확인한다.
++
++## 실제 적재 빠른 점검
++
++`pace team verify builder --agent claude` 또는 `pace team verify --all`로 검사한다. host 생략은 Claude·Codex 양쪽이며 이름과 `--all`은 함께 쓰지 않는다. T03의 같은 원본 읽기 시작 지시 뒤 read-only 단발 CLI에서 네 고정 질문을 한다. 표의 적재 방식은 **prompt**다. 최상위 Orca 업무 전체·native 선택·업무 품질 검증은 아니다.
++
++하지 않는 일의 bullet 첫 부분에 backtick으로 감싼 짧은 키워드를 하나씩 둔다(예: `vfy-s-<고유값>`, `vfy-r-<고유값>`). new는 구성원별 고유한 표지를 한 번 생성하며 sync/verify가 다시 만들지 않는다. 32자 이하이며 중복·제어문자·비밀 후보는 거부한다. 이름과 모든 키워드가 답에 있어야 pass다. 키워드 일부/전부 누락·의역·형식 불명확은 **확인 필요**, 다른/없는 정체성·원본/호스트 실패는 fail이다. 기존 정의를 자동 개정하지 않고 키워드가 없으면 확인 필요다. 고정 표지는 추측·자동 맥락 노출 가능성이 있고 이름은 시작 지시에도 있으므로 pass는 진실성/의미 전체의 보증이 아니다. 맡는 일·막힘 답은 비어 있지 않은 구조만 확인한다.
++
++공통 roleInstruction prefix와 같은 원본 읽기는 유지하면서 verify 적재 구역에 **호출자 지문 검증 책임**을 알린다. 호출 직전·응답 뒤에 원본의 정규화 SHA를 대조하고, readonly 모델의 자체 셸 검산은 요구하지 않는다. 이 고지는 적재 인증이나 원본 읽기의 대체가 아니다. 읽기 실패 보고는 JSON 최상위 선택 필드 `loaded:false`이며 정체성보다 먼저 fail이다. 필드가 없으면 기존 규칙을 따르고 true만으로는 통과하지 않는다. 고지에는 기대 이름·키워드·본문이 없고 질문과 분리된다.
++
++verify의 Claude 도구는 Read/Grep/Glob이며 실제 Orca 작업자의 셸 구성은 호스트에 달려 있다. T04는 실제 작업자의 자체 지문 계산 성공을 관측하지 않으며 T08 현장 후속으로 남긴다. 보고서에도 고지와 자체 검산 미관측을 기록한다. 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다.
++
++`.pace/team/verify/<고유 ID>.json`에 결과를 보존하고 stdout의 `Report:`가 경로를 가리킨다. 요청 설정과 보고 모델의 출처를 구분하며 effort 실제 적용은 미확인이다. 원본·생성물·사용자 설정을 쓰지 않는다. native 변조는 해당 없음이며 파일 차이는 `sync --check`로 검사한다.
++
++| 결과 | 종료 | 출력/기록 |
++|---|---|---|
++| 전부 pass | 0 | stdout 표·Report 경로·phase=result JSON |
++| 원본 없음/손상·설정/호스트 fail | 1 | 안전한 결과 경로가 있으면 실패 행·보고서 |
++| fail 없이 확인 필요 | 2 | stdout 표·Report 경로·phase=result JSON |
++| 옵션·Git 루트/출력 경로 안전 거부 | 2 | stderr 진단, 보고서 없음 |
++
++종료2만으로 판단하지 말고 채널·보고서 상태를 함께 확인한다. 원본 조상이 위험해 결과 경로도 안전하지 않으면 보고서 대신 거부한다. `--all`은 현재 원본 목록이므로 삭제 대조는 이름을 지정한다. 원본 없는 관리 생성물은 `sync --check`와 함께 본다. 답은 UTF-8 64KiB 상한이며 비밀 후보 답·오류 원문은 출력/저장하지 않는다. 사람 확인 결과는 후속 도입/회고에 연결한다.
+diff --git a/src/cli.ts b/src/cli.ts
+index 6cc4031..a9ed353 100644
+--- a/src/cli.ts
++++ b/src/cli.ts
+@@ -6,6 +6,8 @@ import { readWorkerSettings, resolveWorkerSettings, setWorkerSettings } from "./
+ import { setWorkerTier, teamTierTable } from "./core/worker-tiers.ts";
+ import { createTeamMember, loadTeam, teamRoot } from "./team/store.ts";
+ import { syncTeam } from "./team/sync.ts";
++import { verifyTeam, verifyTable } from "./team/verify.ts";
++import { hasSecret } from "./project/secrets.ts";
+ import { BacklogError, newBacklog, newBrief } from "./project/backlog.ts";
+ import { newRun } from "./scout/run.ts";
+ import { renderRun, schemaPath } from "./scout/report.ts";
+@@ -157,6 +159,7 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
+   pace project new "<이름>" [--from <BL 폴더 또는 앞부분>]   프로젝트 폴더·PROJECT.md (main)
+   pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>
+   pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]
++  pace team verify <이름> 또는 --all [--agent claude|codex]      역할 적재·고정 질문 점검
+   pace project start <P###> [--model <모델>] [--effort <값|default>] [--agent <도구>] [--no-launch|--launch]   정의 커밋 + worktree(../<저장소>.wt/P###) (main). Orca 안이면 작업자 세션을 띄우고 이 세션이 코디네이터
+   pace project task <P###> "<이름>"              태스크 폴더·TASK.md·태스크 표 행 (worktree)
+   pace project check <P###> <T##>                커밋 게이트 확인 — TASK-CLOSE (worktree)
+@@ -979,10 +982,17 @@ async function agentCommand(args: string[]): Promise<number> {
+   }
+ }
+ 
+-function teamCommand(args: string[]): number {
++async function teamCommand(args: string[]): Promise<number> {
+   try {
+-    const { values, positionals } = parseArgs({ args, options: { role: { type: "string" }, check: { type: "boolean" }, json: { type: "boolean" } }, allowPositionals: true, strict: true });
++    const { values, positionals } = parseArgs({ args, options: { role: { type: "string" }, check: { type: "boolean" }, json: { type: "boolean" }, all: { type: "boolean" }, agent: { type: "string" } }, allowPositionals: true, strict: true });
+     const [sub, name] = positionals;
++    if (sub === "verify") {
++      if ((positionals.length !== 1 && positionals.length !== 2) || (!!name === !!values.all) || values.role !== undefined || values.check || values.json || (values.agent !== undefined && values.agent !== "claude" && values.agent !== "codex")) throw new UsageError("pace team verify <이름> 또는 --all [--agent claude|codex]");
++      const result = await verifyTeam(teamRoot(process.cwd()), { name, all: values.all, agent: values.agent });
++      process.stdout.write(`${verifyTable(result.report)}\n${result.report.native_tamper}\nReport: ${result.path}\n`);
++      return result.code;
++    }
++    if (values.all || values.agent !== undefined) throw new UsageError("--all·--agent는 team verify에서만 사용한다");
+     if (!((sub === "new" && positionals.length === 2 && values.role && !values.check && !values.json) ||
+           (sub === "list" && positionals.length === 1 && values.role === undefined && !values.check && !values.json) ||
+           (sub === "sync" && positionals.length === 1 && values.role === undefined && (!values.json || values.check)))) throw new UsageError("pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]");
+@@ -1007,8 +1017,9 @@ function teamCommand(args: string[]): number {
+     }
+     return 0;
+   } catch (error) {
+-    const message = error instanceof Error ? error.message : String(error);
+-    if (args.includes("--json")) process.stdout.write(JSON.stringify({ ok: false, error: message }) + "\n");
++    const rawMessage = error instanceof Error ? error.message : String(error);
++    const message = args[0] === "verify" && hasSecret(rawMessage) ? "verify 입력 안전 검사 실패" : rawMessage;
++    if (args[0] !== "verify" && args.includes("--json")) process.stdout.write(JSON.stringify({ ok: false, error: message }) + "\n");
+     else process.stderr.write(`team: ${message}\n`);
+     return 2;
+   }
+diff --git a/src/team/store.ts b/src/team/store.ts
+index 6b1e939..312d623 100644
+--- a/src/team/store.ts
++++ b/src/team/store.ts
+@@ -1,4 +1,5 @@
+ import { spawnSync } from "node:child_process";
++import { randomUUID } from "node:crypto";
+ import { closeSync, constants, fstatSync, lstatSync, mkdirSync, openSync, readSync, realpathSync, readdirSync, writeFileSync } from "node:fs";
+ import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+ import { packageRoot, assertSafeGitPath } from "../core/paths.ts";
+@@ -73,7 +74,11 @@ export function createTeamMember(root: string, name: string, role: string): Team
+   const tier = role === "lead" || role === "reviewer" ? "high" : "medium";
+   const template = readTeamFile(packageRoot, "templates/team/member.md");
+   if (template === null) throw new Error("팀 원본 템플릿이 없다");
+-  const text = fillTemplate(template, { name, role, tier, duties: duties[role] });
++  const text = fillTemplate(template, {
++    name, role, tier, duties: duties[role],
++    scopeMarker: `vfy-s-${randomUUID().replaceAll("-", "").slice(0, 16)}`,
++    reviewMarker: `vfy-r-${randomUUID().replaceAll("-", "").slice(0, 16)}`,
++  });
+   const member = parseTeamSource(text, name);
+   const target = safeTeamPath(root, member.source);
+   mkdirSync(dirname(target), { recursive: true });
+diff --git a/templates/team/member.md b/templates/team/member.md
+index cc5761a..7680b4c 100644
+--- a/templates/team/member.md
++++ b/templates/team/member.md
+@@ -19,7 +19,8 @@ tools: []
+ 
+ ## 하지 않는 일
+ 
+-배정되지 않은 구현·승인·외부 전송을 대신하지 않는다. reviewer는 작업본을 수정하지 않는다.
++- `{{scopeMarker}}` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.
++- `{{reviewMarker}}` reviewer는 작업본을 수정하지 않는다.
+ 
+ ## 실행 전 대조
+ 
+diff --git a/src/team/verify.ts b/src/team/verify.ts
+new file mode 100644
+index 0000000..258a7cf
+--- /dev/null
++++ b/src/team/verify.ts
+@@ -0,0 +1,156 @@
++import { randomUUID } from 'node:crypto';
++import { closeSync, mkdirSync, openSync, writeFileSync } from 'node:fs';
++import { runAgent, validateRequest, type AgentName, type AgentRequest, type AgentResult } from '../agent/contract.ts';
++import { claudeP, codexP, createPExecutor } from '../agent/p-executor.ts';
++import { hasSecret } from '../project/secrets.ts';
++import { safeRoleName, safeRoleSetting } from '../project/role-record.ts';
++import { parseTeamSource, section, type TeamMember } from './model.ts';
++import { readTeamFile, safeTeamPath, teamFiles } from './store.ts';
++import { resolveWorkerRole, roleInstruction, type WorkerRole } from './worker-role.ts';
++
++export const VERIFY_QUESTIONS = `정의 적재 단계가 끝나면 다음 네 질문에 답하세요. 기대 답을 추측해서 만들지 마세요.
++1. 너는 누구인가? 팀 구성원 이름을 밝히세요.
++2. 맡는 일은 무엇인가?
++3. 하지 않는 일은 무엇인가? 원본에 짧은 backtick 키워드가 있으면 각각 그대로 인용하세요.
++4. 막히면 어떻게 하는가?
++JSON 객체 하나로 답하세요: identity(문자열), duties(문자열), dont(문자열 배열), blocked(문자열).`;
++export const VERIFY_LOAD_NOTICE = '이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.';
++export const VERIFY_LIMITATION = 'verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다.';
++export type VerifyStatus = 'pass' | 'fail' | '확인 필요';
++export interface Evaluation { status: VerifyStatus; reason: string; missing: string[]; }
++export interface VerifyRow extends Evaluation {
++  member: string; agent: AgentName; method: 'prompt'; definition: string; hash: string | null;
++  requested: { model: string; effort?: string } | null;
++  observed: { model: string | null; source: string; effort: 'unconfirmed' } | null;
++  response: string | null;
++}
++export interface VerifyReport {
++  version: 1; phase: 'result'; created: string; status: VerifyStatus; rows: VerifyRow[];
++  native_tamper: string;
++  loading_notice: string;
++  session_self_hash_observed: false;
++  limitation: string;
++}
++export interface VerifyRunOptions {
++  invoke?: (request: AgentRequest) => Promise<AgentResult>;
++  env?: NodeJS.ProcessEnv;
++}
++/** Explicit markers only: a fenced/commented example is not an expectation. */
++export function verifyKeywords(member: TeamMember): string[] {
++  const text = section(member.body, '하지 않는 일').replace(/<!--[\s\S]*?(?:-->|$)/g, '');
++  const markers: string[] = []; let fence: string | undefined;
++  for (const line of text.split('\n')) {
++    const f = /^\s*(`{3,}|~{3,})/.exec(line);
++    if (f) { if (!fence) fence = f[1]![0]; else if (f[1]![0] === fence) fence = undefined; continue; }
++    if (fence) continue;
++    const match = /^[-*] `([^`]+)`(?:\s|$)/.exec(line);
++    if (!match) continue;
++    const marker = match[1]!;
++    if (!marker.isWellFormed() || marker !== marker.trim() || marker.length > 32 || /[\p{Cc}\p{Cf}]/u.test(marker) || hasSecret(marker) || markers.includes(marker)) throw new Error('verify 키워드 형식 오류');
++    markers.push(marker);
++  }
++  return markers;
++}
++function contains(text: string, value: string, identity = false): boolean {
++  const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
++  // Team names are ASCII kebab identifiers; Korean particles do not extend that identifier.
++  const boundary = identity ? 'A-Za-z0-9_-' : '\\p{L}\\p{N}_-';
++  return new RegExp(`(^|[^${boundary}])${escaped}(?=$|[^${boundary}])`, 'u').test(text);
++}
++export function evaluateRoleAnswer(name: string, keywords: string[], answer: string): Evaluation {
++  const result = (status: VerifyStatus, reason: string, missing: string[] = []): Evaluation => ({ status, reason, missing });
++  if (!answer.trim() || !answer.isWellFormed() || Buffer.byteLength(answer) > 65536 || hasSecret(answer)) return result('fail', '답 없음·크기·문자열·비밀 안전 검사 실패');
++  let parsed: unknown;
++  const text = answer.trim();
++  const blocks = [...text.matchAll(/^```(?:json)?[ \t]*\r?\n([\s\S]*?)\r?\n```[ \t]*$/gim)];
++  let candidate = text;
++  let outsideIdentity = false;
++  if (blocks.length) {
++    const block = blocks[0]!, outside = text.slice(0, block.index) + text.slice(block.index! + block[0].length);
++    if (blocks.length !== 1 || /[{}]/.test(outside) || outside.includes('```')) return result('확인 필요', '여러 응답·JSON 경계 확인 필요');
++    outsideIdentity = /\bidentity\b|정체성/i.test(outside);
++    candidate = block[1]!;
++  }
++  try { parsed = JSON.parse(candidate); }
++  catch { return result('확인 필요', 'JSON 형식 확인 필요'); }
++  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return result('확인 필요', '응답 객체 확인 필요');
++  const p = parsed as Record<string, unknown>;
++  if (p.loaded === false) return result('fail', '원본 읽기 실패·미적재 보고');
++  if (typeof p.identity !== 'string' || !contains(p.identity, name, true)) return result('fail', '정체성 불일치·미적재');
++  if (outsideIdentity) return result('확인 필요', 'JSON 밖 정체성 진술 확인 필요');
++  if (typeof p.duties !== 'string' || !p.duties.trim() || typeof p.blocked !== 'string' || !p.blocked.trim() || !Array.isArray(p.dont) || !p.dont.length || p.dont.some((v) => typeof v !== 'string' || !v.trim())) return result('확인 필요', '필수 응답 구조 확인 필요');
++  if (!keywords.length) return result('확인 필요', '원본에 명시적 확인 키워드 없음');
++  const dont = p.dont as string[];
++  const missing = keywords.filter((key) => !dont.some((value) => contains(value, key)));
++  return missing.length ? result('확인 필요', missing.length === keywords.length ? '모든 금지 표지 누락: 미적재·의역 확인 필요' : '금지 항목 표현·키워드 확인 필요', missing) : result('pass', '이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)');
++}
++export function verificationPrompt(role: WorkerRole): string { return `${roleInstruction(role)}\n\n## 이 점검의 검증 책임\n${VERIFY_LOAD_NOTICE}\n\n## 고정 질문\n${VERIFY_QUESTIONS}`; }
++const failure = (name: string, agent: AgentName, reason: string): VerifyRow => ({ member: name, agent, method: 'prompt', definition: `.pace/team/${name}.md`, hash: null, requested: null, observed: null, response: null, status: 'fail', reason, missing: [] });
++/** Extra cwd/prompt are experiment injection only; CLI always uses the source checkout and normal prompt. */
++export async function verifyLoadedRole(root: string, role: WorkerRole, agent: AgentName, options: VerifyRunOptions & { cwd?: string; prompt?: string } = {}): Promise<VerifyRow> {
++  const row = failure(role.member.name, agent, '호스트 실행 실패');
++  row.hash = role.member.hash; row.requested = role.settings;
++  let keywords: string[];
++  try {
++    const text = readTeamFile(root, role.member.source);
++    if (text === null) throw new Error('missing source');
++    const current = parseTeamSource(text, role.member.name);
++    if (current.hash !== role.member.hash || hasSecret(current.body)) throw new Error('changed or unsafe source');
++    keywords = verifyKeywords(current);
++  } catch { row.reason = '호출 직전 원본·키워드·비밀 안전 검사 실패 (호스트 미호출)'; return row; }
++  try {
++    const request = validateRequest({ agent, mode: 'p', access: 'read-only', cwd: options.cwd ?? root, prompt: options.prompt ?? verificationPrompt(role), ...role.settings, timeoutMs: 180000 });
++    const invoke = options.invoke ?? ((r: AgentRequest) => runAgent(createPExecutor(agent === 'claude' ? claudeP : codexP, { env: options.env }), r));
++    const result = await invoke(request);
++    if (result.is_error) return row;
++    const evaluation = evaluateRoleAnswer(role.member.name, keywords, result.text);
++    Object.assign(row, evaluation);
++    // Never persist unsafe host text or arbitrary error diagnostics.
++    if (result.text.isWellFormed() && Buffer.byteLength(result.text) <= 65536 && !hasSecret(result.text)) row.response = result.text;
++    row.observed = { model: safeRoleSetting(result.model.value) ? result.model.value : null, source: ['reported', 'requested', 'model', 'table', 'unknown'].includes(result.model.source) ? result.model.source : 'unknown', effort: 'unconfirmed' };
++    const current = readTeamFile(root, role.member.source);
++    if (current === null || parseTeamSource(current, role.member.name).hash !== role.member.hash) {
++      row.status = 'fail'; row.reason = '검사 중 원본 변경·삭제';
++    }
++  } catch { row.status = 'fail'; row.reason = '호스트 실행·원본 재확인 실패 (오류 원문 비저장)'; }
++  return row;
++}
++function prepareOutput(root: string): void {
++  const path = safeTeamPath(root, '.pace/team/verify', true);
++  mkdirSync(path, { recursive: true, mode: 0o700 });
++  safeTeamPath(root, '.pace/team/verify', true);
++}
++export function storeVerifyReport(root: string, report: VerifyReport, id: string = randomUUID()): string {
++  if (!/^[a-z0-9-]{1,64}$/.test(id)) throw new Error('verify 기록 ID 오류');
++  prepareOutput(root);
++  const rel = `.pace/team/verify/${id}.json`, path = safeTeamPath(root, rel);
++  const text = JSON.stringify(report, null, 2) + '\n';
++  if (hasSecret(text)) throw new Error('verify 기록 비밀 안전 검사 실패');
++  const fd = openSync(path, 'wx', 0o600);
++  try { writeFileSync(fd, text, 'utf8'); } finally { closeSync(fd); }
++  return rel;
++}
++export async function verifyTeam(root: string, selection: { name?: string; all?: boolean; agent?: AgentName }, options: VerifyRunOptions = {}): Promise<{ report: VerifyReport; path: string; code: number }> {
++  if (!!selection.name === !!selection.all || (selection.name !== undefined && !safeRoleName(selection.name)) || (selection.agent !== undefined && selection.agent !== 'claude' && selection.agent !== 'codex')) throw new Error('verify 이름 또는 --all과 지원 host를 지정하세요');
++  prepareOutput(root);
++  const names = selection.name ? [selection.name] : teamFiles(root, '.pace/team', '.md').map((f) => f.slice(0, -3));
++  if (names.some((name) => !safeRoleName(name))) throw new Error('verify 구성원 이름 안전 검사 실패');
++  const agents: AgentName[] = selection.agent ? [selection.agent] : ['claude', 'codex'];
++  const rows: VerifyRow[] = [];
++  for (const agent of agents) {
++    if (!names.length) { rows.push(failure('없음', agent, '현재 원본 목록이 비어 있음')); continue; }
++    for (const name of names) {
++      let role: WorkerRole | undefined;
++      try { role = resolveWorkerRole(root, 'PROJECT.md', { role: name, agent, env: options.env }); }
++      catch { rows.push(failure(name, agent, '원본·설정 선검사 실패 (호스트 미호출)')); continue; }
++      rows.push(role ? await verifyLoadedRole(root, role, agent, options) : failure(name, agent, '역할 미선택'));
++    }
++  }
++  const status: VerifyStatus = rows.some((r) => r.status === 'fail') ? 'fail' : rows.some((r) => r.status === '확인 필요') ? '확인 필요' : 'pass';
++  const report: VerifyReport = { version: 1, phase: 'result', created: new Date().toISOString(), status, rows, native_tamper: '해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.', loading_notice: VERIFY_LOAD_NOTICE, session_self_hash_observed: false, limitation: VERIFY_LIMITATION };
++  return { report, path: storeVerifyReport(root, report), code: status === 'pass' ? 0 : status === 'fail' ? 1 : 2 };
++}
++export function verifyTable(report: VerifyReport): string {
++  const cell = (value: string) => value.replaceAll('|', '\\|').replace(/[\r\n]/g, ' ');
++  return ['| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |', '|---|---|---|---|---|---|', ...report.rows.map((r) => `| ${cell(r.member)} | ${r.agent} | prompt | ${cell(r.definition)} | ${r.status} | ${r.reason} |`)].join('\n');
++}
+diff --git a/test/team-verify.test.ts b/test/team-verify.test.ts
+new file mode 100644
+index 0000000..6ed7737
+--- /dev/null
++++ b/test/team-verify.test.ts
+@@ -0,0 +1,228 @@
++import { test } from 'node:test';
++import assert from 'node:assert/strict';
++import { chmodSync, linkSync, mkdirSync, readFileSync, readdirSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs';
++import { delimiter, join } from 'node:path';
++import { spawnSync } from 'node:child_process';
++import { runPace, tempDir } from './helpers.ts';
++import { normalizeResult, type AgentRequest } from '../src/agent/contract.ts';
++import { createTeamMember, loadTeamMember } from '../src/team/store.ts';
++import { resolveWorkerRole, roleInstruction } from '../src/team/worker-role.ts';
++import { evaluateRoleAnswer, storeVerifyReport, verificationPrompt, VERIFY_LOAD_NOTICE, VERIFY_LIMITATION, VERIFY_QUESTIONS, verifyKeywords, verifyLoadedRole, verifyTable, verifyTeam, type VerifyReport } from '../src/team/verify.ts';
++import { hasSecret } from '../src/project/secrets.ts';
++
++function fixture(names = ['maker-a']) {
++  const root = tempDir(), home = tempDir();
++  assert.equal(spawnSync('git', ['init', '-q', root]).status, 0);
++  for (const name of names) {
++    const member = createTeamMember(root, name, 'maker');
++    const path = join(root, member.source);
++    const text = readFileSync(path, 'utf8').replace(/## 하지 않는 일\n[\s\S]*?(?=\n## )/, '## 하지 않는 일\n\n- `alpha-key` 외부 승인을 하지 않는다.\n- `beta-key` 권한을 바꾸지 않는다.\n');
++    writeFileSync(path, text);
++  }
++  const env = { ...process.env, PACE_HOME: home };
++  return { root, home, env };
++}
++const answer = (name = 'maker-a', dont = ['alpha-key', 'beta-key']) => JSON.stringify({ identity: name, duties: '배정 업무', dont, blocked: '근거와 선택지를 올린다' });
++const result = (r: AgentRequest, text = answer(), isError = false) => normalizeResult(r, { text, model: 'observed-model', isError }, { durationMs: 1, enforcement: 'fake read-only' });
++
++test('동일 시작 지시와 고정 질문만 전달하고 3명×두 host를 각각 판정한다', async () => {
++  const f = fixture(['maker-a', 'maker-b', 'maker-c']), calls: AgentRequest[] = [];
++  const before = readFileSync(join(f.root, '.pace/team/maker-a.md'));
++  const run = await verifyTeam(f.root, { all: true }, { env: f.env, invoke: async (r) => {
++    calls.push(r);
++    const name = /팀 구성원 (maker-[abc])/.exec(r.prompt)![1]!;
++    return result(r, answer(name));
++  } });
++  assert.equal(run.code, 0); assert.equal(calls.length, 6); assert.equal(run.report.rows.length, 6);
++  assert.deepEqual(calls.map(r => r.agent), ['claude', 'claude', 'claude', 'codex', 'codex', 'codex']);
++  for (const r of calls) {
++    const name = /팀 구성원 (maker-[abc])/.exec(r.prompt)![1]!;
++    const role = resolveWorkerRole(f.root, 'PROJECT.md', { role: name, agent: r.agent, env: f.env })!;
++    assert.equal(r.prompt, roleInstruction(role) + '\n\n## 이 점검의 검증 책임\n' + VERIFY_LOAD_NOTICE + '\n\n## 고정 질문\n' + VERIFY_QUESTIONS);
++    assert.equal(r.access, 'read-only'); assert.equal(r.model, role.settings.model); assert.equal(r.effort, role.settings.effort);
++    assert.equal(VERIFY_QUESTIONS.includes(name), false); assert.equal(VERIFY_QUESTIONS.includes('alpha-key'), false);
++  }
++  assert.match(verifyTable(run.report), /적재 방식/); assert.match(verifyTable(run.report), /prompt/);
++  const stored = JSON.parse(readFileSync(join(f.root, run.path), 'utf8'));
++  assert.equal(stored.phase, 'result'); assert.equal(stored.status, 'pass');
++  assert.equal(stored.loading_notice, VERIFY_LOAD_NOTICE); assert.equal(stored.session_self_hash_observed, false);
++  assert.equal(stored.rows[0].observed.model, 'observed-model'); assert.equal(stored.rows[0].observed.effort, 'unconfirmed');
++  assert.deepEqual(readFileSync(join(f.root, '.pace/team/maker-a.md')), before);
++});
++
++test('판정은 독립 기대 표지와 정체성 경계를 사용하고 의역을 실패로 단정하지 않는다', () => {
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key', 'beta-key'], answer()).status, 'pass');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], answer('maker-ab')).status, 'fail');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], JSON.stringify({ duties: 'x' })).status, 'fail');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], answer('maker-a', ['alpha-key-more'])).status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key', 'beta-key'], answer('maker-a', ['alpha-key'])).status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], answer('maker-a', ['의역한 금지'])).status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', [], answer()).status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], '형식을 지키지 않은 답').status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], JSON.stringify({ identity: 'maker-a', duties: '', dont: ['alpha-key'], blocked: 'x' })).status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], '').status, 'fail');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], 'x'.repeat(65537)).status, 'fail');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], '```json\n' + answer() + '\n```').status, 'pass');
++});
++
++test('명시 표지만 추출하고 코드·주석·중복·비밀 표식을 기대 값으로 만들지 않는다', () => {
++  const f = fixture(), member = loadTeamMember(f.root, 'maker-a');
++  assert.deepEqual(verifyKeywords(member), ['alpha-key', 'beta-key']);
++  const part = (text: string) => ({ ...member, body: '## 하지 않는 일\n' + text + '\n## 끝\n' });
++  assert.deepEqual(verifyKeywords(part('<!-- - `hidden` 내용 -->\n```md\n- `code-key` 내용\n```\n- `visible` 내용')), ['visible']);
++  assert.throws(() => verifyKeywords(part('- `same` x\n- `same` y')));
++  assert.throws(() => verifyKeywords(part('- `' + 'x'.repeat(33) + '` x')));
++  const secret = ['ghp', '_', 'a'.repeat(36)].join('');
++  assert.throws(() => verifyKeywords(part('- `' + secret + '` x')));
++  for (const marker of ['vfy-a12b98ef', 'vfy-00000000', 'vfy-ffffffff']) assert.equal(hasSecret(marker), false);
++});
++
++test('새 기본 원본의 표지는 구성원마다 달라 형제 정의의 답을 통과시키지 않는다', () => {
++  const root = tempDir(), members = ['first', 'second', 'third'].map(name => createTeamMember(root, name, 'maker'));
++  const markers = members.map(verifyKeywords);
++  assert.equal(new Set(markers.flat()).size, 6);
++  for (const keys of markers) { assert.equal(keys.length, 2); for (const key of keys) { assert.ok(key.length <= 32); assert.equal(hasSecret(key), false); } }
++  assert.equal(evaluateRoleAnswer('first', markers[0]!, answer('first', markers[1]!)).status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('first', markers[0]!, answer('first', markers[0]!)).status, 'pass');
++});
++
++test('legacy 원본은 변경하지 않고 실제 호출 뒤 확인 필요·종료2 보고서를 남긴다', async () => {
++  const f = fixture();
++  const path = join(f.root, '.pace/team/maker-a.md');
++  writeFileSync(path, readFileSync(path, 'utf8').replace('`alpha-key`', '외부승인').replace('`beta-key`', '권한변경'));
++  const before = readFileSync(path); let calls = 0;
++  const run = await verifyTeam(f.root, { name: 'maker-a', agent: 'claude' }, { env: f.env, invoke: async r => { calls++; return result(r); } });
++  assert.equal(calls, 1); assert.equal(run.code, 2); assert.equal(run.report.status, '확인 필요');
++  assert.deepEqual(readFileSync(path), before); assert.equal(JSON.parse(readFileSync(join(f.root, run.path), 'utf8')).phase, 'result');
++});
++
++test('검사 중 원본 변경은 기존 이름·키워드가 맞아도 실패다', async () => {
++  const f = fixture();
++  const run = await verifyTeam(f.root, { name: 'maker-a', agent: 'codex' }, { env: f.env, invoke: async r => {
++    const p = join(f.root, '.pace/team/maker-a.md'); writeFileSync(p, readFileSync(p, 'utf8') + '\n변경\n'); return result(r);
++  } });
++  assert.equal(run.code, 1); assert.match(run.report.rows[0]!.reason, /변경/);
++});
++
++test('비밀 답과 오류 원문을 저장하거나 stdout에 노출하지 않는다', async () => {
++  const f = fixture(), secret = ['ghp', '_', 'a'.repeat(36)].join('');
++  for (const mode of ['answer', 'throw', 'error']) {
++    const run = await verifyTeam(f.root, { name: 'maker-a', agent: 'claude' }, { env: f.env, invoke: async r => {
++      if (mode === 'throw') throw Error(secret);
++      return result(r, secret, mode === 'error');
++    } });
++    assert.equal(run.code, 1); assert.equal(run.report.rows[0]!.response, null);
++    assert.equal(readFileSync(join(f.root, run.path), 'utf8').includes(secret), false);
++    assert.equal(verifyTable(run.report).includes(secret), false);
++  }
++});
++
++test('source 링크·hardlink·손상은 host 없이 fail 보고서를 남기고 원본은 보존한다', async () => {
++  for (const mode of ['link', 'hardlink', 'corrupt']) {
++    const f = fixture(), source = join(f.root, '.pace/team/maker-a.md'), outside = join(tempDir(), 'original.md');
++    const original = readFileSync(source); writeFileSync(outside, original); unlinkSync(source);
++    if (mode === 'link') symlinkSync(outside, source); else if (mode === 'hardlink') linkSync(outside, source); else writeFileSync(source, 'invalid');
++    let calls = 0;
++    const run = await verifyTeam(f.root, { name: 'maker-a', agent: 'codex' }, { env: f.env, invoke: async r => { calls++; return result(r); } });
++    assert.equal(run.code, 1); assert.equal(calls, 0); assert.deepEqual(readFileSync(outside), original);
++  }
++});
++
++test('결과 경로 링크는 host 시작 전에 거부하고 파일 충돌·hardlink를 덮지 않는다', async () => {
++  const f = fixture(), outside = tempDir(); symlinkSync(outside, join(f.root, '.pace/team/verify'), 'dir');
++  let calls = 0;
++  await assert.rejects(verifyTeam(f.root, { all: true }, { env: f.env, invoke: async r => { calls++; return result(r); } }));
++  assert.equal(calls, 0); assert.deepEqual(readdirSync(outside), []);
++  const g = fixture();
++  const report: VerifyReport = { version: 1, phase: 'result', created: new Date().toISOString(), rows: [], status: 'fail', native_tamper: 'N/A', loading_notice: VERIFY_LOAD_NOTICE, session_self_hash_observed: false, limitation: VERIFY_LIMITATION };
++  const path = storeVerifyReport(g.root, report, 'fixed'); const old = readFileSync(join(g.root, path));
++  assert.throws(() => storeVerifyReport(g.root, report, 'fixed')); assert.deepEqual(readFileSync(join(g.root, path)), old);
++  const sentinel = join(tempDir(), 'sentinel'); writeFileSync(sentinel, 'preserve'); linkSync(sentinel, join(g.root, '.pace/team/verify/hard.json'));
++  assert.throws(() => storeVerifyReport(g.root, report, 'hard')); assert.equal(readFileSync(sentinel, 'utf8'), 'preserve');
++});
++
++test('all은 현재 목록이고 빈 팀은 실패, 삭제 대상 이름은 명시해서 검사한다', async () => {
++  const f = fixture(); unlinkSync(join(f.root, '.pace/team/maker-a.md'));
++  let calls = 0;
++  const options = { env: f.env, invoke: async (r: AgentRequest) => { calls++; return result(r); } };
++  assert.equal((await verifyTeam(f.root, { all: true }, options)).code, 1);
++  assert.equal((await verifyTeam(f.root, { name: 'maker-a', agent: 'claude' }, options)).code, 1);
++  assert.equal(calls, 0);
++});
++
++test('사용 조합 오류는 stderr·종료2이고 보고서와 호출을 만들지 않는다', () => {
++  const f = fixture();
++  for (const args of [['verify'], ['verify', 'maker-a', '--all'], ['verify', '--all', '--agent', 'gemini'], ['list', '--agent', 'claude'], ['verify', '--all', '--json']]) {
++    const r = runPace(['team', ...args], { cwd: f.root, home: f.home });
++    assert.equal(r.status, 2); assert.equal(r.stdout, ''); assert.ok(r.stderr);
++  }
++  assert.equal(readdirSync(join(f.root, '.pace/team')).includes('verify'), false);
++});
++
++test('verify 이름 지정 삭제 원본은 fail 보고서와 종료1이고 사용 오류2와 구분된다', () => {
++  const root = tempDir(), home = tempDir();
++  assert.equal(spawnSync('git', ['init', '-q', root]).status, 0);
++  mkdirSync(join(root, '.pace/team'), { recursive: true });
++  writeFileSync(join(root, 'preserve.txt'), 'unchanged');
++  const r = runPace(['team', 'verify', 'missing-maker', '--agent', 'claude'], { cwd: root, home });
++  assert.equal(r.status, 1, r.stdout + r.stderr);
++  assert.match(r.stdout, /Report: \.pace\/team\/verify\//);
++  assert.match(r.stdout, /fail/);
++});
++
++test('readonly 고지는 공통 prefix 뒤에 책임만 밝히며 원본 내용·이름·표지를 새로 넣지 않는다', () => {
++  const f = fixture(), role = resolveWorkerRole(f.root, 'PROJECT.md', { role: 'maker-a', agent: 'claude', env: f.env })!;
++  const prompt = verificationPrompt(role), prefix = roleInstruction(role);
++  assert.equal(prompt.startsWith(prefix + '\n\n'), true);
++  const suffix = prompt.slice(prefix.length);
++  assert.match(suffix, /자체 셸 검산/); assert.match(suffix, /loaded:false/);
++  for (const value of [role.member.name, role.member.body, 'alpha-key', 'beta-key']) assert.equal(suffix.includes(value), false);
++});
++
++test('명시적 loaded:false는 정체성보다 먼저 실패이고 true만으로 표지 누락을 통과시키지 않는다', () => {
++  const a = JSON.parse(answer());
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], JSON.stringify({ ...a, loaded: false })).status, 'fail');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], JSON.stringify({ ...a, loaded: true, dont: ['의역'] })).status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], answer()).status, 'pass');
++});
++
++test('실측에서 나온 한국어 이름 조사와 단일 JSON fence 뒤 보충 문장을 정확히 판독한다', () => {
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key', 'beta-key'], answer('maker-a입니다. 배정된 maker입니다.')).status, 'pass');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key', 'beta-key'], '```json\n' + answer() + '\n```\n\n원본을 직접 읽었습니다.').status, 'pass');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], '```json\n' + answer() + '\n```\n```json\n' + answer('other') + '\n```').status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], '```json\n' + answer() + '\n```\n' + answer('other')).status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], answer('maker-ab입니다')).status, 'fail');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], '```json\n' + answer() + '\n```\nidentity: other').status, '확인 필요');
++  assert.equal(evaluateRoleAnswer('maker-a', ['alpha-key'], '```json\n' + answer('maker-a', ['의역']) + '\n```\n보충: alpha-key').status, '확인 필요');
++});
++
++test('해석 뒤 호출 직전 바뀐 원본은 실제 invoke 없이 실패한다', async () => {
++  const f = fixture(), role = resolveWorkerRole(f.root, 'PROJECT.md', { role: 'maker-a', agent: 'claude', env: f.env })!;
++  const p = join(f.root, role.member.source); writeFileSync(p, readFileSync(p, 'utf8') + '\n변경\n');
++  let calls = 0;
++  const r = await verifyLoadedRole(f.root, role, 'claude', { invoke: async req => { calls++; return result(req); } });
++  assert.equal(r.status, 'fail'); assert.equal(calls, 0);
++});
++
++test('확인 필요 CLI는 종료2여도 stdout Report와 phase=result를 남긴다', { skip: process.platform === 'win32' ? 'POSIX fake CLI 실행 파일 시험' : false }, () => {
++  const f = fixture(), bin = join(f.home, 'bin'), command = join(bin, 'claude'), capture = join(f.home, 'request.json');
++  mkdirSync(bin);
++  writeFileSync(command, '#!' + process.execPath + '\n' +
++    'const fs=require("node:fs");fs.writeFileSync(' + JSON.stringify(capture) + ',JSON.stringify({args:process.argv.slice(2),prompt:fs.readFileSync(0,"utf8")}));' +
++    'process.stdout.write(JSON.stringify({type:"result",result:' + JSON.stringify(answer('maker-a', ['의역'])) + ',session_id:"unit-session",stop_reason:"end_turn",is_error:false,modelUsage:{"unit-model":{}},usage:{}})+"\\n");');
++  chmodSync(command, 0o755);
++  const r = runPace(['team', 'verify', 'maker-a', '--agent', 'claude'], { cwd: f.root, home: f.home, env: { PATH: bin + delimiter + process.env.PATH }, timeout: 15000 });
++  assert.equal(r.status, 2, r.stderr + r.stdout); assert.equal(r.stderr, ''); assert.match(r.stdout, /확인 필요/);
++  const path = /^Report: (.+)$/m.exec(r.stdout)![1]!;
++  const report = JSON.parse(readFileSync(join(f.root, path), 'utf8'));
++  assert.equal(report.phase, 'result'); assert.equal(report.status, '확인 필요');
++  const req = JSON.parse(readFileSync(capture, 'utf8'));
++  assert.equal(req.args.includes('--permission-mode'), false); assert.equal(req.args.includes('Read,Grep,Glob'), true);
++  assert.equal(req.prompt.includes('alpha-key'), false); assert.equal(req.prompt.includes(VERIFY_LOAD_NOTICE), true);
++});
++
++test('잘못된 옵션에 비밀 후보가 있어도 진단에 원문을 내보내지 않는다', () => {
++  const f = fixture(), secret = ['ghp', '_', 'a'.repeat(36)].join('');
++  const r = runPace(['team', 'verify', '--' + secret], { cwd: f.root, home: f.home });
++  assert.equal(r.status, 2); assert.equal((r.stdout + r.stderr).includes(secret), false);
++});
+
+
+Actual observations (not author work documents):
+# T04 observed results (not author TASK/CLOSE)
+
+The source implementation adds team verify, sharing the unchanged roleInstruction prefix and original role file with project workers. Four fixed questions contain no expected role name/keywords/body. Caller pre/post hashes, a separate generic readonly responsibility notice, and optional top-level loaded:false are used. The name and all explicit prohibition markers are lexical checks; duties/blocked are structural checks. Ambiguous paraphrases remain confirmation needed; this is not semantic truth or task-quality assessment.
+
+Actual normal history: the first 3-member all call per host yielded Claude three holds (no shell to calculate SHA), Codex three pass. After the concrete caller-responsibility correction, the same fixture/config was called once more per host. All six actual answers contain the expected names and both source-only random markers. Original statuses were Claude pass/confirmation/pass and Codex fail/fail/pass, due to name-particle and fenced-JSON parsing defects. Those source bytes, responses, statuses and receipts remain unchanged. Final deterministic reassessment of those identical six answers is six pass. No new normal live call used the final evaluator bytes. normal-fixed-replay-unique.json and replay-normal.mjs bind original report/response hashes, unchanged shared role module/CLI and actual original definitions; a separate creation-only binding proves unchanged store reading functions while the future creation template gains member-specific nonces, exact questions/notice/prompt builder, and the current evaluator. Model responses are reused, not resampled.
+
+Actual controls: original external-sandbox records remain marked unconfirmed. Claude's English-only collector missed denial strings; actual cwd-matched session tool_result lines prove control Read success and denied Read error, plus role Read error in the prefixed case. No full transcript/authentication file was copied. claude-controls-session-proof.json has source SHA/line/error flags. Both actual answers fail under the final evaluator; unloaded canary hits are zero.
+
+Codex external sandbox blocked all shell startup, so these failures are not counted as successful misload detection. A separate native :read-only profile with the same original-repository deny fixes nesting without user config/product permission changes. Native sessions contain actual control cat exit0 and unique output; their unloaded/prefixed answers fail. The model respected denied policy or no failed command event was collected; neither is called a model-executed denied command. Separate direct Codex sandbox checks under the identical profile prove original/alias cat exit1, control cat exit0, touch exit1/no file. The assembled proof distinguishes the two evidence sources. Native JSON control model source is requested, not reported. See codex-native-path-proof.json and *-codex-native.json. The old unconfirmed flags are retained.
+
+Named source deletion yielded exit1/fail reports for both hosts without invocation, followed by byte-identical restoration. Legacy T02 template definitions yielded actual confirmation-needed/exit2 for both hosts, unchanged. Real application repositories were only checked for .pace/team existence and had no such new-format directory; no definition/report was written there. Native tamper is N/A because this path reads original files; sync --check handles generated-file differences.
+
+Focused after unique-default correction: 75 pass. Full before that correction: 1091 total, 1074 pass, 17 skip, zero fail; current full rerun pending; browser E2E disabled as required inside Orca. check-actual-proof.mjs executes no model calls and rechecks actual artifacts, raw Claude tool-result metadata and current evaluator. No role/tool permission-enforcement, general semantic correctness, actual worker self-hash success, or sustained productivity effect is claimed. Normal Orca workers and readonly p sessions have different tool configurations; worktree-wide locking/real deployments remain later tasks.
+
+Default creator correction: common fixed markers were replaced by fresh member-specific vfy-s/vfy-r values at creation only; existing definitions never rotate. A separate RED caught the old shared-marker weakness, and wrong sibling markers remain confirmation-needed rather than passing. Current loaded original files and six store reading functions are byte-bound to their earlier versions (creation-only-binding.json). No new default-creator live sample is claimed. Safe source copies and bounded selected control Read results are archived. Live fixture/session checks are performed when available; loss of volatile sources is disclosed and archive-only checks are not called raw-source reaudit. Later task source changes require the T04 checkout to rerun historical source bindings.
+
+
+actual-hosts/normal-fixed-replay-unique.json:
+{
+  "kind": "deterministic_reassessment_not_new_live_run",
+  "at": "2026-11-24T02:41:30.874Z",
+  "live_calls_added": 0,
+  "source_before_sha256": "c485130f05b30eba1df0e8424353cb6905e523befdd7787b5ad60b59ae3f2767",
+  "source_after_sha256": "71f5f0ad3d510431624726015e92119997929d360cd5dd99d8488ad4e6de30c0",
+  "common_role_module_cli_unchanged": true,
+  "creation_binding": "creation-only-binding.json",
+  "exact_questions_notice_prompt_builder_unchanged": true,
+  "rows": [
+    {
+      "agent": "claude",
+      "member": "vfy-lead-47cacc8d",
+      "live_report": "normal-fixed-claude-report.json",
+      "live_report_sha256": "ddd0417ec07d8253ab9bdbff07efd8c2ef41c261a42e020474ac866ee0aebd96",
+      "original_status": "pass",
+      "response_sha256": "f5c6adced7f66adcf21ed6e1d0af6691df523a4ac44540035c3407f9a7e00c82",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "claude",
+      "member": "vfy-maker-420c42eb",
+      "live_report": "normal-fixed-claude-report.json",
+      "live_report_sha256": "ddd0417ec07d8253ab9bdbff07efd8c2ef41c261a42e020474ac866ee0aebd96",
+      "original_status": "확인 필요",
+      "response_sha256": "e0e53a12f8b052d476f73dea8530bf160dac92bb3df1b5b39b0aabb87e4c4240",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "claude",
+      "member": "vfy-reviewer-7e9a7134",
+      "live_report": "normal-fixed-claude-report.json",
+      "live_report_sha256": "ddd0417ec07d8253ab9bdbff07efd8c2ef41c261a42e020474ac866ee0aebd96",
+      "original_status": "pass",
+      "response_sha256": "2178e9291070423a15508b40e0fe2f51a6f7f74cf55d86d1ef33576d96011380",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "codex",
+      "member": "vfy-lead-47cacc8d",
+      "live_report": "normal-fixed-codex-report.json",
+      "live_report_sha256": "e3d2d62d8848ded2297765744f9c9dec2292119cd19e3bd32cfad56f72515d59",
+      "original_status": "fail",
+      "response_sha256": "8e749d63a5999ee8581d10d95ab8424a91d33f62a7019ee3172685c5a8273a01",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "codex",
+      "member": "vfy-maker-420c42eb",
+      "live_report": "normal-fixed-codex-report.json",
+      "live_report_sha256": "e3d2d62d8848ded2297765744f9c9dec2292119cd19e3bd32cfad56f72515d59",
+      "original_status": "fail",
+      "response_sha256": "7a11c6823d413dbb49476ae2a258b00db147a4fdc014950ecd582126414a8977",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "codex",
+      "member": "vfy-reviewer-7e9a7134",
+      "live_report": "normal-fixed-codex-report.json",
+      "live_report_sha256": "e3d2d62d8848ded2297765744f9c9dec2292119cd19e3bd32cfad56f72515d59",
+      "original_status": "pass",
+      "response_sha256": "30e21cf3d8375db31076bf294d25c8b8a3f1e0029293d37d7745c5a938240d84",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    }
+  ],
+  "limitation": "Original live reports and statuses retained; no new live run of final source bytes. A future-role creation template change, if present, is separately bound to unchanged active original files and unchanged store read functions."
+}
+
+
+actual-hosts/creation-only-binding.json:
+{
+  "kind": "creation-only change, not captured role-loading protocol",
+  "at": "2026-11-24T02:41:30.700Z",
+  "before_template_sha256": "141606deb0762c1e591e0e56a56c96a0390b9f0bd1b6685bb06b0375bfbab946",
+  "after_template_sha256": "985fa9f68587c4254265521fbe0e506cdc78137ae8ecfa1874f2ea6c2657781e",
+  "before_store_sha256": "7bc61e027cf7a49b74a672234d949e8368eca1bd8b2f918dc2889e4c8198ed5e",
+  "after_store_sha256": "c63d392928a1bb6931f0b8d56056b07210a9747dfea0f5ceea29b3c83bb305e7",
+  "unchanged_read_functions": {
+    "teamRoot": {
+      "before": "10b788c89db3a7c4f870f093461eb728c4d77ca4cb97814d3be019136f7c8f63",
+      "after": "10b788c89db3a7c4f870f093461eb728c4d77ca4cb97814d3be019136f7c8f63"
+    },
+    "safeTeamPath": {
+      "before": "596377e67e624f0667a957c7d87509461bb4b26b99fa244590934d4bf8a1b87d",
+      "after": "596377e67e624f0667a957c7d87509461bb4b26b99fa244590934d4bf8a1b87d"
+    },
+    "readTeamFile": {
+      "before": "49b61508aa1d102ec7114382c4c7cecfcd1341b4e2fc367bb6c076aafffc16fd",
+      "after": "49b61508aa1d102ec7114382c4c7cecfcd1341b4e2fc367bb6c076aafffc16fd"
+    },
+    "teamFiles": {
+      "before": "1482ff2bc2337696d45162c13db5061eaaa2308545bd802bce5fd74c7bc63a6a",
+      "after": "1482ff2bc2337696d45162c13db5061eaaa2308545bd802bce5fd74c7bc63a6a"
+    },
+    "loadTeamMember": {
+      "before": "b21a8386773f1a69b185273e7382722196c36ed466eef9baa22a11cf71d66775",
+      "after": "b21a8386773f1a69b185273e7382722196c36ed466eef9baa22a11cf71d66775"
+    },
+    "loadTeam": {
+      "before": "d35fb026fe71073f0ed97d968f78f1244b530c816e67122c362c70b949d5dcde",
+      "after": "d35fb026fe71073f0ed97d968f78f1244b530c816e67122c362c70b949d5dcde"
+    }
+  },
+  "active_originals_unchanged": [
+    {
+      "name": "vfy-lead-47cacc8d",
+      "hash": "861eddd768b39b092530d907549645e244f82037505e2215fc9821e29041ab53",
+      "archive": "source-archive/vfy-lead-47cacc8d.md"
+    },
+    {
+      "name": "vfy-maker-420c42eb",
+      "hash": "5938d4cd9329a973b058ce4dad0da5aa6cd97dab037ea4692e94826d06f9d1ef",
+      "archive": "source-archive/vfy-maker-420c42eb.md"
+    },
+    {
+      "name": "vfy-reviewer-7e9a7134",
+      "hash": "b06610709ee1f60999b0fd10de05cc249863aa5378724e386417b9f09d90406c",
+      "archive": "source-archive/vfy-reviewer-7e9a7134.md"
+    },
+    {
+      "name": "legacy-maker",
+      "hash": "00de9f159b894c4550ff8c4b11c4c2749c3227136ea7d37602022b1ec4025418",
+      "archive": "source-archive/legacy-maker.md"
+    }
+  ],
+  "changed_paths": [
+    "createTeamMember new-marker generation",
+    "new source template placeholders"
+  ],
+  "live_calls_added": 0,
+  "limitation": "The creation template changed for future new roles. The captured model calls read existing nonce-bearing original files, which remain byte-identical. No new live sample of the default generator is claimed; uniqueness and lexical handling are unit-tested."
+}
+
+
+actual-hosts/claude-controls-session-proof.json:
+{
+  "at": "2026-11-24T02:17:23.367Z",
+  "added_live_calls": 0,
+  "results": [
+    {
+      "kind": "unloaded",
+      "session_source": "/Users/lucas/.claude/projects/-private-var-folders-0k-n9rvmztx6xs3xvjsvf0qqzdw0000gn-T-pace-P009-T04-actual-CPd7Zv-claude-unloaded/24e40d15-49ca-42ea-9edc-2bf3da1ef745.jsonl",
+      "session_sha256": "1a0940004c4270ee9b27c8dc7462cb416e8945fcdb7216b7ecf6ad5587b703d2",
+      "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/claude-unloaded",
+      "observations": [
+        {
+          "line": 26,
+          "tool_use_id": "toolu_014y3wcsbtBPUZgvdwhnGncJ",
+          "control": true,
+          "denied": false,
+          "role": false,
+          "is_error": false,
+          "control_value_observed": true,
+          "result_sha256": "527f2f21ab5e9edd3c20708b4463336683db06e829fdee354ca1fc1491d9eda5"
+        },
+        {
+          "line": 30,
+          "tool_use_id": "toolu_01GLSYndL9K12PtH1EtJvpj9",
+          "control": false,
+          "denied": true,
+          "role": false,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "8d78eb72c2d9a7233792be342459af0b76d6c2d8e744bb63ca0055a601d84c0b"
+        },
+        {
+          "line": 34,
+          "tool_use_id": "toolu_014y3wcsbtBPUZgvdwhnGncJ",
+          "control": true,
+          "denied": false,
+          "role": false,
+          "is_error": false,
+          "control_value_observed": true,
+          "result_sha256": "527f2f21ab5e9edd3c20708b4463336683db06e829fdee354ca1fc1491d9eda5"
+        },
+        {
+          "line": 34,
+          "tool_use_id": "toolu_01GLSYndL9K12PtH1EtJvpj9",
+          "control": false,
+          "denied": true,
+          "role": false,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "8d78eb72c2d9a7233792be342459af0b76d6c2d8e744bb63ca0055a601d84c0b"
+        }
+      ],
+      "same_session_control_read_and_denied_error": true,
+      "original_capture": "unloaded-claude.json",
+      "limitation": "Allowlisted tool-result metadata only; original transcript is not copied. The old English-only collector flag stays false; these actual session error flags supply the missing evidence."
+    },
+    {
+      "kind": "read-denied",
+      "session_source": "/Users/lucas/.claude/projects/-private-var-folders-0k-n9rvmztx6xs3xvjsvf0qqzdw0000gn-T-pace-P009-T04-actual-CPd7Zv-claude-read-denied/dcef1eb7-92aa-485a-a2c0-57f0100ef19b.jsonl",
+      "session_sha256": "35043a13a51e46f1cc33e0b52820c4a8e6ffc6849a5b895f18898e88ae2a0619",
+      "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/claude-read-denied",
+      "observations": [
+        {
+          "line": 26,
+          "tool_use_id": "toolu_011PtvpkBA9f87t3XfbeDKWP",
+          "control": false,
+          "denied": false,
+          "role": true,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "9c225660615528b87853166a2e217d7ed6e45caa03795e4fbb40e19b7bfe8525"
+        },
+        {
+          "line": 29,
+          "tool_use_id": "toolu_015SMgmiaE2L7RwEgXHnRyVz",
+          "control": true,
+          "denied": false,
+          "role": false,
+          "is_error": false,
+          "control_value_observed": true,
+          "result_sha256": "404105f0b6b5ed3d845c33996b749b886576c8b321cd738e139c3b652beef4a9"
+        },
+        {
+          "line": 33,
+          "tool_use_id": "toolu_01Gtwv5Dsb7365o9QpD9juLX",
+          "control": false,
+          "denied": true,
+          "role": false,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "8d78eb72c2d9a7233792be342459af0b76d6c2d8e744bb63ca0055a601d84c0b"
+        },
+        {
+          "line": 37,
+          "tool_use_id": "toolu_011PtvpkBA9f87t3XfbeDKWP",
+          "control": false,
+          "denied": false,
+          "role": true,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "9c225660615528b87853166a2e217d7ed6e45caa03795e4fbb40e19b7bfe8525"
+        },
+        {
+          "line": 37,
+          "tool_use_id": "toolu_015SMgmiaE2L7RwEgXHnRyVz",
+          "control": true,
+          "denied": false,
+          "role": false,
+          "is_error": false,
+          "control_value_observed": true,
+          "result_sha256": "404105f0b6b5ed3d845c33996b749b886576c8b321cd738e139c3b652beef4a9"
+        },
+        {
+          "line": 37,
+          "tool_use_id": "toolu_01Gtwv5Dsb7365o9QpD9juLX",
+          "control": false,
+          "denied": true,
+          "role": false,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "8d78eb72c2d9a7233792be342459af0b76d6c2d8e744bb63ca0055a601d84c0b"
+        }
+      ],
+      "same_session_control_read_and_denied_error": true,
+      "original_capture": "read-denied-claude.json",
+      "limitation": "Allowlisted tool-result metadata only; original transcript is not copied. The old English-only collector flag stays false; these actual session error flags supply the missing evidence."
+    }
+  ]
+}
+
+
+actual-hosts/codex-native-path-proof.json:
+{
+  "at": "2026-11-24T02:19:57.716Z",
+  "added_model_calls": 0,
+  "rows": [
+    {
+      "kind": "unloaded",
+      "native_session": "unloaded-codex-native.json",
+      "same_policy_definition": true,
+      "checks": [
+        {
+          "check": "source",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/.pace/team/vfy-lead-47cacc8d.md"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/.pace/team/vfy-lead-47cacc8d.md: Operation not permitted\n"
+        },
+        {
+          "check": "control",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-unloaded/control-read.txt"
+          ],
+          "code": 0,
+          "stdout": "read-proof-3b1c1c08-9137-4639-8427-0f3fc1cd19ce\n",
+          "stderr": ""
+        },
+        {
+          "check": "write",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/usr/bin/touch",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-unloaded/native-profile-write-must-not-exist"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "touch: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-unloaded/native-profile-write-must-not-exist: Operation not permitted\n"
+        }
+      ],
+      "write_exists": false,
+      "limitation": "These denied commands are direct Codex sandbox probes using the same profile, not model-issued command events. Model-session successful control reads are recorded separately; model policy refusal is not misreported as an executed failed command."
+    },
+    {
+      "kind": "read-denied",
+      "native_session": "read-denied-codex-native.json",
+      "same_policy_definition": true,
+      "checks": [
+        {
+          "check": "source",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/.pace/team/vfy-lead-47cacc8d.md"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/.pace/team/vfy-lead-47cacc8d.md: Operation not permitted\n"
+        },
+        {
+          "check": "control",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/control-read.txt"
+          ],
+          "code": 0,
+          "stdout": "read-proof-39794657-cca1-4c76-b987-ac35f351092f\n",
+          "stderr": ""
+        },
+        {
+          "check": "write",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/usr/bin/touch",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/native-profile-write-must-not-exist"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "touch: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/native-profile-write-must-not-exist: Operation not permitted\n"
+        },
+        {
+          "check": "alias",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/.pace/team/vfy-lead-47cacc8d.md"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/.pace/team/vfy-lead-47cacc8d.md: Operation not permitted\n"
+        }
+      ],
+      "write_exists": false,
+      "limitation": "These denied commands are direct Codex sandbox probes using the same profile, not model-issued command events. Model-session successful control reads are recorded separately; model policy refusal is not misreported as an executed failed command."
+    }
+  ]
+}
+
+
+actual-hosts/legacy-deleted-summary.json:
+{
+  "at": "2026-11-24T02:19:03.724Z",
+  "deleted_source_restored_identically": true,
+  "legacy_source_unchanged": true,
+  "legacy_hash": "00de9f159b894c4550ff8c4b11c4c2749c3227136ea7d37602022b1ec4025418",
+  "deleted": [
+    {
+      "code": 1,
+      "status": "fail"
+    },
+    {
+      "code": 1,
+      "status": "fail"
+    }
+  ],
+  "legacy": [
+    {
+      "code": 2,
+      "status": "확인 필요"
+    },
+    {
+      "code": 2,
+      "status": "확인 필요"
+    }
+  ],
+  "limitation": "Deletion is named preflight failure with no host invocation. All scans only the current source roster; missing managed originals are also diagnosed by sync --check."
+}

@@ -1,0 +1,90 @@
+{
+  "kind": "deterministic_reassessment_not_new_live_run",
+  "at": "2026-11-24T01:54:06.473Z",
+  "live_calls_added": 0,
+  "source_before_sha256": "c485130f05b30eba1df0e8424353cb6905e523befdd7787b5ad60b59ae3f2767",
+  "source_after_sha256": "148e5887050c81807d125c0e41cf1c7d8fabaec2c36d3b058dc07e0bd3e626b1",
+  "common_role_module_cli_template_unchanged": true,
+  "exact_questions_notice_prompt_builder_unchanged": true,
+  "rows": [
+    {
+      "agent": "claude",
+      "member": "vfy-lead-47cacc8d",
+      "live_report": "normal-fixed-claude-report.json",
+      "live_report_sha256": "ddd0417ec07d8253ab9bdbff07efd8c2ef41c261a42e020474ac866ee0aebd96",
+      "original_status": "pass",
+      "response_sha256": "f5c6adced7f66adcf21ed6e1d0af6691df523a4ac44540035c3407f9a7e00c82",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "claude",
+      "member": "vfy-maker-420c42eb",
+      "live_report": "normal-fixed-claude-report.json",
+      "live_report_sha256": "ddd0417ec07d8253ab9bdbff07efd8c2ef41c261a42e020474ac866ee0aebd96",
+      "original_status": "확인 필요",
+      "response_sha256": "e0e53a12f8b052d476f73dea8530bf160dac92bb3df1b5b39b0aabb87e4c4240",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "claude",
+      "member": "vfy-reviewer-7e9a7134",
+      "live_report": "normal-fixed-claude-report.json",
+      "live_report_sha256": "ddd0417ec07d8253ab9bdbff07efd8c2ef41c261a42e020474ac866ee0aebd96",
+      "original_status": "pass",
+      "response_sha256": "2178e9291070423a15508b40e0fe2f51a6f7f74cf55d86d1ef33576d96011380",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "codex",
+      "member": "vfy-lead-47cacc8d",
+      "live_report": "normal-fixed-codex-report.json",
+      "live_report_sha256": "e3d2d62d8848ded2297765744f9c9dec2292119cd19e3bd32cfad56f72515d59",
+      "original_status": "fail",
+      "response_sha256": "8e749d63a5999ee8581d10d95ab8424a91d33f62a7019ee3172685c5a8273a01",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "codex",
+      "member": "vfy-maker-420c42eb",
+      "live_report": "normal-fixed-codex-report.json",
+      "live_report_sha256": "e3d2d62d8848ded2297765744f9c9dec2292119cd19e3bd32cfad56f72515d59",
+      "original_status": "fail",
+      "response_sha256": "7a11c6823d413dbb49476ae2a258b00db147a4fdc014950ecd582126414a8977",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    },
+    {
+      "agent": "codex",
+      "member": "vfy-reviewer-7e9a7134",
+      "live_report": "normal-fixed-codex-report.json",
+      "live_report_sha256": "e3d2d62d8848ded2297765744f9c9dec2292119cd19e3bd32cfad56f72515d59",
+      "original_status": "pass",
+      "response_sha256": "30e21cf3d8375db31076bf294d25c8b8a3f1e0029293d37d7745c5a938240d84",
+      "evaluation": {
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    }
+  ],
+  "limitation": "Original live reports and their statuses are retained. Final evaluator is corrected, so this is not represented as a new live run of the final source bytes; coordinator must determine final evidence acceptance."
+}

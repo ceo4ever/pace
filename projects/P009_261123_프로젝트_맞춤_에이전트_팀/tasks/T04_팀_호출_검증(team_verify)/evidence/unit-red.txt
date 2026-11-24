@@ -1,0 +1,31 @@
+✖ verify 이름 지정 삭제 원본은 fail 보고서와 종료1이고 사용 오류2와 구분된다 (145.143083ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 224.564584
+
+✖ failing tests:
+
+test at test/team-verify.test.ts:8:1
+✖ verify 이름 지정 삭제 원본은 fail 보고서와 종료1이고 사용 오류2와 구분된다 (145.143083ms)
+  AssertionError [ERR_ASSERTION]: team: Unknown option '--agent'. To specify a positional argument starting with a '-', place it at the end of the command after '--', as in '-- "--agent"
+  
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-verify.test.ts:14:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

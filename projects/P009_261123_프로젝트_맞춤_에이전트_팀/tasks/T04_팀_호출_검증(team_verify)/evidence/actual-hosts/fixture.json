@@ -1,0 +1,43 @@
+{
+  "base": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv",
+  "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo",
+  "home": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/pace-home",
+  "members": [
+    {
+      "name": "vfy-lead-47cacc8d",
+      "role": "lead",
+      "markers": [
+        "vfy-a94d4556",
+        "vfy-0784adc1"
+      ],
+      "hash": "861eddd768b39b092530d907549645e244f82037505e2215fc9821e29041ab53"
+    },
+    {
+      "name": "vfy-maker-420c42eb",
+      "role": "maker",
+      "markers": [
+        "vfy-1619f30e",
+        "vfy-484a77e3"
+      ],
+      "hash": "5938d4cd9329a973b058ce4dad0da5aa6cd97dab037ea4692e94826d06f9d1ef"
+    },
+    {
+      "name": "vfy-reviewer-7e9a7134",
+      "role": "reviewer",
+      "markers": [
+        "vfy-328f1b15",
+        "vfy-45a44525"
+      ],
+      "hash": "b06610709ee1f60999b0fd10de05cc249863aa5378724e386417b9f09d90406c"
+    }
+  ],
+  "source_snapshot": {
+    "src/team/verify.ts": "8458d80ab37c7c242a3771d24c903757d757bbe4a4477be10f26f7df62635f89",
+    "src/team/worker-role.ts": "1206fdad3587d99aca54ad1bf2bca2f1288a6a4b54c5886e62eeccf66034c8fe",
+    "src/cli.ts": "ab335c47311f8624f1250e594ff2f938b1c96289e1f675d48e0297c64f374076",
+    "templates/team/member.md": "141606deb0762c1e591e0e56a56c96a0390b9f0bd1b6685bb06b0375bfbab946",
+    "test/team-verify.test.ts": "444211598f32882d6363575ca709c55bdf4f562c5c663bbf59b6333a85911107"
+  },
+  "created": "2026-11-24T01:34:15.298Z",
+  "retry_policy": "First all per host; no response-only retry. At most one new measurement after a concrete code/environment correction, all prior attempts retained."
+}

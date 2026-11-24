@@ -1,0 +1,16 @@
+{
+  "args": [
+    "node",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+    "team",
+    "verify",
+    "legacy-maker",
+    "--agent",
+    "claude"
+  ],
+  "code": 2,
+  "stdout": "| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |\n|---|---|---|---|---|---|\n| legacy-maker | claude | prompt | .pace/team/legacy-maker.md | 확인 필요 | 원본에 명시적 확인 키워드 없음 |\n해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.\nReport: .pace/team/verify/cff101fe-498d-4f07-ae40-0a57d9445395.json\n",
+  "stderr": "",
+  "at": "2026-11-24T02:18:53.853Z",
+  "report_path": ".pace/team/verify/cff101fe-498d-4f07-ae40-0a57d9445395.json"
+}

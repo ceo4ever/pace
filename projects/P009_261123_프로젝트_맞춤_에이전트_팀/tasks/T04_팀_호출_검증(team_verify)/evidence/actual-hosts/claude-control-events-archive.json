@@ -1,0 +1,130 @@
+{
+  "at": "2026-11-24T02:43:42.587Z",
+  "source_packet_sha256": "604f63bb96e132f773056552a6c9883002c620e8614db3ddd8ef906b4e411880",
+  "full_transcripts_copied": false,
+  "allowed_content": "Only already-observed control-file Read results and denied target/role Read error results; no auth files or other transcript content",
+  "results": [
+    {
+      "kind": "unloaded",
+      "session_sha256": "1a0940004c4270ee9b27c8dc7462cb416e8945fcdb7216b7ecf6ad5587b703d2",
+      "events": [
+        {
+          "line": 26,
+          "tool_use_id": "toolu_014y3wcsbtBPUZgvdwhnGncJ",
+          "control": true,
+          "denied": false,
+          "role": false,
+          "is_error": false,
+          "control_value_observed": true,
+          "result_sha256": "527f2f21ab5e9edd3c20708b4463336683db06e829fdee354ca1fc1491d9eda5",
+          "text": "1\tread-proof-aa60853f-2fee-4bac-8701-030ff62ebe64\n2\t"
+        },
+        {
+          "line": 30,
+          "tool_use_id": "toolu_01GLSYndL9K12PtH1EtJvpj9",
+          "control": false,
+          "denied": true,
+          "role": false,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "8d78eb72c2d9a7233792be342459af0b76d6c2d8e744bb63ca0055a601d84c0b",
+          "text": "Claude requested permissions to read from /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/denied-sentinel.txt, but you haven't granted it yet."
+        },
+        {
+          "line": 34,
+          "tool_use_id": "toolu_014y3wcsbtBPUZgvdwhnGncJ",
+          "control": true,
+          "denied": false,
+          "role": false,
+          "is_error": false,
+          "control_value_observed": true,
+          "result_sha256": "527f2f21ab5e9edd3c20708b4463336683db06e829fdee354ca1fc1491d9eda5",
+          "text": "1\tread-proof-aa60853f-2fee-4bac-8701-030ff62ebe64\n2\t"
+        },
+        {
+          "line": 34,
+          "tool_use_id": "toolu_01GLSYndL9K12PtH1EtJvpj9",
+          "control": false,
+          "denied": true,
+          "role": false,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "8d78eb72c2d9a7233792be342459af0b76d6c2d8e744bb63ca0055a601d84c0b",
+          "text": "Claude requested permissions to read from /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/denied-sentinel.txt, but you haven't granted it yet."
+        }
+      ]
+    },
+    {
+      "kind": "read-denied",
+      "session_sha256": "35043a13a51e46f1cc33e0b52820c4a8e6ffc6849a5b895f18898e88ae2a0619",
+      "events": [
+        {
+          "line": 26,
+          "tool_use_id": "toolu_011PtvpkBA9f87t3XfbeDKWP",
+          "control": false,
+          "denied": false,
+          "role": true,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "9c225660615528b87853166a2e217d7ed6e45caa03795e4fbb40e19b7bfe8525",
+          "text": "Refusing to read /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/claude-read-denied/.pace/team/vfy-lead-47cacc8d.md: where it leads on disk could not be determined (a link on the way could not be examined, or the links do not resolve)."
+        },
+        {
+          "line": 29,
+          "tool_use_id": "toolu_015SMgmiaE2L7RwEgXHnRyVz",
+          "control": true,
+          "denied": false,
+          "role": false,
+          "is_error": false,
+          "control_value_observed": true,
+          "result_sha256": "404105f0b6b5ed3d845c33996b749b886576c8b321cd738e139c3b652beef4a9",
+          "text": "1\tread-proof-bbfd88ce-c6b9-4bf5-bac4-7713704103c6\n2\t"
+        },
+        {
+          "line": 33,
+          "tool_use_id": "toolu_01Gtwv5Dsb7365o9QpD9juLX",
+          "control": false,
+          "denied": true,
+          "role": false,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "8d78eb72c2d9a7233792be342459af0b76d6c2d8e744bb63ca0055a601d84c0b",
+          "text": "Claude requested permissions to read from /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/denied-sentinel.txt, but you haven't granted it yet."
+        },
+        {
+          "line": 37,
+          "tool_use_id": "toolu_011PtvpkBA9f87t3XfbeDKWP",
+          "control": false,
+          "denied": false,
+          "role": true,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "9c225660615528b87853166a2e217d7ed6e45caa03795e4fbb40e19b7bfe8525",
+          "text": "Refusing to read /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/claude-read-denied/.pace/team/vfy-lead-47cacc8d.md: where it leads on disk could not be determined (a link on the way could not be examined, or the links do not resolve)."
+        },
+        {
+          "line": 37,
+          "tool_use_id": "toolu_015SMgmiaE2L7RwEgXHnRyVz",
+          "control": true,
+          "denied": false,
+          "role": false,
+          "is_error": false,
+          "control_value_observed": true,
+          "result_sha256": "404105f0b6b5ed3d845c33996b749b886576c8b321cd738e139c3b652beef4a9",
+          "text": "1\tread-proof-bbfd88ce-c6b9-4bf5-bac4-7713704103c6\n2\t"
+        },
+        {
+          "line": 37,
+          "tool_use_id": "toolu_01Gtwv5Dsb7365o9QpD9juLX",
+          "control": false,
+          "denied": true,
+          "role": false,
+          "is_error": true,
+          "control_value_observed": false,
+          "result_sha256": "8d78eb72c2d9a7233792be342459af0b76d6c2d8e744bb63ca0055a601d84c0b",
+          "text": "Claude requested permissions to read from /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/denied-sentinel.txt, but you haven't granted it yet."
+        }
+      ]
+    }
+  ]
+}

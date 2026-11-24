@@ -1,0 +1,14 @@
+{
+  "source": {
+    "src/team/verify.ts": "c485130f05b30eba1df0e8424353cb6905e523befdd7787b5ad60b59ae3f2767",
+    "src/team/worker-role.ts": "1206fdad3587d99aca54ad1bf2bca2f1288a6a4b54c5886e62eeccf66034c8fe",
+    "src/cli.ts": "fdd5aa531c4094914bed251fdda550497a43a5913b34e0738ac63051492a0e57",
+    "templates/team/member.md": "141606deb0762c1e591e0e56a56c96a0390b9f0bd1b6685bb06b0375bfbab946",
+    "test/team-verify.test.ts": "fa919ebca3c153e8144ca429dd9fd491c193cf3615aeeabeff9bee32e4d111a2"
+  },
+  "same_fixture": true,
+  "changed_definitions": false,
+  "changed_settings": false,
+  "reason": "Concrete readonly Claude self-hash tool gap; coordinator A decision and R4 pre-review pass. Common roleInstruction unchanged; caller responsibility notice and pre/post source guards added.",
+  "started": "2026-11-24T01:49:34.287Z"
+}

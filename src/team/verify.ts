@@ -1,0 +1,156 @@
+import { randomUUID } from 'node:crypto';
+import { closeSync, mkdirSync, openSync, writeFileSync } from 'node:fs';
+import { runAgent, validateRequest, type AgentName, type AgentRequest, type AgentResult } from '../agent/contract.ts';
+import { claudeP, codexP, createPExecutor } from '../agent/p-executor.ts';
+import { hasSecret } from '../project/secrets.ts';
+import { safeRoleName, safeRoleSetting } from '../project/role-record.ts';
+import { parseTeamSource, section, type TeamMember } from './model.ts';
+import { readTeamFile, safeTeamPath, teamFiles } from './store.ts';
+import { resolveWorkerRole, roleInstruction, type WorkerRole } from './worker-role.ts';
+
+export const VERIFY_QUESTIONS = `정의 적재 단계가 끝나면 다음 네 질문에 답하세요. 기대 답을 추측해서 만들지 마세요.
+1. 너는 누구인가? 팀 구성원 이름을 밝히세요.
+2. 맡는 일은 무엇인가?
+3. 하지 않는 일은 무엇인가? 원본에 짧은 backtick 키워드가 있으면 각각 그대로 인용하세요.
+4. 막히면 어떻게 하는가?
+JSON 객체 하나로 답하세요: identity(문자열), duties(문자열), dont(문자열 배열), blocked(문자열).`;
+export const VERIFY_LOAD_NOTICE = '이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.';
+export const VERIFY_LIMITATION = 'verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다.';
+export type VerifyStatus = 'pass' | 'fail' | '확인 필요';
+export interface Evaluation { status: VerifyStatus; reason: string; missing: string[]; }
+export interface VerifyRow extends Evaluation {
+  member: string; agent: AgentName; method: 'prompt'; definition: string; hash: string | null;
+  requested: { model: string; effort?: string } | null;
+  observed: { model: string | null; source: string; effort: 'unconfirmed' } | null;
+  response: string | null;
+}
+export interface VerifyReport {
+  version: 1; phase: 'result'; created: string; status: VerifyStatus; rows: VerifyRow[];
+  native_tamper: string;
+  loading_notice: string;
+  session_self_hash_observed: false;
+  limitation: string;
+}
+export interface VerifyRunOptions {
+  invoke?: (request: AgentRequest) => Promise<AgentResult>;
+  env?: NodeJS.ProcessEnv;
+}
+/** Explicit markers only: a fenced/commented example is not an expectation. */
+export function verifyKeywords(member: TeamMember): string[] {
+  const text = section(member.body, '하지 않는 일').replace(/<!--[\s\S]*?(?:-->|$)/g, '');
+  const markers: string[] = []; let fence: string | undefined;
+  for (const line of text.split('\n')) {
+    const f = /^\s*(`{3,}|~{3,})/.exec(line);
+    if (f) { if (!fence) fence = f[1]![0]; else if (f[1]![0] === fence) fence = undefined; continue; }
+    if (fence) continue;
+    const match = /^[-*] `([^`]+)`(?:\s|$)/.exec(line);
+    if (!match) continue;
+    const marker = match[1]!;
+    if (!marker.isWellFormed() || marker !== marker.trim() || marker.length > 32 || /[\p{Cc}\p{Cf}]/u.test(marker) || hasSecret(marker) || markers.includes(marker)) throw new Error('verify 키워드 형식 오류');
+    markers.push(marker);
+  }
+  return markers;
+}
+function contains(text: string, value: string, identity = false): boolean {
+  const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Team names are ASCII kebab identifiers; Korean particles do not extend that identifier.
+  const boundary = identity ? 'A-Za-z0-9_-' : '\\p{L}\\p{N}_-';
+  return new RegExp(`(^|[^${boundary}])${escaped}(?=$|[^${boundary}])`, 'u').test(text);
+}
+export function evaluateRoleAnswer(name: string, keywords: string[], answer: string): Evaluation {
+  const result = (status: VerifyStatus, reason: string, missing: string[] = []): Evaluation => ({ status, reason, missing });
+  if (!answer.trim() || !answer.isWellFormed() || Buffer.byteLength(answer) > 65536 || hasSecret(answer)) return result('fail', '답 없음·크기·문자열·비밀 안전 검사 실패');
+  let parsed: unknown;
+  const text = answer.trim();
+  const blocks = [...text.matchAll(/^```(?:json)?[ \t]*\r?\n([\s\S]*?)\r?\n```[ \t]*$/gim)];
+  let candidate = text;
+  let outsideIdentity = false;
+  if (blocks.length) {
+    const block = blocks[0]!, outside = text.slice(0, block.index) + text.slice(block.index! + block[0].length);
+    if (blocks.length !== 1 || /[{}]/.test(outside) || outside.includes('```')) return result('확인 필요', '여러 응답·JSON 경계 확인 필요');
+    outsideIdentity = /\bidentity\b|정체성/i.test(outside);
+    candidate = block[1]!;
+  }
+  try { parsed = JSON.parse(candidate); }
+  catch { return result('확인 필요', 'JSON 형식 확인 필요'); }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return result('확인 필요', '응답 객체 확인 필요');
+  const p = parsed as Record<string, unknown>;
+  if (p.loaded === false) return result('fail', '원본 읽기 실패·미적재 보고');
+  if (typeof p.identity !== 'string' || !contains(p.identity, name, true)) return result('fail', '정체성 불일치·미적재');
+  if (outsideIdentity) return result('확인 필요', 'JSON 밖 정체성 진술 확인 필요');
+  if (typeof p.duties !== 'string' || !p.duties.trim() || typeof p.blocked !== 'string' || !p.blocked.trim() || !Array.isArray(p.dont) || !p.dont.length || p.dont.some((v) => typeof v !== 'string' || !v.trim())) return result('확인 필요', '필수 응답 구조 확인 필요');
+  if (!keywords.length) return result('확인 필요', '원본에 명시적 확인 키워드 없음');
+  const dont = p.dont as string[];
+  const missing = keywords.filter((key) => !dont.some((value) => contains(value, key)));
+  return missing.length ? result('확인 필요', missing.length === keywords.length ? '모든 금지 표지 누락: 미적재·의역 확인 필요' : '금지 항목 표현·키워드 확인 필요', missing) : result('pass', '이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)');
+}
+export function verificationPrompt(role: WorkerRole): string { return `${roleInstruction(role)}\n\n## 이 점검의 검증 책임\n${VERIFY_LOAD_NOTICE}\n\n## 고정 질문\n${VERIFY_QUESTIONS}`; }
+const failure = (name: string, agent: AgentName, reason: string): VerifyRow => ({ member: name, agent, method: 'prompt', definition: `.pace/team/${name}.md`, hash: null, requested: null, observed: null, response: null, status: 'fail', reason, missing: [] });
+/** Extra cwd/prompt are experiment injection only; CLI always uses the source checkout and normal prompt. */
+export async function verifyLoadedRole(root: string, role: WorkerRole, agent: AgentName, options: VerifyRunOptions & { cwd?: string; prompt?: string } = {}): Promise<VerifyRow> {
+  const row = failure(role.member.name, agent, '호스트 실행 실패');
+  row.hash = role.member.hash; row.requested = role.settings;
+  let keywords: string[];
+  try {
+    const text = readTeamFile(root, role.member.source);
+    if (text === null) throw new Error('missing source');
+    const current = parseTeamSource(text, role.member.name);
+    if (current.hash !== role.member.hash || hasSecret(current.body)) throw new Error('changed or unsafe source');
+    keywords = verifyKeywords(current);
+  } catch { row.reason = '호출 직전 원본·키워드·비밀 안전 검사 실패 (호스트 미호출)'; return row; }
+  try {
+    const request = validateRequest({ agent, mode: 'p', access: 'read-only', cwd: options.cwd ?? root, prompt: options.prompt ?? verificationPrompt(role), ...role.settings, timeoutMs: 180000 });
+    const invoke = options.invoke ?? ((r: AgentRequest) => runAgent(createPExecutor(agent === 'claude' ? claudeP : codexP, { env: options.env }), r));
+    const result = await invoke(request);
+    if (result.is_error) return row;
+    const evaluation = evaluateRoleAnswer(role.member.name, keywords, result.text);
+    Object.assign(row, evaluation);
+    // Never persist unsafe host text or arbitrary error diagnostics.
+    if (result.text.isWellFormed() && Buffer.byteLength(result.text) <= 65536 && !hasSecret(result.text)) row.response = result.text;
+    row.observed = { model: safeRoleSetting(result.model.value) ? result.model.value : null, source: ['reported', 'requested', 'model', 'table', 'unknown'].includes(result.model.source) ? result.model.source : 'unknown', effort: 'unconfirmed' };
+    const current = readTeamFile(root, role.member.source);
+    if (current === null || parseTeamSource(current, role.member.name).hash !== role.member.hash) {
+      row.status = 'fail'; row.reason = '검사 중 원본 변경·삭제';
+    }
+  } catch { row.status = 'fail'; row.reason = '호스트 실행·원본 재확인 실패 (오류 원문 비저장)'; }
+  return row;
+}
+function prepareOutput(root: string): void {
+  const path = safeTeamPath(root, '.pace/team/verify', true);
+  mkdirSync(path, { recursive: true, mode: 0o700 });
+  safeTeamPath(root, '.pace/team/verify', true);
+}
+export function storeVerifyReport(root: string, report: VerifyReport, id: string = randomUUID()): string {
+  if (!/^[a-z0-9-]{1,64}$/.test(id)) throw new Error('verify 기록 ID 오류');
+  prepareOutput(root);
+  const rel = `.pace/team/verify/${id}.json`, path = safeTeamPath(root, rel);
+  const text = JSON.stringify(report, null, 2) + '\n';
+  if (hasSecret(text)) throw new Error('verify 기록 비밀 안전 검사 실패');
+  const fd = openSync(path, 'wx', 0o600);
+  try { writeFileSync(fd, text, 'utf8'); } finally { closeSync(fd); }
+  return rel;
+}
+export async function verifyTeam(root: string, selection: { name?: string; all?: boolean; agent?: AgentName }, options: VerifyRunOptions = {}): Promise<{ report: VerifyReport; path: string; code: number }> {
+  if (!!selection.name === !!selection.all || (selection.name !== undefined && !safeRoleName(selection.name)) || (selection.agent !== undefined && selection.agent !== 'claude' && selection.agent !== 'codex')) throw new Error('verify 이름 또는 --all과 지원 host를 지정하세요');
+  prepareOutput(root);
+  const names = selection.name ? [selection.name] : teamFiles(root, '.pace/team', '.md').map((f) => f.slice(0, -3));
+  if (names.some((name) => !safeRoleName(name))) throw new Error('verify 구성원 이름 안전 검사 실패');
+  const agents: AgentName[] = selection.agent ? [selection.agent] : ['claude', 'codex'];
+  const rows: VerifyRow[] = [];
+  for (const agent of agents) {
+    if (!names.length) { rows.push(failure('없음', agent, '현재 원본 목록이 비어 있음')); continue; }
+    for (const name of names) {
+      let role: WorkerRole | undefined;
+      try { role = resolveWorkerRole(root, 'PROJECT.md', { role: name, agent, env: options.env }); }
+      catch { rows.push(failure(name, agent, '원본·설정 선검사 실패 (호스트 미호출)')); continue; }
+      rows.push(role ? await verifyLoadedRole(root, role, agent, options) : failure(name, agent, '역할 미선택'));
+    }
+  }
+  const status: VerifyStatus = rows.some((r) => r.status === 'fail') ? 'fail' : rows.some((r) => r.status === '확인 필요') ? '확인 필요' : 'pass';
+  const report: VerifyReport = { version: 1, phase: 'result', created: new Date().toISOString(), status, rows, native_tamper: '해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.', loading_notice: VERIFY_LOAD_NOTICE, session_self_hash_observed: false, limitation: VERIFY_LIMITATION };
+  return { report, path: storeVerifyReport(root, report), code: status === 'pass' ? 0 : status === 'fail' ? 1 : 2 };
+}
+export function verifyTable(report: VerifyReport): string {
+  const cell = (value: string) => value.replaceAll('|', '\\|').replace(/[\r\n]/g, ' ');
+  return ['| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |', '|---|---|---|---|---|---|', ...report.rows.map((r) => `| ${cell(r.member)} | ${r.agent} | prompt | ${cell(r.definition)} | ${r.status} | ${r.reason} |`)].join('\n');
+}

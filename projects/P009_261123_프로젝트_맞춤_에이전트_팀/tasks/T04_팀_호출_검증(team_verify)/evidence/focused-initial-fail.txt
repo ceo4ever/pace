@@ -1,0 +1,78 @@
+✔ project role RED: explicit member is accepted and no-launch carries the role (1489.189084ms)
+✔ project role RED: missing member is rejected before worktree creation (909.889708ms)
+✔ project role: no-role workerSpec is the pre-change golden (34.275542ms)
+✔ project role claude: argv overrides, default effort, and start provenance (2087.495333ms)
+✔ project role codex: argv overrides, default effort, and start provenance (2167.062667ms)
+✔ project role: PROJECT selection, explicit precedence, existing launch requirement, and worktree source (1911.247542ms)
+✔ project role: a team and native files do not imply a default role (3699.055333ms)
+✔ project role: nonhost, unsafe name/settings and misplaced option fail before any worker (4234.893ms)
+✔ project role: draft source is preserved and only committed role enters a new worktree (989.093375ms)
+✔ project role: preparation edits hold launch and preserve the prepared worktree (1042.546ms)
+✔ project role: restored branch reads its own committed PROJECT and source before creation (1462.057042ms)
+✔ project role: existing source links and malformed source fail without a worker (1492.821708ms)
+✔ project role: settings and shell metacharacters are a single quoted value (1364.995041ms)
+✔ project role: start record validation preserves legacy events and rejects malformed role rows (2.224292ms)
+✔ project role: role-free legacy PROJECT may be large and hardlinked (866.639208ms)
+✔ project role: ref PROJECT names use literal Git paths (526.896875ms)
+✔ project role: normalization guidance names CRLF to LF UTF-8 SHA256 (625.136416ms)
+✔ project role: unsafe settings reach semantic preflight and never create a worker (4741.490875ms)
+✔ project role: secret-looking member names never reach logs or diagnostics (641.660166ms)
+✔ project role: invalid PROJECT names and deleted PROJECT-selected sources hold before workers (2338.024875ms)
+✔ project role: unknown and failed launches retain distinct statuses without automatic retries (1694.591459ms)
+✔ 동일 시작 지시와 고정 질문만 전달하고 3명×두 host를 각각 판정한다 (27.402625ms)
+✔ 判定은 독립 기대 표지와 정체성 경계를 사용하고 의역을 실패로 단정하지 않는다 (0.669ms)
+✔ 명시 표지만 추출하고 코드·주석·중복·비밀 표식을 기대 값으로 만들지 않는다 (16.376083ms)
+✔ legacy 원본은 변경하지 않고 실제 호출 뒤 확인 필요·종료2 보고서를 남긴다 (14.494375ms)
+✔ 검사 중 원본 변경은 기존 이름·키워드가 맞아도 실패다 (15.701041ms)
+✔ 비밀 답과 오류 원문을 저장하거나 stdout에 노출하지 않는다 (22.727ms)
+✔ source 링크·hardlink·손상은 host 없이 fail 보고서를 남기고 원본은 보존한다 (64.157292ms)
+✔ 결과 경로 링크는 host 시작 전에 거부하고 파일 충돌·hardlink를 덮지 않는다 (29.867125ms)
+✔ all은 현재 목록이고 빈 팀은 실패, 삭제 대상 이름은 명시해서 검사한다 (15.117083ms)
+✖ 사용 조합 오류는 stderr·종료2이고 보고서와 호출을 만들지 않는다 (1062.800333ms)
+✔ verify 이름 지정 삭제 원본은 fail 보고서와 종료1이고 사용 오류2와 구분된다 (249.351458ms)
+✔ team CLI: 첫 커밋 없는 저장소에서 세 역할을 만들고 두 형식의 변경을 검출한다 (2642.690292ms)
+✔ worker tier CLI: 별도 파일에 등급을 저장하고 일반 worker 설정은 보존한다 (1065.026542ms)
+✔ team check JSON: 원본·설정·내용을 구별하고 복합 차이를 숨기지 않는다 (2515.962375ms)
+✔ team: CRLF 원본/생성물과 다른 위치에서도 입력이 같으면 일치한다 (957.321958ms)
+✔ team schema: 필수/중복/타입/이름/절을 검증하고 설명은 첫 문단 500 코드포인트다 (1422.939ms)
+✔ team 경로: 뒤 foreign 출력 충돌·관리 고아·무관 파일을 보존한다 (1108.192541ms)
+✔ team 경로: 원본·출력·조상 링크와 하드링크는 따라가지 않는다 (2683.582791ms)
+✔ team JSON: 잘못된 원본과 인자/저장소 오류는2·단일 JSON이다 (1153.436916ms)
+✔ team 출력: 파일 링크·하드링크·본문 안 표지는 관리 소유권이 아니다 (2968.016625ms)
+✔ worker tiers: 두 호스트×세 등급·잘못된 값·손상·링크를 검증한다 (6.020708ms)
+✔ worker tiers: constructor 이름은 상속 객체 대신 자기 설정에 저장한다 (204.6355ms)
+✔ worker show: 등급 파일 손상 시에도 기존 설정·유효값을 JSON으로 보존한다 (350.060166ms)
+✔ team 실행 전 대조: 네 역할·두 생성물에 고정 책임을 보존하고 약화·예시·누락은 오류2다 (4391.091458ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 44
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 34612.11625
+
+✖ failing tests:
+
+test at test/team-verify.test.ts:143:1
+✖ 사용 조합 오류는 stderr·종료2이고 보고서와 호출을 만들지 않는다 (1062.800333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '{"ok":false,"error":"pace team verify <이름> 또는 --all [--agent claude|codex]"}\n'
+  - ''
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-verify.test.ts:147:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '{"ok":false,"error":"pace team verify <이름> 또는 --all [--agent claude|codex]"}\n',
+    expected: '',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

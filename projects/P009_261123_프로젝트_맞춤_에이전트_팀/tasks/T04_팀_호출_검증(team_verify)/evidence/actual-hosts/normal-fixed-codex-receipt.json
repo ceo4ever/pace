@@ -1,0 +1,21 @@
+{
+  "args": [
+    "node",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+    "team",
+    "verify",
+    "--all",
+    "--agent",
+    "codex"
+  ],
+  "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo",
+  "pace_home": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/pace-home",
+  "start": "2026-11-24T01:49:34.291Z",
+  "end": "2026-11-24T01:50:21.814Z",
+  "code": 1,
+  "signal": null,
+  "stdout": "| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |\n|---|---|---|---|---|---|\n| vfy-lead-47cacc8d | codex | prompt | .pace/team/vfy-lead-47cacc8d.md | fail | 정체성 불일치·미적재 |\n| vfy-maker-420c42eb | codex | prompt | .pace/team/vfy-maker-420c42eb.md | fail | 정체성 불일치·미적재 |\n| vfy-reviewer-7e9a7134 | codex | prompt | .pace/team/vfy-reviewer-7e9a7134.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.\nReport: .pace/team/verify/f471bbde-a3c4-4734-a003-30834cc8c871.json\n",
+  "stderr": "",
+  "withheld": false,
+  "report_path": ".pace/team/verify/f471bbde-a3c4-4734-a003-30834cc8c871.json"
+}

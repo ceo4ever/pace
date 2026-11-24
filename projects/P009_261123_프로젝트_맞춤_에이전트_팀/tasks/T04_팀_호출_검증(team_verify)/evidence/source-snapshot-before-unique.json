@@ -1,0 +1,12 @@
+{
+  ".pace/test-map.json": "2c12b85d39120ede5a9e6ddc9a726038254fa4e7c9d363095434650250eff0f0",
+  "README.md": "bb9eeebe74404e26f8d367d395efab71c60fc7ff712a331127065de1ed0c34ea",
+  "docs/AGENT-CALL.md": "4b97e8eb417842c1319bb8c769c1b5351f62f1c90471d94ebf6468a50e9fd249",
+  "docs/README.md": "a2facd0c0755c399e0b797aeb5afb647828c7614d3218a57a1c00ce428cdc607",
+  "docs/SECURITY.md": "ad062ca18d4ed359b4ebc813554a6e2b9e1d1f5b37bfda69e4c9ae7ea0ecf68a",
+  "docs/TEAM.md": "80e3f32a53e3ef34339f52caaf7bbed4ddbc93ad4f78ea9e6fc14205d08d5331",
+  "src/cli.ts": "fdd5aa531c4094914bed251fdda550497a43a5913b34e0738ac63051492a0e57",
+  "src/team/verify.ts": "6c57944b158171ae4ec28abde1e5c2318b1f5f20af440c8eff3184c389a7c51f",
+  "templates/team/member.md": "141606deb0762c1e591e0e56a56c96a0390b9f0bd1b6685bb06b0375bfbab946",
+  "test/team-verify.test.ts": "bce16a24b9c7f44e6e5531eac10f922a53be250d303974a228e2b24942b35aec"
+}

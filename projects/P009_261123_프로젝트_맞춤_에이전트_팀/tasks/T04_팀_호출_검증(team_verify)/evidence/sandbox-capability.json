@@ -1,0 +1,18 @@
+{
+  "base": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-sandbox-hhVXVP",
+  "profile": "(version 1)(allow default)(deny file-read* (subpath \"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-sandbox-hhVXVP/original\"))",
+  "rows": [
+    {
+      "file": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-sandbox-hhVXVP/original/role.md",
+      "code": 1,
+      "stdout": "",
+      "stderr": "cat: /var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-sandbox-hhVXVP/original/role.md: Operation not permitted\n"
+    },
+    {
+      "file": "/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-sandbox-hhVXVP/control/plain.txt",
+      "code": 0,
+      "stdout": "control-only",
+      "stderr": ""
+    }
+  ]
+}

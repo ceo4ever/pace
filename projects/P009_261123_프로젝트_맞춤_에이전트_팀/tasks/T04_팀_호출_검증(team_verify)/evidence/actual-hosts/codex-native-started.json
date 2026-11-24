@@ -1,0 +1,4 @@
+{
+  "at": "2026-11-24T02:14:32.074Z",
+  "correction": "External seatbelt nesting prevented all Codex shell reads. Native :read-only profile adds the same original-repo deny without nesting. Inline config only; no user config or product code changed."
+}

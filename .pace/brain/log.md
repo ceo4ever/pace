@@ -66,3 +66,5 @@
 ## [2026-11-24] update | 프로젝트 지표 해석과 세션 기록 함정 (.pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md)
 ## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
 ## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-24] query | T04 team verify 설계 전 작업 하네스 역할 지시·전달/관측 구별과 세션 훅 경계를 검색; T03 roleInstruction 재사용 및 기술적 읽기 차단 음성 대조를 계획한다
+## [2026-11-24] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)

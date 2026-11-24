@@ -1,0 +1,62 @@
+{
+  "kind": "creation-only change, not captured role-loading protocol",
+  "at": "2026-11-24T02:41:30.700Z",
+  "before_template_sha256": "141606deb0762c1e591e0e56a56c96a0390b9f0bd1b6685bb06b0375bfbab946",
+  "after_template_sha256": "985fa9f68587c4254265521fbe0e506cdc78137ae8ecfa1874f2ea6c2657781e",
+  "before_store_sha256": "7bc61e027cf7a49b74a672234d949e8368eca1bd8b2f918dc2889e4c8198ed5e",
+  "after_store_sha256": "c63d392928a1bb6931f0b8d56056b07210a9747dfea0f5ceea29b3c83bb305e7",
+  "unchanged_read_functions": {
+    "teamRoot": {
+      "before": "10b788c89db3a7c4f870f093461eb728c4d77ca4cb97814d3be019136f7c8f63",
+      "after": "10b788c89db3a7c4f870f093461eb728c4d77ca4cb97814d3be019136f7c8f63"
+    },
+    "safeTeamPath": {
+      "before": "596377e67e624f0667a957c7d87509461bb4b26b99fa244590934d4bf8a1b87d",
+      "after": "596377e67e624f0667a957c7d87509461bb4b26b99fa244590934d4bf8a1b87d"
+    },
+    "readTeamFile": {
+      "before": "49b61508aa1d102ec7114382c4c7cecfcd1341b4e2fc367bb6c076aafffc16fd",
+      "after": "49b61508aa1d102ec7114382c4c7cecfcd1341b4e2fc367bb6c076aafffc16fd"
+    },
+    "teamFiles": {
+      "before": "1482ff2bc2337696d45162c13db5061eaaa2308545bd802bce5fd74c7bc63a6a",
+      "after": "1482ff2bc2337696d45162c13db5061eaaa2308545bd802bce5fd74c7bc63a6a"
+    },
+    "loadTeamMember": {
+      "before": "b21a8386773f1a69b185273e7382722196c36ed466eef9baa22a11cf71d66775",
+      "after": "b21a8386773f1a69b185273e7382722196c36ed466eef9baa22a11cf71d66775"
+    },
+    "loadTeam": {
+      "before": "d35fb026fe71073f0ed97d968f78f1244b530c816e67122c362c70b949d5dcde",
+      "after": "d35fb026fe71073f0ed97d968f78f1244b530c816e67122c362c70b949d5dcde"
+    }
+  },
+  "active_originals_unchanged": [
+    {
+      "name": "vfy-lead-47cacc8d",
+      "hash": "861eddd768b39b092530d907549645e244f82037505e2215fc9821e29041ab53",
+      "archive": "source-archive/vfy-lead-47cacc8d.md"
+    },
+    {
+      "name": "vfy-maker-420c42eb",
+      "hash": "5938d4cd9329a973b058ce4dad0da5aa6cd97dab037ea4692e94826d06f9d1ef",
+      "archive": "source-archive/vfy-maker-420c42eb.md"
+    },
+    {
+      "name": "vfy-reviewer-7e9a7134",
+      "hash": "b06610709ee1f60999b0fd10de05cc249863aa5378724e386417b9f09d90406c",
+      "archive": "source-archive/vfy-reviewer-7e9a7134.md"
+    },
+    {
+      "name": "legacy-maker",
+      "hash": "00de9f159b894c4550ff8c4b11c4c2749c3227136ea7d37602022b1ec4025418",
+      "archive": "source-archive/legacy-maker.md"
+    }
+  ],
+  "changed_paths": [
+    "createTeamMember new-marker generation",
+    "new source template placeholders"
+  ],
+  "live_calls_added": 0,
+  "limitation": "The creation template changed for future new roles. The captured model calls read existing nonce-bearing original files, which remain byte-identical. No new live sample of the default generator is claimed; uniqueness and lexical handling are unit-tested."
+}

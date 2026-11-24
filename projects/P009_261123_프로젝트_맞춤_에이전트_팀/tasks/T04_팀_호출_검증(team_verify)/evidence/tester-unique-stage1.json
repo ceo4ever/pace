@@ -1,0 +1,25 @@
+{
+  "text": "# T04 tester 보완 재검증 (첫 판단과 같은 맥락, 새 블라인드 아님) — **pass**\n\n첫 판단의 should_fix 두 건은 모두 반영됐습니다. 새로 생성되는 기본 정의의 형제 오인 위험도 고쳐졌습니다. 그 사이 TASK, PROJECT, BR, PRE, 결정 원문, 작업문서 2단계는 읽지 않았습니다.\n\n## 직접 실행한 것\n- focused 6개 시험 파일 → **75건 모두 통과**, 실패 0 (목표 75건과 일치)\n- `check-actual-proof.mjs` → 1건 통과. 출력은 `added_model_calls:0`, `live_fixture_reaudited:true`, `live_session_sources_reaudited:2`, `archived_control_events_checked:true`입니다. 임시 fixture와 Claude 세션 원본이 아직 남아 있어서 보관본만이 아니라 원본까지 다시 감사됐습니다.\n- 전체 검사, 새 host/model 호출, 파일 수정, 외부 작업은 하지 않았습니다. 해시 계산과 `git diff`는 지난번처럼 승인이 필요해 직접 돌리지 못했습니다. 그래서 해시 대조는 proof가 실행 중에 단언한 결과에 기댑니다.\n\n## 첫 판단 이후 바뀐 부분\n| 첫 판단 지적 | 지금 상태 | 판정 |\n|---|---|---|\n| should_fix 1: 현재 소스와 prefix의 해시 미대조 | proof가 이제 다음을 확인합니다. ① `worker-role.ts`와 `cli.ts`의 현재 SHA가 실측 당시 snapshot과 같음 ② 템플릿 SHA가 binding의 after 값과 같음 ③ `store.ts` 전후 SHA, 그리고 읽기 함수 6개(teamRoot·safeTeamPath·readTeamFile·teamFiles·loadTeamMember·loadTeam) 본문이 전후 같음 ④ read-denied capture의 prompt가 `roleInstruction(...)`으로 시작함 ⑤ unloaded capture의 prompt에는 구성원 이름이 없음 | 해소 |\n| should_fix 2: 임시 폴더 원본 의존 | 원본 정의 4개를 `source-archive/`에 SHA로 묶어 보관했습니다. Claude 대조 이벤트도 `claude-control-events-archive.json`에 보관했고, 담은 것은 대조 파일 Read 결과 텍스트와 거부 오류 텍스트뿐입니다(`full_transcripts_copied:false`). 원본이 남아 있으면 원본과 보관본을 같이 대조하고, 없으면 보관본만 대조하되 원본 재감사는 하지 않았다고 출력에 밝힙니다 | 해소 |\n| note: 이름만 대고 금지 항목을 의역하면 미적재와 구분이 안 됨 | 상태는 그대로 확인 필요입니다. 다만 표지가 하나도 없으면 이유가 `모든 금지 표지 누락: 미적재·의역 확인 필요`로 따로 나옵니다(`verify.ts:85`). 일부 누락과 이유로 구분됩니다 | 개선 |\n\n**새 변경: 생성 때 고유 표지 만들기**\n- `createTeamMember`가 구성원마다 `vfy-s-<16hex>`, `vfy-r-<16hex>`를 한 번 만들어 템플릿 자리표시자에 채웁니다(`store.ts:79-80`, `templates/team/member.md:22-23`). 템플릿을 쓰는 곳은 `store.ts` 하나뿐입니다.\n- 표지 길이는 22자로 32자 제한 안이고, `secrets.ts`의 비밀 탐지 패턴(AKIA, sk-, Bearer 등)에 걸리지 않습니다.\n- 새 시험(`team-verify.test.ts:80`)은 세 구성원의 표지 6개가 모두 다르고, 형제 구성원의 표지로 답하면 pass가 아니라 확인 필요가 되는지 확인합니다.\n- `docs/TEAM.md:137`도 고유값 예시와 \"new에서 한 번 생성, sync/verify는 다시 만들지 않음\"으로 고쳐졌습니다.\n\n**유지된 것**\n- 질문, 고지, prompt 조립 함수는 첫 판단 때와 같습니다(`verify.ts:11-17, 87`). 바뀐 곳은 판정 이유 문구 한 곳뿐입니다.\n- `worker-role.ts`, `cli.ts`, 저장소 읽기 함수 6개, 실측에 쓴 원본 정의 4개가 그대로라는 것은 proof의 해시 단언으로 확인됩니다.\n\n## 달성\n- 공통 prefix, 기대 답 없는 질문, 이름과 표지 대조, 상태 구분(정상 / 미적재 / 삭제 / 의역·legacy는 확인 필요)은 첫 판단 그대로 유지됩니다.\n- 기존 실제 응답 6건을 현재 판정기로 다시 평가해 6건 모두 pass입니다(`normal-fixed-replay-unique.json`, `live_calls_added:0`). 새 실제 호출로 표시하지 않았습니다.\n- 대조군 출처도 첫 판단 때처럼 구분돼 있습니다. Claude는 같은 세션의 tool_result에서 대조 파일 Read 성공과 거부 오류를 봤습니다. Codex는 같은 세션에서 대조 파일 cat 성공만 있고, 원본 거부는 같은 정책으로 따로 돌린 sandbox 직접 시험입니다. 모델이 실행한 거부 명령은 없다는 단언도 유지됩니다.\n- proof의 Codex 검사는 더 엄격해졌습니다. 거부 대상은 exit 1에 `Operation not permitted`가 나와야 하고, 프로필 설정이 시험 명령 인자에 그대로 들어 있어야 합니다.\n\n## 미확인\n- 새 기본 생성기(`vfy-s-`/`vfy-r-`)로 만든 정의는 실제로 호출해 본 적이 없습니다. binding 기록에도 그렇게 적혀 있습니다. 다만 실측 fixture도 무작위 표지 방식이라 구조는 같습니다.\n- 최종 판정기 바이트로 실제 호출을 다시 하지 않았습니다. 실제 작업자 자체 지문 계산, Orca 작업자, 의미 수준의 정확성도 첫 판단 때처럼 미확인입니다.\n\n## 지적\n- **blocking:** 없음.\n- **should_fix:** 없음.\n- **note**\n  1. proof는 `cli.ts`와 `worker-role.ts`의 현재 SHA를 snapshot과 똑같이 맞추라고 요구합니다. 그래서 이후 병합이나 다른 태스크에서 `cli.ts`가 바뀌면 이 proof는 실패합니다. proof 출력 문구에 이 점이 적혀 있으니 결함은 아니고, T04 시점 checkout에서만 돌릴 수 있는 증거라는 뜻입니다.\n  2. 임시 원본이 사라진 뒤의 보관본 대조는 같은 작성자가 남긴 해시와 텍스트가 서로 맞는지만 보는 것입니다. 외부에서 독립적으로 재감사할 수는 없게 되며, 출력에 그렇게 밝힙니다.\n  3. 예전 템플릿의 고정 표지(`미배정`/`검토독립`)로 이미 만든 정의는 자동으로 바뀌지 않아서 형제 오인 위험이 남습니다. 확인한 범위에서는 이 템플릿이 프로젝트 브랜치 커밋에만 있어서 배포된 사용자는 없어 보입니다.\n  4. 첫 판단의 note도 그대로 남습니다. 정체성은 이름이 들어 있는지만 봐서 부정문도 통과합니다. 표지 대조가 있어 잘못된 pass로 이어지지는 않습니다.\n\n## 앞 단계에서 고칠 것\n없음.\n\n**최종: pass**",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "b3226bcd-e345-446c-934c-70aa5a30f646",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 147729,
+  "usage": {
+    "input_tokens": 20,
+    "output_tokens": 7381
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

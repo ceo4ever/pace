@@ -1,0 +1,16 @@
+{
+  "args": [
+    "node",
+    "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+    "team",
+    "verify",
+    "vfy-lead-47cacc8d",
+    "--agent",
+    "claude"
+  ],
+  "code": 1,
+  "stdout": "| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |\n|---|---|---|---|---|---|\n| vfy-lead-47cacc8d | claude | prompt | .pace/team/vfy-lead-47cacc8d.md | fail | 원본·설정 선검사 실패 (호스트 미호출) |\n해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.\nReport: .pace/team/verify/6d1d9c83-cc40-47fc-b2eb-962e49631dd8.json\n",
+  "stderr": "",
+  "at": "2026-11-24T02:18:44.574Z",
+  "report_path": ".pace/team/verify/6d1d9c83-cc40-47fc-b2eb-962e49631dd8.json"
+}

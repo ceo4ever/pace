@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "7c1a4c2a8140306903f5741ed7dd8b336531fc6e5e10a0c50581449a82061761",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "654c70ca18e30801cf4ef8b32a6f5c714852be004916167f0380c948e4935155",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "R1 pass 뒤 상세 보완을 새 Anthropic 맥락에서 전체 검토"
+    },
+    {
+      "hash": "b539040f6f7534a4d8ae3f3a779a072e234b4016f3880fafa0a69db1bff725e9",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "실제 readonly hash 보류 원인과 main A 결정으로 계획 보완 뒤 새 전체 검토"
+    },
+    {
+      "hash": "f470f62d9e595d90d53b2780c6f73eaf2e24c56130b98605b5e8fa9c6f767766",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R4.json",
+      "continuity": "changed",
+      "reason": "R3 실패 뒤 자동 재검토로 B1 해소; source/BR04 2단계 원문·결정 연결"
+    },
+    {
+      "hash": "c59ef5985850f77366bd57c29bce090e09b9a092b37824e85177d1283bf5bd5b",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R5.json",
+      "continuity": "changed",
+      "reason": "사용자 증거 인정 방식과 한계 추가 뒤 전체 사전 검토"
+    },
+    {
+      "hash": "2de61ac8c996e97d50289c024bd4c922922b17918453108c18dfb4f1a3a603ef",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R6.json",
+      "continuity": "changed",
+      "reason": "사용자 인정 방식의 T4/S4 일치와 위임 범위 음성 증거 출처 보완 뒤 전체 검토"
+    }
+  ]
+}

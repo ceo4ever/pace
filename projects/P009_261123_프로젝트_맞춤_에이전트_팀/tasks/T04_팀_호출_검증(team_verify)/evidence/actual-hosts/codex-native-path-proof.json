@@ -1,0 +1,150 @@
+{
+  "at": "2026-11-24T02:19:57.716Z",
+  "added_model_calls": 0,
+  "rows": [
+    {
+      "kind": "unloaded",
+      "native_session": "unloaded-codex-native.json",
+      "same_policy_definition": true,
+      "checks": [
+        {
+          "check": "source",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/.pace/team/vfy-lead-47cacc8d.md"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/.pace/team/vfy-lead-47cacc8d.md: Operation not permitted\n"
+        },
+        {
+          "check": "control",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-unloaded/control-read.txt"
+          ],
+          "code": 0,
+          "stdout": "read-proof-3b1c1c08-9137-4639-8427-0f3fc1cd19ce\n",
+          "stderr": ""
+        },
+        {
+          "check": "write",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/usr/bin/touch",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-unloaded/native-profile-write-must-not-exist"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "touch: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-unloaded/native-profile-write-must-not-exist: Operation not permitted\n"
+        }
+      ],
+      "write_exists": false,
+      "limitation": "These denied commands are direct Codex sandbox probes using the same profile, not model-issued command events. Model-session successful control reads are recorded separately; model policy refusal is not misreported as an executed failed command."
+    },
+    {
+      "kind": "read-denied",
+      "native_session": "read-denied-codex-native.json",
+      "same_policy_definition": true,
+      "checks": [
+        {
+          "check": "source",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/.pace/team/vfy-lead-47cacc8d.md"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/.pace/team/vfy-lead-47cacc8d.md: Operation not permitted\n"
+        },
+        {
+          "check": "control",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/control-read.txt"
+          ],
+          "code": 0,
+          "stdout": "read-proof-39794657-cca1-4c76-b987-ac35f351092f\n",
+          "stderr": ""
+        },
+        {
+          "check": "write",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/usr/bin/touch",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/native-profile-write-must-not-exist"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "touch: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/native-profile-write-must-not-exist: Operation not permitted\n"
+        },
+        {
+          "check": "alias",
+          "args": [
+            "sandbox",
+            "-P",
+            "p009probe",
+            "-c",
+            "permissions.p009probe.extends=\":read-only\"",
+            "-c",
+            "permissions.p009probe.filesystem={\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"}",
+            "--",
+            "/bin/cat",
+            "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/.pace/team/vfy-lead-47cacc8d.md"
+          ],
+          "code": 1,
+          "stdout": "",
+          "stderr": "cat: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-native-read-denied/.pace/team/vfy-lead-47cacc8d.md: Operation not permitted\n"
+        }
+      ],
+      "write_exists": false,
+      "limitation": "These denied commands are direct Codex sandbox probes using the same profile, not model-issued command events. Model-session successful control reads are recorded separately; model policy refusal is not misreported as an executed failed command."
+    }
+  ]
+}

@@ -6,6 +6,8 @@ import { readWorkerSettings, resolveWorkerSettings, setWorkerSettings } from "./
 import { setWorkerTier, teamTierTable } from "./core/worker-tiers.ts";
 import { createTeamMember, loadTeam, teamRoot } from "./team/store.ts";
 import { syncTeam } from "./team/sync.ts";
+import { verifyTeam, verifyTable } from "./team/verify.ts";
+import { hasSecret } from "./project/secrets.ts";
 import { BacklogError, newBacklog, newBrief } from "./project/backlog.ts";
 import { newRun } from "./scout/run.ts";
 import { renderRun, schemaPath } from "./scout/report.ts";
@@ -158,6 +160,7 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace project new "<이름>" [--from <BL 폴더 또는 앞부분>]   프로젝트 폴더·PROJECT.md (main)
   pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>
   pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]
+  pace team verify <이름> 또는 --all [--agent claude|codex]      역할 적재·고정 질문 점검
   pace project start <P###> [--model <모델>] [--effort <값|default>] [--agent <도구>] [--no-launch|--launch]   정의 커밋 + worktree(../<저장소>.wt/P###) (main). Orca 안이면 작업자 세션을 띄우고 이 세션이 코디네이터
   pace project task <P###> "<이름>"              태스크 폴더·TASK.md·태스크 표 행 (worktree)
   pace project check <P###> <T##>                커밋 게이트 확인 — TASK-CLOSE (worktree)
@@ -980,10 +983,17 @@ async function agentCommand(args: string[]): Promise<number> {
   }
 }
 
-function teamCommand(args: string[]): number {
+async function teamCommand(args: string[]): Promise<number> {
   try {
-    const { values, positionals } = parseArgs({ args, options: { role: { type: "string" }, check: { type: "boolean" }, json: { type: "boolean" } }, allowPositionals: true, strict: true });
+    const { values, positionals } = parseArgs({ args, options: { role: { type: "string" }, check: { type: "boolean" }, json: { type: "boolean" }, all: { type: "boolean" }, agent: { type: "string" } }, allowPositionals: true, strict: true });
     const [sub, name] = positionals;
+    if (sub === "verify") {
+      if ((positionals.length !== 1 && positionals.length !== 2) || (!!name === !!values.all) || values.role !== undefined || values.check || values.json || (values.agent !== undefined && values.agent !== "claude" && values.agent !== "codex")) throw new UsageError("pace team verify <이름> 또는 --all [--agent claude|codex]");
+      const result = await verifyTeam(teamRoot(process.cwd()), { name, all: values.all, agent: values.agent });
+      process.stdout.write(`${verifyTable(result.report)}\n${result.report.native_tamper}\nReport: ${result.path}\n`);
+      return result.code;
+    }
+    if (values.all || values.agent !== undefined) throw new UsageError("--all·--agent는 team verify에서만 사용한다");
     if (!((sub === "new" && positionals.length === 2 && values.role && !values.check && !values.json) ||
           (sub === "list" && positionals.length === 1 && values.role === undefined && !values.check && !values.json) ||
           (sub === "sync" && positionals.length === 1 && values.role === undefined && (!values.json || values.check)))) throw new UsageError("pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]");
@@ -1008,8 +1018,9 @@ function teamCommand(args: string[]): number {
     }
     return 0;
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    if (args.includes("--json")) process.stdout.write(JSON.stringify({ ok: false, error: message }) + "\n");
+    const rawMessage = error instanceof Error ? error.message : String(error);
+    const message = args[0] === "verify" && hasSecret(rawMessage) ? "verify 입력 안전 검사 실패" : rawMessage;
+    if (args[0] !== "verify" && args.includes("--json")) process.stdout.write(JSON.stringify({ ok: false, error: message }) + "\n");
     else process.stderr.write(`team: ${message}\n`);
     return 2;
   }

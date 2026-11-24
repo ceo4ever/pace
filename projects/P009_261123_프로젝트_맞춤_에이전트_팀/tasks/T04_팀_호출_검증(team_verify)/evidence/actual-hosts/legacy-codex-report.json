@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "phase": "result",
+  "created": "2026-11-24T02:19:03.713Z",
+  "status": "확인 필요",
+  "rows": [
+    {
+      "member": "legacy-maker",
+      "agent": "codex",
+      "method": "prompt",
+      "definition": ".pace/team/legacy-maker.md",
+      "hash": "00de9f159b894c4550ff8c4b11c4c2749c3227136ea7d37602022b1ec4025418",
+      "requested": {
+        "model": "gpt-6.2-sol",
+        "effort": "low"
+      },
+      "observed": {
+        "model": "gpt-6.2-sol",
+        "source": "reported",
+        "effort": "unconfirmed"
+      },
+      "response": "{\n  \"identity\": \"나는 legacy-maker다. 이 저장소의 maker로서 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"배정된 범위를 구현하고 관련 검사를 실행한다. 완료 보고에 수행 내용, 검증 근거, 결과와 한계, 남은 일을 기록한다.\",\n  \"dont\": [\n    \"배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"reviewer는 작업본을 수정하지 않는다.\",\n    \"미확인 해석을 승인된 것으로 바꾸지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 지시를 캡틴 원문, 확인된 해석 또는 계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청으로 올린다. 역할 밖 요청이나 결정이 필요하면 HANDOFF: lead | 요청 | 근거 형식으로 올리고, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적고, 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않는다.\"\n}",
+      "status": "확인 필요",
+      "reason": "원본에 명시적 확인 키워드 없음",
+      "missing": []
+    }
+  ],
+  "native_tamper": "해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.",
+  "loading_notice": "이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.",
+  "session_self_hash_observed": false,
+  "limitation": "verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다."
+}

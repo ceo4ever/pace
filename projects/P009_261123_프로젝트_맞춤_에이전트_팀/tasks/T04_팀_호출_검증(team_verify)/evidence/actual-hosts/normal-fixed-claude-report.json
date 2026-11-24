@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "phase": "result",
+  "created": "2026-11-24T01:50:01.576Z",
+  "status": "확인 필요",
+  "rows": [
+    {
+      "member": "vfy-lead-47cacc8d",
+      "agent": "claude",
+      "method": "prompt",
+      "definition": ".pace/team/vfy-lead-47cacc8d.md",
+      "hash": "861eddd768b39b092530d907549645e244f82037505e2215fc9821e29041ab53",
+      "requested": {
+        "model": "claude-opus-5-5",
+        "effort": "low"
+      },
+      "observed": {
+        "model": "claude-opus-5-5",
+        "source": "reported",
+        "effort": "unconfirmed"
+      },
+      "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"vfy-lead-47cacc8d — 이 저장소의 lead 역할로, 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"프로젝트 계약을 확인하고 담당·검토·인계를 정리하며 완료 근거를 통합한다. 위임을 받으면 실행 전에 지시가 근거(캡틴 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 완료 보고에는 수행 내용·검증 근거·남은 일을 기록한다.\",\n  \"dont\": [\n    \"`vfy-a94d4556` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-0784adc1` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"범위가 달라졌거나 근거가 불명확하면 실행을 보류하고, 결정 요청 형식(요청 내용·결정 주체·근거·선택지·추천과 이유)으로 올린다. 역할 밖 요청이나 결정은 'HANDOFF: lead | 요청 | 근거' 형식으로 올린다. lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않고, 확인되지 않은 해석을 승인된 것으로 바꾸지 않는다.\"\n}\n```",
+      "status": "pass",
+      "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+      "missing": []
+    },
+    {
+      "member": "vfy-maker-420c42eb",
+      "agent": "claude",
+      "method": "prompt",
+      "definition": ".pace/team/vfy-maker-420c42eb.md",
+      "hash": "5938d4cd9329a973b058ce4dad0da5aa6cd97dab037ea4692e94826d06f9d1ef",
+      "requested": {
+        "model": "claude-opus-5-5",
+        "effort": "low"
+      },
+      "observed": {
+        "model": "claude-opus-5-5",
+        "source": "reported",
+        "effort": "unconfirmed"
+      },
+      "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"vfy-maker-420c42eb — 이 저장소의 maker 역할로, 프로젝트 계약과 배정된 범위에 따라 일한다.\",\n  \"duties\": \"배정된 범위를 구현하고 관련 검사를 실행한 뒤 결과와 한계를 보고한다. 위임을 받으면 실행하기 전에 지시가 근거(캡틴 원문, 확인된 해석 또는 계약)와 같은 범위인지 대조한다. 완료 보고에는 수행 내용, 검증 근거, 남은 일을 기록한다.\",\n  \"dont\": [\n    \"`vfy-1619f30e` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-484a77e3` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청으로 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 그 이유를 적는다. 역할 밖의 요청이나 결정이 필요하면 'HANDOFF: lead | 요청 | 근거' 형식으로 올리고, lead의 범위를 넘는 결정은 coordinator를 거쳐 사용자에게 올린다. 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않으며, 확인되지 않은 해석을 승인된 것으로 바꾸지 않는다.\"\n}\n```\n\n정의 파일을 직접 읽고 답했습니다. 요청에 따라 SHA256 지문은 제가 계산하지 않았으니 호출자 쪽에서 대조해 주세요.",
+      "status": "확인 필요",
+      "reason": "JSON 형식 확인 필요",
+      "missing": []
+    },
+    {
+      "member": "vfy-reviewer-7e9a7134",
+      "agent": "claude",
+      "method": "prompt",
+      "definition": ".pace/team/vfy-reviewer-7e9a7134.md",
+      "hash": "b06610709ee1f60999b0fd10de05cc249863aa5378724e386417b9f09d90406c",
+      "requested": {
+        "model": "claude-opus-5-5",
+        "effort": "low"
+      },
+      "observed": {
+        "model": "claude-opus-5-5",
+        "source": "reported",
+        "effort": "unconfirmed"
+      },
+      "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"vfy-reviewer-7e9a7134 — 이 저장소의 reviewer 역할로, 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"작성자와 독립된 근거로 결함과 계약 충족 여부를 판정하고 지적 사항을 반환한다. 위임을 받으면 실행 전에 지시가 근거(캡틴 원문, 확인된 해석 또는 계약)와 같은 범위인지 대조한다. 완료 보고에는 수행 내용, 검증 근거, 남은 일을 기록한다.\",\n  \"dont\": [\n    \"`vfy-328f1b15` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-45a44525` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"범위가 달라졌거나 근거가 불명확하면 실행을 보류하고, 결정 주체·근거·선택지를 담은 결정 요청 형식으로 올린다. 역할 밖 요청이나 결정이 필요하면 'HANDOFF: lead | 요청 | 근거' 형식으로 lead에게 올리고, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 그 이유를 적는다. 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않으며, 확인되지 않은 해석을 승인된 것으로 바꾸지 않는다.\"\n}\n```",
+      "status": "pass",
+      "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+      "missing": []
+    }
+  ],
+  "native_tamper": "해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.",
+  "loading_notice": "이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.",
+  "session_self_hash_observed": false,
+  "limitation": "verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다."
+}

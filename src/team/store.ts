@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import { closeSync, constants, fstatSync, lstatSync, mkdirSync, openSync, readSync, realpathSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { packageRoot, assertSafeGitPath } from "../core/paths.ts";
@@ -73,7 +74,11 @@ export function createTeamMember(root: string, name: string, role: string): Team
   const tier = role === "lead" || role === "reviewer" ? "high" : "medium";
   const template = readTeamFile(packageRoot, "templates/team/member.md");
   if (template === null) throw new Error("팀 원본 템플릿이 없다");
-  const text = fillTemplate(template, { name, role, tier, duties: duties[role] });
+  const text = fillTemplate(template, {
+    name, role, tier, duties: duties[role],
+    scopeMarker: `vfy-s-${randomUUID().replaceAll("-", "").slice(0, 16)}`,
+    reviewMarker: `vfy-r-${randomUUID().replaceAll("-", "").slice(0, 16)}`,
+  });
   const member = parseTeamSource(text, name);
   const target = safeTeamPath(root, member.source);
   mkdirSync(dirname(target), { recursive: true });

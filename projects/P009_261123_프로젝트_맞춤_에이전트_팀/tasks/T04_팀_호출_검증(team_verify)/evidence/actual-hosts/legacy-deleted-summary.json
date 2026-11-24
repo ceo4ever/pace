@@ -1,0 +1,27 @@
+{
+  "at": "2026-11-24T02:19:03.724Z",
+  "deleted_source_restored_identically": true,
+  "legacy_source_unchanged": true,
+  "legacy_hash": "00de9f159b894c4550ff8c4b11c4c2749c3227136ea7d37602022b1ec4025418",
+  "deleted": [
+    {
+      "code": 1,
+      "status": "fail"
+    },
+    {
+      "code": 1,
+      "status": "fail"
+    }
+  ],
+  "legacy": [
+    {
+      "code": 2,
+      "status": "확인 필요"
+    },
+    {
+      "code": 2,
+      "status": "확인 필요"
+    }
+  ],
+  "limitation": "Deletion is named preflight failure with no host invocation. All scans only the current source roster; missing managed originals are also diagnosed by sync --check."
+}

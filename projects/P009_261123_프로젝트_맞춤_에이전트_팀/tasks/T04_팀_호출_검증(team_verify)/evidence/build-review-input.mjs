@@ -1,0 +1,13 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+const e = import.meta.dirname, root = resolve(e, '../../../../..');
+const git = args => { const r = spawnSync('git', args, { cwd: root, encoding: 'utf8' }); if (![0, 1].includes(r.status)) throw Error(r.stderr); return r.stdout; };
+const paths = new Set([...git(['diff', '--name-only']).trim().split('\n'), ...git(['ls-files', '--others', '--exclude-standard']).trim().split('\n')].filter(p => /^(?:src\/|test\/|docs\/|templates\/)/.test(p) || ['README.md', '.pace/test-map.json'].includes(p)));
+let diff = git(['diff', '--', ...paths]);
+for (const p of paths) if (!git(['ls-files', '--', p]).trim()) diff += git(['diff', '--no-index', '--', '/dev/null', p]);
+diff += '\n\nActual observations (not author work documents):\n' + readFileSync(join(e, 'observations.md'), 'utf8');
+for (const p of ['normal-fixed-replay-unique.json', 'creation-only-binding.json', 'claude-controls-session-proof.json', 'codex-native-path-proof.json', 'legacy-deleted-summary.json']) diff += `\n\nactual-hosts/${p}:\n` + readFileSync(join(e, 'actual-hosts', p), 'utf8');
+writeFileSync(join(e, 'impl-diff.patch'), diff);
+writeFileSync(join(e, 'source-snapshot.json'), JSON.stringify(Object.fromEntries([...paths].sort().map(p => [p, createHash('sha256').update(readFileSync(join(root, p))).digest('hex')])), null, 2) + '\n');

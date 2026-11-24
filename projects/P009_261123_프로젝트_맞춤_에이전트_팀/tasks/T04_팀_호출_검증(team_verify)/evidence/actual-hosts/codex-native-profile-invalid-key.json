@@ -1,0 +1,59 @@
+{
+  "rows": [
+    {
+      "kind": "denied",
+      "args": [
+        "sandbox",
+        "-P",
+        "p009probe",
+        "-c",
+        "permissions.p009probe.extends=\":read-only\"",
+        "-c",
+        "permissions.p009probe.filesystem.\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"",
+        "--",
+        "/bin/cat",
+        "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo/denied-sentinel.txt"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "Error: filesystem path `\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"` must be absolute, use `~/...`, or start with `:`\n"
+    },
+    {
+      "kind": "control",
+      "args": [
+        "sandbox",
+        "-P",
+        "p009probe",
+        "-c",
+        "permissions.p009probe.extends=\":read-only\"",
+        "-c",
+        "permissions.p009probe.filesystem.\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"",
+        "--",
+        "/bin/cat",
+        "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-unloaded/control-read.txt"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "Error: filesystem path `\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"` must be absolute, use `~/...`, or start with `:`\n"
+    },
+    {
+      "kind": "write",
+      "args": [
+        "sandbox",
+        "-P",
+        "p009probe",
+        "-c",
+        "permissions.p009probe.extends=\":read-only\"",
+        "-c",
+        "permissions.p009probe.filesystem.\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"=\"deny\"",
+        "--",
+        "/usr/bin/touch",
+        "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/codex-unloaded/write-must-not-exist"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "Error: filesystem path `\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T04-actual-CPd7Zv/repo\"` must be absolute, use `~/...`, or start with `:`\n"
+    }
+  ],
+  "write_exists": false
+}
