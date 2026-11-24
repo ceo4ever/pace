@@ -38,7 +38,7 @@
 | 에이전트 호출 | `src/agent/` | TypeScript | `pace agent setup`·`run`·`verify` — 다른 제공자 에이전트를 `-p`·ACP로 부르는 호출 계약·체인·폴백 · [AGENT-CALL](AGENT-CALL.md#에이전트-호출) |
 | 검사 선택 | `src/test-runner/`, `.pace/test-map.json` | TypeScript·Node·Python unittest·vitest | `pace test changed·file·unit·all` — 변경 관련 단위·지정 단위·선언 전체 검사(불확실하면 전체) · [TESTING](TESTING.md#검사-선택) |
 | 공통 | `src/core/` | TypeScript | 경로·파일·frontmatter · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
-| 저장소 팀 | `src/team/`, `src/core/worker-tiers.ts`, `templates/team/` | TypeScript·Markdown·TOML | 원본·호스트 정의 동기화와 어긋남 검사, 고정 질문의 실제 적재 점검 · [TEAM](TEAM.md) |
+| 저장소 팀 | `src/team/`, `src/core/worker-tiers.ts`, `templates/team/` | TypeScript·Markdown·TOML | 원본·호스트 동기화, 실제 적재 점검과 참여 자원 잠금 · [TEAM](TEAM.md) |
 | 메모리 | `src/memory/` | TypeScript | 프로필·프로젝트 공용 저장소 · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
 | 프로필 | `src/profile/` | TypeScript | 프로필 생성·복제, 온보딩 질문 원본 · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
 | 프로젝트 | `src/project/` | TypeScript | 상황 판별, 브레인, 작업 하네스(`harness.ts`) · [WORK-PROCESS](WORK-PROCESS.md) |

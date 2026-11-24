@@ -1,0 +1,16 @@
+{
+  ".pace/test-map.json": "351a4052dd91ad37f3ccc06632b2665f4475de36912217695752dfc97a2e6dca",
+  "README.md": "f783c8d8005cafdf80fecd0e6d7d861cf604dbecd2acb7e22a7848aae3c22b5c",
+  "docs/README.md": "39702fa92f353d22b2ac53cc603c354177b111162a1ffa172409f4794ab5261a",
+  "docs/SECURITY.md": "e2a9c56018ad1f69e37b155bbebdebab8f8d09436017d0cf0748444307bc21e1",
+  "docs/TEAM.md": "d324f010ff5c2505cb8fbaa2a20c06153a51a190a846dc683f389ae038936eeb",
+  "skills/pace-project-dev/references/coordinator.md": "3cdb38f2b2538b63fbe9543b703c071507a3eda39430875f5748897dfb65afe2",
+  "src/cli.ts": "78a8bc992f4327237e3c394dde9397c51a4c85286938fa56e6cfda02fac9b92c",
+  "src/team/resource-child.ts": "7e6815dda3216923e5d57d8f889404bc23b740ae02f9bc7c11ebd6db41c3f330",
+  "src/team/resource-cli.ts": "82321efdda21af518e350d2fd70686f72e39c28aea50cc8264b0893bba6bb129",
+  "src/team/resource-lock.ts": "f734cfad09e07a6f455c4bf39733611d9433e24582442ded90957d0a6f6b8536",
+  "src/team/resource-process.ts": "2f3442cb58e2d19a06632bc9f4078de0b0c570a0f82a2c755963b4fd558c83a9",
+  "src/team/resources.ts": "4846c73b870ea1612e3f14cea4d0c4d7caa4365dd7924124ea344046b2ff84e4",
+  "src/team/store.ts": "87c223117aa968043faaac25200a4412d18ec2afddd3cf4c2c5e274bcb0d8bdd",
+  "test/team-lock.test.ts": "13a4cbf474830f641c7f40adf220181f12ce04c6e1ea41bf7034e44c0980c542"
+}

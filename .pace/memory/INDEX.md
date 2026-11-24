@@ -41,6 +41,7 @@
 - [dashboard-init-형제-스냅숏-간헐-실패](dashboard-init-형제-스냅숏-간헐-실패.md) — dashboard-init의 형제 저장소 불변 스냅숏이 전체 검사에서 간헐 실패하면 원문·단독·무변경 재실행을 대조해 원인을 찾는다
 - [T04 사후 사전검토 지적 3건](t04-사후-사전검토-지적-3건.md) — daemon 승인·복구 검증 보강 3건 — 만료 시각 지난 pending 승인 콜백 단위 시험, 부분 쓰기 뒤 강제 중단 복구 실측, 강제 종료 직전 daemon 소유권 대조
 - [역할-지문-crlf-호스트-대조](역할-지문-crlf-호스트-대조.md) — Windows CRLF checkout에서 역할 지문 정규화와 정상 원본 보류 여부를 실제 호스트로 확인한다
+- [잠금 소유자 조회 미확정](잠금-소유자-조회-미확정.md) — 첫 실측의 owner unknown 원인을 확정하지 말고 재발 시 ownerCheck와 조회 실패 조건을 수집한다
 
 ## 할 일
 
@@ -91,4 +92,5 @@
 - [정의서 측정 도구 제공](정의서-측정-도구-제공.md) — pace-project-init의 정의서 측정(크기·절·비고·미등록 폴더·문서·서브 문서)을 CLI나 스킬 도구로 제공 — 지금은 analysis.md에 재는 법만 있다
 - [daemon 설정 PC 이전](daemon-설정-pc-이전.md) — daemon 설정 내보내기·가져오기로 새 PC 설치를 토큰 입력 하나로 줄인다
 - [ask_user 단계 지적 크기 기준](ask-user-단계-지적-크기-기준.md) — reviewer.md 반복 실패 절: 진단 뒤 fail도 PM이 근본 조치(채우기·덜어내기) 뒤 재검증하고 사후 보고 — 사용자 사전 결정은 심각한 오류·보안·목적·범위 변경만
+- [공유 잠금 가용성 보강](공유-잠금-가용성-보강.md) — 안전 확인을 보존하는 guard 복구·busy 대기 큐를 별도 설계한다
 - [사람 식별자 user·owner 통일](사람-식별자-user-owner-통일.md) — 결정 주체 user(review-note·LogActor·waiver)와 수신자 owner(P009 --to)를 owner로 통일하고 user는 옛 값으로 읽기 검토

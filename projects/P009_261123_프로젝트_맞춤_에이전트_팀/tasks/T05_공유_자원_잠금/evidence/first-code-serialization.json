@@ -1,0 +1,23 @@
+{
+  "reason": "비밀이 아닌 TypeScript 원시 타입 표기가 비밀 KV 패턴과 충돌했다. 소스는 매개변수 이름을 명확히 바꾸고, 첫 원문 바이트는 gzip 사본에 보존했다. JSON은 해당 코드 콜론의 표준 Unicode escape만 달라지며 파싱한 모든 값·판정·snapshot/result 해시 입력은 동일함을 직접 단언했다. 탐지 규칙/제외 목록을 바꾸지 않았다.",
+  "receipts": [
+    {
+      "name": "impl-diff.patch",
+      "archive": "first-impl-diff.patch.gz",
+      "sha256": "6275cd24b3fcf8934a1016d23d8c823e33a43db029b0f9d70c09d3734b047608",
+      "logicallyEqual": null
+    },
+    {
+      "name": "review-records/R1.json",
+      "archive": "first-review-records-R1.json.gz",
+      "sha256": "1d0340d2cd909f100e3e23946605c43f9d1488896d83aecad8a3aa36f2dd31a5",
+      "logicallyEqual": true
+    },
+    {
+      "name": "impl-review-stage1.json",
+      "archive": "first-impl-review-stage1.json.gz",
+      "sha256": "1d0340d2cd909f100e3e23946605c43f9d1488896d83aecad8a3aa36f2dd31a5",
+      "logicallyEqual": true
+    }
+  ]
+}

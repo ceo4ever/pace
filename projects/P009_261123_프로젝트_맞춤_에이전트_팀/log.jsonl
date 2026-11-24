@@ -69,3 +69,10 @@
 {"ts":"2026-11-24T03:20:48.221Z","p":"P009","t":"T04","type":"review","by":"agent","msg":"최종 reviewer pass blocking 0 should_fix 2; 위임 main 동등성 확인·SECURITY 보존정책으로 처리, tester pass blocking 0 should_fix 2; 최종 unique 증거 연결·Claude 권한 오류 표현으로 처리","data":{"blocking":0,"should_fix":2,"tester":1,"reviewer":1,"pass":1,"fail":0}}
 {"ts":"2026-11-24T03:20:48.505Z","p":"P009","t":"T04","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-24T03:20:48.505Z","p":"P009","t":"T04","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-24T03:21:06.648Z","p":"P009","t":"T05","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-24T03:25:34.976Z","p":"P009","t":"T05","type":"decision","by":"agent","msg":"사전 검토 B1에 따라 래퍼뿐 아니라 영속 기록한 자식 process group 부재까지 소유자 종료 조건에 포함; IPC bridge 기록 전 실행 금지와 실제 래퍼 강제종료·자식 생존 회귀를 추가하며 범위·목표는 유지","src":"자체 판단"}
+{"ts":"2026-11-24T04:04:07.289Z","p":"P009","t":"T05","type":"decision","by":"agent","msg":"공통 guard 자동 회수와 busy 대기 큐는 추가하지 않고 승인된 보수적 수동 복구·거부 계약을 유지; 짧은 guard 경합만 유한 재시도하고 모든 상태 불명은 보류, 자기 갱신은 시작 식별 캐시로 검증하며 반복 감사 파일 생성을 제거","src":"자체 판단"}
+{"ts":"2026-11-24T04:13:03.960Z","p":"P009","t":"T05","type":"review","by":"agent","msg":"최종 reviewer pass blocking 0 should_fix 2: 중단 guard/일반 신호 지연·busy 대기는 보수적 수동 복구와 거부 계약으로 처리 및 idea 추적; tester pass blocking 0: 신호·실제 CLI 회수 성공 추가 확인, 현재 이름19/19·최신전체1111 실패0·비밀검사 근거를 최종 연결","data":{"blocking":0,"should_fix":2,"tester":1,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-24T04:13:04.276Z","p":"P009","t":"T05","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-24T04:13:04.640Z","p":"P009","t":"T05","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-24T04:13:04.640Z","p":"P009","t":"T05","type":"task_done","by":"cli","msg":"done","ok":true}

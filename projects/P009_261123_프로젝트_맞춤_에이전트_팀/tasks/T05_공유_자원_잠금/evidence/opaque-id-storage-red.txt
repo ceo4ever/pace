@@ -1,0 +1,167 @@
+✔ 자원 메타파일은 역할이 아니며 상태 CLI는 아직 잠기지 않은 자원을 표시한다 (775.776125ms)
+✔ 자원 JSON은 범위·동시1·argv·중복·모르는 키·크기·비밀 후보를 거부한다 (2.028334ms)
+✖ 소유자/자원 상태 행렬: stale heartbeat도 살아 있으면 거부하고 dead+free만 회수한다 (28.576208ms)
+✖ 토큰 fencing: 구 토큰 해제·갱신은 새 획득을 바꾸지 않는다 (22.772166ms)
+✖ started 그룹은 모든 해제 경로에서 종료 확인하고 pre-start도 자원 확인은 생략하지 않는다 (23.706916ms)
+✖ 확인기 없는 정상 완료와 전경 모드는 종료 후 근거 있는 수동 확인까지 잠금을 보존한다 (21.597083ms)
+✖ repo scope는 두 worktree 공통 위치, machine은 다른 저장소까지 공유하고 scope 불일치는 보류한다 (95.839416ms)
+✖ 선언 지문 불일치는 released 상태에서도 막고 설명만 바꾸면 유지한다 (43.605417ms)
+✖ 손상 상태·PGID 0/1·링크·hardlink·중단 guard·감사 실패는 보류하고 바깥 파일을 바꾸지 않는다 (45.964208ms)
+✖ 실제 래퍼는 명령을 START 기록 후 실행하고 자동 갱신하며 다른 worktree 요청을 거부한다 (5022.478166ms)
+✖ 실제 래퍼 SIGKILL+자식 생존+free probe는 회수하지 않는다 (5028.066792ms)
+✖ 실제 자식 정상 종료+손자 생존+free probe도 정상 해제하지 않는다 (212.498709ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 2
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11437.772708
+
+✖ failing tests:
+
+test at test/team-lock.test.ts:60:1
+✖ 소유자/자원 상태 행렬: stale heartbeat도 살아 있으면 거부하고 dead+free만 회수한다 (28.576208ms)
+  Error: 잠금 기록 안전 검사 실패
+      at writeJson (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:50:65)
+      at ResourceLock.audit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:157:5)
+      at ResourceLock.commit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:160:10)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:194:12
+      at inState (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:126:18)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:128:97
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:119:19
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at ResourceLock.operation (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:115:17)
+
+test at test/team-lock.test.ts:75:1
+✖ 토큰 fencing: 구 토큰 해제·갱신은 새 획득을 바꾸지 않는다 (22.772166ms)
+  Error: 잠금 기록 안전 검사 실패
+      at writeJson (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:50:65)
+      at ResourceLock.audit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:157:5)
+      at ResourceLock.commit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:160:10)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:194:12
+      at inState (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:126:18)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:128:97
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:119:19
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at ResourceLock.operation (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:115:17)
+
+test at test/team-lock.test.ts:90:1
+✖ started 그룹은 모든 해제 경로에서 종료 확인하고 pre-start도 자원 확인은 생략하지 않는다 (23.706916ms)
+  Error: 잠금 기록 안전 검사 실패
+      at writeJson (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:50:65)
+      at ResourceLock.audit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:157:5)
+      at ResourceLock.commit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:160:10)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:194:12
+      at inState (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:126:18)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:128:97
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:119:19
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at ResourceLock.operation (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:115:17)
+
+test at test/team-lock.test.ts:108:1
+✖ 확인기 없는 정상 완료와 전경 모드는 종료 후 근거 있는 수동 확인까지 잠금을 보존한다 (21.597083ms)
+  Error: 잠금 기록 안전 검사 실패
+      at writeJson (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:50:65)
+      at ResourceLock.audit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:157:5)
+      at ResourceLock.commit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:160:10)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:194:12
+      at inState (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:126:18)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:128:97
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:119:19
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at ResourceLock.operation (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:115:17)
+
+test at test/team-lock.test.ts:122:1
+✖ repo scope는 두 worktree 공통 위치, machine은 다른 저장소까지 공유하고 scope 불일치는 보류한다 (95.839416ms)
+  Error: 잠금 기록 안전 검사 실패
+      at writeJson (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:50:65)
+      at ResourceLock.audit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:157:5)
+      at ResourceLock.commit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:160:10)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:194:12
+      at inState (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:126:18)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:128:97
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:119:19
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at ResourceLock.operation (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:115:17)
+
+test at test/team-lock.test.ts:145:1
+✖ 선언 지문 불일치는 released 상태에서도 막고 설명만 바꾸면 유지한다 (43.605417ms)
+  Error: 잠금 기록 안전 검사 실패
+      at writeJson (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:50:65)
+      at ResourceLock.audit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:157:5)
+      at ResourceLock.commit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:160:10)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:194:12
+      at inState (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:126:18)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:128:97
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:119:19
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at ResourceLock.operation (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:115:17)
+
+test at test/team-lock.test.ts:156:1
+✖ 손상 상태·PGID 0/1·링크·hardlink·중단 guard·감사 실패는 보류하고 바깥 파일을 바꾸지 않는다 (45.964208ms)
+  Error: 잠금 기록 안전 검사 실패
+      at writeJson (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:50:65)
+      at ResourceLock.audit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:157:5)
+      at ResourceLock.commit (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:160:10)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:194:12
+      at inState (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:126:18)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:128:97
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:119:19
+      at ResourceLock.guard (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:109:20)
+      at ResourceLock.operation (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/resource-lock.ts:115:17)
+
+test at test/team-lock.test.ts:179:1
+✖ 실제 래퍼는 명령을 START 기록 후 실행하고 자동 갱신하며 다른 worktree 요청을 거부한다 (5022.478166ms)
+  AssertionError [ERR_ASSERTION]: 실제 프로세스 관측 기한
+      at waitFor (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-lock.test.ts:28:10)
+      at async TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-lock.test.ts:186:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/team-lock.test.ts:198:1
+✖ 실제 래퍼 SIGKILL+자식 생존+free probe는 회수하지 않는다 (5028.066792ms)
+  AssertionError [ERR_ASSERTION]: 실제 프로세스 관측 기한
+      at waitFor (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-lock.test.ts:28:10)
+      at async TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-lock.test.ts:202:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/team-lock.test.ts:212:1
+✖ 실제 자식 정상 종료+손자 생존+free probe도 정상 해제하지 않는다 (212.498709ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-yaZtnG/pace-resource-H6WUyg/.git/pace/resources/studio.json'
+      at readFileSync (node:fs:483:20)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-lock.test.ts:217:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-yaZtnG/pace-resource-H6WUyg/.git/pace/resources/studio.json'
+  }

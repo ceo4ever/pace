@@ -1,0 +1,7 @@
+{
+  "is_error": true,
+  "error": {
+    "code": "invalid_request",
+    "message": "대상이 없다: projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T05_공유_자원_잠금/evidence/impl-diff.patch"
+  }
+}

@@ -51,11 +51,11 @@ export function readTeamFile(root: string, rel: string): string | null {
 }
 export function teamFiles(root: string, rel: string, extension: string): string[] {
   const path = safeTeamPath(root, rel, true);
-  try { return readdirSync(path).filter((name) => name.endsWith(extension)).sort(); }
+  try { return readdirSync(path).filter((name) => name.endsWith(extension) && !(rel === ".pace/team" && name === "resources.md")).sort(); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
 }
 export function loadTeamMember(root: string, name: string): TeamMember {
-  if (!validTeamName(name)) throw new Error("팀 이름이 올바르지 않다");
+  if (!validTeamName(name) || name === "resources") throw new Error("팀 이름이 올바르지 않거나 예약된 메타파일 이름이다");
   const text = readTeamFile(root, `.pace/team/${name}.md`);
   if (text === null) throw new Error(`팀 역할이 없다: ${name}`);
   return parseTeamSource(text, name);
@@ -64,7 +64,7 @@ export function loadTeam(root: string): TeamMember[] {
   return teamFiles(root, ".pace/team", ".md").map((file) => loadTeamMember(root, file.slice(0, -3)));
 }
 export function createTeamMember(root: string, name: string, role: string): TeamMember {
-  if (!validTeamName(name) || !isTeamRole(role)) throw new Error("팀 이름 또는 역할이 올바르지 않다");
+  if (!validTeamName(name) || name === "resources" || !isTeamRole(role)) throw new Error("팀 이름 또는 역할이 올바르지 않거나 예약된 메타파일 이름이다");
   const duties = {
     lead: "프로젝트 계약을 확인하고 담당·검토·인계를 정리하며 완료 근거를 통합한다.",
     maker: "배정된 범위를 구현하고 관련 검사를 실행해 결과와 한계를 보고한다.",

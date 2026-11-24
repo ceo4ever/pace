@@ -55,6 +55,7 @@
       "tests": [
         "test/team.test.ts",
         "test/team-verify.test.ts",
+        "test/team-lock.test.ts",
         "test/project-role.test.ts",
         "test/worker-settings.test.ts"
       ],

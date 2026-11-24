@@ -1,0 +1,31 @@
+✖ 자원 메타파일은 역할이 아니며 상태 CLI는 아직 잠기지 않은 자원을 표시한다 (353.127167ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 426.750458
+
+✖ failing tests:
+
+test at test/team-lock.test.ts:16:1
+✖ 자원 메타파일은 역할이 아니며 상태 CLI는 아직 잠기지 않은 자원을 표시한다 (353.127167ms)
+  AssertionError [ERR_ASSERTION]: team: 팀 frontmatter가 필요하다
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-lock.test.ts:20:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

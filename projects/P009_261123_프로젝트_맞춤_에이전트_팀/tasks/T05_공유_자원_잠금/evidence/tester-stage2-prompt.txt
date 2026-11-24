@@ -1,0 +1,12 @@
+같은 첫 tester 세션의 최종2단계다. 이전 tester-final2-stage1.json의 첫 보완판정을 보존한다. 새 두 신호 시험은 node --test --test-name-pattern=실제.*(SIGHUP|START) test/team-lock.test.ts 형태로 직접 실행해도 되고 node --test test/team-lock.test.ts19건을 직접 대조해도 된다. Bash의 별도 셸 인자 인용은 안전하게 하라.
+지금은 T05 구현 후 최종 작업문서 대조 2단계다. 첫 판단을 보존하고 수정하지 않는다. TASK.md와 ../../PROJECT.md, backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BR05_공유_자원_잠금.md 및 BACKLOG.md의 P-3/자원 범위를 대조한다. 경로는 저장소 루트에서 찾는다. source/문서/시험과 실제 관측을 별도로 대조해 목표 달성/미확인·올릴 단계와 blocking/should_fix/note를 반환하라. 원 TASK는 R3 사전 pass 뒤 그대로이고 사전 상세 해석은 evidence/pre-review-response.md다.
+
+현재 실제 근거는 actual-worktrees-final2.json와 check-actual-proof.mjs이며 기존 initial/final도 보존했다. repo/machine 두 scope 각각 순차 요청과 동시 경쟁, heartbeat, busy/owner alive/same-start, gate 전 진입1을 직접 관측했다. 실제 Studio/Windows/비참여 직접 호출을 증명하지 않는다. 최초 machine unknown의 당시 세부 조회 사유는 미수집이라 원인 미확정이고 busy로 세지 않는다. 외부 lookup 진단과 cached self 갱신으로 보완했다.
+
+코드/제품 동작은 final2 첫 판단 뒤 바뀌지 않았다. 이후 test/team-lock.test.ts에 SIGHUP(정상·무시 자식)과 START 재시도 중 SIGTERM 두 시험만 추가했고 PM 직접19/19다. docs/TEAM.md에 비대화형 전제·bridge 종료 신호 관측 한계를 한 문단 추가했다. 현재 focused-final.txt19pass, proof-pass.txt1pass/model0, 전체 원문 check-before-signal-tests.txt1109/pass1092/skip17/fail0은 마지막 두 시험 이전이다. 최신 전체는 /tmp/pace-P009-T05-check-accept.txt에서 진행 중/완료 결과를 직접 읽고 실행 중이면 통과로 주장하지 않는다. 새 전체 검사를 반복할 필요는 없다.
+
+reviewer 최종 첫 판단의 SF1 guard 자동 회수는 승인된 보수적 수동 복구 설계로 유지한다: 부분 I/O·자원 미사용·경합까지 운영자가 확인하고 별도 승인 후 보관/교체하며 자동 강제 삭제하지 않는다. SF2 busy 대기 옵션은 BR05의 대기 또는 거부 조건에서 거부로 충족하고 guard만 유한 재시도한다. 대기 큐 확장은 후속 개선으로 남긴다. 안전 기준을 약화하지 않는다. 구현후 should_fix는 반영하거나 이유를 남기는 규칙에 따른다. 신호 정보는 bridge 기준 한계를 문서에 공개했다.
+
+비밀 검사에서 코드 표현식이 오탐된 첫 JSON 원문은 gzip exact byte 사본과 논리값 동일한 JSON 표준 escape 직렬화로 보존했다. first-code-serialization.json/review-json-serialization.jsonl/canonicalize-review-json.mjs는 파싱한 모든 값·snapshot/result hash 입력 불변을 단언한다. 탐지 규칙과 제외 목록은 바꾸지 않았고 현재 소스 변수명을 acquisitionId로 명확히 해 동일 오탐을 제거했다. 새 원문 비밀을 인코딩해 숨긴 것이 아니다.
+
+상위 목표의 실제 달성을 승인/형식 통과로 대신하지 말고, 계약 목표를 독립 판단하라. 파일 수정/외부 행동/다른 모델·작업자 생성 금지. 자동 맥락·직접 읽은 것·실행/미실행을 공개하고 마지막은 pass/fail 한 단어다.

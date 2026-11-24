@@ -1,0 +1,1464 @@
+diff --git a/.pace/test-map.json b/.pace/test-map.json
+index 507f9d9..4cbf593 100644
+--- a/.pace/test-map.json
++++ b/.pace/test-map.json
+@@ -55,6 +55,7 @@
+       "tests": [
+         "test/team.test.ts",
+         "test/team-verify.test.ts",
++        "test/team-lock.test.ts",
+         "test/project-role.test.ts",
+         "test/worker-settings.test.ts"
+       ],
+diff --git a/README.md b/README.md
+index e527b1b..89864ab 100644
+--- a/README.md
++++ b/README.md
+@@ -17,7 +17,7 @@
+ - **프로필 = 독립 에이전트**: 프로필마다 정체성(`SOUL.md`), 사용자 정보(`USER.md`), 메모리(개인 규칙 포함), 스킬, 설정을 따로 가진다. 운영 규칙(`RULES.md`)은 모든 프로필에 같고 PACE와 함께 갱신된다.
+ - **기본 구성만**: 실행은 각 LLM 도구의 기능(계획 모드, 서브에이전트, 스킬, MCP)을 그대로 쓴다(제공자가 다른 에이전트가 필요할 때만 `pace agent`).
+ - **작업 하네스**: 업무를 프로젝트(`projects/P###`)와 태스크로 수행한다. `pace project`가 번호·worktree·게이트(태스크 check, 마감 finish, 병합 merge)를, `pace-project-dev` 스킬이 계약(목적·재료·기준)과 테스트·리뷰·보안 기준을 맡는다. Orca 안에서는 worktree 작업자 세션을 띄우고 main 세션이 코디네이터가 된다.
+-- **저장소 팀**: `pace team new athena --role lead`로 `.pace/team` 원본을 만들고 `team list`, `team sync`, `team sync --check --json`으로 Claude·Codex 정의를 관리한다. `pace project start P123 --role athena`로 프로젝트 작업자의 팀 구성원을 지정한다. `pace team verify --all`은 원본 읽기와 고정 질문으로 적재를 빠르게 점검하며 의역은 확인 필요로 남긴다. 등급 매핑·재시작·사용자 파일 보존·권한 경계는 [팀 사용법](docs/TEAM.md)을 따른다. 실제 업무·권한 집행은 별도 실측 대상이다.
++- **저장소 팀**: `pace team new athena --role lead`로 `.pace/team` 원본을 만들고 `team list`, `team sync`, `team sync --check --json`으로 Claude·Codex 정의를 관리한다. `pace project start P123 --role athena`로 프로젝트 작업자의 팀 구성원을 지정한다. `pace team verify --all`은 원본 읽기와 고정 질문으로 적재를 빠르게 점검하며 의역은 확인 필요로 남긴다. `pace team lock <자원> --by P123 -- <명령>`은 참여 작업의 공유 자원을 잠그고 소유자·자원 종료 미확인 시 보류한다. 등급 매핑·재시작·사용자 파일 보존·권한 경계는 [팀 사용법](docs/TEAM.md)을 따른다. 실제 업무·권한 집행은 별도 실측 대상이다.
+ - **Canvas 읽기·와이어프레임**: Canvas Studio가 배포한 묶음을 `skills/pace-canvas-skills/` 경로로 통째 설치하고, 에이전트에는 `canvas-read`(Canvas 문서에서 프레임·요소를 정보와 이미지로 꺼냄)·`canvas-wireframe`(좌표 없는 명세로 편집 가능한 `.canvas.json`을 만들고 겹침·잘림을 검사) 두 스킬 입구가 보인다. 묶음 본문·배포 식별자·해시는 Canvas Studio 배포본 그대로 두고 설치 경로만 PACE 이름을 쓴다. 도구는 Node 22 이상과 렌더에 설치된 Google Chrome(또는 `CHROME_PATH`)이 필요하다. 앱 확인과 사람 편집은 수행 여부를 구분해 보고한다.
+ - **의도 파악 기획**: `pace-intent` 스킬이 한 줄 요청이나 아이디어에서 목적을 찾아(프로젝트 문서·메모리·브레인·URL·검색 수집 → 한 번에 한 질문 인터뷰) 빈틈 없는 기획으로 만들고, 크기에 맞게 대화·프로젝트·백로그로 넘긴다. 화면 기획은 편집 가능한 Canvas와 유스케이스·IA·흐름·시퀀스·기능 명세 HTML을 사용하며 `pace intent verify`로 의미 연결을 검사한다. `pace intent preview <폴더> [--root <제품 저장소>]`는 Canvas 제품 프레임과 명시한 이동으로 이미지 미리보기를 만들고, `--verify`는 그 출처와 파일이 최신인지 확인한다.
+ 
+diff --git a/docs/README.md b/docs/README.md
+index 1e4bcd2..c6a46b7 100644
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -38,7 +38,7 @@
+ | 에이전트 호출 | `src/agent/` | TypeScript | `pace agent setup`·`run`·`verify` — 다른 제공자 에이전트를 `-p`·ACP로 부르는 호출 계약·체인·폴백 · [AGENT-CALL](AGENT-CALL.md#에이전트-호출) |
+ | 검사 선택 | `src/test-runner/`, `.pace/test-map.json` | TypeScript·Node·Python unittest·vitest | `pace test changed·file·unit·all` — 변경 관련 단위·지정 단위·선언 전체 검사(불확실하면 전체) · [TESTING](TESTING.md#검사-선택) |
+ | 공통 | `src/core/` | TypeScript | 경로·파일·frontmatter · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
+-| 저장소 팀 | `src/team/`, `src/core/worker-tiers.ts`, `templates/team/` | TypeScript·Markdown·TOML | 원본·호스트 정의 동기화와 어긋남 검사, 고정 질문의 실제 적재 점검 · [TEAM](TEAM.md) |
++| 저장소 팀 | `src/team/`, `src/core/worker-tiers.ts`, `templates/team/` | TypeScript·Markdown·TOML | 원본·호스트 동기화, 실제 적재 점검과 참여 자원 잠금 · [TEAM](TEAM.md) |
+ | 메모리 | `src/memory/` | TypeScript | 프로필·프로젝트 공용 저장소 · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
+ | 프로필 | `src/profile/` | TypeScript | 프로필 생성·복제, 온보딩 질문 원본 · [ARCHITECTURE](ARCHITECTURE.md#실행과-구성) |
+ | 프로젝트 | `src/project/` | TypeScript | 상황 판별, 브레인, 작업 하네스(`harness.ts`) · [WORK-PROCESS](WORK-PROCESS.md) |
+diff --git a/docs/SECURITY.md b/docs/SECURITY.md
+index 70f5832..8abcce2 100644
+--- a/docs/SECURITY.md
++++ b/docs/SECURITY.md
+@@ -1,5 +1,7 @@
+ # 보안
+ 
++공유 자원 잠금은 Git common dir와 PACE_HOME 아래 링크 없는 상태·guard·감사 파일을 쓴다. 저장소의 probe argv는 신뢰한 코드 실행이며 shell 없이 시간/출력 제한으로 실행한다. 프로세스 종료 요청은 살아 있는 래퍼가 직접 만든 bridge의 PID·시작 식별을 확인한 뒤 그 그룹에만 보낸다. 외부 status/unlock/회수는 영속 PGID에 신호를 보내지 않는다. 손상·조회 실패·그룹 잔존은 보류하고 guard를 자동 회수하지 않는다. 수동 자원 확인은 주체/근거와 안전한 호출 환경 식별을 감사하나 사용자 인증이나 비참여 도구 차단은 아니다([TEAM](TEAM.md#공유-자원-잠금)).
++
+ `team verify`는 원본/설정 선검사 뒤 read-only 호스트를 호출한다. 결과 경로의 조상 링크·단일 링크 조건과 고유 wx 생성을 검사하며, 64KiB 초과·비밀 후보 답과 호스트 오류 원문은 저장/출력하지 않는다. 생성물/원본을 복구하거나 권한을 확대하지 않는다. 실제 음성 대조의 OS 읽기 제한은 실험 전용이며 제품 역할 권한 집행으로 주장하지 않는다.
+ 
+ 결과 JSON에는 패턴 기반 비밀 검사를 통과한 모델 응답 원문이 포함되며 버전 관리 근거로 커밋된다. 로컬에만 보관하려면 저장소의 `.gitignore`에 `.pace/team/verify/*.json`을 지정한다([결과 보존 정책](TEAM.md)). 패턴 검사는 모든 민감 정보의 탐지를 보장하지 않는다.
+diff --git a/docs/TEAM.md b/docs/TEAM.md
+index 2847ea2..0f438b7 100644
+--- a/docs/TEAM.md
++++ b/docs/TEAM.md
+@@ -152,3 +152,39 @@ verify의 Claude 도구는 Read/Grep/Glob이며 실제 Orca 작업자의 셸 구
+ | 옵션·Git 루트/출력 경로 안전 거부 | 2 | stderr 진단, 보고서 없음 |
+ 
+ 종료2만으로 판단하지 말고 채널·보고서 상태를 함께 확인한다. 원본 조상이 위험해 결과 경로도 안전하지 않으면 보고서 대신 거부한다. `--all`은 현재 원본 목록이므로 삭제 대조는 이름을 지정한다. 원본 없는 관리 생성물은 `sync --check`와 함께 본다. 답은 UTF-8 64KiB 상한이며 비밀 후보 답·오류 원문은 출력/저장하지 않는다. 사람 확인 결과는 후속 도입/회고에 연결한다.
++
++## 공유 자원 잠금
++
++같이 쓰면 충돌하는 자원을 `.pace/team/resources.md`에 등록한다. 이 파일은 예약 메타파일이며 팀 구성원 목록·sync·verify에서 제외한다. 같은 이름의 구성원은 만들 수 없다. 기존 구성원 `resources`는 담당 자원의 이름 목록이다. 알려진 구성원을 `--by`로 지정하면 해당 원본이 그 자원을 선언해야 한다. 프로젝트 번호나 다른 담당 식별자는 계약에 따라 쓰며 자동 인증·자동 잠금을 뜻하지 않는다.
++
++````markdown
++# 공유 자원
++
++```json
++{"version":1,"resources":[{"name":"studio-mcp","capacity":1,"scope":"machine","description":"공유 Studio 연결","probe":["node","/공통경로/check-studio.mjs"]}]}
++```
++````
++
++위 확인기 경로는 형식 예시이며 제공되는 확인기가 아니다. `probe`는 신뢰한 저장소가 선언하는 실행 파일+인자 배열이다. 셸 없이 최대5초·출력64KiB로 실행하며 exit0=미사용,1=사용 중,기타·실행 오류=모름이다. 출력/오류 원문은 저장하지 않는다. 자원별 정확성은 실제 자원과 대조해야 한다. Studio MCP의 실제 확인 방법과 직렬화는 도입 저장소에서 별도 실측한다.
++
++```sh
++pace team lock studio-mcp --by P123 -- node tools/studio-job.mjs
++pace team status studio-mcp
++pace team unlock studio-mcp --token <acquisitionId>
++# 확인기 없는/불명인 자원은 실제 승인·미사용 확인 근거를 받은 뒤에만:
++pace team unlock studio-mcp --token <acquisitionId> --confirmed-by coordinator --evidence "자원 연결 종료를 확인한 승인 근거 요약"
++```
++
++잠금에 참여하는 호출만 보호한다. 비참여 직접 도구 호출을 가로채거나 권한을 차단하지 않는다. 명령 래퍼가 PID·OS 시작 식별과 획득별 `acquisitionId`를 기록하고 자동 갱신하므로 LLM의 수동 갱신 기억에 기대지 않는다. 자기 갱신은 시작 때 확보한 식별값을 대조하고 외부 ps의 일시 실패만으로 작업을 중단하지 않는다. heartbeat는 상태 파일만 갱신하며 획득·시작·해제/회수 감사와 분리한다. 외부 조회의 ownerCheck는 PID 부재·시작 조회 불가 등을 구분하며 모름을 생존/종료로 추정하지 않는다. 자식 process group을 먼저 영속 기록한 뒤 IPC START로 명령을 시작한다. 명령은 그 그룹에 남아야 하며 setsid/detach로 나가는 데몬을 격리하지 않는다. 명령 인자·출력은 잠금 감사에 기록하지 않는다.
++
++repo 범위 상태는 `git rev-parse --git-common-dir` 아래 `pace/resources/`, machine 범위는 같은 `PACE_HOME`의 `team/resources/`다. **같은 PACE_HOME을 공유해야** 기기 범위가 연결된다. 서로 다른 홈·기기·사용자 사이의 전역 잠금이라고 주장하지 않는다. PACE_HOME의 이름별 scope 등록과 machine guard는 다른 저장소의 scope 불일치도 보류한다. repo binding과 machine 상태는 name/capacity/scope/probe argv 지문을 보존한다. 설명만 바꿀 수 있으며 다른 확인기나 scope로 조용히 옮길 수 없다. probe argv는 정확히 비교하고 상대 인자는 최초 획득한 작업 루트에서 실행한다. 기기 자원을 공유하는 저장소는 같은 공통 확인기 경로/argv를 합의한다.
++
++회수는 heartbeat의 나이가 아니라 **래퍼 PID/시작 식별 종료 + 기록한 자식 그룹 부재 + 자원 미사용**을 모두 확인해야 한다. PID·PGID 재사용은 불필요한 보류를 낳을 수 있으나 살아 있는 것으로 취급한다. 정상 자식 종료도 손자가 남으면 해제하지 않는다. 신호는 살아 있는 래퍼가 메모리에 가진 자기 bridge PID/시작 식별을 다시 확인할 때만 그 그룹으로 보낸다. 외부 status/unlock/회수는 파일의 PGID로 프로세스를 죽이지 않는다. 식별할 수 없는 잔여 그룹에는 신호를 보내지 않고 코디네이터 확인을 요청한다.
++
++확인기가 없거나 모름이면 정상 완료도 잠금을 남긴다. 명령 없는 전경 lock은 신호까지 유지하며, 이 모드는 정상 종료와 회수 모두 래퍼 종료 뒤 수동 자원 확인을 요구한다. `--confirmed-by`와 근거는 실제 coordinator/captain 결정을 전달하는 협력 프로토콜이며 주체 인증 수단이 아니다. 살아 있거나 종료 미확인인 소유자/그룹, 확인기가 사용 중이라고 보고한 자원은 수동 확인도 우회하지 못한다. Windows의 자식 그룹 종료 확인은 지원하지 않아 명령 실행을 보류한다. 전경 소유자의 시작 식별 조회가 안 되면 그 획득도 보류한다.
++
++출력은 JSONL이다. 획득 결과 뒤 최종 결과가 나오며 `outcome`과 `childExitCode`/`signal`을 함께 본다. `completed`=0, `child_failed`=1(실제 코드는 childExitCode), `busy`=1, `hold`/사용법·안전 거부=2다. status는 정상 관측0이며 `active`, `owner`, `ownerCheck`, `use`와 사유를 표시한다. 살아 있는 소유자는 probeSkipped=true로 확인기를 생략한다. 획득·시작 기록·해제의 짧은 guard 경합은 최대10초 재시도하며 지속되면 guardBusy=true로 안전 보류한다. 상태 조회도 소유자 종료/불명 상황에는 신뢰한 확인기 코드를 실행한다. 오래된 획득 ID의 갱신/해제는 새 획득을 바꾸지 않는다. scope/binding/상태·0700 guard/0600 감사 기록은 사용자 파일을 덮어쓰거나 자동 삭제하지 않는다.
++
++중단 guard나 정의 불일치는 자동 회수하지 않는다. guard의 owner.json/상태와 실제 소유자·그룹·자원의 종료를 운영자가 확인하고 모든 참여 호출을 멈춘 뒤 **별도 승인**으로 관련 repo/machine guard와 binding·released 상태를 다른 이름에 보관하고 재등록한다. 시작 식별/자원 상태가 모르면 정리하지 않는다. 새 정의와 옛 정의의 확인 방법·scope에 관련된 모든 저장소를 함께 검토한다. 강제 해제·자동 재바인딩 옵션은 없으며 이 절차는 잠금 장치 밖의 운영자 작업이다. 감사 실패/손상 상태는 guard를 남겨 다음 실행을 막는다.
++
++기기 확인기는 모든 참여 저장소가 신뢰하는 공통 절대 경로를 권장한다. 이전 소유자의 작업 루트가 없어졌거나 상대 확인기를 실행할 수 없으면 자동 회수하지 않는다. 확인기가 없는 최초 획득은 이전 참여 소유자가 없다는 기록만을 근거로 하며 외부 직접 사용의 미사용까지 증명하지 않는다.
+diff --git a/skills/pace-project-dev/references/coordinator.md b/skills/pace-project-dev/references/coordinator.md
+index 7a96833..59f3ed4 100644
+--- a/skills/pace-project-dev/references/coordinator.md
++++ b/skills/pace-project-dev/references/coordinator.md
+@@ -74,3 +74,7 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
+ | q-1 | T01 | 10 · ISO 시각 | 11 · ISO 시각 | 12 · ISO 시각 | 13 · ISO 시각 |
+ 
+ 도달은 수신자 의도와 구별한다. 같은 요청의 project log와 소통 기록을 요청 식별자로 묶어 캡틴 답이 있으면 도달, 없고 to:captain 성공 전송(메시지 ID/전송 수단 성공 응답)이 있으면 도달, 없고 실패 전송만 있으면 전송 실패, 그 밖은 미확인이다. 로그에 captain만 적은 것은 도달이 아니다. 연결 파일에는 전송 시도 결과·성공 메시지/응답 또는 캡틴 답 출처도 연결하며, coordinator로 보낸 성공 영수증을 captain 도달 증거로 쓰지 않는다. 같은 요청의 실패 시도는 별도 시도 수이고 성공 뒤 도달은1건이다. 원문은 질문 요약 로그에 복사하지 않고 원문 위치로 참조한다.
++
++## 공유 자원 요청
++
++자원 요청 질문은 문장으로 동시 사용을 허락하는 대신 `pace team lock <자원> --by <담당> -- <작업 명령>`으로 답한다. 원본 resources와 resources.md의 scope·확인 방법 및 같은 PACE_HOME을 대조한다. 잠금은 참여 호출만 직렬화한다. 소유자/자식 그룹 종료와 자원 미사용 중 하나라도 모르면 다음 작업을 보류하고 확인을 요청한다. 확인기가 없는 자원은 실제 coordinator/captain 확인 근거를 전달해 unlock하며 단순 heartbeat 만료나 자기 선언으로 승인을 만들어내지 않는다. 실제 승인과 수동 회수 근거를 사건에 연결하고, 외부 잠금 파일의 PID로 프로세스를 종료하지 않는다. 자세한 CLI·안전 복구는 docs/TEAM.md의 공유 자원 잠금 절을 따른다.
+diff --git a/src/cli.ts b/src/cli.ts
+index a9ed353..9fd93e9 100644
+--- a/src/cli.ts
++++ b/src/cli.ts
+@@ -7,6 +7,7 @@ import { setWorkerTier, teamTierTable } from "./core/worker-tiers.ts";
+ import { createTeamMember, loadTeam, teamRoot } from "./team/store.ts";
+ import { syncTeam } from "./team/sync.ts";
+ import { verifyTeam, verifyTable } from "./team/verify.ts";
++import { resourceCommand } from "./team/resource-cli.ts";
+ import { hasSecret } from "./project/secrets.ts";
+ import { BacklogError, newBacklog, newBrief } from "./project/backlog.ts";
+ import { newRun } from "./scout/run.ts";
+@@ -160,6 +161,7 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
+   pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>
+   pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]
+   pace team verify <이름> 또는 --all [--agent claude|codex]      역할 적재·고정 질문 점검
++  pace team lock <자원> --by <담당> [-- <명령> ...] | unlock <자원> --token <토큰> | status <자원>
+   pace project start <P###> [--model <모델>] [--effort <값|default>] [--agent <도구>] [--no-launch|--launch]   정의 커밋 + worktree(../<저장소>.wt/P###) (main). Orca 안이면 작업자 세션을 띄우고 이 세션이 코디네이터
+   pace project task <P###> "<이름>"              태스크 폴더·TASK.md·태스크 표 행 (worktree)
+   pace project check <P###> <T##>                커밋 게이트 확인 — TASK-CLOSE (worktree)
+@@ -983,6 +985,7 @@ async function agentCommand(args: string[]): Promise<number> {
+ }
+ 
+ async function teamCommand(args: string[]): Promise<number> {
++  if (["lock", "unlock", "status"].includes(args[0] ?? "")) return resourceCommand(args);
+   try {
+     const { values, positionals } = parseArgs({ args, options: { role: { type: "string" }, check: { type: "boolean" }, json: { type: "boolean" }, all: { type: "boolean" }, agent: { type: "string" } }, allowPositionals: true, strict: true });
+     const [sub, name] = positionals;
+diff --git a/src/team/store.ts b/src/team/store.ts
+index 312d623..5351d43 100644
+--- a/src/team/store.ts
++++ b/src/team/store.ts
+@@ -51,11 +51,11 @@ export function readTeamFile(root: string, rel: string): string | null {
+ }
+ export function teamFiles(root: string, rel: string, extension: string): string[] {
+   const path = safeTeamPath(root, rel, true);
+-  try { return readdirSync(path).filter((name) => name.endsWith(extension)).sort(); }
++  try { return readdirSync(path).filter((name) => name.endsWith(extension) && !(rel === ".pace/team" && name === "resources.md")).sort(); }
+   catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
+ }
+ export function loadTeamMember(root: string, name: string): TeamMember {
+-  if (!validTeamName(name)) throw new Error("팀 이름이 올바르지 않다");
++  if (!validTeamName(name) || name === "resources") throw new Error("팀 이름이 올바르지 않거나 예약된 메타파일 이름이다");
+   const text = readTeamFile(root, `.pace/team/${name}.md`);
+   if (text === null) throw new Error(`팀 역할이 없다: ${name}`);
+   return parseTeamSource(text, name);
+@@ -64,7 +64,7 @@ export function loadTeam(root: string): TeamMember[] {
+   return teamFiles(root, ".pace/team", ".md").map((file) => loadTeamMember(root, file.slice(0, -3)));
+ }
+ export function createTeamMember(root: string, name: string, role: string): TeamMember {
+-  if (!validTeamName(name) || !isTeamRole(role)) throw new Error("팀 이름 또는 역할이 올바르지 않다");
++  if (!validTeamName(name) || name === "resources" || !isTeamRole(role)) throw new Error("팀 이름 또는 역할이 올바르지 않거나 예약된 메타파일 이름이다");
+   const duties = {
+     lead: "프로젝트 계약을 확인하고 담당·검토·인계를 정리하며 완료 근거를 통합한다.",
+     maker: "배정된 범위를 구현하고 관련 검사를 실행해 결과와 한계를 보고한다.",
+diff --git a/src/team/resource-child.ts b/src/team/resource-child.ts
+new file mode 100644
+index 0000000..676a776
+--- /dev/null
++++ b/src/team/resource-child.ts
+@@ -0,0 +1,22 @@
++import { spawn } from "node:child_process";
++
++// Private IPC bridge: the wrapper records this process group before sending START.
++// No user command can run in the pre-record crash window.
++let started = false;
++process.on("disconnect", () => { if (!started) process.exit(2); });
++process.on("message", (message: unknown) => {
++  if (started || !message || typeof message !== "object") return;
++  const data = message as { type?: unknown; argv?: unknown };
++  if (data.type !== "START" || !Array.isArray(data.argv) || data.argv.length === 0 || !data.argv.every((arg) => typeof arg === "string")) return;
++  started = true;
++  const [command, ...args] = data.argv as string[];
++  try {
++    const child = spawn(command!, args, { stdio: "inherit", shell: false, detached: false });
++    child.once("error", () => process.exit(127));
++    child.once("exit", (code, signal) => {
++      if (process.connected) process.send?.({ type: "EXIT", code, signal });
++      process.exit(code === null ? 1 : code);
++    });
++  } catch { process.exit(127); }
++});
++process.send?.({ type: "READY" });
+diff --git a/src/team/resource-cli.ts b/src/team/resource-cli.ts
+new file mode 100644
+index 0000000..da6a44f
+--- /dev/null
++++ b/src/team/resource-cli.ts
+@@ -0,0 +1,145 @@
++import { spawn, type ChildProcess } from "node:child_process";
++import { existsSync } from "node:fs";
++import { parseArgs } from "node:util";
++import { fileURLToPath } from "node:url";
++import { hasSecret } from "../project/secrets.ts";
++import { ResourceLock, type Confirmation, type LockResult } from "./resource-lock.ts";
++import { processIdentity, observeProcess, type ProcessIdentity } from "./resource-process.ts";
++import { loadTeamMember, safeTeamPath, teamRoot } from "./store.ts";
++import { safeResourceText } from "./resources.ts";
++
++const usage = "pace team lock <자원> --by <구성원|P###> [-- <명령> ...] | unlock <자원> --token <획득토큰> [--confirmed-by coordinator|captain --evidence <근거>] | status <자원>";
++const pause = (ms: number) => new Promise<void>((done) => setTimeout(done, ms));
++const out = (data: unknown) => process.stdout.write(JSON.stringify(data) + "\n");
++
++/** Only the live wrapper may signal the bridge identity it created in memory. */
++function signalChild(child: ChildProcess, identity: ProcessIdentity | null, signal: NodeJS.Signals): boolean {
++  if (!child.pid || child.pid <= 1 || !identity || identity.pid !== child.pid || observeProcess(identity) !== "alive" || process.platform === "win32") return false;
++  try { process.kill(-child.pid, signal); return true; } catch { return false; }
++}
++export async function retryResourceGuard(operation: () => LockResult, timeoutMs = 10000): Promise<LockResult> {
++  const deadline = Date.now() + timeoutMs;
++  let result = operation();
++  while (result.guardBusy && Date.now() < deadline) { await pause(50); result = operation(); }
++  return result;
++}
++
++export async function runResourceCommand(lock: ResourceLock, by: string, argv: string[], heartbeatMs = 5000): Promise<number> {
++  if (argv.length && process.platform === "win32") {
++    out({ outcome: "hold", reason: "Windows 자식 그룹 전체 종료 확인이 지원되지 않아 명령 실행 보류", participation: "참여 호출만 보호" });
++    return 2;
++  }
++  const acquired = await retryResourceGuard(() => lock.acquire(by, argv.length ? "command" : "manual")); out(acquired);
++  if (acquired.code !== 0 || !acquired.lease) return acquired.code;
++  const acquisitionId = acquired.lease.acquisitionId;
++  let child: ChildProcess | null = null, childIdentity: ProcessIdentity | null = null;
++  let interrupted: NodeJS.Signals | null = null, renewalFailed = false, timer: NodeJS.Timeout | null = null;
++  let finishManual: (() => void) | null = null;
++  const stop = (signal: NodeJS.Signals) => {
++    interrupted = signal;
++    if (child) signalChild(child, childIdentity, signal);
++    finishManual?.();
++  };
++  const sigint = () => stop("SIGINT"), sigterm = () => stop("SIGTERM"), sighup = () => stop("SIGHUP");
++  process.on("SIGINT", sigint); process.on("SIGTERM", sigterm); process.on("SIGHUP", sighup);
++  try {
++    let renewedAt = Date.now();
++    timer = setInterval(() => {
++      if (Date.now() - renewedAt < heartbeatMs) return;
++      try {
++        const renewed = lock.renew(acquisitionId);
++        // A short read operation may own the guard. Contention is not a lost token.
++        if (renewed.guardBusy) return;
++        if (renewed.code === 0) { renewedAt = Date.now(); return; }
++      } catch { /* partial I/O keeps its operation guard */ }
++      renewalFailed = true;
++      stop("SIGTERM");
++    }, Math.min(250, heartbeatMs));
++    let childExitCode: number | null = null, childSignal: NodeJS.Signals | null = null;
++    if (!argv.length) {
++      await new Promise<void>((done) => { finishManual = done; if (interrupted) done(); });
++    } else {
++      child = spawn(process.execPath, [fileURLToPath(new URL("./resource-child.ts", import.meta.url))], { cwd: lock.root, env: process.env, stdio: ["inherit", "inherit", "inherit", "ipc"], detached: true });
++      const bridge = child;
++      let ready = false, exitSeen = false;
++      const finished = new Promise<void>((done) => {
++        bridge.once("error", () => { childExitCode = 127; done(); });
++        bridge.once("exit", (code, signal) => { exitSeen = true; childExitCode = code; childSignal = signal; done(); });
++      });
++      bridge.on("message", (message: unknown) => {
++        if (message && typeof message === "object" && (message as { type?: unknown }).type === "READY") ready = true;
++      });
++      const deadline = Date.now() + 5000;
++      while (!ready && !exitSeen && Date.now() < deadline) await pause(10);
++      childIdentity = bridge.pid ? processIdentity(bridge.pid) : null;
++      if (!ready || !childIdentity || interrupted) {
++        signalChild(bridge, childIdentity, "SIGTERM");
++        if (!childIdentity) bridge.kill("SIGTERM"); // only our directly-created pre-START child; no user command has run
++        bridge.disconnect();
++        out({ outcome: "hold", reason: "bridge 시작 식별/준비 확인 실패; START 전송 안 함", lease: acquired.lease });
++        return 2;
++      }
++      const recorded = await retryResourceGuard(() => lock.started(acquisitionId, childIdentity!));
++      if (recorded.code !== 0) {
++        signalChild(bridge, childIdentity, "SIGTERM");
++        if (bridge.connected) bridge.disconnect();
++        out(recorded); return 2;
++      }
++      if (interrupted || exitSeen) {
++        signalChild(bridge, childIdentity, "SIGTERM");
++        if (bridge.connected) bridge.disconnect();
++        out({ outcome: "hold", reason: "START 전 중단; 명령 실행 안 함·잠금 보존" }); return 2;
++      }
++      bridge.send({ type: "START", argv });
++      await finished;
++      // The leader may exit while grandchildren survive. Never free on child exit alone.
++      for (let i = 0; i < 20 && lock.deps.group(childIdentity.pid) === "alive"; i++) await pause(25);
++    }
++    if (timer) { clearInterval(timer); timer = null; }
++    if (renewalFailed) { out({ outcome: "hold", reason: "자동 갱신 실패; 잠금 보존", childExitCode, signal: childSignal ?? interrupted }); return 2; }
++    const released: LockResult = await retryResourceGuard(() => lock.release(acquisitionId, { internal: true }));
++    const code = released.code !== 0 ? released.code : childExitCode !== null && childExitCode !== 0 || interrupted ? 1 : 0;
++    out({ ...released, outcome: released.code !== 0 ? "hold" : code === 0 ? "completed" : "child_failed", childExitCode, signal: childSignal ?? interrupted });
++    return code;
++  } catch {
++    if (child) {
++      signalChild(child, childIdentity, "SIGTERM");
++      if (child.connected) child.disconnect();
++    }
++    out({ outcome: "hold", reason: "자원 작업 중 안전 확인 실패; 잠금 보존·코디네이터 확인 요청" }); return 2;
++  } finally {
++    if (timer) clearInterval(timer);
++    process.removeListener("SIGINT", sigint); process.removeListener("SIGTERM", sigterm); process.removeListener("SIGHUP", sighup);
++  }
++}
++
++export async function resourceCommand(args: string[]): Promise<number> {
++  try {
++    const split = args.indexOf("--"), argv = split < 0 ? [] : args.slice(split + 1), head = split < 0 ? args : args.slice(0, split);
++    const { values, positionals } = parseArgs({ args: head, options: { by: { type: "string" }, token: { type: "string" }, "confirmed-by": { type: "string" }, evidence: { type: "string" } }, allowPositionals: true, strict: true });
++    const [sub, name] = positionals;
++    if (positionals.length !== 2 || !name || !["lock", "unlock", "status"].includes(sub!) || split >= 0 && (!argv.length || sub !== "lock")) throw new Error(usage);
++    if (sub === "lock" && (!values.by || values.token !== undefined || values["confirmed-by"] !== undefined || values.evidence !== undefined) ||
++        sub === "unlock" && (!values.token || values.by !== undefined || !!values["confirmed-by"] !== !!values.evidence) ||
++        sub === "status" && Object.keys(values).length) throw new Error(usage);
++    let confirmation: Confirmation | undefined;
++    if (values["confirmed-by"]) {
++      if (!["coordinator", "captain"].includes(values["confirmed-by"]) || !safeResourceText(values.evidence)) throw new Error("자원 확인 주체/근거 오류");
++      confirmation = { by: values["confirmed-by"] as Confirmation["by"], evidence: values.evidence! };
++    }
++    const root = teamRoot(process.cwd()), lock = new ResourceLock(root, name);
++    if (sub === "lock") {
++      // A known team member must declare the resource. P###/other caller labels are coordination identities, not authentication.
++      if (values.by && /^[a-z][a-z0-9-]*$/.test(values.by) && existsSync(safeTeamPath(root, `.pace/team/${values.by}.md`))) {
++        if (!loadTeamMember(root, values.by).resources.includes(name)) throw new Error("지정한 팀 구성원의 resources에 없는 자원");
++      }
++      return await runResourceCommand(lock, values.by!, argv);
++    }
++    const result = sub === "status" ? lock.status() : await retryResourceGuard(() => lock.release(values.token!, { confirmation }));
++    out(result); return result.code;
++  } catch (error) {
++    const raw = error instanceof Error ? error.message : "자원 명령 실패";
++    process.stderr.write(`team resource: ${hasSecret(raw) ? "입력 안전 검사 실패" : raw}\n`);
++    return 2;
++  }
++}
+diff --git a/src/team/resource-lock.ts b/src/team/resource-lock.ts
+new file mode 100644
+index 0000000..6e888ff
+--- /dev/null
++++ b/src/team/resource-lock.ts
+@@ -0,0 +1,231 @@
++import { spawnSync } from "node:child_process";
++import { randomUUID } from "node:crypto";
++import { lstatSync, mkdirSync, realpathSync, renameSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
++import { dirname, join, resolve } from "node:path";
++import { paceHome } from "../core/paths.ts";
++import { hasSecret } from "../project/secrets.ts";
++import { readTeamFile, safeTeamPath } from "./store.ts";
++import { loadResource, probeResource, resourceHash, safeResourceText, type Resource, type ResourceUse } from "./resources.ts";
++import { inspectProcess, observeGroup, processIdentity, type Liveness, type ProcessIdentity, type ProcessObservation } from "./resource-process.ts";
++
++export interface ResourceLease {
++  version: 1; active: boolean; acquisitionId: string; resource: string; scope: "repo" | "machine"; definition: string;
++  by: string; owner: ProcessIdentity; cwd: string; acquiredAt: number; heartbeat: number;
++  phase: "pre-start" | "started" | "manual";
++  child: { identity: ProcessIdentity; group: number } | null;
++}
++export interface LockResult {
++  outcome: "acquired" | "busy" | "hold" | "released" | "renewed" | "started" | "status";
++  reason: string; code: 0 | 1 | 2; scope: "repo" | "machine"; active?: boolean; lease?: ResourceLease;
++  owner?: Liveness; ownerCheck?: ProcessObservation["reason"]; use?: ResourceUse; probeSkipped?: boolean; guardBusy?: boolean; guardOwner?: ProcessIdentity | null; participation: string;
++}
++export interface Confirmation { by: "coordinator" | "captain"; evidence: string }
++export interface LockDeps {
++  home?: string; now?: () => number; self?: () => ProcessIdentity | null;
++  process?: (identity: ProcessIdentity) => Liveness; group?: (group: number) => Liveness;
++  probe?: (resource: Resource, cwd: string) => ResourceUse;
++}
++const PARTICIPATION = "잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다";
++const uuid = (value: unknown): value is string => typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value);
++const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
++const positive = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) > 1;
++function identity(value: unknown): value is ProcessIdentity {
++  return record(value) && Object.keys(value).sort().join(",") === "host,pid,platform,started" && positive(value.pid) && safeResourceText(value.started, 256) && safeResourceText(value.host, 256) && safeResourceText(value.platform, 32);
++}
++function readJson(root: string, name: string): unknown | null {
++  const text = readTeamFile(root, name);
++  if (text === null) return null;
++  if (hasSecret(text)) throw new Error("잠금 파일 안전 검사 실패");
++  try { return JSON.parse(text); } catch { throw new Error("잠금 파일 JSON 오류; 자동 회수하지 않는다"); }
++}
++function writeJson(root: string, name: string, value: unknown, exclusive = false): void {
++  const text = JSON.stringify(value) + "\n";
++  if (Buffer.byteLength(text) > 65536 || hasSecret(text)) throw new Error("잠금 기록 안전 검사 실패");
++  const path = safeTeamPath(root, name);
++  if (exclusive) { writeFileSync(path, text, { flag: "wx", mode: 0o600 }); return; }
++  const tmpName = `.${name}.${randomUUID()}.tmp`, tmp = safeTeamPath(root, tmpName);
++  writeFileSync(tmp, text, { flag: "wx", mode: 0o600 });
++  safeTeamPath(root, name);
++  renameSync(tmp, path);
++}
++function directory(root: string, rel: string): string {
++  const path = safeTeamPath(root, rel, true);
++  mkdirSync(path, { recursive: true, mode: 0o700 });
++  return safeTeamPath(root, rel, true);
++}
++function homeRoot(home: string): string {
++  // PACE_HOME itself must not be a link; its parent's OS alias (e.g. /tmp) is canonicalized.
++  const path = resolve(home);
++  mkdirSync(dirname(path), { recursive: true });
++  const parent = realpathSync.native(dirname(path)), base = join(parent, path.slice(dirname(path).length + 1));
++  try { const st = lstatSync(base); if (!st.isDirectory() || st.isSymbolicLink()) throw new Error("PACE_HOME은 링크 없는 디렉터리여야 한다"); }
++  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; mkdirSync(base, { mode: 0o700 }); }
++  return base;
++}
++export function commonGitDirectory(root: string): string {
++  const env = { ...process.env, GIT_OPTIONAL_LOCKS: "0", GIT_TERMINAL_PROMPT: "0", GIT_NO_LAZY_FETCH: "1" };
++  for (const key of ["GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_INDEX_FILE"]) delete (env as NodeJS.ProcessEnv)[key];
++  const r = spawnSync("git", ["-c", "core.fsmonitor=false", "-C", root, "rev-parse", "--git-common-dir"], { encoding: "utf8", timeout: 5000, env });
++  if (r.status !== 0 || !r.stdout.trim()) throw new Error("Git 공통 폴더를 확인하지 못했다");
++  const path = resolve(root, r.stdout.trim()), st = lstatSync(path);
++  if (!st.isDirectory() || st.isSymbolicLink()) throw new Error("Git 공통 폴더는 링크 없는 디렉터리여야 한다");
++  return realpathSync.native(path);
++}
++
++/** Short operation guards are never reclaimed on a timer. I/O failures leave a diagnostic hold. */
++export class ResourceLock {
++  readonly resource: Resource;
++  readonly repoDir: string;
++  readonly machineDir: string;
++  readonly stateDir: string;
++  readonly stateName: string;
++  readonly deps: Required<Omit<LockDeps, "home">>;
++  readonly root: string;
++  private ownerCheck: ProcessObservation["reason"] | undefined;
++  constructor(root: string, name: string, options: LockDeps = {}) {
++    this.root = root;
++    this.resource = loadResource(root, name);
++    this.repoDir = directory(commonGitDirectory(root), "pace/resources");
++    this.machineDir = directory(homeRoot(options.home ?? paceHome()), "team/resources");
++    this.stateDir = this.resource.scope === "repo" ? this.repoDir : this.machineDir;
++    this.stateName = `${name}.json`;
++    // The running wrapper knows its own birth identity. A transient ps failure must not stop its job.
++    const self = processIdentity(process.pid);
++    this.deps = { now: options.now ?? Date.now, self: options.self ?? (() => self), process: options.process ?? ((owner) => { const observation = inspectProcess(owner); this.ownerCheck = observation.reason; return observation.state; }), group: options.group ?? observeGroup, probe: options.probe ?? probeResource };
++  }
++  private result(outcome: LockResult["outcome"], reason: string, code: LockResult["code"], lease?: ResourceLease): LockResult {
++    return { outcome, reason, code, scope: this.resource.scope, ...(lease ? { active: lease.active, lease } : {}), participation: PARTICIPATION };
++  }
++  private guard(dir: string, name: string, fn: () => LockResult): LockResult {
++    const guardName = `${name}.guard`, path = safeTeamPath(dir, guardName, true);
++    try { mkdirSync(path, { mode: 0o700 }); }
++    catch (error) {
++      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
++      let guardOwner: ProcessIdentity | null = null;
++      try { const info = readJson(path, "owner.json"); if (record(info) && identity(info.owner)) guardOwner = info.owner; } catch { /* incomplete guard is unknown, never free */ }
++      return { ...this.result("hold", "작업 guard 경합 또는 중단; 잠시 뒤 재시도하고 지속되면 코디네이터 확인 요청", 2), guardBusy: true, guardOwner };
++    }
++    // Any unexpected failure preserves the guard. No subsequent call can mistake partial I/O for free.
++    writeJson(path, "owner.json", { owner: this.deps.self(), at: this.deps.now() }, true);
++    const result = fn();
++    safeTeamPath(path, "owner.json"); unlinkSync(join(path, "owner.json")); rmdirSync(path);
++    return result;
++  }
++  private operation(fn: () => LockResult, register = true): LockResult {
++    const name = this.resource.name, hash = resourceHash(this.resource);
++    return this.guard(this.machineDir, `${name}.registry`, () => {
++      const registryName = `${name}.scope.json`, global = readJson(this.machineDir, registryName);
++      if (global !== null && (!record(global) || global.scope !== this.resource.scope)) return this.result("hold", "같은 PACE_HOME의 자원 scope 불일치; 운영자 확인 필요", 2);
++      if (global === null && register) writeJson(this.machineDir, registryName, { scope: this.resource.scope }, true);
++      return this.guard(this.repoDir, name, () => {
++        const bindingName = `${name}.binding.json`, binding = readJson(this.repoDir, bindingName);
++        if (binding !== null && (!record(binding) || binding.hash !== hash)) return this.result("hold", "저장소 자원 정의 지문 불일치; 운영자 확인 필요", 2);
++        if (binding === null && register) writeJson(this.repoDir, bindingName, { hash }, true);
++        const inState = () => {
++          const lease = this.read();
++          if (lease && lease.definition !== hash) return this.result("hold", "공유 자원 확인 방법/정의가 다르므로 보류", 2, lease);
++          return fn();
++        };
++        return this.resource.scope === "machine" ? this.guard(this.machineDir, name, inState) : inState();
++      });
++    });
++  }
++  private read(): ResourceLease | null {
++    const data = readJson(this.stateDir, this.stateName);
++    if (data === null) return null;
++    if (!record(data) || Object.keys(data).sort().join(",") !== "acquiredAt,acquisitionId,active,by,child,cwd,definition,heartbeat,owner,phase,resource,scope,version" || data.version !== 1 || typeof data.active !== "boolean" || !uuid(data.acquisitionId) || data.resource !== this.resource.name || data.scope !== this.resource.scope ||
++        typeof data.definition !== "string" || !/^[0-9a-f]{64}$/.test(data.definition) || !safeResourceText(data.by, 64) || !identity(data.owner) || !safeResourceText(data.cwd, 4096) ||
++        !Number.isSafeInteger(data.acquiredAt) || !Number.isSafeInteger(data.heartbeat) || !["pre-start", "started", "manual"].includes(data.phase as string) ||
++        !(data.child === null || record(data.child) && Object.keys(data.child).sort().join(",") === "group,identity" && identity(data.child.identity) && positive(data.child.group) && data.child.group === data.child.identity.pid) ||
++        data.phase === "started" && data.child === null || data.phase !== "started" && data.child !== null) throw new Error("잠금 상태 손상; 자동 회수하지 않는다");
++    return data as unknown as ResourceLease;
++  }
++  private ownerState(lease: ResourceLease, internal = false): Liveness {
++    const wrapper = this.deps.process(lease.owner);
++    if (!internal && wrapper === "alive") return "alive";
++    if (internal) {
++      const self = this.deps.self();
++      if (!self || self.pid !== lease.owner.pid || self.started !== lease.owner.started || self.host !== lease.owner.host || self.platform !== lease.owner.platform) return "unknown";
++    } else if (wrapper !== "dead") return "unknown";
++    if (lease.phase === "pre-start") return "dead";
++    if (lease.phase === "manual") return "dead";
++    return lease.child ? this.deps.group(lease.child.group) : "unknown";
++  }
++  private audit(action: string, lease: ResourceLease, confirmation?: Confirmation): void {
++    const dir = directory(this.stateDir, "audit");
++    const context: Record<string, string> = {};
++    for (const key of ["ORCA_TERMINAL_HANDLE", "ORCA_TERMINAL_ID", "ORCA_RUN_ID"]) if (safeResourceText(process.env[key], 128)) context[key] = process.env[key]!;
++    writeJson(dir, `${this.deps.now()}-${randomUUID()}.json`, { action, at: this.deps.now(), resource: lease.resource, acquisitionId: lease.acquisitionId, by: lease.by, owner: lease.owner, phase: lease.phase, context, ...(confirmation ? { confirmation } : {}) }, true);
++  }
++  private commit(action: string, lease: ResourceLease, confirmation?: Confirmation): void {
++    this.audit(action, lease, confirmation);
++    writeJson(this.stateDir, this.stateName, lease);
++  }
++  private free(lease: ResourceLease, confirmation?: Confirmation): ResourceUse {
++    const state = this.deps.probe(this.resource, lease.cwd);
++    if (state === "busy") return "busy";
++    if (lease.phase === "manual" || state === "unknown") {
++      if (confirmation && (confirmation.by === "coordinator" || confirmation.by === "captain") && safeResourceText(confirmation.evidence)) return "free";
++      return "unknown";
++    }
++    return state;
++  }
++  status(): LockResult {
++    return this.operation(() => {
++      const lease = this.read();
++      if (!lease || !lease.active) return { ...this.result("status", "잠금 없음", 0, lease ?? undefined), active: false };
++      const owner = this.ownerState(lease), probeSkipped = owner === "alive", use = probeSkipped ? "unknown" : this.free(lease);
++      return { ...this.result("status", owner === "dead" && use === "free" ? "종료·미사용 확인; 다음 참여 호출에서 회수 가능" : "잠금 유지; 불명확하면 코디네이터에게 소유자/자원 확인 요청", 0, lease), owner, ownerCheck: this.ownerCheck, use, probeSkipped };
++    }, false);
++  }
++  acquire(by: string, mode: "command" | "manual" = "command"): LockResult {
++    if (!safeResourceText(by, 64) || !/^(?:P\d{3}|[a-z][a-z0-9-]*)$/.test(by)) return this.result("hold", "--by 담당 식별자 오류", 2);
++    const owner = this.deps.self();
++    if (!owner || !identity(owner)) return this.result("hold", "자기 프로세스 시작 식별 불가; 실행 보류", 2);
++    return this.operation(() => {
++      const old = this.read();
++      if (old?.active) {
++        const state = this.ownerState(old);
++        if (state !== "dead") return { ...this.result(state === "alive" ? "busy" : "hold", "이전 소유자/자식 그룹 생존 또는 종료 미확인; 회수하지 않는다", state === "alive" ? 1 : 2, old), owner: state, ownerCheck: this.ownerCheck };
++        if (this.free(old) !== "free") return this.result("hold", "소유자는 종료했으나 자원 사용/미사용 불명; 코디네이터 확인 요청", 2, old);
++        this.audit("reclaim", old);
++      } else if (this.resource.probe && this.deps.probe(this.resource, this.root) !== "free") return this.result("hold", "자원 미사용 확인 불가; 실행 보류", 2);
++      const now = this.deps.now();
++      const lease: ResourceLease = { version: 1, active: true, acquisitionId: randomUUID(), resource: this.resource.name, scope: this.resource.scope, definition: resourceHash(this.resource), by, owner, cwd: this.root, acquiredAt: now, heartbeat: now, phase: mode === "manual" ? "manual" : "pre-start", child: null };
++      this.commit("acquire", lease);
++      return this.result("acquired", "참여 자원 잠금 획득", 0, lease);
++    });
++  }
++  renew(acquisitionId: string): LockResult {
++    return this.operation(() => {
++      const lease = this.read();
++      const self = this.deps.self();
++      if (!lease?.active || lease.acquisitionId !== acquisitionId || !self || lease.owner.pid !== self.pid || lease.owner.started !== self.started || lease.owner.host !== self.host || lease.owner.platform !== self.platform) return this.result("hold", "획득 토큰 또는 자기 시작 식별 불일치; 갱신 거부", 2, lease ?? undefined);
++      lease.heartbeat = this.deps.now();
++      // Heartbeat is display information; don't create a new audit file every five seconds.
++      writeJson(this.stateDir, this.stateName, lease);
++      return this.result("renewed", "자동 갱신", 0, lease);
++    });
++  }
++  started(token: string, child: ProcessIdentity): LockResult {
++    return this.operation(() => {
++      const lease = this.read();
++      if (!lease?.active || lease.acquisitionId !== token || lease.phase !== "pre-start" || !identity(child) || this.ownerState(lease, true) !== "dead") return this.result("hold", "START 전 소유권 대조 실패", 2, lease ?? undefined);
++      lease.phase = "started"; lease.child = { identity: child, group: child.pid };
++      this.commit("started-before-START", lease);
++      return this.result("started", "그룹 영속 기록 완료; START 전송 가능", 0, lease);
++    });
++  }
++  release(token: string, options: { internal?: boolean; confirmation?: Confirmation } = {}): LockResult {
++    return this.operation(() => {
++      const lease = this.read();
++      if (!lease?.active || lease.acquisitionId !== token) return this.result("hold", "획득 토큰 불일치; 해제 거부", 2, lease ?? undefined);
++      const owner = this.ownerState(lease, options.internal);
++      if (owner !== "dead") return { ...this.result("hold", "소유자/자식 그룹 종료 전 해제 보류", 2, lease), owner };
++      if (this.free(lease, options.confirmation) !== "free") return this.result("hold", "자원 사용 중/미사용 불명; 코디네이터 확인 요청", 2, lease);
++      lease.active = false;
++      this.commit("release", lease, options.confirmation);
++      return this.result("released", "소유자 종료·자원 미사용 대조 후 해제", 0, lease);
++    });
++  }
++}
+diff --git a/src/team/resource-process.ts b/src/team/resource-process.ts
+new file mode 100644
+index 0000000..ae441c8
+--- /dev/null
++++ b/src/team/resource-process.ts
+@@ -0,0 +1,42 @@
++import { spawnSync } from "node:child_process";
++import { readFileSync } from "node:fs";
++import { hostname } from "node:os";
++
++export interface ProcessIdentity { pid: number; started: string; host: string; platform: string }
++export type Liveness = "alive" | "dead" | "unknown";
++export interface ProcessObservation { state: Liveness; reason: "other-host" | "pid-gone" | "pid-check-unavailable" | "start-query-unavailable" | "same-start" | "different-start" }
++
++export function processIdentity(pid: number): ProcessIdentity | null {
++  if (!Number.isSafeInteger(pid) || pid < 1) return null;
++  try {
++    let started: string;
++    if (process.platform === "linux") {
++      const stat = readFileSync(`/proc/${pid}/stat`, "utf8");
++      const ticks = stat.slice(stat.lastIndexOf(")") + 2).split(" ")[19];
++      if (!ticks || !/^\d+$/.test(ticks)) return null;
++      started = `${readFileSync("/proc/sys/kernel/random/boot_id", "utf8").trim()}:${ticks}`;
++    } else if (process.platform === "darwin" || process.platform === "freebsd") {
++      const r = spawnSync("ps", ["-p", String(pid), "-o", "lstart="], { encoding: "utf8", timeout: 3000, maxBuffer: 4096, env: { ...process.env, LC_ALL: "C", TZ: "UTC" } });
++      if (r.status !== 0 || !r.stdout.trim()) return null;
++      started = r.stdout.trim();
++    } else if (process.platform === "win32") {
++      const r = spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", `(Get-Process -Id ${pid} -ErrorAction Stop).StartTime.ToUniversalTime().Ticks`], { encoding: "utf8", timeout: 5000, maxBuffer: 4096, windowsHide: true });
++      if (r.status !== 0 || !/^\d+$/.test(r.stdout.trim())) return null;
++      started = r.stdout.trim();
++    } else return null;
++    return { pid, started, host: hostname(), platform: process.platform };
++  } catch { return null; }
++}
++export function inspectProcess(owner: ProcessIdentity, probe: { check(pid: number): void; identity(pid: number): ProcessIdentity | null } = { check: (pid) => { process.kill(pid, 0); }, identity: processIdentity }): ProcessObservation {
++  if (owner.host !== hostname() || owner.platform !== process.platform) return { state: "unknown", reason: "other-host" };
++  try { probe.check(owner.pid); }
++  catch (error) { return (error as NodeJS.ErrnoException).code === "ESRCH" ? { state: "dead", reason: "pid-gone" } : { state: "unknown", reason: "pid-check-unavailable" }; }
++  const current = probe.identity(owner.pid);
++  return !current ? { state: "unknown", reason: "start-query-unavailable" } : current.started === owner.started ? { state: "alive", reason: "same-start" } : { state: "dead", reason: "different-start" };
++}
++export function observeProcess(owner: ProcessIdentity): Liveness { return inspectProcess(owner).state; }
++export function observeGroup(pgid: number, check: (pid: number) => void = (pid) => { process.kill(pid, 0); }): Liveness {
++  if (process.platform === "win32" || !Number.isSafeInteger(pgid) || pgid <= 1) return "unknown";
++  try { check(-pgid); return "alive"; }
++  catch (error) { return (error as NodeJS.ErrnoException).code === "ESRCH" ? "dead" : "unknown"; }
++}
+diff --git a/src/team/resources.ts b/src/team/resources.ts
+new file mode 100644
+index 0000000..e64da64
+--- /dev/null
++++ b/src/team/resources.ts
+@@ -0,0 +1,58 @@
++import { spawnSync } from "node:child_process";
++import { sha256, validTeamName } from "./model.ts";
++import { readTeamFile } from "./store.ts";
++import { hasSecret } from "../project/secrets.ts";
++
++export interface Resource {
++  name: string;
++  capacity: 1;
++  scope: "repo" | "machine";
++  description: string;
++  probe?: string[];
++}
++export type ResourceUse = "free" | "busy" | "unknown";
++export function safeResourceText(value: unknown, max = 512): value is string {
++  return typeof value === "string" && value.length > 0 && value.length <= max && value.isWellFormed() && !/[\p{Cc}\p{Cf}]/u.test(value) && !hasSecret(value);
++}
++function object(value: unknown): value is Record<string, unknown> {
++  return !!value && typeof value === "object" && !Array.isArray(value);
++}
++export function parseResources(text: string): Resource[] {
++  if (Buffer.byteLength(text) > 65536 || !text.isWellFormed() || hasSecret(text)) throw new Error("자원 목록 안전 검사 실패");
++  const blocks = [...text.replace(/\r\n/g, "\n").matchAll(/^```json\s*\n([\s\S]*?)^```\s*$/gm)];
++  if (blocks.length !== 1) throw new Error("resources.md에는 단일 JSON fence가 필요하다");
++  let data: unknown;
++  try { data = JSON.parse(blocks[0]![1]!); } catch { throw new Error("자원 목록 JSON 오류"); }
++  if (!object(data) || Object.keys(data).sort().join(",") !== "resources,version" || data.version !== 1 || !Array.isArray(data.resources) || data.resources.length > 128) throw new Error("자원 목록 version/resources 오류");
++  const names = new Set<string>();
++  return data.resources.map((row: unknown) => {
++    if (!object(row) || Object.keys(row).some((key) => !["name", "capacity", "scope", "description", "probe"].includes(key)) ||
++        typeof row.name !== "string" || !validTeamName(row.name) || names.has(row.name) || row.capacity !== 1 ||
++        (row.scope !== "repo" && row.scope !== "machine") || !safeResourceText(row.description)) throw new Error("자원 이름/동시1/범위/설명 오류");
++    if (row.probe !== undefined && (!Array.isArray(row.probe) || row.probe.length < 1 || row.probe.length > 32 || row.probe.some((arg) => !safeResourceText(arg, 2048)))) throw new Error("자원 확인기 argv 오류");
++    names.add(row.name);
++    return { name: row.name, capacity: 1, scope: row.scope, description: row.description, ...(row.probe === undefined ? {} : { probe: [...row.probe] as string[] }) };
++  });
++}
++export function loadResources(root: string): Resource[] {
++  const text = readTeamFile(root, ".pace/team/resources.md");
++  return text === null ? [] : parseResources(text);
++}
++export function loadResource(root: string, name: string): Resource {
++  if (!validTeamName(name)) throw new Error("자원 이름 오류");
++  const resource = loadResources(root).find((item) => item.name === name);
++  if (!resource) throw new Error("자원 목록에 등록되지 않은 이름");
++  return resource;
++}
++export function resourceHash(resource: Resource): string {
++  return sha256(JSON.stringify({ name: resource.name, capacity: 1, scope: resource.scope, probe: resource.probe ?? null }));
++}
++/** 선언된 확인기는 신뢰한 저장소 코드다. 실행 출력/예외 원문을 기록하지 않는다. */
++export function probeResource(resource: Resource, cwd: string): ResourceUse {
++  if (!resource.probe) return "unknown";
++  try {
++    const [command, ...args] = resource.probe;
++    const result = spawnSync(command!, args, { cwd, encoding: "utf8", timeout: 5000, maxBuffer: 65536, windowsHide: true, shell: false });
++    return result.error || result.signal ? "unknown" : result.status === 0 ? "free" : result.status === 1 ? "busy" : "unknown";
++  } catch { return "unknown"; }
++}
+diff --git a/test/team-lock.test.ts b/test/team-lock.test.ts
+new file mode 100644
+index 0000000..868d437
+--- /dev/null
++++ b/test/team-lock.test.ts
+@@ -0,0 +1,308 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { existsSync, linkSync, mkdirSync, readFileSync, readdirSync, renameSync, rmdirSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
++import { join } from "node:path";
++import { spawnSync } from "node:child_process";
++import { runPace, sessionFreeEnv, spawnTestChild, tempDir } from "./helpers.ts";
++import { ResourceLock, type ResourceLease } from "../src/team/resource-lock.ts";
++import { parseResources, loadResource, resourceHash } from "../src/team/resources.ts";
++import { inspectProcess, processIdentity, observeProcess, observeGroup, type Liveness } from "../src/team/resource-process.ts";
++import { packageRoot } from "../src/core/paths.ts";
++import { retryResourceGuard } from "../src/team/resource-cli.ts";
++
++function fixture() {
++  const root = tempDir("pace-resource-"), home = tempDir("pace-resource-home-");
++  assert.equal(spawnSync("git", ["init", "-q", root]).status, 0);
++  mkdirSync(join(root, ".pace/team"), { recursive: true });
++  writeFileSync(join(root, ".pace/team/resources.md"), "# 공유 자원\n\n```json\n" + JSON.stringify({ version: 1, resources: [{ name: "studio", capacity: 1, scope: "repo", description: "시험용 단일 자원", probe: [process.execPath, "-e", "process.exit(0)"] }] }) + "\n```\n");
++  return { root, home, run: (...args: string[]) => runPace(args, { cwd: root, home }) };
++}
++function writeResource(root: string, patch: Record<string, unknown> = {}) {
++  const resource = { name: "studio", capacity: 1, scope: "repo", description: "시험용 단일 자원", probe: [process.execPath, "-e", "process.exit(0)"], ...patch };
++  mkdirSync(join(root, ".pace/team"), { recursive: true });
++  writeFileSync(join(root, ".pace/team/resources.md"), "# 자원\n```json\n" + JSON.stringify({ version: 1, resources: [resource] }) + "\n```\n");
++}
++const pause = (ms: number) => new Promise<void>((done) => setTimeout(done, ms));
++async function waitFor(predicate: () => boolean, ms = 5000) {
++  const deadline = Date.now() + ms;
++  while (!predicate() && Date.now() < deadline) await pause(20);
++  assert.ok(predicate(), "실제 프로세스 관측 기한");
++}
++
++test("자원 메타파일은 역할이 아니며 상태 CLI는 아직 잠기지 않은 자원을 표시한다", () => {
++  const f = fixture();
++  assert.equal(f.run("team", "new", "maker", "--role", "maker").status, 0);
++  const list = f.run("team", "list");
++  assert.equal(list.status, 0, list.stderr);
++  assert.match(list.stdout, /maker/);
++  assert.doesNotMatch(list.stdout, /resources/);
++  const status = f.run("team", "status", "studio");
++  assert.equal(status.status, 0, status.stderr);
++  const report = JSON.parse(status.stdout);
++  assert.equal(report.active, false);
++  assert.equal(report.scope, "repo");
++  assert.equal(f.run("team", "sync").status, 0);
++  assert.equal(f.run("team", "new", "resources", "--role", "maker").status, 2);
++});
++
++test("자원 JSON은 범위·동시1·argv·중복·모르는 키·크기·비밀 후보를 거부한다", () => {
++  const base = { name: "studio", capacity: 1, scope: "repo", description: "공유" };
++  const text = (resources: unknown, extra = {}) => "```json\n" + JSON.stringify({ version: 1, resources, ...extra }) + "\n```\n";
++  assert.equal(parseResources(text([base]))[0]!.scope, "repo");
++  for (const patch of [{ name: "../outside" }, { capacity: 2 }, { scope: "else" }, { probe: [] }, { probe: ["x", "\n"] }, { probe: "shell command" }, { typo: true }]) assert.throws(() => parseResources(text([{ ...base, ...patch }])));
++  assert.throws(() => parseResources(text([base, base])));
++  assert.throws(() => parseResources(text([base], { other: true })));
++  assert.throws(() => parseResources("x".repeat(65537)));
++  assert.throws(() => parseResources(text([base]) + text([base])));
++  const resource = parseResources(text([base]))[0]!;
++  assert.equal(resourceHash(resource), resourceHash({ ...resource, description: "설명만 변경" }));
++});
++
++test("소유자/자원 상태 행렬: stale heartbeat도 살아 있으면 거부하고 dead+free만 회수한다", () => {
++  for (const owner of ["alive", "dead", "unknown"] as const) for (const use of ["free", "busy", "unknown"] as const) {
++    const f = fixture(); let observed: Liveness = "alive", tick = 100;
++    const lock = new ResourceLock(f.root, "studio", { home: f.home, process: () => observed, probe: () => use, now: () => tick });
++    // Initial acquisition has a separate known-free observation.
++    const setup = new ResourceLock(f.root, "studio", { home: f.home, process: () => "alive", probe: () => "free", now: () => tick });
++    const initial = setup.acquire("P009"); assert.equal(initial.code, 0);
++    tick += 1_000_000; observed = owner;
++    const result = lock.acquire("P010");
++    assert.equal(result.outcome, owner === "dead" && use === "free" ? "acquired" : owner === "alive" ? "busy" : "hold", `${owner}/${use}`);
++    if (result.code === 0) assert.notEqual(result.lease!.acquisitionId, initial.lease!.acquisitionId);
++    else assert.equal(JSON.parse(readFileSync(join(lock.stateDir, lock.stateName), "utf8")).acquisitionId, initial.lease!.acquisitionId);
++  }
++});
++
++test("토큰 fencing: 구 토큰 해제·갱신은 새 획득을 바꾸지 않는다", () => {
++  const f = fixture(); let owner: Liveness = "alive", now = 100;
++  const lock = new ResourceLock(f.root, "studio", { home: f.home, process: () => owner, probe: () => "free", now: () => now });
++  const first = lock.acquire("P009").lease!;
++  now = 200; assert.equal(lock.renew(first.acquisitionId).code, 0);
++  assert.equal(lock.status().lease!.heartbeat, 200);
++  owner = "dead";
++  const second = lock.acquire("P010").lease!;
++  const bytes = readFileSync(join(lock.stateDir, lock.stateName), "utf8");
++  assert.equal(lock.release(first.acquisitionId).code, 2);
++  assert.equal(lock.renew(first.acquisitionId).code, 2);
++  assert.equal(readFileSync(join(lock.stateDir, lock.stateName), "utf8"), bytes);
++  assert.notEqual(first.acquisitionId, second.acquisitionId);
++});
++
++test("자기 갱신은 일시적 외부 시작 조회 실패로 작업을 중단하지 않고 감사 파일을 매번 늘리지 않는다", () => {
++  const f = fixture(), self = processIdentity(process.pid)!;
++  let tick = 100, observations = 0;
++  const lock = new ResourceLock(f.root, "studio", { home: f.home, self: () => self, process: () => { observations++; return "unknown"; }, now: () => tick });
++  const lease = lock.acquire("P009").lease!;
++  const auditCount = readdirSync(join(lock.stateDir, "audit")).length;
++  for (let i = 0; i < 20; i++) { tick += 5000; assert.equal(lock.renew(lease.acquisitionId).code, 0); }
++  assert.equal(observations, 0, "자기 식별에 ps 재조회 없음");
++  assert.equal(readdirSync(join(lock.stateDir, "audit")).length, auditCount);
++  assert.equal(lock.status().lease!.heartbeat, tick);
++  assert.deepEqual(inspectProcess(self, { check() {}, identity: () => null }), { state: "unknown", reason: "start-query-unavailable" });
++  assert.deepEqual(inspectProcess(self, { check() { throw Object.assign(new Error("unavailable"), { code: "EPERM" }); }, identity: () => self }), { state: "unknown", reason: "pid-check-unavailable" });
++});
++
++test("살아 있는 소유자의 status는 probe를 실행하지 않고 짧은 guard 경합만 유한 재시도한다", async () => {
++  const f = fixture(); let probes = 0;
++  const lock = new ResourceLock(f.root, "studio", { home: f.home, process: () => "alive", probe: () => { probes++; return "free"; } });
++  lock.acquire("P009"); const count = probes;
++  assert.equal(lock.status().probeSkipped, true); assert.equal(probes, count);
++  const g = fixture(), next = new ResourceLock(g.root, "studio", { home: g.home });
++  const guard = join(next.machineDir, "studio.registry.guard"); mkdirSync(guard);
++  setTimeout(() => rmdirSync(guard), 100);
++  assert.equal((await retryResourceGuard(() => next.acquire("P010"), 1000)).code, 0);
++  mkdirSync(guard);
++  try { const held = await retryResourceGuard(() => next.release("wrong"), 50); assert.equal(held.code, 2); assert.equal(held.guardBusy, true); }
++  finally { rmdirSync(guard); }
++});
++
++test("started 그룹은 모든 해제 경로에서 종료 확인하고 pre-start도 자원 확인은 생략하지 않는다", () => {
++  const f = fixture(); let owner: Liveness = "alive", group: Liveness = "alive", use: "free" | "busy" | "unknown" = "free";
++  const self = processIdentity(process.pid)!;
++  const lock = new ResourceLock(f.root, "studio", { home: f.home, process: () => owner, group: () => group, probe: () => use });
++  const lease = lock.acquire("P009").lease!;
++  assert.equal(lock.started(lease.acquisitionId, { ...self, pid: self.pid + 100 }).code, 0);
++  assert.equal(lock.release(lease.acquisitionId, { internal: true }).code, 2, "정상 자식 종료+손자 생존도 해제 금지");
++  owner = "dead";
++  assert.equal(lock.acquire("P010").code, 1, "래퍼 종료+그룹 생존");
++  group = "unknown"; assert.equal(lock.acquire("P010").code, 2);
++  group = "dead"; use = "busy"; assert.equal(lock.release(lease.acquisitionId).code, 2);
++  use = "unknown"; assert.equal(lock.release(lease.acquisitionId).code, 2);
++  use = "free"; assert.equal(lock.release(lease.acquisitionId).code, 0);
++  owner = "alive"; const next = lock.acquire("P009").lease!;
++  owner = "dead"; use = "unknown"; assert.equal(lock.acquire("P010").code, 2, "pre-start도 미사용 확인 필수");
++  assert.equal(lock.release(next.acquisitionId, { confirmation: { by: "coordinator", evidence: "시험용 확인기로 사용 종료 대조" } }).code, 0);
++});
++
++test("확인기 없는 정상 완료와 전경 모드는 종료 후 근거 있는 수동 확인까지 잠금을 보존한다", () => {
++  const f = fixture(); writeResource(f.root, { probe: undefined });
++  let owner: Liveness = "alive";
++  const lock = new ResourceLock(f.root, "studio", { home: f.home, process: () => owner, probe: () => "unknown" });
++  const first = lock.acquire("P009", "manual").lease!;
++  assert.equal(lock.release(first.acquisitionId, { internal: true }).code, 2);
++  assert.equal(lock.release(first.acquisitionId, { confirmation: { by: "captain", evidence: "자원 미사용 확인" } }).code, 2, "수동 확인도 살아 있는 소유자는 우회하지 못함");
++  owner = "dead";
++  assert.equal(lock.acquire("P010").code, 2);
++  assert.equal(lock.release(first.acquisitionId, { confirmation: { by: "captain", evidence: "시험용 자원 연결 없음 직접 확인" } }).code, 0);
++  const logs = readdirSync(join(lock.stateDir, "audit")).map((p) => JSON.parse(readFileSync(join(lock.stateDir, "audit", p), "utf8")));
++  assert.equal(logs.filter((x) => x.action === "release")[0]!.confirmation.by, "captain");
++});
++
++test("repo scope는 두 worktree 공통 위치, machine은 다른 저장소까지 공유하고 scope 불일치는 보류한다", () => {
++  const f = fixture(), other = fixture();
++  const git = (...args: string[]) => spawnSync("git", ["-C", f.root, ...args], { encoding: "utf8" });
++  assert.equal(git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "--allow-empty", "-qm", "fixture").status, 0);
++  const worktree = join(tempDir(), "other");
++  assert.equal(git("worktree", "add", "-qb", "other", worktree).status, 0);
++  writeResource(worktree);
++  const one = new ResourceLock(f.root, "studio", { home: f.home }), two = new ResourceLock(worktree, "studio", { home: f.home });
++  assert.equal(one.stateDir, two.stateDir);
++  const initial = one.acquire("P009"); assert.equal(initial.code, 0);
++  assert.equal(two.acquire("P010").code, 1);
++  assert.notEqual(new ResourceLock(other.root, "studio", { home: f.home }).stateDir, one.stateDir);
++  writeResource(worktree, { scope: "machine" });
++  assert.equal(new ResourceLock(worktree, "studio", { home: f.home }).acquire("P010").code, 2);
++  const a = fixture(), b = fixture(); writeResource(a.root, { scope: "machine" }); writeResource(b.root, { scope: "machine" });
++  const ma = new ResourceLock(a.root, "studio", { home: a.home }), mb = new ResourceLock(b.root, "studio", { home: a.home });
++  assert.equal(ma.stateDir, mb.stateDir);
++  assert.equal(ma.acquire("P009").code, 0);
++  assert.equal(mb.acquire("P010").code, 1);
++  writeResource(b.root, { scope: "repo" });
++  assert.equal(new ResourceLock(b.root, "studio", { home: a.home }).acquire("P010").code, 2);
++});
++
++test("선언 지문 불일치는 released 상태에서도 막고 설명만 바꾸면 유지한다", () => {
++  const f = fixture();
++  const lock = new ResourceLock(f.root, "studio", { home: f.home });
++  const first = lock.acquire("P009").lease!;
++  assert.equal(lock.release(first.acquisitionId, { internal: true }).code, 0);
++  writeResource(f.root, { description: "설명만 수정" });
++  assert.equal(new ResourceLock(f.root, "studio", { home: f.home }).status().code, 0);
++  writeResource(f.root, { probe: [process.execPath, "-e", "process.exit(1)"] });
++  assert.equal(new ResourceLock(f.root, "studio", { home: f.home }).acquire("P010").code, 2);
++});
++
++test("운영자 승인 뒤의 재등록 절차는 참여자 중단·free·released 확인과 기존 근거 보관을 거친다", () => {
++  const f = fixture(), lock = new ResourceLock(f.root, "studio", { home: f.home });
++  const initial = lock.acquire("P009").lease!;
++  assert.equal(lock.release(initial.acquisitionId, { internal: true }).code, 0);
++  assert.equal(lock.status().active, false);
++  // Simulate an authorized operator using only this test's isolated files. No product force API.
++  renameSync(join(lock.repoDir, "studio.binding.json"), join(lock.repoDir, "studio.binding.archived.json"));
++  renameSync(join(lock.stateDir, lock.stateName), join(lock.stateDir, "studio.archived.json"));
++  writeResource(f.root, { probe: [process.execPath, "-e", "process.exitCode=0"] });
++  const next = new ResourceLock(f.root, "studio", { home: f.home }).acquire("P010");
++  assert.equal(next.code, 0);
++  assert.notEqual(next.lease!.definition, initial.definition);
++  assert.equal(JSON.parse(readFileSync(join(lock.stateDir, "studio.archived.json"), "utf8")).active, false);
++});
++
++test("손상 상태·PGID 0/1·링크·hardlink·중단 guard·감사 실패는 보류하고 바깥 파일을 바꾸지 않는다", () => {
++  for (const damage of ["json", "group0", "group1", "link", "hardlink", "guard", "audit"] as const) {
++    const f = fixture(); const lock = new ResourceLock(f.root, "studio", { home: f.home });
++    const initial = lock.acquire("P009").lease!, path = join(lock.stateDir, lock.stateName), outside = join(f.home, "outside");
++    const sentinel = JSON.stringify(initial); writeFileSync(outside, sentinel);
++    if (damage === "json") writeFileSync(path, "{broken");
++    if (damage.startsWith("group")) writeFileSync(path, JSON.stringify({ ...initial, phase: "started", child: { identity: initial.owner, group: damage === "group0" ? 0 : 1 } }));
++    if (damage === "link" || damage === "hardlink") { unlinkSync(path); if (damage === "link") symlinkSync(outside, path); else linkSync(outside, path); }
++    if (damage === "guard") mkdirSync(join(lock.repoDir, "studio.guard"));
++    if (damage === "audit") {
++      const audit = join(lock.stateDir, "audit");
++      for (const file of readdirSync(audit)) unlinkSync(join(audit, file));
++      rmdirSync(audit); writeFileSync(audit, "cannot append audit here");
++    }
++    let held = false;
++    try { held = lock.release(initial.acquisitionId, { internal: true }).code === 2; } catch { held = true; }
++    assert.ok(held, damage);
++    assert.equal(readFileSync(outside, "utf8"), sentinel);
++    if (damage === "audit") {
++      assert.equal(JSON.parse(readFileSync(path, "utf8")).active, true);
++      assert.equal(existsSync(join(lock.repoDir, "studio.guard")), true, "감사 실패는 guard를 남겨 실행을 막는다");
++    }
++  }
++});
++
++test("실제 래퍼는 명령을 START 기록 후 실행하고 자동 갱신하며 다른 worktree 요청을 거부한다", { skip: process.platform === "win32" ? "POSIX process group 실제 시험" : false }, async () => {
++  const f = fixture(), ready = join(f.root, "ready"), done = join(f.root, "done");
++  assert.equal(spawnSync("git", ["-C", f.root, "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "--allow-empty", "-qm", "fixture"]).status, 0);
++  const otherWorktree = join(tempDir(), "other");
++  assert.equal(spawnSync("git", ["-C", f.root, "worktree", "add", "-qb", "other", otherWorktree]).status, 0);
++  writeResource(otherWorktree);
++  const env = { ...sessionFreeEnv(), PACE_HOME: f.home };
++  const child = spawnTestChild(process.execPath, [join(packageRoot, "bin/pace.ts"), "team", "lock", "studio", "--by", "P009", "--", process.execPath, "-e", `require("fs").writeFileSync(${JSON.stringify(ready)},"yes");setTimeout(()=>require("fs").writeFileSync(${JSON.stringify(done)},"done"),5700)`], { cwd: f.root, env, stdio: ["ignore", "pipe", "pipe"] });
++  let stdout = "", stderr = ""; child.stdout!.on("data", (x) => { stdout += x; }); child.stderr!.on("data", (x) => { stderr += x; });
++  const ended = new Promise<number | null>((resolveExit) => child.once("exit", resolveExit));
++  const lock = new ResourceLock(f.root, "studio", { home: f.home });
++  await waitFor(() => existsSync(ready));
++  const first = lock.status().lease!; assert.equal(first.phase, "started"); assert.ok(first.child);
++  const events = readdirSync(join(lock.stateDir, "audit")).map((p) => JSON.parse(readFileSync(join(lock.stateDir, "audit", p), "utf8")));
++  assert.ok(events.some((e) => e.action === "started-before-START"));
++  assert.equal(runPace(["team", "lock", "studio", "--by", "P010", "--", process.execPath, "-e", "process.exit(99)"], { cwd: otherWorktree, home: f.home }).status, 1);
++  await waitFor(() => JSON.parse(readFileSync(join(lock.stateDir, lock.stateName), "utf8")).heartbeat > first.heartbeat, 6500);
++  assert.equal(await ended, 0, stderr + stdout);
++  assert.equal(existsSync(done), true);
++  assert.equal(lock.status().active, false);
++  assert.match(stdout, /completed/);
++});
++
++test("OS 시작 식별은 TZ 변경에 안정적이고 PID 재사용·외부 호스트·잘못된 그룹은 보수적으로 구별한다", () => {
++  const self = processIdentity(process.pid)!;
++  assert.ok(self);
++  assert.equal(observeProcess(self), "alive");
++  assert.equal(observeProcess({ ...self, started: `${self.started}-other` }), "dead");
++  assert.equal(observeProcess({ ...self, host: "a-different-host.invalid" }), "unknown");
++  assert.equal(observeGroup(0), "unknown"); assert.equal(observeGroup(1), "unknown"); assert.equal(observeGroup(-1), "unknown");
++  if (process.platform !== "win32") {
++    for (const [code, expected] of [["ESRCH", "dead"], ["EPERM", "unknown"], ["EINVAL", "unknown"]]) {
++      assert.equal(observeGroup(99999, () => { throw Object.assign(new Error("query failed"), { code }); }), expected);
++    }
++    assert.equal(observeGroup(99999, (pid) => { assert.equal(pid, -99999); }), "alive");
++  }
++  const previous = process.env.TZ;
++  try { process.env.TZ = "Pacific/Honolulu"; assert.equal(processIdentity(process.pid)!.started, self.started); }
++  finally { if (previous === undefined) delete process.env.TZ; else process.env.TZ = previous; }
++});
++
++test("실제 probe exit0/1/기타·실행 실패를 분리하고 알려진 역할의 미선언 자원 실행은 막는다", () => {
++  const f = fixture();
++  assert.equal(f.run("team", "new", "maker", "--role", "maker").status, 0);
++  assert.equal(f.run("team", "lock", "studio", "--by", "maker", "--", process.execPath, "-e", "process.exit(99)").status, 2);
++  for (const probe of [[process.execPath, "-e", "process.exit(1)"], [process.execPath, "-e", "process.exit(7)"], [join(f.root, "no-executable")]]) {
++    const g = fixture(); writeResource(g.root, { probe });
++    assert.equal(g.run("team", "lock", "studio", "--by", "P009", "--", process.execPath, "-e", "process.exit(99)").status, 2);
++    assert.equal(existsSync(join(new ResourceLock(g.root, "studio", { home: g.home }).stateDir, "studio.json")), false);
++  }
++  const ok = f.run("team", "lock", "studio", "--by", "P009", "--", process.execPath, "-e", "process.exit(7)");
++  if (process.platform === "win32") { assert.equal(ok.status, 2); return; }
++  assert.equal(ok.status, 1, ok.stderr + ok.stdout);
++  const result = JSON.parse(ok.stdout.trim().split("\n").at(-1)!);
++  assert.equal(result.outcome, "child_failed"); assert.equal(result.childExitCode, 7);
++});
++
++test("실제 래퍼 SIGKILL+자식 생존+free probe는 회수하지 않는다", { skip: process.platform === "win32" ? "POSIX process group 실제 시험" : false }, async () => {
++  const f = fixture(), ready = join(f.root, "ready");
++  const wrapper = spawnTestChild(process.execPath, [join(packageRoot, "bin/pace.ts"), "team", "lock", "studio", "--by", "P009", "--", process.execPath, "-e", `require("fs").writeFileSync(${JSON.stringify(ready)},"yes");setInterval(()=>{},1000)`], { cwd: f.root, env: { ...sessionFreeEnv(), PACE_HOME: f.home }, stdio: "ignore" });
++  const lock = new ResourceLock(f.root, "studio", { home: f.home });
++  await waitFor(() => existsSync(ready));
++  const lease = lock.status().lease!, group = lease.child!.group;
++  try {
++    const ended = new Promise<void>((done) => wrapper.once("exit", () => done())); wrapper.kill("SIGKILL"); await ended;
++    assert.equal(observeGroup(group), "alive");
++    assert.equal(lock.acquire("P010").code, 1);
++    assert.equal(lock.release(lease.acquisitionId).code, 2);
++  } finally { try { process.kill(-group, "SIGKILL"); } catch { /* only this test-created group */ } }
++});
++
++test("실제 자식 정상 종료+손자 생존+free probe도 정상 해제하지 않는다", { skip: process.platform === "win32" ? "POSIX process group 실제 시험" : false }, () => {
++  const f = fixture(), descendant = join(f.root, "descendant");
++  const script = `const c=require("child_process").spawn(process.execPath,["-e","setInterval(()=>{},1000)"],{stdio:"ignore"});require("fs").writeFileSync(${JSON.stringify(descendant)},String(c.pid));c.unref()`;
++  const result = f.run("team", "lock", "studio", "--by", "P009", "--", process.execPath, "-e", script);
++  const lock = new ResourceLock(f.root, "studio", { home: f.home });
++  const lease = JSON.parse(readFileSync(join(lock.stateDir, lock.stateName), "utf8")) as ResourceLease;
++  try {
++    assert.equal(result.status, 2, result.stderr + result.stdout);
++    assert.equal(lease.active, true);
++    assert.equal(observeGroup(lease.child!.group), "alive");
++    assert.equal(lock.acquire("P010").code, 1);
++  } finally { try { process.kill(-lease.child!.group, "SIGKILL"); } catch { /* only this test-created group */ } }
++});
+
+
+실제 관측의 범위:
+# 실제 관측 자료의 범위
+
+source CLI를 격리된 Git 임시 저장소·두 worktree 및 별도 저장소에서 실행했다. actual-worktrees.json에 각 argv/cwd/상태·자동 갱신·거부된 두 번째 요청·순차 실행 timeline과 source SHA를 보존했다. 모델 호출은0이며 실제 Studio MCP·비참여 직접 호출·Windows 실증으로 확대하지 않는다. check-actual-proof.mjs는 현재 원본 자료·상태와 원시 영수증을 직접 대조한다. 잠금 unit 시험은 래퍼 SIGKILL+자식 생존, 자식 정상 종료+손자 생존에서도 의도적으로 free인 확인기를 써 소유자 조건을 독립 검증한다.
+
+첫 actual-worktrees.json의 machine 음성은 살아 있는 래퍼에 owner unknown/hold였다. 당시 세부 조회 사유를 기록하지 않아 ps 실패/시간초과 등의 정확한 원인은 미확정이며 busy 관측으로 세지 않는다. 최종 actual-worktrees-final.json은 새 코드 source CLI로 두 scope 모두 busy/owner alive/ownerCheck same-start를 직접 관측했다. 새 코드는 외부 조회 불명 사유를 구분하고 자기 자동 갱신은 생성 때 확보한 시작 식별을 비교한다. 첫 자료는 덮어쓰지 않는다.
+
+최종2 관측은 guard 경합 유한 재시도·alive status의 확인기 생략과 SIGHUP 보완 뒤 새 source CLI로 실행했다. repo/machine 각각 기존 순차 요청 외에 두 CLI를 동시에 시작해 gate 해제 전 하나만 진입함을 직접 관측했다. 앞의 final과 첫 관측을 모두 보존한다. 최신 정상 근거는 actual-worktrees-final2.json이다.
+
+
+actual-worktrees-final2.json:
+{
+  "at": "2026-11-24T03:57:24.684Z",
+  "kind": "actual-source-cli-temporary-resources",
+  "modelCalls": 0,
+  "base": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy",
+  "cases": [
+    {
+      "scope": "repo",
+      "name": "studio",
+      "firstRoot": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+      "secondRoot": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree",
+      "stateDir": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo/.git/pace/resources",
+      "initial": {
+        "version": 1,
+        "active": true,
+        "acquisitionId": "80e86ece-e394-4819-8a81-8526fa491bcc",
+        "resource": "studio",
+        "scope": "repo",
+        "definition": "81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4",
+        "by": "P009",
+        "owner": {
+          "pid": 77857,
+          "started": "Tue Nov 24 03:57:12 2026",
+          "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+          "platform": "darwin"
+        },
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+        "acquiredAt": 1795492633027,
+        "heartbeat": 1795492633027,
+        "phase": "started",
+        "child": {
+          "identity": {
+            "pid": 78017,
+            "started": "Tue Nov 24 03:57:13 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "group": 78017
+        }
+      },
+      "renewed": {
+        "version": 1,
+        "active": true,
+        "acquisitionId": "80e86ece-e394-4819-8a81-8526fa491bcc",
+        "resource": "studio",
+        "scope": "repo",
+        "definition": "81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4",
+        "by": "P009",
+        "owner": {
+          "pid": 77857,
+          "started": "Tue Nov 24 03:57:12 2026",
+          "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+          "platform": "darwin"
+        },
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+        "acquiredAt": 1795492633027,
+        "heartbeat": 1795492638050,
+        "phase": "started",
+        "child": {
+          "identity": {
+            "pid": 78017,
+            "started": "Tue Nov 24 03:57:13 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "group": 78017
+        }
+      },
+      "rejected": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "studio",
+          "--by",
+          "P010",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "require('fs').writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-forbidden\",'bad')"
+        ],
+        "code": 1,
+        "signal": null,
+        "stdout": "{\"outcome\":\"busy\",\"reason\":\"이전 소유자/자식 그룹 생존 또는 종료 미확인; 회수하지 않는다\",\"code\":1,\"scope\":\"repo\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"80e86ece-e394-4819-8a81-8526fa491bcc\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P009\",\"owner\":{\"pid\":77857,\"started\":\"Tue Nov 24 03:57:12 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo\",\"acquiredAt\":1795492633027,\"heartbeat\":1795492633027,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":78017,\"started\":\"Tue Nov 24 03:57:13 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":78017}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"owner\":\"alive\",\"ownerCheck\":\"same-start\"}\n",
+        "stderr": ""
+      },
+      "first": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "studio",
+          "--by",
+          "P009",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "const f=require('fs'); f.appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-events.jsonl\",JSON.stringify({event:'first-start',at:Date.now()})+'\\n');f.writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-ready\",'ready');const t=setInterval(()=>{if(f.existsSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-gate\")){clearInterval(t);f.appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-events.jsonl\",JSON.stringify({event:'first-end',at:Date.now()})+'\\n')}},20)"
+        ],
+        "code": 0,
+        "signal": null,
+        "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"repo\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"80e86ece-e394-4819-8a81-8526fa491bcc\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P009\",\"owner\":{\"pid\":77857,\"started\":\"Tue Nov 24 03:57:12 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo\",\"acquiredAt\":1795492633027,\"heartbeat\":1795492633027,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"repo\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"80e86ece-e394-4819-8a81-8526fa491bcc\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P009\",\"owner\":{\"pid\":77857,\"started\":\"Tue Nov 24 03:57:12 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo\",\"acquiredAt\":1795492633027,\"heartbeat\":1795492638050,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":78017,\"started\":\"Tue Nov 24 03:57:13 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":78017}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+        "stderr": ""
+      },
+      "second": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "studio",
+          "--by",
+          "P010",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "require('fs').appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-events.jsonl\",JSON.stringify({event:'second-start',at:Date.now()})+'\\n')"
+        ],
+        "code": 0,
+        "signal": null,
+        "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"repo\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"33f2db95-565b-4449-8aba-75dd18c29ffe\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P010\",\"owner\":{\"pid\":79358,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree\",\"acquiredAt\":1795492638316,\"heartbeat\":1795492638316,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"repo\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"33f2db95-565b-4449-8aba-75dd18c29ffe\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P010\",\"owner\":{\"pid\":79358,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree\",\"acquiredAt\":1795492638316,\"heartbeat\":1795492638316,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":79402,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":79402}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+        "stderr": ""
+      },
+      "timeline": [
+        {
+          "event": "first-start",
+          "at": 1795492633115
+        },
+        {
+          "event": "first-end",
+          "at": 1795492638087
+        },
+        {
+          "event": "second-start",
+          "at": 1795492638399
+        }
+      ],
+      "race": {
+        "a": {
+          "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+          "argv": [
+            "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+            "team",
+            "lock",
+            "studio",
+            "--by",
+            "P011",
+            "--",
+            "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+            "-e",
+            "const f=require('fs');f.writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-race-A\",'entered');const t=setInterval(()=>{if(f.existsSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-race-gate\"))clearInterval(t)},20)"
+          ],
+          "code": 1,
+          "signal": null,
+          "stdout": "{\"outcome\":\"busy\",\"reason\":\"이전 소유자/자식 그룹 생존 또는 종료 미확인; 회수하지 않는다\",\"code\":1,\"scope\":\"repo\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"8d675daf-cdae-41ae-b1d4-ff081a424f60\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P012\",\"owner\":{\"pid\":79462,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree\",\"acquiredAt\":1795492638622,\"heartbeat\":1795492638622,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"owner\":\"alive\",\"ownerCheck\":\"same-start\"}\n",
+          "stderr": ""
+        },
+        "b": {
+          "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree",
+          "argv": [
+            "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+            "team",
+            "lock",
+            "studio",
+            "--by",
+            "P012",
+            "--",
+            "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+            "-e",
+            "const f=require('fs');f.writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-race-B\",'entered');const t=setInterval(()=>{if(f.existsSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo-race-gate\"))clearInterval(t)},20)"
+          ],
+          "code": 0,
+          "signal": null,
+          "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"repo\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"8d675daf-cdae-41ae-b1d4-ff081a424f60\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P012\",\"owner\":{\"pid\":79462,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree\",\"acquiredAt\":1795492638622,\"heartbeat\":1795492638622,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"repo\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"8d675daf-cdae-41ae-b1d4-ff081a424f60\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P012\",\"owner\":{\"pid\":79462,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree\",\"acquiredAt\":1795492638622,\"heartbeat\":1795492638622,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":79549,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":79549}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+          "stderr": ""
+        },
+        "entered": {
+          "a": false,
+          "b": true
+        },
+        "simultaneousStarts": 1
+      },
+      "final": {
+        "outcome": "status",
+        "reason": "잠금 없음",
+        "code": 0,
+        "scope": "repo",
+        "active": false,
+        "lease": {
+          "version": 1,
+          "active": false,
+          "acquisitionId": "8d675daf-cdae-41ae-b1d4-ff081a424f60",
+          "resource": "studio",
+          "scope": "repo",
+          "definition": "81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4",
+          "by": "P012",
+          "owner": {
+            "pid": 79462,
+            "started": "Tue Nov 24 03:57:18 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/worktree",
+          "acquiredAt": 1795492638622,
+          "heartbeat": 1795492638622,
+          "phase": "started",
+          "child": {
+            "identity": {
+              "pid": 79549,
+              "started": "Tue Nov 24 03:57:18 2026",
+              "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+              "platform": "darwin"
+            },
+            "group": 79549
+          }
+        },
+        "participation": "잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다"
+      }
+    },
+    {
+      "scope": "machine",
+      "name": "device",
+      "firstRoot": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+      "secondRoot": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo",
+      "stateDir": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/home/team/resources",
+      "initial": {
+        "version": 1,
+        "active": true,
+        "acquisitionId": "95bda72d-9714-47ba-85f5-578501602e1d",
+        "resource": "device",
+        "scope": "machine",
+        "definition": "2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2",
+        "by": "P009",
+        "owner": {
+          "pid": 79624,
+          "started": "Tue Nov 24 03:57:18 2026",
+          "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+          "platform": "darwin"
+        },
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+        "acquiredAt": 1795492638924,
+        "heartbeat": 1795492638924,
+        "phase": "started",
+        "child": {
+          "identity": {
+            "pid": 79668,
+            "started": "Tue Nov 24 03:57:18 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "group": 79668
+        }
+      },
+      "renewed": {
+        "version": 1,
+        "active": true,
+        "acquisitionId": "95bda72d-9714-47ba-85f5-578501602e1d",
+        "resource": "device",
+        "scope": "machine",
+        "definition": "2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2",
+        "by": "P009",
+        "owner": {
+          "pid": 79624,
+          "started": "Tue Nov 24 03:57:18 2026",
+          "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+          "platform": "darwin"
+        },
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+        "acquiredAt": 1795492638924,
+        "heartbeat": 1795492643948,
+        "phase": "started",
+        "child": {
+          "identity": {
+            "pid": 79668,
+            "started": "Tue Nov 24 03:57:18 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "group": 79668
+        }
+      },
+      "rejected": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "device",
+          "--by",
+          "P010",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "require('fs').writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-forbidden\",'bad')"
+        ],
+        "code": 1,
+        "signal": null,
+        "stdout": "{\"outcome\":\"busy\",\"reason\":\"이전 소유자/자식 그룹 생존 또는 종료 미확인; 회수하지 않는다\",\"code\":1,\"scope\":\"machine\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"95bda72d-9714-47ba-85f5-578501602e1d\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P009\",\"owner\":{\"pid\":79624,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo\",\"acquiredAt\":1795492638924,\"heartbeat\":1795492638924,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":79668,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":79668}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"owner\":\"alive\",\"ownerCheck\":\"same-start\"}\n",
+        "stderr": ""
+      },
+      "first": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "device",
+          "--by",
+          "P009",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "const f=require('fs'); f.appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-events.jsonl\",JSON.stringify({event:'first-start',at:Date.now()})+'\\n');f.writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-ready\",'ready');const t=setInterval(()=>{if(f.existsSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-gate\")){clearInterval(t);f.appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-events.jsonl\",JSON.stringify({event:'first-end',at:Date.now()})+'\\n')}},20)"
+        ],
+        "code": 0,
+        "signal": null,
+        "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"machine\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"95bda72d-9714-47ba-85f5-578501602e1d\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P009\",\"owner\":{\"pid\":79624,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo\",\"acquiredAt\":1795492638924,\"heartbeat\":1795492638924,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"machine\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"95bda72d-9714-47ba-85f5-578501602e1d\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P009\",\"owner\":{\"pid\":79624,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo\",\"acquiredAt\":1795492638924,\"heartbeat\":1795492643948,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":79668,\"started\":\"Tue Nov 24 03:57:18 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":79668}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+        "stderr": ""
+      },
+      "second": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "device",
+          "--by",
+          "P010",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "require('fs').appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-events.jsonl\",JSON.stringify({event:'second-start',at:Date.now()})+'\\n')"
+        ],
+        "code": 0,
+        "signal": null,
+        "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"machine\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"a6778d81-c6bf-40a6-9db5-72d52d811cbd\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P010\",\"owner\":{\"pid\":80681,\"started\":\"Tue Nov 24 03:57:24 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo\",\"acquiredAt\":1795492644237,\"heartbeat\":1795492644237,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"machine\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"a6778d81-c6bf-40a6-9db5-72d52d811cbd\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P010\",\"owner\":{\"pid\":80681,\"started\":\"Tue Nov 24 03:57:24 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo\",\"acquiredAt\":1795492644237,\"heartbeat\":1795492644237,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":80725,\"started\":\"Tue Nov 24 03:57:24 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":80725}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+        "stderr": ""
+      },
+      "timeline": [
+        {
+          "event": "first-start",
+          "at": 1795492639008
+        },
+        {
+          "event": "first-end",
+          "at": 1795492643980
+        },
+        {
+          "event": "second-start",
+          "at": 1795492644322
+        }
+      ],
+      "race": {
+        "a": {
+          "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/repo",
+          "argv": [
+            "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+            "team",
+            "lock",
+            "device",
+            "--by",
+            "P011",
+            "--",
+            "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+            "-e",
+            "const f=require('fs');f.writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-race-A\",'entered');const t=setInterval(()=>{if(f.existsSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-race-gate\"))clearInterval(t)},20)"
+          ],
+          "code": 1,
+          "signal": null,
+          "stdout": "{\"outcome\":\"busy\",\"reason\":\"이전 소유자/자식 그룹 생존 또는 종료 미확인; 회수하지 않는다\",\"code\":1,\"scope\":\"machine\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"00f2186f-d781-424b-a2ed-48d1b95ec606\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P012\",\"owner\":{\"pid\":80783,\"started\":\"Tue Nov 24 03:57:24 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo\",\"acquiredAt\":1795492644546,\"heartbeat\":1795492644546,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"owner\":\"alive\",\"ownerCheck\":\"same-start\"}\n",
+          "stderr": ""
+        },
+        "b": {
+          "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo",
+          "argv": [
+            "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+            "team",
+            "lock",
+            "device",
+            "--by",
+            "P012",
+            "--",
+            "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+            "-e",
+            "const f=require('fs');f.writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-race-B\",'entered');const t=setInterval(()=>{if(f.existsSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/machine-race-gate\"))clearInterval(t)},20)"
+          ],
+          "code": 0,
+          "signal": null,
+          "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"machine\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"00f2186f-d781-424b-a2ed-48d1b95ec606\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P012\",\"owner\":{\"pid\":80783,\"started\":\"Tue Nov 24 03:57:24 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo\",\"acquiredAt\":1795492644546,\"heartbeat\":1795492644546,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"machine\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"00f2186f-d781-424b-a2ed-48d1b95ec606\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P012\",\"owner\":{\"pid\":80783,\"started\":\"Tue Nov 24 03:57:24 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo\",\"acquiredAt\":1795492644546,\"heartbeat\":1795492644546,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":80872,\"started\":\"Tue Nov 24 03:57:24 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":80872}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+          "stderr": ""
+        },
+        "entered": {
+          "a": false,
+          "b": true
+        },
+        "simultaneousStarts": 1
+      },
+      "final": {
+        "outcome": "status",
+        "reason": "잠금 없음",
+        "code": 0,
+        "scope": "machine",
+        "active": false,
+        "lease": {
+          "version": 1,
+          "active": false,
+          "acquisitionId": "00f2186f-d781-424b-a2ed-48d1b95ec606",
+          "resource": "device",
+          "scope": "machine",
+          "definition": "2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2",
+          "by": "P012",
+          "owner": {
+            "pid": 80783,
+            "started": "Tue Nov 24 03:57:24 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-7oJrxy/other-repo",
+          "acquiredAt": 1795492644546,
+          "heartbeat": 1795492644546,
+          "phase": "started",
+          "child": {
+            "identity": {
+              "pid": 80872,
+              "started": "Tue Nov 24 03:57:24 2026",
+              "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+              "platform": "darwin"
+            },
+            "group": 80872
+          }
+        },
+        "participation": "잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다"
+      }
+    }
+  ],
+  "sourceHashes": {
+    "src/team/resources.ts": "4846c73b870ea1612e3f14cea4d0c4d7caa4365dd7924124ea344046b2ff84e4",
+    "src/team/resource-lock.ts": "f734cfad09e07a6f455c4bf39733611d9433e24582442ded90957d0a6f6b8536",
+    "src/team/resource-process.ts": "2f3442cb58e2d19a06632bc9f4078de0b0c570a0f82a2c755963b4fd558c83a9",
+    "src/team/resource-cli.ts": "82321efdda21af518e350d2fd70686f72e39c28aea50cc8264b0893bba6bb129",
+    "src/team/resource-child.ts": "7e6815dda3216923e5d57d8f889404bc23b740ae02f9bc7c11ebd6db41c3f330",
+    "src/team/store.ts": "87c223117aa968043faaac25200a4412d18ec2afddd3cf4c2c5e274bcb0d8bdd",
+    "src/cli.ts": "78a8bc992f4327237e3c394dde9397c51a4c85286938fa56e6cfda02fac9b92c"
+  },
+  "limitation": "시험용 자원과 참여 호출만 검증. 실제 Studio MCP/비참여 호출·Windows 실증은 아님."
+}

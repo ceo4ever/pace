@@ -7,6 +7,7 @@ import { setWorkerTier, teamTierTable } from "./core/worker-tiers.ts";
 import { createTeamMember, loadTeam, teamRoot } from "./team/store.ts";
 import { syncTeam } from "./team/sync.ts";
 import { verifyTeam, verifyTable } from "./team/verify.ts";
+import { resourceCommand } from "./team/resource-cli.ts";
 import { hasSecret } from "./project/secrets.ts";
 import { BacklogError, newBacklog, newBrief } from "./project/backlog.ts";
 import { newRun } from "./scout/run.ts";
@@ -161,6 +162,7 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>
   pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]
   pace team verify <이름> 또는 --all [--agent claude|codex]      역할 적재·고정 질문 점검
+  pace team lock <자원> --by <담당> [-- <명령> ...] | unlock <자원> --token <토큰> | status <자원>
   pace project start <P###> [--model <모델>] [--effort <값|default>] [--agent <도구>] [--no-launch|--launch]   정의 커밋 + worktree(../<저장소>.wt/P###) (main). Orca 안이면 작업자 세션을 띄우고 이 세션이 코디네이터
   pace project task <P###> "<이름>"              태스크 폴더·TASK.md·태스크 표 행 (worktree)
   pace project check <P###> <T##>                커밋 게이트 확인 — TASK-CLOSE (worktree)
@@ -984,6 +986,7 @@ async function agentCommand(args: string[]): Promise<number> {
 }
 
 async function teamCommand(args: string[]): Promise<number> {
+  if (["lock", "unlock", "status"].includes(args[0] ?? "")) return resourceCommand(args);
   try {
     const { values, positionals } = parseArgs({ args, options: { role: { type: "string" }, check: { type: "boolean" }, json: { type: "boolean" }, all: { type: "boolean" }, agent: { type: "string" } }, allowPositionals: true, strict: true });
     const [sub, name] = positionals;

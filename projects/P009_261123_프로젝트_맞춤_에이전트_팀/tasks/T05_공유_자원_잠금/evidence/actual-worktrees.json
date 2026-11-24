@@ -1,0 +1,358 @@
+{
+  "at": "2026-11-24T03:44:11.047Z",
+  "kind": "actual-source-cli-temporary-resources",
+  "modelCalls": 0,
+  "base": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ",
+  "cases": [
+    {
+      "scope": "repo",
+      "name": "studio",
+      "firstRoot": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo",
+      "secondRoot": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/worktree",
+      "stateDir": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo/.git/pace/resources",
+      "initial": {
+        "version": 1,
+        "active": true,
+        "acquisitionId": "317b32bd-a68b-46b6-a50d-09130e2d39ed",
+        "resource": "studio",
+        "scope": "repo",
+        "definition": "81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4",
+        "by": "P009",
+        "owner": {
+          "pid": 58395,
+          "started": "Tue Nov 24 03:43:59 2026",
+          "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+          "platform": "darwin"
+        },
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo",
+        "acquiredAt": 1795491839938,
+        "heartbeat": 1795491839938,
+        "phase": "started",
+        "child": {
+          "identity": {
+            "pid": 59823,
+            "started": "Tue Nov 24 03:43:59 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "group": 59823
+        }
+      },
+      "renewed": {
+        "version": 1,
+        "active": true,
+        "acquisitionId": "317b32bd-a68b-46b6-a50d-09130e2d39ed",
+        "resource": "studio",
+        "scope": "repo",
+        "definition": "81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4",
+        "by": "P009",
+        "owner": {
+          "pid": 58395,
+          "started": "Tue Nov 24 03:43:59 2026",
+          "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+          "platform": "darwin"
+        },
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo",
+        "acquiredAt": 1795491839938,
+        "heartbeat": 1795491844982,
+        "phase": "started",
+        "child": {
+          "identity": {
+            "pid": 59823,
+            "started": "Tue Nov 24 03:43:59 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "group": 59823
+        }
+      },
+      "rejected": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/worktree",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "studio",
+          "--by",
+          "P010",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "require('fs').writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo-forbidden\",'bad')"
+        ],
+        "code": 1,
+        "signal": null,
+        "stdout": "{\"outcome\":\"busy\",\"reason\":\"이전 소유자/자식 그룹 생존 또는 종료 미확인; 회수하지 않는다\",\"code\":1,\"scope\":\"repo\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"317b32bd-a68b-46b6-a50d-09130e2d39ed\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P009\",\"owner\":{\"pid\":58395,\"started\":\"Tue Nov 24 03:43:59 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo\",\"acquiredAt\":1795491839938,\"heartbeat\":1795491839938,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":59823,\"started\":\"Tue Nov 24 03:43:59 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":59823}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"owner\":\"alive\"}\n",
+        "stderr": ""
+      },
+      "first": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "studio",
+          "--by",
+          "P009",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "const f=require('fs'); f.appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo-events.jsonl\",JSON.stringify({event:'first-start',at:Date.now()})+'\\n');f.writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo-ready\",'ready');const t=setInterval(()=>{if(f.existsSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo-gate\")){clearInterval(t);f.appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo-events.jsonl\",JSON.stringify({event:'first-end',at:Date.now()})+'\\n')}},20)"
+        ],
+        "code": 0,
+        "signal": null,
+        "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"repo\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"317b32bd-a68b-46b6-a50d-09130e2d39ed\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P009\",\"owner\":{\"pid\":58395,\"started\":\"Tue Nov 24 03:43:59 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo\",\"acquiredAt\":1795491839938,\"heartbeat\":1795491839938,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"repo\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"317b32bd-a68b-46b6-a50d-09130e2d39ed\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P009\",\"owner\":{\"pid\":58395,\"started\":\"Tue Nov 24 03:43:59 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo\",\"acquiredAt\":1795491839938,\"heartbeat\":1795491844982,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":59823,\"started\":\"Tue Nov 24 03:43:59 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":59823}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+        "stderr": ""
+      },
+      "second": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/worktree",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "studio",
+          "--by",
+          "P010",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "require('fs').appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo-events.jsonl\",JSON.stringify({event:'second-start',at:Date.now()})+'\\n')"
+        ],
+        "code": 0,
+        "signal": null,
+        "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"repo\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"3272886e-8b41-48c0-88e0-9299dffe009e\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P010\",\"owner\":{\"pid\":75090,\"started\":\"Tue Nov 24 03:44:05 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/worktree\",\"acquiredAt\":1795491845243,\"heartbeat\":1795491845243,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"repo\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"3272886e-8b41-48c0-88e0-9299dffe009e\",\"resource\":\"studio\",\"scope\":\"repo\",\"definition\":\"81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4\",\"by\":\"P010\",\"owner\":{\"pid\":75090,\"started\":\"Tue Nov 24 03:44:05 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/worktree\",\"acquiredAt\":1795491845243,\"heartbeat\":1795491845243,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":75638,\"started\":\"Tue Nov 24 03:44:05 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":75638}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+        "stderr": ""
+      },
+      "timeline": [
+        {
+          "event": "first-start",
+          "at": 1795491840077
+        },
+        {
+          "event": "first-end",
+          "at": 1795491844994
+        },
+        {
+          "event": "second-start",
+          "at": 1795491845335
+        }
+      ],
+      "final": {
+        "outcome": "status",
+        "reason": "잠금 없음",
+        "code": 0,
+        "scope": "repo",
+        "active": false,
+        "lease": {
+          "version": 1,
+          "active": false,
+          "acquisitionId": "3272886e-8b41-48c0-88e0-9299dffe009e",
+          "resource": "studio",
+          "scope": "repo",
+          "definition": "81b6b48ec86505338a4ac843b9dc8fd6497cc3bd6f280b5278b2a962e768eaf4",
+          "by": "P010",
+          "owner": {
+            "pid": 75090,
+            "started": "Tue Nov 24 03:44:05 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/worktree",
+          "acquiredAt": 1795491845243,
+          "heartbeat": 1795491845243,
+          "phase": "started",
+          "child": {
+            "identity": {
+              "pid": 75638,
+              "started": "Tue Nov 24 03:44:05 2026",
+              "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+              "platform": "darwin"
+            },
+            "group": 75638
+          }
+        },
+        "participation": "잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다"
+      }
+    },
+    {
+      "scope": "machine",
+      "name": "device",
+      "firstRoot": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo",
+      "secondRoot": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/other-repo",
+      "stateDir": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/home/team/resources",
+      "initial": {
+        "version": 1,
+        "active": true,
+        "acquisitionId": "f1a4a2d1-74f0-4dbb-8d49-66cc24caa2a7",
+        "resource": "device",
+        "scope": "machine",
+        "definition": "2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2",
+        "by": "P009",
+        "owner": {
+          "pid": 76071,
+          "started": "Tue Nov 24 03:44:05 2026",
+          "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+          "platform": "darwin"
+        },
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo",
+        "acquiredAt": 1795491845603,
+        "heartbeat": 1795491845603,
+        "phase": "started",
+        "child": {
+          "identity": {
+            "pid": 77031,
+            "started": "Tue Nov 24 03:44:05 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "group": 77031
+        }
+      },
+      "renewed": {
+        "version": 1,
+        "active": true,
+        "acquisitionId": "f1a4a2d1-74f0-4dbb-8d49-66cc24caa2a7",
+        "resource": "device",
+        "scope": "machine",
+        "definition": "2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2",
+        "by": "P009",
+        "owner": {
+          "pid": 76071,
+          "started": "Tue Nov 24 03:44:05 2026",
+          "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+          "platform": "darwin"
+        },
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo",
+        "acquiredAt": 1795491845603,
+        "heartbeat": 1795491850648,
+        "phase": "started",
+        "child": {
+          "identity": {
+            "pid": 77031,
+            "started": "Tue Nov 24 03:44:05 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "group": 77031
+        }
+      },
+      "rejected": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/other-repo",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "device",
+          "--by",
+          "P010",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "require('fs').writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/machine-forbidden\",'bad')"
+        ],
+        "code": 2,
+        "signal": null,
+        "stdout": "{\"outcome\":\"hold\",\"reason\":\"이전 소유자/자식 그룹 생존 또는 종료 미확인; 회수하지 않는다\",\"code\":2,\"scope\":\"machine\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"f1a4a2d1-74f0-4dbb-8d49-66cc24caa2a7\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P009\",\"owner\":{\"pid\":76071,\"started\":\"Tue Nov 24 03:44:05 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo\",\"acquiredAt\":1795491845603,\"heartbeat\":1795491845603,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":77031,\"started\":\"Tue Nov 24 03:44:05 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":77031}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"owner\":\"unknown\"}\n",
+        "stderr": ""
+      },
+      "first": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "device",
+          "--by",
+          "P009",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "const f=require('fs'); f.appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/machine-events.jsonl\",JSON.stringify({event:'first-start',at:Date.now()})+'\\n');f.writeFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/machine-ready\",'ready');const t=setInterval(()=>{if(f.existsSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/machine-gate\")){clearInterval(t);f.appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/machine-events.jsonl\",JSON.stringify({event:'first-end',at:Date.now()})+'\\n')}},20)"
+        ],
+        "code": 0,
+        "signal": null,
+        "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"machine\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"f1a4a2d1-74f0-4dbb-8d49-66cc24caa2a7\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P009\",\"owner\":{\"pid\":76071,\"started\":\"Tue Nov 24 03:44:05 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo\",\"acquiredAt\":1795491845603,\"heartbeat\":1795491845603,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"machine\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"f1a4a2d1-74f0-4dbb-8d49-66cc24caa2a7\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P009\",\"owner\":{\"pid\":76071,\"started\":\"Tue Nov 24 03:44:05 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/repo\",\"acquiredAt\":1795491845603,\"heartbeat\":1795491850648,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":77031,\"started\":\"Tue Nov 24 03:44:05 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":77031}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+        "stderr": ""
+      },
+      "second": {
+        "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/other-repo",
+        "argv": [
+          "/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts",
+          "team",
+          "lock",
+          "device",
+          "--by",
+          "P010",
+          "--",
+          "/Users/lucas/.nvm/versions/node/v24.22.3/bin/node",
+          "-e",
+          "require('fs').appendFileSync(\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/machine-events.jsonl\",JSON.stringify({event:'second-start',at:Date.now()})+'\\n')"
+        ],
+        "code": 0,
+        "signal": null,
+        "stdout": "{\"outcome\":\"acquired\",\"reason\":\"참여 자원 잠금 획득\",\"code\":0,\"scope\":\"machine\",\"active\":true,\"lease\":{\"version\":1,\"active\":true,\"acquisitionId\":\"a08eea8d-5a60-4af4-8550-79259b2f8797\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P010\",\"owner\":{\"pid\":88626,\"started\":\"Tue Nov 24 03:44:10 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/other-repo\",\"acquiredAt\":1795491850889,\"heartbeat\":1795491850889,\"phase\":\"pre-start\",\"child\":null},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\"}\n{\"outcome\":\"completed\",\"reason\":\"소유자 종료·자원 미사용 대조 후 해제\",\"code\":0,\"scope\":\"machine\",\"active\":false,\"lease\":{\"version\":1,\"active\":false,\"acquisitionId\":\"a08eea8d-5a60-4af4-8550-79259b2f8797\",\"resource\":\"device\",\"scope\":\"machine\",\"definition\":\"2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2\",\"by\":\"P010\",\"owner\":{\"pid\":88626,\"started\":\"Tue Nov 24 03:44:10 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"cwd\":\"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/other-repo\",\"acquiredAt\":1795491850889,\"heartbeat\":1795491850889,\"phase\":\"started\",\"child\":{\"identity\":{\"pid\":89210,\"started\":\"Tue Nov 24 03:44:10 2026\",\"host\":\"ip-172-30-1-13.ap-northeast-2.compute.internal\",\"platform\":\"darwin\"},\"group\":89210}},\"participation\":\"잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다\",\"childExitCode\":0,\"signal\":null}\n",
+        "stderr": ""
+      },
+      "timeline": [
+        {
+          "event": "first-start",
+          "at": 1795491845723
+        },
+        {
+          "event": "first-end",
+          "at": 1795491850667
+        },
+        {
+          "event": "second-start",
+          "at": 1795491850996
+        }
+      ],
+      "final": {
+        "outcome": "status",
+        "reason": "잠금 없음",
+        "code": 0,
+        "scope": "machine",
+        "active": false,
+        "lease": {
+          "version": 1,
+          "active": false,
+          "acquisitionId": "a08eea8d-5a60-4af4-8550-79259b2f8797",
+          "resource": "device",
+          "scope": "machine",
+          "definition": "2b627ff194f771f08a39662676d9acc2a960b2e556b205e06313f40238aaaca2",
+          "by": "P010",
+          "owner": {
+            "pid": 88626,
+            "started": "Tue Nov 24 03:44:10 2026",
+            "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+            "platform": "darwin"
+          },
+          "cwd": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-P009-T05-actual-IbN3wQ/other-repo",
+          "acquiredAt": 1795491850889,
+          "heartbeat": 1795491850889,
+          "phase": "started",
+          "child": {
+            "identity": {
+              "pid": 89210,
+              "started": "Tue Nov 24 03:44:10 2026",
+              "host": "ip-172-30-1-13.ap-northeast-2.compute.internal",
+              "platform": "darwin"
+            },
+            "group": 89210
+          }
+        },
+        "participation": "잠금 참여 호출만 보호하며 비참여 직접 도구 호출을 차단하지 않는다"
+      }
+    }
+  ],
+  "sourceHashes": {
+    "src/team/resources.ts": "4846c73b870ea1612e3f14cea4d0c4d7caa4365dd7924124ea344046b2ff84e4",
+    "src/team/resource-lock.ts": "21029beb7846c44282975524fda6929e1edf1b83f439653d794af5a439c2f9f4",
+    "src/team/resource-process.ts": "e44c5e6b74684d5f129ad65aed33597e4238dcf82afa1e123ba95a7fa1fa5417",
+    "src/team/resource-cli.ts": "93469cf7d6a137f19bb99f96d4323847b92594ad51349af8c30cfc24403591fa",
+    "src/team/resource-child.ts": "7e6815dda3216923e5d57d8f889404bc23b740ae02f9bc7c11ebd6db41c3f330",
+    "src/team/store.ts": "87c223117aa968043faaac25200a4412d18ec2afddd3cf4c2c5e274bcb0d8bdd",
+    "src/cli.ts": "78a8bc992f4327237e3c394dde9397c51a4c85286938fa56e6cfda02fac9b92c"
+  },
+  "limitation": "시험용 자원과 참여 호출만 검증. 실제 Studio MCP/비참여 호출·Windows 실증은 아님."
+}

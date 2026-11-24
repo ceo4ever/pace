@@ -1,0 +1,25 @@
+{
+  "text": "# T05 1단계 보완 판정 2 (같은 tester 세션)\n\n**결론: 목표 달성, blocking은 없습니다.** 다만 SIGHUP과 START 직전 중단 경로는 코드로만 확인했고 시험이나 실측 근거가 없어 should_fix 1건으로 올립니다. 첫 판단과 보완 판정 1은 그대로 두고, 이번 판단은 새 코드와 `actual-worktrees-final2.json`만 근거로 했습니다. 이전 실측(`actual-worktrees.json`, `-final.json`)은 섞지 않았습니다.\n\n## 노출 범위\n- **자동으로 들어온 맥락:** 이전과 같습니다(`CLAUDE.md`/`AGENTS.md`, git status 스냅샷, SessionStart 훅).\n- **직접 읽은 것:**\n  - `src/team/resource-lock.ts`, `resource-cli.ts`, `resource-child.ts` 전문\n  - `resource-process.ts`, `resources.ts`는 이전 판정에서 읽은 내용을 그대로 유효하다고 봤습니다\n  - `test/team-lock.test.ts`의 시험 목록과 새 시험(105–117행), `test/` 전체에서 SIGHUP과 중단 관련 grep\n  - `docs/TEAM.md` 156–190행\n  - evidence의 `check-actual-proof.mjs` 전문, `impl-diff.patch`(diff 머리와 핵심 줄 grep)\n  - `actual-worktrees-final2.json`(race 블록 138–187행, 머리와 끝, 결과 필드 grep)\n- **읽지 않은 것:** TASK, PROJECT, 브리프, 사전 검토, 마감, 다른 reviewer 원문. 실측 생성기 `actual-worktrees.mjs`의 현재 판도 이번에는 열지 않았습니다.\n- **하지 않은 것:** 파일 수정, 모델 호출, 실측 재실행.\n\n## 직접 실행 결과\n- `node --test test/team-lock.test.ts`: **17/17 통과**, 건너뜀 0. 새 시험 \"살아 있는 소유자의 status는 probe를 실행하지 않고…\"가 포함됩니다.\n- `node --test evidence/check-actual-proof.mjs`: **1/1 통과**. final2를 읽고 소스 지문 일치, 모델 호출 0, 두 scope 모두에서 busy/alive/same-start, 경쟁 진입 1건을 확인합니다.\n\n## 요청 항목 검증\n| 항목 | 판정 | 근거 |\n|---|---|---|\n| guard 경합 최대 10초 재시도 | 확인 | `retryResourceGuard`는 `guardBusy`일 때만 50ms 간격으로 재시도하고 기한이 지나면 마지막 hold를 그대로 돌려줌. 적용 지점은 acquire, started, 내부 해제, unlock. 시험 113행: 100ms 뒤 guard가 풀리면 획득 성공. 115행: 계속 막히면 `guardBusy` 상태의 hold 2 |\n| 살아 있는 소유자의 status는 확인기 생략 | 확인 | `owner === \"alive\"`이면 `probeSkipped: true`, `use: \"unknown\"`. 시험 109행에서 probe 호출 수가 늘지 않음. 소유자가 종료됐거나 불명이면 확인기를 실행하며 `TEAM.md:186`에 적혀 있음 |\n| 실제 두 CLI 동시 경쟁 | 확인 | repo 사례: B가 획득해 completed. A는 B의 pre-start 단계 lease(같은 `acquisitionId`)를 보고 `busy`, `owner alive`, `same-start`. 진입 기록은 a=false, b=true. A의 거부 영수증이 B의 획득 창과 실제로 겹쳤다는 직접 근거임. machine 사례도 같은 형태(final2 372·394·398행) |\n| SIGHUP | 코드만 확인 | 핸들러를 등록하고 해제함. `stop(\"SIGHUP\")`이 메모리에 가진 bridge 식별을 다시 확인한 뒤에만 그룹으로 전달함. 그 뒤 일반 종료와 같은 확인을 거쳐 해제하거나 보류함. 시험과 실측은 없음 |\n| START 직전 중단 | 코드만 확인 | `started()` 기록 뒤 `interrupted`나 `exitSeen`이면 START를 보내지 않고 bridge를 정리한 다음 hold 2와 잠금 보존. 검사와 `send`가 같은 동기 구간이라 그 사이에 신호 처리기가 끼어들 수 없음. 시험은 없음 |\n| `acquisitionId` 이름 정리 | 부분 | `runResourceCommand`와 `renew`는 `acquisitionId`로 바뀜. `started(token, …)`, `release(token, …)`, CLI의 `--token`은 그대로 |\n| source 지문 | 확인 | final2 `sourceHashes`가 현재 checkout과 같음(proof 통과) |\n\n## blocking\n없음.\n\n## should_fix\n1. **SIGHUP과 START 직전 중단 경로에 자동 시험이나 실측 근거가 없습니다.** 둘 다 안전 쪽(잠금 보존)으로 설계돼 있지만, 이번에 추가된 동작이고 프로세스 신호와 경합을 다루는 경로입니다. 실제 래퍼에 SIGHUP을 보내는 시험을 하나 두는 것을 권합니다. 확인할 점은 세 가지입니다.\n   - 그룹이 신호를 받아 종료하는지\n   - 그 뒤 해제되거나, probe가 없으면 보류되는지\n   - `nohup` 자식이 남으면 잠금이 유지되는지\n\n   START 직전 중단도 `started` 재시도 중에 신호를 주입해 명령이 실행되지 않는지 확인하면 됩니다. 터미널이 닫혀 stdout 쓰기가 EIO로 실패하면 래퍼가 해제 전에 죽을 수 있습니다. 이 경우에도 잠금은 보존되므로 안전하지만, 확인 범위에 넣을 만합니다.\n\n## note\n- START 직전 중단 시 래퍼는 명령이 실행되지 않았다는 것을 알면서도 잠금을 started 상태로 남깁니다. 다음 회수는 probe가 `free`이거나 coordinator 확인이 있어야 합니다. 보수적인 선택이며 동작 자체는 맞습니다.\n- 버려진 guard가 있으면 획득이나 unlock이 10초 기다린 뒤 hold가 됩니다. status는 재시도하지 않고 바로 hold 2를 냅니다. 문서의 재시도 대상 목록과는 일치합니다.\n- 경쟁 결과의 `entered`와 `simultaneousStarts`는 생성기가 스스로 기록한 값입니다. 다만 A의 거부 영수증이 B의 lease를 담고 있어 겹침은 독립적으로 확인됩니다. 두 프로세스를 띄운 시각은 기록돼 있지 않습니다.\n- `release`의 hold에는 여전히 `ownerCheck`가 없습니다(보완 1에서 지적한 그대로).\n- 이전 note들(setsid로 그룹 이탈, 같은 `PACE_HOME` 필요, 종료 코드 1의 의미 중복 등)도 계속 유효합니다.\n\n## 목표 달성과 한계\n- **달성:**\n  - 참여 호출 사이의 직렬화. 순차 실행과 실제 동시 경쟁 모두, 두 scope에서 하나만 진입했습니다.\n  - 래퍼와 작업 그룹 종료, 자원 미사용이 모두 확인되기 전에는 보류하고, 모를 때도 보류합니다.\n  - 짧은 guard 경합은 유한 재시도로 처리하고, 살아 있는 소유자에게는 확인기를 실행하지 않습니다.\n- **한계:**\n  - 시험용 임시 자원과 macOS 실측뿐입니다. Studio MCP, 비참여 호출, Windows 실증은 아닙니다.\n  - SIGHUP과 START 직전 중단은 코드 검토로만 확인했습니다.\n  - 임시 fixture가 사라지면 live 재감사를 할 수 없습니다.\n\n## 올릴 단계\n- should_fix 1은 작성자에게 보내 시험 추가를 요청합니다. 실측 재실행은 필요하지 않습니다.\n- note는 다음 단계인 최종 계약 문서 대조 때 판단하면 됩니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "bcc992c5-ebb7-4623-9af9-54ba2b4343b6",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 97006,
+  "usage": {
+    "input_tokens": 14,
+    "output_tokens": 7900
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

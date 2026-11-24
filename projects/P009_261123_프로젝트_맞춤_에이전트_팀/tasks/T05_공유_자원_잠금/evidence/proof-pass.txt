@@ -1,0 +1,10 @@
+{"cases":2,"model_calls":0,"live_temporary_fixtures_reaudited":true,"boundary":"T05 checkout source hash에 결합. 임시 fixture 소멸 뒤 live 재감사를 주장하지 않는다."}
+✔ 실제 두 worktree 및 다른 저장소 CLI 영수증과 공유 상태를 직접 대조한다 (67.1765ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.382125

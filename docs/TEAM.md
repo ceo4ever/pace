@@ -152,3 +152,41 @@ verify의 Claude 도구는 Read/Grep/Glob이며 실제 Orca 작업자의 셸 구
 | 옵션·Git 루트/출력 경로 안전 거부 | 2 | stderr 진단, 보고서 없음 |
 
 종료2만으로 판단하지 말고 채널·보고서 상태를 함께 확인한다. 원본 조상이 위험해 결과 경로도 안전하지 않으면 보고서 대신 거부한다. `--all`은 현재 원본 목록이므로 삭제 대조는 이름을 지정한다. 원본 없는 관리 생성물은 `sync --check`와 함께 본다. 답은 UTF-8 64KiB 상한이며 비밀 후보 답·오류 원문은 출력/저장하지 않는다. 사람 확인 결과는 후속 도입/회고에 연결한다.
+
+## 공유 자원 잠금
+
+같이 쓰면 충돌하는 자원을 `.pace/team/resources.md`에 등록한다. 이 파일은 예약 메타파일이며 팀 구성원 목록·sync·verify에서 제외한다. 같은 이름의 구성원은 만들 수 없다. 기존 구성원 `resources`는 담당 자원의 이름 목록이다. 알려진 구성원을 `--by`로 지정하면 해당 원본이 그 자원을 선언해야 한다. 프로젝트 번호나 다른 담당 식별자는 계약에 따라 쓰며 자동 인증·자동 잠금을 뜻하지 않는다.
+
+````markdown
+# 공유 자원
+
+```json
+{"version":1,"resources":[{"name":"studio-mcp","capacity":1,"scope":"machine","description":"공유 Studio 연결","probe":["node","/공통경로/check-studio.mjs"]}]}
+```
+````
+
+위 확인기 경로는 형식 예시이며 제공되는 확인기가 아니다. `probe`는 신뢰한 저장소가 선언하는 실행 파일+인자 배열이다. 셸 없이 최대5초·출력64KiB로 실행하며 exit0=미사용,1=사용 중,기타·실행 오류=모름이다. 출력/오류 원문은 저장하지 않는다. 자원별 정확성은 실제 자원과 대조해야 한다. Studio MCP의 실제 확인 방법과 직렬화는 도입 저장소에서 별도 실측한다.
+
+```sh
+pace team lock studio-mcp --by P123 -- node tools/studio-job.mjs
+pace team status studio-mcp
+pace team unlock studio-mcp --token <acquisitionId>
+# 확인기 없는/불명인 자원은 실제 승인·미사용 확인 근거를 받은 뒤에만:
+pace team unlock studio-mcp --token <acquisitionId> --confirmed-by coordinator --evidence "자원 연결 종료를 확인한 승인 근거 요약"
+```
+
+잠금에 참여하는 호출만 보호한다. 비참여 직접 도구 호출을 가로채거나 권한을 차단하지 않는다. 명령 래퍼가 PID·OS 시작 식별과 획득별 `acquisitionId`를 기록하고 자동 갱신하므로 LLM의 수동 갱신 기억에 기대지 않는다. 자기 갱신은 시작 때 확보한 식별값을 대조하고 외부 ps의 일시 실패만으로 작업을 중단하지 않는다. heartbeat는 상태 파일만 갱신하며 획득·시작·해제/회수 감사와 분리한다. 외부 조회의 ownerCheck는 PID 부재·시작 조회 불가 등을 구분하며 모름을 생존/종료로 추정하지 않는다. 자식 process group을 먼저 영속 기록한 뒤 IPC START로 명령을 시작한다. 명령은 그 그룹에 남아야 하며 setsid/detach로 나가는 데몬을 격리하지 않는다. 명령 인자·출력은 잠금 감사에 기록하지 않는다.
+
+repo 범위 상태는 `git rev-parse --git-common-dir` 아래 `pace/resources/`, machine 범위는 같은 `PACE_HOME`의 `team/resources/`다. **같은 PACE_HOME을 공유해야** 기기 범위가 연결된다. 서로 다른 홈·기기·사용자 사이의 전역 잠금이라고 주장하지 않는다. PACE_HOME의 이름별 scope 등록과 machine guard는 다른 저장소의 scope 불일치도 보류한다. repo binding과 machine 상태는 name/capacity/scope/probe argv 지문을 보존한다. 설명만 바꿀 수 있으며 다른 확인기나 scope로 조용히 옮길 수 없다. probe argv는 정확히 비교하고 상대 인자는 최초 획득한 작업 루트에서 실행한다. 기기 자원을 공유하는 저장소는 같은 공통 확인기 경로/argv를 합의한다.
+
+회수는 heartbeat의 나이가 아니라 **래퍼 PID/시작 식별 종료 + 기록한 자식 그룹 부재 + 자원 미사용**을 모두 확인해야 한다. PID·PGID 재사용은 불필요한 보류를 낳을 수 있으나 살아 있는 것으로 취급한다. 정상 자식 종료도 손자가 남으면 해제하지 않는다. 신호는 살아 있는 래퍼가 메모리에 가진 자기 bridge PID/시작 식별을 다시 확인할 때만 그 그룹으로 보낸다. 외부 status/unlock/회수는 파일의 PGID로 프로세스를 죽이지 않는다. 식별할 수 없는 잔여 그룹에는 신호를 보내지 않고 코디네이터 확인을 요청한다.
+
+확인기가 없거나 모름이면 정상 완료도 잠금을 남긴다. 명령 없는 전경 lock은 신호까지 유지하며, 이 모드는 정상 종료와 회수 모두 래퍼 종료 뒤 수동 자원 확인을 요구한다. `--confirmed-by`와 근거는 실제 coordinator/captain 결정을 전달하는 협력 프로토콜이며 주체 인증 수단이 아니다. 살아 있거나 종료 미확인인 소유자/그룹, 확인기가 사용 중이라고 보고한 자원은 수동 확인도 우회하지 못한다. Windows의 자식 그룹 종료 확인은 지원하지 않아 명령 실행을 보류한다. 전경 소유자의 시작 식별 조회가 안 되면 그 획득도 보류한다.
+
+출력은 JSONL이다. 획득 결과 뒤 최종 결과가 나오며 `outcome`과 `childExitCode`/`signal`을 함께 본다. `completed`=0, `child_failed`=1(직접 bridge 종료 코드는 childExitCode), `busy`=1, `hold`/사용법·안전 거부=2다. status는 정상 관측0이며 `active`, `owner`, `ownerCheck`, `use`와 사유를 표시한다. 살아 있는 소유자는 probeSkipped=true로 확인기를 생략한다. 획득·시작 기록·해제의 짧은 guard 경합은 최대10초 재시도하며 지속되면 guardBusy=true로 안전 보류한다. 상태 조회도 소유자 종료/불명 상황에는 신뢰한 확인기 코드를 실행한다. 오래된 획득 ID의 갱신/해제는 새 획득을 바꾸지 않는다. scope/binding/상태·0700 guard/0600 감사 기록은 사용자 파일을 덮어쓰거나 자동 삭제하지 않는다.
+
+중단 guard나 정의 불일치는 자동 회수하지 않는다. guard의 owner.json/상태와 실제 소유자·그룹·자원의 종료를 운영자가 확인하고 모든 참여 호출을 멈춘 뒤 **별도 승인**으로 관련 repo/machine guard와 binding·released 상태를 다른 이름에 보관하고 재등록한다. 시작 식별/자원 상태가 모르면 정리하지 않는다. 새 정의와 옛 정의의 확인 방법·scope에 관련된 모든 저장소를 함께 검토한다. 강제 해제·자동 재바인딩 옵션은 없으며 이 절차는 잠금 장치 밖의 운영자 작업이다. 감사 실패/손상 상태는 guard를 남겨 다음 실행을 막는다.
+
+기기 확인기는 모든 참여 저장소가 신뢰하는 공통 절대 경로를 권장한다. 이전 소유자의 작업 루트가 없어졌거나 상대 확인기를 실행할 수 없으면 자동 회수하지 않는다. 확인기가 없는 최초 획득은 이전 참여 소유자가 없다는 기록만을 근거로 하며 외부 직접 사용의 미사용까지 증명하지 않는다.
+
+명령 래퍼는 비대화형 작업을 전제로 한다. 새 세션/process group의 터미널 입력은 일반 대화형 실행과 다를 수 있다. childExitCode와 signal은 직접 bridge의 관측값이며 정상 명령 종료 코드는 전달하지만 명령이 스스로 신호로 종료하면 bridge의1과 signal=null로 남을 수 있다. 모든 하위 명령의 실제 종료 신호를 수집한다고 주장하지 않는다.
