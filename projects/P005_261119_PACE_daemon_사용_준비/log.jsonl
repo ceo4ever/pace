@@ -132,3 +132,5 @@
 {"ts":"2026-11-24T04:23:57.541Z","p":"P005","t":"T04","type":"task_done","by":"cli","msg":"done","ok":true}
 {"ts":"2026-11-24T05:10:39.926Z","p":"P005","type":"decision","by":"agent","msg":"마감: P-3 기준을 macOS launchd(등록값·단일 인스턴스·정지/재기동)로 변경, 실제 재로그온 자동 기동은 병합 후 macOS 인수·콘솔 비표시는 해당 없음; P-2 허용 밖 거절은 이전 PC 실측+플랫폼 무관 단위 시험으로 인정, macOS 거절 실측은 미확인","src":"사용자 결정","ref":"projects/P005_261119_PACE_daemon_사용_준비/evidence/user-decision-close.md"}
 {"ts":"2026-11-24T05:12:42.859Z","p":"P005","type":"gate","by":"cli","msg":"finish: security","ok":false,"data":{"finish":1}}
+{"ts":"2026-11-24T05:22:30.338Z","p":"P005","type":"gate","by":"cli","msg":"finish","ok":true,"data":{"finish":1}}
+{"ts":"2026-11-24T05:22:30.338Z","p":"P005","type":"finish","by":"cli","msg":"finish","ok":true}
