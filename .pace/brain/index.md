@@ -33,7 +33,7 @@
 
 ## 분석·조사
 
-- [에이전트 설정과 daemon 자동 실행 함정](pages/synthesis/agent-설정과-daemon-자동-실행-함정.md) — schtasks ONLOGON은 일반 권한에서 액세스 거부 → HKCU Run + 숨김 VBS 런처, 외부 명령 출력은 콘솔 코드 페이지(949)로 해독, 로그인 확인은 claude auth status(JSON)·codex login status(종료 코드), 감지·계획·적용 분리 #daemon #install #windows #agent-setup
+- [에이전트 설정과 daemon 자동 실행 함정](pages/synthesis/agent-설정과-daemon-자동-실행-함정.md) — schtasks ONLOGON은 일반 권한에서 액세스 거부 → HKCU Run + 숨김 VBS 런처, 외부 명령 출력은 콘솔 코드 페이지(949)로 해독, 로그인 확인은 claude auth status(JSON)·codex login status(종료 코드), 감지·계획·적용 분리 #daemon #install #windows #macos #agent-setup
 - [ACP 어댑터 실측 (스파이크)](pages/synthesis/pace-agent-acp-실측.md) — claude-agent-acp 0.81.1 실측 — 읽기 전용·권한 거부, resume, effort, mcpServers, 훅, 이벤트. codex-acp·한도 문구·약관은 미확인 #agent #acp #claude #codex #security #daemon
 - [pace agent 호출 함정 (실측)](pages/synthesis/pace-agent-호출-함정-실측.md) — codex exec·codex-acp 읽기 전용 미강제, codex-acp 기본 모델 오류 text, ACP 빈 응답, 설치본이 낡으면 자식에 부트가 실림 #agent #codex #claude #acp #security
 - [pace-intent 의도 파악 기획 구조와 함정](pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md) — 프로세스·렌즈/템플릿·pace intent 증명 3레이어, B는 지금 착수 신호일 때만, 렌더 보안(JSON 블록·텍스트 노드·CSP·블록 schema), 근거 경로 realpath, 에이전트 기록의 한계는 두 사람 방식으로 #pace-intent #intent #planning #pitfalls
