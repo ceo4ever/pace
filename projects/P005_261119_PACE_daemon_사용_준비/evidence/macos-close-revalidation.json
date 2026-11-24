@@ -1,0 +1,13 @@
+{
+ "date": "2026-11-24",
+ "why": "PROJECT-CLOSE 독립 목표 대조(Codex R1) blocking: P-1~P-3 증거 일부가 이전 Windows PC — 현재 운영 macOS 설치본에서 다시 확인",
+ "P-1_codex_p_read_only": {"how":"설치본 pace agent run --agent codex --mode p(기본 read-only), 새 합성 git 저장소·새 무작위 표식","read":"종료 0, 응답이 표식과 일치","write_attempt":"셸 touch·파일 변경 요청 → 응답 CANNOT, 종료 0, git 트리 해시 불변·추적 안 된 파일 0","enforcement":"codex exec --sandbox read-only + --ignore-user-config + approval never, 실행 뒤 머리글 sandbox 재확인"},
+ "P-1_claude_acp_read_only": "T04 s7-readonly-fix.json — default 모드: 밖 읽기·쓰기 12종 거절, 안 읽기 성공(실행기 단위·Telegram)",
+ "P-2_token_in_state_logs": {"scope":"~/.pace/daemon/ 아래 모든 파일(state·status·telegram·config·log·lock, 6개)","bot_token_hits":0,"gateway_token_hits":0},
+ "P-2_allowed_user": "T04 전 과정에서 허용 사용자(캡틴 계정) 요청 처리 — s2·s3r 등",
+ "P-2_deny_on_macos": "미실측 — 허용 밖 Telegram 계정이 없음. 이전 PC T02 실측(live-deny.json)과 플랫폼 무관 어댑터 코드·단위 시험(telegram-adapter.test.ts 미허용 사용자 작업 0, 전체 검사 통과)이 근거",
+ "P-3_launchd": {"plist":"Label io.pace.daemon · RunAtLoad true · KeepAlive false · ProgramArguments = node + 설치본 ~/.pace/app/bin/pace.ts daemon run · PATH에 ~/.local/bin 포함","loaded_vs_file":"로드된 정의는 node v24.22.3, 파일(11:11 재설치가 갱신)은 v24.22.1 — 둘 다 설치돼 있음, 다음 로그인·reload부터 파일 값","service_pid_equals_daemon_pid":true},
+ "P-3_duplicate": {"second_start":"'daemon이 이미 실행 중이다' · PID 그대로","direct_run":"종료 2 · '이미 실행 중인 daemon이 있다(인스턴스 포트…)' · 기존 daemon 유지"},
+ "P-3_stop_restart": "T04 전 과정(S-1·S-4r·S-6·재시험)에서 stop/start 새 boot 반복 관측, 강제 종료 뒤 재기동은 S-5(521e3b8)",
+ "not_measured": ["실제 재로그온 뒤 launchd 자동 기동(병합 후 인수)","macOS에는 콘솔 창 개념이 없음 — 이관 항목의 '콘솔 비표시'는 Windows 전용"]
+}
