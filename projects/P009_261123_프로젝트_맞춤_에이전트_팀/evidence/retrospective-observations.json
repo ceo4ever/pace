@@ -3,12 +3,12 @@
   "metricSource": "pace project stats P009 --json",
   "period": {
     "start": "2026-11-23T13:47:09.995Z",
-    "end": "2026-11-25T01:07:22.898Z",
+    "end": "2026-11-25T01:10:30.309Z",
     "unit": "project-start-to-merge",
     "closed": false
   },
-  "sourceHash": "8fd914e58489272894cfb856d8b1bd757a71dfa2da4f5f833044966a22aa11e3",
-  "logHash": "c61f8d9ab4336a10d25505feefca9b187ac98468555d555d758be9ea61b3e370",
+  "sourceHash": "5da4d6b51f9ddcbfee1095c3df7e192dd0c2a1c5ab9fbf7793d65cc29eca1608",
+  "logHash": "64c4a693792a645fe533e6ef4645f35de66ee7e05522a95ef95acd3dcf739ff6",
   "knownRoleCandidates": [],
   "recurringObserved": [
     {
