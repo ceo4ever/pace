@@ -4,7 +4,9 @@ import { chmodSync, existsSync, linkSync, mkdirSync, readFileSync, readdirSync, 
 import { join } from "node:path";
 import { AgentError, normalizeResult, type Executor } from "../src/agent/contract.ts";
 import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
-import { lineDiff, parseVerdict, readLedger, reviewStage, type LedgerEntry, type ReviewEntry } from "../src/agent/review-log.ts";
+import { acquireLock, lineDiff, parseVerdict, readLedger, reviewStage, textHash, type LedgerEntry, type ReviewEntry } from "../src/agent/review-log.ts";
+import { reserveReviewCall, reviewBudgetScope } from "../src/agent/review-budget.ts";
+import { reviewHash } from "../src/project/pre-review.ts";
 import { runPace, tempDir } from "./helpers.ts";
 
 /** 받은 프롬프트를 기록하고 정해진 결과를 차례로 돌려주는 가짜 codex 실행기 */
@@ -38,6 +40,270 @@ function harness() {
 
 const FIRST = /이전 지적과 그 대응 문서는 받거나 읽지 않는다/;
 const REREVIEW = /판정 범위: 직전 검토의 blocking이 해소됐는지/;
+
+function budgetHarness() {
+  const dir = tempDir("pace-review-budget-");
+  const task = join(dir, "projects/P013_budget/tasks/T01_budget");
+  const backlog = join(dir, "backlogs/BL261126_01_budget");
+  mkdirSync(join(task, "evidence"), { recursive: true });
+  mkdirSync(backlog, { recursive: true });
+  const prompts: string[] = [];
+  const review = async (target: string, reply: string, kind = "goal", provider = "openai", wait?: () => Promise<void>) => {
+    const executor: Executor = {
+      agent: provider === "openai" ? "codex" : "claude", mode: "p",
+      capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
+      async run(request) {
+        prompts.push(request.prompt);
+        await wait?.();
+        return normalizeResult(request, { text: reply, provider, outputTokens: 23 }, { durationMs: 17, enforcement: "fake" });
+      },
+    };
+    const output: string[] = [];
+    const code = await verifyCommand(["--author-agent", provider === "openai" ? "claude" : "codex", "--target", target, "--purpose", "목적", "--kind", kind], {
+      executors: () => [executor], write: (text) => output.push(text),
+    });
+    return { code, json: JSON.parse(output.join("")) };
+  };
+  return { task, backlog, prompts, review };
+}
+
+test("P013 T01: 같은 태스크의 두 원장이 구현 후 예산을 공유하고 사전 예산과 분리한다", async () => {
+  const h = budgetHarness();
+  const first = join(h.task, "change.patch");
+  const second = join(h.task, "evidence/TASK.md");
+  writeFileSync(first, "시작 상태\n");
+  writeFileSync(second, "고친 상태\n");
+  assert.equal((await h.review(first, "F1 [blocking] 고칠 부분\nfail")).code, 0);
+  const resolved = await h.review(second, "pass", "goal", "anthropic");
+  assert.equal(resolved.code, 0);
+  assert.match(h.prompts.at(-1)!, REREVIEW);
+  assert.match(h.prompts.at(-1)!, /## 직전 검토 원문\nF1 \[blocking\]/);
+  assert.match(h.prompts.at(-1)!, /- 시작 상태\n\+ 고친 상태/);
+  writeFileSync(second, "바뀐 상태\n");
+  const blocked = await h.review(second, "never");
+  assert.equal(blocked.code, 16);
+  assert.equal(blocked.json.reason, "budget_exhausted");
+  assert.equal(blocked.json.ran, false);
+  assert.equal(blocked.json.budget.stage, "post");
+  assert.equal(blocked.json.budget.rounds, 2);
+  assert.equal(blocked.json.budget.calls, 2);
+  assert.equal(h.prompts.length, 2);
+  assert.equal((await h.review(second, "never", "task")).code, 2, "구현 diff를 사전 검토로 열 수 없다");
+  const renamed = join(h.task, "evidence/implementation-diff.md");
+  writeFileSync(renamed, readFileSync(second));
+  assert.equal((await h.review(renamed, "never", "task")).code, 2, "Markdown 사본도 구현 후 대상이다");
+  assert.equal((await h.review(renamed, "never", "goal")).code, 16, "같은 단계에서 대상 경로와 확장자가 바뀌어도 소진 상태다");
+  assert.equal(h.prompts.length, 2);
+
+  const plan = join(h.task, "TASK.md");
+  writeFileSync(plan, "계획 1\n");
+  assert.equal((await h.review(plan, "pass", "task")).code, 0);
+  const recorded = readLedger(plan).findLast((entry): entry is ReviewEntry => entry.type === "review")!;
+  assert.equal(recorded.duration_ms, 17);
+  assert.deepEqual(recorded.usage, { input_tokens: null, output_tokens: 23 });
+  writeFileSync(plan, "계획 2\n");
+  assert.equal((await h.review(plan, "pass", "task")).code, 0);
+  assert.match(h.prompts.at(-1)!, REREVIEW, "pass 뒤 같은 단계도 범위 재검토다");
+  writeFileSync(plan, "계획 3\n");
+  const exhausted = await h.review(plan, "never", "goal");
+  assert.equal(exhausted.code, 16, "TASK.md의 종류를 goal로 바꿔도 사전 검토 예산이 유지된다");
+  assert.equal(exhausted.json.budget.stage, "pre");
+  assert.equal(h.prompts.length, 4);
+});
+
+test("P013 T01: 백로그 파일과 종류를 바꾸어도 한 예산에서 끝난다", async () => {
+  const h = budgetHarness();
+  const plan = join(h.backlog, "BACKLOG.md"), brief = join(h.backlog, "BR02_example.md");
+  writeFileSync(plan, "계획\n");
+  writeFileSync(brief, "재료\n");
+  assert.equal((await h.review(plan, "F1 [blocking] 근거\nfail")).code, 0);
+  assert.equal((await h.review(brief, "pass", "task")).code, 0);
+  assert.match(h.prompts.at(-1)!, REREVIEW);
+  const exhausted = await h.review(brief, "never", "goal");
+  assert.equal(exhausted.code, 16);
+  assert.equal(exhausted.json.budget.unit, "backlog");
+  assert.equal(exhausted.json.budget.stage, "backlog");
+  assert.equal(h.prompts.length, 2);
+});
+
+test("P013 T01: 옛 원장의 판정 두 건은 pm 결정과 pass 뒤에도 소급해 센다", async () => {
+  const h = budgetHarness();
+  const plan = join(h.task, "TASK.md");
+  writeFileSync(plan, "새 계획\n");
+  const legacy = (n: number, verdict: "pass" | "fail"): ReviewEntry => ({
+    type: "review", at: "2026-01-01", kind: "task", target: "TASK.md", hash: "old",
+    verdict, verifier: "codex", provider: "openai", rereview_of: null, record: `review-records/R${n}.json`, result_hash: "1".repeat(64),
+  });
+  const decision: LedgerEntry = { type: "decision", at: "2026-01-01", target: "TASK.md", by: "pm", choice: "재검토", summary: "기존 기록", file: "why.md" };
+  writeFileSync(join(h.task, "REVIEW-LOG.jsonl"), [legacy(1, "fail"), decision, legacy(2, "fail")].map((entry) => JSON.stringify(entry)).join("\n") + "\n");
+  assert.equal(readLedger(plan).length, 3);
+  const blocked = await h.review(plan, "never", "task");
+  assert.equal(blocked.code, 16);
+  assert.deepEqual([blocked.json.budget.exhausted, blocked.json.budget.rounds, blocked.json.budget.calls], ["rounds", 2, 2]);
+  assert.equal(h.prompts.length, 0);
+  writeFileSync(join(h.task, "REVIEW-LOG.jsonl"), [legacy(1, "pass"), decision, legacy(2, "fail")].map((entry) => JSON.stringify(entry)).join("\n") + "\n");
+  assert.equal((await h.review(plan, "never", "task")).code, 16, "기존 pass도 판정 예산을 쓴다");
+  assert.equal(h.prompts.length, 0);
+});
+
+test("P013 T01: 옛 evidence/TASK.md의 goal·task 판정과 복구는 사전 예산을 쓰지 않는다", async () => {
+  const h = budgetHarness();
+  const plan = join(h.task, "TASK.md");
+  const result = join(h.task, "evidence/TASK.md");
+  writeFileSync(plan, "사전 계획\n");
+  writeFileSync(result, "구현 검토 기록\n");
+  const entries = [1, 2].map((n): ReviewEntry => ({
+    type: "review", at: "2026-01-01", kind: n === 1 ? "goal" : "task", target: "TASK.md", hash: "old",
+    verdict: "fail", verifier: "codex", provider: "openai", rereview_of: null,
+    record: `review-records/R${n}.json`, result_hash: "1".repeat(64),
+  }));
+  writeFileSync(join(h.task, "evidence/REVIEW-LOG.jsonl"), entries.map((e) => JSON.stringify(e)).join("\n") + "\n");
+  mkdirSync(join(h.task, "evidence/review-records"));
+  writeFileSync(join(h.task, "evidence/review-records/R3.json"), JSON.stringify({ pending: true, review: { target: "TASK.md", hash: "old" } }));
+  const pre = await h.review(plan, "pass", "task");
+  assert.equal(pre.code, 0, "같은 파일명이라도 루트 TASK.md의 첫 사전 판정은 실행한다");
+  assert.deepEqual([pre.json.budget.calls, pre.json.budget.rounds], [1, 1]);
+  const recovered = readLedger(result).at(-1) as ReviewEntry;
+  assert.equal(recovered.kind, "goal");
+  assert.equal(recovered.interrupted, true);
+  const post = await h.review(result, "never", "goal");
+  assert.equal(post.code, 16);
+  assert.deepEqual([post.json.budget.stage, post.json.budget.calls, post.json.budget.rounds], ["post", 3, 2]);
+  assert.equal(h.prompts.length, 1);
+});
+
+test("P013 T01: 무효·중단·unknown은 판정 없이 공유 예약 수만 쓴다", async () => {
+  const h = budgetHarness();
+  const patch = join(h.task, "change.patch"), second = join(h.task, "evidence/change.patch");
+  writeFileSync(patch, "첫 대상\n");
+  writeFileSync(second, "다른 대상\n");
+  assert.equal((await h.review(patch, "F1 [blocking] 잘못된 도구 출력\nfail")).code, 0);
+  const reason = join(h.task, "reason.md");
+  writeFileSync(reason, "무효의 원인과 재현\n");
+  assert.equal(await reviewNoteCommand(["--target", patch, "--void", "--record", "review-records/R1.json", "--summary", "도구 출력 무효", "--file", reason], {
+    executors: () => [], write: () => {},
+  }), 0);
+  const scope = reviewBudgetScope(second)!;
+  const release = acquireLock(scope.lockTarget);
+  try {
+    const reservation = reserveReviewCall(scope, new Date());
+    assert.ok(reservation.callId);
+    const records = join(h.task, "evidence/review-records");
+    mkdirSync(records);
+    writeFileSync(join(records, "R1.json"), JSON.stringify({ pending: true, review: {
+      target: "change.patch", kind: "goal", hash: "before", call_id: reservation.callId,
+    } }));
+    assert.ok(reserveReviewCall(scope, new Date()).callId, "판정 없이 끝난 외부 넘김도 호출 수에 남는다");
+  } finally {
+    release();
+  }
+  const attempt = await h.review(patch, "판정 단어 없음");
+  assert.equal(attempt.code, 0);
+  assert.equal(attempt.json.review.verdict, "unknown");
+  assert.match(attempt.json.recovered[0], /실행 중 중단/);
+  assert.deepEqual([attempt.json.budget.exhausted, attempt.json.budget.rounds, attempt.json.budget.calls], ["calls", 0, 4]);
+  const exhausted = await h.review(second, "never");
+  assert.equal(exhausted.code, 16);
+  assert.equal(exhausted.json.ran, false);
+  assert.equal(h.prompts.length, 2);
+});
+
+test("P013 T01: 마지막 판정 자리는 두 원장에서 동시에 실행되지 않는다", async () => {
+  const h = budgetHarness();
+  const first = join(h.task, "change.patch"), second = join(h.task, "evidence/change.patch");
+  writeFileSync(first, "첫 대상\n");
+  writeFileSync(second, "다른 대상\n");
+  await h.review(first, "pass");
+  const started = Promise.withResolvers<void>(), resume = Promise.withResolvers<void>();
+  const inFlight = h.review(second, "pass", "goal", "openai", async () => {
+    started.resolve();
+    await resume.promise;
+  });
+  await started.promise;
+  try {
+    const concurrent = await h.review(first, "never");
+    assert.equal(concurrent.code, 2);
+    assert.match(concurrent.json.error.message, /진행 중/);
+  } finally {
+    resume.resolve();
+  }
+  assert.equal((await inFlight).code, 0);
+  assert.equal((await h.review(first, "never")).code, 16);
+  assert.equal(h.prompts.length, 2);
+});
+
+test("P013 T01: 교차 검토 미실행과 실행된 B1 폴백은 각 호출·판정에 반영한다", async () => {
+  const h = budgetHarness();
+  const plan = join(h.task, "TASK.md"); writeFileSync(plan, "계획\n");
+  const args = ["--author-agent", "codex", "--target", plan, "--purpose", "목적"];
+  const out: string[] = [];
+  const same: Executor = {
+    agent: "codex", mode: "p",
+    capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
+    async run(request) {
+      return normalizeResult(request, { text: "pass", provider: "openai", inputTokens: 0 }, { durationMs: 1, enforcement: "fake" });
+    },
+  };
+  const deps = { executors: () => [same], write: (t: string) => out.push(t) };
+  assert.equal(await verifyCommand(args, deps), 10);
+  assert.equal(await verifyCommand([...args, "--allow-same-provider"], deps), 0);
+  const result = JSON.parse(out[1]!);
+  assert.equal(result.cross, false);
+  assert.equal(result.review.verdict, "pass");
+  assert.deepEqual([result.budget.calls, result.budget.rounds], [2, 1]);
+  assert.deepEqual(result.result.usage, { input_tokens: 0, output_tokens: null });
+});
+
+test("P013 T01: 사전 검토의 구조 누락이 첫 전체 판정을 소비하지 않는다", async () => {
+  const h = budgetHarness();
+  const plan = join(h.task, "TASK.md");
+  writeFileSync(plan, "- TASK 형식: v2\n## 목적\n안전한 처리\n");
+  const structural = await h.review(plan, "never");
+  assert.equal(structural.code, 2);
+  assert.match(structural.json.error.message, /증명 범위/);
+  assert.equal(h.prompts.length, 0);
+  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n");
+  const first = await h.review(plan, "pass");
+  assert.equal(first.code, 0);
+  assert.equal(first.json.review.rereview_of, null);
+  assert.deepEqual([first.json.budget.calls, first.json.budget.rounds], [2, 1]);
+  assert.match(h.prompts[0]!, FIRST);
+});
+
+test("P013 T01: 옛 구조 전용 판정은 근거가 확인되면 호출로만 보존한다", async () => {
+  const h = budgetHarness();
+  const plan = join(h.task, "TASK.md");
+  const snapshot = "- TASK 형식: v2\n## 목적\n안전한 처리\n";
+  const text = "F1 [blocking] 증명 범위 누락\nfail";
+  const record = "review-records/R1.json";
+  const entry: ReviewEntry = {
+    type: "review", at: "2026-01-01", kind: "task", target: "TASK.md", hash: reviewHash(snapshot),
+    verdict: "fail", verifier: "codex", provider: "openai", rereview_of: null, record, result_hash: textHash(text),
+  };
+  mkdirSync(join(h.task, "review-records"));
+  writeFileSync(join(h.task, record), JSON.stringify({ review: { snapshot }, result: { text } }));
+  writeFileSync(join(h.task, "REVIEW-LOG.jsonl"), JSON.stringify(entry) + "\n");
+  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n");
+  const full = await h.review(plan, "F1 [blocking] 안전 누락\nfail", "task");
+  assert.equal(full.code, 0);
+  assert.equal(full.json.review.rereview_of, null);
+  assert.deepEqual([full.json.budget.calls, full.json.budget.rounds], [2, 1]);
+  writeFileSync(plan, readFileSync(plan, "utf8") + "안전 기준 보완\n");
+  const narrow = await h.review(plan, "pass", "task");
+  assert.equal(narrow.code, 0);
+  assert.equal(narrow.json.review.rereview_of, "review-records/R2.json");
+  assert.match(h.prompts.at(-1)!, REREVIEW);
+
+  const post = join(h.task, "evidence/TASK.md");
+  mkdirSync(join(h.task, "evidence/review-records"));
+  writeFileSync(join(h.task, "evidence", record), JSON.stringify({ review: { snapshot }, result: { text } }));
+  writeFileSync(join(h.task, "evidence/REVIEW-LOG.jsonl"), JSON.stringify(entry) + "\n");
+  writeFileSync(post, "구현 후 변경\n");
+  const postFull = await h.review(post, "pass", "goal");
+  assert.equal(postFull.code, 0);
+  assert.equal(postFull.json.review.rereview_of, null, "옛 구조 전용 판정은 구현 후 전체 판정 자리도 소비하지 않는다");
+  assert.deepEqual([postFull.json.budget.calls, postFull.json.budget.rounds], [2, 1]);
+});
 
 test('결정 주체 pm/user 필수·근거·옛 결정 unknown과 단계 호환', async () => {
   for (const by of ['pm', 'user', 'legacy']) {
@@ -437,7 +703,7 @@ test("S-9h 실행기 오류·미실행 --out 쓰기 오류·너무 큰 변경", 
   assert.match(g.prompts[1]!, /\+ b2099\n  꼬리/);
 });
 
-test("S-9i 중단 흔적 자동 복구: pending은 fail(중단)로 세고 기준점에서 빠지며, 판정 있는 기록은 그 판정으로", async () => {
+test("S-9i 일반 대상의 중단 복구는 기존 진단에 남고 재검토 기준점에서 빠진다", async () => {
   const h = harness();
   h.set("v1\n"); await h.verify("A1\nfail");
   h.set("v2\n"); await h.verify("A2\nfail");
@@ -445,11 +711,11 @@ test("S-9i 중단 흔적 자동 복구: pending은 fail(중단)로 세고 기준
   writeFileSync(join(h.dir, "review-records/R3.json"), JSON.stringify({ pending: true, review: { target: "TASK.md", hash: "x" } }));
   h.set("v3\n");
   const r = await h.verify("never");
-  assert.equal(r.code, 16, "중단을 fail로 세어 3회 — 진단 단계");
+  assert.equal(r.code, 16, "예산 단위 밖의 일반 대상은 기존 진단 단계를 유지한다");
   assert.match(r.json.recovered[0], /R3\.json\(TASK\.md\): 실행 중 중단/);
   const l = h.ledger() as ReviewEntry[];
   assert.equal(l.length, 3); assert.equal(l[2]!.interrupted, true); assert.equal(l[2]!.verdict, "fail");
-  assert.equal(h.prompts.length, 2, "진단 단계라 실행하지 않음");
+  assert.equal(h.prompts.length, 2);
   // 판정 있는 기록의 복구와, 중단 항목이 기준점에서 빠지는지
   const k = harness();
   k.set("v1\n"); await k.verify("K1\nfail");

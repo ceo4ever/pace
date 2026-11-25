@@ -1,13 +1,14 @@
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, renameSync, rmdirSync, rmSync, writeFileSync } from "node:fs";
-import { basename, dirname, join, resolve, sep } from "node:path";
+import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 import { proofScopeIssues, reviewHash } from "../project/pre-review.ts";
 import { AgentError, errorCodes, errorPayload, type Executor } from "./contract.ts";
 import {
-  acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, reviewStage,
-  lineDiff, targetName, textHash, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
+  acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, RECOVERY_LOCK_FILE, reviewStage,
+  lineDiff, reviewUsage, targetName, textHash, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
 } from "./review-log.ts";
-import { crossVerify, type Rereview } from "./verify.ts";
+import { readReviewBudget, reserveReviewCall, reviewBudgetScope } from "./review-budget.ts";
+import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
 
 // `pace agent verify`·`pace agent review-note` 명령 처리 (P007 T01). src/cli.ts는 여기로 위임만 한다 — 시험이 실행기를 주입해 같은 경로를 탄다.
 
@@ -29,18 +30,21 @@ function req(value: string | undefined, usage: string): string {
 
 /** 대상은 실제 경로로 연다 — 링크 별칭으로 다른 원장을 써서 단계를 우회하지 못하게 */
 function realTarget(path: string): string {
-  try { return realpathSync(path); } catch { throw new AgentError("invalid_request", `대상이 없다: ${path}`); }
+  try { return realpathSync.native(path); } catch { throw new AgentError("invalid_request", `대상이 없다: ${path}`); }
 }
 
 /** --out이 원장·잠금·대상·기록 폴더를 덮어쓰지 못하게 실제 경로로 비교한다 */
-function checkOut(out: string, target: string): void {
+function checkOut(out: string, target: string, ledgers: readonly string[]): void {
   let real: string;
   try { real = join(realpathSync(dirname(resolve(out))), basename(out)); } catch { throw new AgentError("invalid_request", `--out 폴더가 없다: ${out}`); }
   // 쓰기는 rename 교체라 링크·하드링크 너머 파일을 고치지 않는다 — 여기서는 관리 파일의 이름 자체를 바꿔 끼우지 못하게만 막는다
   // 대소문자를 구분하지 않는 볼륨(macOS·Windows 기본)에서는 철자만 다른 경로가 같은 파일이다 — 비교는 대소문자 무시
   const low = real.toLowerCase();
-  const records = (join(dirname(target), RECORDS_DIR) + sep).toLowerCase();
-  if ([target, ledgerPath(target), lockPath(target)].some((p) => p.toLowerCase() === low) || low.startsWith(records)) {
+  const managed = ledgers.some((ledger) => {
+    const records = join(dirname(ledger), RECORDS_DIR).toLowerCase();
+    return [ledgerPath(ledger), lockPath(ledger), join(dirname(ledger), RECOVERY_LOCK_FILE)].some((p) => p.toLowerCase() === low) || low === records || low.startsWith(records + sep);
+  });
+  if (target.toLowerCase() === low || managed) {
     throw new AgentError("invalid_request", "--out이 대상·검토 원장·잠금 파일·기록 폴더를 가리킨다");
   }
 }
@@ -69,9 +73,10 @@ function escalation(info: StageInfo, target: string) {
 }
 
 /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
-function loadRereview(target: string, base: ReviewEntry, currentHash: string, current: string, kind: string): Rereview | undefined {
-  if (currentHash === base.hash) throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
-  const file = join(dirname(target), base.record);
+function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, legacyKind?: VerifyKind): Rereview | undefined {
+  const sameTarget = join(dirname(ledgerTarget), base.target) === target;
+  if (sameTarget && currentHash === base.hash && base.verdict === "fail") throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
+  const file = join(dirname(ledgerTarget), base.record);
   if (!existsSync(file)) throw new AgentError("invalid_request", `재검토 기준점의 기록 파일이 없다: ${file}`);
   let record: { result?: { text?: unknown }; review?: { hash?: unknown; snapshot?: unknown } };
   try { record = JSON.parse(readFileSync(file, "utf8")); } catch { throw new AgentError("invalid_request", `재검토 기준점의 기록 파일을 읽을 수 없다: ${file}`); }
@@ -81,33 +86,40 @@ function loadRereview(target: string, base: ReviewEntry, currentHash: string, cu
     throw new AgentError("invalid_request", `재검토 기준점의 기록이 원장과 맞지 않는다: ${file}`);
   }
   // 구조 누락 단건 판정은 나머지 평가를 억제했다. 구조를 채운 다음에는 목적·안전까지 처음 평가한다.
-  if (kind === 'task' && proofScopeIssues(snapshot).length) return undefined;
-  return { previousText: text, diff: lineDiff(snapshot, current) };
+  if (legacyKind === "task" && proofScopeIssues(snapshot).length) return undefined;
+  return { previousText: text, diff: lineDiff(snapshot, current), previousPassed: base.verdict === "pass" };
 }
 
 /** 원장에 없는 기록(중단·기록 끊김의 흔적)을 원장에 자동 복구한다 — 사람이 원장을 손으로 고치지 않게.
- *  판정이 있는 기록은 그 판정으로, pending(실행기 결과를 모름)은 연속 실패를 줄이지 않도록 fail+interrupted로 넣는다. 복구한 항목 설명을 돌려준다 */
-function recoverOrphans(target: string, name: string, kind: string, now: () => Date): string[] {
+ * 판정이 있으면 복구하고, pending은 호출만 셀 수 있도록 중단으로 표시한다. */
+function recoverOrphans(target: string, name: string, kindFor: (owner: string) => string, now: () => Date): string[] {
   const notes: string[] = [];
   for (const rel of orphanRecords(target, readLedger(target))) {
     const file = join(dirname(target), rel);
-    let rec: { pending?: unknown; verifier?: unknown; result?: { text?: unknown; provider?: { value?: unknown } }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; rereview_of?: unknown; snapshot?: unknown } };
+    let rec: { pending?: unknown; verifier?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown } };
     try { rec = JSON.parse(readFileSync(file, "utf8")); } catch { throw new LedgerError(`원장에 없는 검토 기록을 읽을 수 없다: ${file} — 확인해 고치거나 지운 뒤 다시 실행한다`); }
     // 기록은 그 기록의 대상에 귀속한다 — 같은 폴더의 다른 대상(예: TASK.md와 구현 diff) 기록을 지금 대상의 fail로 가져가지 않는다
     const owner = typeof rec.review?.target === "string" && rec.review.target !== "" ? rec.review.target : name;
     const hash = typeof rec.review?.hash === "string" ? rec.review.hash : "";
     const text = rec.result?.text;
     const verdict = rec.review?.verdict;
+    const entryKind = typeof rec.review?.kind === "string" ? rec.review.kind : kindFor(owner);
+    const recordedCall = typeof rec.review?.call_id === "string" ? { call_id: rec.review.call_id } : {};
     let entry: ReviewEntry;
     // 기록 안의 판정을 그대로 믿지 않는다 — 원문의 판정·스냅숏 해시와 맞을 때만 그 판정으로, 아니면 fail(중단)으로 복구한다(위조·손상 기록으로 차단을 풀지 못하게)
     const consistent = rec.pending !== true && typeof text === "string" && typeof rec.review?.snapshot === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")
       && parseVerdict(text) === verdict && hash !== "" && reviewHash(rec.review.snapshot) === hash;
     if (consistent && typeof text === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")) {
-      entry = { type: "review", at: now().toISOString(), kind, target: owner, hash, verdict, verifier: typeof rec.verifier === "string" ? rec.verifier : "unknown", provider: typeof rec.result?.provider?.value === "string" ? rec.result.provider.value : null, rereview_of: typeof rec.review?.rereview_of === "string" ? rec.review.rereview_of : null, record: rel, result_hash: textHash(text) };
+      const duration = rec.result?.duration_ms;
+      const usage = rec.result?.usage;
+      entry = { type: "review", at: now().toISOString(), kind: entryKind, target: owner, hash, verdict, verifier: typeof rec.verifier === "string" ? rec.verifier : "unknown", provider: typeof rec.result?.provider?.value === "string" ? rec.result.provider.value : null, rereview_of: typeof rec.review?.rereview_of === "string" ? rec.review.rereview_of : null, record: rel, result_hash: textHash(text), ...recordedCall,
+        ...(typeof duration === "number" && Number.isFinite(duration) && duration >= 0 ? { duration_ms: duration } : {}),
+        ...(reviewUsage(usage) ? { usage } : {}),
+      };
       notes.push(`${rel}(${owner}): 기록의 판정(${verdict})으로 원장에 복구했다`);
     } else {
-      entry = { type: "review", at: now().toISOString(), kind, target: owner, hash: hash || "unknown", verdict: "fail", verifier: "unknown", provider: null, rereview_of: null, record: rel, result_hash: textHash(""), interrupted: true };
-      notes.push(`${rel}(${owner}): ${rec.pending === true ? "실행 중 중단돼 판정을 모른다" : "기록의 판정·원문·스냅숏이 서로 맞지 않는다"} — 연속 실패를 줄이지 않도록 fail(중단)로 원장에 복구했다(재검토 기준점은 되지 않는다)`);
+      entry = { type: "review", at: now().toISOString(), kind: entryKind, target: owner, hash: hash || "unknown", verdict: "fail", verifier: "unknown", provider: null, rereview_of: null, record: rel, result_hash: textHash(""), interrupted: true, ...recordedCall };
+      notes.push(`${rel}(${owner}): ${rec.pending === true ? "실행 중 중단돼 판정을 모른다" : "기록의 판정·원문·스냅숏이 서로 맞지 않는다"} — 중단으로 원장에 복구했다(판정 회차·재검토 기준점에서는 제외한다)`);
     }
     try { appendLedger(target, entry); } catch (error) { throw new LedgerError(`원장 복구에 실패했다: ${(error as Error).message}`); }
   }
@@ -127,28 +139,56 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     if (author !== "claude" && author !== "codex") throw new AgentError("invalid_request", "--author-agent는 claude|codex");
     const target = realTarget(req(values.target, VERIFY_USAGE));
     const purpose = values["purpose-file"] ? readFileSync(values["purpose-file"], "utf8") : req(values.purpose, VERIFY_USAGE);
-    const kind = values.kind ?? "goal";
-    if (kind !== "goal" && kind !== "task") throw new AgentError("invalid_request", "--kind는 goal|task");
+    const requestedKind = values.kind ?? "goal";
+    if (requestedKind !== "goal" && requestedKind !== "task") throw new AgentError("invalid_request", "--kind는 goal|task");
+    const scope = reviewBudgetScope(target);
+    if (scope?.stage === "post" && requestedKind === "task") {
+      throw new AgentError("invalid_request", "태스크의 사전 검토 대상은 루트 TASK.md다");
+    }
+    const kind = scope?.kind ?? requestedKind;
+    const ledgerTarget = scope?.ledgerTarget ?? target;
+    const ledgerTargets = scope?.ledgerTargets ?? [target];
     const artifact = readFileSync(target, "utf8");
     const out = values.out;
-    if (out !== undefined) checkOut(out, target);
-    const name = targetName(target);
+    if (out !== undefined) checkOut(out, target, ledgerTargets);
+    const name = scope?.name ?? targetName(target);
     const hash = reviewHash(artifact);
 
-    release = acquireLock(target);
-    const recovered = recoverOrphans(target, name, kind, now);
-    const entries = readLedger(target);
-    const before = reviewStage(entries, name);
-    if (before.stage !== "normal") {
+    release = acquireLock(scope?.lockTarget ?? target);
+    const recovered = ledgerTargets.flatMap((ledger) => {
+      const rootTaskLedger = scope?.unit === "task" && ledger === scope.lockTarget;
+      const legacyKindFor = (owner: string) => scope
+        ? (rootTaskLedger && owner.toLowerCase() === "task.md" ? "task" : "goal")
+        : kind;
+      return recoverOrphans(ledger, ledger === ledgerTarget ? name : "unknown", legacyKindFor, now);
+    });
+    const entries = readLedger(ledgerTarget);
+    const budget = scope && reserveReviewCall(scope, now());
+    if (budget?.status.exhausted) {
+      deps.write(JSON.stringify({ ran: false, reason: "budget_exhausted", budget: budget.status, ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n");
+      return ESCALATION_EXIT;
+    }
+    // 기계로 확인되는 구조 누락은 호출에만 남긴다. 첫 독립 판정은 목적·안전을 평가할 수 있어야 한다.
+    if (scope?.stage === "pre") {
+      const issues = proofScopeIssues(artifact);
+      if (issues.length) throw new AgentError("invalid_request", issues.join(" · "));
+    }
+    const before = reviewStage(entries, name, !scope);
+    if (!scope && before.stage !== "normal") {
       deps.write(JSON.stringify({ ran: false, reason: "검토 반복 실패 단계", escalation: escalation(before, target), ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n");
       return ESCALATION_EXIT;
     }
-    const rereview = before.base ? loadRereview(target, before.base, hash, artifact, kind) : undefined;
+    const base = budget?.latest ?? (!scope && before.base ? { ledgerTarget, entry: before.base } : undefined);
+    const rereview = base && loadRereview(base.ledgerTarget, base.entry, target, hash, artifact, scope ? undefined : kind);
+    const previousRecord = rereview && base
+      ? relative(dirname(ledgerTarget), join(dirname(base.ledgerTarget), base.entry.record)).split(sep).join("/")
+      : null;
+    const call = budget?.callId ? { call_id: budget.callId } : {};
 
     // 실행 전에 이번 기록 자리를 먼저 만든다 — 실행 뒤 기록·원장 확정이 끊기면 원장에 없는 기록으로 남아 다음 검토를 막는다
-    const recordName = nextRecordName(target);
-    const recordFile = join(dirname(target), recordName);
-    writeOrLedgerError(recordFile, JSON.stringify({ pending: true, review: { target: name, hash } }, null, 2) + "\n", "검토 기록 자리");
+    const recordName = nextRecordName(ledgerTarget);
+    const recordFile = join(dirname(ledgerTarget), recordName);
+    writeOrLedgerError(recordFile, JSON.stringify({ pending: true, review: { target: name, hash, kind, ...call } }, null, 2) + "\n", "검토 기록 자리");
     const timeout = values["timeout-ms"];
     let outcome: Awaited<ReturnType<typeof crossVerify>>;
     try {
@@ -163,7 +203,11 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     }
     if (!outcome.ran) {
       clearPending(recordFile);
-      const text = JSON.stringify(recovered.length ? { ...outcome, recovered } : outcome, null, 2) + "\n";
+      const text = JSON.stringify({
+        ...outcome,
+        ...(recovered.length ? { recovered } : {}),
+        ...(scope ? { budget: readReviewBudget(scope).status } : {}),
+      }, null, 2) + "\n";
       if (out !== undefined) writeOrLedgerError(out, text, "--out 사본"); // 종전처럼 미실행 사유도 --out에 남긴다
       deps.write(text);
       return 10;
@@ -172,24 +216,26 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     const verdict = parseVerdict(outcome.result.text);
     // 기록 파일에는 세션 ID를 남기지 않는다
     const result = { ...outcome.result, session_id: null };
-    const review = { target: name, hash, verdict, rereview_of: rereview ? before.base!.record : null, snapshot: artifact };
+    const review = { target: name, hash, kind, verdict, rereview_of: previousRecord, snapshot: artifact, ...call };
     const record = { ...outcome, result, review };
     writeOrLedgerError(recordFile, JSON.stringify(record, null, 2) + "\n", "검토 기록");
 
     const entry: ReviewEntry = {
       type: "review", at: now().toISOString(), kind, target: name, hash, verdict, verifier: outcome.verifier,
       provider: outcome.result.provider.value ?? null, rereview_of: review.rereview_of, record: recordName, result_hash: textHash(outcome.result.text),
+      duration_ms: result.duration_ms, usage: result.usage, ...call,
     };
-    try { appendLedger(target, entry); } catch (error) {
+    try { appendLedger(ledgerTarget, entry); } catch (error) {
       throw new LedgerError(`검토는 실행됐지만 원장 기록에 실패했다(${(error as Error).message}) — 기록 파일 ${recordFile}을 확인하고 원장을 복구한 뒤 진행한다`);
     }
     // 필수 기록(기록 파일·원장)이 확정된 뒤에만 보조 사본을 쓴다
     if (out !== undefined) writeOrLedgerError(out, JSON.stringify(record, null, 2) + "\n", "--out 사본");
-    const after = reviewStage(readLedger(target), name);
+    const after = reviewStage(readLedger(ledgerTarget), name, !scope);
     const output: Record<string, unknown> = { ...outcome, last_decision_by: after.last_decision_by, review: { target: name, hash, verdict, rereview_of: review.rereview_of, record: recordName } };
     if (recovered.length) output.recovered = recovered;
     if (verdict === "unknown") output.warning = "결과 마지막 줄에서 pass·fail 판정을 찾지 못했다(unknown) — 연속 실패 수에 넣지 않는다. 원문을 확인한다";
-    if (after.stage !== "normal") output.escalation = escalation(after, target);
+    if (scope) output.budget = readReviewBudget(scope).status;
+    else if (after.stage !== "normal") output.escalation = escalation(after, target);
     deps.write(JSON.stringify(output, null, 2) + "\n");
     return 0;
   } catch (error) {
@@ -224,10 +270,12 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
     if (values.by !== undefined && !values.decision) throw new AgentError('invalid_request', '--by는 --decision에서만 사용한다');
     const summary = req(values.summary, REVIEW_NOTE_USAGE).trim();
     if (!summary) throw new AgentError("invalid_request", "--summary가 비었다");
-    const name = targetName(target);
-    release = acquireLock(target);
-    const ledger = readLedger(target);
-    const info = reviewStage(ledger, name);
+    const scope = reviewBudgetScope(target);
+    const ledgerTarget = scope?.ledgerTarget ?? target;
+    const name = scope?.name ?? targetName(target);
+    release = acquireLock(scope?.lockTarget ?? target);
+    const ledger = readLedger(ledgerTarget);
+    const info = reviewStage(ledger, name, !scope);
     let entry: LedgerEntry;
     if (values.void) {
       // 검토 도구 결함으로 무효인 fail 검토 — normal 단계에서만(열린 단계는 진단·결정으로만 넘어간다), 이 대상의 fail 검토여야 하고 근거가 있어야 한다
@@ -256,8 +304,8 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
       if (realpathSync(file) === target) throw new AgentError("invalid_request", "검토 대상 자체를 결정 근거로 쓸 수 없다");
       entry = { type: "decision", at: now().toISOString(), target: name, by, choice, summary, file };
     }
-    try { appendLedger(target, entry); } catch (error) { throw new LedgerError(`원장 기록에 실패했다: ${(error as Error).message}`); }
-    const after = reviewStage(readLedger(target), name);
+    try { appendLedger(ledgerTarget, entry); } catch (error) { throw new LedgerError(`원장 기록에 실패했다: ${(error as Error).message}`); }
+    const after = reviewStage(readLedger(ledgerTarget), name, !scope);
     deps.write(JSON.stringify({ ok: true, entry, stage: after.stage }, null, 2) + "\n");
     return 0;
   } catch (error) {

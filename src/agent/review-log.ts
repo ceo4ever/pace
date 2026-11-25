@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { appendFileSync, closeSync, existsSync, openSync, readFileSync, readdirSync, rmSync, writeSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
+import type { AgentResult } from "./contract.ts";
 
 // 검토 원장 (P007 T01): 같은 대상의 독립 검토가 거듭 fail할 때 땜질 반복을 끊는다.
 //  - verify가 실행될 때마다 대상 폴더의 REVIEW-LOG.jsonl에 판정을 자동으로 남긴다(작성자 수작업 없음).
@@ -10,6 +11,7 @@ import { basename, dirname, join } from "node:path";
 
 export const LEDGER_FILE = "REVIEW-LOG.jsonl";
 export const LOCK_FILE = "REVIEW-LOG.lock";
+export const RECOVERY_LOCK_FILE = "REVIEW-LOG.lock.recovery";
 export const RECORDS_DIR = "review-records";
 export const DIAGNOSE_AFTER = 3;
 
@@ -32,15 +34,26 @@ export interface ReviewEntry {
   record: string;
   /** 기록 파일의 검토 원문 해시 — 재검토 때 기록 교체·변조를 막는다 */
   result_hash: string;
-  /** 실행 중 중단돼 판정을 모르는 검토를 자동 복구한 항목(fail로 센다, 원문이 없어 재검토 기준점이 되지 않는다) */
+  /** 옛 항목에는 없는 검토 호출 예약 ID와 실행 측정값 */
+  call_id?: string;
+  duration_ms?: number;
+  usage?: AgentResult["usage"];
+  /** 중단 복구. 옛 fail 표기는 기존 진단에서만 세고 예산 판정·재검토 기준점에서 제외한다. */
   interrupted?: true;
+}
+export interface ReviewCallEntry {
+  type: "call";
+  at: string;
+  target: string;
+  kind: string;
+  call_id: string;
 }
 export interface DiagnosisEntry { type: "diagnosis"; at: string; target: string; layer: Layer; summary: string; file?: string }
 export type DecisionBy = 'pm' | 'user';
 export interface DecisionEntry { type: "decision"; at: string; target: string; choice: string; summary: string; file: string; /** 옛 항목의 생략은 unknown이며 user로 추정하지 않는다. */ by?: DecisionBy }
 /** 검토 도구 결함(프롬프트·옵션·열람 불가 등)으로 무효인 검토 — 횟수·기준점에서 뺀다. 대상은 그대로여도 다시 검토할 수 있게 한다 */
 export interface VoidEntry { type: "void"; at: string; target: string; record: string; summary: string; file: string }
-export type LedgerEntry = ReviewEntry | DiagnosisEntry | DecisionEntry | VoidEntry;
+export type LedgerEntry = ReviewEntry | ReviewCallEntry | DiagnosisEntry | DecisionEntry | VoidEntry;
 
 export type Stage = "normal" | "diagnose" | "ask_user";
 export interface StageInfo {
@@ -58,11 +71,22 @@ export class LedgerError extends Error {}
 export function textHash(text: string): string { return createHash("sha256").update(text).digest("hex"); }
 
 const isStr = (v: unknown): v is string => typeof v === "string";
+const isMeasure = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v) && v >= 0;
 const HEX64 = /^[a-f0-9]{64}$/;
+export function reviewUsage(value: unknown): value is AgentResult["usage"] {
+  if (!value || typeof value !== "object") return false;
+  const usage = value as Record<string, unknown>;
+  return [usage.input_tokens, usage.output_tokens].every((v) => v === null || isMeasure(v));
+}
+
 /** 항목 종류별 필수 필드를 확인한다 — 필드가 빠진 decision이 연속 실패를 초기화하지 못하게 */
 function validEntry(v: Record<string, unknown>): boolean {
   if (!isStr(v.target) || !isStr(v.at)) return false;
-  if (v.type === "review") return isStr(v.kind) && isStr(v.hash) && ["pass", "fail", "unknown"].includes(v.verdict as string) && isStr(v.verifier) && (v.provider === null || isStr(v.provider)) && (v.rereview_of === null || isStr(v.rereview_of)) && isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.result_hash) && HEX64.test(v.result_hash) && (v.interrupted === undefined || (v.interrupted === true && v.verdict === "fail"));
+  if (v.type === "call") return isStr(v.kind) && isStr(v.call_id) && v.call_id !== "";
+  if (v.type === "review") return isStr(v.kind) && isStr(v.hash) && ["pass", "fail", "unknown"].includes(v.verdict as string) && isStr(v.verifier) && (v.provider === null || isStr(v.provider)) && (v.rereview_of === null || isStr(v.rereview_of)) && isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.result_hash) && HEX64.test(v.result_hash) && (v.interrupted === undefined || (v.interrupted === true && v.verdict === "fail"))
+    && (v.call_id === undefined || (isStr(v.call_id) && v.call_id !== ""))
+    && (v.duration_ms === undefined || isMeasure(v.duration_ms))
+    && (v.usage === undefined || reviewUsage(v.usage));
   if (v.type === "diagnosis") return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" && (v.file === undefined || isStr(v.file));
   if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "" && (v.by === undefined || v.by === 'pm' || v.by === 'user');
   if (v.type === "void") return isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.summary) && v.summary.trim() !== "" && isStr(v.file) && v.file !== "";
@@ -104,19 +128,21 @@ export function appendLedger(target: string, entry: LedgerEntry): void {
 }
 
 /** 같은 대상(폴더 기준 이름)의 단계. 순수 함수 */
-export function reviewStage(entries: readonly LedgerEntry[], targetName: string): StageInfo {
+export function reviewStage(entries: readonly LedgerEntry[], targetName: string, countInterrupted = true): StageInfo {
   const voided = new Set(entries.filter((e): e is VoidEntry => e.type === "void" && e.target === targetName).map((e) => e.record));
   const mine = entries.filter((e) => e.target === targetName && e.type !== "void" && !(e.type === "review" && voided.has(e.record)));
   let start = 0; // 마지막 pass·decision 다음
   mine.forEach((e, i) => { if ((e.type === "review" && e.verdict === "pass") || e.type === "decision") start = i + 1; });
   const segment = mine.slice(start);
-  const fails = segment.filter((e) => e.type === "review" && e.verdict === "fail").length;
+  const failed = (e: LedgerEntry): e is ReviewEntry => e.type === "review" && e.verdict === "fail";
+  const diagnosedFailure = (e: LedgerEntry) => failed(e) && (countInterrupted || e.interrupted !== true);
+  const fails = segment.filter(diagnosedFailure).length;
   const diagIndex = segment.map((e) => e.type).lastIndexOf("diagnosis");
   const afterDiag = diagIndex < 0 ? segment : segment.slice(diagIndex + 1);
-  const base = [...afterDiag].reverse().find((e): e is ReviewEntry => e.type === "review" && e.verdict === "fail" && e.interrupted !== true) ?? null;
+  const base = afterDiag.findLast((e): e is ReviewEntry => failed(e) && e.interrupted !== true) ?? null;
   let stage: Stage = "normal";
   if (diagIndex < 0) { if (fails >= DIAGNOSE_AFTER) stage = "diagnose"; }
-  else if (afterDiag.some((e) => e.type === "review" && e.verdict === "fail")) stage = "ask_user";
+  else if (afterDiag.some(diagnosedFailure)) stage = "ask_user";
   const last = [...mine].reverse().find((e): e is DecisionEntry => e.type === 'decision');
   return { stage, consecutive_fails: fails, base, last_decision_by: last ? last.by ?? 'unknown' : null };
 }
@@ -128,9 +154,21 @@ export function acquireLock(target: string): () => void {
   let fd: number;
   try { fd = create(); } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw new LedgerError(`검토 잠금을 만들 수 없다: ${file} — ${(error as Error).message}`);
-    // 잠금을 만든 프로세스가 이미 없으면(중단) 남은 잠금이다 — 치우고 한 번 다시 시도한다
     if (!staleLock(file)) throw new LedgerError(`같은 대상의 검토가 진행 중이다(잠금 ${file}). 진행 중인 검토가 없으면 잠금 파일을 지우고 다시 실행한다`);
-    try { rmSync(file, { force: true }); fd = create(); } catch { throw new LedgerError(`같은 대상의 검토가 진행 중이다(잠금 ${file})`); }
+    const recovery = join(dirname(file), RECOVERY_LOCK_FILE);
+    let guard: number;
+    try { guard = openSync(recovery, "wx"); }
+    catch { throw new LedgerError(`검토 잠금을 복구 중이다(${recovery}). 종료된 복구 작업의 표지만 확인해 정리할 수 있다`); }
+    try {
+      // 이미 교체된 잠금을 오래된 관측으로 지우지 않도록 복구자를 직렬화한다.
+      if (staleLock(file)) rmSync(file);
+      fd = create();
+    } catch {
+      throw new LedgerError(`같은 대상의 검토가 진행 중이다(잠금 ${file})`);
+    } finally {
+      closeSync(guard);
+      try { rmSync(recovery); } catch { /* 다음 복구에서 남은 표지를 보고한다 */ }
+    }
   }
   try { writeSync(fd, String(process.pid)); } finally { closeSync(fd); }
   return () => { try { rmSync(file, { force: true }); } catch { /* 잠금 정리 실패는 다음 실행이 알린다 */ } };

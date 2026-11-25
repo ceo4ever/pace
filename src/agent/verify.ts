@@ -34,6 +34,8 @@ export interface Rereview {
   previousText: string;
   /** 기준점 검토 때 대상 → 현재 대상의 바뀐 줄 */
   diff: string;
+  /** 예산 단계의 첫 판정이 pass면 앞선 지적 해소를 재평가할 필요가 없다 */
+  previousPassed?: boolean;
 }
 
 /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
@@ -46,6 +48,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
       `지금은 같은 산출물의 재검토다(${kind === "task" ? "구현 전 TASK 사전 검토" : "목표/결과 대조"}). 아래 "직전 검토 원문"과 "바뀐 줄"이 재검토의 정해진 입력이며, 그것을 읽는 것은 독립성 위반이 아니다.`,
       "작성자 마감·자체 판정·지적 대응 문서는 받거나 읽지 않는다. 허용되는 이전 자료는 직전 검토 원문뿐이다.",
       "판정 범위: 직전 검토의 blocking이 해소됐는지와 그 수정(바뀐 줄)이 만든 새 결함만 판정한다. 직전에 지적되지 않았고 바뀌지 않은 부분의 새 지적은 note로만 남기고 판정에 넣지 않는다.",
+      ...(rereview.previousPassed ? ["직전 판정은 pass였다. 해소 여부를 판정할 blocking은 없으며 이번 변경이 만든 결함만 판정한다."] : []),
     ]
     : kind === "task"
     ? [

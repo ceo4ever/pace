@@ -1,0 +1,14 @@
+{
+  "ran": false,
+  "reason": "budget_exhausted",
+  "budget": {
+    "unit": "task",
+    "root": "/Volumes/Data/AiStudio/workspace/pace.wt/P013/projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T01_태스크_단위_검토_예산과_범위_재검토",
+    "stage": "post",
+    "rounds": 2,
+    "calls": 2,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": "rounds"
+  }
+}
