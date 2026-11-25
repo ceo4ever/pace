@@ -3,10 +3,10 @@ type: concept
 title: "프로필 = 독립 에이전트, 역할은 AI 비서 고정"
 summary: "프로필마다 정체성·사용자 정보·메모리·스킬을 격리하고(Hermes 참고), 역할은 묻지 않고 AI 비서로 고정 — 개발·관리·리서치는 일의 성격별 방식으로 RULES에 둔다"
 tags: [profile, identity, design-history]
-sources: [code:src/profile/profile.ts, code:templates/RULES.md, code:src/profile/onboarding.ts, url:https://hermes-agent.nousresearch.com/docs/user-guide/profiles]
+sources: [code:src/profile/profile.ts, code:templates/RULES.md, code:src/profile/onboarding.ts, url:https://hermes-agent.nousresearch.com/docs/user-guide/profiles, doc:skills/pace-project-dev/references/decision-rights.md]
 related: [memory-two-scopes]
 created: 2026-10-22
-updated: 2026-11-16
+updated: 2026-11-25
 status: active
 ---
 
@@ -24,3 +24,5 @@ status: active
 ## 업무 독립 사고와 형식 선택
 
 2026-11-08 공용 RULES에 업무 독립 사고 원칙을 추가했다. 업무별 표는 역할/권한 확인으로 유지하고 개인 선호는 계속 프로필 rule에 둔다. 처음 1,200자였던 단위 분량 가드는 승인된 추가 원칙에 맞춰 1,700자로 조정했다. SOUL·USER·RULES 비축약과 8,000자 부트 가드는 보존했다. 프로젝트 문서가 업무 형식을 강요하는 대신 목표·전략·결정·결과의 추적과 명령용 최소 구조를 구별하게 했고, 이는 프로필 정체성/안전 경계를 바꾸지 않는다.
+
+P011에서 공용 RULES에 프로젝트 하네스의 결정 권한 정본을 연결했다. 하네스의 결정·기존 위임 경계에는 이 정본을 적용한다. 일반 업무의 프로필 선호와 프로필 정체성·격리는 기존 구성을 따른다. 승인 입력 앞에서는 현재 대상과 owner 원문을 대조한다.
