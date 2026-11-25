@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "metricRef": "METRICS.md",
+  "unusedRoles": [
+    {
+      "role": "pace-implementer",
+      "coverage": "unconfirmed",
+      "refs": []
+    },
+    {
+      "role": "pace-reviewer",
+      "coverage": "unconfirmed",
+      "refs": []
+    },
+    {
+      "role": "pace-tester",
+      "coverage": "unconfirmed",
+      "refs": []
+    }
+  ],
+  "recurringFindings": [
+    {
+      "code": "review-should-fix",
+      "count": 3,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-receipt.json"
+      ]
+    },
+    {
+      "code": "review-tester-fail",
+      "count": 2,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-receipt.json"
+      ]
+    }
+  ],
+  "definitionChanges": [],
+  "noChangesReasonRef": "evidence/retrospective-receipt.json"
+}

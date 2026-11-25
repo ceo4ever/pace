@@ -55,11 +55,11 @@
 |---|---|
 | `skills/pace-project-dev/references/decision-rights.md`(새) | 결정 권한 정본 A·두 층·B·C |
 | `skills/pace-project-dev/**`(coordinator·SKILL §6·reviewer·goal-review·cross-verify·e2e·verification·evals/scenarios) | 형용사형 올림 기준 → 정본 참조 |
-| `src/project/harness.ts` `workerSpec`, `test/fixtures/worker-spec-before-role.txt` | blocking은 코디네이터와 해결, owner 결정은 A 항목만 |
-| `src/agent/verify.ts`·`review-log.ts` 출력 문구와 시험 | 같은 회사 AI 폴백 안내, 심각한 오류는 B, 정본 포인터 |
+| `src/project/harness.ts`의 workerSpec, `test/fixtures/worker-spec-before-role.txt` | blocking은 코디네이터와 해결, owner 결정은 A 항목만 |
+| `src/agent/verify.ts`·`src/agent/review-log.ts` 출력 문구와 시험 | 같은 회사 AI 폴백 안내, 심각한 오류는 B, 정본 포인터 |
 | `.pace/team/agents/*.md` 전부, `templates/team/member.md`, `skills/pace-team/SKILL.md`, `src/team/store.ts` | 보충 문단(계약 v1 유지)·결정 요청 경로 |
 | `templates/RULES.md` | 프로젝트 하네스 안에서는 정본 우선 한 줄 |
-| `docs/WORK-PROCESS.md`, 브레인 `작업-하네스-흐름` | 영향 분류 정본 포인터·결정 이유 |
+| `docs/WORK-PROCESS.md`, `.pace/brain/pages/flow/작업-하네스-흐름.md` | 영향 분류 정본 포인터·결정 이유 |
 
 ## 태스크
 
