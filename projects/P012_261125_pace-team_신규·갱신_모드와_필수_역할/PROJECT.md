@@ -1,6 +1,6 @@
 # P012 pace-team 신규·갱신 모드와 필수 역할
 
-- 상태: 병합 대기
+- 상태: 완료
 - 규모: L(태스크 5개 — BR0n = T0n)
 - 출처: [BL261125_02_pace-team_신규·갱신_모드와_필수_역할](../../backlogs/BL261125_02_pace-team_신규·갱신_모드와_필수_역할/BACKLOG.md)
 - 브랜치: `project/P012` · worktree: `../pace.wt/P012/`
