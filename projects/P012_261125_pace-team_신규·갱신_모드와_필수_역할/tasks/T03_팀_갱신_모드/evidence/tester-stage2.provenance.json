@@ -1,0 +1,16 @@
+{
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 117448
+  },
+  "stop_reason": "completed",
+  "exit": 0
+}

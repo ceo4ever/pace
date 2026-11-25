@@ -1,0 +1,8 @@
+T03 구현 후 2단계 재검토입니다. 이전 reviewer·tester 원문은 previous-reviewer.md와 previous-tester.md입니다. 작업 디렉터리 /private/tmp/pace-P012-work/T03-review-R5의 상대 경로만 읽으세요. 외부 worktree에 접근하지 마세요.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/TASK.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval-final
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/fixture-validation.txt
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval-sync-recheck/U08/commands.json
+skills/pace-team/SKILL.md
+이전 계약 대조 때문에 보강한 근거는 역할·구간에 결합한 실제 영수증, 미채택 구성원 수치의 명시 처리, U08 음성 대조의 유형별 기록입니다. 원응답과 코드/문서의 의미를 비교해 T-2와 T-4, 승인 및 기존 동작을 판정하세요. 앞 판정 대비 달라진 부분과 blocking/should_fix, 최종 pass/fail을 쓰세요. 파일은 수정하지 마세요.
+이번 최종 재채점은 evidence/eval-final/U06과 evidence/eval-release/U07의 원응답을 사용합니다. U06·U07에서 공통 측정 근거를 교정했고 U07에는 스킬의 제출 전 호출 수 대조 문장을 추가한 시점의 원응답을 연결했습니다. 두세 개의 직접 근거를 확인해 앞 판정 차이를 짧게 적으세요.

@@ -1,0 +1,7 @@
+독립 tester 2단계입니다. first-judgment.md는 Codex p에서 앞선 독립 판단의 원문입니다. 이어가기 미지원으로 별도 새 OpenAI 맥락입니다. 작업 디렉터리의 상대 경로를 보세요.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/TASK.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/fixture-validation.txt
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/fixture-provenance.md
+node --test test/project-dev-skill.test.ts를 직접 실행한 뒤 U01~U08을 고정 입력·원응답·파일 지문·명령 출력으로 독립 채점하세요. T-1~T-4별 기준 충족과 검출력, 읽은 범위, 미확인 요소, 최종 pass/fail을 적으세요. 전체 검사는 PM이 실제로 실행합니다. 현재 프로젝트의 파일을 편집하지 마세요.
+최종 판정 자료는 evidence/eval의 U01~U05·U08과 evidence/eval-verified의 U06·U07입니다. 원래 평가 때와 최종판 사이에는 갱신 표의 각 수치와 증거 경로 표기만 바뀌었습니다. 첫 툴 출력의 다른 U06·U07은 수정 전 원응답입니다.

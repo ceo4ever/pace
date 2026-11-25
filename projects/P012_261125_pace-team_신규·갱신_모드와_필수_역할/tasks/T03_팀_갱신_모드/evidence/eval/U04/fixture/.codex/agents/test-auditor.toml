@@ -1,0 +1,4 @@
+name = "test-auditor"
+description = "테스트 확인"
+model_reasoning_effort = "high"
+developer_instructions = "검사 재현과 경로 확인"

@@ -1,0 +1,8 @@
+T03 재채점입니다. OpenAI의 별도 새 맥락이며 이전 tester 원문은 previous-tester.md입니다. T-1·T-3·T-4의 기존 판정은 그대로 받아 두고, 지금은 T-2의 실패를 보강 증거로 재검증하세요. 작업본의 상대 경로 자료만 읽으세요.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/TASK.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval-final
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/fixture-validation.txt
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval-sync-recheck/U08/commands.json
+skills/pace-team/SKILL.md
+새 U06·U07이 채택 프로젝트의 관측 근거를 정확히 다루고, 미채택 프로젝트와 메모의 호출·시간·토큰을 추정하지 않는지 원응답·픽스처로 확인하세요. U08 보강의 표지·공통 문단·생성물 변조별 출력을 대조하세요. 앞 T-1~T-4 판정의 유지/변경·근거·한계와 최종 pass/fail을 간결히 반환하세요. 원본은 편집하지 마세요.
+이번 최종 재채점은 evidence/eval-final/U06과 evidence/eval-release/U07의 원응답을 사용합니다. U06·U07에서 공통 측정 근거를 교정했고 U07에는 스킬의 제출 전 호출 수 대조 문장을 추가한 시점의 원응답을 연결했습니다. 두세 개의 직접 근거를 확인해 앞 판정 차이를 짧게 적으세요.

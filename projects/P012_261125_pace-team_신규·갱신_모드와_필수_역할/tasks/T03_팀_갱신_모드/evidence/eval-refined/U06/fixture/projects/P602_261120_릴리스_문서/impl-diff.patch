@@ -1,0 +1,13 @@
+--- a/RELEASE-NOTES.md
++++ b/RELEASE-NOTES.md
+@@ -1,3 +1,3 @@
+ # 릴리스 메모
+-버전: 1.4.0
++버전: 1.4.1
+ 링크: [변경 목록](CHANGES.md)
+--- a/DEPENDENCIES.md
++++ b/DEPENDENCIES.md
+@@ -4,3 +4,4 @@
+ | left-pad-lite | 2.1.0 | 문자열 |
+ | tiny-csv | 0.9.3 | 표 읽기 |
++| mini-log | 1.0.2 | 로그 |

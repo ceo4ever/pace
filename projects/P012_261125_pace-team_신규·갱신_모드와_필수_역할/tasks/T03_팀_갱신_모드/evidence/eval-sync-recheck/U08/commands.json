@@ -1,0 +1,116 @@
+[
+  {
+    "case": "fixture setup/approved apply",
+    "argv": [
+      "pace",
+      "team",
+      "new",
+      "doc-auditor",
+      "--role",
+      "reviewer"
+    ],
+    "exit": 0,
+    "stdout": "팀 원본 생성: .pace/team/agents/doc-auditor.md\n",
+    "stderr": ""
+  },
+  {
+    "case": "fixture setup/approved apply",
+    "argv": [
+      "pace",
+      "team",
+      "sync"
+    ],
+    "exit": 0,
+    "stdout": "팀 1명 · 두 호스트 생성물 동기화\n",
+    "stderr": ""
+  },
+  {
+    "case": "fixture setup/approved apply",
+    "argv": [
+      "pace",
+      "team",
+      "sync"
+    ],
+    "exit": 0,
+    "stdout": "팀 1명 · 두 호스트 생성물 동기화\n",
+    "stderr": ""
+  },
+  {
+    "case": "fixture setup/approved apply",
+    "argv": [
+      "pace",
+      "team",
+      "sync",
+      "--check",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\"members\":1,\"differences\":[],\"ok\":true}\n",
+    "stderr": ""
+  },
+  {
+    "case": "scope paragraph removed",
+    "argv": [
+      "pace",
+      "team",
+      "sync",
+      "--check",
+      "--json"
+    ],
+    "exit": 2,
+    "stdout": "{\"ok\":false,\"error\":\"실행 전 대조 계약 v1 문단이 필요하다. 기존 맞춤 내용은 보존하고 docs/TEAM.md에 따라 다음 문단을 일반 본문으로 추가하세요: 위임을 받으면 실행 전에 지시가 근거(사용자 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청 형식(결정 주체·근거·선택지)으로 올린다. 미확인 해석을 승인된 것으로 바꾸지 않는다.\"}\n",
+    "stderr": ""
+  },
+  {
+    "case": "verification marker removed",
+    "argv": [
+      "pace",
+      "team",
+      "sync",
+      "--check",
+      "--json"
+    ],
+    "exit": 1,
+    "stdout": "{\"members\":1,\"differences\":[{\"path\":\".claude/agents/doc-auditor.md\",\"kind\":\"source\"},{\"path\":\".claude/agents/doc-auditor.md\",\"kind\":\"content\"},{\"path\":\".codex/agents/doc-auditor.toml\",\"kind\":\"source\"},{\"path\":\".codex/agents/doc-auditor.toml\",\"kind\":\"content\"}],\"ok\":false}\n",
+    "stderr": ""
+  },
+  {
+    "case": "fixture setup/approved apply",
+    "argv": [
+      "pace",
+      "team",
+      "sync",
+      "--check",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\"members\":1,\"differences\":[],\"ok\":true}\n",
+    "stderr": ""
+  },
+  {
+    "case": "native output edited directly",
+    "argv": [
+      "pace",
+      "team",
+      "sync",
+      "--check",
+      "--json"
+    ],
+    "exit": 1,
+    "stdout": "{\"members\":1,\"differences\":[{\"path\":\".claude/agents/doc-auditor.md\",\"kind\":\"content\"}],\"ok\":false}\n",
+    "stderr": ""
+  },
+  {
+    "case": "restored output final check",
+    "argv": [
+      "pace",
+      "team",
+      "sync",
+      "--check",
+      "--json"
+    ],
+    "exit": 0,
+    "stdout": "{\"members\":1,\"differences\":[],\"ok\":true}\n",
+    "stderr": ""
+  }
+]

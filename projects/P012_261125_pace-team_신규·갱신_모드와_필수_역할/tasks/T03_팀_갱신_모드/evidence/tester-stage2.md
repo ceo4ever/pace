@@ -1,0 +1,20 @@
+**독립 tester 최종 판정: FAIL.** T-1, T-3, T-4는 통과했습니다. T-2는 최종 U07이 역할별 수치의 근거를 잘못 판정해 실패했습니다. 직접 실행한 `node --test test/project-dev-skill.test.ts`는 종료 코드 0, 9건 통과, 실패·건너뜀 0건이었습니다. 이 테스트는 `pace-project-dev`의 문서·링크·결정 권한 회귀를 검사합니다. T03의 행동 판정은 U01~U08 증거로 별도 확인했습니다. [테스트 코드](/private/tmp/pace-P012-work/T03-tester/test/project-dev-skill.test.ts) · [TASK 기준](/private/tmp/pace-P012-work/T03-tester/projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/TASK.md)
+
+## 기준별 채점
+
+| 기준 | 판정 | 충족 여부와 검출력 |
+|---|---|---|
+| **T-1** | **PASS** | **U01** 신규, **U02** 새 경로 원본 갱신, **U03** 옛 경로 원본 갱신, **U04** native만 있는 경우 이전·재구성으로 답했습니다. 네 응답 모두 필수 역할 두 원형의 등록 상태와 재점검 조건을 확인했습니다. U04는 Claude 도구 제한, Codex 설정, 사용자 소유 파일 충돌을 짚었습니다. 저장된 `pace team list` 출력은 U01·U04가 빈 목록, U02·U03이 `doc-auditor` 1명으로 일치합니다. **U05**는 설명만 보고 `pace-team`을 선택했습니다. 네 입력은 경로 누락과 모드 오분류를 검출합니다. 신·구 경로 혼재와 원본 읽기·검증 오류에서의 보류는 문서와 코드로 확인했고 해당 E2E 입력은 없었습니다. |
+| **T-2** | **FAIL** | **U06**은 역할 5개와 담당 공백을 행 근거로 보고했습니다. 팀 채택 P602와 미채택 P601에서 의존성 목록 직접 갱신 4건을 찾았고, 백로그 원장의 반복 지적 4건과 후속 통과를 대조했습니다. U06은 P602 `doc-auditor`의 신고값을 인용하되 활동 영수증의 `sourceRef`가 규격에 맞지 않아 시간·토큰을 미확인으로 뒀습니다. **U07**은 동일 영수증의 `1,260,000 ms`, `Read 4,120`, `Bash 1,380`을 역할 관측값으로 표에 실었고, P601의 팀 절 밖 note 기반 집계도 두 역할의 호출 수 `1`로 확정했습니다. 이 픽스처는 업무 기록과 검증된 수치를 혼동하는 오류를 검출했습니다. 유효한 활동 영수증의 수치를 정상 채택하는 대조 사례는 확인하지 못했습니다. |
+| **T-3** | **PASS** | **U06·U07** 모두 `conditional-helper`는 호출 조건 미발생, `hub-notes`는 프로젝트 구간의 기록 부족, `unused-reporter`는 실제 미사용으로 구분했습니다. 조건 미발생과 기록 부족을 합침·제외의 근거로 쓰지 않았고, 회고에서 처리된 `doc-auditor` 링크 기준도 다시 제안하지 않았습니다. U07은 별도 업무 중복이 있는 합침 후보도 독립 검토 약화를 이유로 비추천했고, 내부 정리는 PM, 범위 변경과 합침·제외는 사용자 결정으로 분류했습니다. 세 상태가 한 픽스처에 있어 오분류와 잘못된 제안을 검출할 수 있습니다. |
+| **T-4** | **PASS** | **U01~U07**의 기록된 전후 SHA-256이 일치했고, 보존된 픽스처 파일에서도 재계산해 일치했습니다. U06·U07은 각각 역할 원본 5개와 native 생성물 10개가 대상입니다. **U08**은 승인 경로·승인 전 해시·추가 문장이 실제 diff와 일치했고 공통 계약 문단과 `vfy-s`·`vfy-r` 표지가 보존됐습니다. 저장된 명령 출력은 정상 동기화 뒤 exit 0·`differences: []`, 공통 문단 제거 시 exit 2, 생성물 불일치 시 exit 1을 보여 줍니다. 저장소 검사 출력도 4명·차이 0·`ok: true`였습니다. 브레인에는 미채택·백로그 기록을 담당 공백의 근거로 쓰는 이유가 남아 있습니다. 표지만 제거한 음성 대조와 실제 호스트 적재는 미관측입니다. |
+
+[시나리오와 채점 기준](/private/tmp/pace-P012-work/T03-tester/skills/pace-team/evals/scenarios.md:24) · [최종 U06](/private/tmp/pace-P012-work/T03-tester/projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval-verified/U06/response.md:19) · [최종 U07](/private/tmp/pace-P012-work/T03-tester/projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval-verified/U07/response.md:23) · [역할 관측 규격](/private/tmp/pace-P012-work/T03-tester/docs/TEAM-METRICS.md:183) · [U08 명령 출력](/private/tmp/pace-P012-work/T03-tester/projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval/U08/commands.json) · [브레인 기록](/private/tmp/pace-P012-work/T03-tester/.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md:16)
+
+## 독립 목표 대조와 검증 범위
+
+**독립 목표 대조는 맞음, 목표 달성은 미달입니다.** 앞선 OpenAI Codex p 맥락의 `first-judgment.md`를 원문으로 받아 별도 OpenAI 맥락에서 2단계를 수행했습니다. 1단계가 패치에서 확인한 모드 분기와 적용 경계는 지정된 사례에서 관측됐습니다. 기존 팀을 현장 기록에 근거해 갱신한다는 목표는 U07의 수치 오판 때문에 통과시키기 어렵습니다. T03에서 유효한 활동 영수증과 규격에 맞지 않는 영수증을 대조하고, 팀 미채택 note 집계의 미확인 처리를 독립 재평가할 필요가 있습니다. [첫 독립 판단](/private/tmp/pace-P012-work/T03-tester/first-judgment.md)
+
+TASK·P012·BR03, 구현 패치, 스킬과 관련 정본, 지정된 U01~U08 입력·응답·지문·명령 출력, 픽스처 출처·검증 기록과 해당 원문을 읽었습니다. 최종 U06·U07은 `eval-verified`로 채점했습니다. 시나리오 SHA-256과 `eval-verified/materials.json`의 6개 지문은 현재 작업본과 일치했고, `eval/materials.json`의 스킬 지문은 현재본과 달랐습니다. 픽스처에서 프로젝트 로그 47행, 검토 원장 9행, 영수증 6개를 확인했습니다. 영수증 판독기의 접수 결과는 저장된 출력으로 확인했으며, 역할별 활동 수치의 채택 조건은 해당 영수증 원문과 규격을 대조했습니다. `required-roles.json`은 두 최종 사본의 현재 지문이 같고 전후 지문 목록에는 포함되지 않았습니다. [픽스처 출처](/private/tmp/pace-P012-work/T03-tester/projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/fixture-provenance.md) · [픽스처 검증 출력](/private/tmp/pace-P012-work/T03-tester/projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/fixture-validation.txt)
+
+프로젝트 파일 편집은 없었습니다. 전체 검사는 PM 실행 범위이며, `team list`와 `sync`는 보존된 출력을 채점했습니다.

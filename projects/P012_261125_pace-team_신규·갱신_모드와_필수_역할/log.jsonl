@@ -21,3 +21,13 @@
 {"ts":"2026-11-25T11:49:01.881Z","p":"P012","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-25T11:49:02.086Z","p":"P012","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-25T11:49:02.086Z","p":"P012","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-25T11:49:16.820Z","p":"P012","t":"T03","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-25T11:50:23.006Z","p":"P012","t":"T03","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 3","ref":"tasks/T03_팀_갱신_모드/review-records/R1.json","data":{"blocking":0,"should_fix":3,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-25T12:12:31.223Z","p":"P012","t":"T03","type":"review","by":"agent","msg":"tester fail blocking 1 should_fix 0","ref":"tasks/T03_팀_갱신_모드/evidence/tester-stage2.md","data":{"blocking":1,"should_fix":0,"tester":1,"reviewer":0,"pass":0,"fail":1}}
+{"ts":"2026-11-25T12:12:31.456Z","p":"P012","t":"T03","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 3","ref":"tasks/T03_팀_갱신_모드/evidence/reviewer-stage2.md","data":{"blocking":0,"should_fix":3,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-25T12:19:06.076Z","p":"P012","t":"T03","type":"decision","by":"agent","msg":"최근 완료 프로젝트 최대 다섯 건을 기본으로 기록하고 팀 미채택 기록도 담당 공백 대조에 포함","src":"자체 판단","ref":"tasks/T03_팀_갱신_모드/TASK.md"}
+{"ts":"2026-11-25T12:19:26.123Z","p":"P012","t":"T03","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1","ref":"tasks/T03_팀_갱신_모드/evidence/reviewer-recheck.md","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-25T12:19:26.324Z","p":"P012","t":"T03","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0","ref":"tasks/T03_팀_갱신_모드/evidence/tester-recheck.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-25T12:19:26.528Z","p":"P012","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-25T12:19:26.746Z","p":"P012","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-25T12:19:26.746Z","p":"P012","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}

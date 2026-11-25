@@ -1,0 +1,8 @@
+P601_261023_의존성_기록 15 events 0 invalid
+P602_261120_릴리스_문서 32 events 0 invalid
+BL261112_02_허브_진행_메모/BACKLOG.md 7 review rows
+P602_261120_릴리스_문서/impl-diff.patch 2 review rows
+6 typed evidence receipts accepted
+doc-auditor activity correct period accepted; other period rejected
+conditional-helper condition-not-triggered correct period accepted; other period rejected
+unused-reporter none correct period accepted; other period rejected

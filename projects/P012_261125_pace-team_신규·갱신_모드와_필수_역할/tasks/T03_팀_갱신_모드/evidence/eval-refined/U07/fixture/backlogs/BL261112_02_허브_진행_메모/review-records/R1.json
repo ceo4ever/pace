@@ -1,0 +1,1 @@
+{"kind":"plan","target":"BACKLOG.md","verifier":"claude","at":"2026-11-13T08:00:00.000Z","result":"BACKLOG.md 검토 결과.\n- 기록 절 BL261112_02 행의 결정 열이 hub-notes 작성으로 채워졌다. 결정 열은 정의서의 hub-notes 출력(기록 절 새 행) 범위에 없다.\n- 같은 행의 owner가 비어 있다.\n판정: fail"}

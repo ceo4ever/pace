@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "adb5940e03b48fda0217829290316ce1ec69484d442d8ecd12e860138e869432",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    }
+  ]
+}

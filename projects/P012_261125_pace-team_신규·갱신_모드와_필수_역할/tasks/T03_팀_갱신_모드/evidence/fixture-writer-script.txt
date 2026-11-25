@@ -1,0 +1,73 @@
+import json, hashlib, os, shutil
+F = "/private/tmp/pace-P012-work/T03-fixture-author/fixture"
+def sha(s): return hashlib.sha256(s.encode()).hexdigest()
+def dump(rows): return "".join(json.dumps(r, ensure_ascii=False, separators=(",", ":")) + "\n" for r in rows)
+def load(p): return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
+# 1) P602 role start rows
+p = F + "/projects/P602/log.jsonl"
+rows = load(p)
+for r in rows:
+    if r["type"] == "start" and "role" in r:
+        n = r["role"]["name"]
+        r["by"] = "cli"
+        r["role"] = dict(name=n, source="option", definition=".pace/team/agents/" + n + ".md",
+                         hash=sha("synthetic-definition:" + n), method="prompt", model="synthetic-model",
+                         effort="medium", settingsStatus="planned",
+                         toolsPermissionApplied=False, runtimeObserved=False)
+open(p, "w", encoding="utf-8").write(dump(rows))
+# 2) move projects
+PM = {"P601": "P601_261023_의존성_기록", "P602": "P602_261120_릴리스_문서"}
+for k, v in PM.items(): shutil.move(F + "/projects/" + k, F + "/projects/" + v)
+# 3) backlog folder
+BR = "backlogs/BL261112_02_허브_진행_메모"
+B = F + "/" + BR
+os.makedirs(B)
+shutil.move(F + "/decisions", B + "/decisions")
+shutil.move(F + "/review-records", B + "/review-records")
+for root, _, fs in os.walk(F):
+    for f in fs:
+        if f.endswith((".md", ".json", ".jsonl", ".patch")):
+            q = os.path.join(root, f)
+            t = open(q, encoding="utf-8").read(); o = t
+            for k, v in PM.items(): t = t.replace("projects/" + k + "/", "projects/" + v + "/")
+            t = t.replace("](decisions/", "](" + BR + "/decisions/")
+            if t != o: open(q, "w", encoding="utf-8").write(t)
+# 4) backlog REVIEW-LOG
+def rec(n): return json.load(open(B + "/review-records/R%d.json" % n, encoding="utf-8"))
+def rv(n, verdict, re_of):
+    r = rec(n)
+    return dict(type="review", at=r["at"], kind=r["kind"], target="BACKLOG.md", hash=sha("synthetic-backlog-snapshot-R%d" % n),
+                verdict=verdict, verifier=r["verifier"], provider="anthropic", rereview_of=re_of,
+                record="review-records/R%d.json" % n, result_hash=sha(r["result"]))
+L = [rv(1, "fail", None), rv(2, "fail", "review-records/R1.json"), rv(3, "fail", "review-records/R2.json"),
+     dict(type="diagnosis", at="2026-11-16T09:00:00.000Z", target="BACKLOG.md", layer="planning",
+          summary="R1~R3 지적이 모두 hub-notes의 결정 열·owner 열 작성이다", file="decisions/BL261112_02-diagnosis.md"),
+     rv(4, "fail", None),
+     dict(type="decision", at="2026-11-19T11:00:00.000Z", target="BACKLOG.md", choice="결정·owner 열은 PM이 쓰고 hub-notes는 기록 절 새 행만 쓴다",
+          summary="hub-notes 출력 범위를 정의서와 맞춘다", file="decisions/BL261112_02-rule-change.md", by="pm"),
+     rv(5, "pass", None)]
+open(B + "/REVIEW-LOG.jsonl", "w", encoding="utf-8").write(dump(L))
+# P602 ledger result_hash를 기록 원문과 맞춘다
+P = F + "/projects/" + PM["P602"]
+ents = load(P + "/REVIEW-LOG.jsonl")
+for e in ents: e["result_hash"] = sha(json.load(open(P + "/" + e["record"], encoding="utf-8"))["result"])
+open(P + "/REVIEW-LOG.jsonl", "w", encoding="utf-8").write(dump(ents))
+# 5) docs/README.md
+os.makedirs(F + "/docs")
+d = "../" + BR + "/decisions/"
+lines = [
+"# docs (합성 저장소 문서 안내)", "",
+"이 폴더는 저장소 규칙과 최근 변경의 근거 위치를 모아 둔 안내다. 원본은 각 링크의 파일이다.", "",
+"## 저장소 규칙",
+"- 규칙 원문은 [AGENTS.md](../AGENTS.md)다.",
+"- 프로젝트 자료는 `projects/P###_YYMMDD_이름/`에 둔다. 현재 [P601](../projects/%s/PROJECT.md), [P602](../projects/%s/PROJECT.md)가 있다." % (PM["P601"], PM["P602"]),
+"- 백로그 근거 자료는 `%s/`의 decisions, review-records, REVIEW-LOG.jsonl에 둔다. 목록은 [BACKLOG.md](../BACKLOG.md)다." % BR,
+"- 결정 주체는 pm 또는 user다. 범위·우선순위 변경은 user, 표기·정리는 pm이 정한다.", "",
+"## 최근 변경 근거",
+"| 일자 | 변경 | 근거 |", "|---|---|---|",
+"| 2026-11-14 | BL261114_03 번호 체계 변경 보류 (user) | [BL261114_03-hold.md](%sBL261114_03-hold.md) |" % d,
+"| 2026-11-16 | BL261112_02 진단 기록 | [BL261112_02-diagnosis.md](%sBL261112_02-diagnosis.md) |" % d,
+"| 2026-11-18 | doc-auditor 정의 보강 (P602 회고) | [def-change-doc-auditor.json](../projects/%s/evidence/def-change-doc-auditor.json) |" % PM["P602"],
+"| 2026-11-19 | 결정·owner 열은 PM 작성 (pm) | [BL261112_02-rule-change.md](%sBL261112_02-rule-change.md) |" % d, ""]
+open(F + "/docs/README.md", "w", encoding="utf-8").write("\n".join(lines))
+os.remove(F + "/.apply.py")

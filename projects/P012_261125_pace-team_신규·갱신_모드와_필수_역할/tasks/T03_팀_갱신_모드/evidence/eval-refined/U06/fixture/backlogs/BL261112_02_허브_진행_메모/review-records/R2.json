@@ -1,0 +1,1 @@
+{"kind":"plan","target":"BACKLOG.md","verifier":"claude","at":"2026-11-15T08:00:00.000Z","result":"BACKLOG.md 재검토 결과.\n- 결정 열 지적은 행 하나는 지워졌으나 BL261114_03 행에 같은 방식으로 다시 생겼다.\n- owner를 user로 적은 항목의 결정자가 pm으로 되어 있다. 범위 변경은 user가 정한다(AGENTS 규칙).\n판정: fail"}

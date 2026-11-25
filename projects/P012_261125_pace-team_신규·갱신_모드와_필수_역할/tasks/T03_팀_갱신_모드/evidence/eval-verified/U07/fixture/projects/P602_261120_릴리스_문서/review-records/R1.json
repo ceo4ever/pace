@@ -1,0 +1,1 @@
+{"kind":"goal","target":"impl-diff.patch","verifier":"claude","at":"2026-11-19T16:00:00.000Z","result":"impl-diff.patch 검토 결과.\n- 릴리스 메모의 버전 표기가 두 곳에서 다르다(blocking).\n- METRICS 팀 절 표의 열 수가 맞지 않는다(should_fix).\n판정: fail"}

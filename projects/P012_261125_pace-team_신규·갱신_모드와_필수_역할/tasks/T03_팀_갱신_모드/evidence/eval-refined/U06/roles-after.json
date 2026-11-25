@@ -1,0 +1,17 @@
+{
+  ".claude/agents/conditional-helper.md": "ed04c5a00f21dcd997f5b6a93504928d6c0d3baa49e426919fa43b73874f3913",
+  ".claude/agents/doc-auditor.md": "2c65c3ae1cc3c5f23bdfb05e78eab046e736570398a82336ee29291ea5dc17e7",
+  ".claude/agents/hub-notes.md": "1854a463b5f344253edf942466e76ff8228b4aa239413eacd2d8849dd2f3fb7d",
+  ".claude/agents/test-auditor.md": "94bfbcd71c50b68bef56cbbbd9a3c4c78dce964d6e93e8bbac7d6e80b62f0df2",
+  ".claude/agents/unused-reporter.md": "ff4c6b784cf57bdbc7ebe494389cfda46fe69c1ad9af78947b41190adb6c69e6",
+  ".codex/agents/conditional-helper.toml": "29f462afc3e3e6effa1b43b1e90ba416a007d4c0fe2929a3de45f6cde7a6cc4a",
+  ".codex/agents/doc-auditor.toml": "7593b1082fd0ce37ade51380be32429d625ad5b059713062fa1266f9f9b88bf6",
+  ".codex/agents/hub-notes.toml": "8c861213db9ea81d5695d1b484bc34ff484f131680802cb67207f8177baa490b",
+  ".codex/agents/test-auditor.toml": "60d71f626de827aa54576d066bf1f2c7f64e611255e1a8fcda735a48bd71f152",
+  ".codex/agents/unused-reporter.toml": "b811a854a7af2158a2e9c73f800afb990f5c708742c3e5e850569f26532511b5",
+  ".pace/team/agents/conditional-helper.md": "4d0554be181d288507fda1ff7ec221322afbbc23c4a356246de86b3e6fd27c0e",
+  ".pace/team/agents/doc-auditor.md": "825dc34953cf1d9ef1b98402b724dddd5200b443f344c9fbb689f5015c37b09a",
+  ".pace/team/agents/hub-notes.md": "18f8b77bad501e36920c8f3fac651508bbff5adda016e56db2448002e8f3e494",
+  ".pace/team/agents/test-auditor.md": "023ad168b130b5201aee908d8299b537772b28053305725d2df91fd504caeb29",
+  ".pace/team/agents/unused-reporter.md": "ec310bc3cc5a36bd2dc3e5717333bdebedb30ab761e1b9d1b06d74f7cb09ce70"
+}

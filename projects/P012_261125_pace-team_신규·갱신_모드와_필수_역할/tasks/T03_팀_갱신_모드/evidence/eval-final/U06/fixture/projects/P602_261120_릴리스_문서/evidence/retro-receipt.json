@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "kind": "team-evidence",
+  "sourceRef": "retro-findings:p602-close",
+  "hash": "9ce3709cff86b4222d70abc3ed67be6e5ffed3fcbd2b9073a91834f95d03f907",
+  "purposes": [
+    "role-observation"
+  ],
+  "period": {
+    "start": "2026-11-10T09:00:00+09:00",
+    "end": "2026-11-20T09:30:00+09:00",
+    "unit": "project-start-to-merge"
+  }
+}

@@ -123,3 +123,4 @@
 ## [2026-11-25] query | 반복 실패 조사 및 실측 근거를 대조하고 결정 권한과 공동 시도 이유를 작업-하네스-흐름과 검토-반복-실패-하네스에 반영
 ## [2026-11-25] update | 프로필 = 독립 에이전트, 역할은 AI 비서 고정 (.pace/brain/pages/concept/profile-is-independent-agent.md)
 ## [2026-11-25] lint | RULES 변경 뒤 독립 프로필 구성 설명에 하네스 결정 권한의 적용 범위를 반영하고 stale-source를 해소
+## [2026-11-25] ingest | 저장소 팀 설계와 갱신 흐름 (.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md)

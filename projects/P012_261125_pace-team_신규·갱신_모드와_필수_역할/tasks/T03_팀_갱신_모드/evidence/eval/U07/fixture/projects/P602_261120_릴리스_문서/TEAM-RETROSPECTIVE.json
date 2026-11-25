@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "metricRef": "METRICS.md",
+  "unusedRoles": [],
+  "recurringFindings": [
+    {
+      "code": "review-blocking",
+      "count": 4,
+      "coverage": "reported",
+      "refs": ["evidence/retro-receipt.json"]
+    },
+    {
+      "code": "review-should-fix",
+      "count": 9,
+      "coverage": "reported",
+      "refs": ["evidence/retro-receipt.json"]
+    },
+    {
+      "code": "review-tester-fail",
+      "count": 2,
+      "coverage": "reported",
+      "refs": ["evidence/retro-receipt.json"]
+    }
+  ],
+  "definitionChanges": [
+    {
+      "role": "doc-auditor",
+      "changeRef": "evidence/def-change-doc-auditor.json",
+      "reasonRef": "evidence/def-change-reason-doc-auditor.json"
+    }
+  ]
+}

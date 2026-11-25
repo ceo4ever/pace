@@ -1,0 +1,1 @@
+{"version": 1, "roles": [{"role": "conditional-helper", "scope": "worktree", "conditional": true}, {"role": "hub-notes", "scope": "hub", "conditional": false}, {"role": "unused-reporter", "scope": "hub", "conditional": false}]}

@@ -1,0 +1,9 @@
+T03의 2단계 계약·행동 검증입니다. 작업 디렉터리 /private/tmp/pace-P012-work/T03-review-exact 기준 상대 경로로만 자료를 읽으세요. 앞 단계 diff 제목에 나온 원래 worktree의 절대 경로는 사용하지 마세요.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/TASK.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/eval
+backlogs/BL261125_02_pace-team_신규·갱신_모드와_필수_역할/BR03_팀_갱신_모드.md
+skills/pace-team/SKILL.md
+skills/pace-project-dev/references/decision-rights.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T03_팀_갱신_모드/evidence/fixture-provenance.md
+U01~U08의 실행·원응답과 고정 입력, 검토표의 행 근거·미채택/백로그 자료·비참여와 승인 전 보존을 대조하세요. 공통 계약과 표지 변조 검출도 확인하세요. 이전 단계 대비 관측·한계, blocking/should_fix와 최종 pass/fail을 적으세요. 파일은 바꾸지 마세요.
+최종 판정 자료는 evidence/eval의 U01~U05·U08과 evidence/eval-verified의 U06·U07입니다. 원래 평가 때와 최종판 사이에는 갱신 표의 각 수치와 증거 경로 표기만 바뀌었습니다. 첫 툴 출력의 다른 U06·U07은 수정 전 원응답입니다.

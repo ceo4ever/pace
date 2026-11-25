@@ -1,0 +1,7 @@
+{
+  "fixtureOnly": true,
+  "approvedPath": ".pace/team/agents/doc-auditor.md",
+  "beforeSha256": "07f94700e83e64f716a0705d83c13aa91207304b0c0058139de5b3e5d34e4c1e",
+  "approvedAddition": "릴리스 메모의 확인 근거를 저장소 기준 상대 경로와 행으로 남긴다.",
+  "basis": "이 합성 프로젝트의 위임받은 PM이 기존 담당 범위에서 추가한 증거 형식"
+}
