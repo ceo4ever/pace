@@ -1,0 +1,32 @@
+{
+  "project": "P009",
+  "metricSource": "pace project stats P009 --json",
+  "period": {
+    "start": "2026-11-23T13:47:09.995Z",
+    "end": "2026-11-25T01:07:22.898Z",
+    "unit": "project-start-to-merge",
+    "closed": false
+  },
+  "sourceHash": "8fd914e58489272894cfb856d8b1bd757a71dfa2da4f5f833044966a22aa11e3",
+  "logHash": "c61f8d9ab4336a10d25505feefca9b187ac98468555d555d758be9ea61b3e370",
+  "knownRoleCandidates": [],
+  "recurringObserved": [
+    {
+      "code": "gate-contract",
+      "count": 4
+    },
+    {
+      "code": "review-blocking",
+      "count": 200
+    },
+    {
+      "code": "review-should-fix",
+      "count": 176
+    },
+    {
+      "code": "review-tester-fail",
+      "count": 20
+    }
+  ],
+  "definitionDecision": "현장 참여 수집을 확인한 뒤 판단한다. 현재 P009의 운영 구성 변경을 뒷받침할 증거가 없다."
+}

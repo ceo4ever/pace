@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "metricRef": "METRICS.md",
+  "unusedRoles": [],
+  "recurringFindings": [
+    {
+      "code": "gate-contract",
+      "count": 4,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-receipt.json"
+      ]
+    },
+    {
+      "code": "review-blocking",
+      "count": 200,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-receipt.json"
+      ]
+    },
+    {
+      "code": "review-should-fix",
+      "count": 176,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-receipt.json"
+      ]
+    },
+    {
+      "code": "review-tester-fail",
+      "count": 20,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-receipt.json"
+      ]
+    }
+  ],
+  "definitionChanges": [],
+  "noChangesReasonRef": "evidence/retrospective-receipt.json"
+}
