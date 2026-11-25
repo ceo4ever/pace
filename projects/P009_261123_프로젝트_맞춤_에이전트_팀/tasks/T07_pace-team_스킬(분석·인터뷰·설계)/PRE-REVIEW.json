@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "provider": "anthropic",
+      "status": "unavailable",
+      "cross": true,
+      "hash": "4009326fb207c4f2fd6af38094020fae2c1b799937945d5cff165059f2bc42bc",
+      "blocking": 0,
+      "continuity": "new",
+      "reason": "180초 제한 안에 독립 판정 출력 없음",
+      "evidence": "evidence/pre-review-r1-timeout.json"
+    },
+    {
+      "provider": "anthropic",
+      "status": "pass",
+      "cross": true,
+      "hash": "4009326fb207c4f2fd6af38094020fae2c1b799937945d5cff165059f2bc42bc",
+      "blocking": 0,
+      "shouldFix": 7,
+      "continuity": "changed",
+      "reason": "첫 호출 시간 초과 뒤 독립 새 맥락에서 같은 기준 재확인",
+      "evidence": "pre-review-output-r2.json"
+    },
+    {
+      "provider": "anthropic",
+      "status": "fail",
+      "cross": true,
+      "hash": "a0df014ae09305070c3beedc118d6b70ccbebf76edc7ecd22718ff8732fd3128",
+      "blocking": 1,
+      "shouldFix": 6,
+      "continuity": "changed",
+      "reason": "행동의 음성 대조와 실제 확인 범위를 넓은 계획에 반영",
+      "evidence": "pre-review-output-r3.json"
+    },
+    {
+      "provider": "anthropic",
+      "status": "pass",
+      "cross": true,
+      "hash": "cb6a80ba3a2c6d74e849ec3d2061ae381fc8c0f2f734350126b6b6c8f4f99d58",
+      "blocking": 0,
+      "shouldFix": 5,
+      "continuity": "changed",
+      "reason": "최소성의 필수 업무·독립성 근거와 과잉 설계 대조를 보강한 뒤 독립 새 재검토",
+      "evidence": "pre-review-output-r4.json"
+    }
+  ]
+}

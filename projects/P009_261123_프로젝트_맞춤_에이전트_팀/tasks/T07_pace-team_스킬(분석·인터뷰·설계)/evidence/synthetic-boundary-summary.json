@@ -1,0 +1,65 @@
+{
+  "beforeGit": [
+    {
+      "name": "roblox-studio",
+      "head": "03e7c7900107ca3e841b7b5c8549d4bea1295c3b",
+      "clean": true
+    },
+    {
+      "name": "ai-sql-client",
+      "head": "16fcad8af522ae7d10f908545cc4a46b947bd025",
+      "clean": true
+    }
+  ],
+  "afterGit": [
+    {
+      "name": "roblox-studio",
+      "head": "03e7c7900107ca3e841b7b5c8549d4bea1295c3b",
+      "clean": true
+    },
+    {
+      "name": "ai-sql-client",
+      "head": "16fcad8af522ae7d10f908545cc4a46b947bd025",
+      "clean": true
+    }
+  ],
+  "configKeys": [
+    "claudeDefault",
+    "claudeActive",
+    "codexDefault",
+    "codexActive",
+    "paceWorker"
+  ],
+  "unchangedConfigs": true,
+  "unchangedGit": true,
+  "reports": [
+    {
+      "label": "studio",
+      "host": "claude",
+      "exitCode": 0,
+      "rows": 9,
+      "status": "pass"
+    },
+    {
+      "label": "studio",
+      "host": "codex",
+      "exitCode": 0,
+      "rows": 9,
+      "status": "pass"
+    },
+    {
+      "label": "document",
+      "host": "claude",
+      "exitCode": 0,
+      "rows": 4,
+      "status": "pass"
+    },
+    {
+      "label": "document",
+      "host": "codex",
+      "exitCode": 0,
+      "rows": 4,
+      "status": "pass"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "whole": {
+    "tests": 1363,
+    "pass": 1346,
+    "fail": 0,
+    "skipped": 17
+  },
+  "candidateHash": "73b45a4585e0417ca91f054250d1570278bf44f21980e55f5e435457a2407bc3",
+  "fileCount": 6,
+  "verifiedFiles": true,
+  "detailedHostObserved": 26,
+  "hostSourceHashesMatch": true
+}

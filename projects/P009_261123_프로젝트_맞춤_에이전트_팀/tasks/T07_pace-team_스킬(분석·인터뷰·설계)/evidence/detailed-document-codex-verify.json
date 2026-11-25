@@ -1,0 +1,100 @@
+{
+  "label": "document",
+  "host": "codex",
+  "exitCode": 0,
+  "report": {
+    "version": 1,
+    "phase": "result",
+    "created": "2026-11-25T01:01:27.796Z",
+    "status": "pass",
+    "rows": [
+      {
+        "member": "data-api",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/data-api.md",
+        "hash": "54c42f8ab2aa2296b7f3287acd566a99ec4162f2835638b80638aa00d6a47564",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"loaded\": true,\n  \"identity\": \"data-api. 프로젝트 계약과 배정 범위에 따라 일하는 이 저장소의 maker다.\",\n  \"duties\": \"서버 API, 데이터 정책, 인증, 공통 실행 경로를 유지보수한다. 격리된 테스트 픽스처에서 마이그레이션과 음성 대조군을 설계하고, 실제 쓰기 승인은 별도로 관리한다.\",\n  \"dont\": [\n    \"`vfy-s-bb299ae1790d4017` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-e290fa7adb0f4acb` reviewer는 작업본을 수정하지 않는다.\",\n    \"owner 승인 없이 운영 데이터 쓰기를 승인하거나, 자격 증명을 노출하거나, 유료 애플리케이션 서비스를 실행하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 주체·근거·선택지를 담아 결정 요청을 올린다. 미확인 해석을 승인된 것으로 취급하지 않는다. 검증 근거와 보류 사유를 인계받는 역할에 전달하고, 승인 범위를 정해야 하면 owner의 결정을 기록한다. 소통 원장이 있으면 scope_check와 ready를 확인하고 실제 결과로 종결한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "flow-lead",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/flow-lead.md",
+        "hash": "2d760e670fb6970107eaa0f33d674e9000611341cf49d1be164d349bd3c09dd8",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"loaded\": true,\n  \"identity\": \"flow-lead. 이 저장소의 lead로서 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"백로그의 우선순위를 정리하고 대표 아키텍처 또는 워크플로 문서의 초안을 작성한다. 승인된 범위를 확정하고 독립 검토를 요청하며, 미결 결정은 owner에게 올린다.\",\n  \"dont\": [\n    \"`vfy-s-89d533863b694212` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-e00b5320a4e84ff2` reviewer는 작업본을 수정하지 않는다.\",\n    \"자신이 작성한 문서를 스스로 인증하거나, 범위를 확대하거나, 유료 애플리케이션 사용 또는 게시를 승인하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시가 사용자 원문, 확인된 해석 또는 계약과 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 주체·근거·선택지를 담아 결정 요청을 올린다. 검증 근거와 보류 사유를 받는 역할에 전달하고, 범위 승인이 필요하면 owner의 결정을 기록한다. 미확인 해석을 승인된 것으로 취급하지 않는다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "product-ui",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/product-ui.md",
+        "hash": "01bea003070a9995d4593e75a0fed95a1397cc693d995c1f0bb140ec8da8c7f8",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"product-ui. 프로젝트 계약과 배정 범위에 따라 일하는 이 저장소의 maker다.\",\n  \"duties\": \"인터페이스와 공용 데스크톱 셸 후보를 만들고 라이트·다크 모드와 키보드 조작을 검증한다. 안전한 패키징 후보를 준비하고 격리된 입력으로 Electron과 Tauri의 동작을 비교한다.\",\n  \"dont\": [\n    \"`vfy-s-8aee13000f66443e` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-eeae49e30f094396` reviewer는 작업본을 수정하지 않는다.\",\n    \"권한을 부여받아 배정된 경우에만 데이터 정책을 결정하거나 실제 패키지를 서명·게시·배포한다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시의 범위를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 주체·근거·선택지를 담아 결정 요청을 올린다. 미확인 해석을 승인된 것으로 취급하지 않는다. 검증 근거와 보류 사유를 인계받는 역할에 전달한다. 패키지 후보와 UI 검증은 패키징 매트릭스, 인터페이스 상태, 테스트 근거와 함께 quality-review에 인계한다. 서명·게시 결정은 후보의 한계와 owner 결정에 필요한 조건을 담아 flow-lead에 인계한다. 승인이 필요한 경우 owner의 결정을 기록하고, 소통 원장이 있으면 scope_check와 ready를 확인한 뒤 실제 결과로 종결한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "quality-review",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/quality-review.md",
+        "hash": "205b7f95812f3965ec1d41b3276683cf4154820b4744c5394466f3a40a22ef20",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"quality-review. 프로젝트 계약과 배정 범위에 따라 일하는 이 저장소의 reviewer다.\",\n  \"duties\": \"승인된 합성 통합 환경을 사용해 문서, 권한, 통합, 패키지 증거를 독립적으로 검토한다. 실제 UI 상태 전이를 확인하고, 관찰하지 못한 조건과 보류된 조건을 그대로 기록한다.\",\n  \"dont\": [\n    \"`vfy-s-08aa2e620efd4033` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-e481a13ce466487b` reviewer는 작업본을 수정하지 않는다.\",\n    \"작성자의 파일을 편집하거나 유료 신청, 운영 데이터 관련 작업, 서명, 게시를 실행하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 범위가 다르거나 근거가 불명확하면 실행을 보류하고 결정 주체·근거·선택지를 담아 결정을 요청한다. 미확인 해석을 승인된 것으로 취급하지 않는다. 독립 판단과 실제 관찰 결과, 실패, 미해결 승인 사항을 검증 근거 및 보류 사유와 함께 flow-lead에 전달한다. 승인 범위에 대한 결정이 필요하면 owner의 결정을 기록한다. 소통 원장이 있으면 scope_check와 ready를 확인하고 실제 결과로 종결한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    ],
+    "native_tamper": "해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.",
+    "loading_notice": "이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.",
+    "session_self_hash_observed": false,
+    "limitation": "verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다."
+  },
+  "text": "| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |\n|---|---|---|---|---|---|\n| data-api | codex | prompt | .pace/team/data-api.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| flow-lead | codex | prompt | .pace/team/flow-lead.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| product-ui | codex | prompt | .pace/team/product-ui.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| quality-review | codex | prompt | .pace/team/quality-review.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.\nReport: .pace/team/verify/919035f0-d50c-4ff4-9338-fdb18f43c5b7.json\n",
+  "error": "",
+  "hashesMatch": true
+}

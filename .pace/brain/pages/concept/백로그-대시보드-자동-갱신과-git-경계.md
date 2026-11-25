@@ -6,7 +6,7 @@ tags: []
 sources: [code:src/project/dashboard.ts, code:src/project/dashboard-init.ts, code:src/cli.ts, code:src/project/harness.ts, test:test/dashboard-init.test.ts, code:src/project/adopt-opal.ts, test:test/backlog-dashboard.test.ts, test:test/project-harness.test.ts, doc:skills/pace-project-init/SKILL.md, doc:docs/DASHBOARD.md, code:src/dashboard/backlog/core.js, code:src/dashboard/backlog/app.js, doc:templates/backlog/BACKLOG.md, doc:skills/pace-project-init/references/backlog-format.md, code:src/project/dashboard-layout.ts]
 related: [작업-하네스-흐름]
 created: 2026-11-07
-updated: 2026-11-24
+updated: 2026-11-25
 status: active
 ---
 

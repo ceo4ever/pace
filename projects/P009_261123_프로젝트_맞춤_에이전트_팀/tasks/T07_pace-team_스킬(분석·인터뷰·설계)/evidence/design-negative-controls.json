@@ -1,0 +1,7 @@
+{
+  "mergedDocumentWork": "covered",
+  "reviewerSameProvider": "needs-separate-reviewer",
+  "requiredAuthorMissing": "missing-required-work",
+  "providerUnavailable": "unconfirmed-provider",
+  "extraRoleWithoutWork": "unsupported-role"
+}

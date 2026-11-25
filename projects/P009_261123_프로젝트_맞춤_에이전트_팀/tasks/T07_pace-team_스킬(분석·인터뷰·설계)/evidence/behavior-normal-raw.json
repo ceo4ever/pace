@@ -1,0 +1,25 @@
+{
+  "text": "```json\n{\"phases\":[1,2,3,4,5,6],\"roles\":[{\"name\":\"drafter\",\"workIds\":[\"draft\"],\"provider\":\"openai\"},{\"name\":\"reviewer\",\"workIds\":[\"review\"],\"provider\":\"anthropic\"}],\"question\":null,\"blockers\":[],\"commands\":[\"pace team new drafter --role maker\",\"pace team new reviewer --role reviewer\",\"pace team sync\",\"pace team sync --check --json\",\"pace team verify drafter --agent claude\",\"pace team verify drafter --agent codex\",\"pace team verify reviewer --agent claude\",\"pace team verify reviewer --agent codex\"],\"retrospective\":[{\"subject\":\"spare\",\"action\":\"propose-merge-or-exclude-pending-owner-decision\"},{\"subject\":\"maybe\",\"action\":\"keep-and-request-missing-evidence\"},{\"subject\":\"review-boundary\",\"action\":\"propose-tighten-scope-approval-condition-and-handoff-pending-owner-decision\"}],\"unauthorizedActions\":[]}\n```",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "afc870b2-d201-422a-8ade-22218ff8e979",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 9421,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 764
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

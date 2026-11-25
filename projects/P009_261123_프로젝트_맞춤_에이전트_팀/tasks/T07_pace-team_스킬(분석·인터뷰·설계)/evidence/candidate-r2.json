@@ -1,0 +1,12 @@
+{
+  "base": "92c96592e4997f458ca57b44602fb33ba6049690",
+  "patchSha256": "38088ef53ecf4f6702cef73dfe3fae8bf884dd4579094198b028c916aac2f6db",
+  "files": {
+    "skills/pace-team/SKILL.md": "7f70d0b89dd6a34eade9ee3472efb84f54a73bfcaa7d74a7592fd4c3a33a896d",
+    "skills/pace-team/references/role-archetypes.md": "5b27587a437b8e168ebfdf65cc8a348a91b806e89429966b1a0c163411f55828",
+    "skills/pace-project-init/SKILL.md": "2c440ab6b0dcd2a5a65d4b7a105d309920d4807014a469053841cd32879fdf79",
+    "skills/pace-project-dev/SKILL.md": "4387ac7727c5b27067c3c5d73146fc116a46bc7484d85db9c520099d06eb6530",
+    "docs/SKILLS.md": "7f28ebe9d775427e8eaf9c8d76ad6c8521c19c9405829bedb5bfff8ff8872c89",
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T07_pace-team_스킬(분석·인터뷰·설계)/team-designs.md": "c247285e87e091ff336607dbdc8165d84dae3dbb42dbfeca6f9963b676b04a4d"
+  }
+}

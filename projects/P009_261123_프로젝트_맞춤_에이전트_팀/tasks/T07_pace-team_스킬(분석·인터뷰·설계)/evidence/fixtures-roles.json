@@ -1,0 +1,19 @@
+{
+  "studio": [
+    ["athena", "lead", "Coordinate phase gates and show evidence to the decision owner."],
+    ["hermes", "maker", "Compare source material and report limitations before planning."],
+    ["daedalus", "maker", "Design a prototype within the selected scope."],
+    ["argos", "reviewer", "Independently review acceptance evidence and report blockers."],
+    ["hephaestus", "maker", "Maintain server-side state and test persistence boundaries."],
+    ["apollo", "maker", "Build and validate interactive interface states."],
+    ["gaia", "maker", "Prepare map assets and report shared editing conflicts."],
+    ["iris", "maker", "Prepare a release checklist and observation plan."],
+    ["plutus", "maker", "Draft reward and pricing hypotheses for owner review."]
+  ],
+  "document": [
+    ["flow-lead", "lead", "Draft work contracts and decisions and queue independent document review."],
+    ["data-api", "maker", "Maintain service contracts, database policy and validation boundaries."],
+    ["product-ui", "maker", "Verify interface behavior and the shared desktop shell surface."],
+    ["quality-review", "reviewer", "Independently assess document and application evidence using approved fixtures."]
+  ]
+}

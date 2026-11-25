@@ -1,0 +1,17 @@
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+const e=import.meta.dirname, root=resolve(e,'../../../../..');
+const output=resolve(e,'impl-contract-closeout.json');
+if(existsSync(output))throw new Error('Preserve original closeout');
+const read=(f)=>JSON.parse(readFileSync(resolve(e,f),'utf8'));
+const prior=read('impl-contract-r5-initial.json'), current=read('candidate.json'), first=read('impl-goal-r5.json');
+const verification=read('detailed-boundary-summary.json');
+if(first.review?.verdict!=='pass'||first.review.hash!==current.patchSha256||!verification.unchangedGit||!verification.unchangedConfigs||!verification.reports.every((r)=>r.status==='pass'&&r.hashesMatch)) throw new Error('Final same-candidate evidence is missing');
+const evidence=['whole-check.txt','detailed-boundary-summary.json','detailed-studio-sync.json','detailed-document-sync.json','detailed-studio-role-sources.json','detailed-document-role-sources.json','fixtures-detailed-roles.json','r5-design-coverage-check.json','behavior-summary-r4.json'];
+if(evidence.some((name)=>!existsSync(resolve(e,name))))throw new Error('Wait for all actual results');
+const {createPExecutor,codexP}=await import(resolve(root,'src/agent/p-executor.ts'));
+const {runAgent,validateRequest}=await import(resolve(root,'src/agent/contract.ts'));
+const prompt='Independently close T07 contract for the exact same R5 product candidate in a new read-only context. Read the original R5 stage-two contract verdict appended below. The only T-3 blocking was that first synthetic role inputs were one-line samples and used unassigned default handoff roles. The attached new detailed role sources and actual four report sets were regenerated in isolated Git, with all assigned scope, prohibited work and named handoff targets. Resolve whether this new evidence meets T-3 and overall T07. Check that current implementation fingerprint, full suite result and real host roles/evidence agree, while T08 stays held and no deployment occurred. Cite actual counts and paths, preserve previous failure, return explicit final pass/fail blocking and should_fix. Read-only, no external systems, no new test execution or changes.\n'+evidence.map((name)=>resolve(e,name)).join('\n')+'\n\n'+prior.text;
+const result=await runAgent(createPExecutor(codexP),validateRequest({agent:'codex',mode:'p',access:'read-only',cwd:root,prompt,timeoutMs:360000}));
+writeFileSync(output,JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({provider:result.provider,is_error:result.is_error}));

@@ -1,0 +1,55 @@
+{
+  "scope": "read-only source analysis",
+  "startedAt": "2026-11-25T09:25:45.983084+09:00",
+  "recordedAt": "2026-11-25T09:26:36.094938+09:00",
+  "newOwnerQuestions": 0,
+  "repositories": {
+    "roblox-studio": {
+      "head": "03e7c7900107ca3e841b7b5c8549d4bea1295c3b",
+      "clean": true,
+      "inputsSha256": {
+        "AGENTS.md": "74a5e098adaca277db90c13e51b462a8978b22d222da36a1a15c5702e60f71fa",
+        "docs/README.md": "7e564880c882274c995206febee3bed6501ec3a2e050d36ec9e9c25a3f7ed793",
+        "docs/ARCHITECTURE.md": "0d3c348abf218f097533a11bf6545242f3e8c985b4d7a2b638295af6d4111211",
+        "docs/SECURITY.md": "e386f7e62ebaf6c057b23c7b2eb995f123b6f923df608950a5ce5660667714dc",
+        ".codex/skills/new-game/SKILL.md": "f316820d8a2de4b1b99696040ec60d141f63e85f5d26ad8760cd747c79b2bb78",
+        "docs/templates/GDD.md": "be440897cb7793d1be0a1bdf14bbdf0fc0971c7c733f0a76d988b15e586e78e0",
+        "docs/templates/ECONOMY.md": "1d932d5b20210464c91c2abb131579abe03f541ca26705009a072f8a435f818e",
+        "docs/templates/REVIEW.md": "dc08c5c3c65e898bea35a2d38a9a761b971f28e29adea05e42a4f02b446ed079",
+        "docs/templates/RELEASE-CHECKLIST.md": "88550246040b8a0c5de076705279ecc5cba573c399d0af10b6afd66981c804f4",
+        "docs/templates/OPERATIONS-METRICS.md": "046fabd342c99c2db52cc72051bcea985e504f1c8b564339cf750007b7ad7025",
+        "package.json": "6eb20fe5b893fe547e04929b6df54253f46758397f60040eeaea5f66dd79b84b",
+        ".claude/agents/apollo.md": "4b654f66b2cd87c9db5730f53e1a5a300b774cf45388b4e3432dd504af8cb7c3",
+        ".claude/agents/argos.md": "34c61c875c2b3421c37780ec78cb57e8527a9b2fb2a4fd06c913eef2605c475c",
+        ".claude/agents/athena.md": "7fd0d17ce479d4ab39cf0d3d3434a99b41ee6f09a1527f94f00e68b6dc3cdde7",
+        ".claude/agents/daedalus.md": "25076ef2c396baf639f55342f3a7b4265c0478a8a0918703819e5c9e830dd26d",
+        ".claude/agents/gaia.md": "e2adac673eb07549eae1998262348b3ee8ba9e04583dd7d959157efdcd395343",
+        ".claude/agents/hephaestus.md": "5c2f80124c1d22ee6bef0e3d10c7847fd3f8fa71286ab1100badb7e44efbe8f2",
+        ".claude/agents/hermes.md": "94e6e5c47e13dce3b4cb89c33014741285832a1f46d6d35a8b6f5b1d4831e475",
+        ".claude/agents/iris.md": "498aa749bd357f55c3705b10e16012d378b743e7b525610709fa208ce6d951eb",
+        ".claude/agents/plutus.md": "8a280b166f3c5a66f16a3db5ca2e814abfd8f7bc65507e710ed7c2c6fc17afad",
+        ".codex/agents/apollo.toml": "f2a8ce5d105c7205ebcd6192bffd2fe47f847f4673f59f43e7a2ff61f34a2656",
+        ".codex/agents/argos.toml": "adef6d4740606143940a130ed913a79f5720468a59ac51ea910b0f70d2a8e98f",
+        ".codex/agents/athena.toml": "328911cf0902eba001ab4a0930c088ce0d2459bf42927991aa8efe832047da10",
+        ".codex/agents/daedalus.toml": "c6093408295a9afa33a85f2ec60e0f0b5a2ab5c1af40e2b0b20a930d54115fcc",
+        ".codex/agents/gaia.toml": "73969b46b9cb0c8e106dff3e950141149d043a8836b6773548afe6af8972273c",
+        ".codex/agents/hephaestus.toml": "cfc46c932e32f93d690ee28902383904aed3edafd2cf073432b172b09e2940fc",
+        ".codex/agents/hermes.toml": "8570e3d038925e9a2dedc17d1d4131d37496c31d917c5167f7975d86b8db5470",
+        ".codex/agents/iris.toml": "82eda5cd9845049a18e6258159ac9024bc7a1872b1df108d7bce5608a82197bc",
+        ".codex/agents/plutus.toml": "1f46809d391fbdd0c8ea84e5326a8ae52dc868e269c66a83d0b89c14086b2ccf"
+      }
+    },
+    "ai-sql-client": {
+      "head": "16fcad8af522ae7d10f908545cc4a46b947bd025",
+      "clean": true,
+      "inputsSha256": {
+        "AGENTS.md": "b6c43df4af14be4118c1a0c1ce4cd83a94bbddc7fa56613d7dd25093c8fb6a84",
+        "docs/PROJECT.md": "96f46a05c81fddd93648b8fcf7cd69dd2c786252753b246b73a170f3422ac073",
+        "docs/DESIGN.md": "7f79abd671341effe72f976eaad747cf5afdba246224683f1cf1e3bcb2037aec",
+        "docs/DEPLOYMENT_AUTH.md": "c87e2837b3781eeb9cc10a1f38b86a480d910475fc8faaaa1050788dd2c8aa3f",
+        "backlogs/BACKLOG.md": "139b7844b808b729fd9afd61ec357919b60756c4c77af9a119430fc444113293",
+        "workspace/package.json": "3cbcb11fe665a9f6b63db0a4dfee9386d07688730d9a964a1476ef71d96b2d9d"
+      }
+    }
+  }
+}

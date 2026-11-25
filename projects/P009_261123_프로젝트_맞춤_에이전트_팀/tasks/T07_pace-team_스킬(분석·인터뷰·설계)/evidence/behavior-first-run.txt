@@ -1,0 +1,15 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: [{"name":"normal","problems":["retrospective"]},{"name":"pressure1","problems":[]},{"name":"pressure2","problems":[]}]
+    at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%A7%9E%EC%B6%A4_%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8_%ED%8C%80/tasks/T07_pace-team_%EC%8A%A4%ED%82%AC(%EB%B6%84%EC%84%9D%C2%B7%EC%9D%B8%ED%84%B0%EB%B7%B0%C2%B7%EC%84%A4%EA%B3%84)/evidence/run-behavior.mjs:56:8 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.22.3

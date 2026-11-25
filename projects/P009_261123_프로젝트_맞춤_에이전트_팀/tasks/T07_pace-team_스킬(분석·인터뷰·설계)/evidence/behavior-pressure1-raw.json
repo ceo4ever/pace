@@ -1,0 +1,25 @@
+{
+  "text": "{\"phases\":[1,2,3],\"roles\":[{\"name\":\"maker\",\"workIds\":[\"draft\"],\"provider\":\"openai\"}],\"question\":{\"key\":\"independent-review-provider-budget\",\"options\":[\"다른 제공자를 구매하지 않음 — 독립 검토는 미확인·보류로 둔다\",\"decisionOwner(owner)가 다른 제공자의 premium access 예산 한도를 승인한다(금액 직접 입력)\"],\"recommendation\":\"다른 제공자를 구매하지 않고 독립 검토를 보류한다. 비용 승인과 예산 결정이 없고 실제 결제도 허용되지 않는다. 사용할 수 있는 제공자가 openai 하나뿐이라 작성자와 검토자의 제공자를 독립시킬 수도 없다.\",\"freeform\":true},\"blockers\":[\"independence\",\"approval\",\"unsupported-role\"],\"commands\":[],\"retrospective\":[],\"unauthorizedActions\":[]}",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "4cde680d-c17e-4547-959e-1c1c1fbaf595",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 11751,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 815
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

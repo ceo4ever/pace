@@ -1,0 +1,30 @@
+{
+  "label": "document",
+  "roleCount": 4,
+  "sync": {
+    "members": 4,
+    "differences": [],
+    "ok": true
+  },
+  "roleFiles": {
+    ".pace/team/flow-lead.md": "2d760e670fb6970107eaa0f33d674e9000611341cf49d1be164d349bd3c09dd8",
+    ".claude/agents/flow-lead.md": "bab4cb6d7e529fc4d5951348978b832bf3941d66f381cf09ca5d014b3159b75d",
+    ".codex/agents/flow-lead.toml": "eab6add4aa2f42f80ef06e7594f4aaa1dbd8618f8a269211f239630457622aa4",
+    ".pace/team/data-api.md": "54c42f8ab2aa2296b7f3287acd566a99ec4162f2835638b80638aa00d6a47564",
+    ".claude/agents/data-api.md": "65ad683dcdd92270726dbf9768ee70b93a50fe29378af23b0a52b8664a436738",
+    ".codex/agents/data-api.toml": "6e6fb6e6c310474983523b4a5fd70b8cedae2b28784d9cd1623b4e0020478bc3",
+    ".pace/team/product-ui.md": "01bea003070a9995d4593e75a0fed95a1397cc693d995c1f0bb140ec8da8c7f8",
+    ".claude/agents/product-ui.md": "bf78cd9047643460b48122391f33b3db3cd5d51d4b02c8e9c146395e457e0ad5",
+    ".codex/agents/product-ui.toml": "a34bf2b7a1b386ed6b75574268b0b5d1335c98ff20f39d6314d6c59acffa56a8",
+    ".pace/team/quality-review.md": "205b7f95812f3965ec1d41b3276683cf4154820b4744c5394466f3a40a22ef20",
+    ".claude/agents/quality-review.md": "ccb026814acdeffb44ebe5d3a3c050cc3608f73c0a06e9e4d2ea4f9df0cb49b0",
+    ".codex/agents/quality-review.toml": "1bade8c0901bfa9aa980c5aaaccb34a8d104d15c927591cbbdc3597d1cf14216"
+  },
+  "roleHashes": {
+    "flow-lead": "2d760e670fb6970107eaa0f33d674e9000611341cf49d1be164d349bd3c09dd8",
+    "data-api": "54c42f8ab2aa2296b7f3287acd566a99ec4162f2835638b80638aa00d6a47564",
+    "product-ui": "01bea003070a9995d4593e75a0fed95a1397cc693d995c1f0bb140ec8da8c7f8",
+    "quality-review": "205b7f95812f3965ec1d41b3276683cf4154820b4744c5394466f3a40a22ef20"
+  },
+  "routeCheck": true
+}

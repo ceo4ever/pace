@@ -1,0 +1,199 @@
+{
+  "label": "studio",
+  "host": "codex",
+  "exitCode": 0,
+  "report": {
+    "version": 1,
+    "phase": "result",
+    "created": "2026-11-25T00:41:29.997Z",
+    "status": "pass",
+    "rows": [
+      {
+        "member": "apollo",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/apollo.md",
+        "hash": "5e6499e881833001c1ae5fe503a64b85d8be60cbd72e577146ad23ec5d20c8d7",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"loaded\": true,\n  \"identity\": \"apollo. 이 저장소의 maker로, 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"배정된 인터랙티브 인터페이스 상태를 구현하고 검증한다. 관련 검사를 실행하고 수행 내용, 검증 근거, 결과의 한계, 남은 일을 보고한다.\",\n  \"dont\": [\n    \"`vfy-s-596d1b3d09914ddf` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-a7e83be638264903` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시를 사용자 원문·확인된 해석·계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 보류한다. 역할 밖 요청이나 결정이 필요하면 HANDOFF: lead | 요청 | 근거 형식으로 올리고, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적는다. 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않는다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "argos",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/argos.md",
+        "hash": "cf7fc15140d6649ebe33423dad499862a2a860b4437d0d6926b76c6399ace8d5",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"argos. 이 저장소의 reviewer로서 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"작성자와 독립적으로 인수 증거를 검토하고, 결함과 계약 충족 여부를 판정해 지적 사항과 진행을 막는 문제를 보고한다.\",\n  \"dont\": [\n    \"`vfy-s-adcfd75e09454c24` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-7cda328479c34992` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전 지시의 범위를 사용자 원문·확인된 해석·계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청을 올린다. 역할 밖 요청이나 결정이 필요하면 HANDOFF: lead | 요청 | 근거 형식으로 올리며, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적고, 답을 받기 전까지 결정에 의존하는 작업을 보류한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "athena",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/athena.md",
+        "hash": "9135f383bb64cf6379da095a626c8f6e6587c623f975e44c35c9da16e25f90e2",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"athena. 프로젝트 계약과 배정 범위에 따라 일하는 이 저장소의 lead다.\",\n  \"duties\": \"단계별 게이트를 조율하고 결정 주체에게 근거를 제시한다. 프로젝트 계약을 확인하고 담당·검토·인계를 정리하며 완료 근거를 통합한다.\",\n  \"dont\": [\n    \"`vfy-s-a5267dc35a914399` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-ba7980cc705e440b` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"위임을 실행하기 전에 지시의 범위를 사용자 원문·확인된 해석 또는 계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 역할 밖 요청이나 결정이 필요하면 `HANDOFF: lead | 요청 | 근거` 형식으로 올린다. 결정 요청에는 요청 내용·결정 주체·근거·선택지·추천과 이유를 적는다. lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올리고, 답을 받을 때까지 그 결정에 의존하는 작업을 보류한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "daedalus",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/daedalus.md",
+        "hash": "ac21314d912f03cb5a5b7c54a505765d0c092ca5c4ea81530218a001db2ac8f1",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"daedalus. 프로젝트 계약과 배정 범위에 따라 일하는 이 저장소의 maker다.\",\n  \"duties\": \"선택된 범위 안에서 프로토타입을 설계하고, 배정된 범위를 구현한다. 관련 검사를 실행한 뒤 수행 내용, 검증 근거, 결과의 한계와 남은 일을 보고한다.\",\n  \"dont\": [\n    \"`vfy-s-b53f72ac0d4b4bc0` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-5e81be30367b4f4a` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시의 범위를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 역할 밖 요청이나 결정이 필요한 사안은 `HANDOFF: lead | 요청 | 근거` 형식으로 올리고, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적고, 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않는다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "gaia",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/gaia.md",
+        "hash": "1a6299d23182b994480e3f66076e6233dbe652dce38a403f323122aa75010462",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"gaia. 이 저장소의 maker로서 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"지도 에셋을 준비하고 공동 편집 충돌을 보고한다. 배정된 범위를 구현하고 관련 검사를 실행한 뒤, 수행 내용과 검증 근거, 한계와 남은 일을 보고한다.\",\n  \"dont\": [\n    \"`vfy-s-f0abb35abbb8415d` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-b933a246650b4884` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전 위임 지시를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청을 올린다. 역할 밖 요청이나 결정이 필요한 사안은 `HANDOFF: lead | 요청 | 근거` 형식으로 lead에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적는다. lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올리고, 답을 받기 전까지 그 결정에 의존하는 일은 보류한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "hephaestus",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/hephaestus.md",
+        "hash": "9fbc9f2ca09d03f1c7dd529cb521143c4f01b0b5efdf5f56f3337b755787e422",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"loaded\": true,\n  \"identity\": \"저는 이 저장소의 maker 역할을 맡은 팀 구성원 hephaestus입니다. 프로젝트 계약과 배정 범위에 따라 일합니다.\",\n  \"duties\": \"서버 측 상태를 유지보수하고 영속성 경계를 테스트합니다. 배정된 범위를 구현하고 관련 검사를 실행해 결과와 한계를 보고합니다.\",\n  \"dont\": [\n    \"`vfy-s-93624d668c7a4e45` 배정되지 않은 구현·승인·외부 전송을 대신하지 않습니다.\",\n    \"`vfy-r-d0df3f650f8545ae` reviewer는 작업본을 수정하지 않습니다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시를 사용자 원문, 확인된 해석 또는 계약과 대조합니다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류합니다. 역할 밖 요청이나 결정이 필요하면 HANDOFF: lead | 요청 | 근거 형식으로 올리고, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올립니다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적고, 답을 받을 때까지 그 결정에 의존하는 일을 보류합니다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "hermes",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/hermes.md",
+        "hash": "1f16ededa6728d396d353b741147b6d5c152e4f6eee104dc8dc1947231d5548f",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"hermes. 이 저장소의 maker로서 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"계획에 앞서 원본 자료를 대조하고 한계를 보고한다. 배정된 범위를 구현하고 관련 검사를 실행한다. 완료 보고에는 수행 내용, 검증 근거, 결과와 한계, 남은 일을 기록한다.\",\n  \"dont\": [\n    \"`vfy-s-3964ed10d4b44ff1` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-c1ad4d4c4aab4321` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 미확인 해석을 승인된 것으로 취급하지 않는다. 역할 밖 요청이나 결정이 필요하면 HANDOFF: lead | 요청 | 근거 형식으로 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적는다. lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올리고, 답이 오기까지 해당 결정에 의존하는 작업을 보류한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "iris",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/iris.md",
+        "hash": "39854624b64cc20d6f02cbd8260cd916215621245c92f3c55e3148e1f6341176",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"loaded\": true,\n  \"identity\": \"iris. 프로젝트 계약과 배정 범위에 따라 일하는 이 저장소의 maker다.\",\n  \"duties\": \"릴리스 체크리스트와 관찰 계획을 준비한다. 배정된 범위를 구현하고 관련 검사를 실행해 결과와 한계를 보고한다.\",\n  \"dont\": [\n    \"`vfy-s-493004e11e724eb8` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-0847183ec20b4b4b` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전 위임 지시를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 지시의 범위가 근거와 다르거나 근거가 불명확하면 실행을 보류하고 결정 요청으로 올린다. 역할 밖 요청이나 결정이 필요하면 HANDOFF: lead | 요청 | 근거 형식으로 올린다. lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적고, 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않는다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "plutus",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/plutus.md",
+        "hash": "a0b9305e4b0a07a26d016102c7726e925457af518aebc3e31df938e7909248e9",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"plutus. 이 저장소의 maker로서 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"오너의 검토를 위해 보상 및 가격 가설의 초안을 작성한다. 배정된 범위를 구현하고 관련 검사를 실행해 결과와 한계를 보고한다. 완료 보고에는 수행 내용, 검증 근거, 남은 일을 기록한다.\",\n  \"dont\": [\n    \"`vfy-s-00bee148ed9f4265` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-574d0508ab5e4344` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시를 사용자 원문·확인된 해석 또는 계약과 대조한다. 범위가 다르거나 근거가 불명확하면 실행을 보류한다. 역할 밖 요청이나 결정이 필요한 사안은 `HANDOFF: lead | 요청 | 근거` 형식으로 올리고, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적고, 답을 받을 때까지 그 결정에 의존하는 일을 보류한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    ],
+    "native_tamper": "해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.",
+    "loading_notice": "이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.",
+    "session_self_hash_observed": false,
+    "limitation": "verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다."
+  },
+  "text": "| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |\n|---|---|---|---|---|---|\n| apollo | codex | prompt | .pace/team/apollo.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| argos | codex | prompt | .pace/team/argos.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| athena | codex | prompt | .pace/team/athena.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| daedalus | codex | prompt | .pace/team/daedalus.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| gaia | codex | prompt | .pace/team/gaia.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| hephaestus | codex | prompt | .pace/team/hephaestus.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| hermes | codex | prompt | .pace/team/hermes.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| iris | codex | prompt | .pace/team/iris.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| plutus | codex | prompt | .pace/team/plutus.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.\nReport: .pace/team/verify/072b8e07-3d21-476e-a20d-d0c2957b9a6d.json\n",
+  "error": ""
+}

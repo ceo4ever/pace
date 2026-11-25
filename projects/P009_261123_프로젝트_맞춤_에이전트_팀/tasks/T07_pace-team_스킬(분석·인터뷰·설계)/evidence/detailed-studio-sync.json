@@ -1,0 +1,50 @@
+{
+  "label": "studio",
+  "roleCount": 9,
+  "sync": {
+    "members": 9,
+    "differences": [],
+    "ok": true
+  },
+  "roleFiles": {
+    ".pace/team/athena.md": "03bf41edbe9b36d4f83e412d4ec6409016349b787c136b3ca7eedcecb0c37a6b",
+    ".claude/agents/athena.md": "ac3a3161e181cacaddfcc9bcb9332f5468cf954615d6ab95a354ed6eb17efe6a",
+    ".codex/agents/athena.toml": "79d266d181e71691834d947b4c9894526662927456432637396492f536c9f4cd",
+    ".pace/team/hermes.md": "bb00c5d505a4d5d9b0c99889599630a90bfd90791f29c41aa13f0d08839dfadd",
+    ".claude/agents/hermes.md": "adf46256280b13fee4a0eb48f79958fe3398600a08032ef138f06348b7caf357",
+    ".codex/agents/hermes.toml": "79c917942819abf39e31a03743290caf972976424e1389d53d9c1045b8b71223",
+    ".pace/team/daedalus.md": "90bf1691804b82dec1ea6a3cf9d3d964f7e66415d1f9ac3bffa7bb8f38ef54a7",
+    ".claude/agents/daedalus.md": "ea483cb1093426ce6623fd8510d52793097655dc6753f66040718658a41b44b3",
+    ".codex/agents/daedalus.toml": "f2a288ca322066282704a204d0041018aec8e0d8e20009b0a4340d334d37cc47",
+    ".pace/team/argos.md": "f2c4f11fc875c2d97c2b731ffd672d73cea74aea01ccae3cb87cb750b76340d7",
+    ".claude/agents/argos.md": "b9270412f98c18f14c6eb889280e9f418664e01f9396181f4675cc9c3bab6d75",
+    ".codex/agents/argos.toml": "c26253f720f3b6b34182352a0e45b7323a627220472d4204d3dd38c2a2b4acd4",
+    ".pace/team/hephaestus.md": "882c705896744d4835f6232b500cc05278061412eb2dec0e4f7677583b4e0ad1",
+    ".claude/agents/hephaestus.md": "7e4376840cc906e1b1f70c2662fe7cbc188f9bd1a3f15e1f15609e06fe6ddcc0",
+    ".codex/agents/hephaestus.toml": "1cd23287dbce88836051e2ddbb17ba9eef5a231c49a14a806a542c0f8035cd1b",
+    ".pace/team/apollo.md": "617eff5f6e52722a3b432465fe93ed70d947c29bbb1e252cad72e18dde2cb31d",
+    ".claude/agents/apollo.md": "32efa106949e395d5592baf65bdb23121d419af41d412d4e8fc8af37f9e13943",
+    ".codex/agents/apollo.toml": "caffdeb935f4466fb1a58a96022383be931e84724d038288d31db0fc14959cb8",
+    ".pace/team/gaia.md": "ae24b741d3aabe997bcbc2d654ff41018aaea58e71fede0cf5cbe4c19498e62f",
+    ".claude/agents/gaia.md": "0105bfa22cb50417d1bc02a05ae4a3000eebb8d2fc9b98fbf428d80b19fe9d48",
+    ".codex/agents/gaia.toml": "8444a1c7bbd43052bcb97e7dc6decdb2804cef542510e4de2f16b43f18898daf",
+    ".pace/team/iris.md": "57304b3aa7b5d826f87322f0b586978ed252b69d2ee7e71d2468f8058dcb469a",
+    ".claude/agents/iris.md": "14ac804bcdec1adffa72c6847321059fed9fd2a2aafd1ebbb2b336ac21933462",
+    ".codex/agents/iris.toml": "6c4ec7cabeba0c9fe8fb70d0822c8a9ffc51abd02f2cf20caeb2743f7d576767",
+    ".pace/team/plutus.md": "77e4f73d4e50a5d9e0716ebe73aca9dda17470c53d57f491559f30b38f5612fd",
+    ".claude/agents/plutus.md": "1f6822514820a7261e36568fdea472345c307378a1b57c14f92d1e98eb5feebd",
+    ".codex/agents/plutus.toml": "cde5e876e466781dfde6f2ef2b624468e22ef24154950e955f386c05b7b0bf8a"
+  },
+  "roleHashes": {
+    "athena": "03bf41edbe9b36d4f83e412d4ec6409016349b787c136b3ca7eedcecb0c37a6b",
+    "hermes": "bb00c5d505a4d5d9b0c99889599630a90bfd90791f29c41aa13f0d08839dfadd",
+    "daedalus": "90bf1691804b82dec1ea6a3cf9d3d964f7e66415d1f9ac3bffa7bb8f38ef54a7",
+    "argos": "f2c4f11fc875c2d97c2b731ffd672d73cea74aea01ccae3cb87cb750b76340d7",
+    "hephaestus": "882c705896744d4835f6232b500cc05278061412eb2dec0e4f7677583b4e0ad1",
+    "apollo": "617eff5f6e52722a3b432465fe93ed70d947c29bbb1e252cad72e18dde2cb31d",
+    "gaia": "ae24b741d3aabe997bcbc2d654ff41018aaea58e71fede0cf5cbe4c19498e62f",
+    "iris": "57304b3aa7b5d826f87322f0b586978ed252b69d2ee7e71d2468f8058dcb469a",
+    "plutus": "77e4f73d4e50a5d9e0716ebe73aca9dda17470c53d57f491559f30b38f5612fd"
+  },
+  "routeCheck": true
+}

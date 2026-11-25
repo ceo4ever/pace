@@ -1,0 +1,2 @@
+SKILL.md YAML metadata and all six headings are valid
+Validation is YAML-only in the base interpreter because the skill-creator Python helper imports PyYAML, which is unavailable here. Ruby/Psych validated the actual metadata and ordered stage headings. Installer source src/setup/install.ts:545 discovers ordinary directories containing SKILL.md, then copies the role references through its existing copySkill path. Actual installation is part of the main handoff.

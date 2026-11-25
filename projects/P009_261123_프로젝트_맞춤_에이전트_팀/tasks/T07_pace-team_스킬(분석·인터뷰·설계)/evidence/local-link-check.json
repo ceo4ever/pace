@@ -1,0 +1,45 @@
+[
+  {
+    "file": "skills/pace-team/SKILL.md",
+    "links": [
+      "references/role-archetypes.md"
+    ]
+  },
+  {
+    "file": "skills/pace-project-init/SKILL.md",
+    "links": [
+      "../pace-team/SKILL.md"
+    ]
+  },
+  {
+    "file": "skills/pace-project-dev/SKILL.md",
+    "links": [
+      "../pace-team/SKILL.md"
+    ]
+  },
+  {
+    "file": "docs/SKILLS.md",
+    "links": [
+      "../skills/pace-team/SKILL.md",
+      "TEAM.md",
+      "TEAM-METRICS.md"
+    ]
+  },
+  {
+    "file": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T07_pace-team_스킬(분석·인터뷰·설계)/team-designs.md",
+    "links": [
+      "../../../../docs/TEAM-METRICS.md",
+      "../../../../docs/TEAM-METRICS.md",
+      "../../../../docs/TEAM-METRICS.md",
+      "../../USER-VALIDATION.md"
+    ]
+  },
+  {
+    "file": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/USER-VALIDATION.md",
+    "links": [
+      "tasks/T07_pace-team_스킬(분석·인터뷰·설계)/team-designs.md",
+      "../../docs/TEAM.md",
+      "../../docs/TEAM-METRICS.md"
+    ]
+  }
+]

@@ -1,0 +1,99 @@
+{
+  "label": "document",
+  "host": "codex",
+  "exitCode": 0,
+  "report": {
+    "version": 1,
+    "phase": "result",
+    "created": "2026-11-25T00:40:08.716Z",
+    "status": "pass",
+    "rows": [
+      {
+        "member": "data-api",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/data-api.md",
+        "hash": "ee6a738ba8c8c7bcd139a5adef979543c429dadd9d4a5a16d769d1b4f9e500e5",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"data-api. 이 저장소의 maker로, 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"서비스 계약, 데이터베이스 정책, 검증 경계를 유지한다. 배정된 범위를 구현하고 관련 검사를 실행해 결과와 한계를 보고한다.\",\n  \"dont\": [\n    \"`vfy-s-c654f2f404404c70` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-2af87a08c65a4a26` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"위임 범위가 근거와 다르거나 근거가 불명확하면 실행을 보류한다. 역할 밖 요청이나 결정이 필요하면 HANDOFF: lead | 요청 | 근거 형식으로 올린다. 결정 요청에는 요청 내용·결정 주체·근거·선택지·추천과 이유를 적고, 답을 받을 때까지 그 결정에 의존하는 작업을 보류한다. lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "flow-lead",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/flow-lead.md",
+        "hash": "9b866ebd05eb071ddc5338d471816495ee9e816498997fc7f9c965967a442a03",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"flow-lead. 이 저장소의 lead로서 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"작업 계약과 결정 사항의 초안을 작성하고 독립 문서 검토를 대기열에 올린다. 프로젝트 계약을 확인해 담당·검토·인계를 정리하고 완료 근거를 통합한다. 완료 보고에는 수행 내용·검증 근거·남은 일을 기록한다.\",\n  \"dont\": [\n    \"`vfy-s-ad953ed61814427d` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-7c51104806fa427e` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"위임을 실행하기 전에 지시 범위를 사용자 원문·확인된 해석·계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 역할 밖 요청이나 결정이 필요한 사안은 HANDOFF: lead | 요청 | 근거 형식으로 올리고, lead 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용·결정 주체·근거·선택지·추천과 이유를 적는다. 답을 받기 전에는 해당 결정에 의존하는 작업을 진행하지 않으며, 미확인 해석을 승인된 것으로 취급하지 않는다.\",\n  \"loaded\": true\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "product-ui",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/product-ui.md",
+        "hash": "35b2d95706eb7f2fc0643deb6842b7426dfaba444825e184c8b6ca430ff550ce",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"loaded\": true,\n  \"identity\": \"product-ui. 이 저장소의 maker로서 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"인터페이스 동작과 공용 데스크톱 셸을 검증한다. 배정된 범위를 구현하고 관련 검사를 실행한 뒤 수행 내용, 검증 근거, 한계, 남은 일을 보고한다.\",\n  \"dont\": [\n    \"`vfy-s-288270840e4a45a6` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-1c7f1182b4264651` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전에 위임 지시를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 범위가 다르거나 근거가 불명확하면 실행을 보류한다. 역할 밖 요청이나 결정이 필요하면 `HANDOFF: lead | 요청 | 근거` 형식으로 올리고, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적고, 답을 받기 전까지 그 결정에 의존하는 일은 보류한다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "quality-review",
+        "agent": "codex",
+        "method": "prompt",
+        "definition": ".pace/team/quality-review.md",
+        "hash": "31837a90a54978a5590d58ac6ccd6aca10fcdc0530413410a961b227764a1fb5",
+        "requested": {
+          "model": "gpt-6.2-sol",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "gpt-6.2-sol",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "{\n  \"identity\": \"quality-review. 프로젝트 계약과 배정 범위에 따라 일하는 이 저장소의 reviewer다.\",\n  \"duties\": \"승인된 픽스처를 사용해 문서와 애플리케이션의 증거를 독립적으로 검토한다. 작성자와 독립된 근거로 결함 여부와 계약 충족 여부를 판정하고 지적 사항을 반환한다.\",\n  \"dont\": [\n    \"`vfy-s-6dbe1a82d9f04dbe` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-85a98f28db5047e8` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"위임을 실행하기 전에 지시 범위를 사용자 원문, 확인된 해석 또는 계약과 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 역할 밖 요청이나 결정이 필요한 사안은 HANDOFF: lead | 요청 | 근거 형식으로 올리고, lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 이유를 적고, 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않는다.\"\n}",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    ],
+    "native_tamper": "해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.",
+    "loading_notice": "이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.",
+    "session_self_hash_observed": false,
+    "limitation": "verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다."
+  },
+  "text": "| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |\n|---|---|---|---|---|---|\n| data-api | codex | prompt | .pace/team/data-api.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| flow-lead | codex | prompt | .pace/team/flow-lead.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| product-ui | codex | prompt | .pace/team/product-ui.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| quality-review | codex | prompt | .pace/team/quality-review.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.\nReport: .pace/team/verify/c246f4fa-2a1c-4ee6-8565-6b42d3fa955e.json\n",
+  "error": ""
+}

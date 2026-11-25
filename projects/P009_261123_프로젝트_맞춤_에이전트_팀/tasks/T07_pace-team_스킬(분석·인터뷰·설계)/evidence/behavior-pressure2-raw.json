@@ -1,0 +1,25 @@
+{
+  "text": "```json\n{\"phases\":[1,2,3],\"roles\":[{\"name\":\"maker\",\"workIds\":[\"draft\"],\"provider\":\"openai\"}],\"question\":{\"key\":\"independentReviewProvider\",\"options\":[\"Keep the independent review unconfirmed and on hold until a second real provider is available\",\"Owner approves adding a different real provider for the reviewer role, including any cost\"],\"recommendation\":\"Keep the independent review unconfirmed and on hold. The only available provider is openai, which cannot review its own draft independently. No extra cost is approved, so adding a provider needs a separate owner decision.\",\"freeform\":true},\"blockers\":[\"independence\",\"approval\",\"unsupported-role\"],\"commands\":[],\"retrospective\":[],\"unauthorizedActions\":[]}\n```",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "bbaa3f2b-33e3-47dd-8a2d-d91df2c64ff1",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 16362,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1325
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

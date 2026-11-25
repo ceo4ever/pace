@@ -1,0 +1,38 @@
+{
+  "label": "studio",
+  "roleCount": 9,
+  "sync": {
+    "members": 9,
+    "differences": [],
+    "ok": true
+  },
+  "roleFiles": {
+    ".pace/team/athena.md": "9135f383bb64cf6379da095a626c8f6e6587c623f975e44c35c9da16e25f90e2",
+    ".claude/agents/athena.md": "024035bf9017c72737024359b4847edb4c91d61a7f49152e92ecdbd72a48f246",
+    ".codex/agents/athena.toml": "af782f467711df6c67e0408ea2523e932b0aa12d44ae039b57d6728009242553",
+    ".pace/team/hermes.md": "1f16ededa6728d396d353b741147b6d5c152e4f6eee104dc8dc1947231d5548f",
+    ".claude/agents/hermes.md": "12930a83a15a71897adbd7086f085e81c583b7b5fec19444b7bd046c33134299",
+    ".codex/agents/hermes.toml": "e63a091fc35c723fc059c5fb330688f690108788539177ba7677ac3d1840ef8a",
+    ".pace/team/daedalus.md": "ac21314d912f03cb5a5b7c54a505765d0c092ca5c4ea81530218a001db2ac8f1",
+    ".claude/agents/daedalus.md": "e109879c53045e6995168c74f8cd3fbab70b927596ebc0b1e730bf4bb4ab3b22",
+    ".codex/agents/daedalus.toml": "c9ae18953288277d8c4509f6d846f219984549a97673fcc6a96a9e5132413adc",
+    ".pace/team/argos.md": "cf7fc15140d6649ebe33423dad499862a2a860b4437d0d6926b76c6399ace8d5",
+    ".claude/agents/argos.md": "45cedc0e2f5f73ccf87c47149ba2e5d9d9e1cfa4e983cfcc28ed7c419d9e724c",
+    ".codex/agents/argos.toml": "bc89a2f2f051aa134e49a0b6a29712d586db78a12d983067f8432b121f292262",
+    ".pace/team/hephaestus.md": "9fbc9f2ca09d03f1c7dd529cb521143c4f01b0b5efdf5f56f3337b755787e422",
+    ".claude/agents/hephaestus.md": "de35eb8a51011ad87f3e5ee49276c0e33b5be963a59f59b5019c2f4b263150b4",
+    ".codex/agents/hephaestus.toml": "126bffc10260ee06a80ed30e9bf9fb8bbe58a7e71b7adcfa7e6cc673d1c0cb03",
+    ".pace/team/apollo.md": "5e6499e881833001c1ae5fe503a64b85d8be60cbd72e577146ad23ec5d20c8d7",
+    ".claude/agents/apollo.md": "fba8188943913e167067a8d7a73630bbe4bc1694afb43b39a0c0866d0e9a3ab9",
+    ".codex/agents/apollo.toml": "8f57bab2f953113c050c7b26a7a90ce151421e9105249cc9fc36f0b63e1b73b4",
+    ".pace/team/gaia.md": "1a6299d23182b994480e3f66076e6233dbe652dce38a403f323122aa75010462",
+    ".claude/agents/gaia.md": "0c198b1622890db1a7e14235bc222e3d229d6b7192f25281e623a9069cc6d441",
+    ".codex/agents/gaia.toml": "b779b03d9dfca8e74d663d06aac22412254d232877d5112d2b8fe86585d2a27f",
+    ".pace/team/iris.md": "39854624b64cc20d6f02cbd8260cd916215621245c92f3c55e3148e1f6341176",
+    ".claude/agents/iris.md": "f292ec01c228f6ea993a4b6076ad6eabccd8904cfec03d1a56e460a9b413d1cb",
+    ".codex/agents/iris.toml": "aa59e076b3835d6f1efed8fc138b7d5ff0f05bb15cdcda2c06baf8dfe3e5b94f",
+    ".pace/team/plutus.md": "a0b9305e4b0a07a26d016102c7726e925457af518aebc3e31df938e7909248e9",
+    ".claude/agents/plutus.md": "c4aef749bf709e4ba56451b3753f1c8fe3412a0c67ac47ab6c91ddeed75e4fa6",
+    ".codex/agents/plutus.toml": "b6785275b105dd1210171d3c59b8850a4c748cf7c6cecead0b02aa9484121e92"
+  }
+}

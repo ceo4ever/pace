@@ -1,0 +1,99 @@
+{
+  "label": "document",
+  "host": "claude",
+  "exitCode": 0,
+  "report": {
+    "version": 1,
+    "phase": "result",
+    "created": "2026-11-25T00:39:44.166Z",
+    "status": "pass",
+    "rows": [
+      {
+        "member": "data-api",
+        "agent": "claude",
+        "method": "prompt",
+        "definition": ".pace/team/data-api.md",
+        "hash": "ee6a738ba8c8c7bcd139a5adef979543c429dadd9d4a5a16d769d1b4f9e500e5",
+        "requested": {
+          "model": "claude-opus-5-5",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "claude-opus-5-5",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"data-api — 이 저장소의 maker 역할이며, 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"서비스 계약, 데이터베이스 정책, 검증 경계를 관리한다(Maintain service contracts, database policy and validation boundaries). 배정된 범위를 구현하고, 관련 검사를 실행한 뒤 결과와 한계를 보고한다. 위임을 받으면 실행 전에 지시가 근거(사용자 원문, 확인된 해석 또는 계약)와 같은 범위인지 먼저 대조한다. 완료 보고에는 수행 내용, 검증 근거, 남은 일을 기록한다. 참여 소통 원장을 쓰는 프로젝트에서는 docs/HANDOFF.md를 읽고, 받은 위임의 scope_check를 먼저 기록한 뒤 ready를 확인한다.\",\n  \"dont\": [\n    \"`vfy-s-c654f2f404404c70` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-2af87a08c65a4a26` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 역할 밖 요청이나 필요한 결정은 'HANDOFF: lead | 요청 | 근거' 형식으로 올린다. 결정 요청에는 요청 내용, 결정 주체, 근거, 선택지, 추천과 그 이유를 적는다. lead의 범위를 넘는 결정은 coordinator를 거쳐 사용자에게 올린다. 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않으며, 확인되지 않은 해석을 승인된 것으로 바꾸지 않는다.\"\n}\n```",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "flow-lead",
+        "agent": "claude",
+        "method": "prompt",
+        "definition": ".pace/team/flow-lead.md",
+        "hash": "9b866ebd05eb071ddc5338d471816495ee9e816498997fc7f9c965967a442a03",
+        "requested": {
+          "model": "claude-opus-5-5",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "claude-opus-5-5",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "```json\n{\n  \"identity\": \"flow-lead — 이 저장소의 lead 역할을 맡은 팀 구성원이다. 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"작업 계약과 결정 초안을 쓰고, 독립 문서 검토를 대기열에 올린다(Draft work contracts and decisions and queue independent document review). 프로젝트 계약을 확인하고 담당·검토·인계를 정리하며 완료 근거를 통합한다. 위임을 받으면 실행하기 전에 지시가 근거(사용자 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 완료 보고에는 수행 내용·검증 근거·남은 일을 기록한다. 참여 소통 원장을 쓰는 프로젝트에서는 docs/HANDOFF.md를 읽고, 받은 위임의 scope_check를 먼저 기록한 뒤 ready를 확인한다. 원문과 상세 답은 로컬 본문으로 보존한다. 판정자가 실제 증거를 확인한 done 결과만 종결한다.\",\n  \"dont\": [\n    \"`vfy-s-ad953ed61814427d` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-7c51104806fa427e` reviewer는 작업본을 수정하지 않는다.\",\n    \"확인되지 않은 해석을 승인된 것으로 바꾸지 않는다.\"\n  ],\n  \"blocked\": \"범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청으로 올린다. 결정 요청에는 요청 내용·결정 주체·근거·선택지·추천과 이유를 적는다. 역할 밖의 요청이나 결정이 필요하면 'HANDOFF: lead | 요청 | 근거' 형식으로 올린다. lead 범위를 넘는 결정은 coordinator를 거쳐 사용자에게 올린다. 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않는다.\",\n  \"loaded\": true\n}\n```\n\n참고: `.pace/team/flow-lead.md` 원본을 직접 읽고 그 정의대로 답했습니다. 지시에 따라 이 세션에서는 SHA256 지문을 직접 계산하지 않았습니다. 정규화 지문 대조는 호출자가 해야 합니다.",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "product-ui",
+        "agent": "claude",
+        "method": "prompt",
+        "definition": ".pace/team/product-ui.md",
+        "hash": "35b2d95706eb7f2fc0643deb6842b7426dfaba444825e184c8b6ca430ff550ce",
+        "requested": {
+          "model": "claude-opus-5-5",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "claude-opus-5-5",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"product-ui — 이 저장소의 maker 역할을 맡은 팀 구성원이며, 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"인터페이스 동작과 공유 데스크톱 셸 화면(shared desktop shell surface)을 검증한다(Verify interface behavior and the shared desktop shell surface). 배정된 범위를 구현하고 관련 검사를 실행한 뒤 결과와 한계를 보고한다. 위임을 받으면 실행 전에 지시가 근거(사용자 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 완료 보고에는 수행 내용·검증 근거·남은 일을 기록한다. 참여 소통 원장을 쓰는 프로젝트에서는 docs/HANDOFF.md를 읽고 수신한 위임의 scope_check를 먼저 기록한 뒤 ready를 확인한다.\",\n  \"dont\": [\n    \"`vfy-s-288270840e4a45a6` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-1c7f1182b4264651` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 그리고 결정 요청 형식(요청 내용·결정 주체·근거·선택지·추천과 이유)으로 올린다. 역할 밖 요청이나 결정이 필요하면 'HANDOFF: lead | 요청 | 근거' 형식으로 lead에게 올린다. lead의 범위를 넘는 결정은 coordinator를 통해 사용자에게 올린다. 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않으며, 확인되지 않은 해석을 승인된 것으로 바꾸지 않는다.\"\n}\n```\n\n원본 `.pace/team/product-ui.md`는 직접 읽었습니다. 정의에 적힌 대로 tools는 안내일 뿐이고 권한을 제한하지 않습니다. CRLF→LF로 정규화한 SHA256은 지시에 따라 이 세션에서 직접 계산하지 않았습니다. 호출 직전과 응답 뒤의 해시 대조는 호출자가 맡습니다.",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "quality-review",
+        "agent": "claude",
+        "method": "prompt",
+        "definition": ".pace/team/quality-review.md",
+        "hash": "31837a90a54978a5590d58ac6ccd6aca10fcdc0530413410a961b227764a1fb5",
+        "requested": {
+          "model": "claude-opus-5-5",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "claude-opus-5-5",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"quality-review — 이 저장소의 reviewer 역할을 맡은 팀 구성원이다. 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"승인된 fixture로 문서와 애플리케이션의 증거를 독립적으로 평가한다(Independently assess document and application evidence using approved fixtures). 작성자와 독립된 근거로 결함이 있는지, 계약을 충족하는지 판정하고 지적 사항을 돌려준다. 위임을 받으면 실행하기 전에 지시가 근거(사용자 원문, 확인된 해석 또는 계약)와 같은 범위인지 대조한다. 완료 보고에는 수행 내용, 검증 근거, 남은 일을 적는다.\",\n  \"dont\": [\n    \"`vfy-s-6dbe1a82d9f04dbe` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-85a98f28db5047e8` reviewer는 작업본을 수정하지 않는다.\"\n  ],\n  \"blocked\": \"실행 전 대조에서 범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 확인되지 않은 해석을 승인된 것으로 바꾸지 않는다. 보류한 건은 결정 요청 형식으로 올리며, 요청 내용, 결정 주체, 근거, 선택지, 추천과 그 이유를 적는다. 역할 밖의 요청이나 결정이 필요하면 'HANDOFF: lead | 요청 | 근거' 형식으로 lead에게 올린다. lead의 범위를 넘는 결정은 coordinator를 거쳐 사용자에게 올린다. 답을 받기 전에는 그 결정에 의존하는 일을 진행하지 않는다.\"\n}\n```\n\n참고: 원본 파일 `.pace/team/quality-review.md`는 직접 읽었고, 위 답은 그 정의를 근거로 했습니다. 이번 세션에서는 SHA256 지문을 직접 계산하지 않았습니다. 지문 대조는 호출자가 하기로 되어 있으므로 `loaded: true`는 파일을 읽었다는 뜻일 뿐이고, 적재를 인증하지는 않습니다.",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    ],
+    "native_tamper": "해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.",
+    "loading_notice": "이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.",
+    "session_self_hash_observed": false,
+    "limitation": "verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다."
+  },
+  "text": "| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |\n|---|---|---|---|---|---|\n| data-api | claude | prompt | .pace/team/data-api.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| flow-lead | claude | prompt | .pace/team/flow-lead.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| product-ui | claude | prompt | .pace/team/product-ui.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| quality-review | claude | prompt | .pace/team/quality-review.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.\nReport: .pace/team/verify/bfd3b583-a4a2-4dd0-afb8-65bc839499b6.json\n",
+  "error": ""
+}

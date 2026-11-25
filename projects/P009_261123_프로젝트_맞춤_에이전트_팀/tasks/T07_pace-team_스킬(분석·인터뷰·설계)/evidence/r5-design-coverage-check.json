@@ -1,0 +1,52 @@
+{
+  "beforeRunCandidate": "0a5c8973541b507ab2b45bba56c19834134249a251ab005586f3fa98ebcba490",
+  "reviewCandidate": "73b45a4585e0417ca91f054250d1570278bf44f21980e55f5e435457a2407bc3",
+  "unchangedSkillAndRuntimeInputs": true,
+  "documentsUpdatedDuringSuite": [
+    "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T07_pace-team_스킬(분석·인터뷰·설계)/team-designs.md"
+  ],
+  "focusedDesignCases": {
+    "studio": {
+      "roles": [
+        "athena",
+        "hermes",
+        "daedalus",
+        "argos",
+        "hephaestus",
+        "apollo",
+        "gaia",
+        "iris",
+        "plutus"
+      ],
+      "duties": [
+        "① 트렌드 탐색",
+        "② 벤치 비교",
+        "③ 컨셉·가격 가설",
+        "④ 시제품",
+        "⑤ 시제품 판정",
+        "⑥ 서버·UI·맵 제품 개발",
+        "⑦ 출시 준비·승인 요청",
+        "⑧ 운영과 경제 관측",
+        "⑧ 장애 분류와 보고",
+        "공통 자원·정책"
+      ],
+      "unassigned": 0
+    },
+    "document": {
+      "roles": [
+        "flow-lead",
+        "data-api",
+        "product-ui",
+        "quality-review"
+      ],
+      "duties": [
+        "업무 분류·정의·대표 문서",
+        "접근 권한·정책·데이터 변경",
+        "UI·데스크톱 응답",
+        "통합·검토·릴리스 판정 재료",
+        "Electron·Tauri 패키징 후보·배포"
+      ],
+      "unassigned": 0
+    }
+  }
+}

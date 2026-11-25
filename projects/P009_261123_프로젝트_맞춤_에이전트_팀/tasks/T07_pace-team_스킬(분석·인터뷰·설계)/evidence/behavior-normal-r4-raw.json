@@ -1,0 +1,25 @@
+{
+  "text": "```json\n{\"phases\":[1,2,3,4,5,6],\"roles\":[{\"name\":\"drafter\",\"kind\":\"maker\",\"workIds\":[\"draft\"],\"provider\":\"openai\",\"host\":\"codex\",\"reason\":\"The required 'draft' work needs an owner. This role only produces the draft. It does not review its own work and does not approve scope.\"},{\"name\":\"reviewer\",\"kind\":\"reviewer\",\"workIds\":[\"review\"],\"provider\":\"anthropic\",\"host\":\"claude\",\"reason\":\"The required independent 'review' needs its own owner. It uses a different role and a different real provider (anthropic, not openai), so review stays independent. It runs after the draft as 'review after draft', so there is no parallel conflict. Final decisions go to the owner.\"}],\"question\":null,\"questionReason\":\"The sources already settle decisionOwner=owner, parallel=review after draft, naming=functional default and cost=ordinary local fixture authorized. No open decision would change the design or execution, so there are 0 new questions.\",\"blockers\":[],\"blockerReason\":\"independence: openai and anthropic are both available, so the reviewer gets a different provider. approval: the requested scope (synthetic team creation and two-host validation) matches the supplied approval. unsupported-role: no unsupported role was requested.\",\"commands\":[\"pace team new drafter --role maker\",\"pace team new reviewer --role reviewer\",\"pace team sync\",\"pace team sync --check --json\",\"pace team verify drafter --agent codex\",\"pace team verify reviewer --agent claude\"],\"commandNote\":\"All commands are proposed or simulated only. Per the fixture, sync, check and both verify runs succeed (exit 0, no differences). Verify only shows the prompt was loaded. Real work, carrying out approvals and keeping the native role need separate execution evidence. 'pace project start' is left out because no project or task assignment was approved.\",\"handoff\":\"HANDOFF: reviewer | independent review of the draft | drafter's draft output and its verification criteria\",\"retrospective\":[{\"subject\":\"spare\",\"action\":\"remove\",\"reason\":\"It was fully observed (coverage complete) with activity 0, and an existing role demonstrably owns all of its work. That makes it a removal candidate. Required work and independent review still have owners after removal, as checked. Actually applying the removal is up to the owner.\"},{\"subject\":\"maybe\",\"action\":\"keep\",\"reason\":\"Coverage is partial and activity is null, so there is not enough evidence. Keep it and ask for the missing observation data.\"},{\"subject\":\"review-boundary\",\"action\":\"tighten\",\"reason\":\"The same scope approval error happened twice. Tighten the condition and handoff text: when scope changes, raise the decision owner (owner), the options and a recommendation before execution, and check scope_check against ready. Next check: confirm repeat errors drop to 0 in the next retrospective. Applying the change is up to the owner.\"}],\"unauthorizedActions\":[],\"refusedRequests\":[]}\n```",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "86c22275-0814-4677-b608-d63b722cf3ad",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 18679,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 1829
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

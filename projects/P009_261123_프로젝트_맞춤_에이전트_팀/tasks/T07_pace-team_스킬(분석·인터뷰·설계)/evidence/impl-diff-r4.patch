@@ -1,0 +1,189 @@
+diff --git a/docs/SKILLS.md b/docs/SKILLS.md
+index 317e6b5..9b37119 100644
+--- a/docs/SKILLS.md
++++ b/docs/SKILLS.md
+@@ -8,3 +8,5 @@
+ - 스택·형식: Markdown (Agent Skills)
+ 
+ pace-onboarding · pace-memory · pace-brain · pace-project-init · pace-project-dev(프로젝트·태스크 워크플로우) · pace-prompt · pace-scout(링크·주제에서 사업 아이디어 탐색 보고서) · pace-intent(요청의 목적 파악·인터뷰·기획·인계, 본문 영어·출력 한국어) · pace-tech-handbook(언어별 교본, 라이선스 확인된 원문만) · pace-canvas-skills(Canvas Studio 배포 묶음 2.0.1, 본문·해시 봉인 — canvas-read·canvas-wireframe 두 스킬, 묶음 통째 설치) · html-plan(대화형 HTML 계획, 외부 원본)
++
++[pace-team](../skills/pace-team/SKILL.md)은 저장소의 필수 업무와 권한을 확인해 역할·독립 검토를 배정하고, 원본 작성부터 동기화·호스트 점검·회고까지 연결한다. [팀 명령](TEAM.md)과 [집계·비교·회고 입력](TEAM-METRICS.md)을 사용한다.
+diff --git a/skills/pace-project-dev/SKILL.md b/skills/pace-project-dev/SKILL.md
+index 1cdd4b9..dbe2e9a 100644
+--- a/skills/pace-project-dev/SKILL.md
++++ b/skills/pace-project-dev/SKILL.md
+@@ -51,6 +51,8 @@ main에서 worktree 파일을 절대 경로로 고치지 않는다 — 프로젝
+ 
+ 태스크 표의 `대기` 중 맨 앞부터. 태스크 하나는 아래 단계이고, 멈춤 조건(§6)이 아니면 묻지 않고 끝까지 간다.
+ 
++팀이 있으면 설계 때 [pace-team](../pace-team/SKILL.md)으로 담당과 독립 검토를 정한다.
++
+ 1. **분석** — `pace project task P### "<이름>"`이 TASK.md를 만들고 표 상태를 `진행`으로 둔다. 목적·재료를 쓰고 앞 태스크 TASK-CLOSE의 "남긴 것"을 읽는다.
+ 2. **설계** — 기준 `T-n`, 테스트 표(기준마다 시나리오 한 줄 이상), 접근을 쓰고 기준 문서는 §5 규칙으로 고른다. **구현 전 검토**: 별도 reviewer(작성 PM과 다른 제공자 우선)에게 TASK.md를 `pace agent verify`로 검토받아 pass(blocking 0)이거나 사용자 결정 waiver일 때만 구현한다. 세부: [task-steps.md](references/task-steps.md).
+ 3. **구현** — 기존 코드 스타일을 따르되, 언어 색인의 안티패턴으로 주변 코드와 변경을 대조한다. 보안·성능 문제가 있거나, 따를 주변 코드가 없거나(새 프로젝트·새 모듈), 주변이 안티패턴이면 교본을 따른다(§5). 버그는 실패하는 테스트(RED)부터.
+diff --git a/skills/pace-project-init/SKILL.md b/skills/pace-project-init/SKILL.md
+index 3afb019..a65eb8c 100644
+--- a/skills/pace-project-init/SKILL.md
++++ b/skills/pace-project-init/SKILL.md
+@@ -50,6 +50,8 @@ description: 프로젝트를 분석·인터뷰해 정의하고(AGENTS.md·docs/R
+ 5. **검사 구성**: 개발 프로젝트는 `references/test-map.md`에 따라 단위·공통·미분류와 전체 검사 범위를 분석하고 구성·문서 초안을 제안한다.
+ 6. **(최신화) 변경 맥락**: `pace memory status --project`, 이력(`.pace/memory/history.md`), `git log`로 마지막 문서 갱신 뒤 바뀐 것.
+ 
++신규·기존·최신화 모두 반복되는 업무 단계, 병렬 프로젝트, 독립 검토가 있는지 본다. 역할 배정이 필요하거나 기존 팀의 업무·권한이 달라졌으면 [pace-team](../pace-team/SKILL.md)에 분석 결과를 넘긴다.
++
+ 코드 영역이 2개 이상이거나 빌드 모듈이 10개 이상이면, 도구에 서브에이전트가 있을 때 영역별로 나눠 분석하고 결과를 종합한다. 없으면 직접 순서대로 한다.
+ 
+ ## 2. 인터뷰
+diff --git a/skills/pace-team/SKILL.md b/skills/pace-team/SKILL.md
+new file mode 100644
+index 0000000..c9bd3a4
+--- /dev/null
++++ b/skills/pace-team/SKILL.md
+@@ -0,0 +1,42 @@
++---
++name: pace-team
++description: 저장소의 실제 업무와 권한을 분석해 맞춤 에이전트 팀을 설계하고 PACE 팀 원본·호스트 동기화·검증·회고를 연결한다. 팀이 필요한 새 저장소, 기존 역할 이전·재설계, 마감 뒤 역할 경계 개선에 사용한다.
++---
++
++# 저장소 맞춤 에이전트 팀
++
++필수 업무의 담당과 권한, 독립 검토, 인계를 저장소의 팀 문서나 프로젝트 설계에 표로 남긴다. 이 스킬은 저장소 역할을 설계한다. 개인 비서의 이름·말투·개인 메모리는 사용자 프로필에서 관리한다.
++
++## ① 분석
++
++정의서, `AGENTS.md`, 백로그, 기존 역할·스킬, 스택과 실행 명령을 읽는다. 업무 단계, 반복 산출물, 필수 검토, 사용자 승인과 공유 자원을 뽑고 파일·절 또는 행으로 근거를 남긴다. 기존 역할이 있으면 맡는 일·하지 않는 일과 실제 업무 표부터 대조한다. 신규 저장소라면 합의한 예상 단계와 미확인 항목을 표시한다.
++
++병렬 프로젝트, 세 단계 이상의 지속 업무, 다른 제공자가 필요한 검토는 팀 설계를 검토할 단서다. 한 역할과 기존 검토 절차로 필수 업무를 충족하면 그 근거를 남긴다.
++
++## ② 인터뷰
++
++출처에서 이미 정한 항목을 적고 다시 묻지 않는다. 누가 결정하는지, 독립 worktree와 공유 자원 사용, 요청 모델·등급·비용 한도를 확인한다. 이름과 말투는 기존 선호를 쓰고 없으면 기능 이름과 간결한 보고를 기본값으로 둔다.
++
++실제 설계나 실행을 바꿀 미정 결정이 있으면 한 번에 하나만 묻는다. 선택지, 추천과 이유, 직접 입력을 제공한다. 다룰 질문 수를 알리고 앞 답을 다음 질문에 반영한다. 새 질문 수와 경과, 재질문할 필요가 없었던 출처를 기록한다. 운영 비용·범위·권한이 미확인이면 그 결정에 의존하는 작업을 보류한다. 사람의 상세 답은 소통 계약의 로컬 본문으로 보존하고 기록에는 안전한 참조만 남긴다.
++
++## ③ 설계
++
++필수 업무 표에 담당, 맡는 일, 하지 않는 일, 결정 주체, 다음 수신자와 증거를 적는다. 역할마다 근거가 있는 필수 업무 또는 독립 검토를 하나 이상 맡긴다. 업무를 합치거나 나눌 때는 권한, 검토 독립성, 작업 충돌·동시성, 도구·제공자 근거를 적는다. 담당 누락과 근거 없는 역할이 모두 0인지 확인한다. 원형은 [역할 후보](references/role-archetypes.md)에서 필요한 것만 고른다.
++
++팀 계약에서 제공자 독립성이 필요한 검토는 작성자와 다른 역할과 실제 제공자로 배정한다. 가능한 독립 제공자가 없으면 해당 검토를 미확인·보류한다. 같은 파일·환경을 다루는 작업은 충돌 자원을 먼저 확인하고, 독립 범위만 worktree로 병렬화한다. 프로덕션 배포, 비용 발생, 승인 범위 변경은 사용자 결정에 연결한다.
++
++상태를 넘길 때 `HANDOFF: <수신자> | <요청> | <근거>`와 검증 기준을 적는다. 범위가 달라지거나 근거가 불명확하면 실행 전에 결정 주체·선택지·추천을 올린다. 소통 원장이 있는 프로젝트에서는 `scope_check`와 `ready`를 대조하고 실제 증거를 확인해 종결한다.
++
++## ④ 작성·동기화
++
++설계와 쓰기 권한이 확인된 저장소에서 `pace team new <이름> --role <lead|maker|reviewer|coordinator>`로 원본을 만든다. `.pace/team/`의 원본에 단계, 업무, 금지 항목과 결정 경계를 채운다. 기존 원본·공통 실행 전 대조 문단·점검 표지를 보존하고 생성물은 직접 편집하지 않는다. `pace team sync`로 Claude와 Codex 대상 파일에 반영한다. 기존 역할 이전은 대상 역할과 추가 설정을 대조하고 승인된 변경만 적용한다.
++
++권한 조율은 lead, 산출물 제작은 maker, 독립 판정은 reviewer, 위임·승인 전달은 coordinator 종류를 검토한다. 실제 업무 배정은 `pace project start P### --role <이름> --agent <claude|codex>`에 역할과 제공자를 함께 지정한다.
++
++## ⑤ 검증
++
++`pace team sync --check --json`에서 exit와 `differences`를 확인한다. 원본·생성물의 차이가 있으면 원본을 검토한 뒤 sync를 다시 실행한다. 승인된 호출 범위와 비용을 확인한 뒤 단일 역할은 `pace team verify <이름> --agent <claude|codex>`, 전체 역할은 `pace team verify --all`로 적재를 확인한다. 전체 역할에서 한 호스트만 확인할 때는 `--all --agent <호스트>`를 쓴다. `Report:` 경로의 호스트·원본 지문·요청 설정·관측 모델·판정과 누락 이유를 기록한다. 확인 필요와 실패, 미실행을 구별한다. 이 판정은 prompt 적재 관측이다. 현장 업무, 사용자 승인 이행, native 역할 유지에는 별도 실행 근거가 필요하다.
++
++## ⑥ 회고
++
++마감의 `METRICS.md` 팀 절과 사용 가능한 팀 stats JSON·`TEAM-RETROSPECTIVE.json`을 읽는다. 미사용 후보와 반복 지적에서 관측 구간, 출처, 수집 누락, 실제 맡긴 일을 확인한다. 부분 수집으로 드러난 후보는 유지하며 빠진 근거를 요청한다. 충분히 관측된 중복 업무는 합침·제외 후보로 제안하고 필수 업무와 독립 검토를 다시 대조한다. 반복 지적은 조건·금지·인계 중 실제로 바꿀 문장과 연결한다. 변경 1~3건 또는 근거 있는 무변경과 다음 검증 방법을 제안한다. 실제 적용·승인은 해당 결정 주체에게 남긴다.
+diff --git a/skills/pace-team/references/role-archetypes.md b/skills/pace-team/references/role-archetypes.md
+new file mode 100644
+index 0000000..98e6eb6
+--- /dev/null
++++ b/skills/pace-team/references/role-archetypes.md
+@@ -0,0 +1,16 @@
++# 역할 후보
++
++업무 표를 먼저 만든 뒤 필요한 후보를 고른다. 이름은 예시이며 여러 후보의 업무를 합치거나 프로젝트마다 다르게 배정할 수 있다. 독립 검토와 사용자 승인 경계는 합친 역할에도 적용한다.
++
++| 후보 | 맡는 일 예시 | 하지 않는 일 예시 |
++|---|---|---|
++| 리드 | 계약·의존성·검토 순서, 승인 요청과 근거 정리 | 권한 밖 변경이나 출시를 승인하지 않는다. 자기가 작성한 결과를 독립 판정하지 않는다. |
++| 서버 | API·권한·저장·마이그레이션, 서버가 판단하는 상태 | 승인되지 않은 데이터 쓰기와 상품 활성화를 하지 않는다. |
++| UI | 상호작용, 화면 상태, 접근성·입력 검증 | 서버 권한·영속 데이터 규칙을 화면에서 대신 결정하지 않는다. |
++| QA | 판정 기준, 재현·음성 대조, 실제 증거의 독립 검토 | 작성자의 작업본을 고치거나 사용자 승인으로 대체하지 않는다. |
++| 리서치 | 원천 비교, 출처·한계와 검증할 가설 정리 | 근거 확인 없이 어림값이나 타인의 자료를 결과로 확정하지 않는다. |
++| 기획 | 업무·사용자 흐름, 우선순위, 시제품 판단 재료 | 승인되지 않은 범위 확대와 출시 결정을 집행하지 않는다. |
++| 마케팅 | 시장·출시 계획, 콘텐츠·캠페인 초안과 측정 계획 | 승인 전 게시·광고 집행·비용 지출을 하지 않는다. |
++| 경제 | 가격·보상 구조, 단위 경제와 균형 대조 | 실제 가격·상품·재화를 승인 없이 변경하지 않는다. |
++
++맵·운영·문서 같은 업무도 근거와 충돌 경계가 있으면 역할로 나눌 수 있다. 같은 산출물을 이어서 만드는 작은 작업은 한 역할로 합치고 필요한 독립 검토만 분리한다.
+diff --git a/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T07_pace-team_스킬(분석·인터뷰·설계)/team-designs.md b/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T07_pace-team_스킬(분석·인터뷰·설계)/team-designs.md
+new file mode 100644
+index 0000000..0f59af3
+--- /dev/null
++++ b/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T07_pace-team_스킬(분석·인터뷰·설계)/team-designs.md
+@@ -0,0 +1,77 @@
++# 두 저장소의 팀 설계
++
++읽기 전용 기준은 Roblox `03e7c7900107`과 AI SQL `16fcad8af522`다. [입력 목록과 지문](evidence/analysis-inputs.json)은 각 HEAD와 작업본이 같았음을 기록한다. 설계에 필요한 확인은 이미 사용자가 정한 프로젝트 범위와 두 저장소 지침에서 했다. 새 사용자 질문과 대기 시간은 0이다. 입력 확인 경과와 합성 행동 질문은 따로 기록한다.
++
++| 확인 항목 | roblox-studio | ai-sql-client |
++|---|---|---|
++| 결정 주체 | `AGENTS.md` 권한 절과 `docs/README.md`의 작업 프로세스. owner가 시제품 선택·제품 진행·prod 승인과 가격 변경을 결정한다. 리드는 근거와 선택지를 올린다. | `AGENTS.md`와 `docs/DESIGN.md` §3·§8. owner가 유료 실제 Claude 시험과 제품 범위 변경을 승인한다. 데이터 쓰기는 실행 파이프라인의 승인 정책을 거친다. |
++| 병렬과 자원 | 코드·문서 브랜치는 충돌을 대조해 병렬화한다. `AGENTS.md`에서 Studio 플레이를 한 번에 한 worktree로 제한하고 Rojo 포트를 분리한다. | `docs/PROJECT.md` 구성에 따라 화면·셸, 서버·데이터 경계를 나눈다. 공용 API나 테스트 DB를 공유하면 변경 순서와 독립 DB·포트를 먼저 정한다. |
++| 이름·말투 | `.claude/agents`와 `.codex/agents`의 기존 이름을 유지하는 설계다. 기존 권한·도구 제한의 실제 이전은 T08에서 확인한다. | 업무 이름과 간결한 근거 보고를 기본값으로 쓴다. 개인 비서 이름이나 사용자의 프로필은 역할에 복제하지 않는다. |
++| 비용·등급 | P009가 승인한 일반 PACE 합성 호스트 점검만 수행한다. 실제 Studio 실행·광고·배포·과금의 별도 권한은 적용 범위가 확정될 때 확인한다. | `AISQL_REAL_CLAUDE=1`에는 별도 승인이 필요하다. 합성 호스트 검증은 일반 PACE 적용 범위에서만 수행하고 실제 앱·DB·유료 통합은 보류한다. |
++
++## roblox-studio
++
++| 필수 업무 | 근거 | 담당 | 독립 판정·결정 | 다음 인계 |
++|---|---|---|---|---|
++| ① 트렌드 탐색 | 정의서 §작업 프로세스, new-game ① | hermes | argos가 후속 결정에 쓰는 출처를 대조 | 출처·누락을 daedalus에게 |
++| ② 벤치 비교 | `docs/templates/BENCHMARK.md` | hermes | argos가 비교 기준과 반례를 대조 | 유효 비교·한계를 daedalus에게 |
++| ③ 컨셉·가격 가설 | GDD·경제 양식, 정의서 관문1 | daedalus·plutus | argos 평가 뒤 owner가 대상을 선택 | 선택 범위·권한을 제작 담당에게 |
++| ④ 시제품 | `docs/templates/PROTOTYPE.md` | daedalus·gaia, 화면 필요 시 apollo | argos가 검증 가능성을 대조 | 요구·자산·결과를 ⑤ 판정으로 |
++| ⑤ 시제품 판정 | `docs/templates/REVIEW.md`, 관문2 | argos | 작성자와 별도 제공자, owner가 진로 결정 | 판정·불확실성을 athena에게 |
++| ⑥ 서버·UI·맵 제품 개발 | `AGENTS.md` 데이터·구매·Studio 정책 | hephaestus·apollo·gaia | argos가 회귀, 권한·공유 자원을 대조 | 커밋·검증과 범위를 릴리스 준비로 |
++| ⑦ 출시 준비·승인 요청 | 출시 체크리스트·정의서 관문3 | iris·athena | argos 검증, owner가 prod 승인 | 확인된 승인을 배포 담당에게 |
++| ⑧ 운영과 경제 관측 | 운영 지표·경제 양식 | iris·plutus | argos가 표본/근거 대조, owner가 가격 결정 | 관측·한계를 다음 조사 및 회고로 |
++| 공통 자원·정책 | `AGENTS.md` worktree·Studio·승인 규칙 | athena | argos가 관문 증거의 누락을 대조 | 함께 쓸 자원과 범위의 상태를 담당에게 |
++
++업무 단계는 `docs/README.md:90`과 `.codex/skills/new-game/SKILL.md`에서 따왔다. 명령과 운영 책임은 `AGENTS.md`, `docs/ARCHITECTURE.md`, `docs/SECURITY.md`, `docs/templates/`에서 대조했다. 작성은 Codex로 배정하고 독립 판정은 Claude의 `argos`에 맡긴다. 두 제공자를 쓸 수 없을 때에는 검토를 보류한다.
++
++| 역할 | 근거 있는 필수 업무와 분리 이유 | 금지·인계 |
++|---|---|---|
++| athena · 리드 | ①~⑧ 관문과 의존성 정리. `docs/README.md:90`의 각 관문에서 승인 주체가 제작자와 다르다. | 게임 선택·prod·가격을 대리 승인하지 않는다. `HANDOFF: owner`에 선택지와 증거를 보낸다. |
++| hermes · 리서치 | ① 트렌드·② 비교 분석. `docs/templates/BENCHMARK.md`와 `new-game`의 원천 비교를 맡긴다. 설계에 앞서 독립 수집한 자료가 필요하다. | 결론을 승인하지 않는다. 출처·한계를 daedalus에 넘긴다. |
++| daedalus · 기획 | ③ 컨셉·④ 시제품 설계. `docs/templates/GDD.md`와 `PROTOTYPE.md`가 기준이다. 조사 결과를 사용자 흐름과 구현 계약으로 바꾼다. | 자기 시제품을 판정하지 않는다. 시험 가능한 계획을 argos와 제작 역할에 넘긴다. |
++| argos · QA | 결정에 쓰이는 ①~④ 출처·컨셉·시제품 및 ⑤~⑧ 판정·변경·출시·지표 검토. `docs/templates/REVIEW.md`와 `RELEASE-CHECKLIST.md`를 읽고 다른 제공자에서 판정한다. | 제작 파일을 고치지 않는다. 근거와 차단 이유를 athena에 보낸다. |
++| hephaestus · 서버 | ⑥ 서버 상태, DataStore·구매 처리. `AGENTS.md`는 데이터·구매 코드에 테스트와 마이그레이션 계획을 요구한다. UI와 구매 권위가 다르다. | 클라이언트 입력을 권한으로 쓰지 않는다. API·실패 조건·회귀를 apollo와 argos에 보낸다. |
++| apollo · UI | ⑥ 상호작용과 모바일 경계. Roblox UI 스킬과 `AGENTS.md`의 Studio/Git 경계에 근거한다. 화면 작업은 데이터 권한과 분리한다. | 가격·저장 권위를 정하지 않는다. 화면 상태와 기기별 관측을 argos에 넘긴다. |
++| gaia · 맵 | ④/⑥ 공간·모델 작업. `AGENTS.md`의 Studio 플레이 직렬화·자산 형식을 충족한다. 공용 Studio 자원 때문에 스크립트 작업과 분리한다. | Studio에서 Git 스크립트나 prod를 변경하지 않는다. 자산·자원 상태를 athena에 알린다. |
++| iris · 출시·시장 | ⑦ 출시 계획·⑧ 시장 측정. 출시 체크리스트·운영 지표가 요구하는 출시·외부 채널 준비다. 승인 전 계획만 만들 수 있기 때문에 배포 집행 및 경제 조정과 분리한다. | 게시나 광고·배포를 승인 없이 실행하지 않는다. 출시 근거를 athena에 올린다. |
++| plutus · 경제 | ③ 가격 가설·⑥ 보상 설계·⑧ 경제 관측. `docs/templates/ECONOMY.md`와 `AGENTS.md` 가격 승인 경계에서 나온다. 실제 구매 처리와 경제안의 권한이 다르다. | 실제 상품·가격·재화를 바꾸지 않는다. 대안과 예상 영향만 owner에게 올린다. |
++
++기존 역할이 각 근거와 맞아 이름을 유지했다. 시제품 작업 하나에 아홉 역할을 호출할 필요는 없다. 담당과 판정자만 선택하고 출시·운영 역할은 해당 단계에 참여한다. 기존 명시 도구 제한의 승계와 실제 Studio 잠금은 T08 현장 대조다.
++
++작업별 최소 배정은 전체 후보에서 선택한다. 예를 들어 기존 벤치 자료를 쓰는 UI 시제품이면 daedalus와 apollo를 한 제작 역할로 합치고 argos를 따로 둔다. 자료가 새로 필요할 때만 hermes를 추가한다. 출시·가격·Studio 쓰기가 모두 범위 밖이면 그 역할의 실행은 시작하지 않는다. 조사 요약만 있는 소규모 과제는 hermes와 daedalus를 합칠 수 있지만 이 저장소의 여러 게임이 조사 자료를 공유할 때에는 조사·제작 계약이 독립적으로 이어져 두 후보를 유지한다. iris와 plutus는 보고만 함께 쓸 수 있다. 실제 출시와 상품 가격은 서로 다른 승인·되돌림 근거가 있으므로 후보를 분리한다.
++
++## ai-sql-client
++
++| 필수 업무 | 근거 | 담당 | 독립 판정·결정 | 다음 인계 |
++|---|---|---|---|---|
++| 업무 분류·정의·대표 문서 | 정의서 작업 프로세스, `backlogs/BACKLOG.md` | flow-lead | quality-review가 범위·근거를 대조 | 합의 문서와 조건을 해당 구현 담당에게 |
++| 접근 권한·정책·데이터 변경 | `docs/DESIGN.md` §3·§8, `docs/DEPLOYMENT_AUTH.md` | data-api | quality-review 회귀 판단과 필요한 owner 승인 | API·실패 경계를 화면과 검토자에게 |
++| UI·데스크톱 응답 | `AGENTS.md` UI 규칙, 정의서 구성 | product-ui | quality-review가 light/dark와 실제 전환·키보드 대조 | 화면·셸 근거를 검증 단계로 |
++| 통합·검토·릴리스 판정 재료 | `docs/PROJECT.md` 환경, DB·fake agent·Playwright | quality-review | 작성자와 별도 제공자, 외부 권한은 owner | 독립 결과·미확인을 flow-lead에게 |
++
++`AGENTS.md`, `docs/PROJECT.md`의 구성·작업 프로세스, `docs/DESIGN.md` §3·§4·§8, 루트 백로그에서 요구를 뽑았다. 개인 비서의 말투와 계정은 설계 입력에서 제외했다. 작성은 Codex, 판정은 Claude의 `quality-review`로 배정한다.
++
++| 역할 | 근거 있는 필수 업무와 합침·분리 이유 | 금지·인계 |
++|---|---|---|
++| flow-lead · 계약·문서 | 요구·업무 문서·대표 설계와 승인 경계. `docs/PROJECT.md`의 루트 문서/백로그와 `docs/DESIGN.md` 경계를 함께 다룬다. 같은 산출물의 계약 조율과 문서 초안은 합치며 판정은 분리한다. | 자기 문서를 독립 검토하지 않는다. 비용·범위 증거는 owner, 판정 자료는 quality-review에 넘긴다. |
++| data-api · 서버·데이터 | Fastify, ACP/MCP, DB 접근·인증·데이터 정책. `docs/DESIGN.md` §3·§8의 단일 실행 파이프라인을 한 역할에 맡긴다. 데이터 부작용을 통제하므로 화면과 분리한다. | 승인 없는 쓰기·유료 API 실행을 하지 않는다. 권한 계약·마이그레이션·실패 증거를 검토자에 보낸다. |
++| product-ui · 화면·셸 | React 화면, light/dark, Electron·Tauri 경계. `AGENTS.md` UI 요구와 `docs/PROJECT.md` 구성에서 공통 화면·셸을 하나로 묶는다. | DB 정책과 배포 권한을 정하지 않는다. 화면 상태·키보드·셸 차이의 근거를 검토자에 보낸다. |
++| quality-review · 독립 검증 | `AGENTS.md` typecheck/DB·UI 시험과 `docs/PROJECT.md`의 fake 에이전트·Playwright 경계. 대표 문서와 코드 모두 작성자와 다른 제공자에서 판정한다. | 작업본·사용자 환경을 고치거나 실제 유료 시험을 자동 실행하지 않는다. 실패·미확인을 flow-lead로 넘긴다. |
++
++AI SQL은 시장·게임 경제·맵 업무가 확인되지 않았다. 시스템·문서·화면·검사의 실제 항목으로만 구성했다. 문서 대표 업무는 계약·문서 작성과 독립 검토를 선택하고, 구현이 필요한 과제로 확대되면 해당 데이터 또는 화면 역할을 배정한다.
++
++두 설계 모두 팀 후보 표를 받은 작성자와 다른 제공자에서 증거 누락·권한·과잉 배정을 대조한다. 담당표와 실제 역할 변경은 승인 범위가 맞을 때 확정하고, 불일치한 결정은 owner에게 올린다. 적용 시 작성 역할은 Codex, 독립 판정 역할은 Claude로 명시하며, 두 제공자 적재 결과와 작업별 실제 검토 배정을 따로 기록한다.
++
++## 역할 생성과 요청 등급
++
++| 설계 | lead · high | maker · medium | reviewer · high |
++|---|---|---|---|
++| roblox-studio | athena | hermes, daedalus, hephaestus, apollo, gaia, iris, plutus | argos |
++| ai-sql-client | flow-lead | data-api, product-ui | quality-review |
++
++이 종류를 `team new --role`에 전달했다. 합성 실행에서 Claude는 `claude-opus-5-5`, Codex는 `gpt-6.2-sol`을 요청했다. 역할 종류에 따른 요청 effort는 high 또는 medium이다. 보고 모델은 각 실제 적재 기록으로 확인했으며 실제 effort는 미확인이다. 적용 저장소가 설정을 승인하기 전에는 합성 실행의 모델·등급을 운영 기본값으로 변경하지 않는다.
++
++## 회고와 인계
++
++회고에는 [집계 입력](../../../../docs/TEAM-METRICS.md#측정-입력), [비교](../../../../docs/TEAM-METRICS.md#비교), [회고](../../../../docs/TEAM-METRICS.md#회고와-br07-인계)를 사용한다. 누락이나 미확인 수집을 활동 0으로 확정하지 않는다. 반복 지적을 실제 승인·인계 문장의 개선 후보로 연결한다. 합성 후보 검증 결과는 T07 증거에 보존하고 실제 역할 이전·설치·Studio·도입 효과와 사용자 회고는 [T08 인계](../../USER-VALIDATION.md)에 둔다.

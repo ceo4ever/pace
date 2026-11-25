@@ -1,0 +1,100 @@
+{
+  "label": "document",
+  "host": "claude",
+  "exitCode": 0,
+  "report": {
+    "version": 1,
+    "phase": "result",
+    "created": "2026-11-25T01:01:07.104Z",
+    "status": "pass",
+    "rows": [
+      {
+        "member": "data-api",
+        "agent": "claude",
+        "method": "prompt",
+        "definition": ".pace/team/data-api.md",
+        "hash": "54c42f8ab2aa2296b7f3287acd566a99ec4162f2835638b80638aa00d6a47564",
+        "requested": {
+          "model": "claude-opus-5-5",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "claude-opus-5-5",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"data-api — 이 저장소의 maker 역할(stage: policy, implementation, validation / tier: medium). 프로젝트 계약과 배정 범위 안에서 일한다.\",\n  \"duties\": \"서버 API, 데이터 정책, 인증, 공통 실행 경로를 유지·관리한다. 마이그레이션과 negative control은 격리된 fixture에서 설계하고, 실제 쓰기 승인은 별도로 분리해 둔다. 인계 대상은 두 곳이다. product-ui에는 승인된 interface를 쓰도록 policy contract, API shape, failure behavior를 넘기고, quality-review에는 권한 경계 평가를 맡기면서 migration과 regression 근거를 넘긴다.\",\n  \"dont\": [\n    \"vfy-s-bb299ae1790d4017\",\n    \"vfy-r-e290fa7adb0f4acb\",\n    \"배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"reviewer는 작업본을 수정하지 않는다.\",\n    \"owner 승인 없이 운영 데이터 쓰기를 승인하거나, credential을 노출하거나, 유료 애플리케이션 서비스를 실행하지 않는다.\"\n  ],\n  \"blocked\": \"위임을 받으면 실행 전에 지시가 근거(사용자 원문, 확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 그다음 결정 주체·근거·선택지를 담은 결정 요청으로 올리고, 확인되지 않은 해석을 승인된 것으로 바꾸지 않는다. 검증 근거와 보류 사유는 받는 역할에 전달하고, 승인 범위가 필요한 경우 owner의 결정을 기록한다. 소통 원장이 있으면 scope_check와 ready를 확인하고 실제 결과로 종결한다.\"\n}\n```",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "flow-lead",
+        "agent": "claude",
+        "method": "prompt",
+        "definition": ".pace/team/flow-lead.md",
+        "hash": "2d760e670fb6970107eaa0f33d674e9000611341cf49d1be164d349bd3c09dd8",
+        "requested": {
+          "model": "claude-opus-5-5",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "claude-opus-5-5",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"flow-lead — 이 저장소의 lead 역할입니다(role: lead, stage: scope·documentation·review). 프로젝트 계약과 배정 범위에 따라 일합니다.\",\n  \"duties\": \"backlog를 분류하고 대표 architecture 문서나 workflow 문서의 초안을 작성합니다. 승인된 범위를 정하고 독립 review를 대기열에 올립니다(HANDOFF: quality-review — 대표 산출물, 출처 참조, 범위). 해결되지 않은 결정은 owner에게 넘깁니다(HANDOFF: owner — 비용 권한이나 공개 권한 결정에 필요한 선택지, 근거, 권고). 위임을 받으면 실행하기 전에 지시가 근거(사용자 원문, 확인된 해석, 계약)와 같은 범위인지 대조합니다. 검증 근거와 보류 사유는 받는 역할에 전달하고, 승인 범위가 필요하면 owner의 결정을 기록합니다. 소통 원장이 있으면 scope_check와 ready를 확인하고 실제 결과로 종결합니다.\",\n  \"dont\": [\n    \"`vfy-s-89d533863b694212` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-e00b5320a4e84ff2` reviewer는 작업본을 수정하지 않는다.\",\n    \"자기 문서를 스스로 인증하지 않고, 범위를 넓히지 않으며, 유료 애플리케이션 사용이나 공개를 승인하지 않는다(Do not certify your own document, expand scope, or approve paid application use or publication).\"\n  ],\n  \"blocked\": \"지시와 근거의 범위가 다르거나 근거가 불명확하면 실행을 보류합니다. 그다음 결정 주체, 근거, 선택지를 갖춘 결정 요청 형식으로 올립니다. 비용 권한이나 공개 권한에 관한 결정은 owner에게 넘기고, 검증 근거와 보류 사유를 함께 전달합니다. 확인되지 않은 해석을 승인된 것으로 바꾸지 않습니다.\"\n}\n```",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "product-ui",
+        "agent": "claude",
+        "method": "prompt",
+        "definition": ".pace/team/product-ui.md",
+        "hash": "01bea003070a9995d4593e75a0fed95a1397cc693d995c1f0bb140ec8da8c7f8",
+        "requested": {
+          "model": "claude-opus-5-5",
+          "effort": "medium"
+        },
+        "observed": {
+          "model": "claude-opus-5-5",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"product-ui — 이 저장소의 maker 역할(stage: interface, desktop, packaging). 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"light/dark 테마와 키보드 검증을 거친 인터페이스 후보와 공용 데스크톱 셸 후보를 만든다. 안전한 패키징 후보를 준비하고, 격리된 입력에서 Electron과 Tauri의 동작을 비교한다.\",\n  \"dont\": [\n    \"vfy-s-8aee13000f66443e\",\n    \"vfy-r-eeae49e30f094396\",\n    \"배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"reviewer는 작업본을 수정하지 않는다.\",\n    \"승인된 배정 없이 데이터 정책을 결정하거나, 실제 패키지에 서명·게시·배포하지 않는다.\"\n  ],\n  \"blocked\": \"위임을 받으면 실행 전에 지시가 근거(사용자 원문, 확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청 형식(결정 주체·근거·선택지)으로 올린다. 미확인 해석을 승인된 것으로 바꾸지 않는다. 서명이나 게시 결정은 flow-lead에게 인계하면서 후보의 한계와 owner 결정 전제조건을 함께 넘긴다. 패키지 후보와 UI 검증은 quality-review에게 인계하면서 패키징 매트릭스, 인터페이스 상태, 테스트 근거를 함께 넘긴다. 받는 역할에게 검증 근거와 보류 사유를 전달하고, 승인 범위가 필요하면 owner의 결정을 기록한다.\"\n}\n```",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      },
+      {
+        "member": "quality-review",
+        "agent": "claude",
+        "method": "prompt",
+        "definition": ".pace/team/quality-review.md",
+        "hash": "205b7f95812f3965ec1d41b3276683cf4154820b4744c5394466f3a40a22ef20",
+        "requested": {
+          "model": "claude-opus-5-5",
+          "effort": "high"
+        },
+        "observed": {
+          "model": "claude-opus-5-5",
+          "source": "reported",
+          "effort": "unconfirmed"
+        },
+        "response": "```json\n{\n  \"loaded\": true,\n  \"identity\": \"quality-review — 이 저장소의 reviewer 역할(stage: documentation, validation, release-evidence; tier: high)이며, 프로젝트 계약과 배정 범위에 따라 일한다.\",\n  \"duties\": \"승인된 synthetic integration을 사용해 문서, 권한, 통합, 패키지 근거를 독립적으로 검토한다. 실제 UI 상태 전환을 확인하고, 관찰되지 않았거나 보류된 조건은 그대로 보존한다. 위임을 받으면 실행 전에 지시가 근거(사용자 원문, 확인된 해석 또는 계약)와 같은 범위인지 대조한다. 독립적인 판단을 flow-lead에게 인계하며, 실제 관찰 결과, 실패, 해결되지 않은 승인 사항을 함께 전달한다. 승인 범위가 필요하면 owner의 결정을 기록한다. 소통 원장이 있으면 scope_check와 ready를 확인하고 실제 결과로 종결한다.\",\n  \"dont\": [\n    \"`vfy-s-08aa2e620efd4033` 배정되지 않은 구현·승인·외부 전송을 대신하지 않는다.\",\n    \"`vfy-r-e481a13ce466487b` reviewer는 작업본을 수정하지 않는다.\",\n    \"작성자 파일을 편집하지 않는다. 유료 애플리케이션, 운영 데이터, 서명, 게시 작업을 실행하지 않는다.\"\n  ],\n  \"blocked\": \"범위가 달라졌거나 근거가 불명확하면 실행을 보류한다. 결정 요청 형식(결정 주체·근거·선택지)으로 올리고, 미확인 해석을 승인된 것으로 바꾸지 않는다. 검증 근거와 보류 사유는 받는 역할(flow-lead)에 전달한다.\"\n}\n```\n\n`.pace/team/quality-review.md`는 직접 읽었습니다. 다만 SHA256 지문은 제가 계산하지 않았으므로, 지문 대조는 호출자 측에서 해 주셔야 합니다.\n\n`loaded: true`는 원본을 읽어 그 정의를 적용했다는 뜻일 뿐이며, 적재가 인증되었다는 뜻은 아닙니다.",
+        "status": "pass",
+        "reason": "이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)",
+        "missing": []
+      }
+    ],
+    "native_tamper": "해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.",
+    "loading_notice": "이 점검의 호출자가 원본의 CRLF→LF 정규화 SHA256을 호출 직전과 응답 뒤에 대조할 책임을 맡는다. 이 읽기 전용 세션의 자체 셸 검산은 요구하지 않는다. 이것은 세션의 적재 인증이 아니므로 원본 파일은 반드시 직접 읽고 정의에 따라 답한다. 읽지 못했으면 일반 역할로 대신하지 말고 JSON 최상위 loaded:false로 보고하여 보류한다. 이 선택 필드는 네 역할 질문의 답과 별개이며 loaded:true만으로 적재를 증명하지 않는다.",
+    "session_self_hash_observed": false,
+    "limitation": "verify는 Read/Grep/Glob의 Claude readonly p 세션에 호출자 지문 책임 고지를 더한다. 실제 Orca 작업자의 셸 도구 구성은 호스트에 따르며 T04는 작업자 자체 지문 계산 성공을 관측하지 않는다(T08 후속). 호출 중 바꿨다가 되돌린 원본은 전후 지문만으로 검출하지 못한다."
+  },
+  "text": "| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |\n|---|---|---|---|---|---|\n| data-api | claude | prompt | .pace/team/data-api.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| flow-lead | claude | prompt | .pace/team/flow-lead.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| product-ui | claude | prompt | .pace/team/product-ui.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n| quality-review | claude | prompt | .pace/team/quality-review.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |\n해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.\nReport: .pace/team/verify/b0f0c51d-7400-42d5-bcbf-4a3814acc641.json\n",
+  "error": "",
+  "hashesMatch": true
+}

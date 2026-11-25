@@ -1,0 +1,14 @@
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+const evidence = import.meta.dirname, root = resolve(evidence, '../../../../..');
+const out = resolve(evidence, 'pre-contract.json');
+if (existsSync(out)) throw new Error('Preserve the original result');
+const first = JSON.parse(readFileSync(resolve(evidence, '../pre-review-output-r4.json'), 'utf8'));
+if (first.review?.verdict !== 'pass' || !first.cross) throw new Error('T07 first review must pass first');
+const { createPExecutor, codexP } = await import(resolve(root, 'src/agent/p-executor.ts'));
+const { runAgent, validateRequest } = await import(resolve(root, 'src/agent/contract.ts'));
+const purpose = 'Independent T07 planning stage two in a fresh read-only OpenAI context. Read the actual first Anthropic judgment below first. Then compare the exact TASK.md at the path below to P009 PROJECT P-4/P-5, BR07, and T08 held scope. Judge if T07 may start implementation (no implementation yet) under the existing owner approval. The implementation evidence will include fixed unsupported-role and known-answer negative controls, recorded approval reference for only normal PACE synthetic calls, and the two opposite retrospective outcomes. No real application role or service, installation, executable coding, state mutation, external source reads or new provider calls. Report pass/fail and blocking/should_fix counts, any revised judgment, and actual scope read.\n';
+const request = validateRequest({ agent:'codex', mode:'p', access:'read-only', cwd:root, prompt:purpose+resolve(evidence,'../TASK.md')+'\n\n'+first.result.text, timeoutMs:360000 });
+const result = await runAgent(createPExecutor(codexP),request);
+writeFileSync(out, JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({ provider:result.provider, is_error:result.is_error }));

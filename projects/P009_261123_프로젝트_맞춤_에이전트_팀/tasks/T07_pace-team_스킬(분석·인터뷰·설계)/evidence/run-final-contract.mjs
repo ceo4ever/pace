@@ -1,0 +1,17 @@
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+const e=import.meta.dirname, root=resolve(e,'../../../../..');
+const target=resolve(e,'impl-contract.json');
+if(existsSync(target))throw new Error('Preserve the original judgment');
+const paths=['candidate.json','synthetic-boundary-summary.json','behavior-summary-r4.json','r5-design-coverage-check.json','project-dev-size-r2.txt'];
+if(paths.some((name)=>!existsSync(resolve(e,name))))throw new Error('Wait for the actual independent and whole results');
+const first=JSON.parse(readFileSync(resolve(e,'impl-goal-r5.json'),'utf8'));
+const manifest=JSON.parse(readFileSync(resolve(e,'candidate.json'),'utf8'));
+if(first.review?.verdict!=='pass'||first.review.hash!==manifest.patchSha256)throw new Error('Goal result and current candidate must match');
+const {createPExecutor,codexP}=await import(resolve(root,'src/agent/p-executor.ts'));
+const {runAgent,validateRequest}=await import(resolve(root,'src/agent/contract.ts'));
+const text='Independent T07 implementation contract and execution-evidence review. Before accessing task documents read the actual first Anthropic goal verdict appended below. Then inspect the exact R4 TASK and BR07, P009 P-4/P-5, skill and two design cases. Assess independently T-1 through T-5, the baseline source locators, reviewer role/provider and minimality, unsupported-role negative controls, known-answer negative case, explicit authority, local synthetic fixtures and actual four host reports, and scope of the actual three Anthropic behavior cases. Review this observed product scope independently of the routine whole-repository check, which the worker owns and will await before closure. Record which runtime results you actually inspected. The focused skill tests, 26 real synthetic fixture verify observations and the three real cross-provider behavior observations already exist, with matching unchanged skill hashes and reviewed design changes. An ordinary test still in progress must not be reported as completed. Record explicit pass/fail and blocking/should_fix counts, objective versus achieved result, observations and limits, and T08 handoff. A host verify pass is prompt-load evidence and does not prove native field effects. Read only, no modifications, no real operation, and do not rerun the whole check.\n';
+const prompt=text+paths.map((name)=>resolve(e,name)).join('\n')+'\n'+resolve(e,'../TASK.md')+'\n\n'+first.result.text;
+const result=await runAgent(createPExecutor(codexP),validateRequest({agent:'codex',mode:'p',access:'read-only',cwd:root,prompt,timeoutMs:360000}));
+writeFileSync(target,JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({provider:result.provider,is_error:result.is_error}));

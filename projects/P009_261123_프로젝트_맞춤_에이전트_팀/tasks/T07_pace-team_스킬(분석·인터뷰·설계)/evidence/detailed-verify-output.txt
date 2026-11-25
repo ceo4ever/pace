@@ -1,0 +1,4 @@
+document/claude: 0 pass
+document/codex: 0 pass
+studio/claude: 0 pass
+studio/codex: 0 pass

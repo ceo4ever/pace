@@ -1,0 +1,23 @@
+{
+  "label": "document",
+  "roleCount": 4,
+  "sync": {
+    "members": 4,
+    "differences": [],
+    "ok": true
+  },
+  "roleFiles": {
+    ".pace/team/flow-lead.md": "9b866ebd05eb071ddc5338d471816495ee9e816498997fc7f9c965967a442a03",
+    ".claude/agents/flow-lead.md": "1155099574a4218c7d5d35549e564f4287ec1add04683f1af06d103ad2a3269d",
+    ".codex/agents/flow-lead.toml": "d791710fcd95ec729d3aad9a0e1720c9d9bb75657fb80d66e622e6f9dede32e3",
+    ".pace/team/data-api.md": "ee6a738ba8c8c7bcd139a5adef979543c429dadd9d4a5a16d769d1b4f9e500e5",
+    ".claude/agents/data-api.md": "c7249cf0d317aa5ed3fa503e5c0d73b0de1776063e01ff95db64d9964da35134",
+    ".codex/agents/data-api.toml": "4d684cd39fd9b9a28060cd73204ad5ad5e8a92227678668339ef5b1576a14a64",
+    ".pace/team/product-ui.md": "35b2d95706eb7f2fc0643deb6842b7426dfaba444825e184c8b6ca430ff550ce",
+    ".claude/agents/product-ui.md": "d2efd589535ab89958549e499b7e0871a090d863d62f0012fa39634ddc317430",
+    ".codex/agents/product-ui.toml": "c46894a772ba99ab1f074ae4a5a2e3d433840babbcfe776c2b149a87f9249975",
+    ".pace/team/quality-review.md": "31837a90a54978a5590d58ac6ccd6aca10fcdc0530413410a961b227764a1fb5",
+    ".claude/agents/quality-review.md": "5bac5d46a51eaae65a948e8d38716ab5410f6c1ddfabfd0e7d962b793489a38d",
+    ".codex/agents/quality-review.toml": "bbfe4e4bbfe2aead4839e75399cb5ea2cb3ab43521745c7e8411a6960d8abf7a"
+  }
+}
