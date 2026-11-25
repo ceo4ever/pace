@@ -6,7 +6,7 @@ tags: []
 sources: [code:src/project/adopt-opal.ts, test:test/adopt-opal.test.ts, test:test/adopt-opal-e2e.test.ts, test:test/adopt-opal-recover.test.ts, doc:README.md]
 related: [작업-하네스-흐름]
 created: 2026-11-16
-updated: 2026-11-24
+updated: 2026-11-25
 status: active
 ---
 

@@ -116,3 +116,5 @@
 ## [2026-11-25] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
 ## [2026-11-25] lint | P009 커밋 뒤 근거가 달라진 11개 페이지의 주장과 소통·사전 검토·팀 마감 경계를 대조했다
 ## [2026-11-25] update | pace agent 호출 함정 (실측) (.pace/brain/pages/synthesis/pace-agent-호출-함정-실측.md)
+## [2026-11-25] update | OPAL 가져오기 adopt opal 결정과 함정 (.pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md)
+## [2026-11-25] lint | v0.1.2 README 변경은 버전 표기 두 곳이다. OPAL 가져오기 안내와 브레인 근거를 대조했다.
