@@ -1,0 +1,9 @@
+✔ S-19d getUpdates 실패(409)·메시지 없음이면 직접 입력으로 이어 가고 오류에 토큰이 없다 (20.172375ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 443.8665

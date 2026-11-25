@@ -1,0 +1,5 @@
+재계산한 아카이브 SHA-256 771da4ec1528dddd125d7c54d2334b6e3495cf16fb25f4e8c15eaf6bbb2afa5e
+role SHA-256 a43bf47fe13f26bdf2543696292870782985f65e04a0735a9e0b08948de65aeb
+role SHA-256 a43bf47fe13f26bdf2543696292870782985f65e04a0735a9e0b08948de65aeb
+role SHA-256 a43bf47fe13f26bdf2543696292870782985f65e04a0735a9e0b08948de65aeb
+첫 행은 격리 bare info/attributes로 개발 기록을 포함한 같은 git archive 명령의 아카이브 바이트를 재계산했다. 이후 3행은 제출한 팀 원본, 양성에 주입한 정의, 음성에 주입한 정의다. 당시 데이터는 eval/snapshot.json과 eval-plan을 따라 재생성할 수 있다.

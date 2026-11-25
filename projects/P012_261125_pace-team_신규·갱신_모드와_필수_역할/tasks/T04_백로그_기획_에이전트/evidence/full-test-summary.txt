@@ -1,0 +1,57 @@
+
+=== final ===
+PACE_SKIP_BROWSER_E2E=1 and a temporary PACE_HOME, npm run check
+> tsc -p tsconfig.json
+✖ 호출 프로세스가 강제 종료돼도 독립 감시자가 자식 그룹을 회수한다 (6279.3315ms)
+ℹ tests 1390
+ℹ suites 0
+ℹ pass 1372
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 593599.8845
+✖ failing tests:
+✖ 호출 프로세스가 강제 종료돼도 독립 감시자가 자식 그룹을 회수한다 (6279.3315ms)
+
+=== confirm ===
+PACE_SKIP_BROWSER_E2E=1 and a temporary PACE_HOME, npm run check
+> tsc -p tsconfig.json
+✖ S-19d getUpdates 실패(409)·메시지 없음이면 직접 입력으로 이어 가고 오류에 토큰이 없다 (4.542458ms)
+ℹ tests 1390
+ℹ suites 0
+ℹ pass 1372
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 507385.453292
+✖ failing tests:
+✖ S-19d getUpdates 실패(409)·메시지 없음이면 직접 입력으로 이어 가고 오류에 토큰이 없다 (4.542458ms)
+
+=== controlled ===
+PACE_SKIP_BROWSER_E2E=1 and a temporary PACE_HOME, npm run typecheck && npm test -- --test-concurrency=4
+> tsc -p tsconfig.json
+✖ 실제 래퍼 SIGKILL 때 자식 생존은 보류하고 그룹 종료+free 뒤 CLI 회수한다 (576.512459ms)
+ℹ tests 1390
+ℹ suites 0
+ℹ pass 1372
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 477342.157708
+✖ failing tests:
+✖ 실제 래퍼 SIGKILL 때 자식 생존은 보류하고 그룹 종료+free 뒤 CLI 회수한다 (576.512459ms)
+
+=== lowconc ===
+PACE_SKIP_BROWSER_E2E=1 and a temporary PACE_HOME, npm run typecheck && npm test -- --test-concurrency=2
+> tsc -p tsconfig.json
+ℹ tests 1390
+ℹ suites 0
+ℹ pass 1373
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 573823.20725

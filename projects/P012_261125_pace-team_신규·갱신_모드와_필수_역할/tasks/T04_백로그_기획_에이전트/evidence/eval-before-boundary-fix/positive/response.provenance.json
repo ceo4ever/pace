@@ -1,0 +1,16 @@
+{
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "usage": {
+    "input_tokens": 36,
+    "output_tokens": 16981
+  },
+  "stop_reason": "end_turn",
+  "exit": 0
+}

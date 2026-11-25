@@ -1,0 +1,9 @@
+✔ 실제 래퍼 SIGKILL 때 자식 생존은 보류하고 그룹 종료+free 뒤 CLI 회수한다 (870.597917ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1007.196208

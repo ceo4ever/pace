@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "roles": [
+    {
+      "role": "pace-backlog-planner",
+      "scope": "hub",
+      "conditional": false
+    }
+  ]
+}

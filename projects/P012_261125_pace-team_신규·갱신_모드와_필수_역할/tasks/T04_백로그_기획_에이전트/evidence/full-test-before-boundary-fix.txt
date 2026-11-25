@@ -1,0 +1,11 @@
+✖ project role: workerSpec and all team sources apply the same decision and execution boundary (1.00825ms)
+ℹ tests 1390
+ℹ suites 0
+ℹ pass 1372
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 562477.546167
+✖ failing tests:
+✖ project role: workerSpec and all team sources apply the same decision and execution boundary (1.00825ms)

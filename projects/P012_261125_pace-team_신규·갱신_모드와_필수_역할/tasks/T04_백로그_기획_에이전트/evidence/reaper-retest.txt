@@ -1,0 +1,9 @@
+✔ 호출 프로세스가 강제 종료돼도 독립 감시자가 자식 그룹을 회수한다 (412.011041ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 530.674167

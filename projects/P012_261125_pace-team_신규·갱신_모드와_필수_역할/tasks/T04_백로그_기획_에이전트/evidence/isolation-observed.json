@@ -1,0 +1,22 @@
+{
+  "negative": {
+    "dotGitPresent": false,
+    "toolCalls": {
+      "Glob": 3,
+      "Grep": 18,
+      "Read": 12
+    },
+    "requestedPathsOutsideSnapshot": 0,
+    "rawTraceSha256": "d687b0f85a95491c29ccd3553b1ec409bdecc9d95a84076db0a2e35523090daf"
+  },
+  "positive": {
+    "dotGitPresent": false,
+    "toolCalls": {
+      "Glob": 5,
+      "Grep": 18,
+      "Read": 12
+    },
+    "requestedPathsOutsideSnapshot": 0,
+    "rawTraceSha256": "0f287ef2c851d9ae559fe73385b7ebd7ccd15ebdeeb411a8b2afd772eaf40c5c"
+  }
+}

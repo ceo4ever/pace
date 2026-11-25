@@ -70,6 +70,8 @@ test("project role: workerSpec and all team sources apply the same decision and 
     .map((entry) => join(sourceDir, entry.name));
   assert.ok(sources.length > 0, "팀 원본을 적어도 하나 대조한다");
   const template = join(root, "templates/team/member.md");
+  const { roles: rolePolicies } = JSON.parse(readFileSync(join(root, ".pace/team/required-roles.json"), "utf8")) as { roles: { role: string; scope: "hub" | "worktree" }[] };
+  const hubRoles = new Set(rolePolicies.filter((policy) => policy.scope === "hub").map((policy) => policy.role));
   for (const filename of [...sources, template]) {
     const text = readFileSync(filename, "utf8").replace(/\r\n/g, "\n");
     const paragraphs = text.split("\n\n");
@@ -90,7 +92,7 @@ test("project role: workerSpec and all team sources apply the same decision and 
     assert.ok(instruction!.includes(member.source) && instruction!.includes(member.hash), filename);
     assert.equal(workerInstructions.join("\n"), spec, filename);
     const receiver = /`HANDOFF: ([^|]+) \| 요청 \| 근거`/.exec(text)?.[1];
-    if (member.role === "lead") assert.equal(receiver, "허브 PM", filename);
+    if (member.role === "lead" || hubRoles.has(member.name)) assert.equal(receiver, "허브 PM", filename);
     else assert.match(receiver ?? "", /^(?:pace-project-lead|호출자)$/, filename);
   }
   const decision = readFileSync(join(root, "skills/pace-project-dev/references/decision-rights.md"), "utf8");

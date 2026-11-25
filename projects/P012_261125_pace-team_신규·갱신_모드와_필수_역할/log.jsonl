@@ -31,3 +31,12 @@
 {"ts":"2026-11-25T12:19:26.528Z","p":"P012","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-25T12:19:26.746Z","p":"P012","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-25T12:19:26.746Z","p":"P012","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-25T12:19:54.564Z","p":"P012","t":"T04","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-25T12:20:58.644Z","p":"P012","t":"T04","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 3","ref":"tasks/T04_백로그_기획_에이전트/review-records/R1.json","data":{"blocking":0,"should_fix":3,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-25T12:25:43.521Z","p":"P012","t":"T04","type":"decision","by":"agent","msg":"자체 판단 — BP-11은 기존 구현 maker와 같은 medium, 두 호스트의 현재 설정을 사용한다. 등록은 BR04 확정 범위이며 A-1 합의 변경은 없다."}
+{"ts":"2026-11-25T12:39:09.314Z","p":"P012","t":"T04","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 0","ref":"tasks/T04_백로그_기획_에이전트/evidence/reviewer-stage2.md","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-25T12:51:04.947Z","p":"P012","t":"T04","type":"review","by":"agent","msg":"tester fail blocking 1 should_fix 0","ref":"tasks/T04_백로그_기획_에이전트/evidence/tester-suite-before-lowconc.md","data":{"blocking":1,"should_fix":0,"tester":1,"reviewer":0,"pass":0,"fail":1}}
+{"ts":"2026-11-25T12:59:57.780Z","p":"P012","t":"T04","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0","ref":"tasks/T04_백로그_기획_에이전트/evidence/tester-suite.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-25T12:59:57.957Z","p":"P012","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-25T12:59:58.159Z","p":"P012","t":"T04","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-25T12:59:58.159Z","p":"P012","t":"T04","type":"task_done","by":"cli","msg":"done","ok":true}
