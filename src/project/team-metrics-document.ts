@@ -10,6 +10,11 @@ const qualityLabels = {
   review_failures: "리뷰 실패 사건",
   gate_failures: "게이트 실패",
 };
+const nonParticipationLabels = {
+  "condition-not-triggered": "호출 조건 미발생",
+  unconfirmed: "기록 부족(미확인)",
+  unused: "실제 미사용",
+};
 export function formatTeamMetrics(t: TeamMetrics): string {
   const q = t.requests;
   return [
@@ -31,6 +36,7 @@ export function formatTeamMetrics(t: TeamMetrics): string {
     `소통 종류: ${JSON.stringify(t.handoffs.kinds)} · 구간 말 열린 위임 ${t.handoffs.open.length}`,
     ...Object.entries(t.handoffs.agents).sort(([a], [b]) => a.localeCompare(b)).map(([name, counts]) => `- 소통 ${name}: ${JSON.stringify(counts)}`),
     ...t.unusedRoleCandidates.map((r) => `- 미사용 검토 후보 ${r.role}: ${r.coverage} · ${r.reason}`),
+    ...(t.requiredRoleNonParticipation ?? []).map(({ role, status }) => `- 필수 역할 비참여 ${role}: ${nonParticipationLabels[status]}`),
     ...t.warnings.map((warning) => `- 한계: ${warning}`),
   ].join("\n");
 }

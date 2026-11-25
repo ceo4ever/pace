@@ -1,0 +1,10 @@
+2단계·차단 해소 대조입니다. /private/tmp/pace-P012-work/T02-review-final에 준비한 상대 경로만 읽으세요. 산출물 제목에 나타난 다른 worktree의 절대 경로는 사용하지 마세요.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T02_필수_역할_측정_분류/TASK.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T02_필수_역할_측정_분류/evidence/compatibility-and-targeted.txt
+previous-reviewer.md
+old-snapshot/src/team/store.ts
+test/team-metrics.test.ts
+skills/pace-project-dev/references/decision-rights.md
+docs/TEAM.md
+docs/TEAM-METRICS.md
+이전 계약 대조의 구판 판독기 미확인 사항을 위 실제 구판 실행의 출력과 소스로 재검토하세요. 소통 원장·Git 스냅숏 고정 추가 시험과 배정 확인 문구를 대조해 보안·기존 동작을 판단하세요. 미래 호출 수집기 구현은 BR02에서 넘어가는 범위입니다. 이전 판단 유지·변경과 근거, blocking/should_fix, 최종 pass/fail을 적으세요. 작성자 마감과 판정은 제공하지 않습니다. 파일을 수정하지 마세요.

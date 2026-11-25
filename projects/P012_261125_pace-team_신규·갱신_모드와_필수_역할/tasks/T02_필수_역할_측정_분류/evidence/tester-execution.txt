@@ -1,0 +1,35 @@
+독립 Codex 실행 기록 (임시 저장소)
+pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+✔ 새 start 측정 버전은 marker를 지워도 회고를 요구하며 옛 role 없는 start를 소급하지 않는다 (391.987ms)
+✔ source CLI stats→비교→METRICS→회고→finish를 metadata만으로 완주한다 (4497.98325ms)
+✔ 역할 선언은 실제 시간/출력이나 미사용 증명이 아니며 자체 답도 명시 근거만 센다 (1339.160667ms)
+✔ 필수 역할 표지와 구간 영수증이 세 비참여 상태를 만든다 (1334.104ms)
+✔ 필수 역할 표지의 안전하지 않은 입력은 팀 측정을 보류한다 (2939.777292ms)
+✔ 필수 역할 표지는 finish와 merge에서 비참여를 기록하고 기존 일반 후보를 보호한다 (5776.502542ms)
+✔ 필수 역할 표지와 별도 호출 자료는 미채택 프로젝트에 팀 섹션을 만들지 않는다 (3627.958459ms)
+✔ 필수 역할 표지가 Git 검증 대상에서 빠지면 finish를 보류한다 (1862.316792ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=false) (6880.941834ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=true) (7318.31525ms)
+✔ R7 다른 대표 업무의 역할 시작은 현재 미사용 검토 후보를 숨기지 않는다 (663.853583ms)
+✔ R30 원장 참조가 검증된 중계와 별도 로그를 구분하고 미채택 조회를 보존한다 (4760.298916ms)
+✔ R32 역할 관측과 관측 없음은 역할·종류·수집 범위를 영수증에 함께 요구한다 (1157.952208ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 42815.908459
+
+독립 추가 경계 대조
+role alone: legacy team projection, no adoption
+to alone: legacy team projection, no adoption
+requestId alone: legacy team projection, no adoption
+versioned start: adopted
+same-period role event and ledger participant each override valid nonparticipation evidence
+absent evidence and ordinary candidate remain unconfirmed
+unsupported version: rejected
+unknown scope: rejected
+conditional type: rejected
+no-marker stats team JSON (excluding observation time) and text team section match exactly

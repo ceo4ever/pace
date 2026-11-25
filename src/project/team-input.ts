@@ -235,7 +235,7 @@ export function representativeProofBinding(period: TeamPeriod, completion: { sha
     ? { ref: period.completionRef, receiptSha256: completion.sha256 }
     : null;
 }
-export function observationCovered(dir: string, ref: unknown, period: TeamPeriod, role: string, kind: "activity" | "none", inputs?: InputTrace, receipts = new TeamReceiptReads()): boolean {
+export function observationCovered(dir: string, ref: unknown, period: TeamPeriod, role: string, kind: "activity" | "none" | "condition-not-triggered", inputs?: InputTrace, receipts = new TeamReceiptReads()): boolean {
   const receipt = receipts.read(dir, ref, inputs);
   if (!receipt) return false;
   const { evidence } = receipt;

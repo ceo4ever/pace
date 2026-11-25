@@ -1,0 +1,5 @@
+T02 독립 tester 2단계입니다. 1단계 원문은 first-judgment.md에 있습니다. Codex p의 resume 미지원으로 2단계는 별도 새 OpenAI 맥락입니다.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T02_필수_역할_측정_분류/TASK.md
+backlogs/BL261125_02_pace-team_신규·갱신_모드와_필수_역할/BR02_필수_역할_측정_분류.md
+현재 작업 디렉터리의 격리 사본에서 아래 표적 명령을 직접 실행하세요. 테스트 임시 폴더에 쓰기는 허용합니다. 작업본의 구현·테스트·문서는 고치지 마세요. TypeScript·검증 색인과 팀 두 기준 문서를 참조해 기준별 실행·정확성·조건 충족·검출력·기존 약화 여부를 판정하세요. 첫 목표 판단과 새 관측, 미확인 근거와 최종 pass/fail을 남기세요. 외부 워크트리·설치본 경로를 열지 마세요.
+TMPDIR="$PWD/.test-temp" node --test --test-name-pattern "필수 역할 표지|project-start-to-merge 선언 입력|R27 finish와 Git merge" test/team-metrics.test.ts

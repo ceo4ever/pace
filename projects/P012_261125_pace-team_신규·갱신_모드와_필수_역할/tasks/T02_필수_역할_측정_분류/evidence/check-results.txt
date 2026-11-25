@@ -1,0 +1,18 @@
+PACE_HOME=<임시 폴더> PACE_SKIP_BROWSER_E2E=1 npm run check
+
+
+> pace@0.1.2 typecheck
+> tsc -p tsconfig.json
+
+
+✔ workspace CLI는 BR02 비활성 후보를 동일 ID로 활성화한다 (260.512708ms)
+ℹ tests 1389
+ℹ suites 0
+ℹ pass 1372
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 484017.642042
+
+보안 검토 뒤 보강한 검증: npm run typecheck 종료 0 · 최종 표적 8건 통과. 실행 동작 변경 없이 문서·시험을 보강했다.

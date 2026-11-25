@@ -1,0 +1,51 @@
+구판 호환 · git archive d5129f8에서 src/team/store.ts를 읽기 전용으로 호출. 별도 JSON 적용 전후 loadTeam 반환 deepEqual.
+d5129f8 loadTeam: existing objects unchanged after adding separate JSON role marker
+pace-implementer, pace-project-lead, pace-reviewer, pace-tester
+
+구판·현행의 같은 finish/merge·구간 지표 진입점. 공통 세 시험은 subprocess 사용 실제 Git 픽스처에서 실행됐다.
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=false) (10950.641708ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=true) (10630.359209ms)
+✔ R27 finish와 Git merge는 동일한 채택 판정을 쓰며 review의 버전 숫자를 start로 오인하지 않는다 (7699.426542ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29472.964666
+
+현행 표적 · 별도 팀 표지/구간 증거·마감/병합·미채택 경로와 기존 세 회귀
+✔ 필수 역할 표지와 구간 영수증이 세 비참여 상태를 만든다 (2377.506041ms)
+✔ 필수 역할 표지의 안전하지 않은 입력은 팀 측정을 보류한다 (4226.646334ms)
+✔ 필수 역할 표지는 finish와 merge에서 비참여를 기록하고 기존 일반 후보를 보호한다 (8904.078333ms)
+✔ 필수 역할 표지와 별도 호출 자료는 미채택 프로젝트에 팀 섹션을 만들지 않는다 (4058.053708ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=false) (12606.386667ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=true) (15018.852417ms)
+✔ R27 finish와 Git merge는 동일한 채택 판정을 쓰며 review의 버전 숫자를 start로 오인하지 않는다 (9617.336ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57037.521584
+
+최종 소통 원장 대체 입력과 Git 스냅숏 거부 추가 뒤 현행 표적 재검사
+✔ 필수 역할 표지와 구간 영수증이 세 비참여 상태를 만든다 (1017.687292ms)
+✔ 필수 역할 표지의 안전하지 않은 입력은 팀 측정을 보류한다 (2341.014667ms)
+✔ 필수 역할 표지는 finish와 merge에서 비참여를 기록하고 기존 일반 후보를 보호한다 (4158.460458ms)
+✔ 필수 역할 표지와 별도 호출 자료는 미채택 프로젝트에 팀 섹션을 만들지 않는다 (2888.718917ms)
+✔ 필수 역할 표지가 Git 검증 대상에서 빠지면 finish를 보류한다 (1520.719334ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=false) (5219.129292ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=true) (5133.187625ms)
+✔ R27 finish와 Git merge는 동일한 채택 판정을 쓰며 review의 버전 숫자를 start로 오인하지 않는다 (3505.111583ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25981.734167

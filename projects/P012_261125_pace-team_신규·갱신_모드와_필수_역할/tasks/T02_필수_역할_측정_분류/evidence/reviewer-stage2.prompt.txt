@@ -1,0 +1,5 @@
+2단계 계약 대조입니다. 작업 디렉터리 /private/tmp/pace-P012-work/T02-review에 있는 상대 경로만 읽으세요. 1단계 산출물에 표시된 외부 워크트리 절대 경로는 이번 사본의 경로가 아닙니다.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T02_필수_역할_측정_분류/TASK.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/PROJECT.md
+backlogs/BL261125_02_pace-team_신규·갱신_모드와_필수_역할/BR02_필수_역할_측정_분류.md
+보안 관점부터 검토하세요. docs/SECURITY.md, docs/TEAM-METRICS.md, docs/TEAM.md, skills/pace-tech-handbook/references/typescript/INDEX.md와 함께 구현과 시험을 대조하세요. 현재 태스크가 소유하는 범위와 다음 호출 기록 태스크 범위를 BR02로 확인하세요. 첫 판단 대비 새 근거, T-1~T-5 판정, blocking·should_fix, 증거 한계와 최종 pass/fail을 적으세요. 쓰기는 하지 마세요.

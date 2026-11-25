@@ -118,6 +118,24 @@ native model/effort를 생략해 부모 설정을 상속하는 방법은 환경 
 
 관리 표지는 진위 서명이 아니다. 사용자가 같은 표지를 붙인 파일은 관리 파일로 취급될 수 있으므로 표지를 위조하지 않는다. 팀 파일에는 비밀을 넣지 않는다.
 
+## 필수 역할 표지
+
+팀이 프로젝트의 기본 참여 범위와 다른 필수 역할을 배정하면 선택 파일 `.pace/team/required-roles.json`에 호출 위치와 조건부 여부를 적는다. `scope`는 `hub` 또는 `worktree`, `conditional`은 boolean이다. `role`은 해당 팀 원본의 이름이며 한 번만 적는다.
+
+```json
+{
+  "version": 1,
+  "roles": [
+    { "role": "hub-planner", "scope": "hub", "conditional": false },
+    { "role": "conditional-helper", "scope": "worktree", "conditional": true }
+  ]
+}
+```
+
+팀 측정에서 `scope: "hub"`이거나 `conditional: true`인 기존 역할을 별도로 판정한다. `worktree`의 상시 역할은 일반 역할과 같은 증거·회고 기준을 적용한다. 표지 파일은 Git에 보존하고 표지를 바꿀 때 필수 역할의 배정 근거와 선택 값이 일치하는지 팀 검토에서 확인한다. 역할을 정리할 때 해당 표지도 대조한다.
+
+구판은 Markdown 팀 원본을 계속 읽으며 별도 JSON을 건너뛴다. 현재 팀 측정은 표지를 링크 없는 UTF-8 일반 JSON 파일로 확인한다. 상한은 32KiB다. [비참여 판정과 호출 기록](TEAM-METRICS.md#필수-역할-비참여와-호출-기록)
+
 ## 프로젝트 작업자 역할
 
 `pace project start P123 --role builder --agent codex`는 팀 구성원 이름 `builder`를 선택한다. `team new --role maker`의 역할 종류와 다르다. 선택 순서는 start의 `--role` > PROJECT 머리의 `- 작업자 역할:` > 없음이다. 자동 lead는 없으며, 팀 원본과 native 생성물이 있어도 역할 미지정 경로는 기존과 같다. 역할 실행은 Claude·Codex를 지원한다. 다른 도구는 역할을 빼거나 `--agent claude|codex`를 선택한다.

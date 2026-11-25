@@ -1,0 +1,6 @@
+T02 독립 tester 2단계 재시도입니다. first-judgment.md는 Codex p 새 맥락의 1단계 결과입니다. 앞 독립 실행이 170초 한도에서 끝나 이번 호출의 한도는 늘렸습니다. 테스트 임시 자료만 격리 작업본에서 쓸 수 있으며 작업본의 소스와 기준은 읽으세요.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T02_필수_역할_측정_분류/TASK.md
+backlogs/BL261125_02_pace-team_신규·갱신_모드와_필수_역할/BR02_필수_역할_측정_분류.md
+먼저 아래 두 명령을 실제 실행하세요. old-snapshot은 d5129f8에서 Git으로 내보낸 구판 소스와 팀 원본 사본입니다. 사용한 버전·종료 상태와 모든 기준의 실행·정확성·검출력, BR02의 다음 태스크와의 경계, 첫 판단에서 달라진 것과 최종 pass/fail을 기록하세요. 구현이나 테스트 파일은 편집하지 마세요.
+TMPDIR="$PWD/.test-temp" node --test --test-name-pattern "필수 역할 표지" test/team-metrics.test.ts
+node --input-type=module -e 'import {loadTeam} from "./old-snapshot/src/team/store.ts";import {writeFileSync} from "node:fs";import assert from "node:assert/strict";const root=process.cwd()+"/old-snapshot";const before=loadTeam(root);writeFileSync(root+"/.pace/team/required-roles.json",JSON.stringify({version:1,roles:[{role:"pace-implementer",scope:"hub",conditional:false}]}));const after=loadTeam(root);assert.deepEqual(after,before);console.log(after.map(r=>r.name));'

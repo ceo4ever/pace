@@ -11,3 +11,13 @@
 {"ts":"2026-11-25T11:31:26.382Z","p":"P012","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-25T11:31:32.662Z","p":"P012","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-25T11:31:32.662Z","p":"P012","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-25T11:31:59.511Z","p":"P012","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-25T11:32:53.333Z","p":"P012","t":"T02","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 4","ref":"tasks/T02_필수_역할_측정_분류/review-records/R1.json","data":{"blocking":0,"should_fix":4,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-25T11:44:37.620Z","p":"P012","t":"T02","type":"decision","by":"agent","msg":"별도 JSON 표지와 구간 근거로 허브·조건부 비참여를 기록하고 기존 일반 후보·미채택 집계를 유지","src":"자체 판단","ref":"tasks/T02_필수_역할_측정_분류/TASK.md"}
+{"ts":"2026-11-25T11:46:34.854Z","p":"P012","t":"T02","type":"review","by":"agent","msg":"reviewer fail blocking 1 should_fix 3","ref":"tasks/T02_필수_역할_측정_분류/evidence/reviewer-stage2.md","data":{"blocking":1,"should_fix":3,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-25T11:46:35.051Z","p":"P012","t":"T02","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2","ref":"tasks/T02_필수_역할_측정_분류/evidence/reviewer-recheck.md","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-25T11:47:55.489Z","p":"P012","t":"T02","type":"review","by":"agent","msg":"tester fail blocking 1 should_fix 0","ref":"tasks/T02_필수_역할_측정_분류/evidence/tester-recheck.md","data":{"blocking":1,"should_fix":0,"tester":1,"reviewer":0,"pass":0,"fail":1}}
+{"ts":"2026-11-25T11:49:01.682Z","p":"P012","t":"T02","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0","ref":"tasks/T02_필수_역할_측정_분류/evidence/tester-aggregate.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-25T11:49:01.881Z","p":"P012","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-25T11:49:02.086Z","p":"P012","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-25T11:49:02.086Z","p":"P012","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}

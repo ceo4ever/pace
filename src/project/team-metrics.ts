@@ -10,9 +10,10 @@ import { completeReviewEvent, readEvents, type ProjectEvent } from "./event-log.
 import { gateFailureReasons } from "./metrics.ts";
 import { collectHandoffs, ownerReplyAfterProposal, unlinkedRequestEvent, type DeliveryClaim, type HandoffReport } from "./handoff-report.ts";
 import { observeHandoffLedger } from "./handoff-store.ts";
-import { HandoffError } from "./handoff-files.ts";
+import { fields, HandoffError } from "./handoff-files.ts";
+import { validTeamName } from "../team/model.ts";
 import { loadTeam, safeTeamPath } from "../team/store.ts";
-import { readCompletionProof, readRequestCoverageProof, readRequestSupportingReceipts, portableRequestInputHash, representativeProofBinding, representativeScopeUnconfirmed, observationCovered, receiptPurpose, canonicalTeamLogRef, TeamReceiptReads, MANUAL_KEYS, readTeamInput, readTeamEvents, requestCovered, scopeConfirmed, scopeObserved, scopedRequestCovered, type ComparisonContext, type Coverage, type ManualKey, type PortableRequestCoverageProof, type TeamInput, type TeamPeriod } from "./team-input.ts";
+import { readCompletionProof, readRequestCoverageProof, readRequestSupportingReceipts, portableRequestInputHash, representativeProofBinding, representativeScopeUnconfirmed, metadataJson, observationCovered, receiptPurpose, canonicalTeamLogRef, TeamReceiptReads, MANUAL_KEYS, readTeamInput, readTeamEvents, requestCovered, scopeConfirmed, scopeObserved, scopedRequestCovered, type ComparisonContext, type Coverage, type ManualKey, type PortableRequestCoverageProof, type TeamInput, type TeamPeriod } from "./team-input.ts";
 
 export interface Measure { observed: number | null; total: number | null; coverage: "uncollected" | "reported-partial" | "reported-complete"; refs: string[] }
 export interface MeasurementSnapshot {
@@ -33,9 +34,69 @@ export interface TeamMetrics {
   roles: { name: string; workMs: number | null; outputTokens: { tool: string; output: number | null }[]; source: "reported-role-binding" | "unconfirmed"; refs: string[] }[];
   workerContext: { workMs: number | null; outputs: { tool: string; output: number | null }[]; attribution: "cwd-window-proxy-not-role" };
   unusedRoleCandidates: { role: string; coverage: "unconfirmed"; reason: string }[];
+  requiredRoleNonParticipation?: { role: string; status: "condition-not-triggered" | "unconfirmed" | "unused"; refs: string[] }[];
   handoffs: { kinds: Record<string, number>; agents: Record<string, Record<string, number>>; open: string[] };
   snapshot: MeasurementSnapshot; warnings: string[];
 }
+function requiredRolePolicies(root: string, inputs?: InputTrace): Map<string, boolean> {
+  let path: string;
+  try {
+    path = safeTeamPath(root, ".pace/team/required-roles.json");
+  } catch {
+    throw new HandoffError("필수 역할 표지의 경로·링크 오류");
+  }
+  let value: unknown;
+  try {
+    value = metadataJson(path, 32768, inputs);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    inputs?.absent?.(path);
+    return new Map();
+  }
+
+  fields(value, ["version", "roles"]);
+  if (value.version !== 1 || !Array.isArray(value.roles)) throw new HandoffError("필수 역할 표지 버전·역할 목록 오류");
+  const policies = new Map<string, boolean>();
+  for (const policy of value.roles as unknown[]) {
+    fields(policy, ["role", "scope", "conditional"]);
+    if (typeof policy.role !== "string" || !validTeamName(policy.role) || policies.has(policy.role) ||
+        (policy.scope !== "hub" && policy.scope !== "worktree") || typeof policy.conditional !== "boolean") {
+      throw new HandoffError("필수 역할 표지의 이름·중복·호출 위치·조건부 여부 오류");
+    }
+    policies.set(policy.role, policy.scope === "hub" || policy.conditional);
+  }
+  return policies;
+}
+
+function classifyRequiredRoleNonParticipation(
+  roles: string[], dir: string, period: TeamPeriod, events: readonly ProjectEvent[],
+  receipts: TeamReceiptReads, inputs?: InputTrace,
+): NonNullable<TeamMetrics["requiredRoleNonParticipation"]> {
+  if (!roles.length) return [];
+  const observations = new Map(roles.map((role) => [role, {
+    statuses: new Set<"condition-not-triggered" | "unused">(),
+    refs: new Set<string>(),
+  }]));
+  for (const event of events) {
+    if (event.type !== "note" || event.src !== "team-role-nonparticipation" || !event.ref) continue;
+    const receipt = receipts.read(dir, event.ref, inputs);
+    if (!receipt) continue;
+    const match = /^role-observation:([^:]+):(condition-not-triggered|none):/.exec(receipt.evidence.sourceRef as string);
+    if (!match) continue;
+    const role = match[1]!;
+    const kind = match[2] === "none" ? "none" : "condition-not-triggered";
+    const observation = observations.get(role);
+    if (!observation || !observationCovered(dir, event.ref, period, role, kind, inputs, receipts)) continue;
+    observation.statuses.add(kind === "none" ? "unused" : kind);
+    observation.refs.add(event.ref);
+  }
+  return [...observations].map(([role, { statuses, refs }]) => ({
+    role,
+    status: statuses.size === 1 ? [...statuses][0]! : "unconfirmed",
+    refs: [...refs].sort(),
+  }));
+}
+
 function sumReviewed(rows: readonly ProjectEvent[], key: "blocking" | "should_fix", complete: boolean): number | null {
   if (!complete) return null;
   let total = 0;
@@ -288,7 +349,14 @@ export function collectTeamMetrics(repo: Repo, ref: ProjectRef, stats: FullStats
     return { name, workMs: hasProof ? r!.workMs : null, outputTokens: hasProof ? r!.outputTokens : [], source: hasProof ? "reported-role-binding" : "unconfirmed", refs: r?.coverage.refs ?? [] };
   });
   const declared = new Set([...scopedEvents.flatMap((e) => e.role ? [e.role.name] : []), ...periodRows.flatMap((r) => [r.from, r.to].filter((a) => a.startsWith("agent:")).map((a) => a.slice(6)))]);
-  const unusedRoleCandidates = members.filter((m) => !declared.has(m.name) && !roles.some((r) => r.name === m.name && r.source === "reported-role-binding")).map((m) => ({ role: m.name, coverage: "unconfirmed" as const, reason: "참여/선언 기록 없음은 역할 미사용의 증명이 아니다" }));
+  for (const role of roles) if (role.source === "reported-role-binding") declared.add(role.name);
+  const policies = adopted ? requiredRolePolicies(repo.root, inputs) : new Map<string, boolean>();
+  const withoutParticipation = members.map((member) => member.name).filter((name) => !declared.has(name));
+  const requiredRoleNonParticipation = classifyRequiredRoleNonParticipation(
+    withoutParticipation.filter((name) => policies.get(name)), dir, period, scopedEvents, receipts, inputs,
+  );
+  const unusedRoleCandidates = withoutParticipation.filter((name) => !policies.get(name))
+    .map((role) => ({ role, coverage: "unconfirmed" as const, reason: "참여/선언 기록 없음은 역할 미사용의 증명이 아니다" }));
   if (!period.start || !period.closed) warnings.push("닫힌 동일 비교 범위 미확인");
   if (handoff?.auditCoverage === "metadata-only") warnings.push("로컬 본문 없음: metadata 신고 근거만 남아 원문 재감사 불가");
   warnings.push("신고 actor/ref와 complete는 사람 인증이 아니며 실제 완전성은 현장 감사 대상", "질문·승인·손작업 열은 겹칠 수 있어 사용자 개입 총합을 내지 않는다", "cwd/구간 토큰과 작업 시간은 역할별 실제 사용량이 아니다");
@@ -307,7 +375,7 @@ export function collectTeamMetrics(repo: Repo, ref: ProjectRef, stats: FullStats
     unknown: { request_events: requests.comparisonUnconfirmed + requests.legacyUnlinkedEvents, recipient_events: requests.recipientUnknownEvents, manual_fields: MANUAL_KEYS.filter((key) => measures[key].total === null).length },
     limits: warnings,
   };
-  const metrics: TeamMetrics = { version: 1, period, ...(adopted ? { requestCoverageInputHash } : {}), requests, ownerInterventionTotal: null, manual: { roleCorrections: measures.owner_manual_role_corrections, fileEdits: measures.owner_file_edits, commandRuns: measures.owner_command_runs, extraInstructions: measures.coordinator_extra_instructions }, normal: { roleAssignments: measures.normal_role_assignment, approvals: measures.owner_approvals, mergeApprovals: measures.owner_merge_approvals, deployApprovals: measures.owner_deploy_approvals, scopeApprovals: measures.owner_scope_approvals }, quality, roles, workerContext: { workMs: stats.project.workMs, outputs: stats.tokens.map((t) => ({ tool: t.tool, output: t.status === "recorded" ? t.usage.output : null })), attribution: "cwd-window-proxy-not-role" }, unusedRoleCandidates, handoffs: { kinds: handoff?.kinds ?? {}, agents: handoff?.agents ?? {}, open: handoff?.open ?? [] }, snapshot, warnings };
+  const metrics: TeamMetrics = { version: 1, period, ...(adopted ? { requestCoverageInputHash } : {}), requests, ownerInterventionTotal: null, manual: { roleCorrections: measures.owner_manual_role_corrections, fileEdits: measures.owner_file_edits, commandRuns: measures.owner_command_runs, extraInstructions: measures.coordinator_extra_instructions }, normal: { roleAssignments: measures.normal_role_assignment, approvals: measures.owner_approvals, mergeApprovals: measures.owner_merge_approvals, deployApprovals: measures.owner_deploy_approvals, scopeApprovals: measures.owner_scope_approvals }, quality, roles, workerContext: { workMs: stats.project.workMs, outputs: stats.tokens.map((t) => ({ tool: t.tool, output: t.status === "recorded" ? t.usage.output : null })), attribution: "cwd-window-proxy-not-role" }, unusedRoleCandidates, ...(requiredRoleNonParticipation.length ? { requiredRoleNonParticipation } : {}), handoffs: { kinds: handoff?.kinds ?? {}, agents: handoff?.agents ?? {}, open: handoff?.open ?? [] }, snapshot, warnings };
   receipts.assertStable();
   return { metrics, adopted, ...(handoff ? { handoffs: handoff } : {}) };
 }

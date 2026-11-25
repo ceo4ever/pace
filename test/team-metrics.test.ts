@@ -57,7 +57,7 @@ function confirmRequestInput(dir: string, run: ReturnType<typeof fixture>["run"]
   input.request_coverage.confirmationRef = ref;
   writeFileSync(measurement, JSON.stringify(input));
 }
-function roleReceipt(dir: string, name: string, period: { start: string | null; end: string; unit: string }, role: string, kind: "activity" | "none") {
+function roleReceipt(dir: string, name: string, period: { start: string | null; end: string; unit: string }, role: string, kind: "activity" | "none" | "condition-not-triggered") {
   receipt(dir, name, period);
   const path = join(dir, name), proof = JSON.parse(readFileSync(path, "utf8"));
   proof.sourceRef = `role-observation:${role}:${kind}:fixture:observation`;
@@ -233,6 +233,209 @@ function mergeFixture(check: string | null = "true", security = "true", measurem
   };
   return { f, worktree, run, dir, reviewed };
 }
+
+test("필수 역할 표지와 구간 영수증이 세 비참여 상태를 만든다", () => {
+  const f = fixture();
+  for (const name of ["hub-planner", "conditional-worker", "missing-hub", "regular-worker", "active-hub"]) {
+    createTeamMember(f.root, name, "maker");
+  }
+  const policies = [
+    { role: "hub-planner", scope: "hub", conditional: false },
+    { role: "conditional-worker", scope: "worktree", conditional: true },
+    { role: "missing-hub", scope: "hub", conditional: false },
+    { role: "regular-worker", scope: "worktree", conditional: false },
+    { role: "active-hub", scope: "hub", conditional: false },
+  ];
+  writeFileSync(join(f.root, ".pace/team/required-roles.json"), JSON.stringify({ version: 1, roles: policies }));
+  const period = { start: "2026-01-01T00:00:00Z", end: "2026-01-02T00:00:00Z", unit: "representative-task", closed: true, completionRef: "scope.json" };
+  receipt(f.dir, "scope.json", period);
+  roleReceipt(f.dir, "active.json", period, "active-hub", "activity");
+  writeFileSync(join(f.dir, "TEAM-MEASUREMENT.json"), JSON.stringify({
+    version: 1, period,
+    role_observations: [{
+      role: "active-hub", workMs: 42, outputTokens: [{ tool: "Codex", output: 8 }],
+      coverage: { status: "partial", reportedBy: "coordinator", refs: ["active.json"] },
+    }],
+  }));
+  const note = (ref: string, ts = "2026-01-01T01:00:00Z") => assert.equal(recordEvent(f.dir, {
+    ts, p: "P001", type: "note", by: "coordinator", src: "team-role-nonparticipation", ref, msg: "합성 역할 비참여 관측",
+  }), true);
+  roleReceipt(f.dir, "condition.json", period, "hub-planner", "condition-not-triggered");
+  roleReceipt(f.dir, "unused.json", period, "conditional-worker", "none");
+  roleReceipt(f.dir, "other-period.json", { ...period, end: "2026-01-02T01:00:00Z" }, "missing-hub", "none");
+  roleReceipt(f.dir, "out-of-window.json", period, "missing-hub", "condition-not-triggered");
+  roleReceipt(f.dir, "contradicts-activity.json", period, "active-hub", "none");
+  for (const ref of ["condition.json", "unused.json", "other-period.json", "contradicts-activity.json"]) note(ref);
+  note("out-of-window.json", "2026-01-03T00:00:00Z");
+  const get = () => {
+    const report = f.run("project", "stats", "P001", "--json");
+    assert.equal(report.status, 0, report.stderr);
+    return JSON.parse(report.stdout).team;
+  };
+  const team = get();
+  assert.deepEqual(team.requiredRoleNonParticipation, [
+    { role: "conditional-worker", status: "unused", refs: ["unused.json"] },
+    { role: "hub-planner", status: "condition-not-triggered", refs: ["condition.json"] },
+    { role: "missing-hub", status: "unconfirmed", refs: [] },
+  ]);
+  assert.deepEqual(team.unusedRoleCandidates.map((entry: { role: string }) => entry.role), ["regular-worker"]);
+  assert.equal(team.roles.find((entry: { name: string }) => entry.name === "active-hub").workMs, 42);
+  const text = f.run("project", "stats", "P001");
+  assert.equal(text.status, 0, text.stderr);
+  assert.match(text.stdout, /conditional-worker: 실제 미사용/);
+  assert.match(text.stdout, /hub-planner: 호출 조건 미발생/);
+  assert.match(text.stdout, /missing-hub: 기록 부족\(미확인\)/);
+  roleReceipt(f.dir, "conflict.json", period, "hub-planner", "none");
+  note("conflict.json");
+  assert.deepEqual(get().requiredRoleNonParticipation[1], {
+    role: "hub-planner", status: "unconfirmed", refs: ["condition.json", "conflict.json"],
+  });
+});
+
+test("필수 역할 표지의 안전하지 않은 입력은 팀 측정을 보류한다", () => {
+  const f = fixture();
+  createTeamMember(f.root, "hub", "maker");
+  adoptTeamMetrics(f.root, `projects/${f.dir.split("/").at(-1)}`);
+  const path = join(f.root, ".pace/team/required-roles.json");
+  const role = { role: "hub", scope: "hub", conditional: false };
+  const valid = JSON.stringify({ version: 1, roles: [role] });
+  for (const data of [
+    JSON.stringify({ version: 1, roles: [role, role] }),
+    JSON.stringify({ version: 1, roles: [{ ...role, role: "../hub" }] }),
+    JSON.stringify({ version: 1, roles: [{ ...role, required: true }] }),
+    `{"version":1,"version":1,"roles":[]}`,
+    Buffer.from([0xff]),
+    valid.padEnd(32769, " "),
+  ]) {
+    writeFileSync(path, data);
+    assert.equal(f.run("project", "stats", "P001", "--json").status, 2);
+  }
+  const syntheticCredential = ["sk", "a".repeat(24)].join("-");
+  writeFileSync(path, JSON.stringify({ version: 1, roles: [{ ...role, role: syntheticCredential }] }));
+  const secret = f.run("project", "stats", "P001", "--json");
+  assert.equal(secret.status, 2);
+  assert.match(secret.stderr + secret.stdout, /비밀 후보/);
+  assert.ok(!(secret.stderr + secret.stdout).includes(syntheticCredential));
+  const outside = join(tempDir("pace-required-role-marker-"), "roles.json");
+  writeFileSync(outside, valid);
+  unlinkSync(path);
+  linkSync(outside, path);
+  assert.equal(f.run("project", "stats", "P001", "--json").status, 2);
+  assert.equal(readFileSync(outside, "utf8"), valid);
+  if (process.platform !== "win32") {
+    unlinkSync(path);
+    symlinkSync(outside, path);
+    assert.equal(f.run("project", "stats", "P001", "--json").status, 2);
+  }
+});
+
+test("필수 역할 표지는 finish와 merge에서 비참여를 기록하고 기존 일반 후보를 보호한다", () => {
+  const { f, worktree, dir, run, reviewed } = mergeFixture();
+  for (const name of ["hub", "conditional-worker", "regular-worker", "unknown-hub", "active-hub"]) createTeamMember(worktree, name, "maker");
+  const marker = ".pace/team/required-roles.json";
+  writeFileSync(join(worktree, marker), JSON.stringify({ version: 1, roles: [
+    { role: "hub", scope: "hub", conditional: false },
+    { role: "conditional-worker", scope: "worktree", conditional: true },
+    { role: "unknown-hub", scope: "hub", conditional: false },
+    { role: "active-hub", scope: "hub", conditional: false },
+  ] }));
+  const stats = JSON.parse(run("project", "stats", "P001", "--json").stdout);
+  const period = { start: stats.project.start, end: new Date().toISOString(), unit: "representative-task", closed: true, completionRef: "scope.json" };
+  receipt(dir, "scope.json", period);
+  roleReceipt(dir, "active.json", period, "active-hub", "activity");
+  roleReceipt(dir, "condition.json", period, "hub", "condition-not-triggered");
+  roleReceipt(dir, "unused.json", period, "conditional-worker", "none");
+  for (const ref of ["condition.json", "unused.json"]) assert.equal(recordEvent(dir, {
+    ts: period.end, p: "P001", type: "note", by: "coordinator", src: "team-role-nonparticipation", ref,
+    msg: "합성 역할 비참여 관측",
+  }), true);
+  writeFileSync(join(dir, "TEAM-MEASUREMENT.json"), JSON.stringify({
+    version: 1, period,
+    role_observations: [{
+      role: "active-hub", workMs: 42, outputTokens: [],
+      coverage: { status: "partial", reportedBy: "coordinator", refs: ["active.json"] },
+    }],
+  }));
+  assert.equal(f.git("-C", worktree, "add", "-A").status, 0);
+  assert.equal(f.git("-C", worktree, "commit", "-qm", "synthetic-required-role-policies").status, 0);
+  const held = run("project", "finish", "P001");
+  assert.notEqual(held.status, 0);
+  assert.match(held.stdout + held.stderr, /알려진 미사용 검토 후보/);
+  const retro = join(dir, "TEAM-RETROSPECTIVE.json");
+  const value = JSON.parse(readFileSync(retro, "utf8"));
+  value.unusedRoles = [{ role: "regular-worker", coverage: "unconfirmed", refs: [] }];
+  writeFileSync(retro, JSON.stringify(value));
+  reviewed("synthetic-report-regular-role", retro, join(dir, "log.jsonl"));
+
+  const checkMetrics = (report: string) => {
+    assert.match(report, /필수 역할 비참여 hub: 호출 조건 미발생/);
+    assert.match(report, /필수 역할 비참여 conditional-worker: 실제 미사용/);
+    assert.match(report, /필수 역할 비참여 unknown-hub: 기록 부족\(미확인\)/);
+    assert.match(report, /active-hub: 작업 ms 42/);
+    assert.doesNotMatch(report, /필수 역할 비참여 active-hub/);
+  };
+  const finished = run("project", "finish", "P001");
+  assert.equal(finished.status, 0, finished.stdout + finished.stderr);
+  checkMetrics(readFileSync(join(dir, "METRICS.md"), "utf8"));
+  const head = f.git("-C", worktree, "rev-parse", "HEAD").stdout.trim();
+  const merged = f.run("project", "merge", "P001", "--yes", "--commit", head);
+  assert.equal(merged.status, 0, merged.stdout + merged.stderr);
+  checkMetrics(readFileSync(join(f.dir, "METRICS.md"), "utf8"));
+});
+
+test("필수 역할 표지와 별도 호출 자료는 미채택 프로젝트에 팀 섹션을 만들지 않는다", () => {
+  const { f, worktree, dir, run } = mergeFixture("true", "true", false);
+  createTeamMember(worktree, "hub", "maker");
+  writeFileSync(join(worktree, ".pace/team/required-roles.json"), '{"version":1,"roles":[{"role":"hub","scope":"hub","conditional":false}]}');
+  writeFileSync(join(dir, "synthetic-call-metadata.json"), '{"role":"hub","durationMs":42}');
+  unlinkSync(join(dir, "TEAM-RETROSPECTIVE.json"));
+  const ts = new Date().toISOString();
+  assert.equal(recordEvent(dir, { ts, p: "P001", type: "note", by: "agent", src: "agent-call", ref: "synthetic-call-metadata.json", msg: "합성 호출 자료 참조" }), true);
+  assert.equal(JSON.parse(run("project", "stats", "P001", "--json").stdout).team, undefined);
+  const stats = run("project", "stats", "P001", "--write");
+  assert.equal(stats.status, 0, stats.stdout + stats.stderr);
+  assert.doesNotMatch(readFileSync(join(dir, "METRICS.md"), "utf8"), /## 팀 측정/);
+  assert.equal(f.git("-C", worktree, "add", "-A").status, 0);
+  assert.equal(f.git("-C", worktree, "commit", "-qm", "synthetic-call-metadata").status, 0);
+  const finish = run("project", "finish", "P001");
+  assert.equal(finish.status, 0, finish.stdout + finish.stderr);
+  assert.ok(!readdirSync(dir).includes("TEAM-FINISH.json"));
+
+  const log = join(dir, "log.jsonl");
+  const originalLog = readFileSync(log, "utf8");
+  assert.equal(recordEvent(dir, { ts, p: "P001", type: "question", by: "agent", to: "owner", requestId: "actual-question", msg: "합성 소통 사건" }), true);
+  const summary = JSON.parse(run("project", "stats", "P001", "--json").stdout).team;
+  assert.ok(summary);
+  assert.equal(summary.requests.ownerQuestionEvents, 1);
+  assert.equal(summary.requiredRoleNonParticipation, undefined);
+
+  writeFileSync(log, originalLog);
+  const rel = `projects/${dir.split("/").at(-1)}`;
+  const store = new HandoffStore(worktree, "P001", rel);
+  store.record({
+    protocol: "pace-handoff", v: 1, id: "real-request", kind: "decision_request", from: "coordinator", to: "owner",
+    requestId: "real-request", data: { interpretation: false },
+  }, "SYNTHETIC actual handoff");
+  const ledgerSummary = JSON.parse(run("project", "stats", "P001", "--json").stdout);
+  assert.equal(ledgerSummary.team.requests.ownerIntendedRequests, 1);
+  assert.equal(ledgerSummary.team.requiredRoleNonParticipation, undefined);
+  assert.equal(ledgerSummary.team.requestCoverageInputHash, undefined);
+});
+
+test("필수 역할 표지가 Git 검증 대상에서 빠지면 finish를 보류한다", () => {
+  const { worktree, run, reviewed } = mergeFixture();
+  createTeamMember(worktree, "hub", "maker");
+  const marker = ".pace/team/required-roles.json";
+  const config = join(worktree, marker);
+  const ignore = join(worktree, ".gitignore");
+  writeFileSync(ignore, `/${marker}\n`);
+  reviewed("synthetic-ignore-required-role-marker", ".pace/team/agents/hub.md", ignore);
+  writeFileSync(config, '{"version":1,"roles":[{"role":"hub","scope":"hub","conditional":false}]}');
+  const finish = run("project", "finish", "P001");
+  assert.notEqual(finish.status, 0);
+  assert.match(finish.stdout + finish.stderr, /Git 인덱스에 없다: \.pace\/team\/required-roles\.json/);
+});
+
 for (const removeWorktree of [false, true]) test(`project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=${removeWorktree})`, () => {
   const { f, worktree, run, dir } = mergeFixture();
   const finish = run("project", "finish", "P001"); assert.equal(finish.status, 0, finish.stdout + finish.stderr);
