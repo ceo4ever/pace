@@ -256,3 +256,4 @@
 {"ts":"2026-11-25T01:10:28.967Z","p":"P009","type":"decision","by":"agent","msg":"main 기준 리베이스에서 양쪽 브레인 기록과 코드형 비밀 검사 및 P009 실패 기록을 보존하고 공용 상태는 main을 유지했다","ref":"projects/P009_261123_프로젝트_맞춤_에이전트_팀/PROJECT-CLOSE.md"}
 {"ts":"2026-11-25T01:17:57.200Z","p":"P009","type":"finish","by":"cli","msg":"finish","ok":true}
 {"ts":"2026-11-25T01:17:57.200Z","p":"P009","type":"gate","by":"cli","msg":"finish","ok":true,"src":"finish:877f46c872c1739ebe01cb0e","data":{"finish":1}}
+{"ts":"2026-11-25T01:18:50.260Z","p":"P009","type":"merge","by":"cli","msg":"merge: 사용자 승인","ok":true,"data":{"approved":1,"commits":13}}
