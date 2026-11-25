@@ -16,20 +16,20 @@
   2. owner에게 보고하는 범위가 넓고 모호하다.
   3. owner 대신 결정할 기준이 없다.
 - **근거(2026-11-24 확인)**:
-  - `skills/pace-project-dev/references/coordinator.md` 메시지별 처리: "`escalation`: 사용자에게 그대로 올린다" — 문제 1의 직접 원인. P009 브랜치 수정본도 전달 기록 방식(`--to coordinator|captain`)만 바꾸고 전달 흐름은 유지한다(`git diff main...project/P009`).
+  - `skills/pace-project-dev/references/coordinator.md:27` 메시지별 처리: `escalation`은 작업자 기록(`--to coordinator`)을 확인하고 사용자에게 실제 전달하며 `--to owner`로 기록한다 — 허브가 풀지 않고 owner에게 넘기는 흐름이 문제 1의 직접 원인. P009(병합 `08c6306`)는 수신자 기록(`--to owner|coordinator`, `src/project/event-log.ts:27`)만 더했고 전달 흐름은 main에 그대로다.
   - 같은 문서 "사용자에게 올린다": "판단이 서지 않는 것", "메모리에 선호가 없는데 결과가 크게 갈리는 선택", "비용이 드는 것" — 형용사형 기준이라 모델이 안전한 쪽(올림)으로 해석한다(문제 2).
   - "대신 답한다"는 열린 허용 목록(구현 세부·문서 표현·순서 등)이라 목록 밖은 모두 올라간다(문제 3).
   - `SKILL.md` §6 멈춤 조건은 워크트리 PM이 "코디네이터에게, 아니면 사용자에게" 묻게 하고, "같은 실패 세 번"도 멈춤 조건이다. `src/project/harness.ts` `workerSpec`은 작업자에게 "결정이 필요하면 코디네이터에게 묻는다"만 준다.
-  - 도구가 강제하는 결정 경계는 waiver `by: user`(`src/project/pre-review.ts:112`), review-note `--by pm|user`(`src/agent/verify-cli.ts:250`), merge `--yes`뿐이며 누가 썼는지는 검증하지 않는다.
+  - 도구가 강제하는 결정 경계는 waiver `by: user`(`src/project/pre-review.ts:124`), review-note `--by pm|user`(`src/agent/verify-cli.ts:250`), merge `--yes`뿐이며 누가 썼는지는 검증하지 않는다.
 - **고른 길**: 기본값을 뒤집는다 — "허용 목록에 있으면 PM 결정"에서 "**사용자 전용 닫힌 목록에 걸릴 때만 owner, 나머지는 PM이 결정하고 사후 요약**"으로. blocking은 보고 사유가 아니라 허브의 공동 해결 대상이다. 정본을 한 곳(결정 권한 문서)에 두고 coordinator·SKILL §6·reviewer·작업자 지시가 참조한다.
 - **버린 길**: (1) 기존 "올린다" 목록에 예외 문구 추가 — 열린 형용사 기준이 남아 모호함이 그대로다. (2) 자신감 점수로 올림 여부 결정 — 모델별 보정이 달라 재현되지 않는다. (3) 도구로 사람 결정을 인증(대화형 확인·Telegram 승인 콜백) — 범위가 커서 별도 idea로 둔다.
-- **관련·순서**: P009(같은 `coordinator.md`·`harness.ts`·`docs/WORK-PROCESS.md` 수정 중) **병합 뒤 착수**. BL261124_04(PM 위험 수용·증거 미확인 규칙)는 이 백로그의 정본을 참조하므로 이 백로그를 먼저 한다. `reviewer.md` 반복 실패 절의 영향 분류는 이 정본으로 옮기고 BL04가 그 위에 예산 규칙을 얹는다.
+- **관련·순서**: P009(같은 `coordinator.md`·`harness.ts`·`docs/WORK-PROCESS.md` 수정) **병합 뒤 착수** — 병합 완료(`08c6306`), 근거는 병합 뒤 main 기준으로 대조했다. BL261124_04(PM 위험 수용·증거 미확인 규칙)는 설계에서 이 정본을 참조하도록 맞추므로(BL04 문서에는 아직 참조가 없다) 이 백로그를 먼저 한다. `reviewer.md` 반복 실패 절의 영향 분류는 이 정본으로 옮기고 BL04가 그 위에 예산 규칙을 얹는다(BL04 BR01:15의 "심각한 오류" 문구 갱신은 BL04 설계로 넘긴다). BL261125_01(문제 해결 전문가 에이전트)의 BR02가 B 절차의 "재현·원인 판별"을 그 에이전트 호출로 바꿀 예정이다 — 이 백로그가 B 절차를 먼저 두고 BL261125_01이 그 단계를 바꾼다.
 
 ## 진행 현황
 
 | 브리프 | 상태 | 선행 | 프로젝트 | 비고 |
 |---|---|---|---|---|
-| [BR01 결정 권한 정본과 어드바이저 절차](BR01_결정_권한_정본과_어드바이저_절차.md) | 대기 | P009 병합 | — | 문서 위주 + workerSpec |
+| [BR01 결정 권한 정본과 어드바이저 절차](BR01_결정_권한_정본과_어드바이저_절차.md) | 대기 | P009 병합 | — | 문서 위주 + workerSpec + 팀 원본 보충 + RULES 템플릿 한 줄 |
 
 ## 결정·기록
 
@@ -40,3 +40,9 @@
 | 2026-11-24 18:02 | 백로그 생성 — owner 요청("허브 pm이 … blocking 된 경우 사용자에게 보고 … advisor 역할을 해야", "보고하는 것이 너무 넓고 모호", "대부분을 사용자 대신 의사결정을 해야하는 기준 … 최신 llm에 적용 가능한", "백로그 먼저 만들어 둬"). 착수는 P009 병합 뒤, BL04보다 먼저 |
 | 2026-11-24 18:03 | 교차 검토(Codex) 전체 1회 R1 fail — blocking 2(A-1이 문장 기준이라 실질 범위 축소를 놓침, 기존 위임·승인 확인 조건 누락), should_fix 1(결정 회신 뒤 재개까지 관찰·시도 세는 법·보류 재개 조건), note 1(결정 주체 판정과 실행 전 승인 확인을 두 층으로, 2회·main 수정 근거) — 모두 BR01에 반영 |
 | 2026-11-24 18:04 | 범위 재검토 R2 fail — R1 blocking 2·should_fix 해소, 남은 blocking 1(A-5 "승인 원문 필요"가 이미 승인된 행위를 다시 owner 결정으로 돌림)·should_fix 1(A-1 영향 불분명 시 바로 요청)은 PM 결정으로 반영: A-5는 새 승인만, 기존 승인은 실행 전 확인 층 / A-1은 PM 확인 뒤 남을 때만 요청. 예산(전체 1 + 범위 1)을 다 써서 3차 검토 없이 프로젝트 사전 검토에서 확인 |
+| 2026-11-25 14:17 | 착수 전 검토(제우스) — P009 병합 뒤 근거 대조: 낡은 사실 3(--to 값·pre-review 행·브레인 수렴 과장), 설계 공백 5(팀 역할 정의 충돌, 소통 원장 미사용, 푸시 실행 주체, 참조 누락, eval 관찰 불가)와 BL04 A-3 경계 — owner 결정으로 모두 BR01에 반영. 푸시는 owner 승인·허브 실행(owner 확인). 3차 verify 없음, 프로젝트 사전 검토에서 확인 |
+| 2026-11-25 14:23 | 팀 역할 실행 전 대조 계약 v1(`src/team/model.ts:24`) 충돌 → owner 결정 A: 계약 유지, 정본(`decision-rights.md`) 참조 보충 문단을 원본 4개·템플릿·pace-team 규칙에 둔다. 계약 v2 개정은 하지 않음 — BR01 범위·제외·완료 기준에 반영 |
+| 2026-11-25 16:14 | 독립 검토(pace-reviewer) fail — blocking 1(A-3 제공자 대체 미정), should_fix 10·note 4. 반영: 참조 누락 추가(goal-review·verification·SKILL §6·:65·:71·coordinator :4·:38·:80·member 템플릿·store duty·pace-team :26), 형용사형 기준 제거를 참조 전체 grep·구조 시험으로 확대, "심각한 오류"·"승인된 설계와 다른 방향"은 B(허브 결정)로 옮김(BL04 BR01:15 문구는 BL04 설계로), 팀 보충 문단을 조사→보류·HANDOFF 수신자 결정 요청→A 판정→독립 작업 계속으로(계약 v1 약화 아님), 소통 원장 대응 정정(`approved`는 delegate basis, 허브 실행은 `decision_reply` ID·지문을 log `--ref` 영수증에, 원장은 프로젝트별 선택), roleInstruction 시험을 원본·workerSpec 문장 대조로, golden·구조 시험 갱신 명시, 병합 뒤 인수는 메모리 todo, eval 회귀·A-1·A-4·B1·S1 시나리오 추가, 공동 시도 2회는 초기값(가정)·BL04와 단위 다름, BL04 전 잠정 A-3 판정, `harness.ts` SECURITY 체크리스트, BL261125_01 관계 기록. blocking은 아래 owner 결정 B1로 해소 |
+| 2026-11-25 16:14 | owner 결정 — B1: 반대 회사 AI(다른 제공자)를 호출할 수 없으면 같은 회사 AI(같은 제공자 새 세션)로 폴백, TASK·백로그 검토 모두 PM이 진행하고 사유와 `cross: false`(교차 아님) 기록, 검토 생략만 A-3 "예". S1: 작은 도구 수정은 허브가 main에서 고치고 커밋·필요하면 재설치, owner에게는 사후 보고만(A-2 위임 예외), `templates/RULES.md`에 "프로젝트 하네스 안에서는 decision-rights.md가 우선한다" 한 줄 추가. BR01 범위·제외·완료 기준에 반영 |
+| 2026-11-25 16:31 | 독립 재검토 pass(blocking 0) — should_fix 반영: 도구 출력 문구를 참조로 바꿀 곳에 추가(`src/agent/verify.ts:5`·`:139` → B1 폴백 안내, `:138` 양쪽 미실행 → A-3 결정 요청, `src/agent/review-log.ts:169`·`:172` → B 이관·정본 포인터 `decision-rights.md`, 시험 `test/agent-verify.test.ts:54`·`test/agent-review-log.test.ts:51-52`)와 금지 문구 grep 대상 파일 목록 명시, 팀 원본을 "`.pace/team/agents/*.md` 전부"로(보충 문단 수신자에 호출자 반환 구성원 추가), BL04 연결 기록(BL04 BACKLOG 결정·기록), `src/team/store.ts` SECURITY 체크리스트, `templates/RULES.md:20` 인용 정정, 같은 제공자 폴백까지 실행 불가면 A-3. 착수 순서 BL261124_05 → BL261124_04 BR01 → BL261125_01 BR02 |
+| 2026-11-25 17:14 | BL261125_02(pace-team 신규·갱신 모드와 필수 역할) 연결 — 그 BR01·BR03·BR05는 이 백로그 BR01 병합 뒤 착수한다(같은 파일 `skills/pace-team/SKILL.md` ③ 절·`templates/team/member.md`·`.pace/team/agents/*.md` 원본과 `coordinator.md`를 함께 고치고, 결정 경계는 이 백로그 정본 `decision-rights.md`에 기댄다). 이 백로그 범위는 바뀌지 않음 |
