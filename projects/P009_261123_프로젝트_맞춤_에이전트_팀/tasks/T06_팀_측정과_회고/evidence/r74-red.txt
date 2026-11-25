@@ -1,0 +1,57 @@
+✔ R27 보안 검사와 기준 브랜치의 팀 채택을 첫 커밋 전에 검사한다 (기준 채택=false) (1476.879708ms)
+✔ R27 보안 검사와 기준 브랜치의 팀 채택을 첫 커밋 전에 검사한다 (기준 채택=true) (1187.028459ms)
+✖ R74 미채택 첫 스테이징 직전 기준 브랜치가 채택하면 실제 Git 반영 없이 보류한다 (1400.401458ms)
+✖ R74 실제 인덱스 설치가 실패하면 검증 후보도 객체·HEAD에 반영하지 않는다 (1401.598292ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5614.421
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2153:1
+✖ R74 미채택 첫 스테이징 직전 기준 브랜치가 채택하면 실제 Git 반영 없이 보류한다 (1400.401458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '35889307eb6012ec3c4d79ffcc867c830078203c\n'
+  - '4fe3b4af6a6ba354f31600ec47c5b3991883d0bc\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2188:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '35889307eb6012ec3c4d79ffcc867c830078203c\n',
+    expected: '4fe3b4af6a6ba354f31600ec47c5b3991883d0bc\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2194:1
+✖ R74 실제 인덱스 설치가 실패하면 검증 후보도 객체·HEAD에 반영하지 않는다 (1401.598292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'd979c9c61356aa6b5686688e3aad00830e36244b\n'
+  - 'f6b0b527ce34f3d0121f1315911b6cdb0fab4ac5\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2216:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'd979c9c61356aa6b5686688e3aad00830e36244b\n',
+    expected: 'f6b0b527ce34f3d0121f1315911b6cdb0fab4ac5\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

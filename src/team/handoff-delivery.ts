@@ -8,7 +8,7 @@ export interface DeliveryRoute { transport: "orca" | "external"; actor: string; 
 export function deliveryRoute(value: unknown): DeliveryRoute {
   fields(value, ["transport", "actor", "target", "sourceRef", "from"]);
   if (!["orca", "external"].includes(value.transport as string) || !actor(value.actor) || !sourceRef(value.sourceRef) || !shortText(value.target, 240) || !shortText(value.from, 240)) throw new HandoffError("전송 경로 형식 오류");
-  if (value.transport === "orca" && (value.actor === "captain" || !/^(?:term_|run:|dispatch:|orca_session_id:)[a-zA-Z0-9_-]+$/.test(value.target as string) || !/^(?:term_|orca_session_id:)[a-zA-Z0-9_-]+$/.test(value.from as string))) throw new HandoffError("Orca는 명시된 로컬 에이전트 경로만 허용하며 캡틴 도달 경로가 아니다");
+  if (value.transport === "orca" && (value.actor === "owner" || !/^(?:term_|run:|dispatch:|orca_session_id:)[a-zA-Z0-9_-]+$/.test(value.target as string) || !/^(?:term_|orca_session_id:)[a-zA-Z0-9_-]+$/.test(value.from as string))) throw new HandoffError("Orca는 명시된 로컬 에이전트 경로만 허용하며 사용자 도달 경로가 아니다");
   return value as unknown as DeliveryRoute;
 }
 function deliveryHeader(message: HandoffRecord, attemptId: string, route: DeliveryRoute, phase: string, extra: Record<string, unknown> = {}): HandoffHeader {
@@ -17,7 +17,7 @@ function deliveryHeader(message: HandoffRecord, attemptId: string, route: Delive
 export function prepareDelivery(store: HandoffStore, messageId: string, attemptId: string, inputRoute: unknown): { payloadPath: string; started: HandoffRecord; route: DeliveryRoute } {
   if (!identifier(attemptId) || attemptId.length > 70) throw new HandoffError("전송 시도 ID 오류");
   const route = deliveryRoute(inputRoute), rows = store.read(), message = referenced(rows, messageId);
-  if (route.actor === "captain" && message.to !== "captain") throw new HandoffError("캡틴 전달은 명시한 captain 수신 메시지/중계로 먼저 기록한다");
+  if (route.actor === "owner" && message.to !== "owner") throw new HandoffError("사용자 전달은 명시한 owner 수신 메시지/중계로 먼저 기록한다");
   requireBodies(store.context(true), rows, message);
   if (message.kind === "delegate") validateTransition(store.context(true), rows, structuredClone(message));
   const raw = store.bodies.read(message.bodyHash)!;

@@ -1,0 +1,46 @@
+{
+  "legacy-and-team-fifo": {
+    "expected": [
+      [
+        2,
+        2,
+        3000
+      ],
+      [
+        2,
+        2,
+        3000
+      ],
+      false,
+      2
+    ],
+    "actual": [
+      [
+        2,
+        2,
+        3000
+      ],
+      [
+        2,
+        2,
+        3000
+      ],
+      false,
+      2
+    ],
+    "matches": true
+  },
+  "new-owner-existing-user": {
+    "expected": [
+      0,
+      0,
+      1
+    ],
+    "actual": [
+      0,
+      0,
+      1
+    ],
+    "matches": true
+  }
+}

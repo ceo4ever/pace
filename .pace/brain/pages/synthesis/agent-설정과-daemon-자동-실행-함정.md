@@ -24,3 +24,6 @@ status: active
 - **stop 직후 start**: `pace daemon stop` 직후 바로 `start`하면 서비스가 뜨지 않은 사례가 있다(두 번째 start로 기동, 이슈 daemon-stop-직후-start-무시). 재기동 스크립트는 상태가 stopped가 된 것을 확인한 뒤 start한다.
 - **읽기 전용 ACP 모드**: Claude ACP plan 모드는 작업 폴더 밖 읽기를 권한 요청 없이 실행한다 — 읽기 전용은 default 모드 + 강제 거절(main a3dfdbd, [[pace-agent-acp-실측]]). 쓰기 모드에서도 작업사본 안 읽기 전용 셸은 PACE 승인 없이 실행된다.
 
+## 근거 변경 대조 (2026-11-24)
+
+autostart.ts의 최신 두 변경은 macOS plist PATH 및 강제 종료 뒤 launchctl list로 로드 여부를 먼저 확인하는 경로다(521e3b8). Windows HKCU Run/VBS·소유권 확인의 위 주장을 바꾸지 않는다. 현재 해당 분기와 최근 diff를 대조했고 실제 재로그온이나 사용자 daemon 조작은 하지 않았다. macOS start의 성공 요청은 실제 준비 완료와 구별한다.

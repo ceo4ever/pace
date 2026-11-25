@@ -1,3 +1,5 @@
+import { compareTeam, formatTeamComparison } from "./project/team-comparison.ts";
+import { HandoffError } from "./project/handoff-files.ts";
 import { executeTest } from "./test-runner/runner.ts";
 import { dashboardState as dashboardPresence } from './project/dashboard-layout.ts';
 import { generateDashboard, refreshDashboard } from "./project/dashboard.ts";
@@ -170,9 +172,10 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace project check <P###> <T##>                커밋 게이트 확인 — TASK-CLOSE (worktree)
   pace project done <P###> <T##>                 check 통과 시 상태 완료 — TASK.md·태스크 표·같은 번호 브리프·빈 커밋 칸 (worktree, 커밋은 직접)
   pace project finish <P###>                     마감 하네스 → 병합 대기 (worktree에서만)
-  pace project merge <P###> [--yes]              ff 병합·정리 (main에서만, 기본은 요약만)
-  pace project log <P###> [T##] --type <decision|change|review|question|answer|escalation|note> --msg <한 줄> [--to captain|coordinator] [--src 출처] [--ref 파일] [--request-id 식별자]
+  pace project merge <P###> [--yes --commit SHA] ff 병합·정리 (팀은 승인 SHA 필수, 기본 요약)
+  pace project log <P###> [T##] --type <decision|change|review|question|answer|escalation|note> --msg <한 줄> [--to owner|coordinator] [--src 출처] [--ref 파일] [--request-id 식별자]
   pace project list                              프로젝트 상태·진행 태스크·worktree
+  pace project compare-team --before <JSON> --after <JSON> --kind <목적> [--json]  같은 조건의 팀 비교
   pace project stats <P###> [--json|--write]     러닝 시간·대기·게이트 실패·도구별 토큰 (--write: METRICS.md·비교 표 다시 만들기)
   pace onboard [--with claude|codex|gemini|cursor-agent] [-- <도구 옵션>]   온보딩을 바로 시작하며 LLM CLI 열기
   pace install [--dry-run] [--claude-dir <폴더>…] [--codex-dir <폴더>…]   각 LLM 도구(계정별 폴더 포함)에 부트 훅·대체 규칙·스킬 등록
@@ -673,6 +676,7 @@ function projectCommand(args: string[]): number {
       cwd: { type: "string" },
       from: { type: "string" },
       yes: { type: "boolean" },
+      commit: { type: "string" },
       base: { type: "string" },
       agent: { type: "string" },
       role: { type: "string" },
@@ -687,11 +691,14 @@ function projectCommand(args: string[]): number {
       by: { type: "string" },
       to: { type: "string" },
       "request-id": { type: "string" },
+      before: { type: "string" }, after: { type: "string" }, kind: { type: "string" },
+      "before-context": { type: "string" }, "after-context": { type: "string" },
       "no-launch": { type: "boolean" },
       launch: { type: "boolean" },
     },
   });
   if (values.role !== undefined && sub !== "start") throw new UsageError("project --role은 start의 팀 구성원 이름이다");
+  if (values.commit !== undefined && sub !== "merge") throw new UsageError("project --commit은 merge의 승인 대상 전체 SHA다");
   const cwd = values.cwd ?? process.cwd();
   const out = (text: string) => process.stdout.write(`${text}\n`);
   const need = (n: number, usage: string) => {
@@ -758,24 +765,32 @@ function projectCommand(args: string[]): number {
         return report.ok ? 0 : 1;
       }
       case "merge": {
-        need(1, "pace project merge <P###> [--yes]");
+        need(1, "pace project merge <P###> [--yes --commit SHA]");
         const r = repo();
         const plan = planMerge(r, positionals[0]!, values.yes);
+        if (values.commit !== undefined && !/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(values.commit)) throw new UsageError("--commit은 미리보기의 전체 SHA다");
+        if (values.yes && plan.teamTarget && values.commit !== plan.teamTarget) throw new UsageError(`팀 병합은 승인한 SHA가 필요하다: 미리보기 확인 뒤 --yes --commit ${plan.teamTarget}`);
+        if (values.commit !== undefined && values.commit !== plan.teamTarget) throw new UsageError("--commit은 팀 프로젝트 미리보기의 승인 SHA다: 현재 대상을 다시 확인한다");
         out(`${plan.ref.id} ${plan.ref.name} — 병합할 커밋 ${plan.commits.length}개\n${plan.commits.map((c) => `  ${c}`).join("\n")}${plan.summary ? `\n\n${plan.summary}` : ""}`);
         if (!values.yes) {
-          out("\n(미리보기 — 아무것도 바꾸지 않았다. 사용자 승인 뒤 --yes로 병합한다)");
+          out(plan.teamTarget ? `\n(미리보기 — 사용자 승인 뒤 --yes --commit ${plan.teamTarget} 로 병합한다)` : "\n(미리보기 — 아무것도 바꾸지 않았다. 사용자 승인 뒤 --yes로 병합한다)");
           return 0;
         }
         out(`\n${applyMerge(r, plan).map((d) => `- ${d}`).join("\n")}`);
         return 0;
       }
       case "log": {
-        need(1, "pace project log <P###> [T##] --type <종류> --msg <한 줄> [--to captain|coordinator] [--src 출처] [--ref 파일]");
+        need(1, "pace project log <P###> [T##] --type <종류> --msg <한 줄> [--to owner|coordinator] [--src 출처] [--ref 파일]");
         if (!values.type || !values.msg) throw new UsageError("log는 --type과 --msg가 필요하다");
         const r = repo(); const ref = findProject(r, positionals[0]!); const owner = statsRepo(r, ref);
         const result = agentEvent(join(owner.root, "projects", ref.dir), { p: ref.id, t: positionals[1]?.toUpperCase(), type: values.type, msg: values.msg, src: values.src, ref: values.ref, by: values.by, to: values.to, requestId: values["request-id"] });
         out(result.recorded ? result.duplicate ? "이미 기록됨 (결정 표 동기화)" : "사건 기록" : "경고: 사건을 기록하지 못했다");
         return 0;
+      }
+      case "compare-team": {
+        if (!values.before || !values.after || !values.kind) throw new UsageError("compare-team --before <JSON> --after <JSON> --kind role-automation|team-adoption|definition-change [--before-context JSON] [--after-context JSON] [--json]");
+        const result = compareTeam(values.before, values.after, values.kind, values["before-context"], values["after-context"]);
+        out(values.json ? JSON.stringify(result, null, 2) : formatTeamComparison(result)); return 0;
       }
       case "stats": {
         need(1, "pace project stats <P###> [--json|--write]");
@@ -794,9 +809,10 @@ function projectCommand(args: string[]): number {
         out(formatList(listProjects(repo())));
         return 0;
       default:
-        throw new UsageError("pace project new|start|task|check|done|finish|merge|log|stats|list");
+        throw new UsageError("pace project new|start|task|check|done|finish|merge|log|stats|compare-team|list");
     }
   } catch (error) {
+    if (error instanceof HandoffError) { process.stderr.write(`pace: ${error.message}\n`); return 2; }
     if (!(error instanceof HarnessError) && !(error instanceof BacklogError) && !(error instanceof ProjectLogError)) throw error;
     process.stderr.write(`pace: ${error.message}\n`);
     return 1;

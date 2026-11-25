@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r20.json",
+  "allCandidateFileHashesMatchAfterRun": true,
+  "filesChecked": 34,
+  "tests": 1215,
+  "pass": 1198,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R20 first-stage and independent stage13 blockers pending fix"
+}

@@ -1,0 +1,123 @@
+{
+  "decision": "fail",
+  "blocking": 2,
+  "should_fix": 0,
+  "focused": {
+    "metrics": 71,
+    "team": 14,
+    "pass": 85,
+    "fail": 0,
+    "exit": 0,
+    "fixtureRoot": "/tmp/pace-t06-r20-ind.kvm0GY/focused-retained-tmp"
+  },
+  "replayOriginalExpectations": {
+    "total": 43,
+    "matched": 42,
+    "mismatches": {
+      "empty-link-plus-text": {
+        "expected": 0,
+        "actual": 1,
+        "matches": false
+      }
+    }
+  },
+  "replayCurrentContract": {
+    "total": 150,
+    "matched": 150
+  },
+  "allCurrentContract": {
+    "total": 193,
+    "matched": 187
+  },
+  "current": {
+    "replay/previous-delta.json": {
+      "total": 36,
+      "matched": 36,
+      "mismatches": {}
+    },
+    "replay/role.json": {
+      "total": 7,
+      "matched": 7,
+      "mismatches": {}
+    },
+    "replay/requests.json": {
+      "total": 2,
+      "matched": 2,
+      "mismatches": {}
+    },
+    "replay/current-cell-contract.json": {
+      "total": 43,
+      "matched": 43,
+      "mismatches": {}
+    },
+    "replay/replay-current-contract.json": {
+      "total": 47,
+      "matched": 47,
+      "mismatches": {}
+    },
+    "replay/metadata-recheck.json": {
+      "total": 3,
+      "matched": 3,
+      "mismatches": {}
+    },
+    "replay/compatibility-recheck.json": {
+      "total": 7,
+      "matched": 7,
+      "mismatches": {}
+    },
+    "replay/ledger.json": {
+      "total": 3,
+      "matched": 3,
+      "mismatches": {}
+    },
+    "replay/legacy-fifo-replay.json": {
+      "total": 2,
+      "matched": 2,
+      "mismatches": {}
+    },
+    "changed.json": {
+      "total": 38,
+      "matched": 35,
+      "mismatches": {
+        "ls-fake-root-heading": {
+          "expected": 1,
+          "actual": 0,
+          "matches": false
+        },
+        "ps-fake-heading-end": {
+          "expected": 1,
+          "actual": 0,
+          "matches": false
+        },
+        "ls-fake-end-of-retro": {
+          "expected": 0,
+          "actual": 1,
+          "matches": false
+        }
+      }
+    },
+    "visibility.json": {
+      "total": 5,
+      "matched": 2,
+      "mismatches": {
+        "hangul-filler-summary": {
+          "expected": 1,
+          "actual": 0,
+          "matches": false
+        },
+        "hangul-filler-evidence-label": {
+          "expected": 1,
+          "actual": 0,
+          "matches": false
+        },
+        "hangul-filler-header": {
+          "expected": 1,
+          "actual": 0,
+          "matches": false
+        }
+      }
+    }
+  },
+  "reversePatchCheckExit": 0,
+  "artifactRoot": "/tmp/pace-t06-r20-ind.kvm0GY"
+}

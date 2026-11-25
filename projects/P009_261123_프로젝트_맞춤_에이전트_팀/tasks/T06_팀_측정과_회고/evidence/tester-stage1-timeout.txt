@@ -1,0 +1,14 @@
+file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:204
+        if (outcome.timedOut) throw new AgentError("timeout", `${outcome.idle ? "무출력 기한을 넘겨" : `${request.timeoutMs}ms 안에 끝나지 않아`} 프로세스 그룹을 종료했다${outcome.reaped ? "" : " (종료 확인 실패)"}`, { cleanupUnconfirmed: !outcome.reaped });
+                                    ^
+
+AgentError: 300000ms 안에 끝나지 않아 프로세스 그룹을 종료했다
+    at Object.run (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:204:37)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%A7%9E%EC%B6%A4_%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8_%ED%8C%80/tasks/T06_%ED%8C%80_%EC%B8%A1%EC%A0%95%EA%B3%BC_%ED%9A%8C%EA%B3%A0/evidence/run-tester.mjs:17:16 {
+  code: 'timeout',
+  cleanupUnconfirmed: false,
+  started: true
+}
+
+Node.js v24.22.3

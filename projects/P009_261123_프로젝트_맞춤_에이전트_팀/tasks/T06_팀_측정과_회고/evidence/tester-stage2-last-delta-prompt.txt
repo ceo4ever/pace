@@ -1,0 +1,1 @@
+같은세션 직전24시험pass최종계약대조뒤작은delta. 수신의도카운터가logQ/E+원장decision_request의동일IDunion을세도록보완해원장질문만있어도캡틴/코디네이터질의를누락하지않음. 질문사건/FIFO/BR01reach/own대조는변경없음. 기존도달시험에captainIntendedRequests3단언추가. docs확인및refs둘다필수문장명확화. node --test test/team-metrics.test.ts로24개직접실행하고새helper/단언/문구를확인해blocking/should_fix와직전목표/계약판정유지여부를보고. 실제홈/소스수정/외부발송/새셸승인요청금지.

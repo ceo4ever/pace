@@ -1,0 +1,13 @@
+{
+  "notFinalCandidate": true,
+  "sourceChangedDuringRun": [
+    "src/project/team-input.ts",
+    "src/project/team-metrics.ts",
+    "src/project/team-metrics-document.ts",
+    "src/project/team-comparison.ts",
+    "test/team-metrics.test.ts",
+    "docs/TEAM-METRICS.md"
+  ],
+  "exit": 1,
+  "failure": "existing team-lock descendant reacquire expected1 got2; isolated same-code pass; cause unconfirmed"
+}

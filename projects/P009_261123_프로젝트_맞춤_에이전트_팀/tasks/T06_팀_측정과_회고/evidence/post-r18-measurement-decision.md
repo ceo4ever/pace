@@ -1,0 +1,9 @@
+# R18 measurement gap classification before edits
+
+R18 is a full review after R17 pass and changed source; fail3/SF2 is its first fail, not an open diagnose stage. New blockers concern measurement inference rather than the resolved canonical structure. These are PM contract-gap fixes, not a scope/goal change: preserve unknown owner-answer evidence even with a failed transmission; preserve sample-level quality instead of inferring stability from sums; require equivalent collection origin before directional comparison. No user data, raw originals, actual repository application, external action, or authentication changes occur.
+
+Reach priority: a proven answer or proven external delivery may establish reported reach. Otherwise a by:user answer missing proof remains unknown even if every recorded transmission failed. Failed attempts stay counted. Apply this only to the strict Team projection; preserve prior raw report meaning.
+
+Comparison root action: retain per-sample quality vectors. This version has no paired-case contract, so variation among either group's quality vectors cannot be called stable from equal sums. Keep rows/totals/origins visible, return unknown with explicit reason and further collection plan. Different/mixed stats-declared versus independent collection origins also force unknown until a future explicit equivalence contract; do not pretend completion receipts confirm collection equivalence. Uniform quality with same origin retains existing synthetic improvement/worsening controls.
+
+Should-fix: validate visible summary separately from raw escaped-pipe width; restore adjacent comma/grade punctuation without admitting decimal/exponent/duplicate grade counts. These are implementation gaps within existing plain canonical summary/log contracts. Retain current candidate hashes and all model/whole results before editing; rereview both roles and execute current full checks, never treat a former pass as final.

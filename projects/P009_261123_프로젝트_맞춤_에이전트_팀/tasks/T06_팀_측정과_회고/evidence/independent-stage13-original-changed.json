@@ -1,0 +1,192 @@
+{
+  "tilde-nbsp-close": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "backtick-nbsp-close": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "tilde-ascii-close": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "backtick-ascii-close": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "html-nbsp-line": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "html-ascii-blank": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "html-real-blank-after-nbsp": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "nbsp-heading-separator": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "nbsp-heading-trailing": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "ascii-heading-separator": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "nbsp-table-separator-cell": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "nbsp-table-end": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "nbsp-before-team-label": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "nbsp-header-only": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "ascii-table-cell-trim": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "empty-reference-summary": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "empty-label-plus-text": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "only-combining-hidden": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "control-label": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "html-label-with-text": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "inline-code-header": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "raw-comparison": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "angle-link-summary": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "visible-reference-summary": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "actual-heading-with-nbsp-other-text": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "ls-fake-root-heading": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "ps-fake-heading-end": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "ls-fake-end-of-retro": {
+    "expected": 0,
+    "actual": 1,
+    "matches": false
+  },
+  "nbsp-before-canonical-table": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "marker-hidden-in-nbsp-fence": {
+    "expected": false,
+    "actual": false,
+    "matches": true
+  },
+  "marker-after-ascii-fence": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "marker-hidden-in-nbsp-html": {
+    "expected": false,
+    "actual": false,
+    "matches": true
+  },
+  "marker-after-ascii-html": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "marker-after-nbsp-atx": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "marker-after-ascii-atx": {
+    "expected": false,
+    "actual": false,
+    "matches": true
+  },
+  "marker-nbsp-after-list-dash": {
+    "expected": false,
+    "actual": false,
+    "matches": true
+  },
+  "marker-nested-metadata": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "marker-after-real-blank": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  }
+}

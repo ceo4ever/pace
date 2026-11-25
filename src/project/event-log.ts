@@ -1,12 +1,14 @@
 import { validStartRole, type StartRoleRecord } from "./role-record.ts";
-import { appendFileSync, constants, openSync, closeSync, fstatSync, lstatSync, readFileSync } from "node:fs";
+import { inputHash, InputSnapshotError, type InputTrace } from "../core/input-snapshot.ts";
+import { appendFileSync, constants, openSync, closeSync, fstatSync, lstatSync, readFileSync, existsSync } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
 import { writeFileAtomic } from "../core/fsutil.ts";
 import { hasSecret } from "./secrets.ts";
+import { hasTeamContract } from "./team-contract.ts";
 export const LOG_TYPES = ["start", "approval", "task_start", "gate", "task_done", "finish", "merge", "decision", "change", "review", "question", "answer", "escalation", "note"] as const;
 export type LogType = typeof LOG_TYPES[number];
 export type LogActor = "cli" | "agent" | "coordinator" | "user";
-export type LogRecipient = "captain" | "coordinator";
+export type LogRecipient = "owner" | "coordinator";
 export interface ProjectEvent {
   ts: string; p: string; t?: string; type: LogType; by: LogActor; msg: string;
   to?: LogRecipient;
@@ -19,9 +21,10 @@ function validText(text: unknown, limit: number): text is string {
   return typeof text === "string" && text.trim().length > 0 && text.length <= limit && !/[\r\n\x00-\x1f\x7f]/.test(text) && !hasSecret(text);
 }
 export function validateEvent(event: ProjectEvent): void {
+  if (event.data?.teamMetricsVersion !== undefined && (event.type !== "start" || !event.role || event.data.teamMetricsVersion !== 1)) throw new ProjectLogError("팀 측정 버전은 역할 start의1만 허용한다");
   if (event.requestId !== undefined && (!["question", "escalation", "answer"].includes(event.type) || !/^[a-z][a-z0-9_-]{0,95}$/.test(event.requestId))) throw new ProjectLogError("requestId는 question·escalation·answer의 짧은 식별자여야 한다");
   if (event.role !== undefined && (event.type !== "start" || !validStartRole(event.role))) throw new ProjectLogError("역할 기록은 start의 유효한 전달 설정이어야 한다");
-  if (event.to !== undefined && (!["question", "escalation"].includes(event.type) || !["captain", "coordinator"].includes(event.to))) throw new ProjectLogError("수신자는 question·escalation의 captain|coordinator만 허용한다");
+  if (event.to !== undefined && (!["question", "escalation"].includes(event.type) || !["owner", "coordinator"].includes(event.to))) throw new ProjectLogError("수신자는 question·escalation의 owner|coordinator만 허용한다");
   if (!/^P\d{3}$/.test(event.p) || (event.t !== undefined && !/^T\d{2}$/.test(event.t)) || !LOG_TYPES.includes(event.type) || !["cli", "agent", "coordinator", "user"].includes(event.by)) throw new ProjectLogError("사건 번호·종류·작성자가 올바르지 않다");
   if (!/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/.test(event.ts) || !Number.isFinite(Date.parse(event.ts))) throw new ProjectLogError("사건 시각은 시간대를 포함한 ISO여야 한다");
   if (!validText(event.msg, 240) || (event.src !== undefined && !validText(event.src, 60))) throw new ProjectLogError("사건 메시지는 비밀 없는 짧은 한 줄이어야 한다");
@@ -54,29 +57,42 @@ function openLog(path: string, write: boolean, retries = 0): number {
     return fd;
   } catch (error) { closeSync(fd); throw error; }
 }
-/** Only validated fields reach the append-only file. Failure never changes the command result. */
+/** Only validated fields reach the append-only file; the caller decides how to handle failure. */
 export function recordEvent(dir: string, event: ProjectEvent): boolean {
+  return recordEvents(dir, [event]);
+}
+
+export function recordEvents(dir: string, events: readonly ProjectEvent[]): boolean {
   try {
-    validateEvent(event); assertDir(dir);
-    const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.requestId !== undefined ? { requestId: event.requestId } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
+    assertDir(dir);
+    const lines = events.map((event) => {
+      validateEvent(event);
+      const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.requestId !== undefined ? { requestId: event.requestId } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
+      return `${JSON.stringify(safe)}\n`;
+    });
     const fd = openLog(join(dir, "log.jsonl"), true);
     try {
       const stat = fstatSync(fd); if (!stat.isFile() || stat.nlink !== 1) throw new ProjectLogError("로그는 일반 파일이어야 한다");
-      appendFileSync(fd, `${JSON.stringify(safe)}\n`, "utf8");
+      appendFileSync(fd, lines.join(""), "utf8");
     } finally { closeSync(fd); }
     return true;
   } catch { process.stderr.write("pace: 경고: 지표 로그 기록 실패 (명령은 계속)\n"); return false; }
 }
-export function readEvents(dir: string): ProjectEvent[] {
+export function eventLines(text: string): ProjectEvent[] {
+  return text.split("\n").flatMap((line) => {
+    try { const event = JSON.parse(line) as ProjectEvent; validateEvent(event); return [event]; } catch { return []; }
+  }).sort((a, b) => Date.parse(a.ts) - Date.parse(b.ts));
+}
+export function readEvents(dir: string, inputs?: InputTrace): ProjectEvent[] {
   let fd: number | undefined;
   try {
     assertDir(dir);
     fd = openLog(join(dir, "log.jsonl"), false);
     if (!fstatSync(fd).isFile()) return [];
-    return readFileSync(fd, "utf8").split("\n").flatMap((line) => {
-      try { const event = JSON.parse(line) as ProjectEvent; validateEvent(event); return [event]; } catch { return []; }
-    }).sort((a, b) => Date.parse(a.ts) - Date.parse(b.ts));
-  } catch { return []; }
+    const bytes = readFileSync(fd);
+    inputs?.record(join(dir, "log.jsonl"), inputHash(bytes));
+    return eventLines(bytes.toString("utf8"));
+  } catch (error) { if (error instanceof InputSnapshotError) throw error; if ((error as NodeJS.ErrnoException).code === "ENOENT") inputs?.absent?.(join(dir, "log.jsonl")); return []; }
   finally { if (fd !== undefined) closeSync(fd); }
 }
 function readContract(dir: string): string {
@@ -97,21 +113,41 @@ export function memoDateTime(at: Date): string {
   return `${at.getFullYear()}-${pad(at.getMonth() + 1)}-${pad(at.getDate())} ${pad(at.getHours())}:${pad(at.getMinutes())}`;
 }
 const MANUAL_TYPES = new Set(["decision", "change", "review", "question", "answer", "escalation", "note"]);
+export function reviewMessageData(msg: string, strict = true): Record<string, number> {
+    const normalized = msg.replace(/([/,.!?;:，。！；：])(?=(?:blocking|should_fix)\b)/g, "$1 ");
+    const count = (grade: string) => {
+      if (!strict) {
+        const match = new RegExp(`\\b${grade}\\s*[:：]?\\s*(\\d+)`).exec(msg);
+        if (!match) throw new ProjectLogError("review 메시지에 blocking·should_fix 수를 적는다");
+        return Number(match[1]);
+      }
+      const mentions = [...msg.matchAll(new RegExp(`\\b${grade}\\b`, "g"))];
+      const matches = [...normalized.matchAll(new RegExp(`\\b${grade}\\b\\s*[:：]?\\s*(\\S+)`, "g"))];
+      const countText = matches[0]?.[1]?.replace(/[/,.!?;:，。！；：]+$/u, "");
+      if (mentions.length !== 1 || matches.length !== 1 || !countText || !/^\d+$/.test(countText) || !Number.isSafeInteger(Number(countText))) throw new ProjectLogError("review 메시지에 blocking·should_fix의 음이 아닌 정수를 정확히 한 번 적는다");
+      return Number(countText);
+    };
+    const data = { blocking: count("blocking"), should_fix: count("should_fix"), tester: /\btester\b/.test(msg) ? 1 : 0, reviewer: /\breviewer\b/.test(msg) ? 1 : 0, pass: /\bpass\b/.test(msg) ? 1 : 0, fail: /\bfail\b/.test(msg) ? 1 : 0 };
+    if ((!data.tester && !data.reviewer) || (data.pass ?? 0) + (data.fail ?? 0) !== 1) throw new ProjectLogError("review 메시지에 tester/reviewer와 pass/fail 판정을 적는다");
+    if (strict && (data.tester + data.reviewer !== 1 || data.pass === 1 && data.blocking !== 0)) throw new ProjectLogError("팀 리뷰 역할은 하나이며 pass는 blocking 0이어야 한다");
+    return data;
+}
+export function completeReviewEvent(event: ProjectEvent): boolean {
+  if (event.type !== "review") return false;
+  try { return Object.entries(reviewMessageData(event.msg)).every(([key, value]) => event.data?.[key] === value); }
+  catch { return false; }
+}
 export function agentEvent(dir: string, input: { p: string; t?: string; type: string; msg: string; src?: string; ref?: string; by?: string; to?: string; requestId?: string }): { recorded: boolean; duplicate: boolean } {
   if (!MANUAL_TYPES.has(input.type)) throw new ProjectLogError("수동 사건 종류: decision|change|review|question|answer|escalation|note");
   if (input.src !== undefined && !["사용자 결정", "루카스 결정", "main 판단", "자체 판단"].includes(input.src)) throw new ProjectLogError("출처: 사용자 결정|main 판단|자체 판단 (기존 루카스 결정 호환)");
   const event: ProjectEvent = { ts: new Date().toISOString(), p: input.p, t: input.t, type: input.type as LogType, by: (input.by ?? "agent") as LogActor, msg: input.msg, src: input.src, ref: input.ref, ...(input.to !== undefined ? { to: input.to as LogRecipient } : {}), ...(input.requestId !== undefined ? { requestId: input.requestId } : {}) };
-  if (event.type === "review") {
-    const count = (grade: string) => {
-      const match = new RegExp(`\\b${grade}\\s*[:：]?\\s*(\\d+)`).exec(event.msg);
-      if (!match) throw new ProjectLogError("review 메시지에 blocking·should_fix 수를 적는다");
-      return Number(match[1]);
-    };
-    event.data = { blocking: count("blocking"), should_fix: count("should_fix"), tester: /\btester\b/.test(event.msg) ? 1 : 0, reviewer: /\breviewer\b/.test(event.msg) ? 1 : 0, pass: /\bpass\b/.test(event.msg) ? 1 : 0, fail: /\bfail\b/.test(event.msg) ? 1 : 0 };
-    if ((!event.data.tester && !event.data.reviewer) || (event.data.pass ?? 0) + (event.data.fail ?? 0) !== 1) throw new ProjectLogError("review 메시지에 tester/reviewer와 pass/fail 판정을 적는다");
-  }
   validateEvent(event); assertDir(dir);
   const contract = readContract(dir);
+  if (event.type === "review") {
+    const adopted = hasTeamContract(input.p, contract, existsSync(join(dir, "TEAM-MEASUREMENT.json")), readEvents(dir));
+    event.data = reviewMessageData(event.msg, adopted);
+    validateEvent(event);
+  }
   if (event.t) {
     const project = contract;
     if (!new RegExp(`^\\| ${event.t} \\|`, "m").test(project)) throw new ProjectLogError("프로젝트 태스크 표에 없는 번호다");

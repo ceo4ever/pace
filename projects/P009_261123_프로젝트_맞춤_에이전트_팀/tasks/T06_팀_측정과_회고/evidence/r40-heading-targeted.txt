@@ -1,0 +1,40 @@
+✔ R27 예시 marker는 legacy 문서에 Team 문법을 소급하지 않고 실제 모호한 marker만 보류한다 (783.9745ms)
+✔ R17 기계 구간의 들여쓴 제목은 명시 보류하며 표의 원문 열 수와 기존 표 범위를 지킨다 (429.053917ms)
+✔ R34 이전 미지원 표지 버전은 현재 미채택 프로젝트의 마감과 병합을 막지 않는다 (2282.5485ms)
+✔ R37 원래 HTML 절과 실제 고정 링크만 회고 관문을 통과한다 (404.3125ms)
+✔ R38 전체 구간의 올바른 사용자 답은 보존하되 다른 태스크 답이 총량을 미확인으로 둔다 (577.519542ms)
+✔ R38 코디네이터 자체 답 영수증에는 원장 응답 식별자를 사용할 수 없다 (597.001ms)
+✔ R38 현재와 과거 프로젝트 본문의 코드 예시는 팀 머리 판독에 영향을 주지 않는다 (2777.179708ms)
+✖ R40 목록 설명과 빈 줄 뒤의 제목을 실제 본문으로 오인해 팀 표지를 건너뛰지 않는다 (1562.502625ms)
+✔ R39 뒤늦은 중계가 먼저 기록된 다른 태스크 답의 미확인을 지우지 않는다 (643.036334ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10203.732958
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1721:1
+✖ R40 목록 설명과 빈 줄 뒤의 제목을 실제 본문으로 오인해 팀 표지를 건너뛰지 않는다 (1562.502625ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /열0/. Input:
+  
+  '빠진 것:\n- 팀 측정/회고 입력 누락·손상·범위 오류; finish 보류\n실패\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1736:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '빠진 것:\n- 팀 측정/회고 입력 누락·손상·범위 오류; finish 보류\n실패\n',
+    expected: /열0/,
+    operator: 'match',
+    diff: 'simple'
+  }

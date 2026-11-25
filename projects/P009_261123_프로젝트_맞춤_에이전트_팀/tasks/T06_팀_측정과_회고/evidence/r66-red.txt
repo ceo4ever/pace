@@ -1,0 +1,94 @@
+✖ R27 stats도 같은 영수증을 읽는 중 바뀌면 새 확인을 0 총량으로 승격하지 않는다 (447.4875ms)
+✖ R32 같은 ID의 뒤늦은 태스크 질문은 이전 사용자·코디네이터 답을 소급 승인하지 않는다 (982.419583ms)
+✖ R65 완료 및 요청 지원을 함께 맡은 영수증이 유효하지 않으면 관측을 유지한다 (814.412125ms)
+✖ R66 같은 시각에 실제 원장 태스크로 검증된 거울은 기록 순서와 무관하게 귀속된다 (679.9885ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3071.591833
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:504:1
+✖ R27 stats도 같은 영수증을 읽는 중 바뀌면 새 확인을 0 총량으로 승격하지 않는다 (447.4875ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:512:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1451:1
+✖ R32 같은 ID의 뒤늦은 태스크 질문은 이전 사용자·코디네이터 답을 소급 승인하지 않는다 (982.419583ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 1
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1474:98)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3177:1
+✖ R65 완료 및 요청 지원을 함께 맡은 영수증이 유효하지 않으면 관측을 유지한다 (814.412125ms)
+  AssertionError [ERR_ASSERTION]: pace: JSON 값 오류
+  
+  
+  2 !== 0
+  
+      at stats (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3199:12)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3215:22)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3234:1
+✖ R66 같은 시각에 실제 원장 태스크로 검증된 거울은 기록 순서와 무관하게 귀속된다 (679.9885ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 1
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3263:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

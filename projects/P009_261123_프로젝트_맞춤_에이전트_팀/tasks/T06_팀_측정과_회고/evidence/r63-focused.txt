@@ -1,0 +1,22 @@
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=false) (3824.518541ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=true) (3900.678167ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (wrong-request) (1721.330834ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (answer-first) (1801.961417ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (verified-answer) (1538.355625ms)
+✔ R23 팀 finish tree 계산은 실제 인덱스를 보존하고 Git 대상과 다른 작업 파일을 읽지 않는다 (405.025042ms)
+✔ R23 팀 finish는 기존 다른 소유자의 파일을 덮어쓰지 않고 팀 없는 프로젝트에 소급하지 않는다 (340.847708ms)
+✔ R18 표본별 품질 변동의 합계 상쇄와 수집 출처 차이를 방향 판정으로 숨기지 않는다 (12.165583ms)
+✔ R50 같은 저장소의 실제 포터블 stats 비교는 영수증 교체와 프로젝트 간 재사용을 보류한다 (5497.777667ms)
+✔ R54 stats 봉투에서 출처 필드가 빠져도 수기 비교로 바뀌지 않는다 (1.739334ms)
+✔ R54 finish 뒤 같은 tree의 뒤따른 커밋은 재마감 전까지 병합 대상으로 받지 않는다 (1718.860042ms)
+✔ R61 범위 확인의 승인 위임을 따라 별개 요청 간 응답 재사용을 확인한다 (685.519583ms)
+✔ R62 평면 stats의 출처 필드가 함께 빠져도 요청 총량을 수기 신고로 승격하지 않는다 (2.816416ms)
+✔ R62 검사 명령이 없는 팀 finish는 병합 미리보기에 전체 검사 미실행을 표시한다 (1863.0055ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23506.312167

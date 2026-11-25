@@ -1,0 +1,351 @@
+{
+  "exact-self-closing-block": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "malformed-slash-prefix": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "atx-real-space-inline-comment": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "atx-fake-end-boundary": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "atx-real-end-boundary": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "list-nested-retro-title": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "list-nested-end-title": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "escaped-pipe-invalid-header": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "canonical-role-stats": {
+    "expected": "maker",
+    "actual": "maker",
+    "matches": true
+  },
+  "canonical-team-stats-text": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "canonical": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "canonical-metrics": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "comment-wrong-section": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "inline-html-wrong-section": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "inline-html-right-section": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "standalone-generic-ambiguous": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "true-comment-hides-heading": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "bare-rule": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "unsupported-dash": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "dash-message-names-empty-list": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "outside-rule": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "no-atx-comment-between-hashes-and-text": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "no-atx-no-space-control": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "no-atx-in-seven-hashes-control": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "legacy-no-marker": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "missing-json": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "wrong-link": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "empty-summary": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "native-forward": {
+    "expected": [
+      0,
+      true
+    ],
+    "actual": [
+      0,
+      true
+    ],
+    "matches": true
+  },
+  "native-inverted": {
+    "expected": [
+      2,
+      "팀 성공 종료 사건이 시작보다 앞선다"
+    ],
+    "actual": [
+      2,
+      "팀 성공 종료 사건이 시작보다 앞선다"
+    ],
+    "matches": true
+  },
+  "native-failed": {
+    "expected": [
+      0,
+      false
+    ],
+    "actual": [
+      0,
+      false
+    ],
+    "matches": true
+  },
+  "native-other-actor": {
+    "expected": [
+      0,
+      false
+    ],
+    "actual": [
+      0,
+      false
+    ],
+    "matches": true
+  },
+  "comparison-text": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "comparison-studies-separated": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "audited-stable": {
+    "expected": [
+      "observed-burden-improvement",
+      0,
+      0,
+      true
+    ],
+    "actual": [
+      "observed-burden-improvement",
+      0,
+      0,
+      true
+    ],
+    "matches": true
+  },
+  "stable-worsening": {
+    "expected": [
+      "observed-burden-worsening",
+      0,
+      0,
+      true
+    ],
+    "actual": [
+      "observed-burden-worsening",
+      0,
+      0,
+      true
+    ],
+    "matches": true
+  },
+  "audited-log-changed": {
+    "expected": [
+      "unknown",
+      6,
+      0,
+      true
+    ],
+    "actual": [
+      "unknown",
+      6,
+      0,
+      true
+    ],
+    "matches": true
+  },
+  "audited-log-missing-on-one-side": {
+    "expected": [
+      "unknown",
+      null,
+      0,
+      true
+    ],
+    "actual": [
+      "unknown",
+      null,
+      0,
+      true
+    ],
+    "matches": true
+  },
+  "logged-audit-changed": {
+    "expected": [
+      "unknown",
+      0,
+      4,
+      true
+    ],
+    "actual": [
+      "unknown",
+      0,
+      4,
+      true
+    ],
+    "matches": true
+  },
+  "owner-and-user-role-stats": {
+    "expected": [
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      null,
+      "maker",
+      null
+    ],
+    "actual": [
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      null,
+      "maker",
+      null
+    ],
+    "matches": true
+  },
+  "old-captain-id-rejected": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "new-owner-id-accepted": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "surface-non-heading-does-not-hide-marker": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "marker-manufactured-boundary-cannot-skip-retrospective": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "actual-heading-ends-metadata": {
+    "expected": false,
+    "actual": false,
+    "matches": true
+  },
+  "baseline-roblox.json": {
+    "expected": [
+      "unknown",
+      null,
+      31,
+      48
+    ],
+    "actual": [
+      "unknown",
+      null,
+      31,
+      48
+    ],
+    "matches": true
+  },
+  "baseline-ai-sql-client.json": {
+    "expected": [
+      "unknown",
+      null,
+      null,
+      0
+    ],
+    "actual": [
+      "unknown",
+      null,
+      null,
+      0
+    ],
+    "matches": true
+  }
+}

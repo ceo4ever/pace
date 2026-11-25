@@ -1,0 +1,7 @@
+projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff.patch: OK
+src/project/team-comparison.ts: OK
+src/project/team-input.ts: OK
+src/project/team-markdown.ts: OK
+src/project/team-metrics-document.ts: OK
+src/project/team-metrics.ts: OK
+src/project/team-retrospective.ts: OK

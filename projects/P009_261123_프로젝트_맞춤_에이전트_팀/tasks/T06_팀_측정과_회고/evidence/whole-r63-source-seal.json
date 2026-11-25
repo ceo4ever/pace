@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r63.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1320,
+  "pass": 1303,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R63 source matched after whole pass, but independent contract review failed with two blocking findings."
+}

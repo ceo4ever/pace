@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r24.json",
+  "allCandidateFileHashesMatchAfterRun": true,
+  "filesChecked": 35,
+  "tests": 1227,
+  "pass": 1210,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R24 reviewer blocking: ignored retrospective/proof may be absent from sealed index"
+}

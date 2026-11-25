@@ -1,0 +1,49 @@
+너는 독립 검토자다. 아래 산출물을 읽기만 하고(파일을 고치지 않는다) 상위 목적에 비추어 검토하라.
+지금은 같은 산출물의 재검토다(목표/결과 대조). 아래 "직전 검토 원문"과 "바뀐 줄"이 재검토의 정해진 입력이며, 그것을 읽는 것은 독립성 위반이 아니다.
+작성자 마감·자체 판정·지적 대응 문서는 받거나 읽지 않는다. 허용되는 이전 자료는 직전 검토 원문뿐이다.
+판정 범위: 직전 검토의 blocking이 해소됐는지와 그 수정(바뀐 줄)이 만든 새 결함만 판정한다. 직전에 지적되지 않았고 바뀌지 않은 부분의 새 지적은 note로만 남기고 판정에 넣지 않는다.
+산출물 자체가 계획서/백로그면 평가할 결과로 읽되 그 안의 목표를 상위 목적의 정답으로 믿지 않는다.
+첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다.
+상위 목적은 대조 기준이며 어긋나면 목표·전략·계획 등 해당 단계를 고친다. 합의 목적/목표/범위 변경은 사용자에게 묻는다.
+읽은 파일과 자동 부트/메모리·호스트 첨부 맥락의 노출 범위를 기록한다. 읽기 전용이 작업 문서 접근 차단이나 완전 격리를 뜻하지 않는다.
+재검토이므로 노출 범위에 직전 검토 원문과 바뀐 줄을 받았음을 기록한다. 검토 주체가 바뀌었으면 제공자·독립성 수준을 기록한다.
+
+## 상위 목적·목표 (먼저 읽는다)
+목적: 프로젝트 팀이 캡틴의 부담을 줄였는지 잘못된 결론 없이 측정하고, 원문을 로컬에 유지하면서 같은 조건 비교와 역할 회고를 수행할 장치를 제공한다. 실제 팀 도입 효과는 후속 현장 관측에서 판단한다.
+독립 첫 검토: 첨부 diff와 현 소스·시험·docs/TEAM-METRICS.md만 검토하라. PROJECT/TASK/BR/PM 판단·기존 검토 출력은 읽지 말라. 별도 계약 대조는 첫 판단을 받은 후 요청한다. 실제 사람 인증/완전성을 metadata로 주장하는지, 잘못된 도달/0/효과 판정/회고 우회와 기존 동작 손상이 있는지 검토하라. 코드 수정·외부 전송 금지. verdict pass|fail, blocking/should_fix 수와 위치·재현·범위를 명확히 출력하라.
+사용자 추가 결정(2026-11-24, main 허브가 전달): P009 신규 사람 식별자는 owner이며 기존 user는 유지한다. 이전 captain 사람 식별자의 호환 처리는 불필요하다는 결정이며 실제 프로젝트 로그에 해당 수신자 기록이 없는지 직접 확인한다. T01의 이미 확정된 원본 기준선/과거 증거는 변경하지 않는다. 현재 제품 문서에는 user와 owner가 같은 사람임을 표시한다.
+
+## 묻는 것
+1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?
+각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.
+
+## 직전 검토 원문
+**1단계 독립 목표 대조 · 목표 달성 미달 · blocking 3건 · should_fix 2건**
+
+목표는 상위 목적에 맞습니다. 원문을 로컬에 보존하고, 수신 의도·도달·미확인·부담을 구분하며, 조건과 품질이 맞는 표본에만 부담 방향을 표시하는 구조입니다. `owner`와 기존 `user`가 같은 사람이라는 점도 제품 문서에 명시돼 있습니다. 영수증과 수집 완료 표지는 참여자의 신고로 설명되며 실제 사람의 신원이나 수집의 완전성을 인증한다고 주장하지 않습니다. 실제 팀 도입 효과는 후속 현장 관측에서 판단할 사항입니다.
+
+### 지적
+
+1. **blocking · 같은 ID의 뒤늦은 태스크 질문이 앞선 답을 도달로 소급 인정합니다.** 로그에 10시 프로젝트 범위 질문, 11시 `T01`의 `by:user` 답과 유효한 영수증, 12시 `T01` 질문을 같은 `requestId`로 넣으면 `owner_reply=1`이 됩니다. 12시 행을 제외하면 `unconfirmed=1`입니다. 메모리에서 집계 함수로 재현했습니다. 요청 전체의 최초 시각과 전체 기간의 태스크 집합을 따로 검사해, 그 태스크의 질문이 있기 전 답도 통과시킵니다. 닫힌 수집 범위에서는 이 관측이 도달 총량과 비교 입력에 반영됩니다. [handoff-report.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/handoff-report.ts:106) · [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:130)
+
+2. **blocking · rebase로 팀 채택 근거가 사라지면 최종 회고 없이 병합용 영수증이 생성됩니다.** 정적 재현 경로는 공통 조상에 `TEAM-MEASUREMENT.json`만 채택 표지로 둔 프로젝트입니다. 작업 브랜치는 유효한 회고를 갖추고, main은 측정 입력을 삭제합니다. `finish`의 첫 검증은 통과합니다. rebase 뒤 하네스는 초기 채택 상태를 유지하지만 회고 검증기는 현재 채택 표지가 없다는 이유로 성공을 반환합니다. 결과적으로 최종 팀 집계와 회고를 검증하지 않은 트리에 새 `TEAM-FINISH.json`을 붙일 수 있고, merge는 그 트리의 지문을 수락합니다. [harness.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/harness.ts:1503) · [team-retrospective.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-retrospective.ts:192) · [team-finish.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-finish.ts:105)
+
+3. **blocking · 구간만 일치하는 영수증으로 역할 관측을 확정하고 회고 후보를 제거할 수 있습니다.** 참여 기록이 없는 두 역할에 같은 `role-observation` 영수증과 양수 `workMs`를 연결하고 `coverage.status`를 `unknown`으로 둡니다. 코드상 두 역할 모두 `reported-role-binding`으로 표기되고 미사용 검토 후보에서 빠집니다. 영수증에는 역할 식별자가 없고 관측 경로는 `unknown` 상태도 검사하지 않습니다. 같은 영수증 형식이 회고의 `observed-none`에도 쓰입니다. 역할과 관측 종류를 근거에 결합해야 회고 후보의 누락을 막을 수 있습니다. [team-input.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-input.ts:49) · [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:146) · [team-retrospective.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-retrospective.ts:163)
+
+4. **should_fix · 미채택 프로젝트의 기존 `stats`가 엄격한 팀 로그 검사로 실패할 수 있습니다.** 기존 역할 시작이나 `requestId`가 있고 채택 표지는 없는 프로젝트에서, 유효한 행 옆에 기존 판독기가 건너뛰던 손상 행을 둡니다. 새 코드는 선택 팀 집계를 계산하면서 엄격한 판독기를 호출해 명령 전체를 종료 코드 2로 끝냅니다. 이 경우 기존 사건·FIFO 지표를 계속 조회할 수 있도록 팀 집계의 오류 범위를 좁혀야 합니다. [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:59) · [team-input.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-input.ts:93)
+
+5. **should_fix · 리뷰 품질 집계가 상충하는 판정과 역할 표시를 완전한 기록으로 받습니다.** `reviewer pass blocking 2 should_fix 0`과 `tester reviewer pass blocking 0 should_fix 0` 모두 `completeReviewEvent=true`를 반환하는 것을 재현했습니다. 집계는 첫 사례를 실패 0건으로 세고, 두 번째는 한 판정에 두 역할을 부여합니다. 팀 품질에 쓰는 판정과 역할은 명확한 단일 의미를 요구해야 합니다. [event-log.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/event-log.ts:108) · [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:137)
+
+**전략과 추적성.** 수집 확인과 관측 하한을 분리하고 비교에서 `unknown`을 유지하는 결정은 잘못된 개선 판정을 막는 목적까지 추적됩니다. 비교 표본에 요청·역할·수집 범위의 식별자를 함께 담는 방식도 가능했습니다. 현재처럼 여러 출처를 결합하는 방식에서는 같은 ID, 같은 기간, 같은 역할이 실제로 한 근거에 연결되는지 확인해야 합니다. 올릴 단계는 구현·회귀 검증입니다. 합의된 목적·목표·범위를 변경할 근거는 발견하지 않았습니다.
+
+**열람·검증 범위.** 첨부 diff와 현재 관련 소스·시험 코드, `docs/TEAM-METRICS.md`를 읽었습니다. 패치의 41개 파일 지문이 현재 파일과 일치했습니다. 사용자 결정 확인을 위해 프로젝트 최상위 `log.jsonl`·`handoffs.jsonl`의 식별자 필드를 직접 검사했습니다. 현재 worktree 638행(그중 P009 153행), HEAD 578행, main 670행에서 `to: "captain"`은 각각 0건이었습니다. T01 증거 디렉터리는 HEAD 대비 변경 상태만 확인했습니다. 자동 부트·메모리의 추가 노출 범위는 확인할 수 없었으며 이번 검토에 별도로 불러온 맥락은 없었습니다. 호스트가 제공한 맥락은 이 호출의 상위 목적·사용자 결정·첨부 diff였습니다. 실제 PROJECT·TASK·BR·마감 문서와 기존 검토 출력은 열람하지 않았습니다. 파일 수정이나 외부 전송 없이 두 건의 함수 재현과 정적 경로 분석을 수행했습니다. 전체 시험과 2단계 계약 대조는 실행하지 않았습니다.
+
+fail
+
+
+## 파일로 전달한 동일 입력
+입력 문자 한도를 피하기 위해 중복 본문만 파일 참조로 전달한다. 판정 범위와 직전 원문은 위와 같다. 검토 전에 다음 파일의 전체 내용을 나누어 읽어라. 작성자 대응/계약/마감 문서는 읽지 않는다.
+실제 바뀐 줄: /Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review32-actual-changed-lines.txt
+현재 산출물: /Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff.patch
+현재 산출물 SHA256: 775bb313667c1bea3206242c16be283e657c829c0d40b62a4204e2f698819877
+소스 파일과 테스트는 앞의 범위에서 직접 읽을 수 있다. 파일 참조는 검토 생략이 아니다. 읽은 범위를 판정에 남겨라.

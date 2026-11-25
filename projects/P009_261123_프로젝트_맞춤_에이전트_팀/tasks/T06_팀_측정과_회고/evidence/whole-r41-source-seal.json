@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r41.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1285,
+  "pass": 1268,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent goal fail2/SF1 for orphan coordinator answer and retrospective section"
+}

@@ -30,4 +30,4 @@
 
 ## 참여 소통의 로컬 원문
 
-[HANDOFF](HANDOFF.md)의 캡틴 원문·답·상세 제안/결과·판정과 계약 사본/payload는 Git common dir에만 보존한다. 버전 관리에는 짧은 metadata/출처 locator/지문과 기존 log 요약만 남긴다. 이는 별도 원문 Git 승인 전의 보수적 로컬 보존 지시이며 clone 재감사 한계를 사용자가 승인했다고 주장하지 않는다. 같은 공통 폴더의 호스트들은 본문을 대조하지만 다른 clone에는 원문이 없으므로 stats는 metadata-only, 실행/전송/종결은 대조 보류다. 백업·삭제·Git 승격은 별도 결정이다. 원내 body 입력/위험한 separate-git-dir/링크/하드링크/비밀 후보/손상을 거부하고 알려진 원내 raw staging 후보는 finish 전에 차단한다. 미등록 복사본과 악의적인 같은 계정 동시 교체를 탐지하는 경계는 아니다. 전송 성공 후 영수증 기록 실패는 미확인·재발송 금지로 남긴다. scope_check와 actor/sourceRef는 참여자의 신고이므로 사람 인증/의미 자동 판정이 아니다.
+[HANDOFF](HANDOFF.md)의 사용자(owner, 기존 user) 원문·답·상세 제안/결과·판정과 계약 사본/payload는 Git common dir에만 보존한다. 버전 관리에는 짧은 metadata/출처 locator/지문과 기존 log 요약만 남긴다. 이는 별도 원문 Git 승인 전의 보수적 로컬 보존 지시이며 clone 재감사 한계를 사용자가 승인했다고 주장하지 않는다. 같은 공통 폴더의 호스트들은 본문을 대조하지만 다른 clone에는 원문이 없으므로 stats는 metadata-only, 실행/전송/종결은 대조 보류다. 백업·삭제·Git 승격은 별도 결정이다. 원내 body 입력/위험한 separate-git-dir/링크/하드링크/비밀 후보/손상을 거부하고 알려진 원내 raw staging 후보는 finish 전에 차단한다. 미등록 복사본과 악의적인 같은 계정 동시 교체를 탐지하는 경계는 아니다. 전송 성공 후 영수증 기록 실패는 미확인·재발송 금지로 남긴다. scope_check와 actor/sourceRef는 참여자의 신고이므로 사람 인증/의미 자동 판정이 아니다.

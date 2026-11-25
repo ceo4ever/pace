@@ -1,0 +1,27 @@
+✖ 팀 stats는 수신 의도만 있는 요청을 도달로 세지 않고 없는 손작업 총량을0으로 채우지 않는다 (583.093ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 654.875334
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:20:1
+✖ 팀 stats는 수신 의도만 있는 요청을 도달로 세지 않고 없는 손작업 총량을0으로 채우지 않는다 (583.093ms)
+  AssertionError [ERR_ASSERTION]: 팀 측정 객체가 있어야 한다
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:24:50)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

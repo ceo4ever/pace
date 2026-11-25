@@ -1,0 +1,191 @@
+✖ R75 더러운 팀 마감은 HEAD·객체·인덱스·원장·원문을 그대로 보존한다 (1498.158ms)
+✖ R75 기준 브랜치에만 채택 이력이 있어도 자동 반영과 실패 로그 기록을 보류한다 (1218.714167ms)
+✔ R75 검토 커밋을 팀 마감의 부모로 쓰고 하네스 경로만 새 커밋에 담는다 (2170.438333ms)
+✔ R75 비팀 마감은 미리 커밋하지 않은 변경에 기존 목차 커밋 경로를 유지한다 (1613.045583ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6653.44025
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2006:1
+✖ R75 더러운 팀 마감은 HEAD·객체·인덱스·원장·원문을 그대로 보존한다 (1498.158ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /팀 마감.*검토.*커밋/. Input:
+  
+  'pace: 프로젝트에 부분 스테이징된 변경이 있다: projects/P001_261125_팀_측정_합성/staged-note.txt\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2022:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'pace: 프로젝트에 부분 스테이징된 변경이 있다: projects/P001_261125_팀_측정_합성/staged-note.txt\n',
+    expected: /팀 마감.*검토.*커밋/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2031:1
+✖ R75 기준 브랜치에만 채택 이력이 있어도 자동 반영과 실패 로그 기록을 보류한다 (1218.714167ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+  + Buffer(570) [Uint8Array] [
+  - Buffer(444) [Uint8Array] [
+      123,
+      34,
+      116,
+      115,
+      34,
+  ...
+      10,
+  +   123,
+  +   34,
+  +   116,
+  +   115,
+  +   34,
+  +   58,
+  +   34,
+  +   50,
+  +   48,
+  +   50,
+  +   54,
+  +   45,
+  +   49,
+  +   49,
+  +   45,
+  +   50,
+  +   52,
+  +   84,
+  +   50,
+  +   50,
+  +   58,
+  +   53,
+  +   48,
+  +   58,
+  +   52,
+  +   52,
+  +   46,
+  +   56,
+  +   50,
+  +   53,
+  +   90,
+  +   34,
+  +   44,
+  +   34,
+  +   112,
+  +   34,
+  +   58,
+  +   34,
+  +   80,
+  +   48,
+  +   48,
+  +   49,
+  +   34,
+  +   44,
+  +   34,
+  +   116,
+  +   121,
+  +   112,
+  +   101,
+  +   34,
+  +   58,
+  +   34,
+  +   103,
+  +   97,
+  +   116,
+  +   101,
+  +   34,
+  +   44,
+  +   34,
+  +   98,
+  +   121,
+  +   34,
+  +   58,
+  +   34,
+  +   99,
+  +   108,
+  +   105,
+  +   34,
+  +   44,
+  +   34,
+  +   109,
+  +   115,
+  +   103,
+  +   34,
+  +   58,
+  +   34,
+  +   102,
+  +   105,
+  +   110,
+  +   105,
+  +   115,
+  +   104,
+  +   58,
+  +   32,
+  +   99,
+  +   111,
+  +   110,
+  +   116,
+  +   114,
+  +   97,
+  +   99,
+  +   116,
+  +   34,
+  +   44,
+  +   34,
+  +   111,
+  +   107,
+  +   34,
+  +   58,
+  +   102,
+  +   97,
+  +   108,
+  +   115,
+  +   101,
+  +   44,
+  +   34,
+  +   100,
+  +   97,
+  +   116,
+  +   97,
+  +   34,
+  +   58,
+  +   123,
+  +   34,
+  +   102,
+  +   105,
+  +   110,
+  +   105,
+  +   115,
+  +   104,
+  +   34,
+  +   58,
+  +   49,
+  +   125,
+  +   125,
+  +   10
+    ]
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2050:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: <Buffer 7b 22 74 73 22 3a 22 32 30 32 36 2d 31 31 2d 32 34 54 32 32 3a 35 30 3a 34 34 2e 32 36 35 5a 22 2c 22 70 22 3a 22 50 30 30 31 22 2c 22 74 79 70 65 22 ... 520 more bytes>,
+    expected: <Buffer 7b 22 74 73 22 3a 22 32 30 32 36 2d 31 31 2d 32 34 54 32 32 3a 35 30 3a 34 34 2e 32 36 35 5a 22 2c 22 70 22 3a 22 50 30 30 31 22 2c 22 74 79 70 65 22 ... 394 more bytes>,
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

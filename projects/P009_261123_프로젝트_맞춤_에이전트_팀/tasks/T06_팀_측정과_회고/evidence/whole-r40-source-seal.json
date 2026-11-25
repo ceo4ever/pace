@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r40.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1281,
+  "pass": 1264,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent goal fail2/SF2 for native reply scope and final Git tree"
+}

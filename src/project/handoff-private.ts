@@ -3,10 +3,19 @@ import { dirname, relative, resolve, sep } from "node:path";
 import { safeTeamPath } from "../team/store.ts";
 import { processIdentity } from "../team/resource-process.ts";
 import { commonGitDirectory } from "../team/resource-lock.ts";
-import { atomicText, BODY_LIMIT, createDir, digest, fields, gitRead, HandoffError, HandoffGuardBusy, localHandoffBase, object, regularBytes, strictJson, utf8, within } from "./handoff-files.ts";
+import { atomicText, BODY_LIMIT, createDir, digest, fields, gitRead, gitReadBlob, HandoffError, HandoffGuardBusy, localHandoffBase, object, regularBytes, strictJson, utf8, within } from "./handoff-files.ts";
 import { hasSecret } from "./secrets.ts";
 
 interface BlockedSource { rootHash: string; pathHash: string; rel?: string; publicBaselineHash?: string }
+function matchesPublicBaseline(bytes: Buffer, hash: string): boolean {
+  if (digest(bytes) === hash) return true;
+  const text = bytes.toString("utf8");
+  if (text.includes("\0") || !Buffer.from(text).equals(bytes)) return false;
+  const lf = text.replaceAll("\r\n", "\n");
+  // Older registry entries may contain the public checkout's CRLF bytes instead of its Git blob.
+  return digest(lf) === hash || digest(lf.replaceAll("\n", "\r\n")) === hash;
+}
+
 function blockedSources(base: string): BlockedSource[] {
   const path = safeTeamPath(base, "staging-protection.json");
   if (!existsSync(path)) return [];
@@ -45,14 +54,12 @@ export function readPrivateInput(repoRoot: string, input: string): Buffer {
         holdGuard(localBase, "privacy.guard", (writing) => {
           const sources = blockedSources(localBase), rel = relative(sourceRoot, actual).split(sep).join("/");
           const tracked = gitRead(sourceRoot, ["ls-files", "--error-unmatch", "--", rel]);
-          const status = gitRead(sourceRoot, ["status", "--porcelain=v1", "--untracked-files=all", "--", rel]);
-          const cleanPublic = tracked.status === 0 && status.status === 0 && !status.stdout;
           let publicBaselineHash: string | undefined;
           try {
-            if (cleanPublic) publicBaselineHash = digest(regularBytes(actual, BODY_LIMIT));
-            else if (tracked.status === 0) {
-              const head = gitRead(sourceRoot, ["show", `HEAD:${rel}`]);
-              if (head.status === 0 && Buffer.byteLength(head.stdout) <= BODY_LIMIT) publicBaselineHash = digest(head.stdout);
+            if (tracked.status === 0) {
+              const head = gitRead(sourceRoot, ["rev-parse", "--verify", `HEAD:${rel}`]);
+              const bytes = head.status === 0 ? gitReadBlob(sourceRoot, head.stdout.trim()) : null;
+              if (bytes) publicBaselineHash = digest(bytes);
             }
           } catch { /* Still protect the attempted private path when no public baseline can be established. */ }
           const row: BlockedSource = { rootHash: digest(sourceRoot), pathHash: digest(rel), ...(!hasSecret(rel) && rel.length <= 1024 ? { rel } : {}), ...(publicBaselineHash ? { publicBaselineHash } : {}) };
@@ -87,12 +94,57 @@ export function handoffPrivacyIssues(repoRoot: string): string[] {
     const hits = [...new Set(paths.filter((p) => blocked.some((b) => {
       if (b.pathHash !== digest(p)) return false;
       if (b.publicBaselineHash) {
-        try { if (digest(regularBytes(safeTeamPath(repoRoot, p), BODY_LIMIT)) === b.publicBaselineHash) return false; } catch { /* changed/unreadable is not the previously committed public bytes */ }
+        try { if (matchesPublicBaseline(regularBytes(safeTeamPath(repoRoot, p), BODY_LIMIT), b.publicBaselineHash)) return false; } catch { /* changed/unreadable is not the previously committed public bytes */ }
       }
       return true;
     })))];
     return hits.map((p) => `로컬 전용 원문 staging 금지: ${hasSecret(p) ? "[경로 생략]" : p} — 원문을 저장소 밖으로 옮긴 뒤 확인한다`);
   } catch { return ["로컬 원문 staging 보호 확인 실패; finish를 진행하지 않는다"]; }
+}
+
+/** Check the tip and each tree that would become reachable from the base after fast-forward. */
+export function handoffCommitPrivacyIssues(root: string, target: string, previousBase?: string): string[] {
+  try {
+    if (!existsSync(safeTeamPath(commonGitDirectory(root), "pace/handoffs", true))) return [];
+    const base = localHandoffBase(root);
+    if (!existsSync(base)) return [];
+    if (existsSync(safeTeamPath(base, "privacy.guard", true))) return ["로컬 원문 staging 보호 기록 중단/경합; Git 반영 보류"];
+    const blocked = blockedSources(base);
+    if (!blocked.length) return [];
+    const publicHashes = new Map<string, string[]>();
+    for (const row of blocked) {
+      const aliases = publicHashes.get(row.pathHash) ?? [];
+      if (row.publicBaselineHash) aliases.push(row.publicBaselineHash);
+      publicHashes.set(row.pathHash, aliases);
+    }
+    const tip = gitRead(root, ["rev-parse", "--verify", `${target}^{tree}`]);
+    if (tip.status !== 0) throw new HandoffError("원문 검증 Git tree를 읽지 못했다");
+    const trees = new Set([tip.stdout.trim()]);
+    if (previousBase !== undefined) {
+      const history = gitRead(root, ["log", "--format=%T", `${previousBase}..${target}`]);
+      if (history.status !== 0) throw new HandoffError("원문 검증 편입 이력을 읽지 못했다");
+      for (const tree of history.stdout.split("\n").filter(Boolean)) trees.add(tree);
+    }
+    const hits = new Set<string>(), checkedPublic = new Set<string>();
+    for (const tree of trees) {
+      const result = gitRead(root, ["ls-tree", "-r", "-z", tree]);
+      if (result.status !== 0) throw new HandoffError("원문 검증 Git tree를 읽지 못했다");
+      for (const line of result.stdout.split("\0").filter(Boolean)) {
+        const entry = /^(\d+) \S+ ([a-f0-9]+)\t([\s\S]+)$/.exec(line);
+        if (!entry) throw new HandoffError("원문 검증 Git tree 형식 오류");
+        const mode = entry[1]!, oid = entry[2]!, path = entry[3]!;
+        const pathHash = digest(path);
+        const allowed = publicHashes.get(pathHash);
+        if (!allowed || hits.has(path)) continue;
+        const blobKey = `${pathHash}:${mode}:${oid}`;
+        if (checkedPublic.has(blobKey)) continue;
+        const bytes = allowed.length > 0 && /^100(?:644|755)$/.test(mode) ? gitReadBlob(root, oid) : null;
+        if (bytes && allowed.some((hash) => matchesPublicBaseline(bytes, hash))) checkedPublic.add(blobKey);
+        else hits.add(path);
+      }
+    }
+    return [...hits].map((path) => `로컬 전용 원문 staging 금지: ${hasSecret(path) ? "[경로 생략]" : path} — 검사 후보와 편입 이력의 원문 보호 상태를 확인한다`);
+  } catch { return ["로컬 원문 보호와 검사 Git tree/편입 이력을 대조하지 못했다; Git 반영 보류"]; }
 }
 
 export class PrivateHandoffBodies {

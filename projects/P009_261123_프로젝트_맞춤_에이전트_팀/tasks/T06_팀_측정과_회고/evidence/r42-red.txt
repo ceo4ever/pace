@@ -1,0 +1,71 @@
+✖ R42 원질문 없는 코디네이터 답은 없는 요청 0건으로 비교되지 않는다 (584.613833ms)
+✖ R42 목록 안 HTML과 코드 예시는 실제 다음 절의 팀 표를 회고에 넣지 않는다 (891.699042ms)
+✖ R42 표준 반복 지적은 현재 집계와 서로 대조하고 별도 신고 코드는 보존한다 (1520.15925ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3118.731292
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1881:1
+✖ R42 원질문 없는 코디네이터 답은 없는 요청 0건으로 비교되지 않는다 (584.613833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1893:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1917:1
+✖ R42 목록 안 HTML과 코드 예시는 실제 다음 절의 팀 표를 회고에 넣지 않는다 (891.699042ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /회고에 팀 행/. Input:
+  
+  ''
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1924:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /회고에 팀 행/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1936:1
+✖ R42 표준 반복 지적은 현재 집계와 서로 대조하고 별도 신고 코드는 보존한다 (1520.15925ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1942:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

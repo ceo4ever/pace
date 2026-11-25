@@ -1,0 +1,31 @@
+✖ R50 같은 저장소의 실제 포터블 stats 비교는 영수증 교체와 프로젝트 간 재사용을 보류한다 (3706.574875ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3819.785083
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2502:1
+✖ R50 같은 저장소의 실제 포터블 stats 비교는 영수증 교체와 프로젝트 간 재사용을 보류한다 (3706.574875ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /비교 표본의 외부 응답 증빙 재사용/. Input:
+  
+  'after: 요청 수집 결합 미확인 실패만 남은 owner 요청이 있거나 해결 여부 미수집: 도달 감소를 부담 개선으로 해석하지 않음 owner_questions: 비교 총량 미확인 부담 지표 동률: 효과 방향 미확인'
+  
+      at expectConflict (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2575:12)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2583:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'after: 요청 수집 결합 미확인 실패만 남은 owner 요청이 있거나 해결 여부 미수집: 도달 감소를 부담 개선으로 해석하지 않음 owner_questions: 비교 총량 미확인 부담 지표 동률: 효과 방향 미확인',
+    expected: /비교 표본의 외부 응답 증빙 재사용/,
+    operator: 'match',
+    diff: 'simple'
+  }

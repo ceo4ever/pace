@@ -7,6 +7,7 @@ import { safeTeamPath } from "../team/store.ts";
 import { hasSecret } from "./secrets.ts";
 
 export class HandoffError extends Error {}
+export class HandoffSizeError extends HandoffError {}
 export class HandoffGuardBusy extends HandoffError {}
 export const BODY_LIMIT = 2 * 1024 * 1024;
 export const HEADER_LIMIT = 16384;
@@ -23,16 +24,28 @@ export function within(root: string, path: string): boolean {
   const rel = relative(root, path);
   return !isAbsolute(rel) && rel !== ".." && !rel.startsWith(`..${sep}`);
 }
-export function gitRead(cwd: string, args: string[]): { status: number | null; stdout: string; stderr: string } {
-  const env: NodeJS.ProcessEnv = { ...process.env, LC_ALL: "C", GIT_OPTIONAL_LOCKS: "0", GIT_TERMINAL_PROMPT: "0", GIT_NO_LAZY_FETCH: "1" };
+function gitReadOptions(): { timeout: number; maxBuffer: number; env: NodeJS.ProcessEnv } {
+  const env: NodeJS.ProcessEnv = { ...process.env, LC_ALL: "C", GIT_OPTIONAL_LOCKS: "0", GIT_TERMINAL_PROMPT: "0", GIT_NO_LAZY_FETCH: "1", GIT_NO_REPLACE_OBJECTS: "1" };
   for (const key of ["GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR", "GIT_INDEX_FILE"]) delete env[key];
-  const result = spawnSync("git", ["-c", "core.fsmonitor=false", "-C", cwd, ...args], { encoding: "utf8", timeout: 5000, maxBuffer: LEDGER_LIMIT, env });
+  return { timeout: 5000, maxBuffer: LEDGER_LIMIT, env };
+}
+export function gitRead(cwd: string, args: string[]): { status: number | null; stdout: string; stderr: string } {
+  const result = spawnSync("git", ["-c", "core.fsmonitor=false", "-C", cwd, ...args], { ...gitReadOptions(), encoding: "utf8" });
   if (result.error || result.signal) throw new HandoffError("소통 Git 경계 확인 실패");
   return result;
 }
+export function gitReadBlob(cwd: string, oid: string): Buffer | null {
+  if (!/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(oid)) return null;
+  const size = gitRead(cwd, ["cat-file", "-s", oid]);
+  const length = Number(size.stdout.trim());
+  if (size.status !== 0 || !Number.isSafeInteger(length) || length < 0 || length > BODY_LIMIT) return null;
+  const result = spawnSync("git", ["-c", "core.fsmonitor=false", "-C", cwd, "cat-file", "blob", oid], { ...gitReadOptions(), maxBuffer: BODY_LIMIT });
+  return result.status === 0 && result.stdout.length === length ? result.stdout : null;
+}
 export function regularBytes(path: string, limit: number): Buffer {
   const before = lstatSync(path);
-  if (!before.isFile() || before.isSymbolicLink() || before.nlink !== 1 || before.size > limit) throw new HandoffError("소통 파일 종류/링크/크기 오류");
+  if (!before.isFile() || before.isSymbolicLink() || before.nlink !== 1) throw new HandoffError("소통 파일 종류/링크/크기 오류");
+  if (before.size > limit) throw new HandoffSizeError("소통 파일 종류/링크/크기 오류");
   const fd = openSync(path, constants.O_RDONLY | constants.O_NONBLOCK | (constants.O_NOFOLLOW ?? 0));
   try {
     const stat = fstatSync(fd), current = lstatSync(path);

@@ -1,0 +1,18 @@
+node:fs:483
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: ENOENT: no such file or directory, open '/tmp/pace-t06-r21-recheck.sKQKTK/role-flow/repo.wt/P001/projects/P001_261124_R21_independent_fixture/METRICS.md'
+    at Object.readFileSync (node:fs:483:20)
+    at read (file:///private/tmp/pace-t06-r21-recheck.sKQKTK/probe.mjs:10:22)
+    at file:///private/tmp/pace-t06-r21-recheck.sKQKTK/probe.mjs:157:35
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/tmp/pace-t06-r21-recheck.sKQKTK/role-flow/repo.wt/P001/projects/P001_261124_R21_independent_fixture/METRICS.md'
+}
+
+Node.js v24.22.3

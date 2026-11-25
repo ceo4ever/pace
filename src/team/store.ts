@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { inputHash, type InputTrace } from "../core/input-snapshot.ts";
 import { randomUUID } from "node:crypto";
 import { closeSync, constants, fstatSync, lstatSync, mkdirSync, openSync, readSync, realpathSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
@@ -49,19 +50,25 @@ export function readTeamFile(root: string, rel: string): string | null {
     return text;
   } finally { closeSync(fd); }
 }
-export function teamFiles(root: string, rel: string, extension: string): string[] {
+export function teamFiles(root: string, rel: string, extension: string, inputs?: InputTrace): string[] {
   const path = safeTeamPath(root, rel, true);
-  try { return readdirSync(path).filter((name) => name.endsWith(extension) && !(rel === ".pace/team" && name === "resources.md")).sort(); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
+  const accepts = (name: string) => !name.includes("/") && name.endsWith(extension) && !(rel === ".pace/team" && name === "resources.md");
+  let names: string[];
+  try { names = readdirSync(path); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; names = []; }
+  inputs?.listing?.(path, names, `team-files:${extension}`, "entries", accepts);
+  return names.filter(accepts).sort();
 }
-export function loadTeamMember(root: string, name: string): TeamMember {
+export function loadTeamMember(root: string, name: string, inputs?: InputTrace): TeamMember {
   if (!validTeamName(name) || name === "resources") throw new Error("팀 이름이 올바르지 않거나 예약된 메타파일 이름이다");
   const text = readTeamFile(root, `.pace/team/${name}.md`);
   if (text === null) throw new Error(`팀 역할이 없다: ${name}`);
-  return parseTeamSource(text, name);
+  const member = parseTeamSource(text, name);
+  inputs?.record(safeTeamPath(root, `.pace/team/${name}.md`), inputHash(text));
+  return member;
 }
-export function loadTeam(root: string): TeamMember[] {
-  return teamFiles(root, ".pace/team", ".md").map((file) => loadTeamMember(root, file.slice(0, -3)));
+export function loadTeam(root: string, inputs?: InputTrace): TeamMember[] {
+  return teamFiles(root, ".pace/team", ".md", inputs).map((file) => loadTeamMember(root, file.slice(0, -3), inputs));
 }
 export function createTeamMember(root: string, name: string, role: string): TeamMember {
   if (!validTeamName(name) || name === "resources" || !isTeamRole(role)) throw new Error("팀 이름 또는 역할이 올바르지 않거나 예약된 메타파일 이름이다");

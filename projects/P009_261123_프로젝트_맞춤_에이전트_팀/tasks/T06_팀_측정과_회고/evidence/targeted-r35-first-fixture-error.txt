@@ -1,0 +1,38 @@
+✔ 실제 source stats 스냅샷 네 개를 같은 정의/완료근거로 비교해 신고 부담 증감을 낸다 (1375.400167ms)
+✔ R18 실패 시도는 근거 없는 사용자 답을 해소하지 않고 팀 도달 총량을 미확인으로 남긴다 (801.389792ms)
+✔ R30 원장 참조가 검증된 중계와 별도 로그를 구분하고 미채택 조회를 보존한다 (2962.287583ms)
+✔ R35 단독 문서의 증빙을 받되 병행·귀속 미상 시간창은 관측만 남긴다 (987.553ms)
+✔ R35 검증된 중계의 typed 답은 원장 답 행이 없어도 원 요청에 귀속한다 (872.298042ms)
+✖ R35 폴더 이름을 바꿔도 같은 프로젝트 번호의 팀 마감 이력은 남는다 (1994.240958ms)
+✔ R35 rebase에서 받아온 과거 채택 이력도 첫 마감부터 보류한다 (1311.196625ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10440.2745
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1563:1
+✖ R35 폴더 이름을 바꿔도 같은 프로젝트 번호의 팀 마감 이력은 남는다 (1994.240958ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /팀 finish 영수증/. Input:
+  
+  'pace: 프로젝트 폴더 형식이 아니다: P001_renamed\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1571:45)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'pace: 프로젝트 폴더 형식이 아니다: P001_renamed\n',
+    expected: /팀 finish 영수증/,
+    operator: 'match',
+    diff: 'simple'
+  }

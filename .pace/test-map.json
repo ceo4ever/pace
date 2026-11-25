@@ -51,6 +51,7 @@
         "src/team/**/*.ts",
         "src/core/worker-tiers.ts",
         "src/project/handoff-*.ts",
+        "src/project/team-*.ts",
         "templates/team/**/*"
       ],
       "tests": [
@@ -58,6 +59,7 @@
         "test/team-verify.test.ts",
         "test/team-lock.test.ts",
         "test/team-handoff.test.ts",
+        "test/team-metrics.test.ts",
         "test/project-role.test.ts",
         "test/worker-settings.test.ts"
       ],

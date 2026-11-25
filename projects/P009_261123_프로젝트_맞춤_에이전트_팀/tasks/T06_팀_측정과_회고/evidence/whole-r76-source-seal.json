@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r76.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1344,
+  "pass": 1326,
+  "fail": 1,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R76 \uace0\uc815 \ud6c4\ubcf4 1344\uac74 \uc911 1326\ud1b5\uacfc\u00b717\uac74\ub108\ub700\u00b71\uc2e4\ud328. R74\uc640 \uac19\uc740 \ub300\uc2dc\ubcf4\ub4dc \uc0c1\uc704 \uc815\uc158 \ud569\uc131 \uc2dc\ud5d8; \ubcf8 \uc791\uc5c5\uc758 \uc0c8 \ubc18\ub840\ub294 \uc804\uccb4\uc5d0\uc11c \ud1b5\uacfc\ud568."
+}

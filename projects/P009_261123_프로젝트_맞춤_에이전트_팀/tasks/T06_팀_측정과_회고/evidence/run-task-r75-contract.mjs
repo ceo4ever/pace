@@ -1,0 +1,13 @@
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+const root = resolve(import.meta.dirname, "../../../../..");
+const { createPExecutor, claudeP } = await import(resolve(root, "src/agent/p-executor.ts"));
+const { runAgent, validateRequest } = await import(resolve(root, "src/agent/contract.ts"));
+const first = JSON.parse(readFileSync(resolve(import.meta.dirname,"pre-review-r75-scoped-cli.txt"),"utf8"));
+if (first.review?.verdict !== "pass" || first.cross !== true) throw new Error("The independent first review must pass");
+const out = resolve(import.meta.dirname, "task-r75-contract.json");
+if (existsSync(out)) throw new Error("Preserve the original contract review");
+const prompt = `You independently review only T06's changed TASK contract. This is stage two. First compare the attached first judgment, then read TASK.md at ${resolve(import.meta.dirname, "../TASK.md")}, the user's approved B contract in ${resolve(import.meta.dirname, "r75-owner-b-decision.md")}, P009 PROJECT.md P-5, and BR06. Check scope and T-4/S-6/S-6a/S-6b: dirty abstains before logging, user selects a candidate commit, final harness-generated commit tied to inspected tree, both branches/history, legacy behavior, and no assumption about live impact. No changes, no execution/mutation. State source exposure, blocking/SF counts and verdict pass/fail.\n\nActual first judgment:\n${first.result.text}`;
+const result = await runAgent(createPExecutor(claudeP,{command:"/Users/lucas/.local/bin/claude"}), validateRequest({agent:"claude", mode:"p", cwd:root, access:"read-only",prompt,timeoutMs:180000}));
+writeFileSync(out,JSON.stringify(result,null,2)+"\n");
+console.log(result.text);

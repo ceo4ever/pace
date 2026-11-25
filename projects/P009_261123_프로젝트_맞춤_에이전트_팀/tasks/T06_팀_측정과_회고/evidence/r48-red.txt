@@ -1,0 +1,32 @@
+✖ R48 출처 별칭과 구간 밖 재사용도 동일 응답 ID·지문이면 한 전송 근거다 (858.115ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 972.183208
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2330:1
+✖ R48 출처 별칭과 구간 밖 재사용도 동일 응답 ID·지문이면 한 전송 근거다 (858.115ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'owner_delivery'
+  - 'unconfirmed'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2358:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'owner_delivery',
+    expected: 'unconfirmed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

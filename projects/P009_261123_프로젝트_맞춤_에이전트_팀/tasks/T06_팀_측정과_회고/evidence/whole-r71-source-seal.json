@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r71.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1333,
+  "pass": 1316,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R71 \uace0\uc815 \ud6c4\ubcf4 \uc804\uccb4 \uac80\uc0ac 1333\uac74, 1316\ud1b5\uacfc, 17\uac74 \uac74\ub108\ub700, \uc2e4\ud328 0"
+}

@@ -1,0 +1,18 @@
+{
+  "baselineCommit": "441c1d3783807e0e62c2deaa25ed9c189ac2f48e",
+  "syntheticOnly": true,
+  "results": {
+    "json": {
+      "byteEqual": true,
+      "sha256": "62a2840d11763bcc0f5b1a14ccb7574f974259cad442fa269ad8d006f7045a43"
+    },
+    "text": {
+      "byteEqual": true,
+      "sha256": "6d68c401c50c3717a3c7c3f84a0efc564919f5f6fc7804c6a99de00de996b617"
+    },
+    "METRICS": {
+      "byteEqual": true,
+      "sha256": "eafa1b1b60b512e6e379ca2c866fc165a560419cf452193672e4449567be301d"
+    }
+  }
+}

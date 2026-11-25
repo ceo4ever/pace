@@ -6,7 +6,7 @@ tags: [brain, search, lint]
 sources: [code:src/project/brain.ts, code:skills/pace-brain/SKILL.md, 대화:2026-10-22, code:src/cli.ts]
 related: [session-boot-via-hooks, memory-two-scopes]
 created: 2026-10-22
-updated: 2026-11-19
+updated: 2026-11-24
 status: active
 ---
 
@@ -46,3 +46,7 @@ add·update·log·lint·ingest-scan을 두고 형식 검증은 lint에 합쳤다
 P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움말이며 기존 부트·브레인·프로젝트 명령 분기는 그대로다. harness.ts는 정의서 목록 export, changed 전용 검증 commit 인자 및 셸의 구조화된 실행 상태를 추가했다. 인자를 생략한 기존 all/finish의 main 기준과 ok/output 계약은 유지하며, 설치·프로젝트 생명주기·지표·사건·부트 전달은 변경하지 않았다. README의 OPAL 채택 경로도 유지했다. 따라서 위 기존 주장과 실측의 역사적 한계를 유지한다. 원래 시험 본문과 최종995건의 범위/판정 보존은 T04 TASK-CLOSE 및 t03-regression-comparison에 연결되어 있다.
 
 변경 기반 검사는 별도 경계다. 현재 staged/unstaged/untracked 작업본만 대상으로, 기준 commit과 같은 map의 명시 checks를 먼저 실행한다. 숨김 index/sparse·삭제·미분류·불확실성은 실제 전체 검사로 전환하고, 시작 후 실제 실패1·예외 확인 불가3은 성공으로 숨기지 않는다. 커밋된 브랜치 차이는 빠른 범위에 포함하지 않으며 finish 전체 검사를 유지한다. 자세한 근거는 [[변경-기반-검사와-실행-선언-신뢰-경계]]다. Windows 관측을 실제 설치기·POSIX·다른 프로젝트 일반 성능 검증으로 확대하지 않는다.
+
+## 팀 명령 추가 뒤 검색 경계 대조 (2026-11-24)
+
+cli.ts의 팀·compare-team 분기를 추가한 뒤에도 brain search는 searchBrain/formatSearch만 호출하고 log는 명시 brain log에서만 기록한다. 현재 cli.ts brain 분기와 brain.ts의 검색·색인·lint 경로를 직접 대조했다. 팀 역할 부트는 필요한 역할 정의를 전달하는 별도 장치이며 위키 전체를 부트에 넣는 정책으로 바뀌지 않았다.

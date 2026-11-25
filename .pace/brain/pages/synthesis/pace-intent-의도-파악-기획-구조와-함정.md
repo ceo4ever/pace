@@ -6,7 +6,7 @@ tags: [pace-intent, intent, planning, pitfalls]
 sources: [code:src/intent/, doc:skills/pace-intent/SKILL.md, doc:skills/pace-intent/references/handoff.md, doc:skills/pace-canvas-skills/canvas-wireframe/SKILL.md, doc:skills/pace-project-dev/references/document-shape.md, doc:skills/pace-intent/references/preview.md, code:src/intent/preview.ts]
 related: [pace-scout-기회-탐색-구조와-함정, 작업-하네스-실측-함정]
 created: 2026-10-29
-updated: 2026-11-16
+updated: 2026-11-24
 status: active
 ---
 
@@ -56,3 +56,7 @@ pace intent preview는 명시한 제품 프레임·요소 ID를 읽어 이미지
 화면 보드의 영역 표지와 note는 설명 레이어이며 plan.links의 명시적 이동과 자동 동기화되지 않는다. 둘이 같은 행동을 기술하면 작성자가 서로 대조해야 하고, 검증 통과가 설명 문구까지 일치함을 뜻하지 않는다. [근거: skills/pace-canvas-skills/canvas-wireframe/SKILL.md, skills/pace-intent/references/preview.md]
 
 기존·변경 화면의 근거 경로는 생성 때의 `--root` 또는 현재 폴더를 기준으로 한다. 출력 폴더가 제품 루트라는 보장은 없다. preview `--verify`는 기록된 plan·Canvas·출력·도구 해시를 확인하며 외부 근거 파일 자체는 다시 검사하지 않는다. [근거: src/intent/preview.ts, skills/pace-intent/references/preview.md]
+
+## 근거 변경 대조 (2026-11-24)
+
+현재 document-shape.md의 최소 추적/명령용 필수 구조/업무별 본문 선택과 말미 TASK 파서 한계 설명을 대조했다. 구조 파서는 전체 Markdown renderer가 아니라는 설명이 추가돼도 기획 정본/인계 확인/실제 성과 구분을 유지한다. T06 팀 표의 구조 검증도 별도이며 intent의 의미 판정을 대신하지 않는다.

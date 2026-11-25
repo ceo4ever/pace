@@ -1,0 +1,558 @@
+[
+  {
+    "name": "task-2-closed-edge-positive",
+    "matched": true,
+    "expected": [
+      true,
+      2,
+      0,
+      2,
+      0,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      2,
+      2
+    ],
+    "observed": [
+      true,
+      2,
+      0,
+      2,
+      0,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      2,
+      2
+    ]
+  },
+  {
+    "name": "task-4-closed-edge-positive",
+    "matched": true,
+    "expected": [
+      true,
+      2,
+      0,
+      2,
+      0,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      2,
+      2
+    ],
+    "observed": [
+      true,
+      2,
+      0,
+      2,
+      0,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      2,
+      2
+    ]
+  },
+  {
+    "name": "task-7-old-root-typed-answer-dedup",
+    "matched": true,
+    "expected": [
+      true,
+      1,
+      1,
+      0,
+      0,
+      0,
+      null,
+      0,
+      1,
+      1,
+      1,
+      null,
+      0
+    ],
+    "observed": [
+      true,
+      1,
+      1,
+      0,
+      0,
+      0,
+      null,
+      0,
+      1,
+      1,
+      1,
+      null,
+      0
+    ]
+  },
+  {
+    "name": "task-7-legacy-global",
+    "matched": true,
+    "expected": {
+      "total": 1,
+      "owner_reply": 1,
+      "owner_delivery": 0,
+      "failed_only": 0,
+      "unconfirmed": 0,
+      "unlinkedLogEvents": 0,
+      "items": [
+        {
+          "requestId": "task-7",
+          "reach": "owner_reply"
+        }
+      ]
+    },
+    "observed": {
+      "total": 1,
+      "owner_reply": 1,
+      "owner_delivery": 0,
+      "failed_only": 0,
+      "unconfirmed": 0,
+      "unlinkedLogEvents": 0,
+      "items": [
+        {
+          "requestId": "task-7",
+          "reach": "owner_reply"
+        }
+      ]
+    }
+  },
+  {
+    "name": "task-7-legacy-shape",
+    "matched": true,
+    "expected": [
+      false,
+      false
+    ],
+    "observed": [
+      false,
+      false
+    ]
+  },
+  {
+    "name": "task-7-same-period-dedup-ignores-later-answer",
+    "matched": true,
+    "expected": [
+      true,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ],
+    "observed": [
+      true,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  {
+    "name": "task-9-old-root-typed-answer-dedup",
+    "matched": true,
+    "expected": [
+      true,
+      1,
+      1,
+      0,
+      0,
+      0,
+      null,
+      0,
+      1,
+      1,
+      1,
+      null,
+      0
+    ],
+    "observed": [
+      true,
+      1,
+      1,
+      0,
+      0,
+      0,
+      null,
+      0,
+      1,
+      1,
+      1,
+      null,
+      0
+    ]
+  },
+  {
+    "name": "task-9-legacy-global",
+    "matched": true,
+    "expected": {
+      "total": 1,
+      "owner_reply": 1,
+      "owner_delivery": 0,
+      "failed_only": 0,
+      "unconfirmed": 0,
+      "unlinkedLogEvents": 0,
+      "items": [
+        {
+          "requestId": "task-9",
+          "reach": "owner_reply"
+        }
+      ]
+    },
+    "observed": {
+      "total": 1,
+      "owner_reply": 1,
+      "owner_delivery": 0,
+      "failed_only": 0,
+      "unconfirmed": 0,
+      "unlinkedLogEvents": 0,
+      "items": [
+        {
+          "requestId": "task-9",
+          "reach": "owner_reply"
+        }
+      ]
+    }
+  },
+  {
+    "name": "task-9-legacy-shape",
+    "matched": true,
+    "expected": [
+      false,
+      false
+    ],
+    "observed": [
+      false,
+      false
+    ]
+  },
+  {
+    "name": "task-9-same-period-dedup-ignores-later-answer",
+    "matched": true,
+    "expected": [
+      true,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ],
+    "observed": [
+      true,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  {
+    "name": "answer-after-end-stays-unconfirmed",
+    "matched": true,
+    "expected": [
+      true,
+      1,
+      0,
+      0,
+      0,
+      0,
+      null,
+      0,
+      1,
+      1,
+      1,
+      null,
+      0
+    ],
+    "observed": [
+      true,
+      1,
+      0,
+      0,
+      0,
+      0,
+      null,
+      0,
+      1,
+      1,
+      1,
+      null,
+      0
+    ]
+  },
+  {
+    "name": "root-after-end-with-in-period-typed-answer",
+    "matched": true,
+    "expected": [
+      true,
+      1,
+      1,
+      0,
+      0,
+      0,
+      null,
+      0,
+      1,
+      1,
+      1,
+      null,
+      0
+    ],
+    "observed": [
+      true,
+      1,
+      1,
+      0,
+      0,
+      0,
+      null,
+      0,
+      1,
+      1,
+      1,
+      null,
+      0
+    ]
+  },
+  {
+    "name": "wholly-outside-request-does-not-taint-period",
+    "matched": true,
+    "expected": [
+      true,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "observed": [
+      true,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "name": "same-period-coordinator-confirmed-absorption",
+    "matched": true,
+    "expected": [
+      true,
+      2,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1
+    ],
+    "observed": [
+      true,
+      2,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  {
+    "name": "same-period-coordinator-count",
+    "matched": true,
+    "expected": 1,
+    "observed": 1
+  },
+  {
+    "name": "adjacent-confirmed-absorption-cannot-zero-boundary",
+    "matched": true,
+    "expected": [
+      true,
+      3,
+      1,
+      1,
+      0,
+      1,
+      null,
+      0,
+      2,
+      1,
+      1,
+      null,
+      1
+    ],
+    "observed": [
+      true,
+      3,
+      1,
+      1,
+      0,
+      1,
+      null,
+      0,
+      2,
+      1,
+      1,
+      null,
+      1
+    ]
+  },
+  {
+    "name": "outside-root-coordinator-answer-not-absorbed",
+    "matched": true,
+    "expected": 1,
+    "observed": 1
+  },
+  {
+    "name": "compare-boundary",
+    "matched": true,
+    "expected": [
+      "unknown",
+      2,
+      2,
+      0,
+      2,
+      4,
+      null,
+      null,
+      true,
+      true
+    ],
+    "observed": [
+      "unknown",
+      2,
+      2,
+      0,
+      2,
+      4,
+      null,
+      null,
+      true,
+      true
+    ]
+  },
+  {
+    "name": "compare-clean",
+    "matched": true,
+    "expected": [
+      "observed-burden-improvement",
+      2,
+      2,
+      0,
+      0,
+      4,
+      2,
+      -2,
+      false,
+      true
+    ],
+    "observed": [
+      "observed-burden-improvement",
+      2,
+      2,
+      0,
+      0,
+      4,
+      2,
+      -2,
+      false,
+      true
+    ]
+  },
+  {
+    "name": "no-launch-observation",
+    "matched": true,
+    "expected": [
+      "maker",
+      1,
+      false
+    ],
+    "observed": [
+      "maker",
+      1,
+      false
+    ]
+  },
+  {
+    "name": "no-launch-role-work-unmeasured",
+    "matched": true,
+    "expected": null,
+    "observed": null
+  },
+  {
+    "name": "role-stats-write",
+    "matched": false,
+    "expected": 0,
+    "observed": 1
+  }
+]

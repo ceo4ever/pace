@@ -1,0 +1,54 @@
+✖ project role RED: explicit member is accepted and no-launch carries the role (1976.387208ms)
+✔ project role RED: missing member is rejected before worktree creation (1708.229ms)
+✔ project role: no-role workerSpec is the pre-change golden (59.98625ms)
+✔ project role claude: argv overrides, default effort, and start provenance (5641.081375ms)
+✔ project role codex: argv overrides, default effort, and start provenance (5865.099292ms)
+✔ project role: PROJECT selection, explicit precedence, existing launch requirement, and worktree source (4797.275875ms)
+✔ project role: a team and native files do not imply a default role (9240.072667ms)
+✔ project role: nonhost, unsafe name/settings and misplaced option fail before any worker (7400.065ms)
+✔ project role: draft source is preserved and only committed role enters a new worktree (1456.238584ms)
+✔ project role: preparation edits hold launch and preserve the prepared worktree (1489.001542ms)
+✔ project role: restored branch reads its own committed PROJECT and source before creation (1494.808875ms)
+✔ project role: existing source links and malformed source fail without a worker (1289.543541ms)
+✔ project role: settings and shell metacharacters are a single quoted value (1569.735208ms)
+✔ project role: start record validation preserves legacy events and rejects malformed role rows (2.373959ms)
+✔ project role: role-free legacy PROJECT may be large and hardlinked (1044.878583ms)
+✔ project role: ref PROJECT names use literal Git paths (611.2925ms)
+✔ project role: normalization guidance names CRLF to LF UTF-8 SHA256 (530.075916ms)
+✔ project role: unsafe settings reach semantic preflight and never create a worker (4630.930166ms)
+✔ project role: secret-looking member names never reach logs or diagnostics (628.209167ms)
+✔ project role: invalid PROJECT names and deleted PROJECT-selected sources hold before workers (2126.706833ms)
+✔ project role: unknown and failed launches retain distinct statuses without automatic retries (1579.236208ms)
+pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+✔ 팀 stats는 수신 의도만 있는 요청을 도달로 세지 않고 없는 손작업 총량을0으로 채우지 않는다 (2062.102292ms)
+✔ 팀 비교는 부담 개선·악화·품질 변화 미확인을 분리하며 품질 감소를 개선으로 포장하지 않는다 (4.7005ms)
+✔ 표본·정의·범위·저장소 누락/불일치와 혼재 증감을 판정 전에 검출한다 (2.399625ms)
+✔ legacy 기준선 원본을 바꾸지 않고 지문 고정 주석을 요구하며 수신 의도를 도달로 승격하지 않는다 (2.689417ms)
+✔ 회고는 최초 METRICS 생성 전에 metadata 근거로 검증하며 원문 경로·빈 이유·4변경을 거부한다 (881.370709ms)
+✔ 새 start 측정 버전은 marker를 지워도 회고를 요구하며 옛 role 없는 start를 소급하지 않는다 (769.996417ms)
+✔ 명시 부분 0은 관측0/총량null이고 complete도 닫힌 구간·다른 확인자·영수증이 필요하다 (1742.408459ms)
+✔ source CLI stats→비교→METRICS→회고→finish를 metadata만으로 완주한다 (5407.754583ms)
+✔ 도달은 답만·실패 뒤 성공·실패만을 요청별로 분리하고 범위 밖 최초 요청을 제외한다 (2088.71175ms)
+✔ 역할 선언은 실제 시간/출력이나 미사용 증명이 아니며 자체 답도 명시 근거만 센다 (2921.104708ms)
+✔ project-start-to-merge 선언 입력은 미래 종료를 미리 맞추지 않고 실제 merge 뒤 지표를 생성한다 (5259.30925ms)
+✔ 닫힌 대표 업무의 다른 주체 확인은 신고 총량을 내고 자기 확인은 관측 하한만 낸다 (2918.599125ms)
+✔ 비교 묶음은 신고 N·같은 구간 중복·겹침·조건 혼합으로 표본 수를 부풀리지 못한다 (1.730542ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 33
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 55474.003666
+
+✖ failing tests:
+
+test at test/project-role.test.ts:25:1
+✖ project role RED: explicit member is accepted and no-launch carries the role (1976.387208ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'teamMetricsVersion')
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/project-role.test.ts:32:104)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)

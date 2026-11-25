@@ -1,0 +1,31 @@
+{
+  "base": "441c1d3",
+  "candidate": "post-R8-39",
+  "patchSha256": "6743dd0020366ae1763c1e4135531add80607fb02f2d0638c85b3a5b598ed367",
+  "capturedAt": 1795512423.460479,
+  "captureScope": "captured shortly after check launch; patch generated immediately before launch; no source edits during execution",
+  "files": {
+    ".pace/test-map.json": "13257ac4c656b953abdb83547c972c6df1ba2ecca5952dfe62c1ff6796063244",
+    "docs/HANDOFF.md": "9d2964f35a53e768b63723401cbc0502afbb6b88d75192b7ec1e8f82c322d4c4",
+    "docs/README.md": "74e25723d44cb8a5cb29b656c9c43da231549fec736fa83dc54fa935c4160b30",
+    "docs/TEAM.md": "b22f81eb450156709fe2f0522b5b0927235de500ce1bbb3db8d7c794bd1c72ad",
+    "docs/WORK-PROCESS.md": "ed51d08b3d0a55a3e1e4a688ccdd4b8a764a717320efb0a036ea2c8569f8f350",
+    "docs/TEAM-METRICS.md": "2757dcab8df83b4e1f95ecb3a5de024c39267b62226c5b04d349f4be0f7762c3",
+    "skills/pace-project-dev/references/coordinator.md": "4b898b9f8a0d1e891e09af28481d4274b2854f73e10dc47853be6b3c59027cc9",
+    "src/cli.ts": "362fb201dfe8b4a8033b2addce052f4ebd49bd2559a8927ad36a11a2347b1b9b",
+    "src/project/event-log.ts": "e21508ee0908e86998e4232b86c3dd8cd48596981e4987d20bf557cd74e3bf02",
+    "src/project/handoff-report.ts": "e7cd3ba1446e86d29970cb39f55db07adcdb22c901c9f749f1798aca7bfdc47a",
+    "src/project/harness.ts": "fe471dbd991df1aaa5c33d299b80697ded58bd5a2439a2206bc358688fa170dd",
+    "src/project/metrics-document.ts": "00888030f9d9967933c2595a1c77458e2d915e328774e9e14727f52d9aed76fb",
+    "src/project/metrics-report.ts": "09bfcddb4af39d3c7d26a6d964001aa0396f8a1b151a0ce364a5adfaf796ad4b",
+    "src/project/team-comparison.ts": "c48337b9503392e468901f281d58cb93d5dccbfd87b0dc93e1fcf8693f6b0e97",
+    "src/project/team-input.ts": "eab7fda39ab756aa380dd324af3a6fd608369865d50358dce7a6727ebb6a05a6",
+    "src/project/team-metrics-document.ts": "da4f115e5be1bbb9b0e881549ac8100ec6d7e70edc555e901d3170eeb347af85",
+    "src/project/team-metrics.ts": "7d6efd92250f2d3fe67a2a3846e444a3d78f63a907c000f7cb41efff3835e54e",
+    "src/project/team-retrospective.ts": "9d65c65bea628210b4b9f1ec0b7bc736f47c7a900d5b94b16710ecaa274db1f9",
+    "templates/project/PROJECT-CLOSE.md": "487e90f41daa28a380b23c0f0117e9fd61bf0e0dd0c8e6f530e45bc400ccbe14",
+    "templates/project/PROJECT.md": "a4f5bc6345419edd9e82a8cb94c9848b37d43501158f1de66c860efb0c2c4e46",
+    "test/project-role.test.ts": "09b1cbbf7bd514f05aeedb6fea6e037916510c19f0ecd7bae078aac3e99732e8",
+    "test/team-metrics.test.ts": "ba409d35f8a9c1ba95a30a3bf7aae829a6aaeba8654d25b6f61843ef508ee018"
+  }
+}

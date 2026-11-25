@@ -1,0 +1,185 @@
+✔ R24 ignored 검증 자료는 작업 파일이 유효해도 finish tree에 빠질 수 없다: TEAM-RETROSPECTIVE.json (1604.432542ms)
+✔ R24 ignored 검증 자료는 작업 파일이 유효해도 finish tree에 빠질 수 없다: proof.json (1271.063083ms)
+✖ R25 반복 지적 산출기가 읽은 ignored TASK-CLOSE도 최종 Git 입력으로 추적한다 (1609.494916ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (wrong-request) (2205.421291ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (answer-first) (1988.676208ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (verified-answer) (1577.975041ms)
+✔ R27 보안 검사와 기준 브랜치의 팀 채택을 첫 커밋 전에 검사한다 (기준 채택=false) (1583.70875ms)
+✔ R27 보안 검사와 기준 브랜치의 팀 채택을 첫 커밋 전에 검사한다 (기준 채택=true) (1413.440708ms)
+✔ R31 팀 마감 뒤 채택 파일과 영수증을 뺀 커밋도 기존 프로젝트로 병합되지 않는다 (2754.00625ms)
+✔ R35 단독 문서의 증빙을 받되 병행·귀속 미상 시간창은 관측만 남긴다 (1670.497042ms)
+✔ R35 검증된 중계의 typed 답은 원장 답 행이 없어도 원 요청에 귀속한다 (1223.846417ms)
+✔ R35 폴더 이름을 바꿔도 같은 프로젝트 번호의 팀 마감 이력은 남는다 (2175.765ms)
+✔ R35 rebase에서 받아온 과거 채택 이력도 첫 마감부터 보류한다 (1296.012041ms)
+✔ R75 더러운 팀 마감은 HEAD·객체·인덱스·원장·원문을 그대로 보존한다 (1262.290958ms)
+✔ R75 기준 브랜치에만 채택 이력이 있어도 자동 반영과 실패 로그 기록을 보류한다 (1281.171ms)
+✔ R75 검토 커밋을 팀 마감의 부모로 쓰고 하네스 경로만 새 커밋에 담는다 (2409.329292ms)
+✔ R75 비팀 마감은 미리 커밋하지 않은 변경에 기존 목차 커밋 경로를 유지한다 (1677.100375ms)
+✖ R42 목록 안 HTML과 코드 예시는 실제 다음 절의 팀 표를 회고에 넣지 않는다 (1283.853709ms)
+✖ R43 최상위 코드와 HTML 안의 목록 예시는 블록이나 회고 표를 열지 않는다 (1127.052125ms)
+✔ R43 최상위 코드와 HTML 안의 목록 예시는 팀 표지를 머리로 승격하지 않는다 (698.441417ms)
+✖ R67 finish는 선언된 영수증의 원문과 미확인 형식을 Git 자동 반영 전 거부한다 (1169.74775ms)
+✖ R69 팀 마감은 직접 선언된 답과 원장 거울 파일의 원문도 자동 스테이징 전에 거부한다 (1388.352708ms)
+✖ R70 팀 마감은 없는 과거 답 참조를 보존하고 실제 비영수증 파일은 보류한다 (1170.719292ms)
+✖ R71 조회와 마감에서 과거 로그의 안전한 상대 경로 표기를 같은 파일로 대조한다 (1296.815167ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 17
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 37505.2155
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:275:1
+✖ R25 반복 지적 산출기가 읽은 ignored TASK-CLOSE도 최종 Git 입력으로 추적한다 (1609.494916ms)
+  AssertionError [ERR_ASSERTION]: 빠진 것:
+  - 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다
+  실패
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:283:61)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2174:1
+✖ R42 목록 안 HTML과 코드 예시는 실제 다음 절의 팀 표를 회고에 넣지 않는다 (1283.853709ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /회고에 팀 행/. Input:
+  
+  '빠진 것:\n- 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다\n실패\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2185:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '빠진 것:\n- 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다\n실패\n',
+    expected: /회고에 팀 행/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2208:1
+✖ R43 최상위 코드와 HTML 안의 목록 예시는 블록이나 회고 표를 열지 않는다 (1127.052125ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /회고에 팀 행/. Input:
+  
+  '빠진 것:\n- 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다\n실패\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2224:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '빠진 것:\n- 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다\n실패\n',
+    expected: /회고에 팀 행/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3454:1
+✖ R67 finish는 선언된 영수증의 원문과 미확인 형식을 Git 자동 반영 전 거부한다 (1169.74775ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /영수증|메타데이터/. Input:
+  
+  '빠진 것:\n- 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다\n실패\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3469:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '빠진 것:\n- 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다\n실패\n',
+    expected: /영수증|메타데이터/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3595:1
+✖ R69 팀 마감은 직접 선언된 답과 원장 거울 파일의 원문도 자동 스테이징 전에 거부한다 (1388.352708ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /영수증|메타데이터/. Input:
+  
+  '빠진 것:\n- 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다\n실패\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3622:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '빠진 것:\n- 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다\n실패\n',
+    expected: /영수증|메타데이터/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3634:1
+✖ R70 팀 마감은 없는 과거 답 참조를 보존하고 실제 비영수증 파일은 보류한다 (1170.719292ms)
+  AssertionError [ERR_ASSERTION]: 빠진 것:
+  - 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다
+  실패
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3654:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3663:1
+✖ R71 조회와 마감에서 과거 로그의 안전한 상대 경로 표기를 같은 파일로 대조한다 (1296.815167ms)
+  AssertionError [ERR_ASSERTION]: 빠진 것:
+  - 팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다
+  실패
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3686:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

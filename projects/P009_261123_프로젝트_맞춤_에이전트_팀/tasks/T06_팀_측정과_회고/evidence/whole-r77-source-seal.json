@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r77.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1346,
+  "pass": 1329,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R77 \uace0\uc815 \ud6c4\ubcf4 1346\uac74 \uc911 1329\ud1b5\uacfc\u00b717\uac74\ub108\ub700\u00b7\uc2e4\ud328 0. \ub2e4\ub978 \uccb4\ud06c\uc544\uc6c3 \uc6d0\ubb38 \uae30\ub85d\uc5d0 \ub300\ud55c \ub3c5\ub9bd \uc9c0\uc801\uc740 \ubcc4\ub3c4."
+}

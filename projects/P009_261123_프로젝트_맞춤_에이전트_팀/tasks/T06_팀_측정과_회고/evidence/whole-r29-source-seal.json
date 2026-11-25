@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r29.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1258,
+  "pass": 1240,
+  "fail": 1,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "legacy handoff CLI expectation regressed; independent goal fail1/SF1"
+}

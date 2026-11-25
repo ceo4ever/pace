@@ -1,0 +1,474 @@
+ M .pace/brain/log.md
+ M .pace/brain/pages/concept/brain-at-project-gates.md
+ M .pace/brain/pages/concept/brain-pull-not-push.md
+ M .pace/brain/pages/concept/install-and-launch-pitfalls.md
+ M .pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md
+ M .pace/brain/pages/concept/session-boot-via-hooks.md
+ M .pace/brain/pages/concept/백로그-대시보드-자동-갱신과-git-경계.md
+ M .pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md
+ M .pace/brain/pages/concept/작업-하네스-실측-함정.md
+ M .pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md
+ M .pace/brain/pages/synthesis/agent-설정과-daemon-자동-실행-함정.md
+ M .pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md
+ M .pace/brain/pages/synthesis/telegram-어댑터-설계-함정.md
+ M .pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md
+ M .pace/memory/INDEX.md
+ M .pace/memory/status.md
+ M .pace/test-map.json
+ M backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BACKLOG.md
+ M backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BR08_첫_적용(roblox-studio_이전·새_저장소).md
+ M backlogs/dashboard/data.js
+ M docs/HANDOFF.md
+ M docs/README.md
+ M docs/TEAM.md
+ M docs/WORK-PROCESS.md
+ M projects/P009_261123_프로젝트_맞춤_에이전트_팀/PROJECT.md
+ M projects/P009_261123_프로젝트_맞춤_에이전트_팀/log.jsonl
+ M skills/pace-project-dev/references/coordinator.md
+ M src/cli.ts
+ M src/project/event-log.ts
+ M src/project/handoff-report.ts
+ M src/project/harness.ts
+ M src/project/metrics-document.ts
+ M src/project/metrics-report.ts
+ M src/team/handoff-delivery.ts
+ M src/team/handoff-model.ts
+ M src/team/handoff-state.ts
+ M src/team/model.ts
+ M src/team/resource-cli.ts
+ M src/team/resource-lock.ts
+ M templates/project/PROJECT-CLOSE.md
+ M templates/project/PROJECT.md
+ M templates/team/member.md
+ M test/project-log.test.ts
+ M test/project-role.test.ts
+ M test/team-handoff.test.ts
+ M test/team-lock.test.ts
+ M test/team.test.ts
+?? .pace/memory/daemon-준비-시험의-인스턴스-포트-충돌.md
+?? .pace/memory/부모-종료-자식-회수-시험의-간헐-실패.md
+?? .pace/memory/손자-생존-잠금-시험의-간헐-미확인.md
+?? docs/TEAM-METRICS.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/USER-VALIDATION.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/PRE-REVIEW-HASH-2.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/PRE-REVIEW-HASH.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/PRE-REVIEW.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/REVIEW-LOG.jsonl
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/TASK-CLOSE.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/TASK.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.lock
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-ai-sql-compare.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-ai-sql-exit.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-ai-sql-final-exit.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-ai-sql-final.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-roblox-compare.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-roblox-exit.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-roblox-final-exit.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-roblox-final.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/agent-p-diagnostic-pass.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/brain-lint.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r16.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r17.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r18.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r19.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r20.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r21.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r22.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r23.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/candidate-r24.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/check-final-invocation.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/check-final-receipt.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/check-final-source-after.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/check-final-source-before.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/check-final.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/check-last-source-before.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-delta-review-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-delta-review.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-delta-test-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-delta-test.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage1-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage1.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage10-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage10.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage11-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage11.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage12-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage12.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage13-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage13.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage14-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage14.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage15-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage15.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage16-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage16.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage17-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage2-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage2.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage3-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage3.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage4-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage4.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage5-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage5.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage6-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage6.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage7-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage7.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage8-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage8.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage9-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/codex-post-r7-stage9.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/commonmark-primary-boundaries.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/coordinator-fallback-answer-summary.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/daemon-port-isolated.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/final-artifact-id.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/final-review-card.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/final-source-before.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/final-verify-executor-scope.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-22-pass.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-final-24.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-owner-42.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r10-45.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r11-62.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r12-65.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r13-68.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r14-72.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r15-75.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r16-77.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r17-79.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r18-83-pre-summary-expansion.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-post-r8-39.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r1-fail.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r19-83.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r2-pass.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r20-85.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r20-pass.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r21-88.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r22-90.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r23-91.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r24-97.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/focused-r6-fail-start-assertion.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/handoff-lock-51-pass.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r17-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r17.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r18-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r19-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r19.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r20-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r21-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r22-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-contract-r23-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-intermediate.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r1.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r10.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r11.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r12.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r13.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r14.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r15.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r16.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r17.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r18.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r19.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r2.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r20.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r21.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r22.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r23.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r3.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r4.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r5.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r6.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r7.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r8.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff-r9.patch.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff.patch
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-purpose-before-owner.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-purpose-r2.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-purpose-r3.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-purpose-r4.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-purpose-r5.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-purpose-r6.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-purpose.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-10.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-11.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-12.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-13.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-14.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-15.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-16.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-17.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-18.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-19.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-2.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-20.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-21.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-22.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-23.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-3.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-4.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-5.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-6.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-7.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-8.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-9.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-r16-readable.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-response.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage10-original-extra-results.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage10-original-extra.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage10-original-markdown-proof.py
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage10-original-markdown-proof.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage10-original-probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage10-original-requests-results.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage10-original-requests.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage10-original-results.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-commands.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-delta.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-delta.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-focused-retained.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-markdown-proof.py
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-markdown-proof.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-role-rerun.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-role-rerun.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage11-original-summary.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-commands.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-final-integrity.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-focused-retained.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-new-controls.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-new-controls.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-new-markdown-render.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-replay-current-contract.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-role-commands.jsonl
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage12-original-summary.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-changed.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-changed.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-commands.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-focused-retained.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-focused.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-render.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-render.py
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-reverse.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-source-integrity.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-status-after.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-status-before.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-status-diff.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-summary.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-t01-sha256.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-visibility.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage13-original-visibility.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-check-text.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-commands.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-focused88.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-head.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-probe-initial.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-probe.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-results.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-reverse-after.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-reverse-before.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-status-after.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-status-before.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-status.diff
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-summary.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-t01-sha256.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage14-original-target-sha256.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage15-original-controls.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage15-original-controls.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage15-original-focused90.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage15-original-markdown-render.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage15-original-probe.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage15-original-probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage15-original-status.diff
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage15-original-t01-sha256.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage2-original-probes.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage2-original-probes.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage2-original-retrospective-probe.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage3-original-probe.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage3-original-probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage4-original-compat-status.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage4-original-probe-recheck.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage4-original-probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage4-original-review-cli.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage5-original-fifo.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage5-original-probe-final.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage5-original-results-final.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage6-original-markdown-blocks.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage6-original-probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage6-original-results.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage7-original-compare-grade.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage7-original-compare-grade.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage7-original-markdown-blocks.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage7-original-probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage7-original-results.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage8-original-delta.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage8-original-delta.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage8-original-markdown-structure.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage9-original-markdown-boundaries.py
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage9-original-markdown-boundaries.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage9-original-probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage9-original-requests-results.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage9-original-requests.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/independent-stage9-original-results.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/initial-red.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-final.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-owner.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-owner.py
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r1.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r16.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r17.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r18.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r19.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r21.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-sealed.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat.py
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-role-wrap-red.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/owner-related-78.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/owner-rename-existing-data-audit.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/owner-secret.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/owner-source-candidate.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/owner-typecheck.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/pm-r16-html-prefix-probe.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/pm-r23-impact.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r10-pm-decision.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r10-source-candidate.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r11-source-candidate.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r12-source-candidate.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r13-design-diagnosis.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r13-source-candidate.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r14-pm-decision.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r14-source-candidate.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r18-measurement-decision.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r20-boundary-diagnosis.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r21-line-and-link-decision.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r8-source-before.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-r9-design-diagnosis.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-stage10-structure-diagnosis.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-stage12-text-diagnosis.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/post-stage15-link-lexer-decision.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/pre-review-2-cli.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/pre-review-cli.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/pre-review-response.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/pre-stage2-cli.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/provider-fallback-diagnosis.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r7-green-31.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r7-green-33.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r7-green-first-missing-log-fixture.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r7-red.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r8-green-36.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r8-green-39.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r8-red-three.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r8-tester-red-three.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/r9-parser-red.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/related-r16-86.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-impl-final-stage2-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-impl-final-stage2.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-impl-last-delta-fresh-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-impl-last-delta-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-impl-stage2-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-impl-stage2.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-last-delta-fresh-failed.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-last-delta-resume-failed.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-pre-stage2-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-pre-stage2.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R1.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R10.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R11.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R12.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R13.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R14.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R15.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R16.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R17.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R18.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R19.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R2.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R20.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R21.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R22.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R23.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R24.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R3.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R4.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R5.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R6.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R7.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R8.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review-records/R9.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-codex-delta.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-contract-r17.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-contract-r18.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-contract-r19.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-contract-r20.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-contract-r21.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-contract-r22.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-contract-r23.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-final-verify.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-post-r7-tester.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-reviewer.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/run-tester.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-final.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-identifier-false-positive.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-json-serialization-R12.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-original-output-R12.json.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-original-record-R12.json.gz
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r16.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r18.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r19.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r21.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r3-pass.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/team-lock-diagnostic-pass.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-last-delta-resume-failed.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage1-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage1-retry-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage1-retry.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage1-timeout.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-final-contract-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-final-contract.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-final-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-final.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-last-delta-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-last-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-last.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-r5-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-r5.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-r6-prompt.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2-r6.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-stage2.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester16-probes/focused91.exit
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester16-probes/focused91.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester16-probes/probe.exit
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester16-probes/probe.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester16-probes/probe.mjs
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester16-probes/render.log
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/update-candidate.py
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-post-r8-39-fail-daemon-port.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-post-r8-39-receipt.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r1-fail.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r16-75.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r17-77.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r18-79.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r18-source-seal.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r2-pass.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r20-85.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r20-source-seal.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r22-90.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r22-source-seal.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r3-fail-agent-reaper.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r4-fail-team-lock.txt
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/whole-r4-source-scope.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/pre-review-output-2.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/pre-review-output.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/review-records/R1.json
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/review-records/R2.json
+?? src/project/team-comparison.ts
+?? src/project/team-finish.ts
+?? src/project/team-input.ts
+?? src/project/team-markdown.ts
+?? src/project/team-metrics-document.ts
+?? src/project/team-metrics.ts
+?? src/project/team-retrospective.ts
+?? test/team-metrics.test.ts

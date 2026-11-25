@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r35.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1272,
+  "pass": 1254,
+  "fail": 1,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R31 mixed answer fixture conflicts with representative scope and independent goal fail3/SF1"
+}

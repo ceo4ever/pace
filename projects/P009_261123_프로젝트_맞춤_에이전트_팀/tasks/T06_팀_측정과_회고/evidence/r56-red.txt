@@ -1,0 +1,30 @@
+✖ R56 긴 상태 참조 연쇄에서도 stats는 전송마다 증빙 하나를 내며 compare가 관측을 읽는다 (1288.544083ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1399.13125
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2736:1
+✖ R56 긴 상태 참조 연쇄에서도 stats는 전송마다 증빙 하나를 내며 compare가 관측을 읽는다 (1288.544083ms)
+  AssertionError [ERR_ASSERTION]: spawnSync /Users/lucas/.nvm/versions/node/v24.22.3/bin/node ENOBUFS
+  
+  null !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2758:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

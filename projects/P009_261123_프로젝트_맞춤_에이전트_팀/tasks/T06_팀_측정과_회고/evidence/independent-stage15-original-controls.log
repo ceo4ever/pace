@@ -1,0 +1,58 @@
+[
+  {
+    "name": "mixed-cr-valid-table",
+    "matched": true,
+    "expected": {
+      "status": 0,
+      "bytesUnchanged": true,
+      "gate": false
+    },
+    "observed": {
+      "status": 0,
+      "bytesUnchanged": true,
+      "gate": false
+    }
+  },
+  {
+    "name": "crlf-valid-table",
+    "matched": true,
+    "expected": {
+      "status": 0,
+      "bytesUnchanged": true,
+      "gate": false
+    },
+    "observed": {
+      "status": 0,
+      "bytesUnchanged": true,
+      "gate": false
+    }
+  },
+  {
+    "name": "lf-valid-table",
+    "matched": true,
+    "expected": {
+      "status": 0,
+      "bytesUnchanged": true,
+      "gate": false
+    },
+    "observed": {
+      "status": 0,
+      "bytesUnchanged": true,
+      "gate": false
+    }
+  },
+  {
+    "name": "visible-links",
+    "matched": true,
+    "expected": {
+      "status": 0,
+      "bytesUnchanged": true,
+      "gate": false
+    },
+    "observed": {
+      "status": 0,
+      "bytesUnchanged": true,
+      "gate": false
+    }
+  }
+]

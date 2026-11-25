@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r80.json",
+  "filesChecked": 43,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1356,
+  "pass": 1339,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "T06 R80 \uc804\uccb4 \uac80\uc0ac \ud1b5\uacfc 1356\uac1c \uc911 1339\uac1c \ud1b5\uacfc, 17\uac1c \uc0dd\ub7b5, \uc2e4\ud328 0\uac1c"
+}

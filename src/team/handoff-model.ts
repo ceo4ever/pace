@@ -1,7 +1,7 @@
 import { validTeamName } from "./model.ts";
 import { digest, fields, hashValue, HEADER_LIMIT, HandoffError, identifier, object, shortText } from "../project/handoff-files.ts";
 
-export const MESSAGE_KINDS = ["captain_input", "decision_request", "decision_reply", "delegate", "scope_check", "result", "close", "status", "delivery", "resource_event"] as const;
+export const MESSAGE_KINDS = ["owner_input", "decision_request", "decision_reply", "delegate", "scope_check", "result", "close", "status", "delivery", "resource_event"] as const;
 export type MessageKind = typeof MESSAGE_KINDS[number];
 export interface HandoffPlan { id?: string; task?: string; assignee: string; decisionOwner: string; proofScope: string; instructionHash: string }
 export interface HandoffHeader { protocol: "pace-handoff"; v: 1; id: string; kind: MessageKind; from: string; to: string; task?: string; requestId?: string; data: Record<string, unknown> }
@@ -13,7 +13,7 @@ function sortValue(value: unknown): unknown {
   return value;
 }
 export function actor(value: unknown): value is string {
-  return value === "captain" || value === "coordinator" || typeof value === "string" && (/^project:P\d{3}$/.test(value) || value.startsWith("agent:") && validTeamName(value.slice(6)));
+  return value === "owner" || value === "coordinator" || typeof value === "string" && (/^project:P\d{3}$/.test(value) || value.startsWith("agent:") && validTeamName(value.slice(6)));
 }
 export function sourceRef(value: unknown): value is string { return shortText(value, 240) && /^[a-z][a-z0-9+.-]*:\S+$/i.test(value); }
 export function plan(value: unknown): HandoffPlan {

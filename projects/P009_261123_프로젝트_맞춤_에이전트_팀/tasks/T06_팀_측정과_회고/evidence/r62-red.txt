@@ -1,0 +1,56 @@
+✖ R62 평면 stats의 출처 필드가 함께 빠져도 요청 총량을 수기 신고로 승격하지 않는다 (5.672416ms)
+✖ R62 검사 명령이 없는 팀 finish는 병합 미리보기에 전체 검사 미실행을 표시한다 (1566.434541ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1700.516166
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2956:1
+✖ R62 평면 stats의 출처 필드가 함께 빠져도 요청 총량을 수기 신고로 승격하지 않는다 (5.672416ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'observed-burden-improvement'
+  - 'unknown'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2968:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'observed-burden-improvement',
+    expected: 'unknown',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2988:1
+✖ R62 검사 명령이 없는 팀 finish는 병합 미리보기에 전체 검사 미실행을 표시한다 (1566.434541ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'not-run'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2994:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'not-run',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

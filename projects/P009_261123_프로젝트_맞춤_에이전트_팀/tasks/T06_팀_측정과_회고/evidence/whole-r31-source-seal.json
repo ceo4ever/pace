@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r31.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1261,
+  "pass": 1244,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent goal fail3/SF2"
+}

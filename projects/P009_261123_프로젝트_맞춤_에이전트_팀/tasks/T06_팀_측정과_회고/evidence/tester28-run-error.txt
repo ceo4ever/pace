@@ -1,0 +1,15 @@
+file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:124
+    if (final === "" || !tail || !body.endsWith(`\ncodex\n${final}`)) throw new AgentError("protocol_error", "codex 출력이 끝 완료 표지(최종 메시지 뒤 tokens used) 없이 끝났거나 최종 메시지와 일치하지 않는다");
+                                                                            ^
+
+AgentError: codex 출력이 끝 완료 표지(최종 메시지 뒤 tokens used) 없이 끝났거나 최종 메시지와 일치하지 않는다
+    at Object.parse (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:124:77)
+    at Object.run (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:207:31)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%A7%9E%EC%B6%A4_%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8_%ED%8C%80/tasks/T06_%ED%8C%80_%EC%B8%A1%EC%A0%95%EA%B3%BC_%ED%9A%8C%EA%B3%A0/evidence/run-tester-r63-tests.mjs:19:16 {
+  code: 'protocol_error',
+  cleanupUnconfirmed: false,
+  started: true
+}
+
+Node.js v24.22.3

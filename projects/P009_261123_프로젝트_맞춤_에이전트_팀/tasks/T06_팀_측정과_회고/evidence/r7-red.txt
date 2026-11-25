@@ -1,0 +1,158 @@
+✖ R7 무관한 PROJECT 파일은 팀 도달 증명이 아니며 옛 소통 집계는 유지한다 (573.20125ms)
+✖ R7 다른 구간의 확인 영수증은 요청·손작업·품질 총량을 확정하지 않는다 (493.684333ms)
+✖ R7 손상된 사건 행을 지워진 질문0으로 승격하지 않는다 (344.556125ms)
+✖ R7 표본별 총량이 관측 하한보다 작으면 합계 이전에 거부한다 (4.181958ms)
+✖ R7 fenced code의 예시 표는 실제 팀 회고 표가 아니다 (290.435ms)
+✖ R7 팀 맥락 없는 기존 PROJECT 하드링크는 stats·회고 적용 판정을 바꾸지 않는다 (483.187458ms)
+✖ R7 다른 대표 업무의 역할 시작은 현재 미사용 검토 후보를 숨기지 않는다 (536.121333ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 0
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2864.373625
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:326:1
+✖ R7 무관한 PROJECT 파일은 팀 도달 증명이 아니며 옛 소통 집계는 유지한다 (573.20125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:331:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:333:1
+✖ R7 다른 구간의 확인 영수증은 요청·손작업·품질 총량을 확정하지 않는다 (493.684333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== null
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:338:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:340:1
+✖ R7 손상된 사건 행을 지워진 질문0으로 승격하지 않는다 (344.556125ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-XpgguP/pace-team-metrics-MCRxdR/projects/P001_261124_팀_측정_합성/log.jsonl'
+      at readFileSync (node:fs:483:20)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:344:62)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-XpgguP/pace-team-metrics-MCRxdR/projects/P001_261124_팀_측정_합성/log.jsonl'
+  }
+
+test at test/team-metrics.test.ts:347:1
+✖ R7 표본별 총량이 관측 하한보다 작으면 합계 이전에 거부한다 (4.181958ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:349:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /관측|하한/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:351:1
+✖ R7 fenced code의 예시 표는 실제 팀 회고 표가 아니다 (290.435ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(teamRetrospectiveIssues(f.root, rel).length)
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:355:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:357:1
+✖ R7 팀 맥락 없는 기존 PROJECT 하드링크는 stats·회고 적용 판정을 바꾸지 않는다 (483.187458ms)
+  AssertionError [ERR_ASSERTION]: pace: 팀 경로는 링크 없는 단일 링크 일반 파일이어야 한다: projects/P001_261124_팀_측정_합성/PROJECT.md
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:359:65)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:361:1
+✖ R7 다른 대표 업무의 역할 시작은 현재 미사용 검토 후보를 숨기지 않는다 (536.121333ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'maker'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:365:102)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'maker',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,9 @@
+✔ R27 finish와 Git merge는 동일한 채택 판정을 쓰며 review의 버전 숫자를 start로 오인하지 않는다 (2924.489959ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3035.534

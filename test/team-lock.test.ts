@@ -140,12 +140,12 @@ test("확인기 없는 정상 완료와 전경 모드는 종료 후 근거 있�
   const lock = new ResourceLock(f.root, "studio", { home: f.home, process: () => owner, probe: () => "unknown" });
   const first = lock.acquire("P009", "manual").lease!;
   assert.equal(lock.release(first.acquisitionId, { internal: true }).code, 2);
-  assert.equal(lock.release(first.acquisitionId, { confirmation: { by: "captain", evidence: "자원 미사용 확인" } }).code, 2, "수동 확인도 살아 있는 소유자는 우회하지 못함");
+  assert.equal(lock.release(first.acquisitionId, { confirmation: { by: "owner", evidence: "자원 미사용 확인" } }).code, 2, "수동 확인도 살아 있는 소유자는 우회하지 못함");
   owner = "dead";
   assert.equal(lock.acquire("P010").code, 2);
-  assert.equal(lock.release(first.acquisitionId, { confirmation: { by: "captain", evidence: "시험용 자원 연결 없음 직접 확인" } }).code, 0);
+  assert.equal(lock.release(first.acquisitionId, { confirmation: { by: "owner", evidence: "시험용 자원 연결 없음 직접 확인" } }).code, 0);
   const logs = readdirSync(join(lock.stateDir, "audit")).map((p) => JSON.parse(readFileSync(join(lock.stateDir, "audit", p), "utf8")));
-  assert.equal(logs.filter((x) => x.action === "release")[0]!.confirmation.by, "captain");
+  assert.equal(logs.filter((x) => x.action === "release")[0]!.confirmation.by, "owner");
 });
 
 test("repo scope는 두 worktree 공통 위치, machine은 다른 저장소까지 공유하고 scope 불일치는 보류한다", () => {

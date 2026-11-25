@@ -1,0 +1,55 @@
+✖ R67 finish는 선언된 영수증의 원문과 미확인 형식을 Git 자동 반영 전 거부한다 (1532.270834ms)
+✖ R67 첫 영수증이 부재하거나 상한을 넘으면 이후 파일이 생겨도 같은 조회의 총량을 보류한다 (811.549583ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2469.181292
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:3267:1
+✖ R67 finish는 선언된 영수증의 원문과 미확인 형식을 Git 자동 반영 전 거부한다 (1532.270834ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3280:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3293:1
+✖ R67 첫 영수증이 부재하거나 상한을 넘으면 이후 파일이 생겨도 같은 조회의 총량을 보류한다 (811.549583ms)
+  AssertionError [ERR_ASSERTION]: oversized
+  
+  1 !== null
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3330:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

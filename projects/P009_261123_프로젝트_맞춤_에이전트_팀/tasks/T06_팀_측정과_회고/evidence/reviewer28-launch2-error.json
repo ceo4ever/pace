@@ -1,0 +1,7 @@
+{
+  "is_error": true,
+  "error": {
+    "code": "agent_failed",
+    "message": "codex 종료 코드 1: OpenAI Codex v0.171.0\n--------\nworkdir: /Volumes/Data/AiStudio/workspace/pace.wt/P009\nmodel: gpt-6.2-sol\nprovider: openai\napproval: never\nsandbox: read-only\nreasoning effort: none\nreasoning summaries: none\nsession id: 01a20e18-6624-7fd2-a3bd-07d6a7bf5114\n--------\nuser\n너는 독립 검토자다. 아래 산출물을 읽기만 하고(파일을 "
+  }
+}

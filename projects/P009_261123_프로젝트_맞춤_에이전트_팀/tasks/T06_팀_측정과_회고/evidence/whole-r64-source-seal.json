@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r64.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1323,
+  "pass": 1306,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "Full check passed; independent first-stage review found two blocking issues and one should-fix."
+}

@@ -1,0 +1,21 @@
+Run from /Volumes/Data/AiStudio/workspace/pace.wt/P009 with d=/tmp/pace-t06-stage2.v4BHI9.
+All CLI children in the independent probes use current bin/pace.ts and synthetic PACE_HOME and Git fixtures.
+PACE_HOME="$d/home" TMPDIR="$d/focused-tmp" node --test test/team-metrics.test.ts test/team.test.ts
+node "$d/probe.mjs" "$PWD" "$d/replay"
+node "$d/extra.mjs" "$PWD" "$d/extra"
+node "$d/requests.mjs" "$PWD" "$d/requests"
+node "$d/delta.mjs" "$PWD" "$d/delta"
+node "$d/role.mjs" "$PWD" "$d/role"
+node "$d/role-rerun.mjs" "$PWD" "$d/role-rerun"
+node "$d/compat.mjs" "$PWD" "$d/compat"
+python3 "$d/markdown-proof.py" "$d"
+PACE_KEEP_TEST_TMP=1 PACE_HOME="$d/focused-retained-home" TMPDIR="$d/focused-retained-tmp" node --test test/team-metrics.test.ts test/team.test.ts
+git apply --reverse --check projects/P009_*/tasks/T06_*/evidence/impl-diff.patch
+
+The first role probe exited 1 because it invoked stats --write before creating PROJECT-CLOSE.md,
+which is a declared prerequisite of the metrics writer. The rerun used a fresh Git fixture and
+created a close document with a deliberately incomplete retrospective before invoking stats --write.
+The first attempt and rerun stdout, stderr, exit, child command logs and fixtures are retained.
+The old nested-heading fixtures use current documented expectations: hold an indented heading
+within the machine interval and return diagnostics for it in the metadata header.
+node "$d/ledger.mjs" "$PWD" "$d/ledger"

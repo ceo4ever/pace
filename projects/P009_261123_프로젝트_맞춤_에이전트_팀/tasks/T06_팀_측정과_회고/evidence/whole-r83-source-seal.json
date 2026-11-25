@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r83.json",
+  "filesChecked": 45,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1363,
+  "pass": 1346,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": true,
+  "reason": "Whole check and both stages of independent verification passed on the same frozen candidate."
+}

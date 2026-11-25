@@ -1,0 +1,15 @@
+file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:205
+        if (outcome.code !== 0) throw new AgentError("agent_failed", `${adapter.command} 종료 코드 ${outcome.code ?? outcome.signal}: ${outcome.stderr.trim().slice(0, 300)}${outcome.stdout.trim() ? ` | stdout: ${outcome.stdout.trim().slice(0, 300)}` : ""}`, { cleanupUnconfirmed: !outcome.reaped });
+                                      ^
+
+AgentError: claude 종료 코드 1:  | stdout: {"type":"system","subtype":"hook_started","hook_id":"ac59741b-7395-459b-b71a-f99850f932bf","hook_name":"SessionStart:startup","hook_event":"SessionStart","uuid":"30a435e4-15f2-493d-8da5-ed6ea49f5bcd","session_id":"7d325012-ca6e-4b76-9e8e-a4523bcec55c"}
+{"type":"system","subtype":"hook_started","hook
+    at Object.run (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:205:39)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%A7%9E%EC%B6%A4_%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8_%ED%8C%80/tasks/T06_%ED%8C%80_%EC%B8%A1%EC%A0%95%EA%B3%BC_%ED%9A%8C%EA%B3%A0/evidence/run-reviewer.mjs:17:16 {
+  code: 'agent_failed',
+  cleanupUnconfirmed: false,
+  started: true
+}
+
+Node.js v24.22.3

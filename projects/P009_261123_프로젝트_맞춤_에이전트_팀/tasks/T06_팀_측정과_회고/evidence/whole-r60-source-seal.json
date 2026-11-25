@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r60.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1317,
+  "pass": 1300,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail2/SF1 for indirect request links, detached representative receipt hash, and partial observations lost in aggregation"
+}

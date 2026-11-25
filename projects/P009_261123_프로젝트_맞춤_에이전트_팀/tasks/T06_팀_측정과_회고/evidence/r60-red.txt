@@ -1,0 +1,36 @@
+✔ R25 탈락한 ignored 답 영수증은 finish의 필수 입력이 아니다 (same-clock=false) (1953.193125ms)
+✖ R25 탈락한 ignored 답 영수증은 finish의 필수 입력이 아니다 (same-clock=true) (1671.597458ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3755.559167
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:274:41
+✖ R25 탈락한 ignored 답 영수증은 finish의 필수 입력이 아니다 (same-clock=true) (1671.597458ms)
+  AssertionError [ERR_ASSERTION]: 실행: true
+  실행: true
+  pace: 팀 검증 자료가 Git 인덱스에 없다: projects/P001_261125_팀_측정_합성/irrelevant-answer.json — ignored/미추적 자료를 확인하고 커밋 후 finish한다
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:285:61)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

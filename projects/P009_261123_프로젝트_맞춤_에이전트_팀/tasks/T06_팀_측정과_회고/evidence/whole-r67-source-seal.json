@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r67.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1328,
+  "pass": 1311,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "Whole check passed; independent review found blockers in reference-linked delivery and project adoption affinity."
+}

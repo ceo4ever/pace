@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r22.json",
+  "allCandidateFileHashesMatchAfterRun": true,
+  "filesChecked": 34,
+  "tests": 1220,
+  "pass": 1203,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent stage15 visible literal/title false-rejection blocker pending fix"
+}

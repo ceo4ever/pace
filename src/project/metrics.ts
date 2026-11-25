@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
+import { inputHash, type InputTrace } from "../core/input-snapshot.ts";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { readEvents, recordEvent } from "./event-log.ts";
+import { readEvents, recordEvent, recordEvents } from "./event-log.ts";
 import type { ProjectEvent } from "./event-log.ts";
 import type { ProjectRef, Repo } from "./harness.ts";
 
@@ -16,6 +17,7 @@ export interface MetricEvent {
   msg?: string; src?: string; ref?: string; data?: Record<string, number>; role?: ProjectEvent["role"];
 }
 const commands = new Set(["start", "task", "check", "done", "finish", "merge"]);
+export const gateFailureReasons: readonly string[] = ["security", "rebase", "checks", "contract", "state", "command"];
 export function metricDir(repo: Repo, ref: ProjectRef): string { return join(repo.root, "projects", ref.dir); }
 
 /** Never persist arbitrary command arguments or error messages. */
@@ -27,19 +29,24 @@ export function failureReason(text: string): string {
   if (/상태|완료/.test(text)) return "state";
   return "command";
 }
-export function recordMetric(dir: string, event: MetricEvent): void {
-  const reason = ["security", "rebase", "checks", "contract", "state", "command"].includes(event.reason ?? "") ? event.reason : "command";
+export function recordMetric(dir: string, event: MetricEvent, required = false): boolean {
+  const reason = gateFailureReasons.includes(event.reason ?? "") ? event.reason : "command";
   const base = { ts: event.ts, p: event.project, ...(/^T\d{2}$/.test(event.task ?? "") ? { t: event.task } : {}), by: "cli" as const, ok: event.ok };
   const gate = ["check", "done", "finish"].includes(event.cmd);
   const type = gate ? "gate" : event.cmd === "task" ? "task_start" : event.cmd;
-  recordEvent(dir, { ...base, type: type as ProjectEvent["type"], msg: event.msg ?? `${event.cmd}${!event.ok ? `: ${reason}` : ""}`, ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.role ? { role: event.role } : {}), data: { ...(gate ? { [event.cmd]: 1 } : {}), ...event.data } });
-  if (event.ok && (event.cmd === "done" || event.cmd === "finish")) recordEvent(dir, { ...base, type: event.cmd === "done" ? "task_done" : "finish", msg: event.cmd });
+  const entry: ProjectEvent = { ...base, type: type as ProjectEvent["type"], msg: event.msg ?? `${event.cmd}${!event.ok ? `: ${reason}` : ""}`, ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.role ? { role: event.role } : {}), data: { ...(gate ? { [event.cmd]: 1 } : {}), ...event.data } };
+  if (!event.ok || (event.cmd !== "done" && event.cmd !== "finish")) return recordEvent(dir, entry);
+  const transition: ProjectEvent = { ...base, type: event.cmd === "done" ? "task_done" : "finish", msg: event.cmd };
+  // A truncated append cannot leave the team's authoritative success gate ahead of the companion row.
+  if (required) return recordEvents(dir, [transition, entry]);
+  const recorded = recordEvent(dir, entry);
+  return recordEvent(dir, transition) && recorded;
 }
-export function readMetrics(dir: string): MetricEvent[] {
-  return readEvents(dir).flatMap((event) => {
+export function readMetrics(dir: string, inputs?: InputTrace): MetricEvent[] {
+  return readEvents(dir, inputs).flatMap((event) => {
     const cmd = event.type === "task_start" ? "task" : event.type === "gate" ? ["check", "done", "finish"].find((key) => event.data?.[key] === 1) : ["start", "merge"].includes(event.type) ? event.type : undefined;
     if (!cmd || !commands.has(cmd) || event.ok === undefined) return [];
-    return [{ ts: event.ts, project: event.p, task: event.t, cmd: cmd as MetricCommand, ok: event.ok, ...(!event.ok ? { reason: event.msg.split(": ")[1] ?? "command" } : {}) }];
+    return [{ ts: event.ts, project: event.p, task: event.t, cmd: cmd as MetricCommand, ok: event.ok, ...(event.src ? { src: event.src } : {}), ...(!event.ok ? { reason: event.msg.split(": ")[1] ?? "command" } : {}) }];
   });
 }
 export interface TimeStats {
@@ -75,16 +82,18 @@ function gitTime(repo: Repo, grep: string, oldest = false): string | null {
   const lines = r.status === 0 ? r.stdout.trim().split("\n").filter(Boolean) : [];
   return (oldest ? lines.at(-1) : lines[0]) ?? null;
 }
-export function collectStats(repo: Repo, ref: ProjectRef, now = new Date().toISOString(), finishing = false): ProjectStats {
+export function collectStats(repo: Repo, ref: ProjectRef, now = new Date().toISOString(), finishing = false, inputs?: InputTrace): ProjectStats {
   const dir = metricDir(repo, ref);
-  const events = readMetrics(dir).filter((e) => e.project === ref.id);
-  const log = readEvents(dir).filter((e) => e.p === ref.id);
-  const project = readFileSync(join(dir, "PROJECT.md"), "utf8");
+  const events = readMetrics(dir, inputs).filter((e) => e.project === ref.id);
+  const log = readEvents(dir, inputs).filter((e) => e.p === ref.id);
+  const projectBytes = readFileSync(join(dir, "PROJECT.md")), project = projectBytes.toString("utf8");
+  inputs?.record(join(dir, "PROJECT.md"), inputHash(projectBytes));
   const ids = [...project.matchAll(/^\| (T\d{2}) \|/gm)].map((m) => m[1]!);
   function times(task?: string): TimeStats {
     const es = events.filter((e) => task ? e.task === task : true);
+    const cancelledFinish = (event: MetricEvent) => event.cmd === "finish" && event.ok && /^finish:[a-f0-9]{24}$/.test(event.src ?? "") && events.some((failure) => failure.cmd === "finish" && !failure.ok && failure.project === event.project && failure.task === event.task && failure.src === event.src);
     const at = (cmd: MetricCommand, last = false) => {
-      const matches = es.filter((e) => e.cmd === cmd && e.ok);
+      const matches = es.filter((e) => e.cmd === cmd && e.ok && !cancelledFinish(e));
       return (last ? matches.at(-1) : matches[0])?.ts ?? null;
     };
     const eventStart = at(task ? "task" : "start");
@@ -93,7 +102,7 @@ export function collectStats(repo: Repo, ref: ProjectRef, now = new Date().toISO
     const done = task ? at("done") ?? (stateDone ? gitTime(repo, `(${ref.id}/${task})`) : null) : null;
     const previousFinish = at("finish", true);
     const reopened = previousFinish && events.some((e) => e.cmd === "task" && e.ok && Date.parse(e.ts) > Date.parse(previousFinish));
-    const finish = task ? null : finishing ? now : reopened ? null : at("finish", true) ?? (stateDone ? gitTime(repo, `chore(${ref.id}): 마감`) : null);
+    const finish = task ? null : finishing ? now : reopened ? null : at("finish", true) ?? (stateDone && !es.some(cancelledFinish) ? gitTime(repo, `chore(${ref.id}): 마감`) : null);
     const merge = task ? null : at("merge", true) ?? gitTime(repo, `chore(${ref.id}): 병합 완료`);
     const delta = (end: string | null) => start && end ? Math.max(0, Date.parse(end) - Date.parse(start)) : null;
     const duration = delta(done ?? finish ?? now);

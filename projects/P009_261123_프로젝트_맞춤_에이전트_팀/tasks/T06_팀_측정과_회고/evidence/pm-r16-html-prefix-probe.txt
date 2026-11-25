@@ -1,0 +1,1 @@
+현재 R16 후보 추가 PM 대조: <div/foo 같은 잘못된 slash suffix가 blockTag 시작으로 분류되어 다음 ATX를 가린다. <div/>는 실제 block 시작과 구별해야 한다. R16/별도 tester/전체는 candidate-r16.json 후보에 고정되며 원문 회수 뒤 이 추가 gap을 수정하고 재검증한다. 목표/기준/보안 영향 변경 없이 canonical HTML 시작 검출력 보완 범위다.

@@ -1,0 +1,30 @@
+visible-link-with-title
+<td>P-1</td>
+<td>\ud1b5\uacfc</td>
+<td>synthetic</td>
+<td><code>docs/README.md</code></td>
+<td>\ud574\ub2f9 \uc5c6\uc74c</td>
+<td>synthetic</td>
+<td>\ud300</td>
+<td><a href="TEAM-RETROSPECTIVE.json">\ud68c\uace0</a></td>
+<td><a href="details.md" title="[\u2800](sample.md)">\ubc94\uc704</a></td>
+visible-literal-escaped-bracket
+<td>P-1</td>
+<td>\ud1b5\uacfc</td>
+<td>synthetic</td>
+<td><code>docs/README.md</code></td>
+<td>\ud574\ub2f9 \uc5c6\uc74c</td>
+<td>synthetic</td>
+<td>\ud300</td>
+<td><a href="TEAM-RETROSPECTIVE.json">\ud68c\uace0</a></td>
+<td>\ube44\uad50 [\u2800](details.md)</td>
+reference-summary
+<td>P-1</td>
+<td>\ud1b5\uacfc</td>
+<td>synthetic</td>
+<td><code>docs/README.md</code></td>
+<td>\ud574\ub2f9 \uc5c6\uc74c</td>
+<td>synthetic</td>
+<td>\ud300</td>
+<td><a href="TEAM-RETROSPECTIVE.json">\ud68c\uace0</a></td>
+<td><a href="details.md">\u2800</a></td>

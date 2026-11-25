@@ -1,0 +1,100 @@
+[
+  {
+    "id": "fence",
+    "expected": {
+      "statsTeam": false,
+      "finishRequires": false
+    },
+    "observed": {
+      "statsTeam": false,
+      "finishRequires": false
+    },
+    "pass": true
+  },
+  {
+    "id": "html-pre",
+    "expected": {
+      "statsTeam": false,
+      "finishRequires": false
+    },
+    "observed": {
+      "statsTeam": true,
+      "finishRequires": true
+    },
+    "pass": false
+  },
+  {
+    "id": "chronological-control",
+    "expected": "observed-burden-improvement",
+    "observed": {
+      "conclusion": "observed-burden-improvement",
+      "reasons": [],
+      "blocking": 0,
+      "gate": 0,
+      "fileEdits": -2
+    },
+    "pass": true
+  },
+  {
+    "id": "reversed-periods",
+    "expected": "unknown",
+    "observed": {
+      "conclusion": "observed-burden-improvement",
+      "reasons": [],
+      "blocking": 0,
+      "gate": 0,
+      "fileEdits": -2
+    },
+    "pass": false
+  },
+  {
+    "id": "missing-review-control",
+    "expected": "unknown",
+    "observed": {
+      "conclusion": "unknown",
+      "reasons": [
+        "blocking_sum: 비교 총량 미확인"
+      ],
+      "blocking": null,
+      "gate": 0,
+      "fileEdits": -2
+    },
+    "pass": true
+  },
+  {
+    "id": "contradictory-review",
+    "expected": "unknown",
+    "observed": {
+      "conclusion": "observed-burden-improvement",
+      "reasons": [],
+      "blocking": 0,
+      "gate": 0,
+      "fileEdits": -2
+    },
+    "pass": false
+  },
+  {
+    "id": "own-answer-later",
+    "expected": {
+      "total": 0,
+      "unconfirmed": 0
+    },
+    "observed": {
+      "total": 0,
+      "unconfirmed": 0
+    },
+    "pass": true
+  },
+  {
+    "id": "own-answer-earlier",
+    "expected": {
+      "total": null,
+      "unconfirmed": 1
+    },
+    "observed": {
+      "total": 0,
+      "unconfirmed": 0
+    },
+    "pass": false
+  }
+]

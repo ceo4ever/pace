@@ -1,0 +1,250 @@
+{
+  "calls": {
+    "new": 10,
+    "start": 10,
+    "stats": 4,
+    "finish": 11,
+    "merge": 6
+  },
+  "cases": [
+    {
+      "case": "ignored task close then recorded",
+      "log": "probe.log",
+      "passed": true,
+      "improvements": [
+        {
+          "kind": "review",
+          "code": "blocking",
+          "count": 2,
+          "tasks": [
+            "T99"
+          ]
+        }
+      ],
+      "before": "5544ed8e5ec8e79f10329a88635e8b4eb9b49d9d",
+      "after": "5544ed8e5ec8e79f10329a88635e8b4eb9b49d9d",
+      "input": "projects/P001_261124_synthetic/tasks/T99_synthetic/TASK-CLOSE.md",
+      "input_sha": "6ad7038556e3b61d3debaffdffd132b164f909d27a3cfbba300ef3a3aa5fcc64",
+      "refusal": {
+        "label": "ignored",
+        "exit": 2,
+        "output": "실행: true\n실행: true\npace: 팀 검증 자료가 Git 인덱스에 없다: projects/P001_261124_synthetic/tasks/T99_synthetic/TASK-CLOSE.md — ignored/미추적 자료를 확인하고 커밋 후 finish한다\n"
+      },
+      "recorded": {
+        "label": "tracked",
+        "exit": 0,
+        "output": "- 보안 검사 통과: true\n- 검사 통과: true\n- 병합 대기 — main 체크아웃에서: pace project merge P001\n통과\n실행: true\n실행: true\n"
+      }
+    },
+    {
+      "case": "wrong and out-of-period proofs remain unknown; adopted proof required",
+      "log": "probe-corrected.log",
+      "passed": true,
+      "requests_before": {
+        "linked": 3,
+        "crossBoundaryObserved": 0,
+        "ownerReply": 1,
+        "ownerDelivery": 0,
+        "reachedTotal": null,
+        "reached": 1,
+        "failedOnly": 0,
+        "unconfirmed": 2,
+        "comparisonUnconfirmed": 2,
+        "legacyUnlinkedEvents": 0,
+        "ownerIntendedRequests": 3,
+        "coordinatorIntendedRequests": 0,
+        "ownerQuestionEvents": 3,
+        "coordinatorQuestionEvents": 0,
+        "recipientUnknownEvents": 0,
+        "failedAttemptsObserved": null,
+        "coordinatorOwnAnswerObserved": null,
+        "coordinatorOwnAnswerTotal": null
+      },
+      "requests_after": {
+        "linked": 3,
+        "crossBoundaryObserved": 0,
+        "ownerReply": 1,
+        "ownerDelivery": 0,
+        "reachedTotal": null,
+        "reached": 1,
+        "failedOnly": 0,
+        "unconfirmed": 2,
+        "comparisonUnconfirmed": 2,
+        "legacyUnlinkedEvents": 0,
+        "ownerIntendedRequests": 3,
+        "coordinatorIntendedRequests": 0,
+        "ownerQuestionEvents": 3,
+        "coordinatorQuestionEvents": 0,
+        "recipientUnknownEvents": 0,
+        "failedAttemptsObserved": null,
+        "coordinatorOwnAnswerObserved": null,
+        "coordinatorOwnAnswerTotal": null
+      },
+      "legacy_requests": {
+        "total": 3,
+        "owner_reply": 3,
+        "owner_delivery": 0,
+        "failed_only": 0,
+        "unconfirmed": 0,
+        "unlinkedLogEvents": 0,
+        "items": [
+          {
+            "requestId": "request-0",
+            "reach": "owner_reply"
+          },
+          {
+            "requestId": "request-1",
+            "reach": "owner_reply"
+          },
+          {
+            "requestId": "request-2",
+            "reach": "owner_reply"
+          }
+        ]
+      },
+      "index_inputs": [
+        "projects/P001_261124_synthetic/accepted.json"
+      ],
+      "refusal": {
+        "label": "adopted ignored",
+        "exit": 2,
+        "output": "실행: true\n실행: true\npace: 팀 검증 자료가 Git 인덱스에 없다: projects/P001_261124_synthetic/accepted.json — ignored/미추적 자료를 확인하고 커밋 후 finish한다\n"
+      },
+      "accepted": {
+        "label": "only adopted recorded",
+        "exit": 0,
+        "output": "- 보안 검사 통과: true\n- 검사 통과: true\n- 병합 대기 — main 체크아웃에서: pace project merge P001\n통과\n실행: true\n실행: true\n"
+      }
+    },
+    {
+      "case": "security",
+      "log": "probe-corrected.log",
+      "passed": true,
+      "before": "4ca9a08eec37bd71d3a2b51d24efc3aa98653b1e",
+      "after": "4ca9a08eec37bd71d3a2b51d24efc3aa98653b1e",
+      "committed": "foreign stable",
+      "staged": "staged by security",
+      "call": {
+        "label": "security",
+        "exit": 1,
+        "output": "- 보안 검사 통과: sh side-effect.sh\n빠진 것:\n- 보안 검사/의존성 감사 뒤 자료 또는 인덱스가 바뀌었다: 확인·커밋하고 finish를 다시 실행한다\n실패\n실행: sh side-effect.sh\n"
+      }
+    },
+    {
+      "case": "audit",
+      "log": "probe-corrected.log",
+      "passed": true,
+      "before": "36fe500d42431fcabd37f430bb0584b89eb05617",
+      "after": "36fe500d42431fcabd37f430bb0584b89eb05617",
+      "committed": "foreign stable",
+      "staged": "staged by audit",
+      "call": {
+        "label": "audit",
+        "exit": 1,
+        "output": "- 보안 검사 통과: true\n- 의존성 감사 통과 (package-lock.json): sh side-effect.sh\n빠진 것:\n- 보안 검사/의존성 감사 뒤 자료 또는 인덱스가 바뀌었다: 확인·커밋하고 finish를 다시 실행한다\n실패\n실행: true\n실행: sh side-effect.sh\n"
+      }
+    },
+    {
+      "case": "check",
+      "log": "probe-corrected.log",
+      "passed": true,
+      "before": "04097adceb5b5aa6fb3946852269ac0578eb85e8",
+      "after": "04097adceb5b5aa6fb3946852269ac0578eb85e8",
+      "committed": "foreign stable",
+      "staged": "staged by check",
+      "call": {
+        "label": "check",
+        "exit": 1,
+        "output": "- 보안 검사 통과: true\n- 검사 통과: sh side-effect.sh\n빠진 것:\n- 검사 뒤 staged/unstaged 자료가 바뀌었다: 확인·커밋하고 finish를 다시 실행한다\n실패\n실행: true\n실행: sh side-effect.sh\n"
+      }
+    },
+    {
+      "case": "legacy-security",
+      "log": "probe-corrected.log",
+      "passed": false,
+      "before": "494b0c03c2874edf167be6350bb94a3225155b01",
+      "after": "d58676537678f4a48a2f2c429e97ba39207d6296",
+      "committed": "staged by legacy-security",
+      "staged": "staged by legacy-security",
+      "call": {
+        "label": "legacy-security",
+        "exit": 0,
+        "output": "- 보안 검사 통과: sh side-effect.sh\n- 검사 통과: true\n- 병합 대기 — main 체크아웃에서: pace project merge P001\n통과\n실행: sh side-effect.sh\n실행: true\n"
+      }
+    },
+    {
+      "case": "equal-ref pre-FF then restored target",
+      "log": "probe-corrected.log",
+      "passed": true,
+      "main": "8603b5bc4f97662e756134c0e7edceb172a8d5de",
+      "after_rejection": "8603b5bc4f97662e756134c0e7edceb172a8d5de",
+      "approved": "34f4722783102dd768286bdb66a3aaf876036a4d",
+      "dirty": "",
+      "index_before": "7202a97201feba49bd324615ba469780375c8d0fc56c5cffe34e28dc479f5a8f",
+      "index_after": "7202a97201feba49bd324615ba469780375c8d0fc56c5cffe34e28dc479f5a8f",
+      "untracked_failure_log": false,
+      "refusal": {
+        "label": "equal-ref",
+        "exit": 1,
+        "output": "pace: P001 상태가 병합 대기가 아니다 (진행) — worktree에서 pace project finish P001\n"
+      },
+      "retry": {
+        "label": "restored",
+        "exit": 0,
+        "output": "P001 synthetic — 병합할 커밋 2개\n  34f4722 chore(P001): 마감\n  115c887 valid synthetic inputs\n\n| # | 결과 | 증거 |\n|---|---|---|\n| P-1 | 통과 | 합성 |\n\ntrue 실행\n\n팀 finish 검증 대상: 34f4722783102dd768286bdb66a3aaf876036a4d\n\n- main ← project/P001 (fast-forward, 커밋 2개)\n- 상태 완료 기록\n- 브랜치 삭제: project/P001\n"
+      }
+    },
+    {
+      "case": "successful FF then bookkeeping refusal",
+      "log": "probe-corrected.log",
+      "passed": true,
+      "head": "dd01f8670d3275ce5218433730eedd7156f90518",
+      "approved": "dd01f8670d3275ce5218433730eedd7156f90518",
+      "staged": "",
+      "dirty": "M projects/P001_261124_synthetic/log.jsonl",
+      "events": [
+        {
+          "ts": "2026-11-24T13:47:56.555Z",
+          "p": "P001",
+          "type": "merge",
+          "by": "cli",
+          "msg": "merge: rebase",
+          "ok": false,
+          "data": {}
+        }
+      ],
+      "call": {
+        "label": "post-FF failure",
+        "exit": 1,
+        "output": "P001 synthetic — 병합할 커밋 2개\n  dd01f86 chore(P001): 마감\n  4167bc9 valid synthetic inputs\n\n| # | 결과 | 증거 |\n|---|---|---|\n| P-1 | 통과 | 합성 |\n\ntrue 실행\n\n팀 finish 검증 대상: dd01f8670d3275ce5218433730eedd7156f90518\npace: fast-forward는 완료됐으나 상태 기록에 실패했다: git commit -m chore(P001): 병합 완료 실패: \nmain의 실패 로그 /private/tmp/pace-t06-independent-r8.sjfgzZ/after-ff/repo/projects/P001_261124_synthetic/log.jsonl만 확인해 커밋하고 pace project start P001 --no-launch로 worktree를 복구한 뒤 그곳에서 pace project finish P001, main에서 pace project merge P001를 실행한다. 병합 대기 상태는 유지되며 start와 착수 결정 사건이 다시 기록된다\n팀 병합 재시도는 미리보기의 새 전체 SHA를 확인한 뒤 --yes --commit <새 SHA>를 사용한다. 로그 rebase 충돌이 나면 중단하고 양쪽 기록을 보존한 복구 결정을 받은 뒤 finish를 재시도한다\n"
+      }
+    },
+    {
+      "case": "adoption arrives at rebase after early side effect",
+      "log": "rebase-adoption.log",
+      "passed": false,
+      "call": {
+        "label": "finish",
+        "exit": 0,
+        "output": "- 보안 검사 통과: sh side-effect.sh\n- main 위로 rebase\n- 검사 통과: true\n- 병합 대기 — main 체크아웃에서: pace project merge P001\n통과\n실행: sh side-effect.sh\n실행: true\n"
+      },
+      "before_head": "07c9998ac39f0be3fefb7d0253f25c202b4e4c60",
+      "after_head": "9c204e8e339922bc48a06fc17ba91699faadc70c",
+      "old_file": "foreign stable",
+      "final_file": "staged before adoption",
+      "history": "chore(P001): 목차 갱신\nbase",
+      "seal": true,
+      "marker": true
+    }
+  ],
+  "preview": {
+    "sealed": "9c204e8e339922bc48a06fc17ba91699faadc70c",
+    "validates": true,
+    "index_unchanged": true,
+    "call": {
+      "label": "preview after unsafe finish",
+      "exit": 0,
+      "output": "P001 synthetic — 병합할 커밋 3개\n  9c204e8 chore(P001): 마감\n  7bf491d chore(P001): 목차 갱신\n  9b4867d valid synthetic legacy inputs\n\n| # | 결과 | 증거 |\n|---|---|---|\n| P-1 | 통과 | 합성 |\n\ntrue 실행\n\nworktree 제거 때 함께 지워질 무시 항목: 0곳\n\n팀 finish 검증 대상: 9c204e8e339922bc48a06fc17ba91699faadc70c\n\n(미리보기 — 사용자 승인 뒤 --yes --commit 9c204e8e339922bc48a06fc17ba91699faadc70c 로 병합한다)\n"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r49.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1302,
+  "pass": 1285,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail2/SF1 for unbound historical stats, reuse across message kinds and project samples, optional totals when the log is missing"
+}

@@ -1,0 +1,31 @@
+✖ R68 참조로만 연결된 사용자 전송도 원질문이 없으면 미확인 요청으로 남는다 (742.658875ms)
+✔ R68 다른 프로젝트의 팀 시작 행은 현재 비팀 프로젝트의 Git 병합 채택에 영향이 없다 (2032.611209ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2895.476166
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:3362:1
+✖ R68 참조로만 연결된 사용자 전송도 원질문이 없으면 미확인 요청으로 남는다 (742.658875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3384:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

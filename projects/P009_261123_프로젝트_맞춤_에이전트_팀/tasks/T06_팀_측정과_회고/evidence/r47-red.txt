@@ -1,0 +1,59 @@
+✖ R47 응답은 대상 별칭이 달라도 출처 안에서 중복이며 출처가 다르면 별개다 (624.375834ms)
+✖ R47 같은 구간의 대표 업무 근거가 바뀌면 이전 요청 수집 총량은 보류한다 (810.887833ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1546.033542
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2284:1
+✖ R47 응답은 대상 별칭이 달라도 출처 안에서 중복이며 출처가 다르면 별개다 (624.375834ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   alias: 'owner_delivery',
+  -   alias: 'unconfirmed',
+      first: 'unconfirmed',
+  +   independent: 'unconfirmed'
+  -   independent: 'owner_delivery'
+    }
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2301:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { alias: 'owner_delivery', first: 'unconfirmed', independent: 'unconfirmed' },
+    expected: { alias: 'unconfirmed', first: 'unconfirmed', independent: 'owner_delivery' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2305:1
+✖ R47 같은 구간의 대표 업무 근거가 바뀌면 이전 요청 수집 총량은 보류한다 (810.887833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== null
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2323:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

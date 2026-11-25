@@ -1,0 +1,54 @@
+✖ R50 같은 저장소의 실제 포터블 stats 비교는 영수증 교체와 프로젝트 간 재사용을 보류한다 (3066.205375ms)
+✖ R69 팀 마감은 직접 선언된 답과 원장 거울 파일의 원문도 자동 스테이징 전에 거부한다 (1763.954208ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4960.843209
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2565:1
+✖ R50 같은 저장소의 실제 포터블 stats 비교는 영수증 교체와 프로젝트 간 재사용을 보류한다 (3066.205375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'observed-burden-improvement'
+  - 'unknown'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2628:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'observed-burden-improvement',
+    expected: 'unknown',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3418:1
+✖ R69 팀 마감은 직접 선언된 답과 원장 거울 파일의 원문도 자동 스테이징 전에 거부한다 (1763.954208ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3444:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,9 @@
+✔ S-16 Gateway: 토큰 인증, 메시지 송신·이벤트 구독·승인·취소 왕복 (297.594417ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 390.161875

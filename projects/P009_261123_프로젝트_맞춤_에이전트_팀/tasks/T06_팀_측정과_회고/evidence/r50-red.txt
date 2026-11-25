@@ -1,0 +1,54 @@
+✖ R50 요청 수집 확인 없는 옛 stats는 관측을 보존하고 요청 총량과 부담 방향을 보류한다 (4.834666ms)
+✖ R50 팀 사건 로그 미수집 시 코디네이터 요청과 수신 미상 총량은 null이다 (432.929375ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 553.057166
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2447:1
+✖ R50 요청 수집 확인 없는 옛 stats는 관측을 보존하고 요청 총량과 부담 방향을 보류한다 (4.834666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'observed-burden-improvement'
+  - 'unknown'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2458:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'observed-burden-improvement',
+    expected: 'unknown',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2463:1
+✖ R50 팀 사건 로그 미수집 시 코디네이터 요청과 수신 미상 총량은 null이다 (432.929375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== null
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2470:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

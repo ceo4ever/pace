@@ -1,0 +1,646 @@
+{
+  "owner-precedes": {
+    "expected": [
+      0,
+      null
+    ],
+    "actual": [
+      0,
+      null
+    ],
+    "matches": true
+  },
+  "owner-follows": {
+    "expected": [
+      1,
+      1
+    ],
+    "actual": [
+      1,
+      1
+    ],
+    "matches": true
+  },
+  "coordinator-precedes": {
+    "expected": [
+      null,
+      1
+    ],
+    "actual": [
+      null,
+      1
+    ],
+    "matches": true
+  },
+  "coordinator-follows": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "request-coverage-alone": {
+    "expected": [
+      null,
+      null
+    ],
+    "actual": [
+      null,
+      null
+    ],
+    "matches": true
+  },
+  "wrong-interval-log-coverage": {
+    "expected": [
+      null,
+      null
+    ],
+    "actual": [
+      null,
+      null
+    ],
+    "matches": true
+  },
+  "matching-log-coverage": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "review-message-data-mismatch": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "canonical-review": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "review-fractional-count": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "canonical-retro": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "indented-next-heading": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "cdata-retro": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "malformed-retro-heading": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "wrong-range-role": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "active-role-stats": {
+    "expected": [
+      1000,
+      50,
+      0
+    ],
+    "actual": [
+      1000,
+      50,
+      0
+    ],
+    "matches": true
+  },
+  "participating-role": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "eligible-unused-role": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "pre-example": {
+    "expected": [
+      false,
+      0
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": true
+  },
+  "attribute-comment-before-real-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      true,
+      1
+    ],
+    "matches": true
+  },
+  "gate-compare-invalid": {
+    "expected": "unknown",
+    "actual": "unknown",
+    "matches": true
+  },
+  "gate-compare-control": {
+    "expected": "observed-burden-improvement",
+    "actual": "observed-burden-improvement",
+    "matches": true
+  },
+  "improvement": {
+    "expected": "observed-burden-improvement",
+    "actual": "observed-burden-improvement",
+    "matches": true
+  },
+  "worsening": {
+    "expected": "observed-burden-worsening",
+    "actual": "observed-burden-worsening",
+    "matches": true
+  },
+  "reversed": {
+    "expected": "unknown",
+    "actual": "unknown",
+    "matches": true
+  },
+  "future": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "fraction": {
+    "expected": "unknown",
+    "actual": "unknown",
+    "matches": true
+  },
+  "failure-change": {
+    "expected": "unknown",
+    "actual": "unknown",
+    "matches": true
+  },
+  "review-token-0.5": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "review-token--1": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "review-token-0e2": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "review-token-0 blocking 2": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "review-token-0": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "gate-failure-valid": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "gate-success-valid": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "gate-ok-contradiction": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "gate-cmd-contradiction": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "gate-mixed-cmd-nonbinary": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "status-before-request-does-not-reach": {
+    "expected": [
+      0,
+      0,
+      1
+    ],
+    "actual": [
+      0,
+      0,
+      1
+    ],
+    "matches": true
+  },
+  "status-failure-does-not-count-as-request-attempt": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "request-failure-only-then-status-not-counted": {
+    "expected": [
+      0,
+      1,
+      0,
+      1
+    ],
+    "actual": [
+      0,
+      1,
+      0,
+      1
+    ],
+    "matches": true
+  },
+  "request-retry-success-not-double-counted": {
+    "expected": [
+      1,
+      0,
+      0,
+      1
+    ],
+    "actual": [
+      1,
+      0,
+      0,
+      1
+    ],
+    "matches": true
+  },
+  "linked-orphan-answer": {
+    "expected": [
+      null,
+      1,
+      0,
+      1
+    ],
+    "actual": [
+      null,
+      1,
+      0,
+      1
+    ],
+    "matches": true
+  },
+  "id-less-orphan-answer-total": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "id-less-agent-ack-absent-ledger": {
+    "expected": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "id-less-agent-ack-present-ledger": {
+    "expected": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "pi-retro": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "valid-closed-atx": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "html-summary-only": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "responsibility-legacy": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "responsibility-legacy-soft-line": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "responsibility-legacy-paragraphs": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "responsibility-modern": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "responsibility-weakened": {
+    "expected": [
+      2,
+      1
+    ],
+    "actual": [
+      2,
+      1
+    ],
+    "matches": true
+  },
+  "id-less-shared-tally-false": {
+    "expected": [
+      null,
+      1,
+      1
+    ],
+    "actual": [
+      null,
+      1,
+      1
+    ],
+    "matches": true
+  },
+  "id-less-shared-tally-true": {
+    "expected": [
+      null,
+      1,
+      1
+    ],
+    "actual": [
+      null,
+      1,
+      1
+    ],
+    "matches": true
+  },
+  "inline-comment-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      true,
+      1
+    ],
+    "matches": true
+  },
+  "indented-code-before-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      true,
+      1
+    ],
+    "matches": true
+  },
+  "comment-only-marker": {
+    "expected": [
+      false,
+      0
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": true
+  },
+  "pipe-setext-equals": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "pipe-setext-hyphens": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "indented-code-comment-hides-next-heading": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "indented-code-with-real-retro-table": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "table-thematic-rule-real-retro-current-contract": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true,
+    "previousExpectation": 0
+  },
+  "punctuated-review-cli": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "punctuated-review-stats": {
+    "expected": [
+      0,
+      1
+    ],
+    "actual": [
+      0,
+      1
+    ],
+    "matches": true
+  },
+  "four-space-unclosed-comment-code-before-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      true,
+      1
+    ],
+    "matches": true
+  },
+  "tab-unclosed-comment-code-before-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      true,
+      1
+    ],
+    "matches": true
+  },
+  "space-tab-unclosed-comment-code-before-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": false
+  },
+  "space-tab-code-marker-example": {
+    "expected": [
+      false,
+      0
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": true
+  },
+  "nested-marker-example": {
+    "expected": [
+      false,
+      0
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": true
+  },
+  "body-marker-example": {
+    "expected": [
+      false,
+      0
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": true
+  },
+  "thematic-rule-before-indented-code-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": false
+  },
+  "space-tab-retro-real-table": {
+    "expected": 0,
+    "actual": 1,
+    "matches": false
+  },
+  "space-tab-retro-fake-later-section": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "old-nonteam-hr": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "new-team-asterisk-hr": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "new-team-spaced-hyphen-hr": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "new-team-single-dash-is-not-rule": {
+    "expected": 0,
+    "actual": 1,
+    "matches": false
+  },
+  "review-repeat-dangling-cli": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "review-repeat-dangling-stats": {
+    "expected": [
+      null,
+      null
+    ],
+    "actual": [
+      0,
+      1
+    ],
+    "matches": false
+  }
+}

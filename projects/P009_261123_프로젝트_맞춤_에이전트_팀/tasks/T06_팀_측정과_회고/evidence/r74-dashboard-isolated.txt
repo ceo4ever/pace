@@ -1,0 +1,9 @@
+✔ 상위 정션 아래 모호한 cwd도 형제 저장소를 바꾸지 않는다 (81.372833ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 215.288541

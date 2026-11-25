@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r68.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1330,
+  "pass": 1313,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "Whole check passed; independent review found an event-log receipt commit blocker and a saved comparison-condition provenance issue."
+}

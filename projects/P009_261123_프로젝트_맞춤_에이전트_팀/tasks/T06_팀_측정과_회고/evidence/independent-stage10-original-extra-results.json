@@ -1,0 +1,27 @@
+{
+  "audited-no-log-coverage": {
+    "expected": [
+      "unknown",
+      null,
+      0,
+      true
+    ],
+    "actual": [
+      "unknown",
+      null,
+      0,
+      true
+    ],
+    "matches": true
+  },
+  "nested-heading-does-not-end-project-metadata": {
+    "expected": true,
+    "actual": false,
+    "matches": false
+  },
+  "nested-heading-cannot-disable-retrospective": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  }
+}

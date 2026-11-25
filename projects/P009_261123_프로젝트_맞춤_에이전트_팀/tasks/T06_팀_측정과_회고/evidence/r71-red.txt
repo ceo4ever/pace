@@ -1,0 +1,33 @@
+✖ R71 조회와 마감에서 과거 로그의 안전한 상대 경로 표기를 같은 파일로 대조한다 (1097.377917ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1217.162791
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:3486:1
+✖ R71 조회와 마감에서 과거 로그의 안전한 상대 경로 표기를 같은 파일로 대조한다 (1097.377917ms)
+  AssertionError [ERR_ASSERTION]: 빠진 것:
+  - 팀 측정/회고 입력 또는 선언 영수증 메타데이터를 검증하지 못했다; finish 보류
+  실패
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3509:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

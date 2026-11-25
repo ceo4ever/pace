@@ -1,0 +1,38 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# T06 TASK 사전 검토 (1단계: 독립 목표 대조)\n\n## 노출 범위\n- **직접 읽은 파일**\n  - `tasks/T06_팀_측정과_회고/TASK.md`\n  - T01 evidence의 `baseline-roblox.json`, `baseline-ai-sql-client.json`: TASK가 주장하는 \"v1 형태 차이\"를 확인하려고 읽었다.\n  - T01 evidence 파일 목록(glob)\n- **읽지 않은 파일**: PROJECT.md, BR01·06·07·09, 소스 코드, 작성자 마감이나 이전 지적 문서. PROJECT와 브리프 대조는 2단계에서 한다.\n- **자동 첨부 맥락**: CLAUDE.md/AGENTS.md, git status와 최근 커밋 제목(T02~T09). 부트 훅은 \"자식 세션, 부트 생략\"이었다. 메모리 내용은 읽지 않았다.\n- **한계**: 읽기 전용 검토이고 작업 문서와 완전히 격리된 상태는 아니다. 이 호출은 1단계만 실행했고, 2단계를 실행했다고 주장하지 않는다.\n\n## 첫 판단\n- **독립 목표 대조**: 상위 목적은 \"같은 정의와 구간으로 손작업 감소를 판단할 장치 + 회고 입력\"이다. TASK의 목적, 증명 범위, T-1~T-5가 이 목적과 맞는다. 실제 효과와 인과 판단을 T08과 사람에게 넘긴 것도 일관되다. 결과를 \"효과 증명\"으로 승격하지 않도록 막는 장치도 여러 곳에 있다(cwd 토큰 null, 의도만 있는 사건은 도달로 세지 않음, 31 vs 48 출처 구분).\n- **목표 달성**: 구현 전이므로 결과는 **미확인**이다. 계획만 보면 목표를 이룰 수 있는 구조이고, 형식 v2 표지와 증명 범위·판정 주체는 채워져 있다.\n- **근거와 한계**: 기준선 원본을 직접 확인했다. roblox 파일에는 `condition`/`observed_at`/`period`가 있고, ai-sql-client 파일에는 이 키가 없고 `started_at`/`finished_at`, `writer.host`, `observed_counts`가 있다. 따라서 TASK의 \"형태가 다르다\"는 사실이다.\n- **올릴 단계**: 목표와 범위를 바꿀 필요는 없다. 아래 지적은 기준·테스트·접근 단계를 보완하는 것이다.\n\n## 지적\n\n1. **should_fix: 지표마다 \"좋은 방향\"이 정의되지 않았다.**\n   - S-5는 \"감소/증가 → 개선/악화\"로 방향이 한 가지라고 가정한다.\n   - 그런데 품질 지표(`blocking_sum`, `rereviews_after_fail`, `gate_failures`)는 줄어들면 검토가 느슨해졌다는 뜻일 수도 있다.\n   - \"상충 → 미확인\" 규칙도 지표별 방향이 있어야 작동한다.\n   - 보완: 주 지표(캡틴 도달, 손작업)와 가드 지표(품질)의 방향을 기준에 고정한다. 그리고 \"손작업은 줄고 blocking도 줄면 미확인\"이 나오는지 테스트에 넣는다.\n\n2. **should_fix: v1 기준선의 `conditionCode`가 어디서 오는지 정해지지 않았다.**\n   - roblox의 `condition`은 한국어 자유문(\"메시지 지시 조건(팀 도입 전 아님)\")이고, ai-sql-client에는 condition 키가 아예 없다.\n   - adapter가 이 값을 `message-role`/`no-team`으로 바꾸면, \"추정하지 않는다\"는 원칙과 부딪친다.\n   - 보완: 파일 SHA로 고정한 매핑을 쓸지, 별도 annotation 입력을 쓸지 정한다. S-4에 파일별 고정 기대값을 넣는다. 예: ai-sql-client의 `counts` null과 `observed_counts` 0이 \"총량 null + 관측 하한 0\"으로 나오는지 확인한다.\n\n3. **should_fix: \"complete coverage\"를 작성자 혼자 선언할 수 있다.**\n   - 판정 주체 절은 손집계 완전성을 사람이 판단한다고 정했다.\n   - 그런데 접근에서는 보조 파일에 complete coverage와 ref만 있으면 총량이 null에서 숫자로 바뀐다.\n   - 보완: 확인자나 승인 근거 ref를 필수로 하고, 출력 라벨을 \"신고된 완전\"으로 한다. 확인자 ref가 없는 complete 선언은 null로 남는지 테스트한다.\n   - blocking이 아닌 이유: 출처와 신고 라벨이 붙고, 최종 판단이 T08로 넘어간다.\n\n4. **should_fix: `unusedRoles`의 \"관측 없음\"과 \"수집 안 됨\"을 구분하지 않는다.**\n   - 역할별 세션 추적은 범위 밖이다. 그래서 호스트 서브에이전트처럼 기록되지 않은 사용이 \"미사용 후보\"로 잘못 올라올 수 있고, 이것이 회고에서 역할 삭제 제안으로 이어질 수 있다.\n   - 보완: 후보마다 coverage/근거를 요구하고, 근거가 없으면 미확인으로 둔다. S-6에 이 경우를 넣는다.\n\n5. **should_fix: 회고 관문의 발동 조건을 marker 삭제로 피할 수 있다.**\n   - S-6은 \"새 marker/역할 지정 프로젝트\"라고만 쓰고, 옛 프로젝트는 marker가 없으면 면제된다.\n   - 그러면 새 역할 start가 있는데 marker만 지운 프로젝트도 관문을 피할 수 있다.\n   - 보완: 발동 조건을 marker와 버전 이후 role start 기록 중 무엇으로 할지 정한다. 이 우회 시나리오를 거부 테스트에 넣는다.\n\n6. **should_fix: `recurringFindings`의 count가 어디서 오는지 정해지지 않았다.**\n   - 이 값을 손으로 쓰는지, METRICS나 review 로그에서 도출하는지 정해지지 않았다.\n   - finish는 \"근거 존재\"만 검사하므로 숫자가 로그와 달라도 통과한다.\n   - 보완: 대조 규칙을 두거나 reported 라벨을 붙인다.\n\n7. **should_fix: 코디네이터 자체 답을 추정하는 결함을 잡는 테스트가 약하다.**\n   - 접근은 \"단순 `by:coordinator` answer를 자체 답으로 추정하지 않는다\"고 했다.\n   - S-1과 S-3은 \"캡틴 0\"과 중복 제거만 확인한다. 근거 없는 전달 답을 자체 답으로 세는 결함은 통과할 수 있다.\n   - 보완: 전달 답의 자체 답 수가 0인지 확인하는 기대값을 추가한다.\n\n8. **note: \"충분한 표본 = 각 2건\"의 근거가 적혀 있지 않다.**\n   - 실제 T01 기준선은 각각 1건이라 항상 미확인이 된다. 이는 목적과 일관된다.\n   - 다만 2건만으로 \"개선/악화\" 라벨을 붙이는 것은 과하게 읽힐 수 있다. \"관측 감소/증가\" 같은 중립 용어도 검토할 만하다.\n\n9. **note: 옛 stats JSON이 그대로인지 확인하는 방법이 모호하다.**\n   - 무관한 프로젝트의 stats JSON이 \"그대로\"인지를 S-8의 일반 회귀 테스트에 맡겼다.\n   - 팀 항목이 없는 프로젝트의 출력을 바이트 비교하는 고정 테스트가 있으면 검출력이 확실해진다.\n\n10. **note: 전략의 다른 길.**\n    - 기준선 v1을 v2로 이주하는 대안이 있다. 원본 불변 원칙 때문에 기각한 것으로 보이며, adapter를 택한 것은 타당하다.\n    - 회고를 JSON 대신 PROJECT-CLOSE 표만으로 두는 대안도 있다. finish가 타입 검증을 하므로 JSON이 낫다.\n    - 다른 길을 택하지 않아서 생긴 결함은 보이지 않는다.\n\n11. **note: 범위 밖 작업과 가독성.**\n    - 마지막 줄의 브레인 source 정리는 T06 목적과 이어지지 않는 P009 마감 작업이다. 다른 곳으로 옮기는 편이 추적에 낫다.\n    - 본문이 매우 압축되어 있어(예: \"목적/조건 혼합은2로\") 사람이 읽고 판정하기 어렵다.\n\n## 결정의 추적성\n대부분의 결정이 목적까지 추적된다.\n- 새 이벤트 스트림을 만들지 않음\n- cwd 토큰을 역할 실측으로 쓰지 않음\n- 31/48 출처 분리\n- 목적 혼합 거부\n- 옛 프로젝트 면제\n\n추적 근거가 약한 결정은 세 가지다. 소표본 기준 2건, 32KiB 한도, 정의 변경 1~3건. 마지막 것은 브리프에 근거가 있을 수 있어 2단계에서 확인해야 한다.\n\n## 정리\nblocking은 없다. should_fix는 7건, note는 4건이다. 가장 무게 있는 것은 1(지표 방향), 2(conditionCode 출처), 3(완전성 자기 선언)이다. 지적 등급만으로 판정했다.\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": "0b39b0aa-a17d-4b5d-9b0e-4d350f52e88a",
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 76972,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 8027
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "TASK.md",
+    "hash": "5c13828dc04aa73aeedc61c9a0ac9976b13529acf92d0fd63cb1e43ce6aaef9e",
+    "verdict": "pass",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "worktree": "/tmp/pace-t06-stage2.v4BHI9/role-rerun/start-role.wt/P001",
+  "checks": {
+    "start-evidence": {
+      "expected": [
+        "maker",
+        1,
+        false,
+        true
+      ],
+      "actual": [
+        "maker",
+        1,
+        false,
+        true
+      ],
+      "matches": true
+    },
+    "actual-role-stats": {
+      "expected": [
+        "maker",
+        null,
+        2,
+        1,
+        0,
+        1,
+        null,
+        false
+      ],
+      "actual": [
+        "maker",
+        null,
+        2,
+        1,
+        0,
+        1,
+        null,
+        false
+      ],
+      "matches": true
+    },
+    "actual-role-text": {
+      "expected": true,
+      "actual": true,
+      "matches": true
+    },
+    "actual-role-comparison": {
+      "expected": [
+        "unknown",
+        true,
+        true
+      ],
+      "actual": [
+        "unknown",
+        true,
+        true
+      ],
+      "matches": true
+    },
+    "actual-role-metrics": {
+      "expected": true,
+      "actual": true,
+      "matches": true
+    },
+    "start-event-guards-without-marker": {
+      "expected": [
+        1,
+        true
+      ],
+      "actual": [
+        1,
+        true
+      ],
+      "matches": true
+    },
+    "actual-role-finish": {
+      "expected": 0,
+      "actual": 0,
+      "matches": true
+    }
+  }
+}

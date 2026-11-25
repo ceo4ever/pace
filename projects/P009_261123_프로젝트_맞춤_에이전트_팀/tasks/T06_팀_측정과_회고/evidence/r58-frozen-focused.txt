@@ -1,0 +1,11 @@
+✔ R50 같은 저장소의 실제 포터블 stats 비교는 영수증 교체와 프로젝트 간 재사용을 보류한다 (6470.279416ms)
+✔ R58 같은 시각의 로그 요청과 답은 기록 순서를 따른다 (owner=true) (1579.850209ms)
+✔ R58 같은 시각의 로그 요청과 답은 기록 순서를 따른다 (owner=false) (1060.969334ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9292.806292

@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r18.json",
+  "allCandidateFileHashesMatchAfterRun": true,
+  "filesChecked": 34,
+  "tests": 1209,
+  "pass": 1192,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "formal first-stage R18 blockers pending fix"
+}

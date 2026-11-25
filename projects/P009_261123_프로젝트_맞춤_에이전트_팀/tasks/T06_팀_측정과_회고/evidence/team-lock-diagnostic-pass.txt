@@ -1,0 +1,9 @@
+✔ 실제 자식 정상 종료+손자 생존+free probe도 정상 해제하지 않는다 (932.112375ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1046.714375

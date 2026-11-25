@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r82.json",
+  "filesChecked": 45,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1361,
+  "pass": 1344,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "T06 R82 \uc804\uccb4 \uac80\uc0ac \ud1b5\uacfc 1361\uac1c \uc911 1344\uac1c \ud1b5\uacfc, 17\uac1c \uc0dd\ub7b5, \uc2e4\ud328 0\uac1c"
+}

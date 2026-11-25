@@ -1,0 +1,189 @@
+{
+  "owner-precedes": {
+    "expected": [
+      0,
+      null
+    ],
+    "actual": [
+      0,
+      null
+    ],
+    "matches": true
+  },
+  "owner-follows": {
+    "expected": [
+      1,
+      1
+    ],
+    "actual": [
+      1,
+      1
+    ],
+    "matches": true
+  },
+  "coordinator-precedes": {
+    "expected": [
+      null,
+      1
+    ],
+    "actual": [
+      null,
+      1
+    ],
+    "matches": true
+  },
+  "coordinator-follows": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "request-coverage-alone": {
+    "expected": [
+      null,
+      null
+    ],
+    "actual": [
+      null,
+      null
+    ],
+    "matches": true
+  },
+  "wrong-interval-log-coverage": {
+    "expected": [
+      null,
+      null
+    ],
+    "actual": [
+      null,
+      null
+    ],
+    "matches": true
+  },
+  "matching-log-coverage": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "review-message-data-mismatch": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "canonical-review": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "review-fractional-count": {
+    "expected": null,
+    "actual": 0,
+    "matches": false
+  },
+  "canonical-retro": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "indented-next-heading": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "cdata-retro": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "malformed-retro-heading": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "wrong-range-role": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "active-role-stats": {
+    "expected": [
+      1000,
+      50,
+      0
+    ],
+    "actual": [
+      1000,
+      50,
+      0
+    ],
+    "matches": true
+  },
+  "participating-role": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "eligible-unused-role": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "pre-example": {
+    "expected": [
+      false,
+      0
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": true
+  },
+  "attribute-comment-before-real-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      true,
+      1
+    ],
+    "matches": true
+  },
+  "improvement": {
+    "expected": "observed-burden-improvement",
+    "actual": "observed-burden-improvement",
+    "matches": true
+  },
+  "worsening": {
+    "expected": "observed-burden-worsening",
+    "actual": "observed-burden-worsening",
+    "matches": true
+  },
+  "reversed": {
+    "expected": "unknown",
+    "actual": "unknown",
+    "matches": true
+  },
+  "future": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "fraction": {
+    "expected": "unknown",
+    "actual": "observed-burden-improvement",
+    "matches": false
+  }
+}

@@ -1,0 +1,139 @@
+✔ R38 전체 구간의 올바른 사용자 답은 보존하되 다른 태스크 답이 총량을 미확인으로 둔다 (798.500583ms)
+✔ R38 코디네이터 자체 답 영수증에는 원장 응답 식별자를 사용할 수 없다 (781.940834ms)
+✖ R38 현재와 과거 프로젝트 본문의 코드 예시는 팀 머리 판독에 영향을 주지 않는다 (1414.934417ms)
+✖ R72 원장 전송의 시작과 완료 머리를 원제안과 대조하고 독립 답과 실패를 보존한다 (2452.18225ms)
+✖ R80 rebase로 바뀐 마감 문서에 공통 검증을 적용한다 (1791.430583ms)
+✖ R80 새로 편입할 중간 커밋의 보호 경로를 검사한다 (merge=false) (1743.064209ms)
+✖ R80 새로 편입할 중간 커밋의 보호 경로를 검사한다 (merge=true) (2461.1725ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 2
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11606.231666
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1791:1
+✖ R38 현재와 과거 프로젝트 본문의 코드 예시는 팀 머리 판독에 영향을 주지 않는다 (1414.934417ms)
+  AssertionError [ERR_ASSERTION]: pace: 팀 Markdown의 여러 줄/미완성 코드와 주석 혼합은 일반 텍스트로 정리한다
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1806:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1931:1
+✖ R72 원장 전송의 시작과 완료 머리를 원제안과 대조하고 독립 답과 실패를 보존한다 (2452.18225ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1975:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2203:1
+✖ R80 rebase로 바뀐 마감 문서에 공통 검증을 적용한다 (1791.430583ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - main 위로 rebase
+  - 보안 검사 통과: true
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2214:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2220:52
+✖ R80 새로 편입할 중간 커밋의 보호 경로를 검사한다 (merge=false) (1743.064209ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2247:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2220:52
+✖ R80 새로 편입할 중간 커밋의 보호 경로를 검사한다 (merge=true) (2461.1725ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'ecab29c59fb303b558a0e29adddc47dc56056412\n'
+  - '715de89539c2ad502a7e2efd825e046eaaaf0a8d\n'
+  
+      at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2243:14
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2245:7)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'ecab29c59fb303b558a0e29adddc47dc56056412\n',
+    expected: '715de89539c2ad502a7e2efd825e046eaaaf0a8d\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

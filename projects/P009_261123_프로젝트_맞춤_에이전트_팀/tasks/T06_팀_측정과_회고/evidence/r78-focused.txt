@@ -1,0 +1,19 @@
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=false) (4391.314792ms)
+✔ project-start-to-merge 선언 입력은 실제 merge 뒤 지표를 생성한다 (worktree 제거=true) (4099.509458ms)
+✔ R75 더러운 팀 마감은 HEAD·객체·인덱스·원장·원문을 그대로 보존한다 (1071.449ms)
+✔ R75 기준 브랜치에만 채택 이력이 있어도 자동 반영과 실패 로그 기록을 보류한다 (1185.597542ms)
+✔ R75 검토 커밋을 팀 마감의 부모로 쓰고 하네스 경로만 새 커밋에 담는다 (2281.748875ms)
+✔ R75 비팀 마감은 미리 커밋하지 않은 변경에 기존 목차 커밋 경로를 유지한다 (1494.477458ms)
+✔ R77 rebase 이후 검사 후보에서도 선언된 보안 검사를 통과해야 한다 (1401.371208ms)
+✔ R78 검사 Git tree의 기준 브랜치 원문 보호를 대조한다 (introduced) (1460.719417ms)
+✔ R78 검사 Git tree의 기준 브랜치 원문 보호를 대조한다 (already-present) (1368.982042ms)
+✔ R78 검사 Git tree의 기준 브랜치 원문 보호를 대조한다 (public) (1892.869875ms)
+✔ R77 팀 병합 후 훅이 추가한 변경은 승인 SHA와 별도로 보존한다 (2401.666167ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23265.340584

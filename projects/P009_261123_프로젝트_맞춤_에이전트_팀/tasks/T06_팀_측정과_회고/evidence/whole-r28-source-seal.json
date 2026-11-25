@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r28.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1257,
+  "pass": 1240,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "current independent goal/contract/tester judgments pending"
+}

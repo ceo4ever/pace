@@ -1,0 +1,96 @@
+✖ R72 원장 전송의 시작과 완료 머리를 원제안과 대조하고 독립 답과 실패를 보존한다 (2195.707083ms)
+✖ R77 rebase 이후 검사 후보에서도 선언된 보안 검사를 통과해야 한다 (1997.655708ms)
+✖ R77 팀 병합 후 훅이 추가한 변경은 승인 SHA와 별도로 보존한다 (2698.6075ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7034.727417
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1930:1
+✖ R72 원장 전송의 시작과 완료 머리를 원제안과 대조하고 독립 답과 실패를 보존한다 (2195.707083ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1970:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2179:1
+✖ R77 rebase 이후 검사 후보에서도 선언된 보안 검사를 통과해야 한다 (1997.655708ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: node security-fixture.mjs
+  - main 위로 rebase
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: node security-fixture.mjs
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2190:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2197:1
+✖ R77 팀 병합 후 훅이 추가한 변경은 승인 SHA와 별도로 보존한다 (2698.6075ms)
+  AssertionError [ERR_ASSERTION]: P001 팀 측정 합성 — 병합할 커밋 2개
+    6853cca chore(P001): 마감
+    dbffdcb synthetic-merge-window
+  
+  | # | 결과 | 증거 |
+  |---|---|---|
+  | P-1 | 통과 | 합성 병합 구간 |
+  
+  true 실행
+  
+  worktree 제거 때 함께 지워질 무시 항목: 0곳
+  
+  팀 finish 검증 대상: 6853cca2cbadf9b317a96235438efe7ceff03a58
+  팀 전체 검사: 통과
+  
+  - main ← project/P001 (fast-forward, 커밋 2개)
+  - 상태 완료 기록
+  - worktree 제거: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-OGOuOl/pace-team-metrics-sBHUXI.wt/P001
+  - 브랜치 삭제: project/P001
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2207:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

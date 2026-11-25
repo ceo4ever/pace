@@ -1,0 +1,11 @@
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+const root=resolve(import.meta.dirname,"../../../../..");
+const first=JSON.parse(readFileSync(resolve(import.meta.dirname,"impl-review-output-42.json"),"utf8"));
+if(first.review?.verdict!=="pass") throw new Error("first review must pass before contract handoff");
+const out=resolve(import.meta.dirname,"impl-contract-r42.json"); if(existsSync(out))throw new Error("preserve original");
+const {createPExecutor,codexP}=await import(resolve(root,"src/agent/p-executor.ts"));
+const {runAgent,validateRequest}=await import(resolve(root,"src/agent/contract.ts"));
+const prompt=readFileSync(resolve(import.meta.dirname,"impl-contract-r42-prompt.txt"),"utf8")+"\nActual first-stage judgment:\n"+first.result.text;
+const result=await runAgent(createPExecutor(codexP),validateRequest({agent:"codex",mode:"p",cwd:root,access:"read-only",prompt,timeoutMs:600000}));
+writeFileSync(out,JSON.stringify(result,null,2)+"\n");console.log(JSON.stringify({provider:result.provider,model:result.model,is_error:result.is_error,stop_reason:result.stop_reason}));

@@ -1,0 +1,34 @@
+--- /tmp/pace-t06-r21-recheck.sKQKTK/status-before.txt	2026-11-24 21:11:35
++++ /tmp/pace-t06-r21-recheck.sKQKTK/status-after.txt	2026-11-24 21:15:37
+@@ -57,7 +57,6 @@
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/TASK-CLOSE.md
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/TASK.md
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl
+-?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.lock
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-ai-sql-compare.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-ai-sql-exit.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/actual-baseline-ai-sql-final-exit.json
+@@ -186,6 +185,7 @@
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-19.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-2.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-20.json
++?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-21.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-3.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-4.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-review-output-5.json
+@@ -276,6 +276,7 @@
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r17.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r18.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r19.json
++?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-r21.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat-sealed.json
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-compat.py
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/legacy-role-wrap-red.txt
+@@ -363,6 +364,7 @@
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r16.txt
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r18.txt
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r19.txt
++?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r21.txt
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/secret-r3-pass.txt
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/team-lock-diagnostic-pass.txt
+ ?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/tester-last-delta-resume-failed.txt

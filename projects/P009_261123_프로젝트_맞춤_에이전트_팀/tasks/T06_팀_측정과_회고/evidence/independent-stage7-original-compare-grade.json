@@ -1,0 +1,12 @@
+{
+  "duplicate-grade": {
+    "expected": "unknown",
+    "actual": "observed-burden-improvement",
+    "matches": false
+  },
+  "clean-control": {
+    "expected": "observed-burden-improvement",
+    "actual": "observed-burden-improvement",
+    "matches": true
+  }
+}

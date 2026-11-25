@@ -21,7 +21,7 @@ export interface LockResult {
   reason: string; code: 0 | 1 | 2; scope: "repo" | "machine"; active?: boolean; lease?: ResourceLease;
   owner?: Liveness; ownerCheck?: ProcessObservation["reason"]; use?: ResourceUse; probeSkipped?: boolean; guardBusy?: boolean; guardOwner?: ProcessIdentity | null; participation: string;
 }
-export interface Confirmation { by: "coordinator" | "captain"; evidence: string }
+export interface Confirmation { by: "coordinator" | "owner"; evidence: string }
 export interface LockDeps {
   events?: ResourceEventSink;
   home?: string; now?: () => number; self?: () => ProcessIdentity | null;
@@ -174,7 +174,7 @@ export class ResourceLock {
     const state = this.deps.probe(this.resource, lease.cwd);
     if (state === "busy") return "busy";
     if (lease.phase === "manual" || state === "unknown") {
-      if (confirmation && (confirmation.by === "coordinator" || confirmation.by === "captain") && safeResourceText(confirmation.evidence)) return "free";
+      if (confirmation && (confirmation.by === "coordinator" || confirmation.by === "owner") && safeResourceText(confirmation.evidence)) return "free";
       return "unknown";
     }
     return state;

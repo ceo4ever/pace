@@ -1,0 +1,23 @@
+✖ 이전 책임 문단의 호칭은 의미를 보존해 읽고 새 사람 식별자는 owner로 유지한다 (323.454625ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 401.479458
+
+✖ failing tests:
+
+test at test/team.test.ts:336:1
+✖ 이전 책임 문단의 호칭은 의미를 보존해 읽고 새 사람 식별자는 owner로 유지한다 (323.454625ms)
+  Error: 실행 전 대조 계약 v1 문단이 필요하다. 기존 맞춤 내용은 보존하고 docs/TEAM.md에 따라 다음 문단을 일반 본문으로 추가하세요: 위임을 받으면 실행 전에 지시가 근거(사용자 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청 형식(결정 주체·근거·선택지)으로 올린다. 미확인 해석을 승인된 것으로 바꾸지 않는다.
+      at missingExecutionRule (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/model.ts:21:10)
+      at parseTeamSource (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/model.ts:103:68)
+      at loadTeamMember (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/store.ts:61:10)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team.test.ts:338:218)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)

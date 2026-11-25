@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r48.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1300,
+  "pass": 1283,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail2/SF1 for swapped completion proof, chronological filtering of claimed response reuse, and open delegations at canonical window end"
+}

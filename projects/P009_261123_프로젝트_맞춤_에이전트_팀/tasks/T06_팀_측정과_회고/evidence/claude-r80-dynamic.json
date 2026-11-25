@@ -1,0 +1,25 @@
+{
+  "text": "# T06 R80 독립 동적 테스트 결과\n\n**판정: pass** — blocking 0, should_fix 0. 지정한 묶음은 293개 중 293개가 통과했고, 실패·취소·건너뜀은 없었습니다.\n\n## 1. 사전 확인\n- **`impl-review-output-80.json`**: 필드를 골라 읽은 범위에서 `verdict: \"pass\"`, `hash: \"bc1589a3…26241e\"`입니다.\n- **`candidate-r80.json`**: `base`는 `441c1d3…`이고 `patchSha256`은 `bc1589a3…26241e`입니다. 리뷰 출력의 hash와 같습니다.\n- **현재 HEAD**: `441c1d3`로, candidate의 base와 같습니다.\n- **변경 파일 목록**: 제품 범위(`src` `test` `docs` `templates` `skills` `.pace/test-map.json`)에서 바뀐 파일은 43개입니다(수정 32, 미추적 11). candidate의 `files` 43개와 경로가 정확히 일치합니다.\n- **파일 내용 SHA256은 재계산하지 못했습니다.** `shasum`, `openssl dgst`, `node -e` 모두 \"requires approval\"로 막혔습니다. 제가 직접 겪은 호스트 권한 제한이며 애플리케이션 결함이 아닙니다. 따라서 \"현재 패치 hash가 bc1589…와 같다\"는 점은 경로 집합만 맞는 것으로 확인했고, **바이트 일치는 관측하지 못했습니다.** 실행 권한은 올리지 않았습니다.\n- **T01 v1 기준선 두 파일과 `baseline-roblox-reachability-v2.json`**: base 대비 `git diff --stat` 출력이 비어 있고 `git status`에도 변경이 없습니다. 추적 차이가 없습니다.\n\n## 2. 테스트 실행\n지시한 명령을 그대로 실행했습니다(제한 시간 600000ms).\n`node --test --test-concurrency=2 test/team-metrics.test.ts test/team-handoff.test.ts test/project-log.test.ts test/project-role.test.ts test/team.test.ts`\n\n결과는 `tests 293 / pass 293 / fail 0 / cancelled 0 / skipped 0`, 소요 316.1초입니다.\n\n- 백그라운드 실행(리다이렉트를 섞은 복합 명령)은 승인 단계에서 막혀서 같은 명령을 포그라운드로 다시 돌렸습니다.\n- 출력에 나온 `pace: 경고: 지표 로그 기록 실패 (명령은 계속)`는 테스트 픽스처가 일부러 만든 경고이고 실패가 아닙니다.\n\n## 3. 완료 기준별 관측 결과\n\n| 기준 | 실제 관측(합성 임시 Git·PACE_HOME) | 결과 |\n|---|---|---|\n| T-1 요청 도달·FIFO | 답만 / 실패 뒤 성공 / 실패만 / 의도만 / 수신자 없는 옛 사건 분리, `requestId` 없는 옛 로그의 사건 수·FIFO golden 유지, R58·R66 같은 시각 거울의 기록 순서 무관 귀속, R68 참조로만 연결된 owner 전송은 미확인, R72 `requestId`가 빠진 재시도 행(ownerDelivery 0, failedAttemptsObserved 1, unconfirmed 1, reachedTotal null)과 유효 대조(reachedTotal 2), R73 | ✔ |\n| T-2 승인·손작업·품질·역할 관측 | 명시 부분 0은 관측 0 / 총량 null, R64 부분 품질은 로그·감사 관측을 보존하고 총량 보류, R65 완료·요청 지원을 함께 맡은 영수증이 무효면 관측 유지·총량 미확인, R32 역할 관측 양성/음성 대조, 역할 선언만으로는 시간/출력 미산출 | ✔ |\n| T-3 세 비교 목적 | R64 비교 CLI의 세 목적 구분과 다른 목적 표본 거부, 모든 명시 영수증 경로 검사, 개선·악화·미확인 분리, legacy 기준선 원본 불변·지문 주석 요구, R49·R50 완료 영수증 교체·재사용 시 보류, R27·R67 첫 읽기 미확인·읽는 중 변경 시 총량 보류 | ✔ |\n| T-4 회고 입력·finish | 회고 1~3 변경·빈 이유·4변경 거부, R25 ignored 영수증 대조, R67·R69 영수증·원장 거울의 원문 거부, R70 없는 과거 참조 보존·비영수증 파일 보류, R71 상대 경로 표기 정규화, R75 dirty/base-only/clean-positive/legacy, R76 훅 staging·필수 사건 기록 실패, R77 rebase 후 보안·post-merge 보존, R78 introduced/already-present/public, R79 executable/edited/separate-base/public-crlf, R80 rebase 후 공통 검증과 중간 커밋 보호 경로(merge=false/true), R38 fence 예시와 인접한 모호한 Markdown | ✔ |\n| T-5 통합 source CLI | \"source CLI stats→비교→METRICS→회고→finish를 metadata만으로 완주한다\", project-start-to-merge 실제 merge 뒤 지표 생성(worktree 제거 false/true), 로그·역할·팀 회귀 통과 | ✔(이 테스트 묶음 범위) |\n\nR80 문서 쪽은 `docs/TEAM-METRICS.md:15`가 테스트 코드와 같은 내용을 적고 있습니다. rebase한 후보에서 공통 검사를 하고, 후보 tree와 새로 편입되는 중간 커밋의 보호 경로를 대조하며, 병합 때 현재 보호 목록을 다시 확인합니다. 테스트 코드는 `test/team-metrics.test.ts:2203` 부근입니다.\n\n## 4. 결론과 남은 것\n- **이 태스크 목표는 로컬에서 달성했다고 봅니다.** 장치와 출력 계약이 합성 대조에서 모두 관측됐습니다.\n- **관측하지 못한 것**\n  - 저장소 전체 검사(`npm run check`)와 비밀 검사: PM 담당이라 실행하지 않았습니다.\n  - candidate 파일 바이트의 SHA256 일치: 위에 적은 권한 제한 때문입니다.\n- **T08로 넘어가는 것**: 실제 두 저장소의 전후 효과, 실제 사람·호스트 감사, BR07 회고 실행은 모두 T08에서 관측할 일입니다. 이번 결과는 합성 데이터에서만 얻은 것이며 효과 실측으로 보면 안 됩니다.\n- **제가 하지 않은 것**: 소스·설치 수정, 병합, 외부 연락, 새 테스트 작성은 하지 않았습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "587e53f7-b113-45d9-b700-9584f57d9167",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 417571,
+  "usage": {
+    "input_tokens": 46,
+    "output_tokens": 10342
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

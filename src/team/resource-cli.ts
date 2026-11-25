@@ -9,7 +9,7 @@ import { processIdentity, observeProcess, type ProcessIdentity } from "./resourc
 import { loadTeamMember, safeTeamPath, teamRoot } from "./store.ts";
 import { safeResourceText } from "./resources.ts";
 
-const usage = "pace team lock <자원> --by <구성원|P###> [-- <명령> ...] | unlock <자원> --token <획득토큰> [--confirmed-by coordinator|captain --evidence <근거>] | status <자원>";
+const usage = "pace team lock <자원> --by <구성원|P###> [-- <명령> ...] | unlock <자원> --token <획득토큰> [--confirmed-by coordinator|owner --evidence <근거>] | status <자원>";
 const pause = (ms: number) => new Promise<void>((done) => setTimeout(done, ms));
 const out = (data: unknown) => process.stdout.write(JSON.stringify(data) + "\n");
 
@@ -125,7 +125,7 @@ export async function resourceCommand(args: string[]): Promise<number> {
         sub === "status" && Object.keys(values).some((key) => key !== "project")) throw new Error(usage);
     let confirmation: Confirmation | undefined;
     if (values["confirmed-by"]) {
-      if (!["coordinator", "captain"].includes(values["confirmed-by"]) || !safeResourceText(values.evidence)) throw new Error("자원 확인 주체/근거 오류");
+      if (!["coordinator", "owner"].includes(values["confirmed-by"]) || !safeResourceText(values.evidence)) throw new Error("자원 확인 주체/근거 오류");
       confirmation = { by: values["confirmed-by"] as Confirmation["by"], evidence: values.evidence! };
     }
     const root = teamRoot(process.cwd()), lock = new ResourceLock(root, name, values.project ? { events: projectResourceSink(root, values.project) } : {});

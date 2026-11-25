@@ -1,0 +1,539 @@
+{
+  "plain-summary": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "labeled-markdown-link": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "comment-summary": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "hidden-html-summary": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "entity-summary": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "empty-link-summary": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "whitespace-link-summary": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "zero-width-summary": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "empty-link-plus-text": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "comment-in-header": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "comment-in-link-label": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "wide-unprefixed-short-separator": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "wide-mixed-prefix": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "wide-separated-after-unprefixed": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "failure-only": {
+    "expected": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      "failed_only"
+    ],
+    "actual": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      "failed_only"
+    ],
+    "matches": true
+  },
+  "failure-and-unproven": {
+    "expected": [
+      0,
+      0,
+      1,
+      1,
+      null,
+      null,
+      "failed_only"
+    ],
+    "actual": [
+      0,
+      0,
+      1,
+      1,
+      null,
+      null,
+      "failed_only"
+    ],
+    "matches": true
+  },
+  "failure-and-wrong-request-ref": {
+    "expected": [
+      0,
+      0,
+      1,
+      1,
+      null,
+      null,
+      "owner_reply"
+    ],
+    "actual": [
+      0,
+      0,
+      1,
+      1,
+      null,
+      null,
+      "owner_reply"
+    ],
+    "matches": true
+  },
+  "failure-and-proven": {
+    "expected": [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      "owner_reply"
+    ],
+    "actual": [
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      "owner_reply"
+    ],
+    "matches": true
+  },
+  "adjacent-comma": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "adjacent-fullwidth": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "adjacent-semicolon": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "adjacent-period": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "decimal": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "decimal-comma": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "positive-exponent": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "should-fix-exponent": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "duplicate-blocking": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "duplicate-should-fix": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "legacy-stats-stays-non-team": {
+    "expected": false,
+    "actual": false,
+    "matches": true
+  },
+  "grades-stored-exactly": {
+    "expected": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "actual": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "matches": true
+  },
+  "uniform-stats-improves": {
+    "expected": [
+      "observed-burden-improvement",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      false,
+      false,
+      false
+    ],
+    "actual": [
+      "observed-burden-improvement",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      false,
+      false,
+      false
+    ],
+    "matches": true
+  },
+  "uniform-stats-worsens": {
+    "expected": [
+      "observed-burden-worsening",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      false,
+      false,
+      false
+    ],
+    "actual": [
+      "observed-burden-worsening",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      false,
+      false,
+      false
+    ],
+    "matches": true
+  },
+  "equal-sum-quality-varies": {
+    "expected": [
+      "unknown",
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      true,
+      false,
+      true,
+      false
+    ],
+    "actual": [
+      "unknown",
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      true,
+      false,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "equal-sum-quality-varies-rendered-reasons": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "identical-variable-distribution": {
+    "expected": [
+      "unknown",
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        2
+      ],
+      true,
+      false,
+      true,
+      false
+    ],
+    "actual": [
+      "unknown",
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        2
+      ],
+      true,
+      false,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "identical-variable-distribution-rendered-reasons": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "different-origin": {
+    "expected": [
+      "unknown",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      true,
+      false,
+      true
+    ],
+    "actual": [
+      "unknown",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      true,
+      false,
+      true
+    ],
+    "matches": true
+  },
+  "different-origin-rendered-reasons": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "mixed-origin": {
+    "expected": [
+      "unknown",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      true,
+      false,
+      true
+    ],
+    "actual": [
+      "unknown",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      true,
+      false,
+      true
+    ],
+    "matches": true
+  },
+  "mixed-origin-rendered-reasons": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "both-mixed-origin": {
+    "expected": [
+      "unknown",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      true,
+      false,
+      true
+    ],
+    "actual": [
+      "unknown",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      true,
+      false,
+      true
+    ],
+    "matches": true
+  },
+  "both-mixed-origin-rendered-reasons": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "uniform-independent-improves": {
+    "expected": [
+      "observed-burden-improvement",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      false,
+      false,
+      false
+    ],
+    "actual": [
+      "observed-burden-improvement",
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      false,
+      false,
+      false,
+      false
+    ],
+    "matches": true
+  }
+}

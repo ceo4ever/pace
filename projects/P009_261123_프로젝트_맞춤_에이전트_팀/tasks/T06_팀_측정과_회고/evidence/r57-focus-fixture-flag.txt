@@ -1,0 +1,46 @@
+✔ BL 생명주기 start는 전체 상태를 진행으로 기록한다 (875.2425ms)
+✔ BL 생명주기: finish와 실제 merge에서만 완료하며 미리보기는 변경하지 않는다 (5117.013833ms)
+✔ BL 생명주기: 잘못된 상태와 시작 준비 실패는 원본 상태를 바꾸지 않는다 (1121.74025ms)
+✔ R18 표본별 품질 변동의 합계 상쇄와 수집 출처 차이를 방향 판정으로 숨기지 않는다 (13.740875ms)
+✔ R45 기존 병합도 판정한 커밋만 FF하고 그 뒤 진행된 팀 브랜치와 worktree를 보존한다 (2517.608667ms)
+✔ R46 요청 수집 확인은 같은 구간의 실제 입력에만 적용한다 (3658.017625ms)
+✔ R50 같은 저장소의 실제 포터블 stats 비교는 영수증 교체와 프로젝트 간 재사용을 보류한다 (4746.01825ms)
+✔ R51 한 표본의 큰 전송 증빙 목록은 256 KiB를 넘어도 관측을 읽을 수 있다 (8.905375ms)
+✔ R54 stats 봉투에서 출처 필드가 빠져도 수기 비교로 바뀌지 않는다 (1.376791ms)
+✔ R54 링크된 사용자 전송은 코디네이터 자체 답으로 비교 미해결을 상쇄하지 못한다 (conflict=false) (746.371167ms)
+✔ R54 링크된 사용자 전송은 코디네이터 자체 답으로 비교 미해결을 상쇄하지 못한다 (conflict=true) (745.130792ms)
+✔ R54 finish 뒤 같은 tree의 뒤따른 커밋은 재마감 전까지 병합 대상으로 받지 않는다 (1719.754375ms)
+✔ R56 긴 상태 참조 연쇄에서도 stats는 전송마다 증빙 하나를 내며 compare가 관측을 읽는다 (808.697417ms)
+✖ R57 기존 병합은 pre-FF 거부 기록과 동일 SHA를 보존하며 main 정리 후 재시도한다 (2015.79275ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17147.526459
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2799:1
+✖ R57 기존 병합은 pre-FF 거부 기록과 동일 SHA를 보존하며 main 정리 후 재시도한다 (2015.79275ms)
+  AssertionError [ERR_ASSERTION]: pace: --commit은 팀 프로젝트 미리보기의 승인 SHA다: 현재 대상을 다시 확인한다
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2815:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

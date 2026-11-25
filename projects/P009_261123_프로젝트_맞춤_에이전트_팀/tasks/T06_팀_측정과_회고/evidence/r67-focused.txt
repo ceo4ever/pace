@@ -1,0 +1,51 @@
+✔ R24 ignored 검증 자료는 작업 파일이 유효해도 finish tree에 빠질 수 없다: TEAM-RETROSPECTIVE.json (1580.565416ms)
+✔ R24 ignored 검증 자료는 작업 파일이 유효해도 finish tree에 빠질 수 없다: proof.json (1322.682166ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (wrong-request) (1779.833292ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (answer-first) (1636.427292ms)
+✔ R25 ignored 답 영수증은 실제 판정에 쓰일 때만 finish 필수 입력이다 (verified-answer) (1458.42425ms)
+✔ R27 stats도 같은 영수증을 읽는 중 바뀌면 새 확인을 0 총량으로 승격하지 않는다 (782.287917ms)
+✔ R17 팀 사건의 문자열 배열/객체 강제 변환과 다른 스킴의 파일 경로를 거부한다 (2584.212042ms)
+✔ R32 같은 ID의 뒤늦은 태스크 질문은 이전 사용자·코디네이터 답을 소급 승인하지 않는다 (983.216666ms)
+✔ R50 같은 저장소의 실제 포터블 stats 비교는 영수증 교체와 프로젝트 간 재사용을 보류한다 (5313.367833ms)
+✔ R64 비교는 수집 확인 상태와 무관하게 모든 명시 영수증 경로를 검사한다 (1087.68775ms)
+✔ R64 부분 품질 수집은 로그와 감사 관측을 보존하며 총량을 보류한다 (980.804041ms)
+✔ R64 비교 CLI는 세 목적을 구별하고 다른 목적의 표본은 성공 보고 없이 거부한다 (951.2ms)
+✔ R65 프로젝트 범위의 이전 답을 뒤에 시작한 태스크의 대표 업무로 올리지 않는다 (1355.28525ms)
+✔ R65 완료 및 요청 지원을 함께 맡은 영수증이 유효하지 않으면 관측을 유지한다 (1594.301167ms)
+✔ R66 같은 시각에 실제 원장 태스크로 검증된 거울은 기록 순서와 무관하게 귀속된다 (1104.464625ms)
+✖ R67 finish는 선언된 영수증의 원문과 미확인 형식을 Git 자동 반영 전 거부한다 (1717.466791ms)
+✔ R67 첫 영수증이 부재하거나 상한을 넘으면 이후 파일이 생겨도 같은 조회의 총량을 보류한다 (1000.25875ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 16
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27443.325584
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:3267:1
+✖ R67 finish는 선언된 영수증의 원문과 미확인 형식을 Git 자동 반영 전 거부한다 (1717.466791ms)
+  AssertionError [ERR_ASSERTION]: 빠진 것:
+  - 팀 회고: 회고의 반복 지적이 현재 지표 후보와 불일치한다
+  실패
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3289:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

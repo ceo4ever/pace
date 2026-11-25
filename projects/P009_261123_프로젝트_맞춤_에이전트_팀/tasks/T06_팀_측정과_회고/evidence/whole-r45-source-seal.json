@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r45.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1295,
+  "pass": 1278,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail2/SF1 for shared delivery and request collection witness"
+}

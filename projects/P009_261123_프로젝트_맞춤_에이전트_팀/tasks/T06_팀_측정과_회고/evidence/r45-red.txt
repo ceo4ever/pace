@@ -1,0 +1,87 @@
+✖ R45 요청 ID 없는 코디네이터 답은 닫힌 구간의 도달 0과 개선을 확정하지 않는다 (778.245ms)
+✖ R45 기존 병합도 판정한 커밋만 FF하고 그 뒤 진행된 팀 브랜치와 worktree를 보존한다 (2210.026417ms)
+✖ R45 미채택 기존 통계는 손상된 선택 역할 원본을 보류하고 명시 Team은 오류로 보고한다 (604.684959ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3718.5955
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2045:1
+✖ R45 요청 ID 없는 코디네이터 답은 닫힌 구간의 도달 0과 개선을 확정하지 않는다 (778.245ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2058:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2074:1
+✖ R45 기존 병합도 판정한 커밋만 FF하고 그 뒤 진행된 팀 브랜치와 worktree를 보존한다 (2210.026417ms)
+  AssertionError [ERR_ASSERTION]: P001 팀 측정 합성 — 병합할 커밋 2개
+    5d21287 chore(P001): 마감
+    9c2f356 synthetic-merge-window
+  
+  | # | 결과 | 증거 |
+  |---|---|---|
+  | P-1 | 통과 | 합성 병합 구간 |
+  
+  true 실행
+  
+  worktree 제거 때 함께 지워질 무시 항목: 0곳
+  pace: git worktree remove /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-bE1DCp/pace-team-metrics-kDvfZE.wt/P001 실패: fatal: '/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-bE1DCp/pace-team-metrics-kDvfZE.wt/P001' contains modified or untracked files, use --force to delete it
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2098:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2106:1
+✖ R45 미채택 기존 통계는 손상된 선택 역할 원본을 보류하고 명시 Team은 오류로 보고한다 (604.684959ms)
+  AssertionError [ERR_ASSERTION]: pace: 팀 frontmatter가 필요하다
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2114:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

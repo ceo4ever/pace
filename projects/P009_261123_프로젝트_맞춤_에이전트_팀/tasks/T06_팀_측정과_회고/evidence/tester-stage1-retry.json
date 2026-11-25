@@ -1,0 +1,25 @@
+{
+  "text": "요청 범위 안에서 낸 판정은 **blocking 1건으로 불합격(FAIL)**입니다. 지정된 11개 시험은 모두 통과하지만, 표본 수가 다른 전후 묶음을 비교하면 \"부담 개선\"으로 잘못 판정할 수 있는 의미 반례가 코드에 있습니다. 이 반례는 코드를 읽어서 찾았고, 실행으로 확인하지는 못했습니다.\n\n## 실제로 실행한 것\n- `node --test test/team-metrics.test.ts`: 11개 중 11개 통과(약 6.0초). 실행 중 `pace: 경고: 지표 로그 기록 실패 (명령은 계속)`가 한 번 나왔지만 결과에는 영향이 없었습니다.\n- 정독한 파일: `team-metrics.ts`, `team-comparison.ts`, `team-input.ts`, `team-retrospective.ts`, `docs/TEAM-METRICS.md`.\n- 반례를 재현할 합성 스크립트(임시 폴더, 저장소 밖)는 실행하지 못했습니다. 첫 두 번은 셸 필터가 명령을 거부했고, 세 번째는 승인 요청에서 멈췄습니다.\n\n## Blocking\n**B1. 표본 수(N)가 다르면 합계를 그대로 빼서 부담 감소를 과장합니다** (`src/project/team-comparison.ts:68`, `:89`, `:92`)\n- `sampleGroup`은 표본 수치를 단순 합산합니다. 그리고 `sampleCount`에 실제 표본 수를 넣습니다.\n- 그런데 전후 일치 검사 목록(`:89`)에는 `sampleCount`가 없습니다. 증감 `a - b`도 합계끼리 계산하고 표본 수로 나누지 않습니다.\n- 반례: 전 3건 × 캡틴 질문 5 = 15, 후 2건 × 6 = 12이면 증감이 −3입니다. 다른 부담 지표가 같고 품질 변화가 0이면 판정은 `observed-burden-improvement`가 됩니다. 표본당으로 보면 오히려 악화입니다.\n- 손작업 지표도 같아서, 후 표본만 적게 넣으면 \"개선\"이 만들어집니다.\n- 수정 방향: 전후 N이 다르면 `unknown`과 그 이유를 내거나, 표본당 값으로 비교해야 합니다. 시험에도 N이 다른 반례가 필요합니다.\n\n## Should fix\n1. **전과 후 사이의 구간 중복·동일 기록을 검사하지 않습니다** (`:70`)\n   - 겹침과 중복 검사는 한 묶음 안에서만 합니다.\n   - 같은 저장소의 같은 기간 기록에 조건 코드만 바꿔(no-team / team) 전과 후에 넣어도 통과합니다.\n   - 겹치지 않는 명시 구간만 허용한다는 문서 취지에 따르면 전후 사이에도 같은 검사가 필요합니다.\n2. **주석(annotation)이 최신 스냅샷의 조건과 도달 수를 덮어씁니다** (`:33`, `:43`)\n   - `v.comparison`이 있는 스냅샷에도 주석의 `comparison`과 `reachability`가 그대로 우선합니다.\n   - 지금은 단일 표본이 항상 `unknown`이고 묶음에서는 주석을 거부하므로 결론까지 오염되지는 않습니다. 다만 행 수치는 바뀐 값으로 출력됩니다.\n   - 주석은 legacy 기준선(`comparison` 없음)에만 허용하는 편이 안전합니다.\n3. **`event-log` 품질 출처로는 결론을 낼 수 없을 수 있습니다** (`team-metrics.ts:100`, `team-comparison.ts:94`)\n   - 스냅샷의 `rereviews_after_fail`은 확인된 감사(`quality_audit`)가 있을 때만 값이 생깁니다.\n   - 비교는 이 지표가 null이면 \"비교 총량 미확인\" 이유를 붙입니다.\n   - 그래서 `qualitySource: event-log`인 실제 `stats` 출력은 개선·악화 결론이 사실상 나올 수 없습니다. 의도된 보수성인지 확인이 필요합니다. 과장 쪽이 아니라 과소 쪽 문제입니다.\n4. **구간 경계가 양쪽 끝을 모두 포함합니다** (`team-metrics.ts:64`)\n   - 한 표본의 끝과 다음 표본의 시작이 같은 시각인 인접 구간은 허용됩니다(`:70`).\n   - 이때 경계 시각의 사건은 두 표본에 함께 집계될 수 있습니다.\n\n## 반례를 찾지 못한 부분\n- 캡틴 개입 총합은 null이고, 수신 의도는 도달 수로 세지 않습니다.\n- 손작업 총량은 닫힌 구간, 다른 확인자, 확인 영수증이 모두 있어야 표시됩니다. 자기 확인은 총량이 되지 않습니다.\n- 품질 지표가 어느 방향으로든 변하면 `unknown`이 됩니다. 부담 지표가 늘고 준 것이 섞이거나 동률이어도 `unknown`입니다.\n- 근거 영수증은 `file:`, `.git`, 원문 경로를 거부해서 로컬 원문이 복사되지 않습니다.\n- 한 묶음 안의 겹침 검사는 정렬 후 바로 앞 구간과만 비교하지만, 귀납적으로 따져 보면 빠지는 겹침이 없습니다.\n\n## 미검증 범위\n- B1과 Should fix 1의 실제 실행 재현(합성 스크립트가 실행 승인 단계에서 막혔습니다).\n- `metrics-report`·`metrics-document`, `handoff-report`, `harness`·`event-log`의 변경 diff는 시간 제약 때문에 정독하지 않았습니다. 시험이 호출하는 경로로만 간접 확인했습니다.\n- `team-metrics-document.ts`, `cli.ts`의 `compare-team` 종료 코드(오류 2 / 정상 0).\n- 행위자(actor) 표기의 대소문자 차이로 확인자가 같은 사람인데도 다르게 판정되는지 여부.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "bfa2c639-eb20-4456-871a-8506b7950932",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 98484,
+  "usage": {
+    "input_tokens": 18,
+    "output_tokens": 9814
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

@@ -1,0 +1,46 @@
+pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+✔ R27 main이 rebase 때 Team 채택을 추가해도 보안 검사의 staged 변경을 먼저 보류한다 (1344.555208ms)
+✖ R27 finish와 Git merge는 동일한 채택 판정을 쓰며 review의 버전 숫자를 start로 오인하지 않는다 (988.765ms)
+✔ R24 팀 없는 기존 프로젝트의 동명 심볼릭 링크는 finish와 merge를 막지 않는다 (2582.7955ms)
+✔ R23 팀 finish tree 계산은 실제 인덱스를 보존하고 Git 대상과 다른 작업 파일을 읽지 않는다 (413.280042ms)
+✔ R23 팀 finish는 기존 다른 소유자의 파일을 덮어쓰지 않고 팀 없는 프로젝트에 소급하지 않는다 (345.823375ms)
+✔ R9 계약 반례: 뒤집힌 전후 구간·모순 리뷰·질문 전 답·다른 회고 범위를 확정하지 않는다 (649.525584ms)
+✔ R32 같은 ID의 뒤늦은 태스크 질문은 이전 사용자·코디네이터 답을 소급 승인하지 않는다 (672.47ms)
+✔ R32 rebase가 처음의 유일한 팀 채택 입력을 없애면 마감 봉인을 보류한다 (1564.299959ms)
+✔ R32 역할 관측과 관측 없음은 역할·종류·수집 범위를 영수증에 함께 요구한다 (624.527125ms)
+✔ R32 미채택 로그의 기존 건너뛰기와 새 팀의 엄격한 품질 판정을 구별한다 (980.482084ms)
+✔ R33 표지 줄이 같아도 Markdown 문맥이 과거에 채택됐으면 재마감과 병합을 보류한다 (1916.721042ms)
+✔ R33 역할 영수증의 안쪽 출처도 파일·로컬 지문 제한을 적용한다 (1554.153875ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13814.103083
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:453:1
+✖ R27 finish와 Git merge는 동일한 채택 판정을 쓰며 review의 버전 숫자를 start로 오인하지 않는다 (988.765ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:457:70)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at node:internal/test_runner/test:1305:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

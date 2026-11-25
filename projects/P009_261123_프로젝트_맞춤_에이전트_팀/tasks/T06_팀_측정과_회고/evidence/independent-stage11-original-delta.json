@@ -1,0 +1,254 @@
+{
+  "wider-canonical": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "wider-no-trailing-header": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "wider-no-trailing-separator": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "wider-short-delimiters": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "wider-blank-new-table": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "canonical-escaped": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "canonical-even-slash": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "lazy-paragraph": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "lazy-list": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "canonical-after-list": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "canonical-after-atx": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "comment-only-summary": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "canonical-visible-summary": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "valid-scalar-duplicate": {
+    "expected": [
+      0,
+      1,
+      1
+    ],
+    "actual": [
+      0,
+      1,
+      1
+    ],
+    "matches": true
+  },
+  "malformed-requestId-array": {
+    "expected": [
+      2,
+      true,
+      false
+    ],
+    "actual": [
+      2,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "malformed-t-array": {
+    "expected": [
+      2,
+      true,
+      false
+    ],
+    "actual": [
+      2,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "malformed-ts-array": {
+    "expected": [
+      2,
+      true,
+      false
+    ],
+    "actual": [
+      2,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "malformed-requestId-object": {
+    "expected": [
+      2,
+      true,
+      false
+    ],
+    "actual": [
+      2,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "malformed-requestId-null": {
+    "expected": [
+      2,
+      true,
+      false
+    ],
+    "actual": [
+      2,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "malformed-ts-number": {
+    "expected": [
+      2,
+      true,
+      false
+    ],
+    "actual": [
+      2,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "malformed-ok-string": {
+    "expected": [
+      2,
+      true,
+      false
+    ],
+    "actual": [
+      2,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "malformed-data-array": {
+    "expected": [
+      2,
+      true,
+      false
+    ],
+    "actual": [
+      2,
+      true,
+      false
+    ],
+    "matches": true
+  },
+  "receipt-scheme-id": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "receipt-another-scheme-id": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "receipt-local-sha": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "receipt-upper-local-sha": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "receipt-unknown-scheme-slash": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-unknown-scheme-backslash": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-windows-drive": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-file-scheme": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-https-path": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-local-short": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-local-path": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-no-service": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-array-sourceRef": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "receipt-space-sourceRef": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  }
+}

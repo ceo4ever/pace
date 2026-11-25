@@ -1,0 +1,67 @@
+{
+  "verdict": "fail",
+  "blocking": 1,
+  "should_fix": 1,
+  "focused": {
+    "metrics": 74,
+    "team": 14,
+    "passed": 88,
+    "failed": 0
+  },
+  "independent": {
+    "checks": 60,
+    "matched": 57,
+    "mismatched": [
+      {
+        "name": "markdown-filler-only-summary-link",
+        "matched": false,
+        "expected": [
+          1,
+          true
+        ],
+        "observed": [
+          0,
+          false
+        ]
+      },
+      {
+        "name": "markdown-filler-only-header-link",
+        "matched": false,
+        "expected": [
+          1,
+          true
+        ],
+        "observed": [
+          0,
+          false
+        ]
+      },
+      {
+        "name": "text-closed-clean",
+        "matched": false,
+        "expected": [
+          0,
+          true,
+          true,
+          false
+        ],
+        "observed": [
+          0,
+          true,
+          true,
+          true
+        ],
+        "totalLine": "요청 ID별: 도달 관측 1 / 총량 1 (사용자 답 1, 사람 경로 성공 0) · 실패만 0 · 원장 미확인 1 / 비교 미해결 0 · 옛 식별자 없음 0",
+        "boundaryLine": "구간 밖 최초 요청의 구간 내 활동: 0건(미확인에 포함, 총량/방향 보류)"
+      }
+    ],
+    "source_cli_invocations": 90
+  },
+  "targetSha256": "599b62b06829799a34587687368a0e87b178f73c41de2e87e509066d7baebebc",
+  "unknown": [
+    "full suite and broad native OS lock (PM)",
+    "sandbox-denied ps observation",
+    "T07 device/skill verification",
+    "T08 real adoption, efficacy, and skill retrospective (user after main merge/install)"
+  ]
+}

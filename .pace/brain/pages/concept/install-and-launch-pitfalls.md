@@ -6,7 +6,7 @@ tags: [install, pitfalls, macos, windows]
 sources: [code:scripts/install.sh, code:scripts/install.ps1, code:src/setup/onboard.ts, 실측:2026-10-22, code:src/project/harness.ts, test:test/project-harness.test.ts, code:src/project/brain.ts, test:test/brain.test.ts, code:src/setup/install.ts, test:test/install-windows-wrapper.test.ts, test/intent-preview.test.ts, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/TASK-CLOSE.md, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/existing-test-body-audit.json]
 related: [llm-cannot-speak-first]
 created: 2026-10-22
-updated: 2026-11-19
+updated: 2026-11-24
 status: active
 ---
 
@@ -58,3 +58,7 @@ P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움�
 
 변경 기반 검사는 별도 경계다. 현재 staged/unstaged/untracked 작업본만 대상으로, 기준 commit과 같은 map의 명시 checks를 먼저 실행한다. 숨김 index/sparse·삭제·미분류·불확실성은 실제 전체 검사로 전환하고, 시작 후 실제 실패1·예외 확인 불가3은 성공으로 숨기지 않는다. 커밋된 브랜치 차이는 빠른 범위에 포함하지 않으며 finish 전체 검사를 유지한다. 자세한 근거는 [[변경-기반-검사와-실행-선언-신뢰-경계]]다. Windows 관측을 실제 설치기·POSIX·다른 프로젝트 일반 성능 검증으로 확대하지 않는다.
 
+
+## 팀 역할 start/finish 추가 뒤 기존 설치 한계 대조 (2026-11-24)
+
+현재 harness.ts는 역할 start에 팀 측정 marker와 버전 사건을 추가하고 finish에 팀/소통 검사를 더했다. 기존 sectionStart/appendRow의 LF·CRLF 처리와 상태 변경 보존, project-harness의 CRLF·기존 표 회귀는 유지된다. 실제 사용자 설치기는 이 변경에서 실행하지 않았으며 기존 OS/Claude 지연/훅 신뢰의 역사적 관측을 새로운 실기 통과로 확대하지 않는다. 팀 정의 적재와 원문 영수증은 별도 참여 프로토콜이고 임의 도구 직접 호출까지 인증하지 않는다.

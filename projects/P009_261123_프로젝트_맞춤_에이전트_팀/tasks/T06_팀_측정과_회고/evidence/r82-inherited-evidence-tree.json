@@ -1,0 +1,53 @@
+{
+  "base": "441c1d3783807e0e62c2deaa25ed9c189ac2f48e",
+  "tasks": [
+    {
+      "task": "T01",
+      "closureLinks": 15,
+      "closureDirs": 0,
+      "preReviewTrackedFiles": 6,
+      "missingLinks": [],
+      "invalidPreReview": []
+    },
+    {
+      "task": "T02",
+      "closureLinks": 16,
+      "closureDirs": 0,
+      "preReviewTrackedFiles": 7,
+      "missingLinks": [],
+      "invalidPreReview": []
+    },
+    {
+      "task": "T03",
+      "closureLinks": 18,
+      "closureDirs": 1,
+      "preReviewTrackedFiles": 4,
+      "missingLinks": [],
+      "invalidPreReview": []
+    },
+    {
+      "task": "T04",
+      "closureLinks": 18,
+      "closureDirs": 0,
+      "preReviewTrackedFiles": 7,
+      "missingLinks": [],
+      "invalidPreReview": []
+    },
+    {
+      "task": "T05",
+      "closureLinks": 16,
+      "closureDirs": 0,
+      "preReviewTrackedFiles": 4,
+      "missingLinks": [],
+      "invalidPreReview": []
+    },
+    {
+      "task": "T09",
+      "closureLinks": 30,
+      "closureDirs": 0,
+      "preReviewTrackedFiles": 4,
+      "missingLinks": [],
+      "invalidPreReview": []
+    }
+  ]
+}

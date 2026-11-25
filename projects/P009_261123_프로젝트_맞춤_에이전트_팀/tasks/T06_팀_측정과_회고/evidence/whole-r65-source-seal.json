@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r65.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1325,
+  "pass": 1306,
+  "fail": 2,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "First review failed twice on the candidate; whole check also detected regressions in repeated-proof input consistency (R27) and the resolved positive chronology control (R32)."
+}

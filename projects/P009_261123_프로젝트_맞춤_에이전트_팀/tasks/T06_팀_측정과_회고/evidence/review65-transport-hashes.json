@@ -1,0 +1,9 @@
+{
+  "originalChars": 1842346,
+  "sentChars": 5235,
+  "originalSha256": "ea3c886b2d8944327b1735da6cbdf7542997b0c980ab63fcf003341420215c28",
+  "sentSha256": "c378271cc193f91e0bea4f6adff5827f69abb574e0ebfae5a423b8c75bd28a03",
+  "artifactSha256": "a5fc7ce44cc26d4fc993496276b26a2c59c11186325eb8fb4f072133b8920d50",
+  "deltaSha256": "f9541af646dce112d3d3ef1d5a05f12563b0f6e905b86dae1ed97a384b4249d2",
+  "candidate": "candidate-r65.json"
+}

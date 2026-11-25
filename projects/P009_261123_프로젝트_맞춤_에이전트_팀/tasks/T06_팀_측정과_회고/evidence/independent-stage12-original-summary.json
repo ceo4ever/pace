@@ -1,0 +1,103 @@
+{
+  "root": "/tmp/pace-t06-stage2-new.RCdB3N",
+  "node": "v24.22.3",
+  "verdict": "fail",
+  "findings": {
+    "blocking": 1,
+    "should_fix": 1
+  },
+  "focused": {
+    "teamMetrics": 69,
+    "team": 14,
+    "passed": 83,
+    "failed": 0,
+    "retainedReplayPassed": 83
+  },
+  "controls": {
+    "total": 150,
+    "matched": 145,
+    "runs": {
+      "previous-delta": {
+        "checks": 36,
+        "matched": 36,
+        "mismatches": {},
+        "exit": 0
+      },
+      "replay-current-contract": {
+        "checks": 47,
+        "matched": 47,
+        "mismatches": {},
+        "exit": 0
+      },
+      "requests": {
+        "checks": 2,
+        "matched": 2,
+        "mismatches": {},
+        "exit": 0
+      },
+      "role": {
+        "checks": 7,
+        "matched": 7,
+        "mismatches": {},
+        "exit": 0
+      },
+      "new-controls": {
+        "checks": 43,
+        "matched": 38,
+        "mismatches": {
+          "empty-link-summary": {
+            "expected": 1,
+            "actual": 0,
+            "matches": false
+          },
+          "whitespace-link-summary": {
+            "expected": 1,
+            "actual": 0,
+            "matches": false
+          },
+          "zero-width-summary": {
+            "expected": 1,
+            "actual": 0,
+            "matches": false
+          },
+          "comment-in-header": {
+            "expected": 1,
+            "actual": 0,
+            "matches": false
+          },
+          "comment-in-link-label": {
+            "expected": 1,
+            "actual": 0,
+            "matches": false
+          }
+        },
+        "exit": 0
+      },
+      "compatibility-recheck": {
+        "checks": 7,
+        "matched": 7,
+        "mismatches": {},
+        "exit": 0
+      },
+      "metadata-recheck": {
+        "checks": 3,
+        "matched": 3,
+        "mismatches": {},
+        "exit": 0
+      },
+      "ledger": {
+        "checks": 3,
+        "matched": 3,
+        "mismatches": {},
+        "exit": 0
+      },
+      "legacy-fifo-replay": {
+        "checks": 2,
+        "matched": 2,
+        "mismatches": {},
+        "exit": 0
+      }
+    }
+  },
+  "qualification": "Both focused runs use current source. Probe expectations reflect the documented hold of indented headings and allow specific extra follow-up plans. First-attempt replay, metadata and compatibility outputs are retained separately. The compatibility first attempt omitted the start event needed to measure FIFO and expected the stats-specific diagnostic from finish."
+}

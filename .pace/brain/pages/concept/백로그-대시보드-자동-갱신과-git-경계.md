@@ -6,7 +6,7 @@ tags: []
 sources: [code:src/project/dashboard.ts, code:src/project/dashboard-init.ts, code:src/cli.ts, code:src/project/harness.ts, test:test/dashboard-init.test.ts, code:src/project/adopt-opal.ts, test:test/backlog-dashboard.test.ts, test:test/project-harness.test.ts, doc:skills/pace-project-init/SKILL.md, doc:docs/DASHBOARD.md, code:src/dashboard/backlog/core.js, code:src/dashboard/backlog/app.js, doc:templates/backlog/BACKLOG.md, doc:skills/pace-project-init/references/backlog-format.md, code:src/project/dashboard-layout.ts]
 related: [작업-하네스-흐름]
 created: 2026-11-07
-updated: 2026-11-21
+updated: 2026-11-24
 status: active
 ---
 
@@ -59,3 +59,7 @@ Git 파일 열거가 경고를 stderr에 내면서 exit 0이어도 목록이 불
 버린 길: README.html을 Git에서 빼기(새 clone·worktree가 data.js만 있어 부분 설치로 판정되고 pull 때 파일이 지워짐), 공용 자산 복제(공용 설치본 결정 역행), 현행 유지(PC마다 Git 변경·커밋하면 다른 PC 화면 깨짐).
 
 v1(설치본 file URL을 직접 담음)은 판별용으로만 남는다. 경로만 다른 v1 생성본은 init이 v2로 바꾸고 refresh는 바꾸지 않는다. 고친 v1과 공용 참조가 아닌 기존 화면은 바이트를 보존해 전환하지 않았음을 알린다. OPAL 진입점은 v1과 표지·문구만 다르므로 v1 렌더와 비교한다. 자동 add/commit이나 초안 보호 우회는 하지 않는다.
+
+## 근거 변경 대조 (2026-11-24)
+
+현재 CLI/harness의 refreshDashboard 호출과 guardDashboardDrafts 경로를 대조했다. 팀/소통 start·finish의 추가 거부는 기존 상태 전환 뒤 refresh 및 초안 보호를 대체하지 않는다. P009 원본 문서의 직접 갱신 뒤 backlog refresh를 실제 사용하며 data.js를 재생성한다. 기존 플랫폼/잠금의 미실측 한계를 유지한다.

@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r50.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1306,
+  "pass": 1289,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail2/SF1 about the portable report unbound to confirmation, corrupted receipt handling, and valid claims exceeding read limit"
+}

@@ -1,0 +1,281 @@
+{
+  "version": 1,
+  "study": "role-automation",
+  "conclusion": "unknown",
+  "reasons": [
+    "before: study 미확인",
+    "before: conditionCode 미확인",
+    "before: definition 미확인",
+    "before: unit 미확인",
+    "before: workType 미확인",
+    "before: sizeBand 미확인",
+    "before: host 미확인",
+    "before: sampleCount 미확인",
+    "before: recordingBoundary 미확인",
+    "before: qualitySource 미확인",
+    "before: qualityScopeHash 미확인",
+    "before: 표본 2건 미만(통계적 입증 기준 아님)",
+    "before: 요청 도달 누락/미수집",
+    "after: study 미확인",
+    "after: conditionCode 미확인",
+    "after: definition 미확인",
+    "after: unit 미확인",
+    "after: workType 미확인",
+    "after: sizeBand 미확인",
+    "after: host 미확인",
+    "after: sampleCount 미확인",
+    "after: recordingBoundary 미확인",
+    "after: qualitySource 미확인",
+    "after: qualityScopeHash 미확인",
+    "after: 표본 2건 미만(통계적 입증 기준 아님)",
+    "after: 요청 도달 누락/미수집",
+    "captain_questions: 비교 총량 미확인",
+    "captain_manual_role_corrections: 비교 총량 미확인",
+    "captain_file_edits: 비교 총량 미확인",
+    "captain_command_runs: 비교 총량 미확인",
+    "coordinator_extra_instructions: 비교 총량 미확인",
+    "blocking_sum: 비교 총량 미확인",
+    "부담 지표 동률: 효과 방향 미확인"
+  ],
+  "additionalSamplePlan": [
+    "before: 같은 업무·크기·호스트에서 누락 없는 닫힌 표본을 추가 수집",
+    "after: 같은 업무·크기·호스트에서 누락 없는 닫힌 표본을 추가 수집"
+  ],
+  "rows": [
+    {
+      "metric": "captain_questions",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "captain_manual_role_corrections",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "captain_file_edits",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "captain_command_runs",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "coordinator_extra_instructions",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "normal_role_assignment",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "captain_approvals",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "captain_merge_approvals",
+      "before": 1,
+      "after": 1,
+      "delta": 0,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "captain_deploy_approvals",
+      "before": 0,
+      "after": 0,
+      "delta": 0,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "captain_scope_approvals",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "coordinator_questions",
+      "before": 4,
+      "after": 4,
+      "delta": 0,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "coordinator_answers",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "failed_captain_delivery_attempts",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "blocking_sum",
+      "before": null,
+      "after": null,
+      "delta": null,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "blocking_sum_stats_events",
+      "before": 31,
+      "after": 31,
+      "delta": 0,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "blocking_sum_audited",
+      "before": 48,
+      "after": 48,
+      "delta": 0,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "rereviews_after_fail",
+      "before": 18,
+      "after": 18,
+      "delta": 0,
+      "beforeObserved": null,
+      "afterObserved": null
+    },
+    {
+      "metric": "gate_failures",
+      "before": 7,
+      "after": 7,
+      "delta": 0,
+      "beforeObserved": null,
+      "afterObserved": null
+    }
+  ],
+  "sources": {
+    "before": {
+      "sourceSha256": "9b8ecf3212459e81fe8a21cef8b62e6a17045d315ed1e2b877ed6ff2d15a52e6",
+      "repository": "/Volumes/Data/AiStudio/workspace/roblox-studio",
+      "context": {},
+      "period": {
+        "start": "2026-11-23T08:00:26.280Z",
+        "end": "2026-11-23T14:47:17.091Z",
+        "unit": "project-start-to-merge",
+        "closed": true
+      },
+      "counts": {
+        "captain_questions": null,
+        "coordinator_questions": 4,
+        "recipient_unknown": 2,
+        "captain_decisions": 7,
+        "captain_merge_approvals": 1,
+        "captain_deploy_approvals": 0,
+        "normal_role_assignment_messages": 1,
+        "manual_role_corrections_total": null,
+        "captain_file_edits_total": null,
+        "captain_command_runs_total": null,
+        "coordinator_extra_instructions_observed": 0,
+        "normal_approval_decisions": 8,
+        "blocking_sum_audited": 48,
+        "blocking_sum_stats_events": 31,
+        "rereviews_after_fail_audited": 18,
+        "gate_failures": 7,
+        "rereviews_after_fail": 18,
+        "blocking_sum": null
+      },
+      "observed": {},
+      "unknownRequests": null,
+      "limits": [
+        "원본 기준선 지문 고정; 신고 수치는 사람 인증/인과 효과가 아님",
+        "legacy 수신 의도는 실제 도달 수가 아님: 지문 고정 주석/도달성 입력 필요"
+      ],
+      "range": [
+        10,
+        12
+      ]
+    },
+    "after": {
+      "sourceSha256": "9b8ecf3212459e81fe8a21cef8b62e6a17045d315ed1e2b877ed6ff2d15a52e6",
+      "repository": "/Volumes/Data/AiStudio/workspace/roblox-studio",
+      "context": {},
+      "period": {
+        "start": "2026-11-23T08:00:26.280Z",
+        "end": "2026-11-23T14:47:17.091Z",
+        "unit": "project-start-to-merge",
+        "closed": true
+      },
+      "counts": {
+        "captain_questions": null,
+        "coordinator_questions": 4,
+        "recipient_unknown": 2,
+        "captain_decisions": 7,
+        "captain_merge_approvals": 1,
+        "captain_deploy_approvals": 0,
+        "normal_role_assignment_messages": 1,
+        "manual_role_corrections_total": null,
+        "captain_file_edits_total": null,
+        "captain_command_runs_total": null,
+        "coordinator_extra_instructions_observed": 0,
+        "normal_approval_decisions": 8,
+        "blocking_sum_audited": 48,
+        "blocking_sum_stats_events": 31,
+        "rereviews_after_fail_audited": 18,
+        "gate_failures": 7,
+        "rereviews_after_fail": 18,
+        "blocking_sum": null
+      },
+      "observed": {},
+      "unknownRequests": null,
+      "limits": [
+        "원본 기준선 지문 고정; 신고 수치는 사람 인증/인과 효과가 아님",
+        "legacy 수신 의도는 실제 도달 수가 아님: 지문 고정 주석/도달성 입력 필요"
+      ],
+      "range": [
+        10,
+        12
+      ]
+    }
+  },
+  "limits": [
+    "관측 부담 변화이며 팀의 인과 효과/에이전트 순위가 아니다",
+    "원본 기준선 지문 고정; 신고 수치는 사람 인증/인과 효과가 아님",
+    "legacy 수신 의도는 실제 도달 수가 아님: 지문 고정 주석/도달성 입력 필요",
+    "원본 기준선 지문 고정; 신고 수치는 사람 인증/인과 효과가 아님",
+    "legacy 수신 의도는 실제 도달 수가 아님: 지문 고정 주석/도달성 입력 필요"
+  ]
+}

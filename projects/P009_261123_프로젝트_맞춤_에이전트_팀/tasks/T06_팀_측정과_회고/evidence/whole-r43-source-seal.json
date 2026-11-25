@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r43.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1290,
+  "pass": 1273,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent goal fail1/SF0 for first unmatched taskless answer mixed with named Task"
+}

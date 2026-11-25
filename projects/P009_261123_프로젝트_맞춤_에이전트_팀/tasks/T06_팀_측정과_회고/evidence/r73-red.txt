@@ -1,0 +1,325 @@
+✖ R35 rebase에서 받아온 과거 채택 이력도 첫 마감부터 보류한다 (1646.427917ms)
+✖ R73 후속 전송 확인은 앞선 모든 상태보다 늦어야 도달이나 실패만 남은 요청으로 인정한다 (1645.092417ms)
+✖ R73 첫 자동 스테이징의 회고 경합은 실제 인덱스·객체·HEAD에 반영하지 않는다 (1200.087584ms)
+✖ R73 기준 브랜치에만 팀 채택이 있으면 회고 전 실제 저장소를 건드리지 않는다 (1315.153458ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5952.417084
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1659:1
+✖ R35 rebase에서 받아온 과거 채택 이력도 첫 마감부터 보류한다 (1646.427917ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /기준 브랜치에만 팀 채택 이력이 있다/. Input:
+  
+  '- 보안 검사 통과: true\n' +
+    '- main 위로 rebase\n' +
+    '- 검사 통과: true\n' +
+    '빠진 것:\n' +
+    '- rebase 뒤 팀 채택 이력이 있다: 팀 측정 입력을 복원하고 다시 마감한다\n' +
+    '실패\n' +
+    '실행: true\n' +
+    '실행: true\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1666:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '- 보안 검사 통과: true\n- main 위로 rebase\n- 검사 통과: true\n빠진 것:\n- rebase 뒤 팀 채택 이력이 있다: 팀 측정 입력을 복원하고 다시 마감한다\n실패\n실행: true\n실행: true\n',
+    expected: /기준 브랜치에만 팀 채택 이력이 있다/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1957:1
+✖ R73 후속 전송 확인은 앞선 모든 상태보다 늦어야 도달이나 실패만 남은 요청으로 인정한다 (1645.092417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1989:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1998:1
+✖ R73 첫 자동 스테이징의 회고 경합은 실제 인덱스·객체·HEAD에 반영하지 않는다 (1200.087584ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+  + Buffer(1093) [Uint8Array] [
+  - Buffer(1036) [Uint8Array] [
+      68,
+      73,
+      82,
+      67,
+      0,
+  ...
+      40,
+  +   49,
+  +   166,
+  +   151,
+  +   180,
+  -   18,
+  -   199,
+  -   73,
+  -   130,
+      107,
+      6,
+      12,
+      40,
+  +   49,
+  +   166,
+  +   151,
+  +   180,
+  -   18,
+  -   199,
+  -   73,
+  -   130,
+      1,
+      0,
+      0,
+      20,
+      10,
+  ...
+      1,
+  +   248,
+  +   23,
+  +   106,
+  +   210,
+  +   170,
+  +   45,
+  +   34,
+  +   203,
+  +   232,
+  +   94,
+  +   88,
+  +   75,
+  +   169,
+  +   53,
+  +   234,
+  +   31,
+  +   103,
+  +   56,
+  +   254,
+  -   211,
+  -   96,
+  -   10,
+  -   228,
+  -   235,
+  -   35,
+  -   92,
+  -   28,
+  -   250,
+  -   119,
+  -   22,
+  -   89,
+  -   92,
+  -   194,
+  -   167,
+      86,
+  +   3,
+  -   222,
+  -   108,
+  -   100,
+  -   96,
+  -   118,
+      0,
+      49,
+      112,
+      114,
+      111,
+  ...
+      0,
+  +   141,
+  -   84,
+      0,
+  +   56,
+  -   45,
+  -   49,
+      32,
+      50,
+      10,
+  +   115,
+  +   72,
+  +   207,
+  +   45,
+  +   163,
+  +   71,
+  +   177,
+  +   254,
+  +   198,
+  +   58,
+  +   177,
+  +   80,
+  +   7,
+  +   250,
+      100,
+  +   208,
+  +   180,
+  +   90,
+  +   127,
+  +   20,
+  +   100,
+      111,
+      99,
+      115,
+      0,
+      49,
+  ...
+      0,
+  +   55,
+  -   45,
+  -   49,
+      32,
+      49,
+      10,
+  +   134,
+  +   154,
+  +   161,
+  +   219,
+  +   30,
+  +   234,
+  +   118,
+  +   96,
+  +   203,
+  +   4,
+  +   119,
+  +   169,
+  +   132,
+  +   131,
+  +   154,
+  +   90,
+  +   200,
+  +   211,
+  +   148,
+  +   254,
+      80,
+      48,
+      48,
+      49,
+      95,
+  ...
+      0,
+  +   55,
+  -   45,
+  -   49,
+      32,
+      48,
+      10,
+  +   56,
+  +   250,
+  +   140,
+  +   60,
+  +   73,
+  +   214,
+  +   225,
+  +   110,
+  -   16,
+  -   162,
+      192,
+  +   22,
+  +   191,
+  +   166,
+  +   66,
+  +   200,
+  +   28,
+  +   210,
+  +   30,
+  +   14,
+  +   156,
+  +   153,
+  +   202,
+  -   25,
+      155,
+  +   114,
+  +   151,
+  +   191,
+  +   191,
+  +   5,
+  -   84,
+  -   14,
+  -   176,
+  -   176,
+  -   119,
+  -   49,
+  -   53,
+  -   149,
+  -   123,
+  -   169,
+      56,
+  +   120,
+  +   44,
+  +   121,
+  +   222,
+  +   249,
+  +   182,
+  +   114,
+      202,
+  +   130,
+  +   158,
+  +   254,
+  +   50
+  -   152,
+  -   6,
+  -   33
+    ]
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2029:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: <Buffer 44 49 52 43 00 00 00 02 00 00 00 08 6b 06 0c 28 10 82 58 19 6b 06 0c 28 10 82 58 19 01 00 00 14 0a 02 00 2f 00 00 81 a4 00 00 01 f5 00 00 00 14 00 00 ... 1043 more bytes>,
+    expected: <Buffer 44 49 52 43 00 00 00 02 00 00 00 08 6b 06 0c 28 10 82 58 19 6b 06 0c 28 10 82 58 19 01 00 00 14 0a 02 00 2f 00 00 81 a4 00 00 01 f5 00 00 00 14 00 00 ... 986 more bytes>,
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2042:1
+✖ R73 기준 브랜치에만 팀 채택이 있으면 회고 전 실제 저장소를 건드리지 않는다 (1315.153458ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /기준 브랜치에만 팀 채택 이력이 있다/. Input:
+  
+  '- 보안 검사 통과: true\n' +
+    '- main 위로 rebase\n' +
+    '- 검사 통과: true\n' +
+    '빠진 것:\n' +
+    '- 최종 팀 측정/회고 대조 실패; finish 보류\n' +
+    '실패\n' +
+    '실행: true\n' +
+    '실행: true\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2056:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '- 보안 검사 통과: true\n- main 위로 rebase\n- 검사 통과: true\n빠진 것:\n- 최종 팀 측정/회고 대조 실패; finish 보류\n실패\n실행: true\n실행: true\n',
+    expected: /기준 브랜치에만 팀 채택 이력이 있다/,
+    operator: 'match',
+    diff: 'simple'
+  }

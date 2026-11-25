@@ -1,0 +1,25 @@
+{
+  "text": "**독립 1단계 판정은 목표 미달입니다. Blocking 2건, should_fix 2건입니다.** 작성자와 같은 OpenAI 제공자이므로 `cross=false`이며 교차 검증에 해당하지 않습니다. 합성 원문의 로컬 보존은 확인했습니다. 캡틴 도달 총량과 품질 비교는 근거가 빠진 입력에서도 확정되는 경우가 있었습니다.\n\n### Blocking\n\n1. **서로 다른 영수증을 조합하면 캡틴 도달 총량이 0으로 확정됩니다.** 코디네이터 자체 답의 확인 영수증은 요청과 구간이 모두 맞았지만, 근거 목록에는 `같은 요청·다른 구간`과 `다른 요청·같은 구간`만 넣었습니다. 두 조건을 각각 다른 영수증이 충족하면서 실제 CLI가 `comparisonUnconfirmed=0`, `reachedTotal=0`을 출력했습니다. 같은 요청과 같은 구간을 함께 증명하는 근거가 없으면 미해결을 유지해야 합니다. [team-input.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-input.ts:65) · [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:97)\n2. **리뷰 수치가 빠지면 품질 변화가 0으로 집계되어 부담 개선을 내보냅니다.** 후행 두 표본에 `reviewer fail blocking 2 should_fix 1` 리뷰 행을 넣고 `data`를 생략했습니다. 네 개의 실제 `stats` 스냅샷으로 비교한 결과 `blocking` 증감 `0`, 파일 수정 증감 `-2`, `observed-burden-improvement`가 나왔습니다. 팀 집계에서는 수치가 빠진 리뷰를 거부하거나 품질을 미확인으로 남겨야 합니다. [event-log.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/event-log.ts:21) · [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:101) · [team-comparison.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-comparison.ts:103)\n\n### Should fix\n\n- **다른 구간의 역할 관측이 현재 구간에 표시됩니다.** 이전 구간 영수증만 참조한 `500ms`, Codex 출력 `50`이 현재 대표 업무의 `reported-role-binding`으로 출력됐습니다. 구간이 명시된 영수증은 현재 구간과 대조해야 합니다. [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:104)\n- **코드 블록 속 예시가 팀 측정을 활성화합니다.** 팀 기록과 입력이 없는 합성 프로젝트에서 fenced code 안에만 `- 팀 측정: v1`을 넣었는데 `stats`가 팀 절을 출력했습니다. 같은 판별 함수를 회고 적용 여부에도 사용합니다. [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:30) · [team-retrospective.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-retrospective.ts:20)\n\n### 실행과 검증 범위\n\n- Node v24.22.3에서 `node --test test/team-metrics.test.ts`를 직접 실행해 **33/33 통과**했습니다. 추가 회귀는 기존 지표 16건, 소통 6건, 역할 시작 4건으로 **26/26 통과**했습니다.\n- 양성 테스트는 실제 CLI의 `stats → 비교 → METRICS → 회고 → finish` 흐름과 신고 부담의 개선·악화를 검출합니다. 음성 테스트는 수신 의도만 있는 요청, 잘못된 영수증, 겹치는 표본, 깨진 JSONL, 회고 예시 표를 검출합니다. 위 반례처럼 **필드가 빠진 유효 JSON**과 **여러 영수증에 분산된 조건**은 놓쳤습니다. 회귀 테스트에서 기존 요청 분류, FIFO 대기, 역할 없는 프로젝트의 출력이 유지됐습니다.\n- 합성 원문은 로컬에서 바이트가 그대로였고, `stats` JSON·텍스트, 비교 JSON, `METRICS.md`, 소통 원장에 복사되지 않았습니다. 별도 `finish` 회귀에서도 원문이 Git HEAD와 인덱스에 들어가지 않았습니다.\n- `src/project/team-*.ts` 5개, `handoff-report`·지표·`harness`·`event-log`의 관련 경로, CLI 연결부, `docs/TEAM-METRICS.md`, 지정 테스트를 읽었습니다. 실제 PROJECT·TASK·BR·PM 마감·응답·이전 리뷰 판정은 열람하지 않았습니다. 계약 대조, 전체 검사, 실제 호스트와 사람 경로 실측은 이번 단계에서 미검증입니다. 샌드박스 거부는 없었으며, 쓰기는 임시 홈과 합성 fixture에 한정했습니다.",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": "01a20cc7-aec3-7ec3-adff-37838ee9c438",
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 249358,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 120283
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

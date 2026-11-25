@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r72.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1335,
+  "pass": 1318,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R72 \uace0\uc815 \ud6c4\ubcf4 \uc804\uccb4 \uac80\uc0ac 1335\uac74, 1318\ud1b5\uacfc, 17\uac74 \uac74\ub108\ub700, \uc2e4\ud328 0. \ub3c5\ub9bd \ubaa9\ud45c \uc9c0\uc801 2\uac74\uc740 \ubcc4\ub3c4\ub85c \ubcf4\uc874\ud568"
+}

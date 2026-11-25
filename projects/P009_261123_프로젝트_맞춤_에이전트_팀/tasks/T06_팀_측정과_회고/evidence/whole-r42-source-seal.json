@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r42.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1288,
+  "pass": 1269,
+  "fail": 2,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent goal fail1/SF0 and existing request regressions R9/R10"
+}

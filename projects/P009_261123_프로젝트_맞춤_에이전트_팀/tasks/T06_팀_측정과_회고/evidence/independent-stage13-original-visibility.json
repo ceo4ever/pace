@@ -1,0 +1,27 @@
+{
+  "hangul-filler-summary": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "hangul-filler-evidence-label": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "hangul-filler-header": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "hangul-visible-syllable": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "default-ignorable-letter-plus-visible": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  }
+}

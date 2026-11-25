@@ -1,0 +1,281 @@
+comment-in-header
+'| 구분 <!-- note --> | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | 합성 요약 |'
+<table>
+<thead>
+<tr>
+<th>구분 <!-- note --></th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+</tr>
+</tbody>
+</table>
+
+comment-in-link-label
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [<!-- note -->](TEAM-RETROSPECTIVE.json) | 합성 요약 |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json"><!-- note --></a></td>
+<td>합성 요약</td>
+</tr>
+</tbody>
+</table>
+
+comment-summary
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | <!-- note --> |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td><!-- note --></td>
+</tr>
+</tbody>
+</table>
+
+empty-link-plus-text
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | [](details.md) 합성 요약 |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td><a href="details.md"></a> 합성 요약</td>
+</tr>
+</tbody>
+</table>
+
+empty-link-summary
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | [](details.md) |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td><a href="details.md"></a></td>
+</tr>
+</tbody>
+</table>
+
+entity-summary
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | &#x200B; |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>​</td>
+</tr>
+</tbody>
+</table>
+
+hidden-html-summary
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | <span hidden>note</span> |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td><span hidden>note</span></td>
+</tr>
+</tbody>
+</table>
+
+labeled-markdown-link
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | [합성 요약](details.md) |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td><a href="details.md">합성 요약</a></td>
+</tr>
+</tbody>
+</table>
+
+plain-summary
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | 합성 요약 |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+</tr>
+</tbody>
+</table>
+
+whitespace-link-summary
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | [ ](details.md) |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td><a href="details.md"> </a></td>
+</tr>
+</tbody>
+</table>
+
+wide-mixed-prefix
+'| A | B | C | D\n---|---|---|---\n| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | 합성 요약 |'
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구분</td>
+<td>입력</td>
+<td>요약</td>
+<td></td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+<td>---</td>
+<td></td>
+</tr>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+wide-separated-after-unprefixed
+'A | B | C | D\n---|---|---|---\n\n| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | 합성 요약 |'
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+</tr>
+</tbody>
+</table>
+
+wide-unprefixed-short-separator
+'A | B | C | D\n- | - | - | -\n| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | 합성 요약 |'
+<p>A | B | C | D</p>
+<ul>
+<li>| - | - | -
+| 구분 | 입력 | 요약 |
+|---|---|---|
+| 팀 | <a href="TEAM-RETROSPECTIVE.json">회고</a> | 합성 요약 |</li>
+</ul>
+
+zero-width-summary
+'| 구분 | 입력 | 요약 |\n|---|---|---|\n| 팀 | [회고](TEAM-RETROSPECTIVE.json) | \u200b |'
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>​</td>
+</tr>
+</tbody>
+</table>
+

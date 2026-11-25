@@ -1,0 +1,25 @@
+{
+  "text": "# P009/T06 계약 대조 결과 — **pass** (blocking 0 · should_fix 1 · note 5)\n\n이 대조는 새 Claude 맥락에서 했고, 첫 판단을 낸 reviewer를 이어서 실행한 것이 아닙니다. 셸 도구가 없어 `npm run check`와 시험은 돌리지 못했습니다. 시험이 통과하는지는 확인되지 않았고, 시험 코드를 읽어 판단했습니다.\n\n## 실제 본 범위\n- **첫 판단**: `evidence/impl-review-output.json` 1~16행의 판단 본문을 읽고 그대로 두었습니다. 18행 이후의 메타데이터 부분은 읽지 않았습니다. 첫 판단은 blocking 1(#1), should_fix 4(#2~5), note 4(#6~9), 결과 fail이었습니다.\n- **계약 문서**: TASK.md 전체, `pre-review-response.md`, BR06·BR01 전체를 읽었습니다. PROJECT.md는 P-5와 실행 순서 행만 grep했습니다. BR09는 하네스와 집계 행만, BR07은 회고 입력 행만 grep했습니다.\n- **소스 전체**: `team-metrics.ts`, `team-input.ts`, `team-comparison.ts`, `team-retrospective.ts`\n- **소스 일부**: `harness.ts`의 finish 관문(1275–1299)·finish 마감(1430–1467)·merge 이후(1535–1579), `metrics-report.ts:50–113`, `metrics.ts:78–97`\n- **시험**: `test/team-metrics.test.ts:36–185`\n- **문서와 템플릿**: `docs/TEAM-METRICS.md`의 비교·구간·회고 절, PROJECT·PROJECT-CLOSE 템플릿의 팀 줄\n- **읽지 않은 것**: docs/WORK-PROCESS·TEAM·HANDOFF와 coordinator.md의 본문. 파일 이름만 grep했습니다.\n\n## 첫 판단에서 유지된 것과 바뀐 것\n| 첫 판단 | 지금 | 이유 |\n|---|---|---|\n| #1 blocking: merge에서 막힘 | **해소** | `team-metrics.ts:41`이 종료 시각을 `>`로 비교하고, `:44`가 end와 닫힘을 실제 merge 사건에서 다시 도출합니다. `metrics.ts:97`은 마지막 merge 사건을 씁니다. 시험 `:156–170`이 finish→merge까지 실행하고 `period.end === project.merge`를 확인합니다. 남은 문제는 아래 note 1로 낮췄습니다. |\n| #2 should_fix: 대표 업무가 입력 period 없이 닫힘 | **해소** | `:39`는 project-start-to-merge이면서 merge가 있을 때만 닫힘으로 봅니다. 시험 `:120–121`이 확인합니다. |\n| #3 should_fix: sampleCount 자기 신고 | **해소** | `sampleCountActual`을 실제 기록 수로 정하고(`team-comparison.ts:51`, `:72`), 2건 미만 검사는 이 값으로 합니다(`:84`). 같은 구간 중복, 겹침, 묶음 안 조건 혼합은 거부합니다. 시험 `:58`과 `:179–184`가 있습니다. |\n| #4 should_fix: 독립 기준선 | **일부 유지(범위를 좁힘)** | 닫힘 정보가 없는 옛 구간은 이제 `closed:false`로 둡니다(`:23`). 남은 공백은 아래 should_fix입니다. |\n| #5 should_fix: 회고가 METRICS 후보와 대조되지 않음 | **note로 낮춤** | TASK 71·80행은 finish가 형식, 한도, 링크, 비밀, 근거 존재만 검사한다고 정합니다. 의미 대조는 BR07 인터뷰와 T08이 맡습니다. 형식 관문으로서 계약을 줄인 것은 아닙니다. |\n| #6 note: 절대 경로 / #8 note: 표지 덧붙임 / #9 note: 인증 아님 | 유지 | 코드가 바뀌지 않았습니다. |\n| #7 note: 구간 시작 문자열 비교 | **해소** | `:43`이 `Date.parse`로 비교합니다. |\n\n## 지적\n\n### [should_fix] 비교 입력의 대표 업무 구간은 완료 영수증 없이도 닫힌 것으로 받습니다\n- **위치**: `team-comparison.ts:22`. `teamPeriod()`가 `closed:true`인 representative-task를 `completionRef` 없이 받아들입니다.\n- **stats 경로와의 차이**: stats 경로는 `team-metrics.ts:46–47`에서 `completionRef` 영수증이 있어야 닫힘으로 봅니다.\n- **결과**: 직접 쓴 `samples` 2건 이상에 `closed:true`만 넣으면 `observed-burden-improvement`가 나올 수 있습니다.\n- **계약과의 충돌**: TASK 83행과 TEAM-METRICS 19행의 \"대표 업무는 명시 구간·완료 영수증 필요\"와 맞지 않습니다.\n- **blocking이 아닌 이유**: 결과 라벨이 \"관측\"으로 한정되고, \"표본 실제성은 현장 감사 대상\"이라는 한계가 출력에 붙습니다.\n- **제안**: representative-task를 닫힘으로 보려면 최소한 `completionRef`가 있어야 하고, 없으면 미확인 사유를 추가합니다. counts의 coverage 근거를 요구하지 않는 것은 T01 v1 수기 집계와 호환해야 하므로(S-4) 받아들일 수 있습니다.\n\n### [note]\n1. **측정 입력 검증이 늦습니다.** finish의 앞 관문(`harness.ts:1289`)은 `TEAM-MEASUREMENT.json`을 검증하지 않습니다. 잘못된 입력은 rebase와 검사 뒤 `refreshProjectMetrics`(`:1455`)에서야 실패합니다. 이때 restore로 되돌아가고, merge까지 넘어가지는 않습니다. 앞쪽 관문에서 미리 검사하면 실패가 더 빨리 드러납니다.\n2. **(첫 판단 #5)** 회고 JSON의 `unusedRoles:[]`·`recurringFindings:[]`는 METRICS 후보와 대조하지 않습니다. 이는 계약대로이며 BR07과 T08이 맡습니다. 다만 `observed-none`인데 refs가 비어 있으면 거부하는 분기에는 시험이 없습니다.\n3. **(첫 판단 #6)** 스냅샷의 `repository`에 `repo.mainRoot` 절대 경로가 들어갑니다. stats JSON을 커밋하면 로컬 경로가 노출되고, clone 위치가 다르면 서로 다른 저장소로 판정돼 증감이 미확인이 됩니다. 결과가 보수적인 쪽으로 기울기는 합니다.\n4. **(첫 판단 #8)** 활성 표지를 파일 끝에 덧붙이는 방식은 그대로입니다. 동작에는 문제가 없습니다.\n5. **(첫 판단 #9)** 표지·영수증이 인증이 아니라는 한계는 문서에 명시돼 있고 그대로 유지됩니다.\n\n## 계약 누락·축소 대조\n- **T-1·S-1**: 다음을 요청별로 분리하고, 범위 밖 요청을 제외하는 것을 확인했습니다.\n  - 답만 있는 경우, 실패 뒤 성공, 실패만, 의도만 있는 경우, 수신자 없는 옛 기록\n  - attemptId별 실패 시도 수\n  - 단순 전달 답을 코디네이터 자체 답으로 세지 않는 것\n- **T-2**: 다음이 계약대로입니다.\n  - 손작업 3종, 계약 밖 지시, 정상 배정, 승인 종류를 따로 두는 것\n  - 총량은 null로 두고 관측 하한만 내는 것\n  - 다른 주체의 확인이 있어야 신고 총량을 내는 것\n  - 로그 blocking과 감사 합을 다른 출처로 구분하는 것\n  - cwd 기반 토큰을 역할 사용량으로 쓰지 않는 것(role은 null)\n- **T-3**: 다음을 확인했습니다.\n  - 세 비교 목적의 조건 짝, 섞으면 종료 2\n  - 지문에 고정한 annotation, legacy 수신 의도를 도달로 승격하지 않는 것\n  - 품질 변화나 혼재·동률이면 unknown과 이유·추가 표본 계획을 내는 것\n  - 대표 업무 닫힘 규칙만 위 should_fix 공백이 있습니다.\n- **T-4**: 다음을 확인했습니다.\n  - 팀 행, 고정 JSON, 1~3개 변경 또는 무변경 이유(둘은 함께 둘 수 없음)\n  - symlink·`.git` 링크 거부\n  - 버전이 기록된 start는 marker를 지워도 회고를 요구하고, 옛 프로젝트에는 소급하지 않는 것\n  - BR07 인계 내용이 TEAM-METRICS 45행에 문서화된 것\n- **T-5·S-8**: source CLI로 stats→비교→METRICS→finish→merge를 실행하는 시험이 있습니다. 전체 검사 통과는 이 세션에서 확인하지 못했습니다.\n\n**판정: pass.** blocking 0, should_fix 1(비교 입력의 대표 업무 닫힘), note 5입니다. 원문, 외부 발송, 수정은 하지 않았습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "ead585e0-6235-4c36-a87d-c854def9e487",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 135091,
+  "usage": {
+    "input_tokens": 28,
+    "output_tokens": 13784
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

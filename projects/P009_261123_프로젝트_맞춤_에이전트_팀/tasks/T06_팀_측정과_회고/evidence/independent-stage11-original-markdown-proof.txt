@@ -1,0 +1,260 @@
+/tmp/pace-t06-stage2.v4BHI9/replay/list-nested-retro-title/input-close.md
+  L19 heading level=0 '참고'
+  L22 heading level=2 '회고'
+  L24 table level=0 top-section='참고' header-columns=3
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+</tr>
+</tbody>
+</table>
+  L28 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/replay/list-nested-end-title/input-close.md
+  L19 heading level=0 '회고'
+  L22 heading level=2 '참고'
+  L24 table level=0 top-section='회고' header-columns=3
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+</tr>
+</tbody>
+</table>
+  L28 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/replay/escaped-pipe-invalid-header/input-close.md
+  L19 heading level=0 '회고'
+  L25 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/delta/wider-canonical/input-close.md
+  L19 heading level=0 '회고'
+  L21 table level=0 top-section='회고' header-columns=4
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구분</td>
+<td>입력</td>
+<td>요약</td>
+<td></td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+<td>---</td>
+<td></td>
+</tr>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+  L27 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/delta/wider-no-trailing-header/input-close.md
+  L19 heading level=0 '회고'
+  L21 table level=0 top-section='회고' header-columns=4
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구분</td>
+<td>입력</td>
+<td>요약</td>
+<td></td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+<td>---</td>
+<td></td>
+</tr>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+  L27 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/delta/wider-no-trailing-separator/input-close.md
+  L19 heading level=0 '회고'
+  L21 table level=0 top-section='회고' header-columns=4
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구분</td>
+<td>입력</td>
+<td>요약</td>
+<td></td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+<td>---</td>
+<td></td>
+</tr>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+  L27 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/delta/wider-short-delimiters/input-close.md
+  L19 heading level=0 '회고'
+  L21 table level=0 top-section='회고' header-columns=4
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>구분</td>
+<td>입력</td>
+<td>요약</td>
+<td></td>
+</tr>
+<tr>
+<td>---</td>
+<td>---</td>
+<td>---</td>
+<td></td>
+</tr>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+  L27 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/delta/wider-blank-new-table/input-close.md
+  L19 heading level=0 '회고'
+  L21 table level=0 top-section='회고' header-columns=4
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td>b</td>
+<td>c</td>
+<td>d</td>
+</tr>
+</tbody>
+</table>
+  L25 table level=0 top-section='회고' header-columns=3
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+</tr>
+</tbody>
+</table>
+  L29 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/delta/comment-only-summary/input-close.md
+  L19 heading level=0 '회고'
+  L21 table level=0 top-section='회고' header-columns=3
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td><!-- hidden --></td>
+</tr>
+</tbody>
+</table>
+  L25 heading level=0 '지표'
+/tmp/pace-t06-stage2.v4BHI9/delta/canonical-visible-summary/input-close.md
+  L19 heading level=0 '회고'
+  L21 table level=0 top-section='회고' header-columns=3
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>입력</th>
+<th>요약</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>팀</td>
+<td><a href="TEAM-RETROSPECTIVE.json">회고</a></td>
+<td>합성 요약</td>
+</tr>
+</tbody>
+</table>
+  L25 heading level=0 '지표'

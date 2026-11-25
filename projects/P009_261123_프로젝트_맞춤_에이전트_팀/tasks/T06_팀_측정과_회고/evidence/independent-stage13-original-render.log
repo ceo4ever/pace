@@ -1,0 +1,17 @@
+ls-fake-root-heading headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '지표']
+ps-fake-heading-end headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '회고\u2029later text', '지표']
+ls-fake-end-of-retro headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '회고', '지표']
+tilde-ascii-close headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '회고', '지표']
+tilde-nbsp-close headings: ['Synthetic close', '기준 대조', '보안', '정본 반영']
+html-nbsp-line headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '지표']
+html-ascii-blank headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '회고', '지표']
+hangul-filler-summary headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '회고', '지표']
+  rendered: '<td>\u3164</td>'
+hangul-filler-evidence-label headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '회고', '지표']
+  rendered: '<td><a href="TEAM-RETROSPECTIVE.json">\u3164</a></td>'
+hangul-filler-header headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '회고', '지표']
+  rendered: '<th>\u3164</th>'
+hangul-visible-syllable headings: ['Synthetic close', '기준 대조', '보안', '정본 반영', '회고', '지표']
+'\u3164' HANGUL FILLER Lo ink_bbox None advance 27.0
+'\ud55c' HANGUL SYLLABLE HAN Lo ink_bbox (9, 11, 35, 39) advance 28.0
+' ' SPACE Zs ink_bbox None advance 8.0

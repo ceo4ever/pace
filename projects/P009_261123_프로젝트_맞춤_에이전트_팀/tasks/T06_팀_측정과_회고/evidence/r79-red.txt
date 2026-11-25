@@ -1,0 +1,118 @@
+✖ R79 팀 후보의 공통 보호 경로와 Git 공개 지문을 대조한다 (executable) (1839.98075ms)
+✖ R79 팀 후보의 공통 보호 경로와 Git 공개 지문을 대조한다 (edited) (1821.291417ms)
+✖ R79 팀 후보의 공통 보호 경로와 Git 공개 지문을 대조한다 (separate-base) (1885.006792ms)
+✖ R79 팀 후보의 공통 보호 경로와 Git 공개 지문을 대조한다 (public-crlf) (1706.101ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7408.919708
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2224:87
+✖ R79 팀 후보의 공통 보호 경로와 Git 공개 지문을 대조한다 (executable) (1839.98075ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2256:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2224:87
+✖ R79 팀 후보의 공통 보호 경로와 Git 공개 지문을 대조한다 (edited) (1821.291417ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2256:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2224:87
+✖ R79 팀 후보의 공통 보호 경로와 Git 공개 지문을 대조한다 (separate-base) (1885.006792ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - release 위로 rebase
+  - 보안 검사 통과: true
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2256:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2224:87
+✖ R79 팀 후보의 공통 보호 경로와 Git 공개 지문을 대조한다 (public-crlf) (1706.101ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - main 위로 rebase
+  - 보안 검사 통과: true
+  - 검사 통과: true
+  빠진 것:
+  - 로컬 전용 원문 staging 금지: projects/P001_261125_팀_측정_합성/known-source.txt — 검사 후보의 원문 보호 상태를 확인한다
+  실패
+  실행: true
+  실행: true
+  실행: true
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2253:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

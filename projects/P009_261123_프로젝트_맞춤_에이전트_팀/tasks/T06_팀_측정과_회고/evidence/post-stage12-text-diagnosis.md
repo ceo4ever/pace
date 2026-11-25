@@ -1,0 +1,9 @@
+# Visible cell text after independent stage12
+
+First-stage R19 pass0/SF1 is followed by independent contract fail1/SF1: missing visible summary/usable evidence-link label, and inline header comments despite documented canonical format. The empty-label link was also noted as pre-existing by formal R19, not a verdict item in its rereview scope. These are still T06 goal gaps and must be fixed; do not close from a first-stage pass.
+
+PM implementation classification before edits: unchanged retrospective evidence goal, no actual user data/originals/external effects. A shared canonical usable-text predicate will reject empty direct/reference link labels, control/format-only cells, HTML comments/tags/entities and unsupported inline code in header/link-label/summary. Tag detection must require an actual complete tag boundary, retaining normal A<B text and angle-bracket Markdown URL destinations. Consume source rows with escape-aware widths as before. Add actual negative and visible-positive controls; independent tester/reviewer must judge sufficiency. No full Markdown rendering/authentication guarantee is introduced.
+
+Current contract19 raw result is still pending and source candidate19 remains frozen until it returns. Next edits and checks get their own candidate hash; preserve all original evidence.
+
+Contract19 returned fail1/SF2: NBSP accepted as a fence closer and activated an example retrospective/marker. Root cause is JS Unicode whitespace used for ASCII Markdown structure, not only one fence expression. Before edits classified as PM parser gap, no goal/data/external effects. Use ASCII blanks/closers/ATX boundary and table edge/cell trims, with NBSP negative and normal space/tab controls. Shared usable-text validation also resolves first-stage SF over-rejection through actual complete-tag boundaries and keeps visible text/angle URLs. New candidate20 is separate from R19, and all old passing logs stay historical.

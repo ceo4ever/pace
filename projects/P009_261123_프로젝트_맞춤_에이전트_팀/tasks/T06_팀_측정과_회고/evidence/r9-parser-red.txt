@@ -1,0 +1,30 @@
+✖ R9 주석 뒤 절 제목은 회고 경계를 유지하고 inline 주석 예시는 marker를 숨기지 않는다 (247.298167ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 347.900833
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:441:1
+✖ R9 주석 뒤 절 제목은 회고 경계를 유지하고 inline 주석 예시는 marker를 숨기지 않는다 (247.298167ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(teamRetrospectiveIssues(f.root, rel).length)
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:447:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

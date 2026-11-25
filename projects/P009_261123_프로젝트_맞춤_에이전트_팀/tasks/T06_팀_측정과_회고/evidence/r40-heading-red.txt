@@ -1,0 +1,53 @@
+✖ R38 현재와 과거 프로젝트 본문의 코드 예시는 팀 머리 판독에 영향을 주지 않는다 (1977.729375ms)
+✖ R40 목록 설명과 빈 줄 뒤의 제목을 실제 본문으로 오인해 팀 표지를 건너뛰지 않는다 (1029.200666ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3129.576875
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1702:1
+✖ R38 현재와 과거 프로젝트 본문의 코드 예시는 팀 머리 판독에 영향을 주지 않는다 (1977.729375ms)
+  AssertionError [ERR_ASSERTION]: pace: 팀 Markdown의 여러 줄/미완성 코드와 주석 혼합은 일반 텍스트로 정리한다
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1714:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1721:1
+✖ R40 목록 설명과 빈 줄 뒤의 제목을 실제 본문으로 오인해 팀 표지를 건너뛰지 않는다 (1029.200666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 2
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1733:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

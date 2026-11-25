@@ -1,0 +1,54 @@
+✖ R72 원장 전송의 시작과 완료 머리를 원제안과 대조하고 독립 답과 실패를 보존한다 (804.511458ms)
+✖ R72 첫 자동 스테이징에 바뀐 회고 이유 영수증이 들어가면 중간 커밋을 보류한다 (1554.598084ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2486.518083
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1914:1
+✖ R72 원장 전송의 시작과 완료 머리를 원제안과 대조하고 독립 답과 실패를 보존한다 (804.511458ms)
+  AssertionError [ERR_ASSERTION]: {"to":"coordinator"}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1944:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1957:1
+✖ R72 첫 자동 스테이징에 바뀐 회고 이유 영수증이 들어가면 중간 커밋을 보류한다 (1554.598084ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '2b577a8cc0a5ac3eb54387fef832e9028e7c5c1d\n'
+  - 'f8bd82dc8decb1a18c38b6b52737819d5f304a56\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1982:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2b577a8cc0a5ac3eb54387fef832e9028e7c5c1d\n',
+    expected: 'f8bd82dc8decb1a18c38b6b52737819d5f304a56\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

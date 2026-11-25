@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r27.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1253,
+  "pass": 1236,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "current independent goal/contract judgments pending"
+}

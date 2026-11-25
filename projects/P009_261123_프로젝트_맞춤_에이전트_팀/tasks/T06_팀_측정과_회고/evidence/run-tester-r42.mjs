@@ -1,0 +1,21 @@
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+const root = resolve(import.meta.dirname, "../../../../..");
+const first = JSON.parse(readFileSync(resolve(import.meta.dirname, "impl-review-output-42.json"), "utf8"));
+const candidate = JSON.parse(readFileSync(resolve(import.meta.dirname, "candidate-r42.json"), "utf8"));
+if (first.review?.verdict !== "pass" || first.review.hash !== candidate.patchSha256) {
+  throw new Error("The first-stage review must pass for this candidate");
+}
+const out = resolve(import.meta.dirname, "codex-post-r7-stage25.json");
+if (existsSync(out)) throw new Error("Preserve the original tester result");
+const wrapper = process.argv[2];
+if (!wrapper?.startsWith("/")) throw new Error("Provide the local stderr capture wrapper");
+
+const { createPExecutor, codexP } = await import(resolve(root, "src/agent/p-executor.ts"));
+const { runAgent, validateRequest } = await import(resolve(root, "src/agent/contract.ts"));
+const prompt = readFileSync(resolve(import.meta.dirname, "codex-post-r7-stage25-prompt.txt"), "utf8");
+const request = validateRequest({ agent: "codex", mode: "p", cwd: root, access: "write", prompt, timeoutMs: 600000 });
+const result = await runAgent(createPExecutor(codexP, { command: wrapper }), request);
+writeFileSync(out, JSON.stringify(result, null, 2) + "\n");
+console.log(JSON.stringify({ model: result.model, provider: result.provider, stop_reason: result.stop_reason, is_error: result.is_error }));

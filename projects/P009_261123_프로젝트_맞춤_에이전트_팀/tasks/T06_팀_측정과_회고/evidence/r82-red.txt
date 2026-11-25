@@ -1,0 +1,103 @@
+✖ R27 보안 검사와 기준 브랜치의 팀 채택을 첫 커밋 전에 검사한다 (기준 채택=false) (1526.68025ms)
+✔ R27 보안 검사와 기준 브랜치의 팀 채택을 첫 커밋 전에 검사한다 (기준 채택=true) (1216.85175ms)
+✖ R82 팀 후보의 사전 검토 증거와 예외 근거를 같은 Git tree에서 확인한다 (record) (2337.425708ms)
+✖ R82 팀 후보의 사전 검토 증거와 예외 근거를 같은 Git tree에서 확인한다 (attempt) (2358.982458ms)
+✖ R82 팀 후보의 사전 검토 증거와 예외 근거를 같은 Git tree에서 확인한다 (waiver) (2291.60175ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 1
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9898.762708
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:414:44
+✖ R27 보안 검사와 기준 브랜치의 팀 채택을 첫 커밋 전에 검사한다 (기준 채택=false) (1526.68025ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 0
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:426:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2157:65
+✖ R82 팀 후보의 사전 검토 증거와 예외 근거를 같은 Git tree에서 확인한다 (record) (2337.425708ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 커밋 칸: T01 059fad2
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2179:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2157:65
+✖ R82 팀 후보의 사전 검토 증거와 예외 근거를 같은 Git tree에서 확인한다 (attempt) (2358.982458ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 커밋 칸: T01 adbb528
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2179:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2157:65
+✖ R82 팀 후보의 사전 검토 증거와 예외 근거를 같은 Git tree에서 확인한다 (waiver) (2291.60175ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 커밋 칸: T01 ee37bf3
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2179:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

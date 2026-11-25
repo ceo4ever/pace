@@ -1,0 +1,370 @@
+{
+  "owner-precedes": {
+    "expected": [
+      0,
+      null
+    ],
+    "actual": [
+      0,
+      null
+    ],
+    "matches": true
+  },
+  "owner-follows": {
+    "expected": [
+      1,
+      1
+    ],
+    "actual": [
+      1,
+      1
+    ],
+    "matches": true
+  },
+  "coordinator-precedes": {
+    "expected": [
+      null,
+      1
+    ],
+    "actual": [
+      null,
+      1
+    ],
+    "matches": true
+  },
+  "coordinator-follows": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "request-coverage-alone": {
+    "expected": [
+      null,
+      null
+    ],
+    "actual": [
+      null,
+      null
+    ],
+    "matches": true
+  },
+  "wrong-interval-log-coverage": {
+    "expected": [
+      null,
+      null
+    ],
+    "actual": [
+      null,
+      null
+    ],
+    "matches": true
+  },
+  "matching-log-coverage": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "review-message-data-mismatch": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "canonical-review": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "review-fractional-count": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "canonical-retro": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "indented-next-heading": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "cdata-retro": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "malformed-retro-heading": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "wrong-range-role": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "active-role-stats": {
+    "expected": [
+      1000,
+      50,
+      0
+    ],
+    "actual": [
+      1000,
+      50,
+      0
+    ],
+    "matches": true
+  },
+  "participating-role": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "eligible-unused-role": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "pre-example": {
+    "expected": [
+      false,
+      0
+    ],
+    "actual": [
+      false,
+      0
+    ],
+    "matches": true
+  },
+  "attribute-comment-before-real-marker": {
+    "expected": [
+      true,
+      1
+    ],
+    "actual": [
+      true,
+      1
+    ],
+    "matches": true
+  },
+  "gate-compare-invalid": {
+    "expected": "unknown",
+    "actual": "observed-burden-improvement",
+    "matches": false
+  },
+  "gate-compare-control": {
+    "expected": "observed-burden-improvement",
+    "actual": "observed-burden-improvement",
+    "matches": true
+  },
+  "improvement": {
+    "expected": "observed-burden-improvement",
+    "actual": "observed-burden-improvement",
+    "matches": true
+  },
+  "worsening": {
+    "expected": "observed-burden-worsening",
+    "actual": "observed-burden-worsening",
+    "matches": true
+  },
+  "reversed": {
+    "expected": "unknown",
+    "actual": "unknown",
+    "matches": true
+  },
+  "future": {
+    "expected": 2,
+    "actual": 2,
+    "matches": true
+  },
+  "fraction": {
+    "expected": "unknown",
+    "actual": "unknown",
+    "matches": true
+  },
+  "failure-change": {
+    "expected": "unknown",
+    "actual": "unknown",
+    "matches": true
+  },
+  "review-token-0.5": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "review-token--1": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "review-token-0e2": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "review-token-0 blocking 2": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "review-token-0": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "gate-failure-valid": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "gate-success-valid": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "gate-ok-contradiction": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "gate-cmd-contradiction": {
+    "expected": null,
+    "actual": null,
+    "matches": true
+  },
+  "gate-mixed-cmd-nonbinary": {
+    "expected": null,
+    "actual": 1,
+    "matches": false
+  },
+  "status-before-request-does-not-reach": {
+    "expected": [
+      0,
+      0,
+      1
+    ],
+    "actual": [
+      0,
+      0,
+      1
+    ],
+    "matches": true
+  },
+  "status-failure-does-not-count-as-request-attempt": {
+    "expected": 0,
+    "actual": 1,
+    "matches": false
+  },
+  "request-failure-only-then-status-not-counted": {
+    "expected": [
+      0,
+      1,
+      0,
+      1
+    ],
+    "actual": [
+      0,
+      1,
+      0,
+      2
+    ],
+    "matches": false
+  },
+  "request-retry-success-not-double-counted": {
+    "expected": [
+      1,
+      0,
+      0,
+      1
+    ],
+    "actual": [
+      1,
+      0,
+      0,
+      2
+    ],
+    "matches": false
+  },
+  "linked-orphan-answer": {
+    "expected": [
+      null,
+      1,
+      0,
+      1
+    ],
+    "actual": [
+      null,
+      1,
+      0,
+      1
+    ],
+    "matches": true
+  },
+  "id-less-orphan-answer-total": {
+    "expected": null,
+    "actual": 0,
+    "matches": false
+  },
+  "pi-retro": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "valid-closed-atx": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "html-summary-only": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "responsibility-legacy": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "responsibility-modern": {
+    "expected": [
+      0,
+      0
+    ],
+    "actual": [
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "responsibility-weakened": {
+    "expected": [
+      2,
+      1
+    ],
+    "actual": [
+      2,
+      1
+    ],
+    "matches": true
+  }
+}

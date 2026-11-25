@@ -1,0 +1,52 @@
+✖ R43 최상위 코드와 HTML 안의 목록 예시는 블록이나 회고 표를 열지 않는다 (1063.235625ms)
+✖ R43 최상위 코드와 HTML 안의 목록 예시는 팀 표지를 머리로 승격하지 않는다 (414.30075ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1595.856875
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1951:1
+✖ R43 최상위 코드와 HTML 안의 목록 예시는 블록이나 회고 표를 열지 않는다 (1063.235625ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /회고에 팀 행/. Input:
+  
+  ''
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1961:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /회고에 팀 행/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:1974:1
+✖ R43 최상위 코드와 HTML 안의 목록 예시는 팀 표지를 머리로 승격하지 않는다 (414.30075ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:1980:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

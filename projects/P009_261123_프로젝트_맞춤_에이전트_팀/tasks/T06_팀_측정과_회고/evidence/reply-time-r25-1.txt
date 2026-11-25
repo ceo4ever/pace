@@ -1,0 +1,9 @@
+✔ R24 영수증이 가리킨 실제 응답도 최초 요청 이전이면 도달 근거가 아니다 (1090.425709ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1204.298166

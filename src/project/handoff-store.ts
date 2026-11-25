@@ -1,10 +1,30 @@
 import { closeSync, constants, existsSync, fsyncSync, lstatSync, openSync, writeSync } from "node:fs";
-import { resolve } from "node:path";
+import { inputHash, type InputTrace } from "../core/input-snapshot.ts";
+import { join, resolve } from "node:path";
 import { PrivateHandoffBodies } from "./handoff-private.ts";
 import { BODY_LIMIT, digest, HandoffError, LEDGER_LIMIT, regularBytes, strictJson, utf8 } from "./handoff-files.ts";
 import { safeTeamPath } from "../team/store.ts";
 import { header, stable, type HandoffHeader, type HandoffRecord } from "../team/handoff-model.ts";
 import { ready, referenced, requireBodies, validateTransition, type StateContext } from "../team/handoff-state.ts";
+
+export interface HandoffLedgerSnapshot {
+  present: boolean;
+  rows: readonly HandoffRecord[];
+}
+
+/** Capture a negative lookup before any later consumer can observe a new ledger. */
+export function observeHandoffLedger(root: string, project: string, projectDir: string, inputs?: InputTrace): HandoffLedgerSnapshot {
+  const path = join(root, projectDir, "handoffs.jsonl");
+  try {
+    const observed = lstatSync(path);
+    if (!observed.isFile() || observed.isSymbolicLink() || observed.nlink !== 1) throw new HandoffError("소통 원장은 링크 없는 단일 링크 일반 파일이어야 한다");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    inputs?.absent?.(path);
+    return { present: false, rows: [] };
+  }
+  return new HandoffStore(root, project, projectDir).readSnapshot(inputs);
+}
 
 export class HandoffStore {
   readonly root: string;
@@ -19,10 +39,17 @@ export class HandoffStore {
     this.bodies = new PrivateHandoffBodies(root, project, projectDir);
   }
   context(live: boolean): StateContext { return { root: this.root, projectDir: this.projectDir, bodies: this.bodies, live }; }
-  read(): HandoffRecord[] {
-    if (!existsSync(this.path)) return [];
+  read(inputs?: InputTrace): HandoffRecord[] { return this.readSnapshot(inputs).rows; }
+  readSnapshot(inputs?: InputTrace): HandoffLedgerSnapshot & { rows: HandoffRecord[] } {
     safeTeamPath(this.root, `${this.projectDir}/handoffs.jsonl`);
-    const text = utf8(regularBytes(this.path, LEDGER_LIMIT));
+    let text: string;
+    try { text = utf8(regularBytes(this.path, LEDGER_LIMIT)); }
+    catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+      inputs?.absent?.(this.path);
+      return { present: false, rows: [] };
+    }
+    inputs?.record(this.path, inputHash(text));
     if (text && !text.endsWith("\n")) throw new HandoffError("소통 원장 마지막 행이 불완전하다; 복구 확인 전 보류");
     const rows: HandoffRecord[] = [], checkedBodies = new Set<string>();
     for (const line of text.split("\n").filter(Boolean)) {
@@ -33,7 +60,7 @@ export class HandoffStore {
       for (const hash of this.privateHashes([row])) if (!checkedBodies.has(hash)) { this.bodies.read(hash); checkedBodies.add(hash); }
       rows.push(row);
     }
-    return rows;
+    return { present: true, rows };
   }
   private append(row: HandoffRecord, writing: () => void): void {
     const path = safeTeamPath(this.root, `${this.projectDir}/handoffs.jsonl`), bytes = Buffer.from(JSON.stringify(row) + "\n");
@@ -79,11 +106,11 @@ export class HandoffStore {
       return { ready: ready(rows, delegate), reason: ready(rows, delegate) ? "수신자 범위 확인 기록 있음" : "수신자 범위 대조 없음/hold" };
     } catch (error) { if (error instanceof HandoffError) return { ready: false, reason: error.message }; throw error; }
   }
-  audit(): { records: number; missingBodies: number; auditCoverage: "local-bytes" | "metadata-only"; open: string[] } {
-    const rows = this.read(), missingBodies = this.privateHashes(rows).filter((hash) => !this.bodies.read(hash)).length;
+  audit(inputs?: InputTrace, snapshot?: readonly HandoffRecord[]): { records: number; missingBodies: number; auditCoverage: "local-bytes" | "metadata-only"; open: string[] } {
+    const rows = snapshot ?? this.read(inputs), missingBodies = this.privateHashes(rows).filter((hash) => !this.bodies.read(hash)).length;
     return { records: rows.length, missingBodies, auditCoverage: missingBodies ? "metadata-only" : "local-bytes", open: rows.filter((r) => r.kind === "delegate" && !rows.some((c) => c.kind === "close" && c.data.re === r.id)).map((r) => r.id) };
   }
-  private privateHashes(rows: HandoffRecord[]): string[] {
+  private privateHashes(rows: readonly HandoffRecord[]): string[] {
     return [...new Set(rows.flatMap((r) => [r.bodyHash, r.data.policySnapshotHash, r.data.payloadHash].filter((h): h is string => typeof h === "string")))];
   }
 }

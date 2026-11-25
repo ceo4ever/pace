@@ -1,0 +1,17 @@
+Run from /Volumes/Data/AiStudio/workspace/pace.wt/P009 with d=/tmp/pace-t06-stage2-new.RCdB3N.
+Node v24.22.3. All probe children use temporary synthetic Git repositories and PACE_HOME.
+PACE_HOME="$d/home" TMPDIR="$d/focused-tmp" node --test test/team-metrics.test.ts test/team.test.ts
+PACE_KEEP_TEST_TMP=1 PACE_HOME="$d/focused-retained-home" TMPDIR="$d/focused-retained-tmp" GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 node --test test/team-metrics.test.ts test/team.test.ts
+
+Run each final probe with:
+node "$d/<name>.mjs" "$PWD" "$d/<name>"
+Names: previous-delta role requests new-controls replay-current-contract metadata-recheck compatibility-recheck ledger legacy-fifo-replay.
+For first-attempt raw output the same command ran with names replay, extra, and legacy-and-finish.
+In each fixture the actual CLI was invoked as node <workspace>/bin/pace.ts <arguments>.
+Per-command logs preserve cwd, arguments, exit and output. prepare-external and receipt operations are local, with synthetic reported outcomes.
+
+/Volumes/Data/PythonStudio/miniconda3/bin/python3 "$d/render-controls.py" "$d"
+git apply --reverse --check "$d/impl-diff.patch"
+git status --porcelain=v1
+shasum -a 256 <T01 baseline>
+git show "HEAD:<T01 baseline>" | shasum -a 256

@@ -1,0 +1,14 @@
+quoted-title 0 0 false true true
+escaped-bracket 0 0 false true true
+actual-filler-with-prose 1 1 true true true
+angle-and-nested 0 0 false true true
+escaped-double-title 0 0 false true true
+escaped-single-title 0 0 false true true
+hidden-label-with-title 1 1 true true true
+inline-html 1 1 true true true
+inline-comment 1 1 true true true
+inline-pi 1 1 true true true
+inline-cdata 1 1 true true true
+escaped-presentation 0 0 false true true
+html-after-destination 1 0 false true false
+html-in-quoted-title 0 0 false true true

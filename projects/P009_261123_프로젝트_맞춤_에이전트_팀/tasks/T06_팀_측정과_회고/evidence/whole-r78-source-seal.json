@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r78.json",
+  "filesChecked": 43,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1349,
+  "pass": 1331,
+  "fail": 1,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R78 \uace0\uc815 \ud6c4\ubcf4 \uc804\uccb4 1349\uac74 \uc911 1331\ud1b5\uacfc\u00b717\uac74\ub108\ub700\u00b7\ub300\uc2dc\ubcf4\ub4dc \uc0c1\uc704 \uc815\uc158 1\uc2e4\ud328. \uc9d1\uc911 \uc2dc\ud5d8\uacfc \ub3c5\ub9bd \uacb0\uacfc\ub294 \uac01\uac01 \ubcf4\uc874\ud568."
+}

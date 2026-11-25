@@ -1,0 +1,13 @@
+{
+  "id": "retrospective-other-period",
+  "expected": "observed-none proof rejected; unconfirmed required",
+  "candidate": [
+    {
+      "role": "maker",
+      "coverage": "unconfirmed",
+      "reason": "참여/선언 기록 없음은 역할 미사용의 증명이 아니다"
+    }
+  ],
+  "finishExit": 0,
+  "out": "- 보안 검사 통과: true\n- 검사 통과: true\n- 완료 (main 직접 프로젝트 — merge 필요 없음)\n통과\n실행: true\n실행: true\n"
+}

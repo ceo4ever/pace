@@ -61,6 +61,11 @@ export function evidence(ctx: StateContext, value: unknown, live = ctx.live): vo
     if (live && digest(regularBytes(safeTeamPath(ctx.root, item.path as string), 16 * 1024 * 1024)) !== item.hash) fail("실제 증거 지문 불일치");
   }
 }
+export function deliveryMatchesMessage(delivery: HandoffRecord, message: HandoffRecord): boolean {
+  return delivery.from === message.from && delivery.to === delivery.data.routeActor &&
+    delivery.task === message.task && delivery.requestId === message.requestId &&
+    (delivery.to !== "owner" || message.to === "owner");
+}
 /** Replay validates structural provenance; live registration additionally reads current policy/evidence. */
 export function validateTransition(ctx: StateContext, rows: HandoffRecord[], row: HandoffRecord): void {
   if (ctx.live) for (const who of [row.from, row.to]) if (who.startsWith("agent:")) loadTeamMember(ctx.root, who.slice(6));
@@ -68,12 +73,12 @@ export function validateTransition(ctx: StateContext, rows: HandoffRecord[], row
   const ref = (kind?: HandoffRecord["kind"]) => referenced(rows, d.re, kind);
   const hasRequest = () => { if (!row.requestId) fail("결정 요청 requestId 누락"); };
   switch (row.kind) {
-    case "captain_input":
-      fields(d, ["sourceRef"]); if (!sourceRef(d.sourceRef)) fail("캡틴 원문 출처 누락"); break;
+    case "owner_input":
+      fields(d, ["sourceRef"]); if (!sourceRef(d.sourceRef)) fail("사용자 원문 출처 누락"); break;
     case "decision_request": {
       fields(d, ["interpretation", "of", "plan", "relayOf"], ["interpretation"]); hasRequest();
       if (typeof d.interpretation !== "boolean") fail("해석 여부 오류");
-      if (d.interpretation || d.of) referenced(rows, d.of, "captain_input");
+      if (d.interpretation || d.of) referenced(rows, d.of, "owner_input");
       if (d.plan && plan(d.plan).instructionHash !== row.bodyHash) fail("제안 계획 지시 지문 불일치");
       if (d.relayOf) {
         const original = referenced(rows, d.relayOf, "decision_request");
@@ -83,7 +88,7 @@ export function validateTransition(ctx: StateContext, rows: HandoffRecord[], row
     }
     case "decision_reply": {
       fields(d, ["re", "decision", "proposalHash", "sourceRef"]); const proposal = ref("decision_request");
-      if (row.from !== "captain" || row.requestId !== proposal.requestId || !sourceRef(d.sourceRef) || !["approve", "correct", "reject"].includes(d.decision as string) || d.proposalHash !== proposalDigest(proposal)) fail("캡틴 답 주체/출처/특정 제안 지문 오류");
+      if (row.from !== "owner" || row.requestId !== proposal.requestId || !sourceRef(d.sourceRef) || !["approve", "correct", "reject"].includes(d.decision as string) || d.proposalHash !== proposalDigest(proposal)) fail("사용자 답 주체/출처/특정 제안 지문 오류");
       break;
     }
     case "delegate": {
@@ -103,7 +108,7 @@ export function validateTransition(ctx: StateContext, rows: HandoffRecord[], row
       } else if (basis.kind === "input") {
         fields(basis, ["kind", "ref", "hash", "policy"]);
         fields(basis.policy, ["ref", "hash", "planId"]);
-        const original = referenced(rows, basis.ref, "captain_input");
+        const original = referenced(rows, basis.ref, "owner_input");
         if (original.bodyHash !== basis.hash || original.bodyHash !== row.bodyHash) fail("원문 근거의 지시 본문 변경");
         locator = basis.policy;
       } else if (basis.kind === "contract") { fields(basis, ["kind", "ref", "hash", "planId"]); locator = { ref: basis.ref, hash: basis.hash, planId: basis.planId }; }
@@ -145,7 +150,8 @@ export function validateTransition(ctx: StateContext, rows: HandoffRecord[], row
       fields(d, ["re", "attemptId", "phase", "transport", "routeActor", "target", "sourceRef", "reportedBy", "responseHash", "responseId", "payloadHash"], ["re", "attemptId", "phase", "transport", "routeActor", "target", "sourceRef"]);
       const message = ref();
       if (message.kind === "delivery" || message.kind === "resource_event" || !identifier(d.attemptId) || !["started", "sent", "failed", "unconfirmed"].includes(d.phase as string) || !["orca", "external"].includes(d.transport as string) || !actor(d.routeActor) || !sourceRef(d.sourceRef) || typeof d.target !== "string") fail("전송 사건 형식 오류");
-      if (d.transport === "orca" && d.routeActor === "captain") fail("Orca 에이전트 수신자를 캡틴 경로라고 기록할 수 없다");
+      if (d.transport === "orca" && d.routeActor === "owner") fail("Orca 에이전트 수신자를 사용자 경로라고 기록할 수 없다");
+      if (ctx.live && !deliveryMatchesMessage(row, message)) fail("메시지/전송 머리 불일치");
       const prior = rows.filter((r) => r.kind === "delivery" && r.data.attemptId === d.attemptId);
       if (d.phase === "started") {
         if (!hashValue(d.payloadHash)) fail("전송 payload 지문 누락");
@@ -153,7 +159,9 @@ export function validateTransition(ctx: StateContext, rows: HandoffRecord[], row
       } else {
         const start = prior[0];
         const laterConfirmation = d.transport === "external" && prior.length === 2 && prior[1]?.data.phase === "unconfirmed" && ["sent", "failed"].includes(d.phase as string);
-        if (!start || prior.length !== 1 && !laterConfirmation || start.data.phase !== "started" || ["re", "transport", "routeActor", "target", "sourceRef"].some((key) => start.data[key] !== d[key])) fail("선기록 전송 시도/실제 경로와 영수증 불일치");
+        if (!start || prior.length !== 1 && !laterConfirmation || start.data.phase !== "started" ||
+            ["re", "transport", "routeActor", "target", "sourceRef"].some((key) => start.data[key] !== d[key]) ||
+            ctx.live && !deliveryMatchesMessage(start, message)) fail("선기록 전송 시도/실제 경로와 영수증 불일치");
         if (d.phase === "sent" && (!hashValue(d.responseHash) || !shortText(d.responseId, 240) || !actor(d.reportedBy))) fail("성공 응답/보고자 없는 영수증");
       }
       break;

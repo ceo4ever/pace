@@ -1,0 +1,25 @@
+{
+  "text": "## 최종 계약 대조: T06 팀 측정과 회고 (R6 이후 보완분)\n\n**검토 주체는 같은 제공자(Claude, Opus 5.5)의 새 맥락입니다.** R6 출력의 `session_id`가 `null`이라 R6 세션을 이어받지 못했습니다. 그렇다고 R6 판단을 모르는 새 독립 검토도 아닙니다. 이 검토를 시작하면서 R6 원문을 먼저 읽었기 때문입니다.\n\n### 0. R6 첫 판단 (원문 그대로)\n- 출처: `impl-review-output-6.json`, `verdict: \"pass\"`, `session_id: null`\n- 판정: blocking 0, should_fix 1, note 2\n  - **S4 (should_fix)**: 캡틴 반대 신호를 측정 구간 안에서만 대조함\n  - **N7 (note)**: wrong-proof 시험이 영수증 결합의 한쪽만 검증함\n  - **N8 (note)**: 열린 구간에서도 `coordinatorOwnAnswerObserved`가 늘어남\n- 목표 판단: 장치·출력 계약 범위에서 달성. 실제 효과는 T08 몫.\n\n### 1. 첫 판단을 유지합니다 (pass)\n보완 뒤에도 판정 근거가 그대로라 바꾸지 않았습니다. 지적 항목별 상태는 다음과 같습니다.\n- **S4 해소**: `team-metrics.ts:74`의 `captainSignal`이 이제 같은 requestId의 전체 `events`와 `rows`를 봅니다. 구간으로 걸러진 `scopedEvents`·`admitted`가 아닙니다.\n  - 도달 관측 수는 계속 측정 구간 안 원장 값만 씁니다(`:80`, `handoff-report.ts:30`).\n  - 그래서 구간 밖의 나중 답은 도달 수에 더해지지 않고, 자체 답 판정의 확신만 철회합니다. 요청하신 의미와 같습니다.\n  - 시험 `team-metrics.test.ts:312`가 이 순서를 단언합니다. 처음 `reachedTotal 0` → 구간 밖 `by:user` 답을 추가 → `reached 0`, `own 0`, `comparisonUnconfirmed 1`, `reachedTotal null`.\n- **수신자 없는 질문/에스컬레이션도 반대 신호로 반영**: 코드는 `e.to !== \"coordinator\"` 조건으로 처리합니다. `recipient-unknown` 사례로 시험합니다(`:288`).\n- **N7 해소**: 비대칭 반례 두 가지가 추가됐습니다. 둘 다 `requestCovered`(`team-input.ts:65-67`)에서 거부됩니다.\n  - `bad-confirmation`: confirmationRef만 다른 요청의 영수증\n  - `bad-refs`: refs만 다른 요청의 영수증\n- **열린 구간·coverage 불충분**: 직접 단언합니다(`:306-309`). 두 경우 모두 `comparisonUnconfirmed 9`, `reachedTotal null`입니다.\n- **N8 유지 (note)**: 열린 구간에서도 own 관측 수가 늘어납니다. 관측 열일 뿐 판정에는 영향이 없습니다. 이 값을 단언하는 시험은 없습니다.\n- **시험 수**: 정적으로 세어 보니 `test(` 호출이 **24개**입니다.\n\n### 2. 목표 달성: 달성 (장치·출력 계약 범위 안에서)\n- **BR01 원장 4분류 보존**\n  - `handoff-report.ts`는 바뀌지 않았습니다.\n  - `data.handoffs.requests.unconfirmed === 9` 단언이 원장 값이 보존됨을 확인합니다.\n  - 기준선이 없는 과거(legacy)에는 소급 적용하지 않는다는 점이 문서에 있습니다.\n  - 별도 축인 `comparisonUnconfirmed`는 두 조건이 모두 맞을 때만 줄어듭니다. 구간이 닫혀 있고, 다른 확인자의 `request_coverage`가 있을 때입니다.\n- **BR06 완료 기준 3개 모두 충족**\n  - stats의 팀 항목: 수신자별 구분, 수신자 없는 기록은 미확인, 요청 단위 ①~④ 분류\n  - 비교 보고: 개선/악화/미확인과 이유·추가 표본 계획을 냅니다. `before-change`/`after-change`를 `team-adoption`에 넣으면 종료 2로 거부합니다(`team-comparison.ts:84`).\n  - PROJECT-CLOSE 팀 행과 finish 검증이 있습니다.\n- **BR09 불변식 7(집계 일치)**: 지켜집니다.\n- **BR07이 읽을 입력**: `docs/TEAM-METRICS.md:47`에 명시돼 있습니다.\n- **실제 효과는 미확인**입니다. 두 저장소의 효과와 스킬 회고 실행은 T08에서 봅니다(PROJECT P-5, BR06 \"장치와 출력 계약\").\n- 신고된 actor/영수증과 typed receipt는 인증이 아닙니다. 코드 경고(`:103`)와 문서 모두 이 점을 명시합니다.\n\n### 3. 실제로 본 범위\n- **계약 문서**: R6 출력, PROJECT의 P-5와 실행 순서, TASK, pre-review-response, BR01·BR06·BR07·BR09\n- **소스**: `team-metrics.ts`, `team-input.ts`, `handoff-report.ts`는 전체를 읽었습니다.\n  - `team-comparison.ts`는 판정부(:76-120)를 읽었습니다.\n  - `team-retrospective.ts`와 `harness`/`event-log`의 회고 버전 표지는 검색으로만 확인했습니다.\n  - `team-metrics-document.ts`는 출력 줄만 확인했습니다.\n- **시험·문서**: 시험 목록과 핵심 시험 4개, `docs/TEAM-METRICS.md` 전문\n- **실행 안 함**: 셸 도구가 없어 시험·검사는 실행하지 않았습니다. 판단은 모두 정적 분석입니다. \"24개 통과\"는 확인하지 못했습니다.\n- **변경·발송 없음**: 파일 수정, 실제 홈 접근, 외부 발송은 하지 않았습니다.\n\n### 4. 집계\n**blocking 0, should_fix 0, 계약 축소 없음.**\n\n남은 note는 세 개입니다.\n- **N8**: 위 1절 그대로 유지\n- **N9 (신규)**: `captain_input`이 `from: captain`이고 같은 requestId를 가지면 캡틴이 관여했다는 신호인데, `captainSignal`이 이를 대조하지 않습니다.\n  - R6 계약이 나열한 신호 목록에는 없는 항목이라 계약 축소는 아닙니다.\n  - 보수성을 더하려면 후속 idea 후보로 둘 만합니다.\n- **N10 (신규, 문서 문구)**: `TEAM-METRICS.md:21`의 \"confirmationRef와 refs 중 적어도 하나의 … requestId가 같아야\"는 둘 중 하나만 맞아도 된다고 읽힐 수 있습니다.\n  - 코드는 confirmationRef가 같아야 하고, refs 중 적어도 하나도 같아야 합니다.\n  - \"confirmationRef와, refs 중 적어도 하나가 모두\"로 고치면 오해가 없습니다.\n\n**결론: pass** (첫 판단 유지, S4·N7 해소)",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": "7ffa1e8b-af03-4cec-8c0d-1d7327edef98",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 113160,
+  "usage": {
+    "input_tokens": 42,
+    "output_tokens": 9563
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

@@ -1,0 +1,61 @@
+✖ R81 비팀 보안 검사의 정상 산출물은 기존 목차 커밋으로 마감한다 (1508.810125ms)
+✖ R81 작업 폴더의 ignored 태스크 증거만으로 팀 후보를 봉인하지 않는다 (2290.964875ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3935.3125
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2112:1
+✖ R81 비팀 보안 검사의 정상 산출물은 기존 목차 커밋으로 마감한다 (1508.810125ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: node security-fixture.mjs
+  빠진 것:
+  - 보안 검사/의존성 감사 뒤 자료 또는 인덱스가 바뀌었다: 확인·커밋하고 finish를 다시 실행한다
+  실패
+  실행: node security-fixture.mjs
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2119:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2125:1
+✖ R81 작업 폴더의 ignored 태스크 증거만으로 팀 후보를 봉인하지 않는다 (2290.964875ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 커밋 칸: T01 2a4a25e
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2143:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

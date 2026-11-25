@@ -1,0 +1,18 @@
+{
+  "src/cli.ts": "362fb201dfe8b4a8033b2addce052f4ebd49bd2559a8927ad36a11a2347b1b9b",
+  "src/project/event-log.ts": "e21508ee0908e86998e4232b86c3dd8cd48596981e4987d20bf557cd74e3bf02",
+  "src/project/handoff-report.ts": "378456785b9aecb9a607529102655a7521943ede0188dc3a90db4f9fa08168fd",
+  "src/project/harness.ts": "fe471dbd991df1aaa5c33d299b80697ded58bd5a2439a2206bc358688fa170dd",
+  "src/project/metrics-report.ts": "09bfcddb4af39d3c7d26a6d964001aa0396f8a1b151a0ce364a5adfaf796ad4b",
+  "src/project/metrics-document.ts": "00888030f9d9967933c2595a1c77458e2d915e328774e9e14727f52d9aed76fb",
+  "src/project/team-input.ts": "1c0d718c1484d9806c704617854063e4db01399cb0424e54904f7ee89d18270a",
+  "src/project/team-metrics.ts": "6d700fd2c47399ec29b0c70b262833f00fd9e7ebc8a5a29da7dc57b800d7f0b5",
+  "src/project/team-metrics-document.ts": "77da4ed8d9ce1f7c202f123c901518cac1d8cb280cea30b2201d185687935f9a",
+  "src/project/team-comparison.ts": "e89a67b1bb29cc0d351899d5d92c0b8ce1f67176e711de0d933cb9208ee73c66",
+  "src/project/team-retrospective.ts": "d07cb6cb032a72c36ddb2b562287949346ff1fd4436db13a63160b602b757418",
+  "test/team-metrics.test.ts": "93d172159eb4f7975e3d425bce34c98ff368c8d339581158bbb65ff8eb25a3fc",
+  "test/project-role.test.ts": "09b1cbbf7bd514f05aeedb6fea6e037916510c19f0ecd7bae078aac3e99732e8",
+  "docs/TEAM-METRICS.md": "8416b51e4353f2d8d0b9e4cd20a226e0bcfaba85e37c0df0810f257f629ed605",
+  "templates/project/PROJECT.md": "a4f5bc6345419edd9e82a8cb94c9848b37d43501158f1de66c860efb0c2c4e46",
+  "templates/project/PROJECT-CLOSE.md": "487e90f41daa28a380b23c0f0117e9fd61bf0e0dd0c8e6f530e45bc400ccbe14"
+}

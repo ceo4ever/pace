@@ -1,0 +1,47 @@
+너는 독립 검토자다. 아래 산출물을 읽기만 하고(파일을 고치지 않는다) 상위 목적에 비추어 검토하라.
+지금은 같은 산출물의 재검토다(목표/결과 대조). 아래 "직전 검토 원문"과 "바뀐 줄"이 재검토의 정해진 입력이며, 그것을 읽는 것은 독립성 위반이 아니다.
+작성자 마감·자체 판정·지적 대응 문서는 받거나 읽지 않는다. 허용되는 이전 자료는 직전 검토 원문뿐이다.
+판정 범위: 직전 검토의 blocking이 해소됐는지와 그 수정(바뀐 줄)이 만든 새 결함만 판정한다. 직전에 지적되지 않았고 바뀌지 않은 부분의 새 지적은 note로만 남기고 판정에 넣지 않는다.
+산출물 자체가 계획서/백로그면 평가할 결과로 읽되 그 안의 목표를 상위 목적의 정답으로 믿지 않는다.
+첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다.
+상위 목적은 대조 기준이며 어긋나면 목표·전략·계획 등 해당 단계를 고친다. 합의 목적/목표/범위 변경은 사용자에게 묻는다.
+읽은 파일과 자동 부트/메모리·호스트 첨부 맥락의 노출 범위를 기록한다. 읽기 전용이 작업 문서 접근 차단이나 완전 격리를 뜻하지 않는다.
+재검토이므로 노출 범위에 직전 검토 원문과 바뀐 줄을 받았음을 기록한다. 검토 주체가 바뀌었으면 제공자·독립성 수준을 기록한다.
+
+## 상위 목적·목표 (먼저 읽는다)
+목적: 프로젝트 팀이 캡틴의 부담을 줄였는지 잘못된 결론 없이 측정하고, 원문을 로컬에 유지하면서 같은 조건 비교와 역할 회고를 수행할 장치를 제공한다. 실제 팀 도입 효과는 후속 현장 관측에서 판단한다.
+독립 첫 검토: 첨부 diff와 현 소스·시험·docs/TEAM-METRICS.md만 검토하라. PROJECT/TASK/BR/PM 판단·기존 검토 출력은 읽지 말라. 별도 계약 대조는 첫 판단을 받은 후 요청한다. 실제 사람 인증/완전성을 metadata로 주장하는지, 잘못된 도달/0/효과 판정/회고 우회와 기존 동작 손상이 있는지 검토하라. 코드 수정·외부 전송 금지. verdict pass|fail, blocking/should_fix 수와 위치·재현·범위를 명확히 출력하라.
+사용자 추가 결정(2026-11-24, main 허브가 전달): P009 신규 사람 식별자는 owner이며 기존 user는 유지한다. 이전 captain 사람 식별자의 호환 처리는 불필요하다는 결정이며 실제 프로젝트 로그에 해당 수신자 기록이 없는지 직접 확인한다. T01의 이미 확정된 원본 기준선/과거 증거는 변경하지 않는다. 현재 제품 문서에는 user와 owner가 같은 사람임을 표시한다.
+
+## 묻는 것
+1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?
+각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.
+
+## 직전 검토 원문
+**1단계 독립 목표 대조 · 목표 달성 미달 · blocking 3건 · should_fix 1건.** 원문을 로컬에 두고, 사용자 도달 관측과 신고 총량을 구분하며, 같은 조건의 표본만 비교한다는 방향은 상위 목적에 맞습니다. 문서와 출력은 metadata의 주체·출처·완전성을 참여자의 신고로 설명합니다. 실제 사용자 인증이나 팀 도입 효과는 후속 현장 관측에서 판단해야 합니다.
+
+### 지적
+
+1. **blocking · 중계 시각이 모순되어도 사용자 도달로 집계됩니다.** 최초 요청 10시 → 1차 중계 14시 → 이를 참조한 2차 중계 12시를 합성하고, 2차 중계에 대한 13시 사용자 답 또는 외부 성공 영수증을 각각 넣었습니다. 현재 판정기는 두 경우를 `owner_reply`, `owner_delivery`로 반환했습니다. 중계의 선후를 검증해 만든 목록을 원장 답·전송 판정에서 사용하지 않아 생깁니다. 채택 프로젝트의 도달 관측과 비교용 총량에 영향을 줍니다. [handoff-report.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/handoff-report.ts:46) · [도달 판정](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/handoff-report.ts:125)
+
+2. **blocking · 동시에 처음 생성된 소통 원장을 집계에서 빠뜨린 채 마감할 수 있습니다.** 메모리 재현에서 첫 존재 확인에는 원장이 없고, 집계기의 다음 확인에는 있도록 했습니다. 결과는 원장 관측 0건이었고, 입력 추적에는 원장 내용과 부재가 모두 빠졌습니다. 이후 회고 검증이 새 원장의 지문을 처음 등록하면, 집계에서 빠뜨린 원장과 최종 Git tree의 원장이 같다는 이유로 검사가 통과할 수 있습니다. 새 원장의 요청·역할 참여를 놓친 지표가 마감 커밋에 들어가는 범위입니다. [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:71) · [handoff-report.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/handoff-report.ts:28) · [회고의 원장 재읽기](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-retrospective.ts:174)
+
+3. **blocking · HTML 내부의 예시가 필수 회고 표를 대신할 수 있습니다.** 실제 `## 회고` 아래 `<textarea>`를 열고, `</style>` 다음에 예시 표를 둔 뒤 `</textarea>`로 닫았습니다. 현재 투영기는 `</style>`에서 블록을 끝내고 예시 표를 회고 입력으로 넘깁니다. 유효한 회고 JSON이 이미 있으면 실제 회고 표 없이 관문을 통과할 수 있습니다. [team-markdown.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-markdown.ts:5) · [회고 표 판정](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-retrospective.ts:128)
+
+4. **should_fix · 비교 스냅샷에서 관측값이 총량처럼 표시됩니다.** 자체 답 신고 목록이 명시적으로 비어 있으면 `coordinatorOwnAnswerObserved`는 0이고 `coordinatorOwnAnswerTotal`은 `null`입니다. 일반 구간의 스냅샷은 같은 0을 `counts.coordinator_answers`에 넣고 관측 열을 비웁니다. 실패 시도 관측도 같은 방식입니다. 자동 부담 방향 판정에는 쓰이지 않지만, 비교표를 읽는 사람이 미수집 총량을 0으로 해석할 수 있습니다. [team-metrics.ts](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:145) · [스냅샷 생성](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-metrics.ts:183) · [비교표 생성](/Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/team-comparison.ts:129)
+
+**전략과 올릴 단계.** 원장과 영수증을 재사용하고 마감 검증을 Git tree에 결합하는 방식은 목적까지 추적됩니다. 요청 판정에는 검증된 중계 사슬만 넘기고, 원장 부재도 원장 내용과 같은 입력 검증에서 고정하는 설계가 가능했습니다. 회고는 Markdown 구조에 맞춰 검증하거나 고정 JSON을 필수 입력으로 삼고 표를 생성하는 방법도 있었습니다. 지적은 요청 판정·입력 스냅샷·회고 검증의 **설계·구현·회귀시험 단계**로 올립니다. 합의된 목적·목표·범위 변경을 제안하는 지적은 없습니다.
+
+**근거와 노출 범위.** 첨부 diff, 현재 소스와 시험, `docs/TEAM-METRICS.md`를 대조했습니다. diff에 포함된 소스 25개·시험 6개·문서 1개의 현재 Git blob 지문이 첨부본과 일치했습니다. 추가 사용자 결정에 따라 실제 프로젝트 로그의 `to` 필드만 집계했습니다. 작업 트리 8개, `HEAD` 10개, `main` 11개와 로컬 참조 이력에서 찾은 고유 로그 blob 78개에서 `captain` 수신자는 0건이었습니다. 제품 문서에 `user`와 `owner`가 같은 사람이라는 설명이 있고, 첨부 diff에 T01 기준선 변경은 없습니다.
+
+호스트가 제공한 범위는 요청 본문, `AGENTS.md`, 환경 정보, 첨부 diff입니다. 별도 자동 부트 출력·메모리·작업 문서·작성자 판정·기존 검토 출력은 열람하지 않았습니다. 이 범위는 실제 열람 기록이며 파일 접근 차단이나 완전 격리를 뜻하지 않습니다. 파일 수정과 외부 전송 없이 소스 추적 및 메모리 재현을 수행했습니다. 전체 시험, 현장 효과 관측, 2단계 계약 대조는 미실행입니다.
+
+fail
+
+
+## 파일로 전달한 동일 입력
+입력 문자 한도를 피하기 위해 중복 본문만 파일 참조로 전달한다. 판정 범위와 직전 원문은 위와 같다. 검토 전에 다음 파일의 전체 내용을 나누어 읽어라. 작성자 대응/계약/마감 문서는 읽지 않는다.
+실제 바뀐 줄: /Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/review36-actual-changed-lines.txt
+현재 산출물: /Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff.patch
+현재 산출물 SHA256: 23b9755d4db551004fccc3927550d13abced0b8a1e9862cb7f75ee2713e6b33a
+소스 파일과 테스트는 앞의 범위에서 직접 읽을 수 있다. 파일 참조는 검토 생략이 아니다. 읽은 범위를 판정에 남겨라.

@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r73.json",
+  "filesChecked": 45,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1341,
+  "pass": 1323,
+  "fail": 1,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R73 \uace0\uc815 \ud6c4\ubcf4 1341\uac74 \uc911 1323\ud1b5\uacfc\u00b717\uac74\ub108\ub700\u00b71\uc2e4\ud328. \uae30\uc900 \ube0c\ub79c\uce58 \ub2e8\ub3c5 \ucc44\ud0dd\uc744 \ub354 \uc77c\ucc0d \ucc28\ub2e8\ud558\ub3c4\ub85d \ubcc0\uacbd\ud574 \uae30\uc874 R27 \uae30\ub300\uac12\uacfc \ub2ec\ub77c\uc9d0."
+}

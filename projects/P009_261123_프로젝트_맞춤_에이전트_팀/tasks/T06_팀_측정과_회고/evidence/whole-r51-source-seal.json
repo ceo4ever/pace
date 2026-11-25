@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r51.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1307,
+  "pass": 1290,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail2/SF0 for discarding unconfirmed adverse claims and aborting observations on oversized request certificate"
+}

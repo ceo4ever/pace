@@ -1,0 +1,90 @@
+{
+  "matched": 15,
+  "total": 21,
+  "failures": [
+    {
+      "name": "cr-valid-table",
+      "matched": false,
+      "expected": {
+        "status": 0,
+        "bytesUnchanged": true,
+        "gate": false
+      },
+      "observed": {
+        "status": 1,
+        "bytesUnchanged": true,
+        "gate": false
+      }
+    },
+    {
+      "name": "crlf-valid-table",
+      "matched": false,
+      "expected": {
+        "status": 0,
+        "bytesUnchanged": true,
+        "gate": false
+      },
+      "observed": {
+        "status": 1,
+        "bytesUnchanged": true,
+        "gate": false
+      }
+    },
+    {
+      "name": "lf-valid-table",
+      "matched": false,
+      "expected": {
+        "status": 0,
+        "bytesUnchanged": true,
+        "gate": false
+      },
+      "observed": {
+        "status": 1,
+        "bytesUnchanged": true,
+        "gate": false
+      }
+    },
+    {
+      "name": "visible-links",
+      "matched": false,
+      "expected": {
+        "status": 0,
+        "bytesUnchanged": true,
+        "gate": false
+      },
+      "observed": {
+        "status": 1,
+        "bytesUnchanged": true,
+        "gate": false
+      }
+    },
+    {
+      "name": "visible-link-with-title",
+      "matched": false,
+      "expected": {
+        "status": 0,
+        "bytesUnchanged": true,
+        "gate": false
+      },
+      "observed": {
+        "status": 1,
+        "bytesUnchanged": true,
+        "gate": true
+      }
+    },
+    {
+      "name": "visible-literal-escaped-bracket",
+      "matched": false,
+      "expected": {
+        "status": 0,
+        "bytesUnchanged": true,
+        "gate": false
+      },
+      "observed": {
+        "status": 1,
+        "bytesUnchanged": true,
+        "gate": true
+      }
+    }
+  ]
+}

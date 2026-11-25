@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r46.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1297,
+  "pass": 1280,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail2/SF0 for endpoint alias and swapped representative work proof"
+}

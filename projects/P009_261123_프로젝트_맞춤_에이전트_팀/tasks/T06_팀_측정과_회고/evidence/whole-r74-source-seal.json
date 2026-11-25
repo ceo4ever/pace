@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r74.json",
+  "filesChecked": 45,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1345,
+  "pass": 1327,
+  "fail": 1,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R74 \uace0\uc815 \ud6c4\ubcf4 \uc804\uccb4 \uac80\uc0ac 1345\uac74. \uc2e4\uc81c \uac1c\ubcc4 \uc2e4\ud328\uc640 \ucd1d\uacc4\ub294 \uc6d0\ubb38\uc5d0 \ubcf4\uc874\ud588\ub2e4."
+}

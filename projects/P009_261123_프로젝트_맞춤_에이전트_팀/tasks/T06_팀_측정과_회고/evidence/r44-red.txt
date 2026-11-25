@@ -1,0 +1,52 @@
+✖ R44 명시 태스크 앞의 미지정 답은 대표 업무 총량을 보류하고 확인된 자체 답은 관측한다 (436.851709ms)
+✖ R44 번호 2가 일반 문단을 중단하지 못하므로 이후 코드 예시를 회고 표로 읽지 않는다 (868.504584ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1424.669834
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:1986:1
+✖ R44 명시 태스크 앞의 미지정 답은 대표 업무 총량을 보류하고 확인된 자체 답은 관측한다 (436.851709ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== null
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2005:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2031:1
+✖ R44 번호 2가 일반 문단을 중단하지 못하므로 이후 코드 예시를 회고 표로 읽지 않는다 (868.504584ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /회고에 팀 행/. Input:
+  
+  ''
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2040:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /회고에 팀 행/,
+    operator: 'match',
+    diff: 'simple'
+  }

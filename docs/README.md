@@ -7,7 +7,7 @@
 | 목적 | Claude Code·Codex·Gemini CLI·Cursor·Antigravity 어디서 세션을 열어도 올라오는 **개인 비서 에이전트**. 정체성·메모리·브레인만 두고, 실행은 각 LLM 도구의 기능을 그대로 쓴다 |
 | 유형 | 개발 |
 | 단계 | 진행 중 — PACE (`0.1.1`) |
-| 사용자 | 개발자 본인(캡틴), 이후 PACE 사용자 |
+| 사용자 | 개발자 본인, 이후 PACE 사용자 |
 
 이 문서는 지도다. 각 절은 요약과 상세 문서 링크만 담고, 상세는 아래 [문서](#문서) 표의 서브 문서에 있다.
 
@@ -103,6 +103,7 @@
 | `AGENTS.md` | 일하는 법 요약과 길 안내 | — | 전체 | 항상 (자동) |
 | `docs/SECURITY.md` | 민감 경로와 보안 체크리스트 | security | `src/setup/**`, `scripts/**`, `src/boot.ts`, `src/core/fsutil.ts`, `src/core/worker-tiers.ts`, `src/team/**`, `src/project/**`, `src/memory/**`, `src/profile/**`, `src/scout/**`, `src/intent/**` | 작업 시 |
 | `docs/HANDOFF.md` | 원문 로컬 보존·승인/위임/종결·전송 선기록·요청 집계 | spec | `src/team/handoff-*.ts`, `src/project/handoff-*.ts`, `src/team/resource-events.ts` | 작업 시 |
+| `docs/TEAM-METRICS.md` | 팀 부담·품질·역할 관측, 기준선 비교·회고 입력과 finish | spec | `src/project/team-*.ts`, `src/project/metrics-report.ts`, `src/project/metrics-document.ts` | 작업 시 |
 | `docs/TEAM.md` | 팀 원본·생성물·모델 매핑·보존/권한 경계 | spec | `src/team/**`, `src/core/worker-tiers.ts`, `templates/team/**` | 작업 시 |
 | `README.md` | 소개·설치·사용·OPAL에서 넘어올 때 (사용자용) | — | — | 요청 시 |
 | `skills/pace-project-init/references/` | 정의서·백로그 형식, 분석 방법 | convention | `docs/**`, `backlogs/**`, `skills/pace-project-init/**` | 작업 시 |

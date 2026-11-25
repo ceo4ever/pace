@@ -1,0 +1,15 @@
+TMPDIR=<retained>/focused-tmp PACE_HOME=<retained>/home node --test test/team-metrics.test.ts test/team.test.ts
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/previous-delta.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/previous-delta"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/role.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/role"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/requests.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/requests"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/new-controls.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/new-controls"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/replay-current-contract.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/replay-current-contract"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/metadata-recheck.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/metadata-recheck"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/compatibility-recheck.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/compatibility-recheck"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/ledger.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/ledger"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/legacy-fifo-replay.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/legacy-fifo-replay"
+node "/tmp/pace-t06-r20-ind.kvm0GY/changed.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/changed"
+PACE_KEEP_TEST_TMP=1 GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 TMPDIR=<retained>/focused-retained-tmp PACE_HOME=<retained>/home node --test test/team-metrics.test.ts test/team.test.ts
+node "/tmp/pace-t06-r20-ind.kvm0GY/visibility.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/visibility"
+/Volumes/Data/PythonStudio/miniconda3/bin/python3 -B "/tmp/pace-t06-r20-ind.kvm0GY/render.py" "/tmp/pace-t06-r20-ind.kvm0GY"
+node "/tmp/pace-t06-r20-ind.kvm0GY/replay/current-cell-contract.mjs" "/Volumes/Data/AiStudio/workspace/pace.wt/P009" "/tmp/pace-t06-r20-ind.kvm0GY/replay/current-cell-contract"

@@ -1,0 +1,6 @@
+{
+  "path": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/impl-diff.patch",
+  "sha256": "51e45ca635b273ccbaaf9bd36e7b542d30ce19c647a6393d3bc9308c7af8d2d7",
+  "commitBase": "441c1d3",
+  "reviewPending": "formal current-artifact verify fallback decision; existing cross-provider goal/contract and same-provider last-delta passes preserved"
+}

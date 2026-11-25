@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r61.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1318,
+  "pass": 1301,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail1/SF1 for modern flat stats losing explicit markers and omitted whole-check classification in team finish seal"
+}

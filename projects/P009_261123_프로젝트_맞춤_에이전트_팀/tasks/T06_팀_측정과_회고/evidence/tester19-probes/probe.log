@@ -1,0 +1,11 @@
+ignored task close then recorded {"passed": true, "improvements": [{"kind": "review", "code": "blocking", "count": 2, "tasks": ["T99"]}], "before": "5544ed8e5ec8e79f10329a88635e8b4eb9b49d9d", "after": "5544ed8e5ec8e79f10329a88635e8b4eb9b49d9d", "input": "projects/P001_261124_synthetic/tasks/T99_synthetic/TASK-CLOSE.md", "input_sha": "6ad7038556e3b61d3debaffdffd132b164f909d27a3cfbba300ef3a3aa5fcc64", "refusal": {"label": "ignored", "exit": 2, "output": "실행: true\n실행: true\npace: 팀 검증 자료가 Git 인덱스에 없다: projects/P001_261124_synthetic/tasks/T99_synthetic/TASK-CLOSE.md — ignored/미추적 자료를 확인하고 커밋 후 finish한다\n"}, "recorded": {"label": "tracked", "exit": 0, "output": "- 보안 검사 통과: true\n- 검사 통과: true\n- 병합 대기 — main 체크아웃에서: pace project merge P001\n통과\n실행: true\n실행: true\n"}}
+Traceback (most recent call last):
+  File "/tmp/pace-t06-independent-r8.sjfgzZ/probe.py", line 40, in <module>
+    s=stats(f,w); held=finish(f,w)
+  File "/tmp/pace-t06-independent-r8.sjfgzZ/probe.py", line 10, in stats
+    def stats(f,w): return json.loads(expect(f.cli('project','stats','P001','--json',cwd=w)))
+                                      ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/pace-t06-independent-r8.sjfgzZ/fixture.py", line 15, in expect
+    if r.returncode!=n: raise RuntimeError((r.args,r.returncode,r.stdout,r.stderr))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: (['/Users/lucas/.nvm/versions/node/v24.22.3/bin/node', '/Volumes/Data/AiStudio/workspace/pace.wt/P009/bin/pace.ts', 'project', 'stats', 'P001', '--json'], 2, '', 'pace: 소통 객체의 필수/허용 필드 오류\n')

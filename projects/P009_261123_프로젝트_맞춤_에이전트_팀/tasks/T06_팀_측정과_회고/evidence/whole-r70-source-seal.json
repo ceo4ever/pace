@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r70.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1332,
+  "pass": 1315,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "Whole check passed; independent rereview found a blocker for equivalent safe legacy path spellings."
+}

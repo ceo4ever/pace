@@ -1,0 +1,6 @@
+{
+  "command": "PACE_SKIP_BROWSER_E2E=1 npm run check -- -- --test-concurrency=2",
+  "scope": "typecheck and all tests, same17 browser/platform skips; explicit supported concurrency, no name filter/shard",
+  "reason": "two prior unrelated OS process-observation failures under default parallelism; both isolated same-code diagnostics passed, causes unconfirmed",
+  "sourceFileCount": 22
+}

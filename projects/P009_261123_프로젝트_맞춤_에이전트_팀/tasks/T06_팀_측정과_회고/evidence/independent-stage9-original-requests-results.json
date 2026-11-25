@@ -1,0 +1,67 @@
+{
+  "checks": {
+    "reply-delivery-failure-intent-and-legacy": {
+      "expected": [
+        4,
+        2,
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "actual": [
+        4,
+        2,
+        1,
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "matches": true
+    },
+    "one-class-per-request": {
+      "expected": {
+        "failed-case": "failed_only",
+        "intent-case": "unconfirmed",
+        "reply-case": "owner_reply",
+        "retry-case": "owner_delivery"
+      },
+      "actual": {
+        "failed-case": "failed_only",
+        "intent-case": "unconfirmed",
+        "reply-case": "owner_reply",
+        "retry-case": "owner_delivery"
+      },
+      "matches": true
+    }
+  },
+  "requests": {
+    "linked": 4,
+    "ownerReply": 1,
+    "ownerDelivery": 1,
+    "reachedTotal": null,
+    "reached": 2,
+    "failedOnly": 1,
+    "unconfirmed": 1,
+    "comparisonUnconfirmed": 1,
+    "legacyUnlinkedEvents": 1,
+    "ownerIntendedRequests": 4,
+    "coordinatorIntendedRequests": 0,
+    "ownerQuestionEvents": 4,
+    "coordinatorQuestionEvents": 0,
+    "recipientUnknownEvents": 1,
+    "failedAttemptsObserved": 2,
+    "coordinatorOwnAnswerObserved": null,
+    "coordinatorOwnAnswerTotal": null
+  },
+  "classes": {
+    "failed-case": "failed_only",
+    "intent-case": "unconfirmed",
+    "reply-case": "owner_reply",
+    "retry-case": "owner_delivery"
+  }
+}

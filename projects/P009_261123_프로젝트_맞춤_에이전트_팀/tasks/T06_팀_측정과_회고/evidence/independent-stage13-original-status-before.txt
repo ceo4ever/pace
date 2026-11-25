@@ -1,0 +1,60 @@
+ M .pace/brain/log.md
+ M .pace/brain/pages/concept/brain-at-project-gates.md
+ M .pace/brain/pages/concept/brain-pull-not-push.md
+ M .pace/brain/pages/concept/install-and-launch-pitfalls.md
+ M .pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md
+ M .pace/brain/pages/concept/session-boot-via-hooks.md
+ M .pace/brain/pages/concept/백로그-대시보드-자동-갱신과-git-경계.md
+ M .pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md
+ M .pace/brain/pages/concept/작업-하네스-실측-함정.md
+ M .pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md
+ M .pace/brain/pages/synthesis/agent-설정과-daemon-자동-실행-함정.md
+ M .pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md
+ M .pace/brain/pages/synthesis/telegram-어댑터-설계-함정.md
+ M .pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md
+ M .pace/memory/INDEX.md
+ M .pace/memory/status.md
+ M .pace/test-map.json
+ M backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BACKLOG.md
+ M backlogs/BL261123_01_프로젝트_맞춤_에이전트_팀/BR08_첫_적용(roblox-studio_이전·새_저장소).md
+ M backlogs/dashboard/data.js
+ M docs/HANDOFF.md
+ M docs/README.md
+ M docs/TEAM.md
+ M docs/WORK-PROCESS.md
+ M projects/P009_261123_프로젝트_맞춤_에이전트_팀/PROJECT.md
+ M projects/P009_261123_프로젝트_맞춤_에이전트_팀/log.jsonl
+ M skills/pace-project-dev/references/coordinator.md
+ M src/cli.ts
+ M src/project/event-log.ts
+ M src/project/handoff-report.ts
+ M src/project/harness.ts
+ M src/project/metrics-document.ts
+ M src/project/metrics-report.ts
+ M src/team/handoff-delivery.ts
+ M src/team/handoff-model.ts
+ M src/team/handoff-state.ts
+ M src/team/model.ts
+ M src/team/resource-cli.ts
+ M src/team/resource-lock.ts
+ M templates/project/PROJECT-CLOSE.md
+ M templates/project/PROJECT.md
+ M templates/team/member.md
+ M test/project-log.test.ts
+ M test/project-role.test.ts
+ M test/team-handoff.test.ts
+ M test/team-lock.test.ts
+ M test/team.test.ts
+?? .pace/memory/daemon-준비-시험의-인스턴스-포트-충돌.md
+?? .pace/memory/부모-종료-자식-회수-시험의-간헐-실패.md
+?? .pace/memory/손자-생존-잠금-시험의-간헐-미확인.md
+?? docs/TEAM-METRICS.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/USER-VALIDATION.md
+?? projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/
+?? src/project/team-comparison.ts
+?? src/project/team-input.ts
+?? src/project/team-markdown.ts
+?? src/project/team-metrics-document.ts
+?? src/project/team-metrics.ts
+?? src/project/team-retrospective.ts
+?? test/team-metrics.test.ts

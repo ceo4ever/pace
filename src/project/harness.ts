@@ -1,19 +1,25 @@
+import { adoptTeamMetrics, teamRetrospectiveIssues, teamRetrospectiveRequired } from "./team-retrospective.ts";
+import { InputSnapshot } from "../core/input-snapshot.ts";
+import { assertTeamFinishDestination, assertTeamFinishInputs, assertTeamFinishScope, checkedTeamTarget, commitTeamFinish, hasTeamFinishHistory, teamFinishFile, writeTeamFinish } from "./team-finish.ts";
 import { resolveWorkerRole, roleInstruction, startRoleRecord, type WorkerRole } from "../team/worker-role.ts";
+import { safeTeamPath } from "../team/store.ts";
 import { reviewIssues } from "./pre-review.ts";
 import { shellState } from "./shell-result.ts";
 import { generateDashboard, refreshDashboard } from "./dashboard.ts";
 import { resolveWorkerSettings } from "../core/worker-settings.ts";
 import { assertBacklogPath, listBriefs, resolveBacklog } from "./backlog.ts";
-import { memoDateTime, recordEvent } from "./event-log.ts";
-import { handoffPrivacyIssues } from "./handoff-private.ts";
+import { eventLines, memoDateTime, recordEvent } from "./event-log.ts";
+import { LEDGER_LIMIT, regularBytes, utf8 } from "./handoff-files.ts";
+import { handoffCommitPrivacyIssues, handoffPrivacyIssues } from "./handoff-private.ts";
 import { collectHandoffs } from "./handoff-report.ts";
 import { hasSecret, isCodeFile } from "./secrets.ts";
 export { hasSecret } from "./secrets.ts";
-import { assertMetricsDestination, refreshProjectMetrics, metricsSummaryIssues } from "./metrics-report.ts";
+import { assertMetricsDestination, refreshProjectMetrics, metricsSummaryIssues, collectDashboard } from "./metrics-report.ts";
+import { assertTeamCommitReceipts } from "./team-input.ts";
 import { recordMetric, metricDir, failureReason } from "./metrics.ts";
 import { spawnSync } from "node:child_process";
-import { randomBytes } from "node:crypto";
-import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, statSync, unlinkSync, writeFileSync, renameSync } from "node:fs";
+import { createHash, randomBytes } from "node:crypto";
+import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync, readlinkSync, readdirSync, realpathSync, statSync, unlinkSync, writeFileSync, renameSync } from "node:fs";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fillTemplate, folderName, today, writeFileAtomic } from "../core/fsutil.ts";
 import { assertSafeGitPath, templatesDir } from "../core/paths.ts";
@@ -27,6 +33,10 @@ import { brainDir, brainUpdateCandidates, lintBrain, rebuildBrainIndex, searchBr
  */
 
 export class HarnessError extends Error {}
+class MergeBookkeepingError extends HarnessError {
+  readonly metricReason: string;
+  constructor(message: string, reason: string) { super(message); this.metricReason = reason; }
+}
 
 const PROJECT_DIR = /^P(\d{3})_(\d{6})_(.+)$/;
 const TASK_DIR = /^T(\d{2})_(.+)$/;
@@ -58,7 +68,7 @@ export interface Report {
 // ── git ─────────────────────────────────────────────────────────────
 
 // 묻는 프롬프트·멈춘 git이 명령(부트 포함)을 붙잡지 않게.
-const GIT_ENV = { GIT_EDITOR: "true", GIT_TERMINAL_PROMPT: "0" };
+const GIT_ENV = { GIT_EDITOR: "true", GIT_TERMINAL_PROMPT: "0", GIT_OPTIONAL_LOCKS: "0" };
 // 한글 경로를 이스케이프하지 않게 — 사용자 설정(core.quotepath)에 기대지 않는다.
 const GIT_OPTS = ["-c", "core.quotepath=false"];
 const GIT_TIMEOUT = 120_000;
@@ -109,10 +119,13 @@ function relativeGitPath(root: string, path: string): string {
   return relative(root, path).split(sep).join("/");
 }
 
-/** 커밋하지 않은 변경 경로 — `-z`로 읽어 줄 앞 상태 칸의 공백과 한글 경로를 그대로 지킨다. 이름 바꿈은 새 경로만. */
-function pendingPaths(root: string): string[] {
-  const r = gitSpawn(root, ["status", "--porcelain", "-z", "--untracked-files=all"]);
-  if (r.status !== 0) return [];
+/** 커밋하지 않은 변경 경로. 범위 검사는 이름 바꿈을 삭제와 추가로 모두 확인한다. */
+function pendingPaths(root: string, detectRenames = true): string[] {
+  const r = gitSpawn(root, ["status", "--porcelain", "-z", "--untracked-files=all", ...(detectRenames ? [] : ["--no-renames"])]);
+  if (r.status !== 0) {
+    if (!detectRenames) throw new HarnessError("마감 범위의 변경 경로를 확인하지 못했다");
+    return [];
+  }
   const entries = r.stdout.split("\0");
   const paths: string[] = [];
   for (let i = 0; i < entries.length; i++) {
@@ -122,6 +135,22 @@ function pendingPaths(root: string): string[] {
     if (/[RC]/.test(entry.slice(0, 2))) i++;
   }
   return paths;
+}
+
+/** Hash only: never persist source contents while checking command side effects. */
+function finishInputFingerprint(root: string): string {
+  const hash = createHash("sha256");
+  for (const args of [["rev-parse", "HEAD"], ["status", "--porcelain", "-z", "--untracked-files=all"], ["diff", "--binary", "HEAD"], ["diff", "--cached", "--binary"]]) hash.update(git(root, args));
+  const untracked = gitSpawn(root, ["ls-files", "--others", "--exclude-standard", "-z"]);
+  if (untracked.status !== 0) throw new HarnessError("검사 전후 미추적 자료를 확인하지 못했다");
+  for (const path of untracked.stdout.split("\0").filter(Boolean).sort()) {
+    const absolute = join(root, path), stat = lstatSync(absolute);
+    hash.update(path).update("\0").update(String(stat.mode));
+    if (stat.isSymbolicLink()) hash.update(readlinkSync(absolute));
+    else if (stat.isFile()) hash.update(readFileSync(absolute));
+    else throw new HarnessError("검사 전후 비교는 일반 파일/링크만 지원한다");
+  }
+  return hash.digest("hex");
 }
 
 function gitOk(cwd: string, args: string[]): boolean {
@@ -170,6 +199,22 @@ export function snapshotOwned(root: string, paths: string[]): () => void {
       if (item.entry) git(root, ["update-index", "--add", "--cacheinfo", item.entry[1]!, item.entry[2]!, gitPath]);
       else git(root, ["update-index", "--force-remove", "--", gitPath]);
     }
+  };
+}
+
+/** Keep append-only event bodies; roll back only this command's index ownership. */
+function snapshotFinishOwned(root: string, paths: string[], logPath: string, preserveLog: boolean): () => void {
+  if (!preserveLog) return snapshotOwned(root, paths);
+  const restore = snapshotOwned(root, paths.filter((path) => path !== logPath));
+  const gitLog = relativeGitPath(root, resolve(root, logPath));
+  const index = gitSpawn(root, ["ls-files", "--stage", "-z", "--", gitLog]);
+  if (index.status !== 0) throw new HarnessError("finish 로그 인덱스를 확인하지 못했다");
+  const entry = /^(\d+) ([0-9a-f]+) 0\t/.exec(index.stdout);
+  if (index.stdout && !entry) throw new HarnessError("finish 로그 인덱스가 충돌 중이다");
+  return () => {
+    restore();
+    if (entry) git(root, ["update-index", "--add", "--cacheinfo", entry[1]!, entry[2]!, gitLog]);
+    else git(root, ["update-index", "--force-remove", "--", gitLog]);
   };
 }
 
@@ -792,6 +837,7 @@ function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { 
       // worktree의 BACKLOG.md는 태스크 done이 현황 표를 고쳐 main과 달라진다 — 전체 상태가 이미 진행이면 동기화할 것이 없다
       const inWorktree = readFileSync(existingPath, "utf8");
       if (inWorktree === backlogChange.text || alreadyInProgress(inWorktree)) {
+        if (options.roleChoice) adoptTeamMetrics(existing, folder);
         const launch = options.relaunch ? launchWorker(ref, existing, repo.root, options) : null;
         return { ref: { ...ref, worktree: existing }, created: false, setup: null, launch, choice: options.choice, ...(options.roleChoice ? { roleChoice: options.roleChoice } : {}) };
       }
@@ -801,6 +847,7 @@ function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { 
   guardDashboardDrafts(repo.root, [folder, ...(backlogRel ? [backlogRel] : [])]);
   // 이미 존재하는 worktree라도 연결 BL이 동기화되지 않았다면 준비부터 복구한다.
   if (existing !== null && !backlogChange) {
+    if (options.roleChoice) adoptTeamMetrics(existing, folder);
     const launch = options.relaunch ? launchWorker(ref, existing, repo.root, options) : null;
     return { ref: { ...ref, worktree: existing }, created: false, setup: null, launch, choice: options.choice, ...(options.roleChoice ? { roleChoice: options.roleChoice } : {}) };
   }
@@ -843,6 +890,7 @@ function startProjectRaw(repo: Repo, id: string, options: StartOptions = {}): { 
     throw error;
   }
   if ((backlogChange || !branchAlreadyExists) && !gitOk(worktree, ["merge", "--ff-only", repo.base])) throw new HarnessError("main의 백로그 커밋은 기록됐으나 worktree 반영에 실패했다 — worktree 변경을 보존하고 확인 후 start를 재시도한다");
+  if (options.roleChoice) adoptTeamMetrics(worktree, folder);
   const launch = launchWorker(ref, worktree, repo.root, options);
   return { ref: { ...ref, worktree }, created: existing === null, setup, launch, choice: options.choice, ...(options.roleChoice ? { roleChoice: options.roleChoice } : {}) };
 }
@@ -1087,8 +1135,42 @@ function checkCriteria(contract: string, close: string, prefix: "T" | "P", label
   }
 }
 
+interface TaskCandidateFiles {
+  hasEntry(path: string): boolean;
+  hasEvidence(path: string): boolean;
+  hasProof(path: string): boolean;
+  readText(path: string): string | null;
+}
+
+function taskCandidateFiles(repo: Repo, projectRel: string, head: string): TaskCandidateFiles {
+  const env = { GIT_NO_LAZY_FETCH: "1", GIT_NO_REPLACE_OBJECTS: "1" };
+  const tree = gitSpawn(repo.root, ["--literal-pathspecs", "ls-tree", "-r", "-t", "-l", "-z", head, "--", `${projectRel}/tasks`], env);
+  if (tree.status !== 0) throw new HarnessError("검사 후보의 태스크 Git tree를 읽지 못했다");
+  const files = new Map<string, { mode: string; size: number }>();
+  for (const entry of tree.stdout.split("\0")) {
+    if (entry === "") continue;
+    const item = /^(\d+) \S+ [a-f0-9]+ +([0-9]+|-)\t([\s\S]+)$/.exec(entry);
+    if (!item) throw new HarnessError("검사 후보의 태스크 Git tree 형식을 확인하지 못했다");
+    files.set(item[3]!, { mode: item[1]!, size: Number(item[2]) });
+  }
+  const metadata = (path: string) => files.get(relativeGitPath(repo.root, path));
+  const regular = (entry: { mode: string } | undefined) => /^(100644|100755)$/.test(entry?.mode ?? "");
+  return {
+    hasEntry: (path) => metadata(path) !== undefined,
+    hasEvidence: (path) => { const entry = metadata(path); return regular(entry) || entry?.mode === "040000"; },
+    hasProof: (path) => { const entry = metadata(path); return regular(entry) && entry!.size > 0; },
+    readText(path) {
+      const rel = relativeGitPath(repo.root, path);
+      if (!regular(files.get(rel))) return null;
+      const content = gitSpawn(repo.root, ["show", `${head}:${rel}`], env);
+      if (content.status !== 0) throw new HarnessError("검사 후보의 태스크 Git 파일을 읽지 못했다");
+      return content.stdout;
+    },
+  };
+}
+
 /** 적힌 증거 경로가 있는지 확인하고, 서로 다른 경로 수를 돌려준다. */
-function checkEvidencePaths(dir: string, text: string, label: string, issues: string[]): number {
+function checkEvidencePaths(dir: string, text: string, label: string, issues: string[], candidate?: TaskCandidateFiles): number {
   const seen = new Set<string>();
   // 마크다운 링크 [evidence/a](evidence/a)의 괄호·대괄호는 경로가 아니다.
   for (const m of stripComments(text).matchAll(/`?((?:\.\/)?evidence\/[^\s`|()[\]]+)`?/g)) {
@@ -1096,12 +1178,17 @@ function checkEvidencePaths(dir: string, text: string, label: string, issues: st
     const path = m[1]!.replace(/^\.\//, "").replace(/[,.:;]+$/, "");
     if (seen.has(path)) continue;
     seen.add(path);
-    if (!existsSync(join(dir, path))) issues.push(`${label}: 증거 파일이 없다 — ${path}`);
+    const absolute = join(dir, path);
+    if (candidate) {
+      if (!relativeGitPath(dir, absolute).startsWith("evidence/") || !candidate.hasEvidence(absolute)) {
+        issues.push(`${label}: 검사 후보의 증거 파일이 없다 — ${path}`);
+      }
+    } else if (!existsSync(absolute)) issues.push(`${label}: 증거 파일이 없다 — ${path}`);
   }
   return seen.size;
 }
 
-function checkTaskRaw(repo: Repo, id: string, taskId: string): Report {
+function checkTaskRaw(repo: Repo, id: string, taskId: string, candidate?: TaskCandidateFiles): Report {
   const ref = findProject(repo, id);
   requireOwnWorktree(repo, ref, "check");
   const dir = taskDir(repo, ref, taskId);
@@ -1109,11 +1196,17 @@ function checkTaskRaw(repo: Repo, id: string, taskId: string): Report {
   const label = `${ref.id} ${taskId.toUpperCase()}`;
   const contractPath = join(dir, "TASK.md");
   const closePath = join(dir, "TASK-CLOSE.md");
-  if (!existsSync(closePath)) return { ok: false, issues: [`${label}: TASK-CLOSE.md가 없다`], notes: [] };
-  const close = readFileSync(closePath, "utf8");
+  const close = candidate ? candidate.readText(closePath) : existsSync(closePath) ? readFileSync(closePath, "utf8") : null;
+  if (close === null) return { ok: false, issues: [`${label}: TASK-CLOSE.md가 없다`], notes: [] };
   if (!/^- 태스크: .*판정: 통과/m.test(close)) issues.push(`${label}: 판정이 "통과"가 아니다`);
-  const contract = readFileSync(contractPath, "utf8");
-  issues.push(...reviewIssues(dir, contract).map(issue => `${label}: ${issue}`));
+  const contract = candidate ? candidate.readText(contractPath) : readFileSync(contractPath, "utf8");
+  if (contract === null) return { ok: false, issues: [`${label}: 검사 후보의 TASK.md가 없다`], notes: [] };
+  const candidateReview = candidate ? {
+    hasEntry: (path: string) => candidate.hasEntry(join(dir, path)),
+    hasProof: (path: string) => candidate.hasProof(join(dir, path)),
+    readText: (path: string) => candidate.readText(join(dir, path)),
+  } : undefined;
+  issues.push(...reviewIssues(dir, contract, candidateReview).map(issue => `${label}: ${issue}`));
   checkCriteria(contract, close, "T", label, issues);
   const headings = ["## 단위 테스트", "## E2E", "## 리뷰", "## 남긴 것"];
   for (const heading of headings) {
@@ -1121,7 +1214,7 @@ function checkTaskRaw(repo: Repo, id: string, taskId: string): Report {
     if (section === null) issues.push(`${label}: ${heading} 절이 없다`);
     else if (section.replace(/<!--[\s\S]*?-->/g, "").trim() === "") issues.push(`${label}: ${heading} 절이 비었다`);
   }
-  const evidence = checkEvidencePaths(dir, close, label, issues);
+  const evidence = checkEvidencePaths(dir, close, label, issues, candidate);
   const criteria = tableRows(contract, "## 기준").map((r) => r[0]!).filter((c) => /^T-\d+$/.test(c));
   const notes = issues.length === 0 ? [`확인: 판정 통과 · 기준 ${criteria.length}개(${criteria.join(", ")}) 모두 통과 · 절 ${headings.length}개 · 증거 파일 ${evidence}개`] : [];
   return { ok: issues.length === 0, issues, notes };
@@ -1173,9 +1266,9 @@ function regenerateIndexes(root: string): void {
 }
 
 /** main 위로 rebase한다. 목차 파일만 충돌하면 다시 만들어 이어 가고, 그 밖의 충돌은 멈춘다. */
-function rebaseOnto(root: string, base: string, notes: string[]): string[] {
-  if (gitOk(root, ["merge-base", "--is-ancestor", base, "HEAD"])) return [];
-  let step = gitSpawn(root, ["rebase", base]);
+function rebaseOnto(root: string, base: string, notes: string[], target = base): string[] {
+  if (gitOk(root, ["merge-base", "--is-ancestor", target, "HEAD"])) return [];
+  let step = gitSpawn(root, ["rebase", target]);
   for (let guard = 0; rebaseInProgress(root) && guard < 200; guard++) {
     const conflicted = git(root, ["diff", "--name-only", "--diff-filter=U"], true).split("\n").filter(Boolean);
     const dashboardConflict = conflicted.includes("backlogs/dashboard/data.js");
@@ -1196,7 +1289,7 @@ function rebaseOnto(root: string, base: string, notes: string[]): string[] {
     }
   }
   if (rebaseInProgress(root)) return [`rebase가 끝나지 않았다: ${(step.stderr || step.stdout).trim()}`];
-  if (!gitOk(root, ["merge-base", "--is-ancestor", base, "HEAD"])) return [`rebase에 실패했다: ${(step.stderr || step.stdout).trim()}`];
+  if (!gitOk(root, ["merge-base", "--is-ancestor", target, "HEAD"])) return [`rebase에 실패했다: ${(step.stderr || step.stdout).trim()}`];
   notes.push(`${base} 위로 rebase`);
   return [];
 }
@@ -1269,8 +1362,57 @@ function canonTargets(project: string): string[] {
     .filter((p) => !p.includes(" "));
 }
 
-function finishProjectRaw(repo: Repo, id: string): Report {
-  const ref = findProject(repo, id);
+const reviewedTeamWorktree = "팀 마감 전에는 검토한 변경만 직접 커밋하고 깨끗한 작업본에서 finish를 다시 실행한다";
+
+function cleanTeamWorktree(root: string): boolean {
+  return git(root, ["status", "--porcelain", "--untracked-files=all", "--ignore-submodules=none"]) === "";
+}
+
+function finishStrayPaths(root: string, project: string, mainDirect: boolean): string[] {
+  return pendingPaths(root, false).filter((path) =>
+    !path.startsWith(`${project}/`) && (mainDirect || !path.startsWith(".pace/")) && path !== "backlogs/dashboard/data.js");
+}
+
+function validateTeamFinishCandidate(repo: Repo, ref: ProjectRef, projectRel: string, head: string, finishGit: Parameters<typeof assertTeamFinishInputs>[2]): string[] {
+  const inputs = new InputSnapshot(), logProofInputs = new InputSnapshot();
+  assertTeamCommitReceipts(repo.root, projectRel, ref.id, inputs, logProofInputs);
+  const dashboard = collectDashboard(repo, ref, {}, inputs);
+  const issues = teamRetrospectiveIssues(repo.root, projectRel, dashboard.improvements, dashboard.team?.unusedRoleCandidates.map((r) => r.role), dashboard.team?.period, inputs, true);
+  if (issues.length) return issues;
+  assertTeamFinishInputs(repo.root, inputs, finishGit, head);
+  assertTeamFinishInputs(repo.root, logProofInputs, finishGit, head, { allowMissingFiles: true });
+  return [];
+}
+
+function finishSecurityChecks(repo: Repo, mainDirect: boolean, notes: string[], candidateBase?: string): string | undefined {
+  const beforeCommands = candidateBase === undefined ? undefined : finishInputFingerprint(repo.root);
+  const security = executionCommand(repo, repo.root, "보안 검사");
+  if (security === null) notes.push("경고: 보안 검사 명령이 선언되지 않았다 (docs/README.md 환경)");
+  else {
+    const r = run(repo.root, security);
+    if (!r.ok) return `보안 검사 실패: ${security}\n${r.output.slice(-2000)}`;
+    notes.push(`보안 검사 통과: ${security}`);
+  }
+  // 4-1. 의존성 감사(선택 선언) — 잠금 파일이 base 대비 바뀐 브랜치에서만. worktree 준비는 조회 없이 설치하고, 기존 패키지의 새 취약점은 main 주기 점검이 맡는다.
+  const audit = executionCommand(repo, repo.root, "의존성 감사");
+  if (audit !== null) {
+    if (mainDirect) notes.push("의존성 감사 생략: main 직접 마감 — 잠금 파일을 바꿨다면 직접 실행한다");
+    else {
+      const locks = changedLockFiles(git(repo.root, ["diff", "--name-only", "--no-renames", `${candidateBase ?? repo.base}...HEAD`], true).split("\n").filter(Boolean));
+      if (locks.length === 0) notes.push("의존성 감사 생략: 잠금 파일이 base와 같다");
+      else {
+        const r = run(repo.root, audit);
+        if (!r.ok) return `의존성 감사 실패 (${locks.join(", ")}): ${audit}\n${r.output.slice(-2000)}`;
+        notes.push(`의존성 감사 통과 (${locks.join(", ")}): ${audit}`);
+      }
+    }
+  }
+  if (beforeCommands !== undefined && finishInputFingerprint(repo.root) !== beforeCommands) return "보안 검사/의존성 감사 뒤 자료 또는 인덱스가 바뀌었다: 확인·커밋하고 finish를 다시 실행한다";
+  return undefined;
+}
+
+function finishProjectRaw(repo: Repo, id: string, attempt: { source?: string; preserveLog?: boolean }): Report {
+  let ref = findProject(repo, id);
   const onOwnBranch = repo.branch === ref.branch;
   const mainDirect = !repo.inWorktree && repo.branch === repo.base && !branchExists(repo, ref.branch);
   if (!onOwnBranch && !mainDirect) {
@@ -1278,11 +1420,62 @@ function finishProjectRaw(repo: Repo, id: string): Report {
   }
   const issues: string[] = [];
   const notes: string[] = [];
+  let projectRel = relativeGitPath(repo.root, join(projectsRoot(repo.root), ref.dir));
+  const finishGit = (args: string[], env?: Record<string, string>) => gitSpawn(repo.root, args, env);
+  const initialHead = git(repo.root, ["rev-parse", "--verify", "HEAD"]);
+  let candidateHead = initialHead;
+  const baseRef = `refs/heads/${repo.base}`;
+  const originalBase = mainDirect ? initialHead : git(repo.root, ["rev-parse", "--verify", baseRef], true);
+  if (!originalBase) {
+    attempt.preserveLog = true;
+    return { ok: false, issues: ["마감 기준 브랜치를 확인할 수 없다: 기준을 확인하고 finish를 다시 실행한다"], notes };
+  }
+  let initialTeamRequired = false;
+  try {
+    initialTeamRequired = teamRetrospectiveRequired(repo.root, projectRel);
+    if (!initialTeamRequired) {
+      const history = hasTeamFinishHistory(projectRel, ref.id, initialHead, finishGit)
+        ? "팀 채택 이력이 있다: 팀 측정 입력을 복원하고 다시 마감한다"
+        : originalBase !== initialHead && hasTeamFinishHistory(projectRel, ref.id, originalBase, finishGit)
+        ? "기준 브랜치에만 팀 채택 이력이 있다: 채택 입력을 확인한 뒤 다시 마감한다"
+        : undefined;
+      if (history) {
+        attempt.preserveLog = true;
+        return { ok: false, issues: [history], notes };
+      }
+    }
+    if (initialTeamRequired) {
+      if (!cleanTeamWorktree(repo.root) || git(repo.root, ["rev-parse", "--verify", "HEAD"]) !== initialHead) {
+        attempt.preserveLog = true;
+        return { ok: false, issues: [reviewedTeamWorktree], notes };
+      }
+      if (!mainDirect) {
+        const conflict = rebaseOnto(repo.root, repo.base, notes, originalBase);
+        if (conflict.length) return { ok: false, issues: conflict, notes };
+        ref = findProject(repo, id);
+        projectRel = relativeGitPath(repo.root, join(projectsRoot(repo.root), ref.dir));
+        if (!teamRetrospectiveRequired(repo.root, projectRel)) {
+          return { ok: false, issues: ["팀 채택 근거가 rebase/검사 중 사라졌다: 팀 측정 입력을 복원하고 다시 마감한다"], notes };
+        }
+        assertTeamFinishDestination(repo.root, projectRel, ref.id);
+      }
+      candidateHead = git(repo.root, ["rev-parse", "--verify", "HEAD"]);
+      if (!cleanTeamWorktree(repo.root)) {
+        attempt.preserveLog = true;
+        return { ok: false, issues: [reviewedTeamWorktree], notes };
+      }
+      issues.push(...handoffCommitPrivacyIssues(repo.root, candidateHead, mainDirect ? undefined : originalBase));
+      issues.push(...validateTeamFinishCandidate(repo, ref, projectRel, candidateHead, finishGit));
+    }
+  } catch (error) {
+    if (!cleanTeamWorktree(repo.root)) attempt.preserveLog = true;
+    issues.push(`팀 측정/회고 입력 또는 선언 영수증 메타데이터를 검증하지 못했다; finish 보류${error instanceof Error ? `\n${error.message}` : ""}`);
+  }
   const projectPath = projectFile(repo, ref);
   const project = readFileSync(projectPath, "utf8");
   const dir = join(projectsRoot(repo.root), ref.dir);
   const backlogChange = mainDirect ? backlogStateChange(repo, projectPath, project, "완료") : null;
-  const projectRel = relativeGitPath(repo.root, dir);
+  const comparisonBase = initialTeamRequired ? originalBase : repo.base;
   issues.push(...handoffPrivacyIssues(repo.root));
   try {
     const handoffs = collectHandoffs(repo.root, ref.id, projectRel);
@@ -1294,18 +1487,19 @@ function finishProjectRaw(repo: Repo, id: string): Report {
   if (backlogRel) requireCleanBacklog(repo.root, backlogRel);
   guardDashboardDrafts(repo.root, [projectRel, ...(backlogRel ? [backlogRel] : [])]);
   if (mainDirect) {
-    const stray = pendingPaths(repo.root).filter((f) => !f.startsWith(`${projectRel}/`) && f !== "backlogs/dashboard/data.js");
+    const stray = finishStrayPaths(repo.root, projectRel, mainDirect);
     if (stray.length) throw new HarnessError(`프로젝트 밖에 커밋하지 않은 변경이 있다: ${stray.slice(0, 10).join(", ")}`);
   }
 
   // 1. 태스크
+  const taskCandidate = initialTeamRequired ? taskCandidateFiles(repo, projectRel, candidateHead) : undefined;
   for (const row of taskRows(project)) {
     const [taskId, , , state] = row;
     if (!/^T\d{2}$/.test(taskId ?? "")) continue;
     if (state === "보류") continue;
     if (state !== "완료") issues.push(`${taskId}: 상태가 완료가 아니다 (${state || "빈칸"})`);
     else {
-      issues.push(...checkTaskRaw(repo, id, taskId!).issues);
+      issues.push(...checkTaskRaw(repo, id, taskId!, taskCandidate).issues);
       // 승인된 선반영 뒤에도 태스크 커밋은 HEAD의 조상이다. 다른 브랜치의 태그는 인정하지 않는다.
       const commits = git(repo.root, ["log", "-1", "--format=%h", "-F", `--grep=(${ref.id}/${taskId})`, "HEAD"]);
       if (commits === "") issues.push(`${taskId}: 태스크 커밋이 없다 — (${ref.id}/${taskId})`);
@@ -1359,7 +1553,7 @@ function finishProjectRaw(repo: Repo, id: string): Report {
   }
   // 2-1. 브레인 행 — main 직접 프로젝트도 확인한다. 반영 여부는 커밋된 변경과 아직 커밋하지 않은 변경을 함께 본다.
   {
-    const committed = mainDirect ? [] : git(repo.root, ["diff", "--name-only", "--no-renames", `${repo.base}...HEAD`], true).split("\n");
+    const committed = mainDirect ? [] : git(repo.root, ["diff", "--name-only", "--no-renames", `${comparisonBase}...HEAD`], true).split("\n");
     const pending = pendingPaths(repo.root);
     const changed = new Set([...committed, ...pending].filter(Boolean));
     for (const page of brainUpdateCandidates(repo.root, changed)) notes.push(`브레인 갱신 후보: ${page} — 변경된 근거의 주장을 확인한다`);
@@ -1367,7 +1561,7 @@ function finishProjectRaw(repo: Repo, id: string): Report {
   }
   // 3. 정본 반영 — 목록의 경로가 이 브랜치에서 바뀌었거나, PROJECT-CLOSE에 "해당 없음"으로 적혔는지
   if (!mainDirect) {
-    const changed = new Set(git(repo.root, ["diff", "--name-only", "--no-renames", `${repo.base}...HEAD`], true).split("\n").filter(Boolean));
+    const changed = new Set(git(repo.root, ["diff", "--name-only", "--no-renames", `${comparisonBase}...HEAD`], true).split("\n").filter(Boolean));
     const closeRows = close ? tableRows(close, "## 정본 반영") : [];
     for (const target of canonTargets(project)) {
       const touched = canonTouched(target, changed);
@@ -1377,8 +1571,7 @@ function finishProjectRaw(repo: Repo, id: string): Report {
   }
   // 3-1. 프로젝트 밖의 커밋하지 않은 변경 — 마감 커밋에 검사 없이 쓸려 들어가지 않게
   if (!mainDirect) {
-    const projectRel = relativeGitPath(repo.root, dir);
-    const stray = pendingPaths(repo.root).filter((f) => !f.startsWith(`${projectRel}/`) && !f.startsWith(".pace/") && f !== "backlogs/dashboard/data.js");
+    const stray = finishStrayPaths(repo.root, projectRel, mainDirect);
     if (stray.length > 0) issues.push(`커밋하지 않은 변경이 있다 — 태스크 커밋에 넣거나 치운다: ${stray.slice(0, 10).join(", ")}`);
   }
   // 4. 보안 — 비밀 노출, 선언된 보안 검사
@@ -1389,52 +1582,60 @@ function finishProjectRaw(repo: Repo, id: string): Report {
     for (const issue of lint.issues.filter((i) => i.severity === "error")) issues.push(`브레인 lint: ${issue.page} — ${issue.detail}`);
   }
   if (issues.length > 0) return { ok: false, issues, notes };
-  const security = executionCommand(repo, repo.root, "보안 검사");
-  if (security === null) notes.push("경고: 보안 검사 명령이 선언되지 않았다 (docs/README.md 환경)");
-  else {
-    const r = run(repo.root, security);
-    if (!r.ok) return { ok: false, issues: [`보안 검사 실패: ${security}\n${r.output.slice(-2000)}`], notes };
-    notes.push(`보안 검사 통과: ${security}`);
-  }
-  // 4-1. 의존성 감사(선택 선언) — 잠금 파일이 base 대비 바뀐 브랜치에서만. worktree 준비는 조회 없이 설치하고, 기존 패키지의 새 취약점은 main 주기 점검이 맡는다.
-  const audit = executionCommand(repo, repo.root, "의존성 감사");
-  if (audit !== null) {
-    if (mainDirect) notes.push("의존성 감사 생략: main 직접 마감 — 잠금 파일을 바꿨다면 직접 실행한다");
-    else {
-      const locks = changedLockFiles(git(repo.root, ["diff", "--name-only", "--no-renames", `${repo.base}...HEAD`], true).split("\n").filter(Boolean));
-      if (locks.length === 0) notes.push("의존성 감사 생략: 잠금 파일이 base와 같다");
-      else {
-        const r = run(repo.root, audit);
-        if (!r.ok) return { ok: false, issues: [`의존성 감사 실패 (${locks.join(", ")}): ${audit}\n${r.output.slice(-2000)}`], notes };
-        notes.push(`의존성 감사 통과 (${locks.join(", ")}): ${audit}`);
-      }
-    }
-  }
+  const securityFailure = finishSecurityChecks(repo, mainDirect, notes, initialTeamRequired ? comparisonBase : undefined);
+  if (securityFailure) return { ok: false, issues: [securityFailure], notes };
   // 활성 대시보드 오류는 원본이나 인덱스를 바꾸기 전에 발견한다.
   const dashboardPath = "backlogs/dashboard/data.js";
   const dashboardPresent = existsSync(join(repo.root, dashboardPath));
-  if (dashboardPresent) {
+  if (dashboardPresent && !initialTeamRequired) {
     const restoreDashboard = snapshotOwned(repo.root, [dashboardPath]);
     withRestoration(() => generateDashboard(repo.root, true), restoreDashboard);
   }
-  const ownedFinish = [relative(repo.root, projectPath), relative(repo.root, projectFile(repo, ref, "METRICS.md")), "projects/METRICS.md", relative(repo.root, join(dir, "log.jsonl")), ...(backlogRel ? [backlogRel] : []), ...(dashboardPresent ? [dashboardPath] : []), ...(mainDirect ? pendingPaths(repo.root).filter((path) => path.startsWith(`${projectRel}/`)) : [])];
-  let restoreDirect = mainDirect ? snapshotOwned(repo.root, ownedFinish) : null;
+  const finishLog = relativeGitPath(repo.root, join(dir, "log.jsonl"));
+  const finishOutputs = [relativeGitPath(repo.root, projectPath), relativeGitPath(repo.root, projectFile(repo, ref, "METRICS.md")), "projects/METRICS.md", finishLog, ...(backlogRel ? [backlogRel] : []), ...(dashboardPresent ? [dashboardPath] : [])];
+  const ownedFinish = [...finishOutputs, ...(!mainDirect && initialTeamRequired ? [`${projectRel}/${teamFinishFile}`] : []), ...(mainDirect && !initialTeamRequired ? pendingPaths(repo.root).filter((path) => path.startsWith(`${projectRel}/`)) : [])];
+  let restoreDirect = mainDirect ? snapshotFinishOwned(repo.root, ownedFinish, finishLog, initialTeamRequired) : null;
   try {
-  // 5. 목차 정리
-  regenerateIndexes(repo.root);
-  if (!isClean(repo.root)) {
-    git(repo.root, ["add", "-A"]);
-    stageDashboard(repo.root);
-    git(repo.root, ["commit", "-m", `chore(${ref.id}): 목차 갱신`]);
-    // 성공한 중간 커밋은 되감지 않는다. 다음 복원은 이 HEAD와 인덱스를 기준으로 한다.
-    if (mainDirect) restoreDirect = snapshotOwned(repo.root, ownedFinish);
+  // Team inputs are already committed. The legacy path still collects its indexes.
+  if (initialTeamRequired) {
+    if (!cleanTeamWorktree(repo.root) || git(repo.root, ["rev-parse", "--verify", "HEAD"]) !== candidateHead) {
+      attempt.preserveLog = true;
+      return { ok: false, issues: [reviewedTeamWorktree], notes };
+    }
+  } else {
+    if (teamRetrospectiveRequired(repo.root, projectRel)) {
+      attempt.preserveLog = true;
+      return { ok: false, issues: ["검사 뒤 현재 작업본의 팀 채택 상태가 바뀌었다: 검토한 커밋을 확인하고 다시 마감한다"], notes };
+    }
+    const currentBase = git(repo.root, ["rev-parse", "--verify", baseRef]);
+    if (currentBase !== originalBase && hasTeamFinishHistory(projectRel, ref.id, currentBase, finishGit)) {
+      attempt.preserveLog = true;
+      return { ok: false, issues: ["기준 브랜치에만 팀 채택 이력이 있다: 채택 입력을 확인한 뒤 다시 마감한다"], notes };
+    }
+    const currentHead = git(repo.root, ["rev-parse", "--verify", "HEAD"]);
+    if (currentHead !== initialHead && hasTeamFinishHistory(projectRel, ref.id, currentHead, finishGit)) {
+      attempt.preserveLog = true;
+      return { ok: false, issues: ["검사 뒤 팀 채택 이력이 생겼다: 검토한 커밋을 확인하고 다시 마감한다"], notes };
+    }
+    const commitPrivacy = handoffPrivacyIssues(repo.root);
+    if (commitPrivacy.length) return { ok: false, issues: commitPrivacy, notes };
+    const stray = finishStrayPaths(repo.root, projectRel, mainDirect);
+    if (stray.length) return { ok: false, issues: [`보안 검사/의존성 감사 뒤 자료 또는 인덱스가 범위 밖에서 바뀌었다: ${stray.slice(0, 10).join(", ")}`], notes };
+    regenerateIndexes(repo.root);
+    if (!isClean(repo.root)) {
+      git(repo.root, ["add", "-A"]);
+      stageDashboard(repo.root);
+      git(repo.root, ["commit", "-m", `chore(${ref.id}): 목차 갱신`]);
+      if (mainDirect) restoreDirect = snapshotFinishOwned(repo.root, ownedFinish, finishLog, false);
+    }
   }
   // 6. rebase
-  if (!mainDirect) {
+  if (!mainDirect && !initialTeamRequired) {
     const conflict = rebaseOnto(repo.root, repo.base, notes);
     if (conflict.length > 0) return { ok: false, issues: conflict, notes };
   }
   // 7. 검사 명령(회귀)
+  const checkedHead = initialTeamRequired ? candidateHead : git(repo.root, ["rev-parse", "HEAD"]);
   const check = executionCommand(repo, repo.root, "검사");
   if (check === null) notes.push("경고: 검사 명령이 선언되지 않았다 (docs/README.md 환경)");
   else {
@@ -1442,21 +1643,74 @@ function finishProjectRaw(repo: Repo, id: string): Report {
     if (!r.ok) return { ok: false, issues: [`검사 실패: ${check}\n${r.output.slice(-2000)}`], notes };
     notes.push(`검사 통과: ${check}`);
   }
+  if (git(repo.root, ["rev-parse", "HEAD"]) !== checkedHead) return { ok: false, issues: ["검사 중 HEAD가 바뀌었다: 생성된 커밋을 보존하고 확인 뒤 finish를 다시 실행한다"], notes };
+  // Rebase/check may change team definitions; validate against the same final state used by metrics.
+  let finalTeamRequired = false;
+  try {
+    finalTeamRequired = teamRetrospectiveRequired(repo.root, projectRel);
+    if (initialTeamRequired && !finalTeamRequired) return { ok: false, issues: ["팀 채택 근거가 rebase/검사 중 사라졌다: 팀 측정 입력을 복원하고 다시 마감한다"], notes };
+    if (!initialTeamRequired && finalTeamRequired) return { ok: false, issues: ["rebase/검사 중 팀 채택 상태가 바뀌었다: 검토한 커밋을 확인하고 다시 마감한다"], notes };
+    if (!finalTeamRequired && hasTeamFinishHistory(projectRel, ref.id, checkedHead, finishGit)) {
+      return { ok: false, issues: ["rebase 뒤 팀 채택 이력이 있다: 팀 측정 입력을 복원하고 다시 마감한다"], notes };
+    }
+    if (finalTeamRequired) {
+      if (!cleanTeamWorktree(repo.root)) return { ok: false, issues: ["검사 뒤 staged/unstaged 자료가 바뀌었다: 확인·커밋하고 finish를 다시 실행한다"], notes };
+      const commitPrivacy = handoffCommitPrivacyIssues(repo.root, checkedHead, mainDirect ? undefined : originalBase);
+      if (commitPrivacy.length) return { ok: false, issues: commitPrivacy, notes };
+      const finalTeamIssues = validateTeamFinishCandidate(repo, ref, projectRel, checkedHead, finishGit);
+      if (finalTeamIssues.length) return { ok: false, issues: finalTeamIssues, notes };
+    }
+  } catch (error) { return { ok: false, issues: [`최종 팀 측정/회고 대조 실패; finish 보류${error instanceof Error ? `\n${error.message}` : ""}`], notes }; }
   // 8. 병합 대기 — 커밋 칸은 rebase 뒤 해시로
   const filled = fillCommitHashes(repo.root, ref, readFileSync(projectPath, "utf8"));
   if (filled.filled.length > 0) notes.push(`커밋 칸: ${filled.filled.join(", ")}`);
-  const restoreFinal = mainDirect ? null : snapshotOwned(repo.root, ownedFinish);
+  if (finalTeamRequired) attempt.source = `finish:${randomBytes(12).toString("hex")}`;
+  const restoreFinal = mainDirect ? null : snapshotFinishOwned(repo.root, [...ownedFinish, ...(!mainDirect && finalTeamRequired ? [`${projectRel}/${teamFinishFile}`] : [])], finishLog, finalTeamRequired);
   try {
   writeBacklogState(repo, backlogChange);
   writeFileAtomic(projectPath, setState(filled.text, mainDirect ? "완료" : "병합 대기"));
-  refreshProjectMetrics(repo, ref, { finishing: true });
+  const validatedTeamInputs = new InputSnapshot();
+  if (finalTeamRequired && !emitMetric(repo, ref.id, "finish", true, undefined, undefined, { src: attempt.source }, false, true)) {
+    throw new HarnessError("팀 마감 성공 사건을 기록하지 못했다");
+  }
+  const finalDashboard = refreshProjectMetrics(repo, ref, { finishing: true }, finalTeamRequired ? validatedTeamInputs : undefined);
+  if (finalTeamRequired) {
+    const finalIssues = teamRetrospectiveIssues(repo.root, projectRel, finalDashboard.improvements, finalDashboard.team?.unusedRoleCandidates.map((r) => r.role), finalDashboard.team?.period, validatedTeamInputs, true);
+    if (finalIssues.length) throw new HarnessError(finalIssues.join("\n"));
+  }
   git(repo.root, ["add", "--", projectFile(repo, ref, "METRICS.md"), join(repo.root,"projects","METRICS.md")]);
-  emitMetric(repo, ref.id, "finish", true);
-  git(repo.root, ["add", "--", join(dir, "log.jsonl")], true);
+  if (!finalTeamRequired) emitMetric(repo, ref.id, "finish", true);
+  git(repo.root, ["add", "--", join(dir, "log.jsonl")], !finalTeamRequired);
   // 검사 명령이 만든 파일(로그 등)은 마감 커밋에 넣지 않는다.
   git(repo.root, ["add", "--", projectPath]);
   stageDashboard(repo.root);
-  if (!gitOk(repo.root, ["diff", "--cached", "--quiet"])) git(repo.root, ["commit", "-m", `chore(${ref.id}): 마감`]);
+  const capturedTree = finalTeamRequired ? git(repo.root, ["write-tree"]) : null;
+  let finishReceipt: { path: string; content: string } | undefined;
+  if (capturedTree) {
+    assertTeamFinishInputs(repo.root, validatedTeamInputs, finishGit, capturedTree);
+    assertTeamFinishScope(finishGit, checkedHead, capturedTree, finishOutputs);
+    if (git(repo.root, ["rev-parse", "HEAD"]) !== checkedHead) throw new HarnessError("마감 중 HEAD가 바뀌었다: 생성된 커밋을 보존하고 finish를 다시 실행한다");
+    if (!mainDirect) finishReceipt = {
+      path: `${projectRel}/${teamFinishFile}`,
+      content: writeTeamFinish(repo.root, projectRel, ref.id, finishGit, {
+        tree: capturedTree, parent: checkedHead, checkStatus: check === null ? "not-run" : "passed",
+      }),
+    };
+  }
+  const finishMessage = `chore(${ref.id}): 마감`;
+  if (capturedTree) commitTeamFinish(finishGit, capturedTree, checkedHead, finishMessage, finishReceipt);
+  else if (!gitOk(repo.root, ["diff", "--cached", "--quiet"])) git(repo.root, ["commit", "-m", finishMessage]);
+  if (capturedTree) {
+    try {
+      const finishedHead = git(repo.root, ["rev-parse", "HEAD"]);
+      const finalTree = git(repo.root, ["rev-parse", `${finishedHead}^{tree}`]);
+      if (finishedHead !== checkedHead && git(repo.root, ["rev-parse", `${finishedHead}^1`]) !== checkedHead) throw new HarnessError("마감 커밋의 부모가 검사한 HEAD와 다르다");
+      assertTeamFinishInputs(repo.root, validatedTeamInputs, finishGit, finalTree);
+      if (mainDirect) {
+        if (finalTree !== capturedTree) throw new HarnessError("마감 커밋과 고정 Git tree가 다르다");
+      } else checkedTeamTarget(projectRel, ref.id, finishedHead, finishGit);
+    } catch { return { ok: false, issues: ["마감 커밋 중 입력/tree가 바뀌었다. 생성된 커밋을 보존했으니 변경을 확인하고 finish를 다시 실행한다"], notes }; }
+  }
   notes.push(mainDirect ? "완료 (main 직접 프로젝트 — merge 필요 없음)" : `병합 대기 — main 체크아웃에서: pace project merge ${ref.id}`);
   return { ok: true, issues, notes };
   } catch (error) { if (restoreFinal) restoreAfterFailure(error, restoreFinal); throw error; }
@@ -1465,9 +1719,34 @@ function finishProjectRaw(repo: Repo, id: string): Report {
 
 export interface MergePlan {
   ref: ProjectRef;
+  target: string;
   worktree: string | null;
   commits: string[];
   summary: string;
+  teamTarget?: string;
+}
+
+const mergeRejectionSource = "merge:before-ff";
+function mergeWorktreeReady(root: string, target: string, id: string, log: string): boolean {
+  const status = gitSpawn(root, ["status", "--porcelain", "-z", "--untracked-files=all"]);
+  if (status.status !== 0) return false;
+  if (status.stdout === "") return true;
+  const untracked = status.stdout === `?? ${log}\0`;
+  if (!untracked && status.stdout !== ` M ${log}\0`) return false;
+  try {
+    if (untracked && git(root, ["--literal-pathspecs", "ls-tree", "-z", target, "--", log]) !== "") return false;
+    const base = untracked ? "" : gitSpawn(root, ["show", `${target}:${log}`]);
+    if (base !== "" && base.status !== 0) return false;
+    const original = base === "" ? "" : base.stdout.replaceAll("\r\n", "\n");
+    const data = utf8(regularBytes(safeTeamPath(root, log), LEDGER_LIMIT)).replaceAll("\r\n", "\n");
+    if (!data.startsWith(original) || !data.endsWith("\n")) return false;
+    const appended = data.slice(original.length);
+    const rows = eventLines(appended);
+    return rows.length > 0 && rows.length === appended.split("\n").length - 1 && rows.every((row) =>
+      row.p === id && row.type === "merge" && row.by === "cli" && row.ok === false && row.src === mergeRejectionSource &&
+      /^merge: (security|rebase|checks|contract|state|command)$/.test(row.msg) &&
+      row.data && Object.keys(row.data).length === 0 && Object.keys(row).length === 8);
+  } catch { return false; }
 }
 
 function planMergeRaw(repo: Repo, id: string): MergePlan {
@@ -1476,31 +1755,39 @@ function planMergeRaw(repo: Repo, id: string): MergePlan {
   const want = id.toUpperCase();
   const branch = `project/${want}`;
   if (!branchExists(repo, branch)) throw new HarnessError(`브랜치가 없다: ${branch}`);
-  const files = git(repo.root, ["ls-tree", "-r", "--name-only", branch, "projects/"]).split("\n");
+  const target = git(repo.root, ["rev-parse", `${branch}^{commit}`]);
+  const files = git(repo.root, ["ls-tree", "-r", "--name-only", target, "projects/"]).split("\n");
   const projectRel = files.find((f) => new RegExp(`^projects/${want}_[^/]+/PROJECT\\.md$`).test(f));
   if (projectRel === undefined) throw new HarnessError(`${branch}에 PROJECT.md가 없다`);
   const ref = refFor(repo, projectRel.split("/")[1]!);
-  const state = readState(git(repo.root, ["show", `${branch}:${projectRel}`]));
+  const state = readState(git(repo.root, ["show", `${target}:${projectRel}`]));
   if (state !== "병합 대기") throw new HarnessError(`${ref.id} 상태가 병합 대기가 아니다 (${state}) — worktree에서 pace project finish ${ref.id}`);
+  const teamFinish = checkedTeamTarget(projectRel.replace(/\/PROJECT\.md$/, ""), ref.id, target, (args, env) => gitSpawn(repo.root, args, env));
+  const teamTarget = teamFinish?.target;
   if (!isClean(repo.root)) throw new HarnessError("main 작업 트리에 커밋하지 않은 변경이 있다");
-  if (!gitOk(repo.root, ["merge-base", "--is-ancestor", repo.base, branch])) {
+  if (!gitOk(repo.root, ["merge-base", "--is-ancestor", repo.base, target])) {
     throw new HarnessError(`fast-forward가 안 된다 — ${repo.base}가 앞서 갔다. worktree에서 pace project finish ${ref.id}를 다시 실행해 rebase한다`);
   }
-  const commits = git(repo.root, ["log", "--format=%h %s", `${repo.base}..${branch}`]).split("\n").filter(Boolean);
+  if (teamTarget) {
+    const base = git(repo.root, ["rev-parse", "--verify", "HEAD"]);
+    const privacyIssues = handoffCommitPrivacyIssues(repo.root, target, base);
+    if (privacyIssues.length) throw new HarnessError(privacyIssues.join("\n"));
+  }
+  const commits = git(repo.root, ["log", "--format=%h %s", `${repo.base}..${target}`]).split("\n").filter(Boolean);
   const closeRel = projectRel.replace(/PROJECT\.md$/, "PROJECT-CLOSE.md");
-  const close = git(repo.root, ["show", `${branch}:${closeRel}`], true);
+  const close = git(repo.root, ["show", `${target}:${closeRel}`], true);
   let summary = ["## 기준 대조", "## 보안", "## 남은 일"]
     .map((h) => (sectionBody(close, h) ?? "").replace(/<!--[\s\S]*?-->/g, "").trim())
     .filter(Boolean)
     .join("\n\n");
   const worktree = worktreeOf(repo, branch);
-  if (worktree !== null && !isClean(worktree)) {
+  if (worktree !== null && !mergeWorktreeReady(worktree, target, ref.id, projectRel.replace(/PROJECT\.md$/, "log.jsonl"))) {
     throw new HarnessError(`worktree에 커밋하지 않은 변경이 있다: ${worktree} — 커밋하거나 치운 뒤 다시 실행한다`);
   }
   const declarations: string[] = [];
   for (const label of COMMAND_LABELS) {
     const base = committedCommand(repo, repo.base, label);
-    const next = committedCommand(repo, branch, label);
+    const next = committedCommand(repo, target, label);
     if (base !== next) declarations.push(`${label}: ${base ?? "(선언 없음)"} → ${next ?? "(선언 없음)"}`);
   }
   if (declarations.length) summary += `\n\n환경 선언 변경 (병합 뒤 적용):\n${declarations.join("\n")}`;
@@ -1514,59 +1801,77 @@ function planMergeRaw(repo: Repo, id: string): MergePlan {
     const shown = ignored.map((path) => `  ${/[\x00-\x1f\x7f]/.test(path) ? JSON.stringify(path) : path}`);
     if (shown.length) summary += `\n${shown.slice(0, 20).join("\n")}${shown.length > 20 ? `\n  … 나머지 ${shown.length - 20}곳` : ""}`;
   }
-  return { ref, worktree, commits, summary };
+  if (teamFinish) {
+    const checkLabels = { passed: "통과", "not-run": "미실행", unrecorded: "기록 없음" } as const;
+    summary += `\n\n팀 finish 검증 대상: ${teamFinish.target}\n팀 전체 검사: ${checkLabels[teamFinish.checkStatus]}`;
+  }
+  return { ref, target, worktree, commits, summary, ...(teamTarget ? { teamTarget } : {}) };
 }
 
-function applyMergeRaw(repo: Repo, plan: MergePlan): string[] {
-  const done: string[] = [];
-  let backlogChange: { path: string; text: string } | null;
-  if (plan.worktree !== null) {
-    const sourceRepo = { ...repo, root: plan.worktree };
-    const sourceProject = projectFile(sourceRepo, plan.ref);
-    const validated = backlogStateChange(sourceRepo, sourceProject, readFileSync(sourceProject, "utf8"), "완료");
-    backlogChange = validated ? { path: join(repo.root, relative(plan.worktree, validated.path)), text: validated.text } : null;
-  } else {
-    // worktree가 없어도 병합 브랜치의 정본을 검증한다. Git 트리의 일반 파일만 허용한다.
-    const projectPath = projectFile(repo, plan.ref);
-    const projectRel = relativeGitPath(repo.root, projectPath);
-    const project = git(repo.root, ["show", `${plan.ref.branch}:${projectRel}`]);
-    const folder = linkedBacklogFolder(dirname(projectPath), project);
-    backlogChange = null;
-    if (folder !== null) {
-      const path = join(folder, "BACKLOG.md");
-      const rel = relativeGitPath(repo.root, path);
-      if (dirname(folder) !== join(repo.root, "backlogs")) throw new HarnessError("백로그 출처가 backlogs/ 밖을 가리킨다");
-      const tree = gitSpawn(repo.root, ["ls-tree", "-z", plan.ref.branch, "--", rel]);
-      if (tree.status !== 0 || !/^100(?:644|755) blob [0-9a-f]+\t/.test(tree.stdout)) throw new HarnessError("병합할 BACKLOG.md가 일반 파일이 아니다");
-      const blob = gitSpawn(repo.root, ["show", `${plan.ref.branch}:${rel}`]);
-      if (blob.status !== 0) throw new HarnessError("병합할 BACKLOG.md를 읽지 못했다");
-      backlogChange = { path, text: updatedBacklogState(blob.stdout, "완료") };
-    }
+function applyMergeRaw(repo: Repo, plan: MergePlan, markMerged: () => void): string[] {
+  const current = planMergeRaw(repo, plan.ref.id);
+  if (plan.target !== current.target || plan.worktree !== current.worktree ||
+      ((plan.teamTarget || current.teamTarget) && (plan.teamTarget !== current.teamTarget || plan.summary !== current.summary))) {
+    throw new HarnessError("병합 승인 대상이 바뀌었다: merge 계획을 다시 확인한다");
   }
-  git(repo.root, ["merge", "--ff-only", plan.ref.branch]);
+  plan = current;
+  const target = plan.target;
+  const done: string[] = [];
+  // The approved commit supplies both the project and its linked backlog.
   const projectPath = projectFile(repo, plan.ref);
+  const projectRel = relativeGitPath(repo.root, projectPath);
+  const project = git(repo.root, ["show", `${target}:${projectRel}`]);
+  const sourceRoot = !plan.teamTarget && plan.worktree !== null ? plan.worktree : repo.root;
+  const folder = linkedBacklogFolder(join(sourceRoot, dirname(projectRel)), project);
+  let backlogChange: { path: string; text: string } | null = null;
+  if (folder !== null) {
+    if (dirname(folder) !== join(sourceRoot, "backlogs")) throw new HarnessError("백로그 출처가 backlogs/ 밖을 가리킨다");
+    const rel = relativeGitPath(sourceRoot, join(folder, "BACKLOG.md"));
+    const tree = gitSpawn(repo.root, ["ls-tree", "-z", target, "--", rel]);
+    if (tree.status !== 0 || !/^100(?:644|755) blob [0-9a-f]+\t/.test(tree.stdout)) throw new HarnessError("병합할 BACKLOG.md가 일반 파일이 아니다");
+    const blob = gitSpawn(repo.root, ["show", `${target}:${rel}`]);
+    if (blob.status !== 0) throw new HarnessError("병합할 BACKLOG.md를 읽지 못했다");
+    backlogChange = { path: join(repo.root, rel), text: updatedBacklogState(blob.stdout, "완료") };
+  }
+  git(repo.root, ["merge", "--ff-only", target]);
+  markMerged();
   const ownedMerge = [relative(repo.root, projectPath), relative(repo.root, join(dirname(projectPath), "METRICS.md")), "projects/METRICS.md", relative(repo.root, join(dirname(projectPath), "log.jsonl")), ...(backlogChange ? [relative(repo.root, backlogChange.path)] : []), ...(existsSync(join(repo.root, "backlogs/dashboard/data.js")) ? ["backlogs/dashboard/data.js"] : [])];
   const restoreMerge = snapshotOwned(repo.root, ownedMerge);
   try {
+  if (plan.teamTarget && (!cleanTeamWorktree(repo.root) || git(repo.root, ["rev-parse", "HEAD"]) !== target)) {
+    throw new HarnessError("팀 병합 반영 뒤 훅 또는 동시 작업이 Git 상태를 바꿨다: 변경을 확인하고 상태 기록을 재시도한다");
+  }
   writeBacklogState(repo, backlogChange);
   done.push(`${repo.base} ← ${plan.ref.branch} (fast-forward, 커밋 ${plan.commits.length}개)`);
   writeFileAtomic(projectPath, setState(readFileSync(projectPath, "utf8"), "완료"));
   git(repo.root, ["add", "--", relative(repo.root, projectPath)]);
-  emitMetric(repo, plan.ref.id, "merge", true, undefined, undefined, { msg: "merge: 사용자 승인", data: { approved: 1, commits: plan.commits.length } });
+  const mergedEvent = emitMetric(repo, plan.ref.id, "merge", true, undefined, undefined, { msg: "merge: 사용자 승인", data: { approved: 1, commits: plan.commits.length } }, true, !!plan.teamTarget);
+  if (plan.teamTarget && !mergedEvent) throw new HarnessError("팀 병합 성공 사건을 기록하지 못했다");
   refreshProjectMetrics(repo, plan.ref);
   git(repo.root, ["add", "--", join(dirname(projectPath), "METRICS.md"), join(repo.root,"projects","METRICS.md")]);
-  git(repo.root, ["add", "--", join(dirname(projectPath), "log.jsonl")], true);
+  git(repo.root, ["add", "--", join(dirname(projectPath), "log.jsonl")], !plan.teamTarget);
   stageDashboard(repo.root);
-  git(repo.root, ["commit", "-m", `chore(${plan.ref.id}): 병합 완료`]);
+  const mergeMessage = `chore(${plan.ref.id}): 병합 완료`;
+  if (plan.teamTarget) {
+    const mergeGit = (args: string[], env?: Record<string, string>) => gitSpawn(repo.root, args, env);
+    const tree = git(repo.root, ["write-tree"]);
+    assertTeamFinishScope(mergeGit, target, tree, ownedMerge.map((path) => path.split(sep).join("/")));
+    commitTeamFinish(mergeGit, tree, target, mergeMessage);
+  } else git(repo.root, ["commit", "-m", mergeMessage]);
   } catch (error) {
     try { restoreAfterFailure(error, restoreMerge); } catch (restoredError) { error = restoredError; }
     const logPath = join(plan.worktree ?? repo.root, relative(repo.root, join(dirname(projectPath), "log.jsonl")));
     const recovery = plan.worktree
       ? `실패 로그 ${logPath}를 확인한 뒤 ${plan.worktree}에서 pace project finish ${plan.ref.id}, main에서 pace project merge ${plan.ref.id}를 실행한다`
       : `main의 실패 로그 ${logPath}만 확인해 커밋하고 pace project start ${plan.ref.id} --no-launch로 worktree를 복구한 뒤 그곳에서 pace project finish ${plan.ref.id}, main에서 pace project merge ${plan.ref.id}를 실행한다. 병합 대기 상태는 유지되며 start와 착수 결정 사건이 다시 기록된다`;
-    throw new HarnessError(`fast-forward는 완료됐으나 상태 기록에 실패했다: ${error instanceof Error ? error.message : String(error)}\n${recovery}`);
+    const teamRecovery = plan.teamTarget ? `\n팀 병합 재시도는 미리보기의 새 전체 SHA를 확인한 뒤 --yes --commit <새 SHA>를 사용한다. 로그 rebase 충돌이 나면 중단하고 양쪽 기록을 보존한 복구 결정을 받은 뒤 finish를 재시도한다` : "";
+    throw new MergeBookkeepingError(`fast-forward는 완료됐으나 상태 기록에 실패했다: ${error instanceof Error ? error.message : String(error)}\n${recovery}${teamRecovery}`, failureReason(error instanceof Error ? error.message : ""));
   }
   done.push("상태 완료 기록");
+  if (git(repo.root, ["rev-parse", plan.ref.branch], true) !== target || plan.worktree !== null && (!isClean(plan.worktree) || git(plan.worktree, ["rev-parse", "HEAD"], true) !== target)) {
+    done.push("병합 뒤 브랜치/worktree 변경 감지: 제거하지 않고 보존했다");
+    return done;
+  }
   if (plan.worktree !== null) {
     git(repo.root, [...(process.platform === "win32" ? ["-c", "core.longpaths=true"] : []), "worktree", "remove", plan.worktree]);
     done.push(`worktree 제거: ${plan.worktree}`);
@@ -1669,23 +1974,26 @@ export function formatReport(report: Report): string {
 }
 
 // Public boundaries record one event; internal validation is not a separate command.
-function emitMetric(repo: Repo, id: string, cmd: import("./metrics.ts").MetricCommand, ok: boolean, task?: string, reason?: string, details: Pick<import("./metrics.ts").MetricEvent, "msg" | "src" | "ref" | "data" | "role"> = {}): void {
+function emitMetric(repo: Repo, id: string, cmd: import("./metrics.ts").MetricCommand, ok: boolean, task?: string, reason?: string, details: Pick<import("./metrics.ts").MetricEvent, "msg" | "src" | "ref" | "data" | "role"> = {}, mergeApplied = false, required = false): boolean {
   try {
     const ref = findProject(repo, id);
     const worktree = !repo.inWorktree && (cmd !== "merge" || !ok) ? worktreeOf(repo, ref.branch) : null;
+    // A rejected merge without an owning worktree must not dirty main and block its retry.
+    if (cmd === "merge" && !ok && !repo.inWorktree && worktree === null && !mergeApplied) return false;
     const target = worktree ? { ...repo, root: worktree } : repo;
-    recordMetric(metricDir(target, ref), { ts: new Date().toISOString(), project: ref.id, cmd, ok, task: task?.toUpperCase(), reason, ...details });
-  } catch { /* Unknown projects have no safe destination. */ }
+    return recordMetric(metricDir(target, ref), { ts: new Date().toISOString(), project: ref.id, cmd, ok, task: task?.toUpperCase(), reason, ...details,
+      ...(cmd === "merge" && !ok && !mergeApplied ? { src: mergeRejectionSource } : {}) }, required);
+  } catch { return false; /* Unknown projects have no safe destination. */ }
 }
-function observed<T>(repo: Repo, id: string, cmd: import("./metrics.ts").MetricCommand, task: string | undefined, fn: () => T, committed = false): T {
+function observed<T>(repo: Repo, id: string, cmd: import("./metrics.ts").MetricCommand, task: string | undefined, fn: () => T, committed = false, mergeApplied: () => boolean = () => false, metricSource: () => string | undefined = () => undefined, record: () => boolean = () => true): T {
   try {
     const result = fn();
     const report = result as { ok?: boolean; issues?: string[]; taskId?: string; ref?: ProjectRef; created?: boolean; choice?: AgentChoice; launch?: LaunchResult | null; roleChoice?: WorkerRole };
     const ok = report.ok !== false;
-    if (!committed || !ok) {
+    if (record() && (!committed || !ok)) {
       const target = cmd === "start" && report.ref ? { ...repo, root: report.ref.worktree } : repo;
-      const details = cmd === "start" && ok ? { msg: `start: ${report.choice?.agent ?? "resume"} · launch ${report.launch?.status ?? "existing"}`, ...(report.choice ? { src: report.choice.source } : {}), ...(report.roleChoice ? { role: startRoleRecord(report.roleChoice, report.launch?.status === "launched" ? "arguments" : report.launch?.status === "unknown" ? "unconfirmed" : report.launch?.status === "failed" ? "rejected" : "planned") } : {}) } : {};
-      emitMetric(target, id, cmd, ok, report.taskId ?? task, ok ? undefined : failureReason(report.issues?.join(" ") ?? ""), details);
+      const details = cmd === "start" && ok ? { msg: `start: ${report.choice?.agent ?? "resume"} · launch ${report.launch?.status ?? "existing"}`, ...(report.choice ? { src: report.choice.source } : {}), ...(report.roleChoice ? { data: { teamMetricsVersion: 1 }, role: startRoleRecord(report.roleChoice, report.launch?.status === "launched" ? "arguments" : report.launch?.status === "unknown" ? "unconfirmed" : report.launch?.status === "failed" ? "rejected" : "planned") } : {}) } : {};
+      emitMetric(target, id, cmd, ok, report.taskId ?? task, ok ? undefined : failureReason(report.issues?.join(" ") ?? ""), { ...details, ...(metricSource() ? { src: metricSource() } : {}) });
       if (cmd === "start" && ok && report.created && report.ref) {
         const dir = metricDir(target, report.ref);
         try {
@@ -1697,7 +2005,7 @@ function observed<T>(repo: Repo, id: string, cmd: import("./metrics.ts").MetricC
     }
     return result;
   } catch (error) {
-    emitMetric(repo, id, cmd, false, task, failureReason(error instanceof Error ? error.message : ""));
+    if (record()) emitMetric(repo, id, cmd, false, task, error instanceof MergeBookkeepingError ? error.metricReason : failureReason(error instanceof Error ? error.message : ""), metricSource() ? { src: metricSource() } : {}, mergeApplied());
     throw error;
   }
 }
@@ -1721,10 +2029,12 @@ export function doneTask(repo: Repo, id: string, taskId: string): Report {
   return result;
 }
 export function finishProject(repo: Repo, id: string): Report {
-  return observed(repo, id, "finish", undefined, () => finishProjectRaw(repo, id), true);
+  const attempt: { source?: string; preserveLog?: boolean } = {};
+  return observed(repo, id, "finish", undefined, () => finishProjectRaw(repo, id, attempt), true, () => false, () => attempt.source, () => !attempt.preserveLog);
 }
 export function applyMerge(repo: Repo, plan: MergePlan): string[] {
-  return observed(repo, plan.ref.id, "merge", undefined, () => applyMergeRaw(repo, plan), true);
+  let merged = false;
+  return observed(repo, plan.ref.id, "merge", undefined, () => applyMergeRaw(repo, plan, () => { merged = true; }), true, () => merged);
 }
 
 export function planMerge(repo: Repo, id: string, recordFailure = false): MergePlan {

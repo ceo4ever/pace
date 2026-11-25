@@ -1,0 +1,8 @@
+file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%A7%9E%EC%B6%A4_%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8_%ED%8C%80/tasks/T06_%ED%8C%80_%EC%B8%A1%EC%A0%95%EA%B3%BC_%ED%9A%8C%EA%B3%A0/evidence/run-final-verify-file-transport65.mjs:10
+if(existsSync(out)) throw new Error("preserve existing review");
+                          ^
+
+Error: preserve existing review
+    at file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%A7%9E%EC%B6%A4_%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8_%ED%8C%80/tasks/T06_%ED%8C%80_%EC%B8%A1%EC%A0%95%EA%B3%BC_%ED%9A%8C%EA%B3%A0/evidence/run-final-verify-file-transport65.mjs:10:27
+
+Node.js v24.22.3

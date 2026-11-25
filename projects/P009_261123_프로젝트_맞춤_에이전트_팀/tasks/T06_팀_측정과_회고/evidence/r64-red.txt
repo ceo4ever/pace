@@ -1,0 +1,485 @@
+✖ R64 비교는 수집 확인 상태와 무관하게 모든 명시 영수증 경로를 검사한다 (574.949666ms)
+✖ R64 부분 품질 수집은 로그와 감사 관측을 보존하며 총량을 보류한다 (462.775375ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1159.458417
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:3009:1
+✖ R64 비교는 수집 확인 상태와 무관하게 모든 명시 영수증 경로를 검사한다 (574.949666ms)
+  AssertionError [ERR_ASSERTION]: {
+    "version": 1,
+    "study": "team-adoption",
+    "conclusion": "unknown",
+    "reasons": [
+      "after: 요청 수집 결합 미확인",
+      "실패만 남은 owner 요청이 있거나 해결 여부 미수집: 도달 감소를 부담 개선으로 해석하지 않음",
+      "수집 출처/경로 불일치 또는 혼재: 완료 영수증으로 수집 동등성을 확인하지 않음",
+      "owner_questions: 비교 총량 미확인",
+      "부담 지표 동률: 효과 방향 미확인"
+    ],
+    "additionalSamplePlan": [
+      "before: 같은 업무·크기·호스트에서 누락 없는 닫힌 표본을 추가 수집",
+      "after: 같은 업무·크기·호스트에서 누락 없는 닫힌 표본을 추가 수집",
+      "수집 경로를 통일한 표본을 확보하고 출처·수집 정의를 대조한다"
+    ],
+    "rows": [
+      {
+        "metric": "owner_questions",
+        "before": 10,
+        "after": null,
+        "delta": null,
+        "beforeObserved": null,
+        "afterObserved": 1
+      },
+      {
+        "metric": "owner_manual_role_corrections",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "owner_file_edits",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "owner_command_runs",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "coordinator_extra_instructions",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "normal_role_assignment",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "owner_approvals",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "owner_merge_approvals",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "owner_deploy_approvals",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "owner_scope_approvals",
+        "before": 10,
+        "after": 10,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "coordinator_questions",
+        "before": null,
+        "after": null,
+        "delta": null,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "coordinator_answers",
+        "before": null,
+        "after": null,
+        "delta": null,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "failed_owner_delivery_attempts",
+        "before": null,
+        "after": null,
+        "delta": null,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "failed_only_owner_requests",
+        "before": 0,
+        "after": null,
+        "delta": null,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "blocking_sum",
+        "before": 6,
+        "after": 6,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "blocking_sum_stats_events",
+        "before": 6,
+        "after": 6,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "blocking_sum_audited",
+        "before": null,
+        "after": null,
+        "delta": null,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "rereviews_after_fail",
+        "before": 4,
+        "after": 4,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "review_failures",
+        "before": 0,
+        "after": 0,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "should_fix_sum_stats_events",
+        "before": 0,
+        "after": 0,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      },
+      {
+        "metric": "gate_failures",
+        "before": 2,
+        "after": 2,
+        "delta": 0,
+        "beforeObserved": null,
+        "afterObserved": null
+      }
+    ],
+    "sources": {
+      "before": {
+        "qualitySamples": [
+          {
+            "blocking_sum": 3,
+            "blocking_sum_stats_events": 3,
+            "blocking_sum_audited": null,
+            "rereviews_after_fail": 2,
+            "review_failures": 0,
+            "should_fix_sum_stats_events": 0,
+            "gate_failures": 1
+          },
+          {
+            "blocking_sum": 3,
+            "blocking_sum_stats_events": 3,
+            "blocking_sum_audited": null,
+            "rereviews_after_fail": 2,
+            "review_failures": 0,
+            "should_fix_sum_stats_events": 0,
+            "gate_failures": 1
+          }
+        ],
+        "auditedBlockingPresent": false,
+        "origin": "independent-reported",
+        "sourceSha256": "8826cb67159c1eb4484b22612921f0bc09a4e4812b12b61946f3b671e43d8dfb",
+        "repository": "fixture-repo",
+        "context": {
+          "study": "team-adoption",
+          "conditionCode": "no-team",
+          "definition": "reach-v1",
+          "unit": "representative-task",
+          "workType": "feature",
+          "sizeBand": "small",
+          "host": "codex",
+          "sampleCount": 2,
+          "recordingBoundary": "closed-task",
+          "qualitySource": "event-log",
+          "qualityScopeHash": "4ce628773c04a49ef2525408b1b696ecc65bdac69f280240e8b1010bf9d87710"
+        },
+        "period": {
+          "start": "2026-01-01T00:00:00Z",
+          "end": "2026-01-04T00:00:00Z",
+          "unit": "representative-task",
+          "closed": true,
+          "completionRef": "completion-no-team-0.json"
+        },
+        "counts": {
+          "owner_questions": 10,
+          "owner_manual_role_corrections": 10,
+          "owner_file_edits": 10,
+          "owner_command_runs": 10,
+          "coordinator_extra_instructions": 10,
+          "normal_role_assignment": 10,
+          "owner_approvals": 10,
+          "owner_merge_approvals": 10,
+          "owner_deploy_approvals": 10,
+          "owner_scope_approvals": 10,
+          "coordinator_questions": null,
+          "coordinator_answers": null,
+          "failed_owner_delivery_attempts": null,
+          "failed_only_owner_requests": 0,
+          "blocking_sum": 6,
+          "blocking_sum_stats_events": 6,
+          "blocking_sum_audited": null,
+          "rereviews_after_fail": 4,
+          "review_failures": 0,
+          "should_fix_sum_stats_events": 0,
+          "gate_failures": 2
+        },
+        "observed": {
+          "owner_questions": null,
+          "owner_manual_role_corrections": null,
+          "owner_file_edits": null,
+          "owner_command_runs": null,
+          "coordinator_extra_instructions": null,
+          "normal_role_assignment": null,
+          "owner_approvals": null,
+          "owner_merge_approvals": null,
+          "owner_deploy_approvals": null,
+          "owner_scope_approvals": null,
+          "coordinator_questions": null,
+          "coordinator_answers": null,
+          "failed_owner_delivery_attempts": null,
+          "failed_only_owner_requests": null,
+          "blocking_sum": null,
+          "blocking_sum_stats_events": null,
+          "blocking_sum_audited": null,
+          "rereviews_after_fail": null,
+          "review_failures": null,
+          "should_fix_sum_stats_events": null,
+          "gate_failures": null
+        },
+        "unknownRequests": 0,
+        "limits": [
+          "원본 기준선 지문 고정; 신고 수치는 사람 인증/인과 효과가 아님",
+          "N은 서로 겹치지 않는 명시 표본 기록 수이며 표본 자체의 실제성은 신고/현장 감사 대상",
+          "추가 표본: 실패만 남은 owner 요청을 해결하고 같은 구간의 결과를 확인한다"
+        ],
+        "range": null,
+        "sampleCountActual": 2,
+        "intervals": [
+          {
+            "start": "2026-01-01T00:00:00Z",
+            "end": "2026-01-02T00:00:00Z",
+            "unit": "representative-task",
+            "closed": true,
+            "completionRef": "completion-no-team-0.json"
+          },
+          {
+            "start": "2026-01-03T00:00:00Z",
+            "end": "2026-01-04T00:00:00Z",
+            "unit": "representative-task",
+            "closed": true,
+            "completionRef": "completion-no-team-1.json"
+          }
+        ]
+      },
+      "after": {
+        "qualitySamples": [
+          {
+            "blocking_sum": 3,
+            "blocking_sum_stats_events": 3,
+            "blocking_sum_audited": null,
+            "rereviews_after_fail": 2,
+            "review_failures": 0,
+            "should_fix_sum_stats_events": 0,
+            "gate_failures": 1
+          },
+          {
+            "blocking_sum": 3,
+            "blocking_sum_stats_events": 3,
+            "blocking_sum_audited": null,
+            "rereviews_after_fail": 2,
+            "review_failures": 0,
+            "should_fix_sum_stats_events": 0,
+            "gate_failures": 1
+          }
+        ],
+        "auditedBlockingPresent": false,
+        "origin": "mixed-reported",
+        "sourceSha256": "8920472623b4a852099fa3e3b4668883110b6dab49a5732eefe4d48e972c3374",
+        "repository": "fixture-repo",
+        "context": {
+          "study": "team-adoption",
+          "conditionCode": "team",
+          "definition": "reach-v1",
+          "unit": "representative-task",
+          "workType": "feature",
+          "sizeBand": "small",
+          "host": "codex",
+          "sampleCount": 2,
+          "recordingBoundary": "closed-task",
+          "qualitySource": "event-log",
+          "qualityScopeHash": "4ce628773c04a49ef2525408b1b696ecc65bdac69f280240e8b1010bf9d87710"
+        },
+        "period": {
+          "start": "2026-01-05T00:00:00Z",
+          "end": "2026-01-08T00:00:00Z",
+          "unit": "representative-task",
+          "closed": true,
+          "completionRef": "completion-team-0.json"
+        },
+        "counts": {
+          "owner_questions": null,
+          "owner_manual_role_corrections": 10,
+          "owner_file_edits": 10,
+          "owner_command_runs": 10,
+          "coordinator_extra_instructions": 10,
+          "normal_role_assignment": 10,
+          "owner_approvals": 10,
+          "owner_merge_approvals": 10,
+          "owner_deploy_approvals": 10,
+          "owner_scope_approvals": 10,
+          "coordinator_questions": null,
+          "coordinator_answers": null,
+          "failed_owner_delivery_attempts": null,
+          "failed_only_owner_requests": null,
+          "blocking_sum": 6,
+          "blocking_sum_stats_events": 6,
+          "blocking_sum_audited": null,
+          "rereviews_after_fail": 4,
+          "review_failures": 0,
+          "should_fix_sum_stats_events": 0,
+          "gate_failures": 2
+        },
+        "observed": {
+          "owner_questions": 1,
+          "owner_manual_role_corrections": null,
+          "owner_file_edits": null,
+          "owner_command_runs": null,
+          "coordinator_extra_instructions": null,
+          "normal_role_assignment": null,
+          "owner_approvals": null,
+          "owner_merge_approvals": null,
+          "owner_deploy_approvals": null,
+          "owner_scope_approvals": null,
+          "coordinator_questions": null,
+          "coordinator_answers": null,
+          "failed_owner_delivery_attempts": null,
+          "failed_only_owner_requests": null,
+          "blocking_sum": null,
+          "blocking_sum_stats_events": null,
+          "blocking_sum_audited": null,
+          "rereviews_after_fail": null,
+          "review_failures": null,
+          "should_fix_sum_stats_events": null,
+          "gate_failures": null
+        },
+        "unknownRequests": 0,
+        "limits": [
+          "원본 기준선 지문 고정; 신고 수치는 사람 인증/인과 효과가 아님",
+          "요청 수집 결합 미확인",
+          "일부 표본의 관측 미수집: 관측 합계는 알려진 하한",
+          "N은 서로 겹치지 않는 명시 표본 기록 수이며 표본 자체의 실제성은 신고/현장 감사 대상"
+        ],
+        "range": null,
+        "sampleCountActual": 2,
+        "intervals": [
+          {
+            "start": "2026-01-05T00:00:00Z",
+            "end": "2026-01-06T00:00:00Z",
+            "unit": "representative-task",
+            "closed": true,
+            "completionRef": "completion-team-0.json"
+          },
+          {
+            "start": "2026-01-07T00:00:00Z",
+            "end": "2026-01-08T00:00:00Z",
+            "unit": "representative-task",
+            "closed": true,
+            "completionRef": "completion-team-1.json"
+          }
+        ]
+      }
+    },
+    "limits": [
+      "관측 부담 변화이며 팀의 인과 효과/에이전트 순위가 아니다",
+      "원본 기준선 지문 고정; 신고 수치는 사람 인증/인과 효과가 아님",
+      "N은 서로 겹치지 않는 명시 표본 기록 수이며 표본 자체의 실제성은 신고/현장 감사 대상",
+      "추가 표본: 실패만 남은 owner 요청을 해결하고 같은 구간의 결과를 확인한다",
+      "원본 기준선 지문 고정; 신고 수치는 사람 인증/인과 효과가 아님",
+      "요청 수집 결합 미확인",
+      "일부 표본의 관측 미수집: 관측 합계는 알려진 하한",
+      "N은 서로 겹치지 않는 명시 표본 기록 수이며 표본 자체의 실제성은 신고/현장 감사 대상"
+    ]
+  }
+  
+  
+  0 !== 2
+  
+      at check (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3026:12)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3036:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:3050:1
+✖ R64 부분 품질 수집은 로그와 감사 관측을 보존하며 총량을 보류한다 (462.775375ms)
+  AssertionError [ERR_ASSERTION]: blocking_sum_stats_events
+  
+  undefined !== 2
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:3071:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

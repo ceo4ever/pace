@@ -6,7 +6,7 @@ tags: [boot, hooks, platform]
 sources: [code:src/boot.ts, code:src/setup/install.ts, 대화:2026-10-22, url:https://github.com/anthropics/claude-code/blob/v2.1.316/CHANGELOG.md, url:https://learn.chatgpt.com/docs/hooks, url:https://cursor.com/docs/hooks, url:https://antigravity.google/docs/hooks, url:https://antigravity.google/docs/rules/, code:scripts/benchmark-boot.ts, code:src/project/harness.ts, code:src/project/workspace-registry.ts, test:test/boot.test.ts, doc:templates/RULES.md]
 related: [platform-hook-behavior, llm-cannot-speak-first, situational-boot-greeting]
 created: 2026-10-22
-updated: 2026-11-19
+updated: 2026-11-24
 status: active
 ---
 
@@ -78,3 +78,7 @@ OS 캐시는 비우지 않았고 fsync·원격 디스크·동시 세션·모델 
 P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움말이며 기존 부트·브레인·프로젝트 명령 분기는 그대로다. harness.ts는 정의서 목록 export, changed 전용 검증 commit 인자 및 셸의 구조화된 실행 상태를 추가했다. 인자를 생략한 기존 all/finish의 main 기준과 ok/output 계약은 유지하며, 설치·프로젝트 생명주기·지표·사건·부트 전달은 변경하지 않았다. README의 OPAL 채택 경로도 유지했다. 따라서 위 기존 주장과 실측의 역사적 한계를 유지한다. 원래 시험 본문과 최종995건의 범위/판정 보존은 T04 TASK-CLOSE 및 t03-regression-comparison에 연결되어 있다.
 
 변경 기반 검사는 별도 경계다. 현재 staged/unstaged/untracked 작업본만 대상으로, 기준 commit과 같은 map의 명시 checks를 먼저 실행한다. 숨김 index/sparse·삭제·미분류·불확실성은 실제 전체 검사로 전환하고, 시작 후 실제 실패1·예외 확인 불가3은 성공으로 숨기지 않는다. 커밋된 브랜치 차이는 빠른 범위에 포함하지 않으며 finish 전체 검사를 유지한다. 자세한 근거는 [[변경-기반-검사와-실행-선언-신뢰-경계]]다. Windows 관측을 실제 설치기·POSIX·다른 프로젝트 일반 성능 검증으로 확대하지 않는다.
+
+## 근거 변경 대조 (2026-11-24)
+
+현재 boot.ts의 활성 AGENT 조회·worktree fallback·8000자 예산과 harness.ts의 projectWorktreeMainRoot를 대조했다. P009 start --role의 팀 정의 전달은 이 활성 프로젝트 AGENT/프로필 부트와 별도이며 기존 신원·보호 절 우선순위를 바꾸지 않는다. 실제 호스트 수신의 과거 한계는 유지한다.

@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r75.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1340,
+  "pass": 1323,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "R75 \uc0ac\uc6a9\uc790 B \uace0\uc815 \ud6c4\ubcf4 \uc804\uccb4 1340\uac74 \uc911 1323\ud1b5\uacfc\u00b717\uac74\ub108\ub700\u00b7\uc2e4\ud328 0. \ub3c5\ub9bd \ucd5c\uc885 \ucee4\ubc0b\uacfc \uae30\ub85d\uc758 \uacb0\ud569 \uc9c0\uc801\uc740 \ubcc4\ub3c4\ub2e4."
+}

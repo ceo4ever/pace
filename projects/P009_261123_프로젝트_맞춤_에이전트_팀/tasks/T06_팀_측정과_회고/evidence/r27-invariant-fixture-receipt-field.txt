@@ -1,0 +1,22 @@
+✔ R27 검증 내용 지문은 나중 작업 파일/인덱스 대신 고정 tree와 대조한다 (288.58625ms)
+✖ R27 통합 불변식은 같은 요청의 로그/원장부터 비교·회고·Git 마감까지 이어진다 (1572.56725ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1984.158833
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:382:1
+✖ R27 통합 불변식은 같은 요청의 로그/원장부터 비교·회고·Git 마감까지 이어진다 (1572.56725ms)
+  Error: 소통 객체의 필수/허용 필드 오류
+      at fields (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/project/handoff-files.ts:20:143)
+      at deliveryReceipt (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/team/handoff-delivery.ts:33:3)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:394:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)

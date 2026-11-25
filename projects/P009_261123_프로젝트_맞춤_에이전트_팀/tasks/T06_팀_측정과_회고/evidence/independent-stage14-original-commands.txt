@@ -1,0 +1,16 @@
+Run from /Volumes/Data/AiStudio/workspace/pace.wt/P009. Node v24.22.3.
+Evidence directory: /tmp/pace-t06-r21-recheck.sKQKTK
+
+Focused (74 metrics, 14 team):
+  mkdir "$out/focused-tmp" "$out/focused-home"
+  TMPDIR="$out/focused-tmp" PACE_HOME="$out/focused-home" GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null GIT_TERMINAL_PROMPT=0 node --test test/team-metrics.test.ts test/team.test.ts
+
+Independent changed-case rerun (fresh output dir, owned synthetic Git/metadata/ PACE_HOME only):
+  fresh=$(mktemp -d /tmp/pace-t06-r21-repro.XXXXXX)
+  node "$out/probe.mjs" "$PWD" "$fresh"
+  node "$out/check-text.mjs" "$PWD" "$fresh"
+
+The main script logs every actual argv, cwd, stdout, stderr, and exit to run/commands.jsonl. The two supplemental stats text commands record the same fields in run/{boundary,closed-clean}.display.json. It records each assertion separately in run/results.json and run/text-results.json. The script records mismatches as diagnostic data and its exit 0 means collection completed.
+Commands include project new, team new, project start --role maker --agent codex --no-launch, project stats --json/--write/text, compare-team --kind team-adoption --json, team handoff record/prepare-external/receipt, and project finish. External delivery records are fabricated metadata. There is no send invocation.
+Patch checked twice with git apply --reverse --check. Live workspace status compared before/after. T01 baseline files compared against HEAD with shasum -a 256.
+Initial probe: stats --write preceded fixture PROJECT-CLOSE.md creation and correctly returned 1. Initial files and commands are retained at this root, and the retry before diagnosis is under canonical/. The corrected run creates the close file before stats --write. The original harness is probe-initial.mjs.

@@ -1,0 +1,112 @@
+{
+  "real-retro": {
+    "expected": 0,
+    "actual": 0,
+    "matches": true
+  },
+  "inline-comment-crosses-block": {
+    "expected": 1,
+    "actual": 0,
+    "matches": false
+  },
+  "inline-comment-one-line": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "standalone-dash": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "consistent-hr": {
+    "expected": 1,
+    "actual": 1,
+    "matches": true
+  },
+  "native-forward": {
+    "expected": true,
+    "actual": true,
+    "matches": true
+  },
+  "native-inverted": {
+    "expected": false,
+    "actual": true,
+    "matches": false
+  },
+  "native-failed": {
+    "expected": false,
+    "actual": false,
+    "matches": true
+  },
+  "native-other-actor": {
+    "expected": false,
+    "actual": false,
+    "matches": true
+  },
+  "audited-stable": {
+    "expected": [
+      "observed-burden-improvement",
+      0,
+      0
+    ],
+    "actual": [
+      "observed-burden-improvement",
+      0,
+      0
+    ],
+    "matches": true
+  },
+  "audited-logged-blocking": {
+    "expected": [
+      "unknown",
+      6,
+      0
+    ],
+    "actual": [
+      "observed-burden-improvement",
+      6,
+      0
+    ],
+    "matches": false
+  },
+  "event-logged-blocking": {
+    "expected": [
+      "unknown",
+      6,
+      0
+    ],
+    "actual": [
+      "unknown",
+      6,
+      0
+    ],
+    "matches": true
+  },
+  "audited-logged-should-fix": {
+    "expected": [
+      "unknown",
+      0,
+      6
+    ],
+    "actual": [
+      "unknown",
+      0,
+      6
+    ],
+    "matches": true
+  },
+  "audited-logged-blocking-overflow": {
+    "expected": [
+      "unknown",
+      null,
+      0
+    ],
+    "actual": [
+      "observed-burden-improvement",
+      null,
+      0
+    ],
+    "matches": false
+  }
+}

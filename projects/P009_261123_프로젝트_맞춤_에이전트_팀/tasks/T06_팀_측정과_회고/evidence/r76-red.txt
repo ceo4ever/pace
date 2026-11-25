@@ -1,0 +1,122 @@
+✖ R76 마감 커밋 훅이 스테이징한 원문은 실제 Git과 검증 커밋에 들어가지 않는다 (2029.48675ms)
+✖ R76 팀 finish 필수 사건을 기록하지 못하면 명령도 성공하지 않는다 (1558.992958ms)
+✖ R76 팀 merge 필수 사건을 기록하지 못하면 명령도 성공하지 않는다 (2244.487875ms)
+✖ R76 보안 검사 중 현재 작업본의 팀 채택이 생기면 비팀 중간 커밋을 중단한다 (1377.51ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7359.758542
+
+✖ failing tests:
+
+test at test/team-metrics.test.ts:2099:1
+✖ R76 마감 커밋 훅이 스테이징한 원문은 실제 Git과 검증 커밋에 들어가지 않는다 (2029.48675ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'f7643d20e408aa2352730d0f7540970a2ffa451c\n'
+  - 'b3f0e9b7c108ddb19a0ee46608962545a38bc63d\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2110:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'f7643d20e408aa2352730d0f7540970a2ffa451c\n',
+    expected: 'b3f0e9b7c108ddb19a0ee46608962545a38bc63d\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2116:53
+✖ R76 팀 finish 필수 사건을 기록하지 못하면 명령도 성공하지 않는다 (1558.992958ms)
+  AssertionError [ERR_ASSERTION]: - 보안 검사 통과: true
+  - 검사 통과: true
+  - 병합 대기 — main 체크아웃에서: pace project merge P001
+  통과
+  실행: true
+  실행: true
+  pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+  pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2144:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2116:53
+✖ R76 팀 merge 필수 사건을 기록하지 못하면 명령도 성공하지 않는다 (2244.487875ms)
+  AssertionError [ERR_ASSERTION]: P001 팀 측정 합성 — 병합할 커밋 2개
+    d343074 chore(P001): 마감
+    a9a2fc3 synthetic-merge-window
+  
+  | # | 결과 | 증거 |
+  |---|---|---|
+  | P-1 | 통과 | 합성 병합 구간 |
+  
+  true 실행
+  
+  worktree 제거 때 함께 지워질 무시 항목: 0곳
+  
+  팀 finish 검증 대상: d3430749559207952bf1b0569e5f0a4f93be227b
+  팀 전체 검사: 통과
+  
+  - main ← project/P001 (fast-forward, 커밋 2개)
+  - 상태 완료 기록
+  - worktree 제거: /private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-p4dCUJ/pace-team-metrics-q1d5Lb.wt/P001
+  - 브랜치 삭제: project/P001
+  pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2144:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/team-metrics.test.ts:2153:1
+✖ R76 보안 검사 중 현재 작업본의 팀 채택이 생기면 비팀 중간 커밋을 중단한다 (1377.51ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '67ee031821861df2d593a9fb3d8c7096e6818b75\n'
+  - '1f16e1e356fac07ff77c927aaa3dbd687698510f\n'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/test/team-metrics.test.ts:2166:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '67ee031821861df2d593a9fb3d8c7096e6818b75\n',
+    expected: '1f16e1e356fac07ff77c927aaa3dbd687698510f\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

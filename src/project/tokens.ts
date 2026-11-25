@@ -1,4 +1,5 @@
 import { StringDecoder } from "node:string_decoder";
+import type { InputTrace } from "../core/input-snapshot.ts";
 import { closeSync, existsSync, lstatSync, openSync, readFileSync, readSync, readdirSync, realpathSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
@@ -14,7 +15,7 @@ export type TokenTool = "Claude Code" | "Codex" | "Gemini CLI" | "Cursor" | "Ant
 export interface TokenStats { tool: TokenTool; status: "recorded" | "missing"; usage: TokenUsage; samples: number; }
 interface Sample { tool: TokenTool; ts: number; usage: TokenUsage; }
 interface CodexSession { samples: { ts: number; usage: TokenUsage }[]; }
-export interface TokenOptions { home?: string; env?: NodeJS.ProcessEnv; now?: string; finishing?: boolean; }
+export interface TokenOptions { home?: string; env?: NodeJS.ProcessEnv; now?: string; finishing?: boolean; inputTrace?: InputTrace; }
 export interface FullStats extends ProjectStats { coordinatorTokens: TokenStats[]; tokens: TokenStats[]; taskTokens: { id: string; tokens: TokenStats[] }[]; }
 const zero = (): TokenUsage => ({ input: 0, cachedInput: 0, cacheCreationInput: 0, output: 0, reasoningOutput: 0, tool: 0 });
 const count = (n: unknown): number => typeof n === "number" && Number.isSafeInteger(n) && n >= 0 ? n : 0;
@@ -159,7 +160,7 @@ function aggregate(samples: Sample[], codex: CodexSession[], range: TimeStats, n
 }
 export function collectProjectStats(repo: Repo, ref: ProjectRef, options: TokenOptions = {}): FullStats {
   const home = options.home ?? homedir(); const env = options.env ?? process.env; const now = options.now ?? new Date().toISOString();
-  const stats = collectStats(repo, ref, now, options.finishing);
+  const stats = collectStats(repo, ref, now, options.finishing, options.inputTrace);
   if (options.finishing) {
     stats.project.finish = now;
     stats.project.durationMs = stats.project.start ? Math.max(0, Date.parse(now) - Date.parse(stats.project.start)) : null;

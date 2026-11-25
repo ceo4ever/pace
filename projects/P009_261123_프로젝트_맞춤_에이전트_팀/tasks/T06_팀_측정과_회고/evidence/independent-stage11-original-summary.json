@@ -1,0 +1,91 @@
+{
+  "node": "v24.22.3",
+  "verdict": "fail",
+  "blocking": 2,
+  "should_fix": 0,
+  "focused": {
+    "metrics": 65,
+    "team": 14,
+    "pass": 79,
+    "fail": 0,
+    "skipped": 0,
+    "replayedWithRetainedFixtures": true
+  },
+  "independent": {
+    "groups": {
+      "replay": {
+        "exit": 0,
+        "total": 47,
+        "matched": 47
+      },
+      "extra": {
+        "exit": 0,
+        "total": 3,
+        "matched": 3
+      },
+      "requests": {
+        "exit": 0,
+        "total": 2,
+        "matched": 2
+      },
+      "delta": {
+        "exit": 0,
+        "total": 36,
+        "matched": 32
+      },
+      "role-rerun": {
+        "exit": 0,
+        "total": 7,
+        "matched": 7
+      },
+      "compat": {
+        "exit": 0,
+        "total": 2,
+        "matched": 2
+      },
+      "ledger": {
+        "exit": 0,
+        "total": 3,
+        "matched": 3
+      }
+    },
+    "total": 100,
+    "matched": 96,
+    "mismatches": [
+      {
+        "group": "delta",
+        "test": "wider-no-trailing-header",
+        "expected": 1,
+        "actual": 0,
+        "matches": false
+      },
+      {
+        "group": "delta",
+        "test": "wider-no-trailing-separator",
+        "expected": 1,
+        "actual": 0,
+        "matches": false
+      },
+      {
+        "group": "delta",
+        "test": "wider-short-delimiters",
+        "expected": 1,
+        "actual": 0,
+        "matches": false
+      },
+      {
+        "group": "delta",
+        "test": "comment-only-summary",
+        "expected": 1,
+        "actual": 0,
+        "matches": false
+      }
+    ]
+  },
+  "priorAttempt": {
+    "roleExit": 1,
+    "reason": "PROJECT-CLOSE.md prerequisite missing in first tester harness",
+    "retained": true
+  },
+  "patchReverseCheckExit": 0
+}

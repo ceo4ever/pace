@@ -16,7 +16,7 @@ export function validTeamName(name: string): boolean {
 export function isTeamRole(role: string): role is TeamRole { return TEAM_ROLES.some((value) => value === role); }
 const KEYS = ["name", "role", "stage", "tier", "resources", "tools"];
 const HEADINGS = ["정체성", "맡는 일", "하지 않는 일", "실행 전 대조", "인계·결정 요청·완료 보고", "도구 안내"];
-export const EXECUTION_CHECK_RULE = "위임을 받으면 실행 전에 지시가 근거(캡틴 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청 형식(결정 주체·근거·선택지)으로 올린다. 미확인 해석을 승인된 것으로 바꾸지 않는다.";
+export const EXECUTION_CHECK_RULE = "위임을 받으면 실행 전에 지시가 근거(사용자 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청 형식(결정 주체·근거·선택지)으로 올린다. 미확인 해석을 승인된 것으로 바꾸지 않는다.";
 function missingExecutionRule(): Error {
   return new Error(`실행 전 대조 계약 v1 문단이 필요하다. 기존 맞춤 내용은 보존하고 docs/TEAM.md에 따라 다음 문단을 일반 본문으로 추가하세요: ${EXECUTION_CHECK_RULE}`);
 }
@@ -42,8 +42,9 @@ function hasExecutionRule(text: string): boolean {
     let candidate = "";
     for (let end = start; end < paragraphs.length; end++) {
       candidate += (candidate ? " " : "") + paragraphs[end]!;
-      if (candidate === EXECUTION_CHECK_RULE) return true;
-      if (candidate.length >= EXECUTION_CHECK_RULE.length) break;
+      const normalized = candidate.replaceAll("캡틴 원문", "사용자 원문");
+      if (normalized === EXECUTION_CHECK_RULE) return true;
+      if (normalized.length >= EXECUTION_CHECK_RULE.length) break;
     }
   }
   return false;

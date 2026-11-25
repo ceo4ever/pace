@@ -1,0 +1,22 @@
+lint: 오류 0 · 경고 21
+△ [stale-source] .pace/brain/pages/concept/brain-at-project-gates.md — changed: src/project/harness.ts (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/brain-pull-not-push.md — changed: src/cli.ts (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/install-and-launch-pitfalls.md — changed: src/project/harness.ts (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/install-and-launch-pitfalls.md — changed: test/project-harness.test.ts (2026-11-23 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md — changed: README.md (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/session-boot-via-hooks.md — changed: src/project/harness.ts (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/백로그-대시보드-자동-갱신과-git-경계.md — changed: src/cli.ts (2026-11-24 > 2026-11-21) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/백로그-대시보드-자동-갱신과-git-경계.md — changed: src/project/harness.ts (2026-11-24 > 2026-11-21) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/백로그-대시보드-자동-갱신과-git-경계.md — changed: test/project-harness.test.ts (2026-11-23 > 2026-11-21) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md — changed: src/project/harness.ts (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md — changed: README.md (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/작업-하네스-실측-함정.md — changed: src/project/harness.ts (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/작업-하네스-실측-함정.md — changed: src/cli.ts (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/작업-하네스-실측-함정.md — changed: skills/pace-project-dev/SKILL.md (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/작업-하네스-실측-함정.md — changed: skills/pace-project-dev/references/coordinator.md (2026-11-24 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/작업-하네스-실측-함정.md — changed: test/project-harness.test.ts (2026-11-23 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md — changed: docs/README.md (2026-11-24 > 2026-11-21) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md — changed: src/project/harness.ts (2026-11-24 > 2026-11-21) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/synthesis/agent-설정과-daemon-자동-실행-함정.md — changed: src/daemon/autostart.ts (2026-11-23 > 2026-11-16) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md — changed: skills/pace-project-dev/references/document-shape.md (2026-11-23 > 2026-11-16) — 근거 변경 뒤 주장을 확인한다
+△ [stale-source] .pace/brain/pages/synthesis/telegram-어댑터-설계-함정.md — changed: test/telegram-flow.test.ts (2026-11-23 > 2026-11-19) — 근거 변경 뒤 주장을 확인한다

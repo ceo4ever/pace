@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r47.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1299,
+  "pass": 1282,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent fail1/SF0 for source locator aliases allowing the same response"
+}

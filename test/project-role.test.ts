@@ -27,6 +27,9 @@ test("project role RED: explicit member is accepted and no-launch carries the ro
   const r = run("project", "start", "P001", "--role", "builder", "--agent", "codex", "--no-launch");
   assert.equal(r.status, 0, r.stderr); assert.match(r.stdout, /builder/);
   assert.equal(existsSync(worktree), true);
+  const dir = join(worktree, "projects", readdirSync(join(worktree, "projects")).find((s) => s.startsWith("P001_"))!);
+  assert.match(readFileSync(join(dir, "PROJECT.md"), "utf8"), /^- 팀 측정: v1$/m);
+  assert.equal(readFileSync(join(dir, "log.jsonl"), "utf8").trim().split("\n").map((line) => JSON.parse(line)).find((e) => e.type === "start").data.teamMetricsVersion, 1);
 });
 test("project role RED: missing member is rejected before worktree creation", () => {
   const { run, worktree } = fixture();

@@ -1,0 +1,26 @@
+file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:205
+        if (outcome.code !== 0) throw new AgentError("agent_failed", `${adapter.command} 종료 코드 ${outcome.code ?? outcome.signal}: ${outcome.stderr.trim().slice(0, 300)}${outcome.stdout.trim() ? ` | stdout: ${outcome.stdout.trim().slice(0, 300)}` : ""}`, { cleanupUnconfirmed: !outcome.reaped });
+                                      ^
+
+AgentError: codex 종료 코드 1: OpenAI Codex v0.171.0
+--------
+workdir: /Volumes/Data/AiStudio/workspace/pace.wt/P009
+model: gpt-6.2-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: none
+reasoning summaries: none
+session id: 01a20e57-c297-7061-8f0c-c169be79669e
+--------
+user
+
+    at Object.run (file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/src/agent/p-executor.ts:205:39)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///Volumes/Data/AiStudio/workspace/pace.wt/P009/projects/P009_261123_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EB%A7%9E%EC%B6%A4_%EC%97%90%EC%9D%B4%EC%A0%84%ED%8A%B8_%ED%8C%80/tasks/T06_%ED%8C%80_%EC%B8%A1%EC%A0%95%EA%B3%BC_%ED%9A%8C%EA%B3%A0/evidence/run-post-r7-tester.mjs:8:14 {
+  code: 'agent_failed',
+  cleanupUnconfirmed: false,
+  started: true
+}
+
+Node.js v24.22.3

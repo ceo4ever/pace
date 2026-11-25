@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r44.json",
+  "filesChecked": 41,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1292,
+  "pass": 1275,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "independent goal fail2/SF1 for unlinked coordinator and legacy merge ref"
+}

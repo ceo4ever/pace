@@ -295,7 +295,7 @@ test("worker show: 등급 파일 손상 시에도 기존 설정·유효값을 JS
 
 test("team 실행 전 대조: 네 역할·두 생성물에 고정 책임을 보존하고 약화·예시·누락은 오류2다", () => {
   const { root, run } = fixture();
-  const rule = "위임을 받으면 실행 전에 지시가 근거(캡틴 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청 형식(결정 주체·근거·선택지)으로 올린다. 미확인 해석을 승인된 것으로 바꾸지 않는다.";
+  const rule = "위임을 받으면 실행 전에 지시가 근거(사용자 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청 형식(결정 주체·근거·선택지)으로 올린다. 미확인 해석을 승인된 것으로 바꾸지 않는다.";
   for (const role of ["lead", "maker", "reviewer", "coordinator"]) {
     assert.equal(run("team", "new", role, "--role", role).status, 0);
     const text = readFileSync(join(root, `.pace/team/${role}.md`), "utf8");
@@ -313,7 +313,7 @@ test("team 실행 전 대조: 네 역할·두 생성물에 고정 책임을 보�
   const path = join(root, ".pace/team/maker.md"), source = readFileSync(path, "utf8");
   const generated = readFileSync(join(root, ".codex/agents/maker.toml"), "utf8");
   const weakened = ["해당 없음", `    ${rule}`, `\t${rule}`, `<!--\n${rule}\n-->`, `\`\`\`text\n\n${rule}\n\n\`\`\``, `> ${rule}`, `"${rule}"`,
-    ...["캡틴 원문", "확인된 해석", "계약", "범위가 달라졌거나", "근거가 불명확하면", "실행을 보류하고", "결정 요청 형식(결정 주체·근거·선택지)", "미확인 해석을 승인된 것으로 바꾸지 않는다."].map((part) => rule.replace(part, ""))];
+    ...["사용자 원문", "확인된 해석", "계약", "범위가 달라졌거나", "근거가 불명확하면", "실행을 보류하고", "결정 요청 형식(결정 주체·근거·선택지)", "미확인 해석을 승인된 것으로 바꾸지 않는다."].map((part) => rule.replace(part, ""))];
   for (const replacement of weakened) {
     writeFileSync(path, source.replace(rule, replacement));
     const result = run("team", "sync", "--check", "--json");
@@ -331,4 +331,10 @@ test("team 실행 전 대조: 네 역할·두 생성물에 고정 책임을 보�
   assert.equal(run("team", "sync").status, 0, "공백·줄바꿈 정규화는 허용한다");
   writeFileSync(path, source.replace(rule, rule.replace("대조한다. ", "대조한다.\n    ")));
   assert.equal(run("team", "sync").status, 0, "일반 문단의 이어지는 줄 들여쓰기는 허용한다");
+});
+
+test("이전 책임 문단의 호칭은 의미를 보존해 읽고 새 사람 식별자는 owner로 유지한다", () => {
+  const f = fixture(); assert.equal(f.run("team", "new", "builder", "--role", "maker").status, 0);
+  const file = join(f.root, ".pace/team/builder.md"), current = readFileSync(file, "utf8"); for (const phrase of ["캡틴 원문", "캡틴\n원문", "캡틴\n\n원문"]) { writeFileSync(file, current.replace("사용자 원문", phrase)); assert.equal(loadTeamMember(f.root, "builder").name, "builder"); assert.equal(f.run("team", "list").status, 0); }
+  writeFileSync(file, current.replace("사용자 원문·확인된 해석 또는 계약", "사용자 원문")); assert.throws(() => loadTeamMember(f.root, "builder"), /실행 전 대조/);
 });

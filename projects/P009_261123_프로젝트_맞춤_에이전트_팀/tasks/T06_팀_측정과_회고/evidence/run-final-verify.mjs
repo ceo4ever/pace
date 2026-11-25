@@ -1,0 +1,10 @@
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
+const root=resolve(import.meta.dirname,"../../../../..");
+const { verifyCommand }=await import(resolve(root,"src/agent/verify-cli.ts"));
+const { createPExecutor,codexP }=await import(resolve(root,"src/agent/p-executor.ts"));
+const revision=process.argv[2]??"7"; if(!/^[0-9]+$/.test(revision)) throw new Error("revision required");
+const out=resolve(import.meta.dirname,`impl-review-output-${revision}.json`);
+if(existsSync(out)) throw new Error("preserve existing review");
+const code=await verifyCommand(["--author-agent","codex","--allow-same-provider","--target",resolve(import.meta.dirname,"impl-diff.patch"),"--purpose-file",resolve(import.meta.dirname,"impl-purpose.txt"),"--out",out,"--timeout-ms","600000"],{executors:()=>[createPExecutor(codexP)],write:text=>process.stdout.write(text)});
+process.exitCode=code;

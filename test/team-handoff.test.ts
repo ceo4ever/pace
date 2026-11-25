@@ -38,17 +38,17 @@ function fixture() {
   return { root, home, dir, run, git };
 }
 
-test("긴 합성 캡틴 원문은 로컬 bytes로 남고 버전 관리 원장에는 본문이 들어가지 않는다", () => {
+test("긴 합성 사용자 원문은 로컬 bytes로 남고 버전 관리 원장에는 본문이 들어가지 않는다", () => {
   const f = fixture();
-  const body = "SYNTHETIC_CAPTAIN_ONLY_LOCAL\r\n가상 업무 지시\r\n".repeat(80);
+  const body = "SYNTHETIC_OWNER_ONLY_LOCAL\r\n가상 업무 지시\r\n".repeat(80);
   const header = join(f.root, "header.json");
-  writeFileSync(header, JSON.stringify({ protocol: "pace-handoff", v: 1, id: "input-one", kind: "captain_input", from: "coordinator", to: "project:P001", data: { sourceRef: "fixture:captain-original-one" } }) + "\n");
+  writeFileSync(header, JSON.stringify({ protocol: "pace-handoff", v: 1, id: "input-one", kind: "owner_input", from: "coordinator", to: "project:P001", data: { sourceRef: "fixture:owner-original-one" } }) + "\n");
   const result = runPace(["team", "handoff", "record", "P001", "--file", header, "--body-file", "-"], { cwd: f.root, home: f.home, input: body });
   assert.equal(result.status, 0, result.stderr + result.stdout);
   const response = JSON.parse(result.stdout);
   assert.equal(readFileSync(response.localBodyPath, "utf8"), body);
   const ledger = readFileSync(join(f.dir, "handoffs.jsonl"), "utf8");
-  assert.doesNotMatch(ledger, /SYNTHETIC_CAPTAIN_ONLY_LOCAL/);
+  assert.doesNotMatch(ledger, /SYNTHETIC_OWNER_ONLY_LOCAL/);
   const event = JSON.parse(ledger.trim());
   assert.equal(event.bodyHash, createHash("sha256").update(body).digest("hex"));
   assert.ok(existsSync(response.localBodyPath));
@@ -77,14 +77,14 @@ function cliRecord(f: ReturnType<typeof protocolFixture>, h: HandoffHeader, body
 
 test("input/contract 계획의 본문·판정자·증명 범위 변조와 none basis는 행을 남기지 않는다", () => {
   const f = protocolFixture();
-  const original = f.record(f.make("original", "captain_input", { sourceRef: "fixture:captain-original" }));
+  const original = f.record(f.make("original", "owner_input", { sourceRef: "fixture:owner-original" }));
   const basis = { kind: "input", ref: original.id, hash: original.bodyHash, policy: f.locator };
   f.delegate("input-ok", basis); f.delegate("contract-ok");
   const count = f.store.read().length;
   for (const [name, badBasis, badPlan, body] of [
     ["none", { kind: "none" }, f.p, f.instruction],
     ["input-body", basis, { ...f.p, instructionHash: digest("changed") }, "changed"],
-    ["input-owner", basis, { ...f.p, decisionOwner: "captain" }, f.instruction],
+    ["input-owner", basis, { ...f.p, decisionOwner: "owner" }, f.instruction],
     ["contract-hash", { kind: "contract", ...f.locator, hash: "0".repeat(64) }, f.p, f.instruction],
     ["contract-proof", { kind: "contract", ...f.locator }, { ...f.p, proofScope: "T-2" }, f.instruction],
     ["input-no-policy", { kind: "input", ref: original.id, hash: original.bodyHash }, f.p, f.instruction],
@@ -103,21 +103,21 @@ test("input/contract 계획의 본문·판정자·증명 범위 변조와 none b
 
 test("해석 승인은 특정 제안·본문·판정 계획에 묶이고 정정 뒤 재사용할 수 없다", () => {
   const f = protocolFixture();
-  const original = f.record(f.make("original", "captain_input", { sourceRef: "fixture:original" }), "SYNTHETIC_CAPTAIN_RAW");
-  const proposal = f.record(f.make("proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "captain", "business-one"));
-  const second = f.record(f.make("other-proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "captain", "business-two"));
+  const original = f.record(f.make("original", "owner_input", { sourceRef: "fixture:original" }), "SYNTHETIC_OWNER_RAW");
+  const proposal = f.record(f.make("proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "owner", "business-one"));
+  const second = f.record(f.make("other-proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "owner", "business-two"));
   const approved = { kind: "approved", ref: proposal.id, approval: "approval", hash: proposalDigest(proposal) };
   assert.throws(() => f.delegate("before-approval", approved));
-  const reply = f.make("approval", "decision_reply", { re: proposal.id, decision: "approve", proposalHash: proposalDigest(proposal), sourceRef: "fixture:captain-reply" }, "captain", "coordinator", "business-one");
+  const reply = f.make("approval", "decision_reply", { re: proposal.id, decision: "approve", proposalHash: proposalDigest(proposal), sourceRef: "fixture:owner-reply" }, "owner", "coordinator", "business-one");
   assert.throws(() => f.record(reply, ""));
-  f.record(reply, "SYNTHETIC_CAPTAIN_APPROVAL_EXACT\r\n승인\r\n");
+  f.record(reply, "SYNTHETIC_OWNER_APPROVAL_EXACT\r\n승인\r\n");
   const delegated = f.delegate("approved-delegate", approved);
   f.record(f.make("approved-scope", "scope_check", { re: delegated.id, status: "within", basisHash: instructionDigest(delegated), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
   assert.equal(f.store.readiness(delegated.id).ready, true);
   assert.throws(() => f.delegate("duplicate-approved", approved));
   assert.throws(() => f.delegate("other-approval", { ...approved, ref: second.id, hash: proposalDigest(second) }));
-  assert.throws(() => f.record(f.make("changed-owner", "delegate", { basis: approved, plan: { ...f.p, decisionOwner: "captain" } })));
-  f.record(f.make("correction", "decision_reply", { re: proposal.id, decision: "correct", proposalHash: proposalDigest(proposal), sourceRef: "fixture:captain-correction" }, "captain", "coordinator", "business-one"), "SYNTHETIC_CORRECTION");
+  assert.throws(() => f.record(f.make("changed-owner", "delegate", { basis: approved, plan: { ...f.p, decisionOwner: "owner" } })));
+  f.record(f.make("correction", "decision_reply", { re: proposal.id, decision: "correct", proposalHash: proposalDigest(proposal), sourceRef: "fixture:owner-correction" }, "owner", "coordinator", "business-one"), "SYNTHETIC_CORRECTION");
   assert.throws(() => f.delegate("stale-approval", approved));
   assert.equal(f.store.readiness("approved-delegate").ready, false);
 });
@@ -147,7 +147,7 @@ test("수신자 범위 확인과 done 증거를 지정 판정자가 확인한 �
 });
 
 test("전송 시도는 호출 전에 내구 기록되고 sent/불명/잔여 guard는 재발송하지 않는다", () => {
-  const f = protocolFixture(); f.record(f.make("question", "decision_request", { interpretation: false }, "coordinator", "captain", "request-one"));
+  const f = protocolFixture(); f.record(f.make("question", "decision_request", { interpretation: false }, "coordinator", "owner", "request-one"));
   const route = { transport: "orca", actor: "coordinator", target: "term_fixture", from: "term_sender", sourceRef: "fixture:orca" };
   let calls = 0;
   const result = sendDelivery(f.store, "question", "attempt-one", route, (_route, path) => {
@@ -159,7 +159,7 @@ test("전송 시도는 호출 전에 내구 기록되고 sent/불명/잔여 guar
   assert.equal(result.code, 0); assert.equal(calls, 1);
   assert.throws(() => sendDelivery(f.store, "question", "attempt-two", route, () => { calls++; return { phase: "sent" }; }));
   assert.equal(calls, 1);
-  assert.throws(() => prepareDelivery(f.store, "question", "fake-human", { ...route, actor: "captain" }));
+  assert.throws(() => prepareDelivery(f.store, "question", "fake-human", { ...route, actor: "owner" }));
   f.record(f.make("uncertain", "status", {}));
   assert.equal(sendDelivery(f.store, "uncertain", "attempt-unknown", route, () => ({ phase: "unconfirmed" })).code, 2);
   assert.throws(() => sendDelivery(f.store, "uncertain", "attempt-unknown-next", route, () => { calls++; return { phase: "failed" }; }));
@@ -181,14 +181,14 @@ test("실패는 새 시도만 허용하고 성공 뒤 기록 실패는 미확인
 });
 
 test("기존 사람 경로 준비는 발송하지 않고 명시한 실제 출처의 영수증만 수락한다", () => {
-  const f = protocolFixture(); f.record(f.make("question", "decision_request", { interpretation: false }, "coordinator", "captain", "request-one"));
-  const route = { transport: "external", actor: "captain", target: "existing-host-channel", from: "coordinator", sourceRef: "fixture:existing-human-route" };
+  const f = protocolFixture(); f.record(f.make("question", "decision_request", { interpretation: false }, "coordinator", "owner", "request-one"));
+  const route = { transport: "external", actor: "owner", target: "existing-host-channel", from: "coordinator", sourceRef: "fixture:existing-human-route" };
   prepareDelivery(f.store, "question", "external-one", route);
   assert.throws(() => deliveryReceipt(f.store, "external-one", { phase: "sent", reportedBy: "coordinator", sourceRef: route.sourceRef }));
   assert.throws(() => deliveryReceipt(f.store, "external-one", { phase: "sent", reportedBy: "coordinator", sourceRef: "fixture:different-route", responseHash: digest("receipt"), responseId: "fixture-response" }));
   deliveryReceipt(f.store, "external-one", { phase: "unconfirmed", reportedBy: "coordinator", sourceRef: route.sourceRef });
   const receipt = deliveryReceipt(f.store, "external-one", { phase: "sent", reportedBy: "coordinator", sourceRef: route.sourceRef, responseHash: digest("receipt"), responseId: "fixture-response" });
-  assert.equal(receipt.data.routeActor, "captain");
+  assert.equal(receipt.data.routeActor, "owner");
 });
 
 test("로컬 본문 없음은 metadata-only이며 변조·중복 키·미지원 원장은 오류다", () => {
@@ -204,14 +204,14 @@ test("로컬 본문 없음은 metadata-only이며 변조·중복 키·미지원 
 });
 
 test("본문의 원내 파일·링크·비밀과 metadata 원문을 거부하고 staging 보호를 남긴다", () => {
-  const f = protocolFixture(), raw = join(f.root, "captain-raw.md"); writeFileSync(raw, "SYNTHETIC_DO_NOT_STAGE");
-  assert.throws(() => readPrivateInput(f.root, raw)); assert.ok(handoffPrivacyIssues(f.root).some((s) => s.includes("captain-raw.md")));
+  const f = protocolFixture(), raw = join(f.root, "owner-raw.md"); writeFileSync(raw, "SYNTHETIC_DO_NOT_STAGE");
+  assert.throws(() => readPrivateInput(f.root, raw)); assert.ok(handoffPrivacyIssues(f.root).some((s) => s.includes("owner-raw.md")));
   assert.equal(readFileSync(raw, "utf8"), "SYNTHETIC_DO_NOT_STAGE");
   const out = join(tempDir("pace-handoff-body-"), "source.md"); writeFileSync(out, "SYNTHETIC_EXTERNAL_BODY\r\n");
   assert.equal(readPrivateInput(f.root, out).toString(), "SYNTHETIC_EXTERNAL_BODY\r\n");
   const link = join(tempDir("pace-handoff-link-"), "source.md"); symlinkSync(out, link); assert.throws(() => readPrivateInput(f.root, link));
   rmSync(link); linkSync(out, link); assert.throws(() => readPrivateInput(f.root, out));
-  assert.throws(() => f.record(f.make("long-metadata", "captain_input", { sourceRef: "fixture:" + "SYNTHETIC_RAW".repeat(100) })));
+  assert.throws(() => f.record(f.make("long-metadata", "owner_input", { sourceRef: "fixture:" + "SYNTHETIC_RAW".repeat(100) })));
   const syntheticCredential = "password" + "=" + "super-secret-fixture-value";
   assert.throws(() => f.record(f.make("secret-body", "status", {}), syntheticCredential));
   assert.equal(f.store.read().length, 0);
@@ -274,25 +274,25 @@ test("source CLI --project 잠금은 실제 명령 뒤 acquire/release를 연결
   assert.throws(() => f.record(f.make("forged", "resource_event", {})));
 });
 
-test("같은 요청 log+중계는 하나이며 coordinator 답·Orca 영수증은 캡틴 도달이 아니다", () => {
+test("같은 요청 log+중계는 하나이며 coordinator 답·Orca 영수증은 사용자 도달이 아니다", () => {
   const f = protocolFixture();
   const log = (type: "question" | "answer", requestId: string, by: "user" | "agent" | "coordinator", extra = {}) => assert.ok(recordEvent(f.dir, { ts: new Date().toISOString(), p: "P001", type, by, requestId, msg: "합성 시험 요약", ...extra }));
   log("question", "business-one", "agent", { to: "coordinator" }); log("answer", "business-one", "coordinator");
   const first = f.record(f.make("question", "decision_request", { interpretation: false }, "agent:maker", "coordinator", "business-one"));
-  f.record(f.make("relay", "decision_request", { interpretation: false, relayOf: first.id }, "coordinator", "captain", "business-one"));
-  assert.throws(() => f.record(f.make("duplicate-root", "decision_request", { interpretation: false }, "coordinator", "captain", "business-one")), /중계 참조/);
-  assert.throws(() => f.record(f.make("changed-relay", "decision_request", { interpretation: false, relayOf: first.id }, "coordinator", "captain", "business-one"), "SYNTHETIC_CHANGED_RELAY"), /중계가/);
+  f.record(f.make("relay", "decision_request", { interpretation: false, relayOf: first.id }, "coordinator", "owner", "business-one"));
+  assert.throws(() => f.record(f.make("duplicate-root", "decision_request", { interpretation: false }, "coordinator", "owner", "business-one")), /중계 참조/);
+  assert.throws(() => f.record(f.make("changed-relay", "decision_request", { interpretation: false, relayOf: first.id }, "coordinator", "owner", "business-one"), "SYNTHETIC_CHANGED_RELAY"), /중계가/);
   const route = { transport: "orca", actor: "coordinator", target: "term_fixture", from: "term_sender", sourceRef: "fixture:orca" };
   sendDelivery(f.store, "relay", "agent-delivery", route, () => ({ phase: "sent", responseHash: digest("fixture"), responseId: "msg_fixture" }));
   let report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!;
-  assert.equal(report.requests.total, 1); assert.equal(report.requests.unconfirmed, 1); assert.equal(report.requests.captain_reply, 0);
-  f.record(f.make("reply", "decision_reply", { re: first.id, decision: "reject", proposalHash: proposalDigest(first), sourceRef: "fixture:captain-answer" }, "captain", "coordinator", "business-one"), "SYNTHETIC_RAW_REJECTION");
-  report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!; assert.equal(report.requests.captain_reply, 1);
-  log("question", "business-two", "agent", { to: "captain" }); log("answer", "business-two", "agent", { src: "사용자 결정" });
-  log("question", "business-three", "agent", { to: "captain" }); log("answer", "business-three", "user", { ref: "absent.md" });
+  assert.equal(report.requests.total, 1); assert.equal(report.requests.unconfirmed, 1); assert.equal(report.requests.owner_reply, 0);
+  f.record(f.make("reply", "decision_reply", { re: first.id, decision: "reject", proposalHash: proposalDigest(first), sourceRef: "fixture:owner-answer" }, "owner", "coordinator", "business-one"), "SYNTHETIC_RAW_REJECTION");
+  report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!; assert.equal(report.requests.owner_reply, 1);
+  log("question", "business-two", "agent", { to: "owner" }); log("answer", "business-two", "agent", { src: "사용자 결정" });
+  log("question", "business-three", "agent", { to: "owner" }); log("answer", "business-three", "user", { ref: "absent.md" });
   writeFileSync(join(f.dir, "receipt.md"), "Synthetic source receipt"); log("answer", "business-three", "user", { ref: "receipt.md" });
   report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!;
-  assert.equal(report.requests.total, 3); assert.equal(report.requests.captain_reply, 2); assert.equal(report.requests.unconfirmed, 1);
+  assert.equal(report.requests.total, 3); assert.equal(report.requests.owner_reply, 2); assert.equal(report.requests.unconfirmed, 1);
   assert.ok(recordEvent(f.dir, { ts: new Date().toISOString(), p: "P001", type: "question", by: "agent", msg: "합성 과거 미연결 질문" }));
   report = collectHandoffs(f.root, "P001", relative(f.root, f.dir))!; assert.equal(report.requests.unlinkedLogEvents, 1); assert.equal(report.requests.total, 3);
   const stats = f.run("project", "stats", "P001", "--json"); assert.equal(stats.status, 0, stats.stderr);
@@ -304,23 +304,23 @@ test("실제 사람 경로의 성공·실패만·불명은 BR01 우선순위를 
   assert.equal(collectHandoffs(f.root, "P001", projectDir), undefined);
   const old = JSON.parse(f.run("project", "stats", "P001", "--json").stdout); assert.equal(Object.hasOwn(old, "handoffs"), false);
   for (const [index, phase] of ["sent", "failed", "unconfirmed"].entries()) {
-    const id = `business-${index}`; f.record(f.make(`question-${index}`, "decision_request", { interpretation: false }, "coordinator", "captain", id));
-    const route = { transport: "external", actor: "captain", target: "existing-human-channel", from: "coordinator", sourceRef: "fixture:human-receipt" };
+    const id = `business-${index}`; f.record(f.make(`question-${index}`, "decision_request", { interpretation: false }, "coordinator", "owner", id));
+    const route = { transport: "external", actor: "owner", target: "existing-human-channel", from: "coordinator", sourceRef: "fixture:human-receipt" };
     prepareDelivery(f.store, `question-${index}`, `attempt-${index}`, route);
     deliveryReceipt(f.store, `attempt-${index}`, { phase, reportedBy: "coordinator", sourceRef: route.sourceRef, ...(phase === "sent" ? { responseHash: digest("fixture-receipt"), responseId: "fixture-receipt" } : {}) });
   }
   const report = collectHandoffs(f.root, "P001", projectDir)!;
-  assert.equal(report.requests.captain_delivery, 1); assert.equal(report.requests.failed_only, 1); assert.equal(report.requests.unconfirmed, 1);
+  assert.equal(report.requests.owner_delivery, 1); assert.equal(report.requests.failed_only, 1); assert.equal(report.requests.unconfirmed, 1);
   const current = JSON.parse(f.run("project", "stats", "P001", "--json").stdout);
   assert.deepEqual(current.eventCounts, old.eventCounts);
   assert.equal(current.project.questionWaitMs, old.project.questionWaitMs);
   assert.equal(current.project.approvalWaitMs, old.project.approvalWaitMs);
   assert.deepEqual(current.tasks, old.tasks);
-  const retryRoute = { transport: "external", actor: "captain", target: "existing-human-channel", from: "coordinator", sourceRef: "fixture:human-receipt" };
+  const retryRoute = { transport: "external", actor: "owner", target: "existing-human-channel", from: "coordinator", sourceRef: "fixture:human-receipt" };
   prepareDelivery(f.store, "question-1", "failed-then-success", retryRoute);
   deliveryReceipt(f.store, "failed-then-success", { phase: "sent", reportedBy: "coordinator", sourceRef: retryRoute.sourceRef, responseHash: digest("synthetic-success-after-failure"), responseId: "fixture-late-success" });
   const retried = collectHandoffs(f.root, "P001", projectDir)!.requests;
-  assert.equal(retried.total, 3); assert.equal(retried.failed_only, 0); assert.equal(retried.captain_delivery, 2); assert.equal(retried.unconfirmed, 1);
+  assert.equal(retried.total, 3); assert.equal(retried.failed_only, 0); assert.equal(retried.owner_delivery, 2); assert.equal(retried.unconfirmed, 1);
 });
 
 function finishFixture() {
@@ -341,12 +341,12 @@ test("실제 finish는 열린 위임을 경고하며 원문을 HEAD/index에 넣
   assert.equal(f.store.bodies.read(digest(f.instruction))!.toString(), f.instruction);
 });
 test("알려진 원내 raw 입력은 실제 finish가 staging 전에 보류하고 원본을 보존한다", () => {
-  const f = finishFixture(), path = join(f.dir, "raw.md"); writeFileSync(path, "SYNTHETIC_CAPTAIN_RAW_NEVER_STAGE");
+  const f = finishFixture(), path = join(f.dir, "raw.md"); writeFileSync(path, "SYNTHETIC_OWNER_RAW_NEVER_STAGE");
   assert.throws(() => readPrivateInput(f.root, path));
   const result = f.run("project", "finish", "P001"); assert.equal(result.status, 1, result.stdout + result.stderr);
   assert.match(result.stdout, /로컬 전용 원문 staging 금지/);
   assert.equal(f.git("ls-files", "--error-unmatch", relative(f.root, path)).status, 1);
-  assert.equal(readFileSync(path, "utf8"), "SYNTHETIC_CAPTAIN_RAW_NEVER_STAGE");
+  assert.equal(readFileSync(path, "utf8"), "SYNTHETIC_OWNER_RAW_NEVER_STAGE");
 });
 
 test("source CLI는 원문→위임→수신 대조→결과→종결을 저장하고 같은 ID 재호출을 중복 집계하지 않는다", () => {
@@ -356,7 +356,7 @@ test("source CLI는 원문→위임→수신 대조→결과→종결을 저장�
     const result = runPace(["team", "handoff", "record", "P001", "--file", path, "--body-file", "-"], { cwd: f.root, home: f.home, input: body });
     assert.equal(result.status, 0, result.stderr); return JSON.parse(result.stdout).record;
   };
-  const original = record(f.make("cli-input", "captain_input", { sourceRef: "fixture:source-cli-original" }));
+  const original = record(f.make("cli-input", "owner_input", { sourceRef: "fixture:source-cli-original" }));
   const delegate = record(f.make("cli-delegate", "delegate", { basis: { kind: "input", ref: original.id, hash: original.bodyHash, policy: f.locator }, plan: f.p }));
   assert.equal(f.run("team", "handoff", "ready", "P001", delegate.id).status, 1);
   record(f.make("cli-scope", "scope_check", { re: delegate.id, status: "within", basisHash: instructionDigest(delegate), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
@@ -384,7 +384,7 @@ test("fake Orca 실행기는 실제 source CLI의 선기록과 정상/거절/모
 });
 
 test("다른 worktree는 같은 로컬 본문을 대조하고 다른 clone은 metadata-only로 남는다", () => {
-  const f = protocolFixture(), original = f.record(f.make("source", "captain_input", { sourceRef: "fixture:common-dir" }));
+  const f = protocolFixture(), original = f.record(f.make("source", "owner_input", { sourceRef: "fixture:common-dir" }));
   assert.equal(f.git("add", "-A").status, 0); assert.equal(f.git("commit", "-qm", "synthetic-ledger").status, 0);
   const worktree = join(tempDir("pace-handoff-worktree-"), "checkout"); assert.equal(f.git("worktree", "add", "--detach", worktree, "HEAD").status, 0);
   const other = new HandoffStore(worktree, "P001", relative(f.root, f.dir));
@@ -425,7 +425,7 @@ test("무관한 계획 추가는 기존 위임을 유지하고 선택 계획/작
   f.record(f.make("scope", "scope_check", { re: delegate.id, status: "within", basisHash: instructionDigest(delegate), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
   const updated = { version: 1, declaredBy: "coordinator", plans: [f.p, { ...f.p, id: "other-plan", proofScope: "T-2" }] };
   writeFileSync(path, JSON.stringify(updated)); assert.equal(f.store.readiness(delegate.id).ready, true);
-  writeFileSync(path, JSON.stringify({ ...updated, declaredBy: "captain" })); assert.equal(f.store.readiness(delegate.id).ready, false);
+  writeFileSync(path, JSON.stringify({ ...updated, declaredBy: "owner" })); assert.equal(f.store.readiness(delegate.id).ready, false);
   writeFileSync(path, JSON.stringify({ ...updated, plans: [{ ...f.p, proofScope: "T-3" }] })); assert.equal(f.store.readiness(delegate.id).ready, false);
   writeFileSync(path, JSON.stringify(updated));
   writeFileSync(join(f.root, "proof.txt"), "synthetic-proof");
@@ -501,19 +501,19 @@ test("다른 위임의 완료 결과나 빈 done 증거를 종결에 사용할 �
 
 test("source CLI 확인 사슬과 종류/에이전트별 집계는 실제 승인·위임·결과·종결 수와 같다", () => {
   const f = protocolFixture();
-  const original = cliRecord(f, f.make("cli-original", "captain_input", { sourceRef: "fixture:captain-raw" }), "SYNTHETIC_CAPTAIN_ORIGINAL_FOR_APPROVAL");
-  const proposal = cliRecord(f, f.make("cli-proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "captain", "cli-business"));
-  const reply = cliRecord(f, f.make("cli-approval", "decision_reply", { re: proposal.id, decision: "approve", proposalHash: proposalDigest(proposal), sourceRef: "fixture:captain-approval" }, "captain", "coordinator", "cli-business"), "SYNTHETIC_CAPTAIN_APPROVAL\r\n");
+  const original = cliRecord(f, f.make("cli-original", "owner_input", { sourceRef: "fixture:owner-raw" }), "SYNTHETIC_OWNER_ORIGINAL_FOR_APPROVAL");
+  const proposal = cliRecord(f, f.make("cli-proposal", "decision_request", { interpretation: true, of: original.id, plan: f.p }, "coordinator", "owner", "cli-business"));
+  const reply = cliRecord(f, f.make("cli-approval", "decision_reply", { re: proposal.id, decision: "approve", proposalHash: proposalDigest(proposal), sourceRef: "fixture:owner-approval" }, "owner", "coordinator", "cli-business"), "SYNTHETIC_OWNER_APPROVAL\r\n");
   const delegate = cliRecord(f, f.make("cli-approved-delegate", "delegate", { basis: { kind: "approved", ref: proposal.id, approval: reply.id, hash: proposalDigest(proposal) }, plan: f.p }));
   cliRecord(f, f.make("cli-within", "scope_check", { re: delegate.id, status: "within", basisHash: instructionDigest(delegate), checks: { instruction: true, decisionOwner: true, proofScope: true } }, "agent:maker", "coordinator"));
   writeFileSync(join(f.root, "proof.txt"), "synthetic-proof");
   cliRecord(f, f.make("cli-done", "result", { re: delegate.id, status: "done", evidence: [{ path: "proof.txt", hash: digest("synthetic-proof") }] }, "agent:maker", "coordinator"));
   cliRecord(f, f.make("cli-closed", "close", { re: delegate.id, result: "cli-done", proofScope: "T-1", checked: true }, "agent:reviewer", "coordinator"));
   const result = f.run("project", "stats", "P001", "--json"); assert.equal(result.status, 0, result.stderr); const h = JSON.parse(result.stdout).handoffs;
-  assert.deepEqual(h.kinds, { captain_input: 1, decision_request: 1, decision_reply: 1, delegate: 1, scope_check: 1, result: 1, close: 1 });
-  assert.deepEqual(h.agents, { coordinator: { captain_input: 1, decision_request: 1, delegate: 1 }, "agent:maker": { scope_check: 1, result: 1 }, "agent:reviewer": { close: 1 } });
-  assert.deepEqual(h.open, []); assert.equal(h.requests.total, 1); assert.equal(h.requests.captain_reply, 1);
-  assert.doesNotMatch(readFileSync(f.store.path, "utf8"), /SYNTHETIC_CAPTAIN_ORIGINAL_FOR_APPROVAL|SYNTHETIC_CAPTAIN_APPROVAL/);
+  assert.deepEqual(h.kinds, { owner_input: 1, decision_request: 1, decision_reply: 1, delegate: 1, scope_check: 1, result: 1, close: 1 });
+  assert.deepEqual(h.agents, { coordinator: { owner_input: 1, decision_request: 1, delegate: 1 }, "agent:maker": { scope_check: 1, result: 1 }, "agent:reviewer": { close: 1 } });
+  assert.deepEqual(h.open, []); assert.equal(h.requests.total, 1); assert.equal(h.requests.owner_reply, 1);
+  assert.doesNotMatch(readFileSync(f.store.path, "utf8"), /SYNTHETIC_OWNER_ORIGINAL_FOR_APPROVAL|SYNTHETIC_OWNER_APPROVAL/);
 });
 
 test("partial/blocked 결과는 실제 finish 뒤에도 열린 위임 경고로 남는다", () => {
@@ -557,5 +557,5 @@ test("project log --request-id source CLI는 요청을 연결하고 잘못된 �
   }
   const stats = f.run("project", "stats", "P001", "--json"); assert.equal(stats.status, 0, stats.stderr); const data = JSON.parse(stats.stdout);
   assert.equal(data.eventCounts.questions, 1); assert.equal(data.eventCounts.answers, 1);
-  assert.equal(data.handoffs.requests.total, 1); assert.equal(data.handoffs.requests.unconfirmed, 1); assert.equal(data.handoffs.requests.captain_reply, 0);
+  assert.equal(data.handoffs.requests.total, 1); assert.equal(data.handoffs.requests.unconfirmed, 1); assert.equal(data.handoffs.requests.owner_reply, 0);
 });

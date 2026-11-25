@@ -1,0 +1,11 @@
+{
+  "candidate": "candidate-r66.json",
+  "filesChecked": 42,
+  "allCandidateFileHashesMatchAfterRun": true,
+  "tests": 1326,
+  "pass": 1309,
+  "fail": 0,
+  "skip": 17,
+  "finalCandidate": false,
+  "reason": "Whole check passed; independent review found privacy and first-read consistency blockers."
+}
