@@ -54,3 +54,5 @@
 {"ts":"2026-11-25T13:38:59.647Z","p":"P012","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-25T13:38:59.818Z","p":"P012","t":"T05","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-25T13:39:59.572Z","p":"P012","type":"gate","by":"cli","msg":"finish: contract","ok":false,"data":{"finish":1}}
+{"ts":"2026-11-25T13:47:47.134Z","p":"P012","type":"finish","by":"cli","msg":"finish","ok":true}
+{"ts":"2026-11-25T13:47:47.134Z","p":"P012","type":"gate","by":"cli","msg":"finish","ok":true,"src":"finish:75af7de8eec21bf47101f76f","data":{"finish":1}}
