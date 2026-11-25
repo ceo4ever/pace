@@ -1188,7 +1188,7 @@ function backlogCommand(args: string[]): number {
     let path: string;
     if (sub === "new" && rest.length > 0) path = newBacklog(repo, rest.join(" "));
     else if (sub === "brief" && rest.length > 1) path = newBrief(repo, rest[0]!, rest.slice(1).join(" "));
-    else throw new UsageError('pace backlog new "<이름>" | brief <BL> "<이름>"');
+    else throw new UsageError('pace backlog new "<이름>" | brief <BL> "<이름>" | init | refresh');
     refreshDashboard(repo.root);
     process.stdout.write(`${path}\n`);
     return 0;
