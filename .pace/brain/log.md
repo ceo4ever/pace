@@ -118,3 +118,6 @@
 ## [2026-11-25] update | pace agent 호출 함정 (실측) (.pace/brain/pages/synthesis/pace-agent-호출-함정-실측.md)
 ## [2026-11-25] update | OPAL 가져오기 adopt opal 결정과 함정 (.pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md)
 ## [2026-11-25] lint | v0.1.2 README 변경은 버전 표기 두 곳이다. OPAL 가져오기 안내와 브레인 근거를 대조했다.
+## [2026-11-25] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-25] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
+## [2026-11-25] query | 반복 실패 조사 및 실측 근거를 대조하고 결정 권한과 공동 시도 이유를 작업-하네스-흐름과 검토-반복-실패-하네스에 반영

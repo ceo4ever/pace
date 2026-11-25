@@ -16,7 +16,7 @@ PACE는 **계약**(목적·재료·기준), **게이트**(커밋·마감·병합
 | `references/testing.md` · `references/e2e.md` | 테스트 설계·버그 수정 · 화면·프로세스 시나리오 |
 | `references/tester.md` · `references/reviewer.md` | 태스크 사전 검토·테스트 단계 — 새 맥락에 넘길 판정 기준 |
 | `references/security.md` | 설계의 보안 영향, finish 전 보안 검사 |
-| `references/coordinator.md` | Orca에서 main 세션이 코디네이터일 때 |
+| `references/coordinator.md` · `references/decision-rights.md` | 코디네이터 운영, PM·owner 결정과 실행 전 승인 확인 |
 | `references/html-plan.md` | 복잡한 설계를 html-plan으로 보여 줄 때 |
 | `references/project-define.md` · `references/task-steps.md` | 프로젝트 분석·설계 세부 · 태스크 단계 세부·reviewer 배정 |
 | `references/commands.md` | `done`·`check`가 하는 일, `pace project log` 형식 |
@@ -49,7 +49,7 @@ main에서 worktree 파일을 절대 경로로 고치지 않는다 — 프로젝
 
 ## 3. 태스크 (worktree, 자율)
 
-태스크 표의 `대기` 중 맨 앞부터. 태스크 하나는 아래 단계이고, 멈춤 조건(§6)이 아니면 묻지 않고 끝까지 간다.
+태스크 표의 `대기` 중 맨 앞부터 아래 단계를 수행한다. 결정이나 장애의 처리 범위는 §6을 따른다.
 
 팀이 있으면 설계 때 [pace-team](../pace-team/SKILL.md)으로 담당과 독립 검토를 정한다.
 
@@ -62,16 +62,16 @@ main에서 worktree 파일을 절대 경로로 고치지 않는다 — 프로젝
 ## 4. finish → merge
 
 1. 모든 태스크가 `완료`(또는 `보류`)면 PROJECT-CLOSE.md를 쓴다 — 기준 대조와 별도 **목표 달성 판정**([goal-review.md](references/goal-review.md)). 목표 미달/미확인은 게이트 통과로 덮지 않고 해당 위 단계 보완·합의 변경 질문으로 올린다. 구성·보안·지표는 [finish.md](references/finish.md).
-2. `pace project finish P###` (worktree에서. main 직접 프로젝트는 main에서) — 검사 항목은 [finish.md](references/finish.md). 실패하면 이유를 고치고 다시 돈다. rebase 충돌은 목차 외에는 멈추고 보고한다.
+2. `pace project finish P###` — 검사 항목은 [finish.md](references/finish.md). 실패를 고치고 다시 실행한다. 목차 외 rebase 충돌은 중지하고 허브와 [A·B·C](references/decision-rights.md)에 따라 해결·보고한다.
    `finish` 직전·직후에 같은 검사를 따로 반복하지 않는다([verification.md](references/verification.md)).
 3. **자체 판단 대조** — finish가 통과한 뒤 `worker_done`·완료 보고 전에 워크트리 PM이 log.jsonl의 `자체 판단` 결정을 백로그·PROJECT.md 합의(목적·기준·범위)와 대조한다. 합의를 바꾼 것이 있으면 보고 전에 §6으로 올리고, 없으면 "대조: 변경 없음"을 보고에 적는다.
 4. 지표(`pace project stats`)·남은 일·브레인 정리는 [finish.md](references/finish.md).
 5. 실제 merge의 FF가 성공한 뒤 완료 기록이 실패하면 [recovery.md](references/recovery.md)를 따른다.
 
-✋ **병합 대기 중 main 커밋 금지** — main 세션(허브 PM·사용자 대화)은 `finish`로 `병합 대기`인 프로젝트가 있으면 메모리 등 어떤 커밋도 main에 먼저 하지 않는다. fast-forward가 깨져 finish를 다시 돌아야 한다. 커밋은 merge 뒤로 미루거나 사용자에게 묻는다. 예외는 위 5번 복구(merge FF 성공 뒤 완료 기록 실패)의 실패 로그 보존 커밋뿐이다.
+✋ **병합 대기 중 main 커밋은 병합 뒤로 미룬다.** 메모리 파일은 갱신하되, 그 커밋과 [B의 도구 수정](references/decision-rights.md#b-허브의-장애-대응) 커밋을 미룬다. FF 뒤 완료 기록 복구는 위 5번을 따른다.
 
-✋ **merge**는 main 체크아웃에서 사람이 승인한다: `pace project merge P###` → 승인 → `--yes`. worktree 세션은 merge를 하지 않는다. Orca 작업자면 finish 통과 뒤 `worker_done`으로 끝낸다.
-6. ✋ 배포가 있으면 별도 승인.
+✋ **merge**는 허브가 main에서 실행한다. `pace project merge P###`의 미리보기 대상과 owner 승인 원문을 [실행 전 확인](references/decision-rights.md#실행-전-승인-확인)으로 대조한 뒤 `--yes`를 입력한다. Orca 작업자면 finish 통과 뒤 `worker_done`으로 끝낸다.
+6. ✋ 배포가 있으면 같은 정본으로 배포 대상의 별도 승인을 확인한다.
 
 ## 5. 기준 문서 고르기 (D3)
 
@@ -79,15 +79,9 @@ main에서 worktree 파일을 절대 경로로 고치지 않는다 — 프로젝
 
 ## 6. 멈춤 조건
 
-아래면 진행을 멈추고 묻는다 — Orca 작업자는 주입된 `ask` 명령으로 코디네이터에게, 아니면 사용자에게. 질문은 선택지와 권고·이유를 붙여 짧게.
+[결정 권한 정본](references/decision-rights.md)의 A와 실행 전 승인 확인을 적용한다. A에 걸리면 작업자는 `ask`로 허브에 인계하고 허브가 C의 요청을 보낸다. 해당 조치만 보류하고 독립 작업은 이어간다.
 
-- 기준·범위를 바꿔야 한다 (계약 변경)
-- 승인된 설계와 다른 방향이 필요하다
-- 되돌리기 어렵거나 밖으로 나가는 행동: 푸시·배포·삭제·외부 전송·결제·병합
-- 보안·비밀·사용자 데이터·비용
-- 같은 검사·실행 실패가 세 번 이어진다. 검토 fail의 단계·분류·조치·보고는 [반복 실패 정본](references/reviewer.md#반복-실패-진단과-사용자-결정)을 따른다
-
-그 밖(구현 세부·테스트 방식·문서 표현·순서)은 스스로 정하고 결정 메모에 남긴다. 코디네이터가 대신 답한 것은 "(main 판단)"을 붙인다.
+A 밖은 PM이 결정하고 근거를 기록해 C의 사후 요약에 담는다. 장애나 같은 실패 3회는 근거와 함께 허브에 보내 [B](references/decision-rights.md#b-허브의-장애-대응)로 해결한다. 단독 PM은 이 절차를 직접 수행한다. 검토 원장 단계는 [반복 실패](references/reviewer.md#반복-실패-진단과-사용자-결정)를 따른다. 허브 결정은 "(main 판단)"으로 기록한다.
 
 ## 7. 진행 기록과 인계
 

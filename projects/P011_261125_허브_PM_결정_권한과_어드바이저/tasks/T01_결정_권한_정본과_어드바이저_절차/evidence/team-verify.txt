@@ -1,0 +1,12 @@
+| 구성원 | 호스트 | 적재 방식 | 원본 | 판정 | 이유 |
+|---|---|---|---|---|---|
+| pace-implementer | claude | prompt | .pace/team/agents/pace-implementer.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |
+| pace-project-lead | claude | prompt | .pace/team/agents/pace-project-lead.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |
+| pace-reviewer | claude | prompt | .pace/team/agents/pace-reviewer.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |
+| pace-tester | claude | prompt | .pace/team/agents/pace-tester.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |
+| pace-implementer | codex | prompt | .pace/team/agents/pace-implementer.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |
+| pace-project-lead | codex | prompt | .pace/team/agents/pace-project-lead.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |
+| pace-reviewer | codex | prompt | .pace/team/agents/pace-reviewer.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |
+| pace-tester | codex | prompt | .pace/team/agents/pace-tester.md | pass | 이름·모든 명시 키워드 일치 (의미·진실성 검증 아님) |
+해당 없음: 원본 prompt 직접 적재 경로. 생성물 차이는 team sync --check로 검사한다.
+Report: .pace/team/verify/89a901ac-5deb-40b6-805b-64924b967aea.json

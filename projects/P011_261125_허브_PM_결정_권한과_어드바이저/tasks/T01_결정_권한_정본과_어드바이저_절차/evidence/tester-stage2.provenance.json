@@ -1,0 +1,15 @@
+{
+  "agent": "codex",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "write",
+  "stop_reason": "completed",
+  "sha256": "cb959b741a8d51dd3b4500cb7e49df08f1b8b848796464df5c09e60c06b22d9d",
+  "personal_identifiers_redacted": 0
+}

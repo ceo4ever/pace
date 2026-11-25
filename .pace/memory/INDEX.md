@@ -52,6 +52,7 @@
 - [pace agent Codex 호스트 조건 안내 확인](pace-agent-codex-호스트-조건-안내-확인.md) — Codex 호스트의 네트워크 허용·중첩 Codex의 샌드박스 해제 필요 안내가 실제 사용 때 드러나는지 확인한다
 - [호스트 실사용 검증](호스트-실사용-검증.md) — GUI 호스트와 Windows에서 프로젝트 역할 수신·부트를 실사용으로 확인한다
 - [로그온 자동 기동 병합 후 실측](로그온-자동-기동-병합-후-실측.md) — P005 병합 후 운영 PC(macOS)에서 재로그온 뒤 launchd(io.pace.daemon RunAtLoad)로 daemon이 수동 start 없이 새로 뜨는지 실제 확인한다 — Windows PC daemon은 캡틴이 제거
+- [P011 병합 후 Orca 장애 대응 인수](p011-병합-후-orca-장애-대응-인수.md) — 실제 작업자 escalation부터 허브의 결정과 워크트리 재개·재검증까지 Orca 1건을 관측한다
 
 ## 메모 (사실·결정)
 

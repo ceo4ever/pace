@@ -166,10 +166,10 @@ export function targetName(target: string): string { return basename(target); }
 
 export function escalationNext(stage: Stage, target: string, fails: number): string {
   if (stage === "diagnose") {
-    return `같은 대상에서 연속 ${fails}회 fail — 지적별 수정을 멈추고 원인 층(structure/planning/design/other)을 진단한다. 근본 조치 전에 합의된 목적·범위와 실제 영향을 확인해 분류한다. 심각한 오류·보안·합의 변경이면 조치 전 사용자 결정을 받는다. 일반 갭은 PM이 근본 조치·재검증 후 사후 보고한다. 분류 정본: skills/pace-project-dev/references/reviewer.md의 반복 실패 절. \`pace agent review-note --target ${target} --diagnosis --layer <층> --summary "<진단·조치>" [--file <진단 증거·승인 연결>]\`로 기록한다. 진단 뒤 첫 검토는 새 기준 전체 검토다.`;
+    return `같은 대상에서 연속 ${fails}회 fail — 지적별 수정을 멈추고 원인 층(structure/planning/design/other)을 진단한다. skills/pace-project-dev/references/decision-rights.md B에 따라 허브와 원인을 확인하고 근본 조치의 실제 영향을 A로 판정한다. A에 해당할 때만 조치 전 owner 결정을 요청한다. 그 밖의 조치는 PM이 결정해 재검증한 뒤 사후 요약한다. \`pace agent review-note --target ${target} --diagnosis --layer <층> --summary "<진단·조치>" [--file <진단 증거·승인 연결>]\`로 기록한다. 진단 뒤 첫 검토는 새 기준 전체 검토다.`;
   }
   if (stage === "ask_user") {
-    return `진단 뒤에도 fail — ask_user는 호환을 위한 결정 필요 단계 이름이며 주체를 자동 지정하지 않는다. 매 수정 전에 지적·조치의 영향을 분류한다(정본: skills/pace-project-dev/references/reviewer.md 반복 실패 절). 일반 갭은 PM 결정: 분류 이유·조치를 근거 파일에 남기고 근본 조치 → 전체 재검증 → 사후 보고한다. 심각한 오류·보안·목적·범위 변경은 고치기 전 사용자 결정: 실패 추이·진단·남은 지적·선택지와 추천을 보고하고 사람 결정 원문을 보존한다. \`pace agent review-note --target ${target} --decision --by pm|user --choice "<선택>" --summary "<사유>" --file <분류·조치 또는 사용자 원문>\`으로 기록한다. PM 결정은 waiver가 아니며 재검증한다.`;
+    return `진단 뒤에도 fail — ask_user는 호환을 위한 결정 필요 단계 이름이다. skills/pace-project-dev/references/decision-rights.md B에 따라 허브와 해결하고 매 수정 전에 A로 결정 주체를 고른다. A 밖 조치는 PM이 결정 근거를 남긴 뒤 근본 조치 → 전체 재검증 → 사후 요약한다. A에 해당할 때만 수정 전 owner 결정을 요청하고 실행 전 원문과 대상을 대조한다. \`pace agent review-note --target ${target} --decision --by pm|user --choice "<선택>" --summary "<사유>" --file <PM 근거 또는 승인 근거>\`로 기록한다. 사전 검토의 PM 결정은 재검증 pass로 확인한다.`;
   }
   return "";
 }

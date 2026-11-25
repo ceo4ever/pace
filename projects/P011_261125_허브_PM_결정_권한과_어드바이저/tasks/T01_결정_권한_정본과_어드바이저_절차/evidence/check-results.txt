@@ -1,0 +1,29 @@
+PACE_HOME=<격리> PACE_SKIP_BROWSER_E2E=1 npm run check
+exit 0, TypeScript 검사 통과
+ℹ tests 1385
+ℹ pass 1368
+ℹ fail 0
+ℹ skipped 17
+ℹ duration_ms 449007.66575
+
+최종 B1 안내와 규칙 문구 이후 표적 5개 파일
+
+node --test test/rules.test.ts test/project-dev-skill.test.ts test/agent-verify.test.ts test/agent-review-log.test.ts test/project-role.test.ts
+
+exit 0
+ℹ tests 73
+ℹ pass 73
+ℹ fail 0
+ℹ skipped 0
+ℹ duration_ms 28930.507584
+
+역할 분기의 완전한 지시 대조 추가 후 시험
+
+node --test --test-name-pattern "workerSpec and all team sources" test/project-role.test.ts
+
+exit 0
+ℹ tests 1
+ℹ pass 1
+ℹ fail 0
+ℹ skipped 0
+ℹ duration_ms 122.592916

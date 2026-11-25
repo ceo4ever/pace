@@ -87,7 +87,7 @@ export function createTeamMember(root: string, name: string, role: string): Team
     lead: "프로젝트 계약을 확인하고 담당·검토·인계를 정리하며 완료 근거를 통합한다.",
     maker: "배정된 범위를 구현하고 관련 검사를 실행해 결과와 한계를 보고한다.",
     reviewer: "작성자와 독립된 근거로 결함·계약 충족을 판정하고 지적을 반환한다.",
-    coordinator: "작업자의 질문·장애를 분류하고 결정 주체에게 전달해 답과 작업 수명을 연결한다.",
+    coordinator: "decision-rights.md A로 결정 주체를 판정하고 B로 작업자의 장애를 조사·재현해 결정·근거·재검증 기준을 회신한다.",
   };
   const tier = role === "lead" || role === "reviewer" ? "high" : "medium";
   const template = readTeamFile(packageRoot, "templates/team/member.md");

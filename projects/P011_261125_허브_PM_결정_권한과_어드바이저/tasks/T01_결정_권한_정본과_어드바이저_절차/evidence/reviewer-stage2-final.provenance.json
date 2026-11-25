@@ -1,0 +1,15 @@
+{
+  "agent": "claude",
+  "model": {
+    "value": "claude-sonnet-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "stop_reason": "end_turn",
+  "sha256": "9d483b1d596b8f93d2b2c0a72e6417d9838c941970228edc1a1d459c45c94898",
+  "personal_identifiers_redacted": 0
+}

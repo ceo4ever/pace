@@ -47,14 +47,30 @@ test("목표 대조는 작업 문서 전 1단계이며 결과 달성과 상향 �
   assert.match(p, /호스트 첨부.*노출 범위/);
 });
 
-test("다른 제공자를 쓸 수 없으면 같은 제공자로 몰래 대체하지 않고 미실행·질문", async () => {
+test("다른 제공자 미실행에는 B1에 따른 명시적 폴백과 교차 여부를 안내한다", async () => {
   calls.length = 0;
   const o = await crossVerify({ ...base, executors: [fake("claude")] });
   assert.equal(o.ran, false);
-  assert.ok(!o.ran && /교차 검증 미실행/.test(o.reason) && /사용자에게 묻는다/.test(o.ask));
+  assert.ok(!o.ran);
+  assert.match(o.reason, /교차 검증 미실행/);
+  assert.match(o.ask, /decision-rights\.md A-3의 B1.*--allow-same-provider.*사유.*cross: false/);
+  assert.doesNotMatch(o.ask, /owner 결정|사용자에게 묻/);
   assert.equal(calls.length, 0);
   const failed = await crossVerify({ ...base, executors: [fake("claude"), fake("codex", { fail: new AgentError("read_only_unenforceable", "강제 불가") })] });
   assert.ok(!failed.ran && /read_only_unenforceable/.test(failed.reason));
+});
+
+test("같은 제공자까지 미실행이면 검토 생략에 A-3 결정을 요청한다", async () => {
+  const missing = new AgentError("executor_unavailable", "실행기 없음");
+  const o = await crossVerify({
+    ...base,
+    allowSameProvider: true,
+    executors: [fake("codex", { fail: missing }), fake("claude", { fail: missing })],
+  });
+  assert.ok(!o.ran);
+  assert.match(o.reason, /codex:.*claude:/);
+  assert.match(o.ask, /모두 미실행.*decision-rights\.md A-3.*owner 결정/);
+  assert.doesNotMatch(o.ask, /--allow-same-provider/);
 });
 
 test("제공자를 확인하지 못한 결과(고정표뿐)는 교차로 인정하지 않고 미실행", async () => {

@@ -48,8 +48,9 @@ test('결정 주체 pm/user 필수·근거·옛 결정 unknown과 단계 호환'
     const opened = await h.verify('F1 [blocking] 남은 갭\nfail');
     assert.equal(opened.code, 0);
     assert.equal(opened.json.escalation.stage, 'ask_user');
-    assert.match(opened.json.escalation.next, /PM|pm/);
-    assert.match(opened.json.escalation.next, /사전|고치기 전/);
+    assert.match(opened.json.escalation.next, /decision-rights\.md B.*A로 결정 주체/);
+    assert.match(opened.json.escalation.next, /A에 해당할 때만 수정 전 owner 결정.*원문과 대상/);
+    assert.match(opened.json.escalation.next, /A 밖 조치는 PM.*전체 재검증/);
     const evidence = join(h.dir, 'choice.md'); writeFileSync(evidence, '분류 이유와 조치 / 합성 사용자 원문');
     const args = ['--decision', '--choice', '고치고 재검토', '--summary', '사유', '--file', evidence];
     const before = readFileSync(join(h.dir, 'REVIEW-LOG.jsonl'), 'utf8');
@@ -203,7 +204,9 @@ test("S-5 3회 fail → 진단 → 진단 뒤 fail → 사용자 결정 → 재�
   let calls = h.prompts.length;
   h.set("v4\n");
   const blocked = await h.verify("d\nfail");
-  assert.equal(blocked.code, 16); assert.equal(blocked.json.escalation.stage, "diagnose"); assert.match(blocked.json.escalation.next, /review-note/);
+  assert.equal(blocked.code, 16); assert.equal(blocked.json.escalation.stage, "diagnose");
+  assert.match(blocked.json.escalation.next, /decision-rights\.md B.*허브와 원인.*A에 해당할 때만 조치 전 owner 결정/);
+  assert.match(blocked.json.escalation.next, /review-note.*--diagnosis.*전체 검토/);
   assert.equal(h.prompts.length, calls, "차단 때 실행기 호출 0");
   assert.equal(h.ledger().length, 3);
 

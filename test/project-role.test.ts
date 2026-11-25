@@ -1,11 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { chmodSync, existsSync, linkSync, mkdirSync, readFileSync, readdirSync, renameSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
-import { join, sep } from "node:path";
+import { basename, join, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
 import { runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
+import { EXECUTION_CHECK_RULE, parseTeamSource } from "../src/team/model.ts";
 function fixture() {
   const parent = tempDir("pace-project-role-"), root = join(parent, "app"), home = tempDir("pace-project-role-home-");
   mkdirSync(root); mkdirSync(join(root, "docs"));
@@ -47,10 +48,54 @@ test("project role RED: missing member is rejected before worktree creation", ()
   assert.notEqual(r.status, 0); assert.match(r.stderr, /팀 역할이 없다/); assert.equal(existsSync(worktree), false);
 });
 
-test("project role: no-role workerSpec is the pre-change golden", async () => {
+test("project role: no-role workerSpec matches the decision-rights golden", async () => {
   const { workerSpec } = await import("../src/project/harness.ts");
   const ref = { id: "P123", dir: "P123_261124_role-test", name: "role-test", branch: "project/P123", worktree: "/fixture/app.wt/P123" };
   assert.equal(workerSpec(ref, ref.worktree), readFileSync(new URL("./fixtures/worker-spec-before-role.txt", import.meta.url), "utf8"));
+});
+
+test("project role: workerSpec and all team sources apply the same decision and execution boundary", async () => {
+  const { workerSpec } = await import("../src/project/harness.ts");
+  const ref = { id: "P123", dir: "P123_261124_role-test", name: "role-test", branch: "project/P123", worktree: "/fixture/app.wt/P123" };
+  const spec = workerSpec(ref, ref.worktree);
+  const prohibited = "푸시·배포·삭제·외부 전송";
+  assert.ok(spec.includes(`(${prohibited})은 하지 않는다`));
+  assert.match(spec, /owner 결정은 A 항목에 해당할 때만 코디네이터를 통해 요청/);
+  assert.match(spec, /B에 따라 코디네이터에게 증거와 재현 조건.*재검증한 뒤 태스크를 이어간다/);
+
+  const root = join(import.meta.dirname, "..");
+  const sourceDir = join(root, ".pace/team/agents");
+  const sources = readdirSync(sourceDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => join(sourceDir, entry.name));
+  assert.ok(sources.length > 0, "팀 원본을 적어도 하나 대조한다");
+  const template = join(root, "templates/team/member.md");
+  for (const filename of [...sources, template]) {
+    const text = readFileSync(filename, "utf8").replace(/\r\n/g, "\n");
+    const paragraphs = text.split("\n\n");
+    const index = paragraphs.indexOf(EXECUTION_CHECK_RULE);
+    assert.notEqual(index, -1, `${filename}: 실행 전 대조 계약 v1`);
+    const supplement = paragraphs[index + 1] ?? "";
+    assert.match(supplement, /먼저 조사.*실행을 보류.*HANDOFF 수신자.*호출자/, filename);
+    assert.match(supplement, /decision-rights\.md`의 A로 판정/, filename);
+    assert.ok(supplement.includes(`${prohibited} 금지와 병합 인계`), filename);
+    assert.match(supplement, /독립 작업은 계속/, filename);
+    if (filename === template) {
+      assert.match(text, /구현자·검토자·테스터는 워크트리 lead에게, lead는 허브 PM에게 인계/, filename);
+      continue;
+    }
+    const member = parseTeamSource(text, basename(filename, ".md"));
+    const roleSpec = workerSpec(ref, ref.worktree, { member, source: "option", settings: { model: "fixture" } });
+    const [instruction, ...workerInstructions] = roleSpec.split("\n");
+    assert.ok(instruction!.includes(member.source) && instruction!.includes(member.hash), filename);
+    assert.equal(workerInstructions.join("\n"), spec, filename);
+    const receiver = /`HANDOFF: ([^|]+) \| 요청 \| 근거`/.exec(text)?.[1];
+    if (member.role === "lead") assert.equal(receiver, "허브 PM", filename);
+    else assert.match(receiver ?? "", /^(?:pace-project-lead|호출자)$/, filename);
+  }
+  const decision = readFileSync(join(root, "skills/pace-project-dev/references/decision-rights.md"), "utf8");
+  assert.match(decision, /A-2 복구·외부 영향[^\n]*저장소 밖 데이터 삭제/);
+  assert.ok(decision.includes(`워크트리는 ${prohibited}을 수행하지 않고`));
 });
 function projectPath(root: string): string {
   return join(root, "projects", readdirSync(join(root, "projects")).find((name) => name.startsWith("P001_"))!, "PROJECT.md");
@@ -83,6 +128,7 @@ for (const host of ["claude", "codex"]) test(`project role ${host}: argv overrid
     assert.equal(value("--agent"), host);
     assert.match(value("--spec")!, /^먼저 \.pace\/team\/agents\/builder\.md를 읽고/);
     assert.match(value("--spec")!, /적재하지 못하면.*보류/);
+    assert.match(value("--spec")!, /decision-rights\.md.*owner 결정은 A 항목에 해당할 때만/);
     const event = starts(f.worktree).at(-1)!;
     assert.equal(event.role.name, "builder"); assert.equal(event.role.source, "option");
     assert.equal(event.role.definition, ".pace/team/agents/builder.md"); assert.match(event.role.hash, /^[a-f0-9]{64}$/);

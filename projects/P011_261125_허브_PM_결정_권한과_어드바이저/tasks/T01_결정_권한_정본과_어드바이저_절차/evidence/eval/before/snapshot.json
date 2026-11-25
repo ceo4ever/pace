@@ -1,0 +1,90 @@
+{
+  "skills/pace-project-dev/SKILL.md": {
+    "bytes": 10746,
+    "sha256": "4387ac7727c5b27067c3c5d73146fc116a46bc7484d85db9c520099d06eb6530"
+  },
+  "skills/pace-project-dev/references/backlog.md": {
+    "bytes": 3077,
+    "sha256": "642289fc329427cfff485c966ef8f3a7ee085858670163a501bdf1739a022876"
+  },
+  "skills/pace-project-dev/references/commands.md": {
+    "bytes": 2432,
+    "sha256": "ccc75f6ca9f5686c35020aa9d17c17bfacca88d4f0589af3e2900d6d5f7a8199"
+  },
+  "skills/pace-project-dev/references/coordinator.md": {
+    "bytes": 15462,
+    "sha256": "0b7b71bab3ddb09880885b57d6b691c3b4ea4d70182bfcc7c9820b4201508285"
+  },
+  "skills/pace-project-dev/references/cross-verify.md": {
+    "bytes": 1235,
+    "sha256": "ffba1e331e3147b5b79beb52addb02cb012ec35150160f561f8dff51910a8b12"
+  },
+  "skills/pace-project-dev/references/document-shape.md": {
+    "bytes": 6178,
+    "sha256": "1687882cdfbdbbb447627b6b9c624b656beafed54ecf29d38bff3ecbd05e8efa"
+  },
+  "skills/pace-project-dev/references/e2e.md": {
+    "bytes": 3127,
+    "sha256": "2a73ff7a0fadf6152f695ce90c86dd95493a2aa64a8a55898b17f59547254da9"
+  },
+  "skills/pace-project-dev/references/finish.md": {
+    "bytes": 2509,
+    "sha256": "94a23e6bd252c6a95dcaaa00e1f362d4e05eec8c38ddb7223db51c2c49022830"
+  },
+  "skills/pace-project-dev/references/goal-review.md": {
+    "bytes": 7135,
+    "sha256": "c9a799b81348c7bc47f1aab6d9f20a0cf48ea6abdc91399f9157aa70f2e01dba"
+  },
+  "skills/pace-project-dev/references/html-plan.md": {
+    "bytes": 1970,
+    "sha256": "aed1e58dd0de655e0d6feedcda6d7a39cadff3a1d39ce7ec4fcb5c938af75dc6"
+  },
+  "skills/pace-project-dev/references/project-define.md": {
+    "bytes": 666,
+    "sha256": "890b331c79e67138fd4af6893fc98f429a2f69636f77e289f2bf42021f941250"
+  },
+  "skills/pace-project-dev/references/recovery.md": {
+    "bytes": 598,
+    "sha256": "029971649d481ae5ba9103ededf4fdbb2c7d3cb731e12d6c5a42dc4e2a1b8bd3"
+  },
+  "skills/pace-project-dev/references/reviewer.md": {
+    "bytes": 22346,
+    "sha256": "0a169583b6d8ee6def81e5aef5a5a2e22d090663136324cef6f46268939b95b8"
+  },
+  "skills/pace-project-dev/references/security.md": {
+    "bytes": 2946,
+    "sha256": "81f66e65fc9272cc73b4ef78a0f5c69b234f607ea9451609fe70dd5165d6d007"
+  },
+  "skills/pace-project-dev/references/standards.md": {
+    "bytes": 1202,
+    "sha256": "31fd584ad4819ae4f3fb84993c0c2f14f73148894d971292749b9e9c78dd8c0b"
+  },
+  "skills/pace-project-dev/references/task-steps.md": {
+    "bytes": 3967,
+    "sha256": "8aa85f7c577df3c4e93621aefab284f72429eefd7458afc4a7655870008038b2"
+  },
+  "skills/pace-project-dev/references/tester.md": {
+    "bytes": 2723,
+    "sha256": "70971660c3d7665209aa0f16a8c0632c71b69fb37d8769df4711b080861988f4"
+  },
+  "skills/pace-project-dev/references/testing.md": {
+    "bytes": 5107,
+    "sha256": "b15c1d2175a606bbc22304b32dcbca47d67de5ea8b52b1b017af171338c1e067"
+  },
+  "skills/pace-project-dev/references/tools.md": {
+    "bytes": 5748,
+    "sha256": "78d3f7d4f95ae45a7c131672f00abfe8d52b37e0731259a2f8b2a2197fdfe7e1"
+  },
+  "skills/pace-project-dev/references/verification.md": {
+    "bytes": 2082,
+    "sha256": "d446f989ec3c1d354724d9fb7c6fb3bfbefc894c54e2f55670049ee663421989"
+  },
+  "skills/pace-team/SKILL.md": {
+    "bytes": 5716,
+    "sha256": "82e4f3788af3e1882c51a6e509a2d57012290266d5f61b55ff3dcee2cc3661f0"
+  },
+  "skills/pace-team/references/role-archetypes.md": {
+    "bytes": 1869,
+    "sha256": "5b27587a437b8e168ebfdf65cc8a348a91b806e89429966b1a0c163411f55828"
+  }
+}

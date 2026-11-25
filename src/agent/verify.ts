@@ -2,7 +2,7 @@ import { AgentError, providerFromModel, providerOf, runAgent, type AgentName, ty
 import { taskFormat } from "../project/pre-review.ts";
 
 // 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용 -p로 독립 검토한다.
-// 같은 제공자로 몰래 대체하지 않는다 — 못 하면 "미실행"으로 기록하고 사용자에게 묻는다.
+// 다른 제공자 미실행 시 B1에 따라 같은 제공자 새 세션으로 대체하고 사유와 cross: false를 기록한다.
 
 export type VerifyOutcome =
   | { ran: true; cross: boolean; verifier: AgentName; result: AgentResult }
@@ -17,7 +17,7 @@ export interface VerifyOptions {
   artifactName: string;
   cwd: string;
   timeoutMs?: number;
-  /** 단일 제공자 사용자: 같은 제공자의 새 맥락 검토로 대체(교차 아님으로 기록) */
+  /** B1: 다른 제공자 미실행 시 같은 제공자의 새 맥락 검토로 대체(cross: false) */
   allowSameProvider?: boolean;
   model?: string;
   /** goal(기본): 결과물의 목표/결과 대조 · task: 구현 전 TASK 사전 검토 — TASK.md 자체가 검토 대상 결과물이다 */
@@ -59,7 +59,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
     ...scope,
     "산출물 자체가 계획서/백로그면 평가할 결과로 읽되 그 안의 목표를 상위 목적의 정답으로 믿지 않는다.",
     "첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다.",
-    "상위 목적은 대조 기준이며 어긋나면 목표·전략·계획 등 해당 단계를 고친다. 합의 목적/목표/범위 변경은 사용자에게 묻는다.",
+    "상위 목적은 대조 기준이며 어긋나면 목표·전략·계획 등 해당 단계를 고친다. 합의 영향은 skills/pace-project-dev/references/decision-rights.md의 A-1로 판정한다.",
     "읽은 파일과 자동 부트/메모리·호스트 첨부 맥락의 노출 범위를 기록한다. 읽기 전용이 작업 문서 접근 차단이나 완전 격리를 뜻하지 않는다.",
     rereview
       ? "재검토이므로 노출 범위에 직전 검토 원문과 바뀐 줄을 받았음을 기록한다. 검토 주체가 바뀌었으면 제공자·독립성 수준을 기록한다."
@@ -135,7 +135,7 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
     ran: false,
     reason: `교차 검증 미실행: ${reasons.join("; ")}`,
     ask: options.allowSameProvider
-      ? "같은 제공자 검토도 불가했다 — 검증을 건너뛸지 사용자에게 묻는다"
-      : "다른 제공자 에이전트를 쓸 수 없다 — 같은 제공자의 새 맥락 검토(교차 아님 기록)로 대체할지, 건너뛸지 사용자에게 묻는다",
+      ? "다른 제공자와 같은 제공자 검토가 모두 미실행이다. 검토 생략 여부는 decision-rights.md A-3에 따라 owner 결정으로 요청한다."
+      : "다른 제공자 검토가 미실행이다. 프로젝트의 태스크·백로그 검토는 decision-rights.md A-3의 B1에 따라 --allow-same-provider로 같은 제공자 새 세션 검토를 진행하고 사유와 cross: false를 기록한다.",
   };
 }

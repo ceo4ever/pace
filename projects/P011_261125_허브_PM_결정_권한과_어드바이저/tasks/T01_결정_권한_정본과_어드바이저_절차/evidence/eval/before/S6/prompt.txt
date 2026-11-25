@@ -1,0 +1,41 @@
+이것은 읽기 전용 행동 시나리오 시험이다. 실제 행동(수정·질문·메모리·커밋·전송)은 하지 말고 현재 상황에서 할 일의 순서를 답해라. 사례마다 담당, 실제 명령 또는 기록, 질문과 승인 대기 수를 필요한 만큼 적어라. 자동 첨부를 받았는지와 읽은 파일·실제 읽은 줄 범위를 본문 끝에 밝히고, 전체 바이트는 도구로 확인할 수 있을 때만 적어라. 다른 사례의 응답·평가표·TASK·마감 문서는 읽지 마라.
+파일은 열지 말고 아래 이름·설명만으로 요청별 스킬을 고른다.
+name: html-plan
+description: Write an implementation plan as one interactive HTML page - a tree of claims (why › what › how › where), each proved by one exhibit (UI mockup, state machine, call stack, schema or code), with the decisions the user has to make placed on the claim they change. Use when the user types /html-plan, or asks for a plan, RFC or design before building something that touches more than a couple of files.
+---
+name: pace-brain
+description: Query and maintain the project brain as an LLM Wiki. Search when asked why something was done, whether a problem happened before, how components or flows work, or what terms mean, and before changing architecture. After answering from code or docs outside the wiki, file reusable answers back.
+---
+name: pace-intent
+description: Find the real purpose behind a one-line request or a decided idea, close the gaps with project context and one-question-at-a-time interviews, and turn it into a gap-free plan or document handed off as a prompt, a document, a project, or a backlog. Use for documents whose reader and purpose matter ("주간 보고 써 줘", "제안서 써 줘", "PRD 써 줘") and for planning requests such as "기획해 줘", "서비스 기획", "기능 기획", "이걸로 서비스 기획해 줘", "화면 기획", "사업 기획", "이거 만들고 싶은데 정리해 줘", "요구사항 정리", or "pace-intent". Do not use to polish a given sentence or prompt (pace-prompt) or to discover new ideas from articles, videos, or topics (pace-scout).
+---
+name: pace-memory
+description: Write and tidy PACE profile and project memory — where information belongs, memory writing principles, closing and stale items, graduating rules to AGENTS.md or the brain, and summarizing settled user facts into USER.md. Use when the user asks to clean up memory ("메모리 정리"), when boot shows many ⚠ stale items or more than 15 rules, or when unsure where or how to record something.
+---
+name: pace-onboarding
+description: PACE 에이전트 프로필을 인터뷰로 만든다. 부트 맥락이 "프로필이 없다"고 할 때, 또는 사용자가 에이전트 설정·재설정·새 에이전트 만들기를 요청할 때 쓴다.
+---
+name: pace-playbook-maker
+description: 브라우저 자동화 업무 흐름의 실행 명세를 만들고 고친다 — 단계를 실제로 실행하며 원본 steps.json을 쓰고, 가림 처리한 기준 캡처를 사람 확인·해시 대조로 승인한 뒤 사람용 flow.html과 에이전트용 flow/overview.md·S0n.md·지도를 생성하고, 인터뷰로 플레이북(업무 스킬 한 벌)까지 만든다. "흐름 명세 만들어 줘", "업무 단계 정리·캡처", "플레이북 만들어 줘", 업무 스킬에 흐름 추가, UI 변경으로 명세 갱신일 때 쓴다. 이미 만든 명세대로 업무를 실행하는 요청에는 쓰지 않는다(그건 해당 업무 스킬).
+---
+name: pace-project-dev
+description: 업무를 프로젝트(projects/P###)와 태스크로 수행한다 — 발의·규모 판단 → 분석·설계·계약 → 태스크(분석·설계·구현·테스트·마감) → finish → merge. "프로젝트로 진행해 줘", "태스크 수행", "pace project …", 백로그 단계 착수, 정리된 기획·문서의 실행 인계, 또는 Orca 작업자로 프로젝트 worktree에 띄워졌을 때 쓴다. 개발·문서 등 업무 종류가 아니라 단계로 나눈다 — 요구사항·기획을 정리하는 단계는 pace-intent, 저장소 정의서·문서 최신화는 pace-project-init이 맡고 이 스킬은 그 결과를 실행·검증하는 단계에 쓴다. 기획·목차가 이미 확정돼 작성·구현·검증만 남은 요청(예: 확정된 목차대로 PRD 작성·검증)은 문서여도 처음부터 이 스킬이다.
+---
+name: pace-project-init
+description: 프로젝트를 분석·인터뷰해 정의하고(AGENTS.md·docs/README.md 정의서·유형별 문서·프로젝트 메모리·백로그), 이미 정의된 프로젝트는 문서·환경·메모리·백로그를 현재 상태에 맞게 최신화한다. "프로젝트 초기화·정의·셋업", "프로젝트 문서 만들어 줘·최신화", "opi", 또는 정의 없는 프로젝트에서 본격 작업을 시작할 때 쓴다.
+---
+name: pace-prompt
+description: Analyze and rewrite a supplied question or prompt so its intent, missing details, and requested output are clear. Use when the user asks to improve a prompt or invokes pace-prompt with a question to refine.
+---
+name: pace-scout
+description: 뉴스 기사·유튜브·블로그 링크나 주제를 분석해 사업 아이디어 후보를 찾고 평가한 HTML 보고서를 만든다 — 출처 수집 → 신호 → 후보 3~5개 → 평가표 → 추천·아이디어 카드, 내보내기 전에 증명 검사. "이 기사·영상에서 사업 아이디어 찾아 줘", "○○ 분야 기회 탐색", "pace-scout"일 때 쓴다. 이미 정한 아이디어를 깊게 기획하는 요청(기획으로 넘김)이나 주어진 문장·프롬프트를 다듬는 요청에는 쓰지 않는다.
+---
+name: pace-team
+description: 저장소의 실제 업무와 권한을 분석해 맞춤 에이전트 팀을 설계하고 PACE 팀 원본·호스트 동기화·검증·회고를 연결한다. 팀이 필요한 새 저장소, 기존 역할 이전·재설계, 마감 뒤 역할 경계 개선에 사용한다.
+---
+name: pace-tech-handbook
+description: 언어·프레임워크별 코드 작성·테스트 교본(Python·Kotlin·Java·TypeScript·SQL·검증)을 색인으로 찾아 필요한 절만 읽는다. 코드를 구현·리뷰·테스트할 때 저장소 규칙과 주변 코드만으로 판단이 서지 않거나, 안티패턴·테스트 방식을 대조해야 하면 쓴다.
+
+
+## 상황
+요청 ①"이걸로 서비스 기획해 줘" ②"프로젝트 문서 최신화해 줘" ③"BL261109_03 착수해 줘" ④"확정된 목차대로 제안서 작성·검증을 프로젝트로 진행해 줘" ⑤"PRD 써 줘"(내용·독자 미정) ⑥"확정된 목차대로 제안서 작성하고 검증해 줘"

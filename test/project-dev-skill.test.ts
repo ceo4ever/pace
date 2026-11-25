@@ -45,7 +45,7 @@ test("description은 쓰는 때와 단계별 경계를 함께 적는다", () => 
 
 test("사용자 교정 규칙이 작업자가 읽는 §4 본문에 있다 (병합 대기 중 main 커밋 금지, 자체 판단 대조)", () => {
   const finish = skill.slice(skill.indexOf("## 4. finish"), skill.indexOf("## 5."));
-  assert.match(finish, /병합 대기 중 main 커밋 금지[^\n]*main 세션[^\n]*main에 먼저 하지 않는다/);
+  assert.match(finish, /병합 대기 중 main 커밋은 병합 뒤로 미룬다[^\n]*메모리 파일은 갱신하되[^\n]*\[B의 도구 수정\][^\n]*커밋을 미룬다/);
   const selfCheck = finish.split("\n").find((line) => line.includes("자체 판단 대조")) ?? "";
   for (const part of ["워크트리 PM", "worker_done", "log.jsonl", "§6"]) assert.ok(selfCheck.includes(part), `자체 판단 대조 줄에 ${part} 없음`);
   assert.match(selfCheck, /finish가 통과한 뒤 `worker_done`·완료 보고 전에/, "시점: finish 통과 뒤 보고 전");
@@ -79,9 +79,10 @@ test("SKILL.md와 references 문서의 상대 링크가 모두 실제 파일을 
   assert.ok(count >= 20, `링크 ${count}개`);
 });
 
-test('반복 실패는 영향 분류 정본 하나로 연결하고 옛 무조건 사용자 경로를 남기지 않는다', () => {
+test('반복 실패 원장 단계와 결정 권한 정본을 연결한다', () => {
   const reviewer = readFileSync(join(skillDir, 'references/reviewer.md'), 'utf8');
-  for (const part of ['모든 수정 직전', '확인한 것과 남은 불확실성', '--decision --by pm', '--decision --by user', 'TASK-CLOSE 리뷰 절과 사용자 보고', 'normal 단계에서 새 위험', 'unknown(미확인)']) assert.ok(reviewer.includes(part), part);
+  for (const part of ['모든 수정 직전', '확인한 증거와 남은 불확실성', '--decision --by pm', '--decision --by user', 'TASK-CLOSE 리뷰 절과 [C의 사후 요약]', 'normal 단계에서 새 위험', 'unknown(미확인)']) assert.ok(reviewer.includes(part), part);
+  assert.match(reviewer, /decision-rights\.md#실행-전-승인-확인/);
   for (const file of ['SKILL.md', 'references/task-steps.md', 'references/tools.md', 'references/coordinator.md']) {
     const text = readFileSync(join(skillDir, file), 'utf8');
     assert.match(text, /reviewer\.md#반복-실패-진단과-사용자-결정/);
@@ -90,4 +91,26 @@ test('반복 실패는 영향 분류 정본 하나로 연결하고 옛 무조건
   assert.match(reviewer, /^## 반복 실패: 진단과 사용자 결정$/m);
   const scenarios = readFileSync(join(skillDir, 'evals/scenarios.md'), 'utf8');
   for (const id of ['E', 'E′', 'H', 'J']) assert.ok(scenarios.includes(`| ${id} |`));
+});
+
+test("모든 변경 대상에서 기존 올림 기준을 제거하고 결정 권한 정본을 연결한다", () => {
+  const team = readdirSync(join(root, ".pace/team/agents")).filter((name) => name.endsWith(".md"));
+  const refs = ["coordinator", "verification", "reviewer", "goal-review", "cross-verify", "e2e"];
+  const targets = [
+    "skills/pace-project-dev/SKILL.md",
+    ...refs.map((name) => `skills/pace-project-dev/references/${name}.md`),
+    "skills/pace-team/SKILL.md", "templates/team/member.md", "templates/RULES.md", "docs/WORK-PROCESS.md",
+    ...team.map((name) => `.pace/team/agents/${name}`),
+    "src/project/harness.ts", "src/team/store.ts", "src/agent/verify.ts", "src/agent/review-log.ts",
+  ];
+  const old = /크게 갈리는|판단이 서지 않는|비용이 드는|미승인 영향이 큰 선택|심각한 오류|보안·비밀·사용자 데이터·비용|검토\(교차 아님 기록\)로 대체할지|기록하고 사용자에게 묻는다|조치 전 사용자 결정|고치기 전 사용자 결정|정본: skills\/pace-project-dev\/references\/reviewer\.md/;
+  for (const file of targets) {
+    const text = readFileSync(join(root, file), "utf8");
+    assert.match(text, /decision-rights\.md/, file);
+    assert.doesNotMatch(text, old, file);
+  }
+  const coordinator = readFileSync(join(skillDir, "references/coordinator.md"), "utf8");
+  assert.match(coordinator, /verification\.md#역할과-검증-책임/);
+  const rules = readFileSync(join(root, "templates/RULES.md"), "utf8");
+  assert.match(rules, /프로필 `rule`이 우선한다\.\n하네스 결정\(S1 포함\)에는 프로필 `rule`·확인 규칙보다 `decision-rights\.md`가 우선/);
 });
