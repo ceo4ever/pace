@@ -53,11 +53,11 @@
 
 | 정본 | 바뀌는 것 |
 |---|---|
-| `skills/pace-team/SKILL.md`·`references/required-roles.md`(새)·`references/role-archetypes.md`·`evals/scenarios.md`(새) | 모드 분기·필수 역할 점검·갱신 절 |
+| `skills/pace-team/SKILL.md`·`skills/pace-team/references/required-roles.md`(새)·`skills/pace-team/references/role-archetypes.md`·`skills/pace-team/evals/scenarios.md`(새) | 모드 분기·필수 역할 점검·갱신 절 |
 | `src/project/team-metrics.ts`(+필요 시 `src/team/`) | 조건부·허브 쪽 역할 비참여 분류, 필수 역할 표지 |
 | `docs/TEAM.md`·`docs/TEAM-METRICS.md` | 갱신 모드·필수 역할·측정 분류 |
 | `.pace/team/agents/pace-backlog-planner.md`(새)와 생성물 | 기획자 맞춤 정의 |
-| `skills/pace-intent`·`skills/pace-project-dev/references/backlog.md`·`coordinator.md` | 허브 위임 경로 |
+| `skills/pace-intent`·`skills/pace-project-dev/references/backlog.md`·`skills/pace-project-dev/references/coordinator.md` | 허브 위임 경로 |
 
 ## 태스크
 

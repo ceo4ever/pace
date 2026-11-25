@@ -36,11 +36,12 @@ owner가 승인한 중간 범위에서 문제 해결자는 요건 미등록(BL26
 
 | 정본 | 반영 | 비고 |
 |---|---|---|
-| `skills/pace-team/SKILL.md`·`references/required-roles.md`·`references/role-archetypes.md`·`evals/scenarios.md` | 반영 | 모드 선택, 필수 역할의 등록·대조, 갱신 판단·검증. |
+| `skills/pace-team/SKILL.md`·`skills/pace-team/references/required-roles.md`·`skills/pace-team/references/role-archetypes.md`·`skills/pace-team/evals/scenarios.md` | 반영 | 모드 선택, 필수 역할의 등록·대조, 갱신 판단·검증. |
 | `src/project/team-metrics.ts`·`team-input.ts`·`team-metrics-document.ts` | 반영 | 역할 표지, 구간 증거와 세 결과를 별도 지표에 표시. |
+| `src/team/` | 해당 없음 | 기존 팀 원본의 안전 경로와 적재를 사용했다. 표지 판독과 측정 변경은 src/project에 반영했다. |
 | `docs/TEAM.md`·`docs/TEAM-METRICS.md` | 반영 | 갱신, 표지 형식, 측정 계약과 판독 한계. |
 | `.pace/team/agents/pace-backlog-planner.md`·`.pace/team/required-roles.json`·호스트 생성물 | 반영 | 허브 maker 적용과 동기화. |
-| `skills/pace-intent`·`skills/pace-project-dev/references/backlog.md`·`coordinator.md` | 반영 | 새·기존 백로그 위임, 독립 검토와 owner 결정 인계. |
+| `skills/pace-intent`·`skills/pace-project-dev/references/backlog.md`·`skills/pace-project-dev/references/coordinator.md` | 반영 | 새·기존 백로그 위임, 독립 검토와 owner 결정 인계. |
 | 브레인(`.pace/brain/`) | 반영 | [저장소 팀 설계와 갱신 흐름](../../.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md)의 모드 선택과 기록 검토·승인 근거, [기획 위키](../../.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md)의 C 경로 위임·독립 검토. |
 
 ## 남은 일
