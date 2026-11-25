@@ -3,10 +3,10 @@ type: synthesis
 title: pace-intent 의도 파악 기획 구조와 함정
 summary: "프로세스·렌즈/템플릿·pace intent 증명 3레이어, B는 지금 착수 신호일 때만, 렌더 보안(JSON 블록·텍스트 노드·CSP·블록 schema), 근거 경로 realpath, 에이전트 기록의 한계는 두 사람 방식으로"
 tags: [pace-intent, intent, planning, pitfalls]
-sources: [code:src/intent/, doc:skills/pace-intent/SKILL.md, doc:skills/pace-intent/references/handoff.md, doc:skills/pace-canvas-skills/canvas-wireframe/SKILL.md, doc:skills/pace-project-dev/references/document-shape.md, doc:skills/pace-intent/references/preview.md, code:src/intent/preview.ts]
+sources: [code:src/intent/, doc:skills/pace-intent/SKILL.md, doc:skills/pace-intent/references/handoff.md, doc:skills/pace-canvas-skills/canvas-wireframe/SKILL.md, doc:skills/pace-project-dev/references/document-shape.md, doc:skills/pace-intent/references/preview.md, code:src/intent/preview.ts, doc:skills/pace-project-dev/references/decision-rights.md, doc:skills/pace-team/references/required-roles.md]
 related: [pace-scout-기회-탐색-구조와-함정, 작업-하네스-실측-함정]
 created: 2026-10-29
-updated: 2026-11-24
+updated: 2026-11-25
 status: active
 ---
 
@@ -37,9 +37,11 @@ pace-intent는 pace-scout와 같은 세 레이어다. 프로세스(`skills/pace-
 - `pace project check`가 증거 경로 뒤 문장부호를 파일명으로 읽던 문제는 2026-10-31 수정했다. 현재 `checkEvidencePaths`는 끝의 쉼표·마침표·콜론·세미콜론을 제거한다.
 - 같은 세션 안 iframe으로 다른 문서를 여는 브라우저 점검은 CSP(`default-src 'none'`)가 막는다 — 문서마다 직접 열어 본다.
 
-## 인계 전 교차 검토 (2026-11-06 확인)
+## 인계와 독립 검토
 
-SKILL의 ⑧은 백로그·큰 문서를 다른 제공자 에이전트에게 목적 중심으로 읽기 전용 교차 검토시키는 단계이며 인계는 ⑨다. 적합한 호스트 기본 호출이 있으면 쓰고 없으면 `pace agent verify`를 사용한다. 다른 제공자가 없으면 미실행을 기록하고 사용자에게 확인하며 동일 제공자의 새 맥락 검토를 교차 검토로 표시하지 않는다. 기존 프로세스·렌즈·증명 레이어와 파일 쓰기 전 인계 확인 원칙은 유지한다.
+기획의 인계는 ⑨다. 경로 C의 목적·범위가 확정되면 저장소 쓰기를 확인받고, 허브는 백로그 기획자에게 정본 BP-09로 위임한다. 저장소에 해당 역할이 없으면 허브가 승인 범위의 초안을 작성한다. 기존 백로그 최신화는 근거·상태의 일반 정정을 맡긴 뒤 합의 영향과 미확인 근거만 결정 권한에 대조한다.
+
+⑧은 승인 범위의 초안과 큰 변경을 작성자와 별개의 reviewer가 목적 중심으로 검토하는 단계다. C 경로에서 다른 제공자 호출이 불가능하면 미실행 사유와 같은 제공자의 별도 새 세션을 B1에 따른 cross: false로 기록한다. 양쪽이 모두 불가능하면 초안 수용 전에 허브가 A-3을 요청한다. 목적·전략 지적이 합의를 바꾸려면 A-1로 owner에게 올린다. 다른 대형 문서에는 기존의 미실행 기록과 사용자 확인을 적용한다. 인계 확인은 쓰기 전에 하고, 초안 검토의 두 단계에는 첫 독립 판단을 받은 뒤 작업 문서를 전달한다.
 
 ## Canvas와 기획 정본
 

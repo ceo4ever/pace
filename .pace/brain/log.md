@@ -124,3 +124,5 @@
 ## [2026-11-25] update | 프로필 = 독립 에이전트, 역할은 AI 비서 고정 (.pace/brain/pages/concept/profile-is-independent-agent.md)
 ## [2026-11-25] lint | RULES 변경 뒤 독립 프로필 구성 설명에 하네스 결정 권한의 적용 범위를 반영하고 stale-source를 해소
 ## [2026-11-25] ingest | 저장소 팀 설계와 갱신 흐름 (.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md)
+## [2026-11-25] update | pace-intent 의도 파악 기획 구조와 함정 (.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md)
+## [2026-11-25] lint | P012 T05의 경로 C 위임·독립 검토와 B1/A-3을 기획 위키에 대조하고 오래된 근거를 갱신

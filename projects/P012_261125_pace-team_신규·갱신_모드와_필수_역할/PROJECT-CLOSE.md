@@ -41,7 +41,7 @@ owner가 승인한 중간 범위에서 문제 해결자는 요건 미등록(BL26
 | `docs/TEAM.md`·`docs/TEAM-METRICS.md` | 반영 | 갱신, 표지 형식, 측정 계약과 판독 한계. |
 | `.pace/team/agents/pace-backlog-planner.md`·`.pace/team/required-roles.json`·호스트 생성물 | 반영 | 허브 maker 적용과 동기화. |
 | `skills/pace-intent`·`skills/pace-project-dev/references/backlog.md`·`coordinator.md` | 반영 | 새·기존 백로그 위임, 독립 검토와 owner 결정 인계. |
-| 브레인(`.pace/brain/`) | 반영 | [저장소 팀 설계와 갱신 흐름](../../.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md)의 모드 선택과 기록 검토·승인 근거. |
+| 브레인(`.pace/brain/`) | 반영 | [저장소 팀 설계와 갱신 흐름](../../.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md)의 모드 선택과 기록 검토·승인 근거, [기획 위키](../../.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md)의 C 경로 위임·독립 검토. |
 
 ## 남은 일
 
