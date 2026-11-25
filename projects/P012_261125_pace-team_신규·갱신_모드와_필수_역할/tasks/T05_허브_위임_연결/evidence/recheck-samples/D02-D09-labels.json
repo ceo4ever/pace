@@ -1,0 +1,14 @@
+{
+  "D02": {
+    "A": "Pre-T05 matched repeat",
+    "B": "P011 approved baseline",
+    "C": "T05 first response",
+    "D": "T05 matched repeat"
+  },
+  "D09": {
+    "A": "T05 first response",
+    "B": "Pre-T05 matched repeat",
+    "C": "P011 approved baseline",
+    "D": "T05 matched repeat"
+  }
+}

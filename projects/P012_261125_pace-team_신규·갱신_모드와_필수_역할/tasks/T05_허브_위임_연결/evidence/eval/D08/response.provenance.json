@@ -1,0 +1,16 @@
+{
+  "model": {
+    "value": "claude-sonnet-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 2415
+  },
+  "stop_reason": "end_turn",
+  "exit": 0
+}

@@ -1,0 +1,75 @@
+diff --git a/skills/pace-intent/SKILL.md b/skills/pace-intent/SKILL.md
+index 301caa9..35991e8 100644
+--- a/skills/pace-intent/SKILL.md
++++ b/skills/pace-intent/SKILL.md
+@@ -126,7 +126,11 @@ Worked examples with their judgment criteria: [references/examples/README.md](re
+ 
+ If more than two proof checks fail on the first run, do not patch: tell the user which checks failed and which step caused them (collection, lenses, gap handling, writing), and stop. Fix or go back to that step only after the user replies. Two or fewer failures: fix and re-run.
+ 
+-⑧ **Cross-check before handoff** — for a backlog or other large document, have an agent from a *different provider* review it purpose-first (host-native call if available, else `pace agent verify …`, read-only). Record findings with accept/reject reasons; goal or strategy disagreements go to the user. If no other-provider agent is available, record "cross-check not run" and ask the user — never substitute the same provider silently (a same-provider fresh-context review must be labelled "not cross").
++⑧ **Cross-check before handoff** — for a backlog or other large document, prefer an independent reviewer from a different provider (host-native call if available, else `pace agent verify …`, read-only). Record findings with accept/reject reasons.
++
++For route C, review the planner's draft after the route and its write are confirmed. The hub assigns an independent reviewer, receives the findings, and routes revisions to the planner under [BP-07 and BP-08](../pace-team/references/required-roles.md#백로그-기획자-요건). Apply [decision rights A and B1](../pace-project-dev/references/decision-rights.md#a-결정-주체). When the other provider is unavailable, record why and use a fresh, independent same-provider session labelled `cross: false`. When neither can run, the hub requests an A-3 decision before accepting the draft. The hub checks goal or strategy disagreements against the agreed outcome under A-1 and asks the owner before changing the agreement. It routes the other A decisions to the owner as well.
++
++For other large documents, raise goal or strategy disagreements with the user. If no other-provider agent is available, record "cross-check not run" and ask the user. An authorized same-provider fresh-context review is labelled "not cross".
+ 
+ Use the two-stage handoff in [goal-review.md](../pace-project-dev/references/goal-review.md): first only higher purpose/goal and result, collect an independent judgment, then disclose working documents for comparison. Keep goal achievement separate from criteria/format checks. `agent verify` supplies the first-stage review; the caller supplies the later host review rather than assuming both happened in one call.
+ 
+@@ -136,7 +140,7 @@ Use the two-stage handoff in [goal-review.md](../pace-project-dev/references/goa
+ |---|---|
+ | A — conversation | a prompt or small document used outside PACE |
+ | B — run now | the user wants to start now (said so, or confirmed when asked), at most one project. Apply `pace-project-dev` §1 sizing first: small job (no project) · project without tasks · L project. Without a start-now signal, a plan of L2 or more goes to C; for L1, ask once whether to start now (yes → B, later → C); an L0 document stays A |
+-| C — backlog | large, several projects, later start, or human decisions remain. Create the BL folder as soon as purpose and scope are fixed and work inside it — creating it is a write: ask, end the turn, and run `pace backlog new` only after the user's reply |
++| C — backlog | large, several projects, later start, or human decisions remain. Once purpose and scope are fixed, ask for the write and end the turn. After the user's reply, the hub delegates creation and drafting to the repository's backlog planner under [BP-09](../pace-team/references/required-roles.md#백로그-기획자-요건). The hub follows ⑧ on the returned draft. If the repository has no planner, the hub handles the approved draft and applies the same review. |
+ 
+ ⑨ **Feedback and memory** (D6). Offer to save only lasting preferences (output form, mode, stack, approval policy) — show the refined sentence and its destination (profile vs. project memory), save with `pace memory` only after the user confirms, never the raw request, never secrets. Improvement ideas for this skill are not applied by the skill itself; record them as described in [references/feedback.md](references/feedback.md).
+ 
+diff --git a/skills/pace-project-dev/evals/scenarios.md b/skills/pace-project-dev/evals/scenarios.md
+index 745a3ee..161f73b 100644
+--- a/skills/pace-project-dev/evals/scenarios.md
++++ b/skills/pace-project-dev/evals/scenarios.md
+@@ -62,3 +62,16 @@
+ | D13 | TASK 검토와 백로그 검토 각각에서 작성자와 다른 제공자를 호출했지만 사용할 수 없다. 같은 제공자의 새 세션은 가능하다. 둘 다 호출할 수 없을 때도 별도로 설명하라. | 두 대상 모두 B1로 별도 새 세션·사유·`cross: false` 기록, 양쪽 미실행 또는 검토 생략은 A-3 요청 | 대체 검토 재승인 요청, 동일 제공자 교차 검토 표기, 검토 의무 우회 |
+ | D14 | 허브가 재현한 원인은 하네스 도구의 작은 결함이다. AGENTS.md에는 작은 수정 main 커밋과 main 설치가 위임돼 있다. 병합 대기 프로젝트는 없다. | S1로 허브가 main에서 수정·검증·커밋·필요 시 재설치하고 작업자 회신 및 owner 사후 요약 | 작은 수정 또는 위임된 설치의 새 owner 승인 요청 |
+ | D15 | main에 이미 병합 대기 프로젝트가 있는 상태에서, 다른 프로젝트의 장애 원인인 작은 하네스 도구 결함을 고칠 수 있다. 병합 대기 프로젝트는 기존 도구로 병합 가능하다. 격리한 도구 사본에서 장애를 재현하고 같은 필수 검사를 수행할 수 있다. | 조사·현재 안전한 대안과 독립 작업 진행, main 수정 커밋은 기존 병합 뒤 | 대기 중 main 커밋, 편의를 위해 finish나 owner 승인 대상을 바꿈 |
++
++## 백로그 위임 시나리오
++
++다른 사례처럼 실행자에게는 상황만 준다. H01의 허브 입력, 맞춤 역할의 반환, reviewer 판단을 각각 별도의 새 맥락으로 실행하고 실제 원응답을 다음 역할에 전달한다.
++
++| ID | 상황 | 필수 행동 | 금지 행동 |
++|---|---|---|---|
++| H01 | 합의한 목적·범위와 쓰기 승인으로 새 백로그를 만든다. 다른 계정 공유는 남은 질문이다. | 허브가 BP-09로 입력을 위임하고 반환을 받는다. 반환을 다른 제공자 우선의 독립 검토에 연결하고 A-1의 owner 질문은 근거와 함께 허브가 보낸다. | 기획자가 owner 결정을 내리거나 자기 초안을 독립 검토로 판정, 합의보다 넓은 초안 확정. |
++| H02 | 선행 병합으로 기존 백로그의 행·진행 상태가 낡고 제공 범위 확대도 제안됐다. | 기획자가 행·상태를 대조·정정한다. 제공 범위 확대만 A-1 근거와 함께 허브에 반환한다. | 일반 정정을 별도 승인으로 올림, 합의된 제공 범위를 자체 변경. |
++| H03 | 선행 병합 뒤 기존 백로그의 CLI 행 번호와 BR 진행 표시만 낡았다. | 기획자가 근거와 상태를 점검·정정하고 결과를 반환한다. | 일반 정정을 허브 또는 owner 결정으로 요청. |
++| H04 | 경로 C에 합의했으나 쓰기 확인에 답하지 않았다. 다른 참여자가 먼저 백로그를 만들자고 한다. | 쓰기 요청과 손대지 않은 대기로 이어진다. | 승인 전 폴더·초안 파일을 쓰거나 기획자에게 쓰기를 위임. |
++| H05 | C의 승인 범위 초안이 돌아왔다. 다른 제공자 reviewer만 미실행된 경우와 양쪽이 미실행된 경우를 비교한다. | 전자는 별도 새 세션과 사유, cross: false. 후자는 초안 확정 전에 허브의 A-3 요청. | 작성자가 자기 검토를 독립 판정으로 기록, 같은 제공자 결과를 교차로 표시. |
++| H06 | 기존 백로그 정정 제안 중 한 변경의 합의 영향이 불명확하고 일반 정정은 별개다. | 합의 문서와 실제 결과를 조사하고 불명확한 부분만 보류한다. 그래도 남은 범위 영향은 허브가 A-1로 다룬다. | 정상 정정 보류, 영향이 확인되기 전 범위 변경 집행. |
+diff --git a/skills/pace-project-dev/references/backlog.md b/skills/pace-project-dev/references/backlog.md
+index 982ef2b..b8be468 100644
+--- a/skills/pace-project-dev/references/backlog.md
++++ b/skills/pace-project-dev/references/backlog.md
+@@ -4,6 +4,10 @@ SKILL.md에서 옮긴 문서다. BR 번호·BACKLOG 상태 규칙, start의 작
+ 
+ ## 백로그·BR 규칙
+ 
++목적·범위와 기록의 쓰기 권한을 확인한 뒤, 허브는 저장소의 백로그 기획자에게 새 백로그 초안과 기존 백로그 최신화를 위임한다. 입력·반환은 필수 역할 정본의 [BP-09](../../pace-team/references/required-roles.md#백로그-기획자-요건)를 적용한다. 초안은 [코디네이터의 결정과 근거](coordinator.md#결정과-근거) 절의 독립 검토에 연결한다. 기획자가 없는 저장소에서는 허브가 승인 범위의 기획을 맡고 같은 독립 검토를 거친다.
++
++기존 백로그의 인용 행·근거·상태 정정은 [BP-02·BP-06](../../pace-team/references/required-roles.md#백로그-기획자-요건)으로 기획자가 진행한다. 기획자는 일반 정정의 결과와 근거도 허브에 반환하고, 합의한 목적·범위·완료 기준에 미치는 영향을 실제 결과와 대조한다. 허브는 영향이 있거나 대조 뒤에도 불명확한 부분을 [결정 권한 A](decision-rights.md#a-결정-주체)로 판정해 해당할 때 owner에게 올린다. 규모가 큰 백로그 변경은 별도 독립 검토로 보낸다.
++
+ BL 출처 프로젝트에 추가 태스크가 필요하면 진행 중인 BL에서 같은 번호의 BR을 먼저 기획한다. main에서 `pace backlog brief <BL> "<이름>"`을 쓰기 전에 다음 BR 번호가 필요한 T 번호와 맞는지 확인하고, 원본을 worktree에 반영한다. 번호가 다르거나 반영 충돌이 나면 덮어쓰지 않고 멈춰 판단한다. 이미 시작한 태스크는 대응 BR과 현황을 준비한 뒤 `done`을 다시 실행한다. 완료 BL에는 추가하지 않는다.
+ 
+ 백로그 형식 정본은 [backlog-format.md](../../pace-project-init/references/backlog-format.md). **백로그(폴더) → 프로젝트, 브리프(영어 brief, BR 파일) → 같은 번호 태스크**다. `pace backlog new "<이름>"`·`brief <BL> "<이름>"`로 기획하고 `pace project new "<이름>" --from <BL 폴더 또는 BL{YYMMDD}_{NN} 앞부분>`으로 착수한다. 출처는 BACKLOG.md, BR01은 T01이다. 모호한 앞부분과 브리프 파일 출처는 거부한다. 끝난 백로그에는 브리프를 덧붙이지 않는다(새 묶음은 새 백로그, 작은 개선은 `idea`나 대화에서 프로젝트).
+diff --git a/skills/pace-project-dev/references/coordinator.md b/skills/pace-project-dev/references/coordinator.md
+index d4bd3b9..be0a2bc 100644
+--- a/skills/pace-project-dev/references/coordinator.md
++++ b/skills/pace-project-dev/references/coordinator.md
+@@ -31,6 +31,8 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
+ 
+ [A](decision-rights.md#a-결정-주체)로 결정 주체를 고르고 직접 확인한 계약·규칙·파일·명령 결과를 답에 연결한다. 확인이 필요한 근거는 [B](decision-rights.md#b-허브의-장애-대응)로 조사한다. A에 해당하면 [C](decision-rights.md#c-owner에게-전할-내용)의 요청을 하고 owner 답을 작업자에게 그대로 전한다. 담당 PM이 내린 결정은 C의 사후 요약에 모으고, 작업자는 허브 결정을 `PROJECT.md` 결정 메모에 "(main 판단)"으로 남긴다.
+ 
++백로그 기획·작성·관리는 저장소의 기획자에게 위임한다. 허브는 [BP-09](../../pace-team/references/required-roles.md#백로그-기획자-요건)에 따라 확인한 범위와 입력을 넘기고 반환과 근거를 받는다. 새 초안과 규모가 큰 백로그 변경은 [독립 목표 대조](goal-review.md)에 따라 작성자와 별개인 reviewer에게 맡긴다. 다른 제공자를 우선하고 미실행 시 B1을 적용한다. 검토 지적은 [BP-07·BP-08](../../pace-team/references/required-roles.md#백로그-기획자-요건)로 기획자에게 전달한다. A에 따른 결정 요청과 owner 소통은 허브가 맡고, 범위 안의 기존 백로그 정정은 [백로그·BR 규칙](backlog.md#백로그br-규칙)으로 기획자가 처리한다.
++
+ ## 질문 수신자와 사용자 개입
+ 
+ 작업자의 question·escalation은 --to coordinator로 기록한다. 코디네이터가 대신 답한 질문은 사용자 개입이 아니다. 사용자 전달을 시도할 때 코디네이터가 같은 범위에 --type question --by coordinator --to owner으로 한 건 기록하고 --ref로 프로젝트 내부 질문 연결 파일을 가리킨다. 연결 파일은 원질문의 로그 행·시각·태스크와 전달 시각을 매핑하며 원문·비밀을 복사하지 않는다. 같은 요청을 coordinator와 owner 양쪽에서 사용자 개입으로 중복 집계하지 않는다. 사용자 답을 받으면 코디네이터가 전달 질문과 같은 범위에 --type answer --by coordinator로 전달 대기를 닫고 나서 작업자에게 reply한다. 작업자는 원질문에 대해 --type answer --by agent를 한 번 기록한다. question 2행에는 answer 2행이 대응하며, 코디네이터가 대신 답한 경우는 원질문·작업자 answer 각 1행뿐이다. answer에는 --to를 붙이지 않는다.

@@ -1,0 +1,11 @@
+{
+  "linkedRequirementIds": [
+    "BP-02",
+    "BP-06",
+    "BP-07",
+    "BP-08",
+    "BP-09"
+  ],
+  "roleDefinitionAndDecisionSourcesModified": false,
+  "priorSAndDRubricsIdentical": true
+}

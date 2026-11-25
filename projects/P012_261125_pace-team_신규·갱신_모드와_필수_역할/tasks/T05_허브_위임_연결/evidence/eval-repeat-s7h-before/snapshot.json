@@ -1,0 +1,110 @@
+{
+  "skills/pace-project-dev/SKILL.md": {
+    "bytes": 10605,
+    "sha256": "03a75f236ff848159054358e9a67c4f64a10b3fe3155a2c812b5203ea47afadc"
+  },
+  "skills/pace-project-dev/references/backlog.md": {
+    "bytes": 3077,
+    "sha256": "642289fc329427cfff485c966ef8f3a7ee085858670163a501bdf1739a022876"
+  },
+  "skills/pace-project-dev/references/commands.md": {
+    "bytes": 2432,
+    "sha256": "ccc75f6ca9f5686c35020aa9d17c17bfacca88d4f0589af3e2900d6d5f7a8199"
+  },
+  "skills/pace-project-dev/references/coordinator.md": {
+    "bytes": 13956,
+    "sha256": "1e437279ebc6a654d5550003af19bf13eb674d4638e9cb93dd21ab5ee29565d0"
+  },
+  "skills/pace-project-dev/references/cross-verify.md": {
+    "bytes": 1361,
+    "sha256": "2c513dbbba6e2a24dbd34fca7893a5a266cb9e93efe3f287590007f69894ac96"
+  },
+  "skills/pace-project-dev/references/decision-rights.md": {
+    "bytes": 9361,
+    "sha256": "059355c7ed51cbf8de9d77ff21948c8793750875891d56a152ad5c713c6e99b6"
+  },
+  "skills/pace-project-dev/references/document-shape.md": {
+    "bytes": 6178,
+    "sha256": "1687882cdfbdbbb447627b6b9c624b656beafed54ecf29d38bff3ecbd05e8efa"
+  },
+  "skills/pace-project-dev/references/e2e.md": {
+    "bytes": 3229,
+    "sha256": "0faf67c86b535daa4492d0b6cc0709c271bfb4107e06c494a69c2acf711aeb01"
+  },
+  "skills/pace-project-dev/references/finish.md": {
+    "bytes": 2509,
+    "sha256": "94a23e6bd252c6a95dcaaa00e1f362d4e05eec8c38ddb7223db51c2c49022830"
+  },
+  "skills/pace-project-dev/references/goal-review.md": {
+    "bytes": 6872,
+    "sha256": "7269e62e25c2822c0d3095f03cbfb4f1e66324219bb28874d601f2cb45d95882"
+  },
+  "skills/pace-project-dev/references/html-plan.md": {
+    "bytes": 1970,
+    "sha256": "aed1e58dd0de655e0d6feedcda6d7a39cadff3a1d39ce7ec4fcb5c938af75dc6"
+  },
+  "skills/pace-project-dev/references/project-define.md": {
+    "bytes": 666,
+    "sha256": "890b331c79e67138fd4af6893fc98f429a2f69636f77e289f2bf42021f941250"
+  },
+  "skills/pace-project-dev/references/recovery.md": {
+    "bytes": 598,
+    "sha256": "029971649d481ae5ba9103ededf4fdbb2c7d3cb731e12d6c5a42dc4e2a1b8bd3"
+  },
+  "skills/pace-project-dev/references/reviewer.md": {
+    "bytes": 23280,
+    "sha256": "b4e77f6901427e4003ef75b39fa1aaaaa8a273a74b990a1f59e22d1f7e6f9c37"
+  },
+  "skills/pace-project-dev/references/security.md": {
+    "bytes": 2946,
+    "sha256": "81f66e65fc9272cc73b4ef78a0f5c69b234f607ea9451609fe70dd5165d6d007"
+  },
+  "skills/pace-project-dev/references/standards.md": {
+    "bytes": 1202,
+    "sha256": "31fd584ad4819ae4f3fb84993c0c2f14f73148894d971292749b9e9c78dd8c0b"
+  },
+  "skills/pace-project-dev/references/task-steps.md": {
+    "bytes": 3815,
+    "sha256": "be8e9bcc4a50fd8e187fc287d00913420af6cd69ae8d28cee29188bc2061d966"
+  },
+  "skills/pace-project-dev/references/tester.md": {
+    "bytes": 2723,
+    "sha256": "70971660c3d7665209aa0f16a8c0632c71b69fb37d8769df4711b080861988f4"
+  },
+  "skills/pace-project-dev/references/testing.md": {
+    "bytes": 5107,
+    "sha256": "b15c1d2175a606bbc22304b32dcbca47d67de5ea8b52b1b017af171338c1e067"
+  },
+  "skills/pace-project-dev/references/tools.md": {
+    "bytes": 5660,
+    "sha256": "63fcf2dca9e4a1e9fa7f876460bbe09c50dd96a581bd8da184f981c29beca176"
+  },
+  "skills/pace-project-dev/references/verification.md": {
+    "bytes": 2194,
+    "sha256": "b14b96260dfe7a47c51015e80a4e526e1ad7a8884f4f82d3a25a165a3822aa48"
+  },
+  "skills/pace-team/SKILL.md": {
+    "bytes": 12143,
+    "sha256": "47b3e067318ed152393dbc5a455a12fb54c56213a52a3e759bb0f8781df36c2d"
+  },
+  "skills/pace-team/references/role-archetypes.md": {
+    "bytes": 2221,
+    "sha256": "e6bfdf6dffbcd5d16d4229c52ac21a2e80f1bff8ac59bb0f73603973bcbb879d"
+  },
+  "skills/pace-intent/SKILL.md": {
+    "bytes": 18399,
+    "sha256": "e3f0c3533f6e15f8de896c24bf0c94338e5c5012cc2c4e35e629aa1c7bfd245a"
+  },
+  "skills/pace-intent/references/handoff.md": {
+    "bytes": 12419,
+    "sha256": "93c8d9b128315b13808824aae846675ef21da4cb7538c49c2a36344001225cc0"
+  },
+  "skills/pace-team/references/required-roles.md": {
+    "bytes": 11211,
+    "sha256": "273e1740a0959814321e4861fb0cba55a222455b48d4292430d97d9eb4fd8af4"
+  },
+  ".pace/team/agents/pace-backlog-planner.md": {
+    "bytes": 5484,
+    "sha256": "a43bf47fe13f26bdf2543696292870782985f65e04a0735a9e0b08948de65aeb"
+  }
+}

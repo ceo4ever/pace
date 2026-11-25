@@ -1,0 +1,14 @@
+{
+  "S7-C": {
+    "A": "P011 approved baseline",
+    "B": "T05 matched repeat",
+    "C": "T05 first response",
+    "D": "Pre-T05 matched repeat"
+  },
+  "S7-H": {
+    "A": "Pre-T05 matched repeat",
+    "B": "P011 approved baseline",
+    "C": "T05 matched repeat",
+    "D": "T05 first response"
+  }
+}

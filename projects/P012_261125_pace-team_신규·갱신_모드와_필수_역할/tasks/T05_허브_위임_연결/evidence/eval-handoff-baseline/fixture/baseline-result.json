@@ -1,0 +1,120 @@
+{
+  "fixedQueryCount": 10,
+  "hits": 4,
+  "minApproved": 7,
+  "shaSource": "b7eb72966d89563a08558ac4d76589837e29e106a47f03894a8d3c60c4c90dc8",
+  "shaData": "c0a3d139692453e7b92c8a66afa4559af11eeee122f4793ca6505ce7d4a0856b",
+  "otherAccountExcluded": true,
+  "rows": [
+    {
+      "query": "계약서",
+      "returned": [
+        "expected-1",
+        "candidate-1-1",
+        "candidate-1-2"
+      ],
+      "expected": "expected-1",
+      "found": true,
+      "excludedOther": true
+    },
+    {
+      "query": "메모",
+      "returned": [
+        "expected-2",
+        "candidate-2-1",
+        "candidate-2-2"
+      ],
+      "expected": "expected-2",
+      "found": true,
+      "excludedOther": true
+    },
+    {
+      "query": "기획",
+      "returned": [
+        "expected-3",
+        "candidate-3-1",
+        "candidate-3-2"
+      ],
+      "expected": "expected-3",
+      "found": true,
+      "excludedOther": true
+    },
+    {
+      "query": "예산",
+      "returned": [
+        "expected-4",
+        "candidate-4-1",
+        "candidate-4-2"
+      ],
+      "expected": "expected-4",
+      "found": true,
+      "excludedOther": true
+    },
+    {
+      "query": "보고",
+      "returned": [
+        "candidate-5-1",
+        "candidate-5-2",
+        "candidate-5-3"
+      ],
+      "expected": "expected-5",
+      "found": false,
+      "excludedOther": true
+    },
+    {
+      "query": "요약",
+      "returned": [
+        "candidate-6-1",
+        "candidate-6-2",
+        "candidate-6-3"
+      ],
+      "expected": "expected-6",
+      "found": false,
+      "excludedOther": true
+    },
+    {
+      "query": "검토",
+      "returned": [
+        "candidate-7-1",
+        "candidate-7-2",
+        "candidate-7-3"
+      ],
+      "expected": "expected-7",
+      "found": false,
+      "excludedOther": true
+    },
+    {
+      "query": "설계",
+      "returned": [
+        "candidate-8-1",
+        "candidate-8-2",
+        "candidate-8-3"
+      ],
+      "expected": "expected-8",
+      "found": false,
+      "excludedOther": true
+    },
+    {
+      "query": "회고",
+      "returned": [
+        "candidate-9-1",
+        "candidate-9-2",
+        "candidate-9-3"
+      ],
+      "expected": "expected-9",
+      "found": false,
+      "excludedOther": true
+    },
+    {
+      "query": "계정",
+      "returned": [
+        "candidate-10-1",
+        "candidate-10-2",
+        "candidate-10-3"
+      ],
+      "expected": "expected-10",
+      "found": false,
+      "excludedOther": true
+    }
+  ]
+}

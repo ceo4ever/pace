@@ -31,6 +31,8 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
 
 [A](decision-rights.md#a-결정-주체)로 결정 주체를 고르고 직접 확인한 계약·규칙·파일·명령 결과를 답에 연결한다. 확인이 필요한 근거는 [B](decision-rights.md#b-허브의-장애-대응)로 조사한다. A에 해당하면 [C](decision-rights.md#c-owner에게-전할-내용)의 요청을 하고 owner 답을 작업자에게 그대로 전한다. 담당 PM이 내린 결정은 C의 사후 요약에 모으고, 작업자는 허브 결정을 `PROJECT.md` 결정 메모에 "(main 판단)"으로 남긴다.
 
+백로그 기획·작성·관리는 저장소의 기획자에게 위임한다. 허브는 [BP-09](../../pace-team/references/required-roles.md#백로그-기획자-요건)에 따라 확인한 범위와 입력을 넘기고 반환과 근거를 받는다. 새 초안과 규모가 큰 백로그 변경은 [독립 목표 대조](goal-review.md)에 따라 작성자와 별개인 reviewer에게 맡긴다. 다른 제공자를 우선하고 미실행 시 B1을 적용한다. 검토 지적은 [BP-07·BP-08](../../pace-team/references/required-roles.md#백로그-기획자-요건)로 기획자에게 전달한다. A에 따른 결정 요청과 owner 소통은 허브가 맡고, 범위 안의 기존 백로그 정정은 [백로그·BR 규칙](backlog.md#백로그br-규칙)으로 기획자가 처리한다.
+
 ## 질문 수신자와 사용자 개입
 
 작업자의 question·escalation은 --to coordinator로 기록한다. 코디네이터가 대신 답한 질문은 사용자 개입이 아니다. 사용자 전달을 시도할 때 코디네이터가 같은 범위에 --type question --by coordinator --to owner으로 한 건 기록하고 --ref로 프로젝트 내부 질문 연결 파일을 가리킨다. 연결 파일은 원질문의 로그 행·시각·태스크와 전달 시각을 매핑하며 원문·비밀을 복사하지 않는다. 같은 요청을 coordinator와 owner 양쪽에서 사용자 개입으로 중복 집계하지 않는다. 사용자 답을 받으면 코디네이터가 전달 질문과 같은 범위에 --type answer --by coordinator로 전달 대기를 닫고 나서 작업자에게 reply한다. 작업자는 원질문에 대해 --type answer --by agent를 한 번 기록한다. question 2행에는 answer 2행이 대응하며, 코디네이터가 대신 답한 경우는 원질문·작업자 answer 각 1행뿐이다. answer에는 --to를 붙이지 않는다.

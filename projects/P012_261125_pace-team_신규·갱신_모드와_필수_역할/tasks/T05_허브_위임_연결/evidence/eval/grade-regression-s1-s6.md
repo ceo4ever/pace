@@ -1,0 +1,12 @@
+**S1–S6 독립 판정은 pass 5건, fail 1건입니다.** S3만 이전 판정과 다릅니다. 각 답변에 명시된 행동과 순서를 채점했습니다. 자료 수정과 운영 작업은 수행하지 않았습니다. [rubric.md](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/rubric.md:13) · [이전 판정 기록](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/previous-grade-regression.md:5)
+
+| 사례 ID | pass/fail | 필수·금지 판단의 원문 근거 | 이전 판정과 같음/다름/신규 |
+|---|---|---|---|
+| S1 | pass | “`pace project new` … 쓰지 않는다”고 명시하고, “한 글자만 고친다” → “저장소 검사 명령 … 실행” → “통과하면 커밋한다” 순서를 제시했다. [S1 응답](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/S1/response.md:5) | 같음 |
+| S2 | pass | `pace project new "<이름>" --from BL261109_03` → PROJECT.md에 목적·기준·설계·태스크 표 작성 → “승인 답은 기다리지 않는다” → `pace project start P###` 순서다. 착수 질문도 “0건”이다. [S2 응답](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/S2/response.md:14) | 같음 |
+| S3 | **fail** | 다른 제공자에게 검토를 받고 “pass(blocking 0)를 받는다”고 적었지만, 바로 뒤에 “사용자 결정 waiver가 있어도 통과한다”고 했다. 이 분기는 필수 reviewer pass 없이 구현을 허용한다. `task`로 상태를 바꾸고 TASK.md에 `T-n`·테스트 표를 작성하는 단계와, 구현 → 검사·tester/reviewer 병렬 → TASK-CLOSE → `check` → `done` → `memory status` → 커밋은 명시했다. 상태 칸 수동 수정이나 작업자 merge는 제시하지 않았다. [S3 응답](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/S3/response.md:5) | **다름** — 이전 pass |
+| S4 | pass | `pace memory status --project --body …`로 메모리를 갱신하고 “변경은 working tree에 남기고, 병합 뒤 커밋합니다”라고 했다. 질문과 신규 승인 대기는 각각 0건이다. [S4 응답](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/S4/response.md:7) | 같음 |
+| S5 | pass | “`worker_done`과 완료 보고 전에” `자체 판단`을 백로그·PROJECT.md와 대조한다. BR03 분리 생략을 A-1 합의 변경으로 판단해 허브에 `ask`로 올리고, 완료 보고와 `worker_done`을 보류한다. [S5 응답](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/S5/response.md:12) | 같음 |
+| S6 | pass | 담당 스킬로 ①⑤ `pace-intent`, ② `pace-project-init`, ③④⑥ `pace-project-dev`를 골랐다. ①②⑤의 `pace-project-dev` 선택과 ⑥의 `pace-intent` 선택은 없다. [S6 응답](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/S6/response.md:9) | 같음 |
+
+**S3 실패 분석.** 주어진 T01에서 다른 제공자 reviewer의 pass를 구현의 필수 선행 조건으로 유지해야 한다. 프롬프트에는 waiver를 뒷받침할 owner 결정이 없다. Rubric의 S7-G는 owner 결정이 주어진 별도 상황에서 PRE-REVIEW waiver를 허용한다. 그 예외를 S3에도 일반화했을 가능성이 있지만, 응답만으로 정책 문구가 원인이었는지는 확인할 수 없다. **문구를 그대로 두고 새 맥락에서 한 차례 재실행할 가치는 있다.** 같은 예외가 반복되는지 확인할 수 있으며, 재실행 결과는 이번 실패와 함께 남겨야 한다. [S3 프롬프트](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/S3/prompt.txt:4) · [S3 응답](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/S3/response.md:14) · [rubric.md](/private/tmp/pace-P012-work/T05-grade-skx8p2ed/regression-s1-s6/rubric.md:15)

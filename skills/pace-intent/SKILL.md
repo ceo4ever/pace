@@ -126,7 +126,11 @@ Worked examples with their judgment criteria: [references/examples/README.md](re
 
 If more than two proof checks fail on the first run, do not patch: tell the user which checks failed and which step caused them (collection, lenses, gap handling, writing), and stop. Fix or go back to that step only after the user replies. Two or fewer failures: fix and re-run.
 
-⑧ **Cross-check before handoff** — for a backlog or other large document, have an agent from a *different provider* review it purpose-first (host-native call if available, else `pace agent verify …`, read-only). Record findings with accept/reject reasons; goal or strategy disagreements go to the user. If no other-provider agent is available, record "cross-check not run" and ask the user — never substitute the same provider silently (a same-provider fresh-context review must be labelled "not cross").
+⑧ **Cross-check before handoff** — for a backlog or other large document, prefer an independent reviewer from a different provider (host-native call if available, else `pace agent verify …`, read-only). Record findings with accept/reject reasons.
+
+For route C, review the planner's draft after the route and its write are confirmed. The hub assigns an independent reviewer, receives the findings, and routes revisions to the planner under [BP-07 and BP-08](../pace-team/references/required-roles.md#백로그-기획자-요건). Apply [decision rights A and B1](../pace-project-dev/references/decision-rights.md#a-결정-주체). When the other provider is unavailable, record why and use a fresh, independent same-provider session labelled `cross: false`. When neither can run, the hub requests an A-3 decision before accepting the draft. The hub checks goal or strategy disagreements against the agreed outcome under A-1 and asks the owner before changing the agreement. It routes the other A decisions to the owner as well.
+
+For other large documents, raise goal or strategy disagreements with the user. If no other-provider agent is available, record "cross-check not run" and ask the user. An authorized same-provider fresh-context review is labelled "not cross".
 
 Use the two-stage handoff in [goal-review.md](../pace-project-dev/references/goal-review.md): first only higher purpose/goal and result, collect an independent judgment, then disclose working documents for comparison. Keep goal achievement separate from criteria/format checks. `agent verify` supplies the first-stage review; the caller supplies the later host review rather than assuming both happened in one call.
 
@@ -136,7 +140,7 @@ Use the two-stage handoff in [goal-review.md](../pace-project-dev/references/goa
 |---|---|
 | A — conversation | a prompt or small document used outside PACE |
 | B — run now | the user wants to start now (said so, or confirmed when asked), at most one project. Apply `pace-project-dev` §1 sizing first: small job (no project) · project without tasks · L project. Without a start-now signal, a plan of L2 or more goes to C; for L1, ask once whether to start now (yes → B, later → C); an L0 document stays A |
-| C — backlog | large, several projects, later start, or human decisions remain. Create the BL folder as soon as purpose and scope are fixed and work inside it — creating it is a write: ask, end the turn, and run `pace backlog new` only after the user's reply |
+| C — backlog | large, several projects, later start, or human decisions remain. Once purpose and scope are fixed, ask for the write and end the turn. After the user's reply, the hub delegates creation and drafting to the repository's backlog planner under [BP-09](../pace-team/references/required-roles.md#백로그-기획자-요건). The hub follows ⑧ on the returned draft. If the repository has no planner, the hub handles the approved draft and applies the same review. |
 
 ⑨ **Feedback and memory** (D6). Offer to save only lasting preferences (output form, mode, stack, approval policy) — show the refined sentence and its destination (profile vs. project memory), save with `pace memory` only after the user confirms, never the raw request, never secrets. Improvement ideas for this skill are not applied by the skill itself; record them as described in [references/feedback.md](references/feedback.md).
 

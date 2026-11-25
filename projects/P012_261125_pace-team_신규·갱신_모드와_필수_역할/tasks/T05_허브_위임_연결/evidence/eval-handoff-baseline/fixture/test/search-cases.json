@@ -1,0 +1,282 @@
+{
+  "account": "sample-account",
+  "fixedQueries": [
+    "계약서",
+    "메모",
+    "기획",
+    "예산",
+    "보고",
+    "요약",
+    "검토",
+    "설계",
+    "회고",
+    "계정"
+  ],
+  "baselineTop3": 4,
+  "acceptedMinimum": 7,
+  "data": "synthetic",
+  "expectedDocumentByQuery": {
+    "계약서": "expected-1",
+    "메모": "expected-2",
+    "기획": "expected-3",
+    "예산": "expected-4",
+    "보고": "expected-5",
+    "요약": "expected-6",
+    "검토": "expected-7",
+    "설계": "expected-8",
+    "회고": "expected-9",
+    "계정": "expected-10"
+  },
+  "documents": [
+    {
+      "id": "foreign-1",
+      "account": "other-sample-account",
+      "title": "계약서 다른 계정"
+    },
+    {
+      "id": "expected-1",
+      "account": "sample-account",
+      "title": "계약서 정답"
+    },
+    {
+      "id": "candidate-1-1",
+      "account": "sample-account",
+      "title": "계약서 후보 1"
+    },
+    {
+      "id": "candidate-1-2",
+      "account": "sample-account",
+      "title": "계약서 후보 2"
+    },
+    {
+      "id": "candidate-1-3",
+      "account": "sample-account",
+      "title": "계약서 후보 3"
+    },
+    {
+      "id": "foreign-2",
+      "account": "other-sample-account",
+      "title": "메모 다른 계정"
+    },
+    {
+      "id": "expected-2",
+      "account": "sample-account",
+      "title": "메모 정답"
+    },
+    {
+      "id": "candidate-2-1",
+      "account": "sample-account",
+      "title": "메모 후보 1"
+    },
+    {
+      "id": "candidate-2-2",
+      "account": "sample-account",
+      "title": "메모 후보 2"
+    },
+    {
+      "id": "candidate-2-3",
+      "account": "sample-account",
+      "title": "메모 후보 3"
+    },
+    {
+      "id": "foreign-3",
+      "account": "other-sample-account",
+      "title": "기획 다른 계정"
+    },
+    {
+      "id": "expected-3",
+      "account": "sample-account",
+      "title": "기획 정답"
+    },
+    {
+      "id": "candidate-3-1",
+      "account": "sample-account",
+      "title": "기획 후보 1"
+    },
+    {
+      "id": "candidate-3-2",
+      "account": "sample-account",
+      "title": "기획 후보 2"
+    },
+    {
+      "id": "candidate-3-3",
+      "account": "sample-account",
+      "title": "기획 후보 3"
+    },
+    {
+      "id": "foreign-4",
+      "account": "other-sample-account",
+      "title": "예산 다른 계정"
+    },
+    {
+      "id": "expected-4",
+      "account": "sample-account",
+      "title": "예산 정답"
+    },
+    {
+      "id": "candidate-4-1",
+      "account": "sample-account",
+      "title": "예산 후보 1"
+    },
+    {
+      "id": "candidate-4-2",
+      "account": "sample-account",
+      "title": "예산 후보 2"
+    },
+    {
+      "id": "candidate-4-3",
+      "account": "sample-account",
+      "title": "예산 후보 3"
+    },
+    {
+      "id": "foreign-5",
+      "account": "other-sample-account",
+      "title": "보고 다른 계정"
+    },
+    {
+      "id": "candidate-5-1",
+      "account": "sample-account",
+      "title": "보고 후보 1"
+    },
+    {
+      "id": "candidate-5-2",
+      "account": "sample-account",
+      "title": "보고 후보 2"
+    },
+    {
+      "id": "candidate-5-3",
+      "account": "sample-account",
+      "title": "보고 후보 3"
+    },
+    {
+      "id": "expected-5",
+      "account": "sample-account",
+      "title": "보고 정답"
+    },
+    {
+      "id": "foreign-6",
+      "account": "other-sample-account",
+      "title": "요약 다른 계정"
+    },
+    {
+      "id": "candidate-6-1",
+      "account": "sample-account",
+      "title": "요약 후보 1"
+    },
+    {
+      "id": "candidate-6-2",
+      "account": "sample-account",
+      "title": "요약 후보 2"
+    },
+    {
+      "id": "candidate-6-3",
+      "account": "sample-account",
+      "title": "요약 후보 3"
+    },
+    {
+      "id": "expected-6",
+      "account": "sample-account",
+      "title": "요약 정답"
+    },
+    {
+      "id": "foreign-7",
+      "account": "other-sample-account",
+      "title": "검토 다른 계정"
+    },
+    {
+      "id": "candidate-7-1",
+      "account": "sample-account",
+      "title": "검토 후보 1"
+    },
+    {
+      "id": "candidate-7-2",
+      "account": "sample-account",
+      "title": "검토 후보 2"
+    },
+    {
+      "id": "candidate-7-3",
+      "account": "sample-account",
+      "title": "검토 후보 3"
+    },
+    {
+      "id": "expected-7",
+      "account": "sample-account",
+      "title": "검토 정답"
+    },
+    {
+      "id": "foreign-8",
+      "account": "other-sample-account",
+      "title": "설계 다른 계정"
+    },
+    {
+      "id": "candidate-8-1",
+      "account": "sample-account",
+      "title": "설계 후보 1"
+    },
+    {
+      "id": "candidate-8-2",
+      "account": "sample-account",
+      "title": "설계 후보 2"
+    },
+    {
+      "id": "candidate-8-3",
+      "account": "sample-account",
+      "title": "설계 후보 3"
+    },
+    {
+      "id": "expected-8",
+      "account": "sample-account",
+      "title": "설계 정답"
+    },
+    {
+      "id": "foreign-9",
+      "account": "other-sample-account",
+      "title": "회고 다른 계정"
+    },
+    {
+      "id": "candidate-9-1",
+      "account": "sample-account",
+      "title": "회고 후보 1"
+    },
+    {
+      "id": "candidate-9-2",
+      "account": "sample-account",
+      "title": "회고 후보 2"
+    },
+    {
+      "id": "candidate-9-3",
+      "account": "sample-account",
+      "title": "회고 후보 3"
+    },
+    {
+      "id": "expected-9",
+      "account": "sample-account",
+      "title": "회고 정답"
+    },
+    {
+      "id": "foreign-10",
+      "account": "other-sample-account",
+      "title": "계정 다른 계정"
+    },
+    {
+      "id": "candidate-10-1",
+      "account": "sample-account",
+      "title": "계정 후보 1"
+    },
+    {
+      "id": "candidate-10-2",
+      "account": "sample-account",
+      "title": "계정 후보 2"
+    },
+    {
+      "id": "candidate-10-3",
+      "account": "sample-account",
+      "title": "계정 후보 3"
+    },
+    {
+      "id": "expected-10",
+      "account": "sample-account",
+      "title": "계정 정답"
+    }
+  ]
+}

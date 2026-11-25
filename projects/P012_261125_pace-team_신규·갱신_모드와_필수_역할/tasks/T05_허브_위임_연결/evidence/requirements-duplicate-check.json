@@ -1,0 +1,53 @@
+{
+  "registry": "skills/pace-team/references/required-roles.md",
+  "canonicalDefinitionsPerId": {
+    "BP-01": 1,
+    "BP-02": 1,
+    "BP-03": 1,
+    "BP-04": 1,
+    "BP-05": 1,
+    "BP-06": 1,
+    "BP-07": 1,
+    "BP-08": 1,
+    "BP-09": 1,
+    "BP-10": 1,
+    "BP-11": 1,
+    "BP-12": 1
+  },
+  "appliedScope": [
+    {
+      "document": "skills/pace-intent/SKILL.md",
+      "linkedIds": [
+        "BP-07",
+        "BP-08",
+        "BP-09"
+      ],
+      "unlinkedIds": [],
+      "copiedCanonicalRequirementSentences": [],
+      "independentRequirementTableRows": 0
+    },
+    {
+      "document": "skills/pace-project-dev/references/backlog.md",
+      "linkedIds": [
+        "BP-09",
+        "BP-02",
+        "BP-06"
+      ],
+      "unlinkedIds": [],
+      "copiedCanonicalRequirementSentences": [],
+      "independentRequirementTableRows": 0
+    },
+    {
+      "document": "skills/pace-project-dev/references/coordinator.md",
+      "linkedIds": [
+        "BP-09",
+        "BP-07",
+        "BP-08"
+      ],
+      "unlinkedIds": [],
+      "copiedCanonicalRequirementSentences": [],
+      "independentRequirementTableRows": 0
+    }
+  ],
+  "registryAndRoleUnchangedFromT04": true
+}
