@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "c44eb2797853dbede3873194d4bbc0ca7fc69566b45bc2c6b8ef853b5fe9245c",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "3864b536daf246769b24086894bf801db7342a47fd4c8530ae58803900dd8dd1",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "new"
+    }
+  ]
+}

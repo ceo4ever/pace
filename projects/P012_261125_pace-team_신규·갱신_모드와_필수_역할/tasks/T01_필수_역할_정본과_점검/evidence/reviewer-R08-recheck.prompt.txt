@@ -1,0 +1,9 @@
+새 답은 2단계입니다. 1단계 직후 격리 작업본에 아래 자료의 로컬 사본을 준비했습니다. 작업 디렉터리 /private/tmp/pace-P012-work/T01-review-R08 기준의 상대 경로로만 읽으세요. 1단계 산출물 제목과 앞 응답에 나온 외부 저장소의 절대 경로는 사용하지 마세요.
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T01_필수_역할_정본과_점검/TASK.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/PROJECT.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T01_필수_역할_정본과_점검/evidence/eval-R08-recheck/R08/response.md
+projects/P012_261125_pace-team_신규·갱신_모드와_필수_역할/tasks/T01_필수_역할_정본과_점검/evidence/eval-R08-recheck/R08/fixture/skills/pace-team/references/required-roles.md
+previous-reviewer.md
+previous-tester.md
+skills/pace-team/references/required-roles.md
+지금은 독립 목표 대조 뒤 2단계 계약 검토입니다. 현재 TASK.md, PROJECT.md, BR01, 이전 reviewer 원문 previous-reviewer.md와 이전 독립 채점 previous-tester.md를 함께 대조하세요. 먼저 이전 판단이 바뀐 범위를 설명하고, 프로젝트 내 T01/evidence/eval-R08-recheck 폴더의 고정 입력·수정한 스킬 정본·원응답으로 선행 장치 보류를 재확인하세요. 부분 초안과 완성본의 제안 보류, 요건별 상태 분리와 목표 달성 여부를 판정하세요. 작성자 마감·자체 판정은 제공하지 않습니다. 파일을 고치지 말고 근거와 최종 pass/fail을 적으세요.

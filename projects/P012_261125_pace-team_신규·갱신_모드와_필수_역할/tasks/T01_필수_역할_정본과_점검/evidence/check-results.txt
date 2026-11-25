@@ -1,0 +1,36 @@
+PACE_HOME=<임시 폴더> PACE_SKIP_BROWSER_E2E=1 npm run check
+
+
+> pace@0.1.2 typecheck
+✔ 정의 생성 후 등록 레코드 쓰기가 실패하면 생성한 정의를 되돌린다 (1.092334ms)
+✔ workspace CLI는 BR02 비활성 후보를 동일 ID로 활성화한다 (264.410667ms)
+ℹ tests 1385
+ℹ suites 0
+ℹ pass 1368
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 417173.760958
+
+node --test test/project-dev-skill.test.ts (최종 스킬 문장 패치 후)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.661417
+
+git diff --check (최종 스킬 문장 패치 후) · 종료 0
+
+최종 R08 문장 적용 후 표적 명령 재실행
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88.385959

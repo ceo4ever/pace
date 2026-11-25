@@ -15,6 +15,8 @@ Git 저장소의 어느 하위 폴더에서 실행해도 최상위 `.pace/team/a
 
 기존 `.pace/team/<이름>.md` 원본도 계속 읽는다. 옮기려면 해당 파일을 `.pace/team/agents/`로 이동한 뒤 `pace team sync`를 실행한다. 같은 이름의 원본이 두 위치에 있으면 명령이 중단된다. 옛 경로를 가리키는 동일 역할의 관리 생성물은 새 경로로 갱신된다. 공유 자원 정의와 검증 결과는 각각 `.pace/team/resources.md`, `.pace/team/verify/`에 둔다.
 
+팀을 설계하거나 점검할 때 [필수 역할 정본](../skills/pace-team/references/required-roles.md)의 원형과 요건 ID를 확인한다. 원형별 합의의 등록 상태와 저장소 원본의 충족 여부는 각각 근거를 남긴다. 맞춤 정의의 적용·검증은 [pace-team 스킬](../skills/pace-team/SKILL.md)을 따른다.
+
 ## 원본 형식
 
 ```md
