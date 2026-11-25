@@ -536,7 +536,7 @@ for (const change of ["new-role", "new-input", "new-task-close"] as const) test(
   const { f, worktree, dir } = mergeFixture(), rel = `projects/${dir.split("/").at(-1)}`;
   let path: string, body: string;
   if (change === "new-role") {
-    createTeamMember(worktree, "late", "reviewer"); path = join(worktree, ".pace/team/late.md"); body = readFileSync(path, "utf8"); unlinkSync(path);
+    createTeamMember(worktree, "late", "reviewer"); path = join(worktree, ".pace/team/agents/late.md"); body = readFileSync(path, "utf8"); unlinkSync(path);
   } else if (change === "new-input") {
     path = join(dir, "TEAM-MEASUREMENT.json"); unlinkSync(path); adoptTeamMetrics(worktree, rel); body = '{"version":999}';
   } else {

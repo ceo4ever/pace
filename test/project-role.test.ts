@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chmodSync, existsSync, linkSync, mkdirSync, readFileSync, readdirSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, linkSync, mkdirSync, readFileSync, readdirSync, renameSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { join, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
@@ -22,6 +22,16 @@ function fixture() {
   const worktree = join(parent, "app.wt/P001");
   return { root, home, env, git, run, worktree };
 }
+test("project role: a checkout with a legacy source still starts and records that path", () => {
+  const f = fixture();
+  const legacy = ".pace/team/builder.md";
+  renameSync(join(f.root, ".pace/team/agents/builder.md"), join(f.root, legacy));
+  f.git("add", ".pace/team");
+  f.git("commit", "-qm", "legacy team layout");
+  const result = f.run("project", "start", "P001", "--role", "builder", "--agent", "codex", "--no-launch");
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(starts(f.worktree).at(-1)!.role.definition, legacy);
+});
 test("project role RED: explicit member is accepted and no-launch carries the role", () => {
   const { run, worktree } = fixture();
   const r = run("project", "start", "P001", "--role", "builder", "--agent", "codex", "--no-launch");
@@ -71,11 +81,11 @@ for (const host of ["claude", "codex"]) test(`project role ${host}: argv overrid
     const value = (flag: string) => args.includes(flag) ? args[args.indexOf(flag) + 1] : undefined;
     assert.equal(value("--model"), c.model); assert.equal(value("--effort"), c.effort);
     assert.equal(value("--agent"), host);
-    assert.match(value("--spec")!, /^먼저 \.pace\/team\/builder\.md를 읽고/);
+    assert.match(value("--spec")!, /^먼저 \.pace\/team\/agents\/builder\.md를 읽고/);
     assert.match(value("--spec")!, /적재하지 못하면.*보류/);
     const event = starts(f.worktree).at(-1)!;
     assert.equal(event.role.name, "builder"); assert.equal(event.role.source, "option");
-    assert.equal(event.role.definition, ".pace/team/builder.md"); assert.match(event.role.hash, /^[a-f0-9]{64}$/);
+    assert.equal(event.role.definition, ".pace/team/agents/builder.md"); assert.match(event.role.hash, /^[a-f0-9]{64}$/);
     assert.equal(event.role.model, c.model); assert.equal(event.role.effort, c.effort);
     assert.equal(event.role.method, "prompt"); assert.equal(event.role.settingsStatus, "arguments");
     assert.equal(event.role.toolsPermissionApplied, false); assert.equal(event.role.runtimeObserved, false);
@@ -122,10 +132,10 @@ test("project role: nonhost, unsafe name/settings and misplaced option fail befo
   const f = fixture(); assert.notEqual(f.run("project", "check", "P001", "T01", "--role", "builder").status, 0);
 });
 test("project role: draft source is preserved and only committed role enters a new worktree", async () => {
-  const f = fixture(), path = join(f.root, ".pace/team/builder.md"), original = readFileSync(path, "utf8");
+  const f = fixture(), path = join(f.root, ".pace/team/agents/builder.md"), original = readFileSync(path, "utf8");
   writeFileSync(path, original + "\nUNCOMMITTED-ROLE-MARKER\n");
   const r = f.run("project", "start", "P001", "--role", "builder", "--agent", "codex", "--no-launch"); assert.equal(r.status, 0, r.stderr);
-  assert.equal(readFileSync(join(f.worktree, ".pace/team/builder.md"), "utf8"), original);
+  assert.equal(readFileSync(join(f.worktree, ".pace/team/agents/builder.md"), "utf8"), original);
   assert.equal(readFileSync(path, "utf8").includes("UNCOMMITTED-ROLE-MARKER"), true);
   const { parseTeamSource } = await import("../src/team/model.ts");
   assert.equal(starts(f.worktree).at(-1)!.role.hash, parseTeamSource(original, "builder").hash);
@@ -134,12 +144,12 @@ test("project role: draft source is preserved and only committed role enters a n
 
 test("project role: preparation edits hold launch and preserve the prepared worktree", () => {
   const f = fixture(), orca = fakeOrca(f.home);
-  writeFileSync(join(f.root, "prepare.mjs"), "import {appendFileSync} from 'node:fs'; appendFileSync('.pace/team/builder.md','\\nPREPARED-CHANGE\\n');\n");
+  writeFileSync(join(f.root, "prepare.mjs"), "import {appendFileSync} from 'node:fs'; appendFileSync('.pace/team/agents/builder.md','\\nPREPARED-CHANGE\\n');\n");
   const docs = join(f.root, "docs/README.md"); writeFileSync(docs, readFileSync(docs, "utf8") + "- worktree 준비: `node prepare.mjs`\n");
   f.git("add", "docs", "prepare.mjs"); f.git("commit", "-qm", "prepare");
   const r = runPace(["project", "start", "P001", "--role", "builder", "--agent", "codex"], { cwd: f.root, home: f.home, env: { ...f.env, ...orca.env }, timeout: 30000 });
   assert.notEqual(r.status, 0); assert.match(r.stderr, /준비 뒤 달라졌다/); assert.deepEqual(orca.calls(), []);
-  assert.equal(existsSync(f.worktree), true); assert.match(readFileSync(join(f.worktree, ".pace/team/builder.md"), "utf8"), /PREPARED-CHANGE/);
+  assert.equal(existsSync(f.worktree), true); assert.match(readFileSync(join(f.worktree, ".pace/team/agents/builder.md"), "utf8"), /PREPARED-CHANGE/);
 });
 test("project role: restored branch reads its own committed PROJECT and source before creation", () => {
   const f = fixture();
@@ -147,17 +157,17 @@ test("project role: restored branch reads its own committed PROJECT and source b
   for (const args of [["add", "-A"], ["commit", "-qm", "checkpoint"]]) {
     const r = spawnSync("git", ["-C", f.worktree, ...args], { env: f.env, encoding: "utf8" }); assert.equal(r.status, 0, r.stderr);
   }
-  const original = readFileSync(join(f.worktree, ".pace/team/builder.md"), "utf8");
+  const original = readFileSync(join(f.worktree, ".pace/team/agents/builder.md"), "utf8");
   f.git("worktree", "remove", f.worktree);
-  writeFileSync(join(f.root, ".pace/team/builder.md"), "INVALID MAIN DRAFT");
+  writeFileSync(join(f.root, ".pace/team/agents/builder.md"), "INVALID MAIN DRAFT");
   const r = f.run("project", "start", "P001", "--role", "builder", "--agent", "codex", "--no-launch"); assert.equal(r.status, 0, r.stderr);
-  assert.equal(readFileSync(join(f.worktree, ".pace/team/builder.md"), "utf8"), original);
-  assert.equal(readFileSync(join(f.root, ".pace/team/builder.md"), "utf8"), "INVALID MAIN DRAFT");
+  assert.equal(readFileSync(join(f.worktree, ".pace/team/agents/builder.md"), "utf8"), original);
+  assert.equal(readFileSync(join(f.root, ".pace/team/agents/builder.md"), "utf8"), "INVALID MAIN DRAFT");
 });
 test("project role: existing source links and malformed source fail without a worker", { skip: process.platform === "win32" ? "file symlink privilege varies on Windows" : false }, () => {
   const f = fixture(), orca = fakeOrca(f.home);
   assert.equal(f.run("project", "start", "P001", "--role", "builder", "--agent", "codex", "--no-launch").status, 0);
-  const source = join(f.worktree, ".pace/team/builder.md"), outside = join(f.home, "outside.md");
+  const source = join(f.worktree, ".pace/team/agents/builder.md"), outside = join(f.home, "outside.md");
   const original = readFileSync(source, "utf8"); writeFileSync(outside, original); unlinkSync(source); symlinkSync(outside, source);
   const run = () => runPace(["project", "start", "P001", "--role", "builder", "--launch", "--agent", "codex"], { cwd: f.root, home: f.home, env: { ...f.env, ...orca.env } });
   assert.notEqual(run().status, 0); assert.equal(readFileSync(outside, "utf8"), original); assert.deepEqual(orca.calls(), []);
@@ -173,7 +183,7 @@ test("project role: settings and shell metacharacters are a single quoted value"
   const fake = join(bin, "codex"); writeFileSync(fake, `#!/usr/bin/env node\nrequire('node:fs').writeFileSync(${JSON.stringify(recorded)},JSON.stringify(process.argv.slice(2)));\n`); chmodSync(fake, 0o755);
   const executed = spawnSync("sh", ["-c", command], { env: { ...f.env, PATH: `${bin}:${process.env.PATH}` }, encoding: "utf8" }); assert.equal(executed.status, 0, executed.stderr);
   const captured = JSON.parse(readFileSync(recorded, "utf8")) as string[];
-  assert.equal(captured[captured.indexOf("--model") + 1], model); assert.match(captured.at(-1)!, /^먼저 \.pace\/team\/builder\.md/);
+  assert.equal(captured[captured.indexOf("--model") + 1], model); assert.match(captured.at(-1)!, /^먼저 \.pace\/team\/agents\/builder\.md/);
   assert.equal(existsSync(join(f.worktree, "sentinel-role")), false);
 });
 test("project role: start record validation preserves legacy events and rejects malformed role rows", async () => {
@@ -211,7 +221,7 @@ test("project role: ref PROJECT names use literal Git paths", async () => {
 });
 test("project role: normalization guidance names CRLF to LF UTF-8 SHA256", async () => {
   const f = fixture(), { resolveWorkerRole, roleInstruction } = await import("../src/team/worker-role.ts");
-  const path = join(f.root, ".pace/team/builder.md"), lf = readFileSync(path, "utf8");
+  const path = join(f.root, ".pace/team/agents/builder.md"), lf = readFileSync(path, "utf8");
   writeFileSync(path, lf.replace(/\n/g, "\r\n"));
   const role = resolveWorkerRole(f.root, `projects/${projectPath(f.root).split(sep).at(-2)!}/PROJECT.md`, { role: "builder", agent: "codex", env: f.env })!;
   assert.match(roleInstruction(role), /CRLF.*LF.*UTF-8.*SHA256/);
@@ -260,7 +270,7 @@ test("project role: invalid PROJECT names and deleted PROJECT-selected sources h
   const f = fixture(), orca = fakeOrca(f.home), path = projectPath(f.root);
   writeFileSync(path, readFileSync(path, "utf8").replace(/^- 작업자 역할:.*$/m, "- 작업자 역할: builder"));
   assert.equal(f.run("project", "start", "P001", "--agent", "codex", "--no-launch").status, 0);
-  unlinkSync(join(f.worktree, ".pace/team/builder.md"));
+  unlinkSync(join(f.worktree, ".pace/team/agents/builder.md"));
   const r = runPace(["project", "start", "P001", "--agent", "codex", "--launch"], { cwd: f.root, home: f.home, env: { ...f.env, ...orca.env } });
   assert.notEqual(r.status, 0); assert.equal(orca.calls().length, 0);
 });

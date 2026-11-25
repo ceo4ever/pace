@@ -5,7 +5,7 @@ import { closeSync, constants, fstatSync, lstatSync, mkdirSync, openSync, readSy
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { packageRoot, assertSafeGitPath } from "../core/paths.ts";
 import { fillTemplate } from "../core/fsutil.ts";
-import { isTeamRole, parseTeamSource, validTeamName, type TeamMember } from "./model.ts";
+import { isTeamRole, LEGACY_TEAM_DIR, parseTeamSource, TEAM_AGENTS_DIR, teamSourcePath, validTeamName, type TeamMember } from "./model.ts";
 
 export function teamRoot(cwd: string): string {
   assertSafeGitPath(cwd);
@@ -52,26 +52,37 @@ export function readTeamFile(root: string, rel: string): string | null {
 }
 export function teamFiles(root: string, rel: string, extension: string, inputs?: InputTrace): string[] {
   const path = safeTeamPath(root, rel, true);
-  const accepts = (name: string) => !name.includes("/") && name.endsWith(extension) && !(rel === ".pace/team" && name === "resources.md");
+  const accepts = (name: string) => !name.includes("/") && name.endsWith(extension) && !(rel === LEGACY_TEAM_DIR && name === "resources.md");
   let names: string[];
   try { names = readdirSync(path); }
   catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; names = []; }
   inputs?.listing?.(path, names, `team-files:${extension}`, "entries", accepts);
   return names.filter(accepts).sort();
 }
-export function loadTeamMember(root: string, name: string, inputs?: InputTrace): TeamMember {
+export function findTeamSource(name: string, read: (path: string) => string | null): { path: string; text: string } | null {
   if (!validTeamName(name) || name === "resources") throw new Error("팀 이름이 올바르지 않거나 예약된 메타파일 이름이다");
-  const text = readTeamFile(root, `.pace/team/${name}.md`);
-  if (text === null) throw new Error(`팀 역할이 없다: ${name}`);
-  const member = parseTeamSource(text, name);
-  inputs?.record(safeTeamPath(root, `.pace/team/${name}.md`), inputHash(text));
-  return member;
+  const path = teamSourcePath(name), legacyPath = teamSourcePath(name, true);
+  const text = read(path), legacy = read(legacyPath);
+  if (text !== null && legacy !== null) throw new Error(`팀 역할 원본이 두 위치에 존재한다: ${path}, ${legacyPath}`);
+  if (text !== null) return { path, text };
+  return legacy === null ? null : { path: legacyPath, text: legacy };
+}
+export function loadTeamMember(root: string, name: string, inputs?: InputTrace): TeamMember {
+  const source = findTeamSource(name, (path) => readTeamFile(root, path));
+  if (!source) throw new Error(`팀 역할이 없다: ${name}`);
+  inputs?.record(safeTeamPath(root, source.path), inputHash(source.text));
+  return parseTeamSource(source.text, name, source.path);
+}
+export function teamMemberNames(root: string, inputs?: InputTrace): string[] {
+  const files = [TEAM_AGENTS_DIR, LEGACY_TEAM_DIR].flatMap((dir) => teamFiles(root, dir, ".md", inputs));
+  return [...new Set(files)].sort().map((file) => file.slice(0, -3));
 }
 export function loadTeam(root: string, inputs?: InputTrace): TeamMember[] {
-  return teamFiles(root, ".pace/team", ".md", inputs).map((file) => loadTeamMember(root, file.slice(0, -3), inputs));
+  return teamMemberNames(root, inputs).map((name) => loadTeamMember(root, name, inputs));
 }
 export function createTeamMember(root: string, name: string, role: string): TeamMember {
   if (!validTeamName(name) || name === "resources" || !isTeamRole(role)) throw new Error("팀 이름 또는 역할이 올바르지 않거나 예약된 메타파일 이름이다");
+  if (findTeamSource(name, (path) => readTeamFile(root, path))) throw new Error(`기존 팀 원본이 있다: ${name}`);
   const duties = {
     lead: "프로젝트 계약을 확인하고 담당·검토·인계를 정리하며 완료 근거를 통합한다.",
     maker: "배정된 범위를 구현하고 관련 검사를 실행해 결과와 한계를 보고한다.",

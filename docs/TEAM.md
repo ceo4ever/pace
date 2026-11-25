@@ -1,6 +1,6 @@
 # 저장소 팀 원본과 호스트 정의
 
-팀은 저장소의 `.pace/team/<name>.md` 한 벌에서 관리한다. 개인 비서 프로필·워크스페이스 `.pace/AGENT.md`와는 별개다. Claude·Codex native 정의는 생성물이므로 직접 편집한 내용은 `sync`로 덮어쓴다. 원본을 먼저 고친다.
+팀은 저장소의 `.pace/team/agents/<name>.md` 한 벌에서 관리한다. 개인 비서 프로필·워크스페이스 `.pace/AGENT.md`와는 별개다. Claude·Codex native 정의는 생성물이므로 직접 편집한 내용은 `sync`로 덮어쓴다. 원본을 먼저 고친다.
 
 ```sh
 pace team new athena --role lead
@@ -11,7 +11,9 @@ pace team sync
 pace team sync --check --json
 ```
 
-Git 저장소의 어느 하위 폴더에서 실행해도 최상위 `.pace/team`을 사용하며 첫 커밋 전에도 동작한다. 저장소 밖에서는 거부한다. `new`는 기존 원본을 덮어쓰지 않는다. 생성된 공통 골격의 단계·업무·자원·도구를 저장소 상황에 맞게 편집한다. 팀 명단만 만든다고 프로젝트 작업자의 역할이 자동 선택되지는 않는다.
+Git 저장소의 어느 하위 폴더에서 실행해도 최상위 `.pace/team/agents`에 생성하며 첫 커밋 전에도 동작한다. 저장소 밖에서는 거부한다. `new`는 기존 원본을 덮어쓰지 않는다. 생성된 공통 골격의 단계·업무·자원·도구를 저장소 상황에 맞게 편집한다. 팀 명단만 만든다고 프로젝트 작업자의 역할이 자동 선택되지는 않는다.
+
+기존 `.pace/team/<이름>.md` 원본도 계속 읽는다. 옮기려면 해당 파일을 `.pace/team/agents/`로 이동한 뒤 `pace team sync`를 실행한다. 같은 이름의 원본이 두 위치에 있으면 명령이 중단된다. 옛 경로를 가리키는 동일 역할의 관리 생성물은 새 경로로 갱신된다. 공유 자원 정의와 검증 결과는 각각 `.pace/team/resources.md`, `.pace/team/verify/`에 둔다.
 
 ## 원본 형식
 
@@ -108,7 +110,7 @@ native model/effort를 생략해 부모 설정을 상속하는 방법은 환경 
 
 ## 보존과 권한 경계
 
-원본과 출력의 조상 링크·파일 링크·하드링크·일반 파일 여부를 검사한다. 고아를 찾을 때 여는 무관 native 파일에도 같은 제한과 64KiB 상한을 적용한다. 이름 규칙에 맞지 않는 `.pace/team/*.md`는 거부하고 다른 확장자는 읽지 않는다. 같은 경로의 사용자 소유 출력은 덮어쓰지 않으며 무관 native 파일은 보존한다. 모든 사전 검사를 마친 뒤 각 파일을 원자 교체한다. 여러 파일 트랜잭션이나 악의적인 동시 디렉터리 교체 방어는 보장하지 않는다. 중간 I/O 실패 뒤 sync/check를 다시 실행해 확인한다.
+원본과 출력의 조상 링크·파일 링크·하드링크·일반 파일 여부를 검사한다. 고아를 찾을 때 여는 무관 native 파일에도 같은 제한과 64KiB 상한을 적용한다. 이름 규칙에 맞지 않는 `.pace/team/agents/*.md`는 거부하고 다른 확장자는 읽지 않는다. 같은 경로의 사용자 소유 출력은 덮어쓰지 않으며 무관 native 파일은 보존한다. 모든 사전 검사를 마친 뒤 각 파일을 원자 교체한다. 여러 파일 트랜잭션이나 악의적인 동시 디렉터리 교체 방어는 보장하지 않는다. 중간 I/O 실패 뒤 sync/check를 다시 실행해 확인한다.
 
 따라서 native 정의를 링크로 공유하거나 64KiB를 넘는 파일을 같은 agents 폴더에 둔 저장소에서는 검사·동기화가 거부된다. 관리 고아 검출을 건너뛰지 않기 위한 보수적 정책이며 기존 파일을 자동 변환하지 않는다. 원본 이름을 바꾸면 이전 관리 생성물을 검토해 별도로 정리한 뒤 sync한다.
 
@@ -122,7 +124,7 @@ native model/effort를 생략해 부모 설정을 상속하는 방법은 환경 
 
 새 branch의 역할은 체크아웃될 HEAD의 커밋된 원본에서 읽는다. main의 커밋되지 않은 역할 편집은 자동 반영하지 않는다. 기존 branch 복구는 그 ref의 원본·PROJECT를 미리 검사하고, 기존 worktree 재실행은 실제 실행 checkout의 원본·PROJECT를 쓴다. 도구 선택은 기존 main PROJECT/저장소/세션 규칙을 유지하므로 도구와 역할의 출처가 다를 수 있다. 준비·병합이 끝난 실행 직전에 원본/선택/설정을 다시 확인한다. 달라지면 실행을 보류하고 worktree를 보존하므로 원본/커밋을 확인한 뒤 `start --launch`로 재시도한다. 역할 원본과 역할 필드를 실제로 선택한 PROJECT는 64KiB 이하 UTF-8 일반 파일이어야 한다. 역할 필드가 없으면 PROJECT 탐색은 기존 읽기 방식을 유지해 큰 파일·하드링크에 이 제한을 새로 적용하지 않는다. 명시 role은 PROJECT 역할 필드보다 우선한다.
 
-두 호스트 모두 시작 지시 첫 줄에서 `.pace/team/<이름>.md`를 읽는다. 시작 지문은 CRLF를 LF로 정규화한 UTF-8 텍스트의 SHA256이며 지시문에도 계산 기준을 넣는다. native subagent는 최상위 Orca 작업자 선택과 다르고, 공유 settings 교체는 동시 실행에 간섭하므로 쓰지 않는다(T01 실측). 각 model/effort 필드는 명시 start 옵션 > tier 해석 순이다. tier의 model은 tier override → 일반 worker model/기본값, effort는 tier override → tier 문자열이며 일반 worker effort가 덮지 않는다. 명시 `--effort default`는 기존 의미대로 effort 인자를 생략한다. 값은 비밀·선행 대시·Unicode 제어/서식 문자 없는 well-formed 문자열(1024자 이하)이며, 공백·셸 메타문자는 한 argv 값으로 전달하고 직접 안내에서는 인용한다. 시작 구성원 이름도 비밀 후보를 거부해 진단·기록에 넣지 않는다. 모델별 실제 지원은 호스트 결과로 확인한다.
+두 호스트 모두 시작 지시 첫 줄에서 실제 원본 경로를 읽는다. 새 원본은 `.pace/team/agents/<이름>.md`다. 시작 지문은 CRLF를 LF로 정규화한 UTF-8 텍스트의 SHA256이며 지시문에도 계산 기준을 넣는다. native subagent는 최상위 Orca 작업자 선택과 다르고, 공유 settings 교체는 동시 실행에 간섭하므로 쓰지 않는다(T01 실측). 각 model/effort 필드는 명시 start 옵션 > tier 해석 순이다. tier의 model은 tier override → 일반 worker model/기본값, effort는 tier override → tier 문자열이며 일반 worker effort가 덮지 않는다. 명시 `--effort default`는 기존 의미대로 effort 인자를 생략한다. 값은 비밀·선행 대시·Unicode 제어/서식 문자 없는 well-formed 문자열(1024자 이하)이며, 공백·셸 메타문자는 한 argv 값으로 전달하고 직접 안내에서는 인용한다. 시작 구성원 이름도 비밀 후보를 거부해 진단·기록에 넣지 않는다. 모델별 실제 지원은 호스트 결과로 확인한다.
 
 start 사건의 선택 `role` 객체에는 name/source(option 또는 project), definition(상대 경로), hash(시작 검증 지문), method(prompt), model/effort, settingsStatus, toolsPermissionApplied(false), runtimeObserved(false)를 기록한다. settingsStatus는 planned(직접 안내/미실행), arguments(Orca 인자 전달), unconfirmed(실행 응답 불명), rejected(실행 실패)다. **전달은 실제 적용이 아니다.** 런타임 model/effort·적재 행동은 별도 세션 관측으로 확인하고 불일치·미확인은 이슈와 후속 검증으로 남긴다. 시작 지문은 이후의 동시 편집까지 고정하지 않는다. 도구 권한은 적용하지 않으며 역할 정의 자체도 보안 경계가 아니다.
 

@@ -4,8 +4,8 @@ import { runAgent, validateRequest, type AgentName, type AgentRequest, type Agen
 import { claudeP, codexP, createPExecutor } from '../agent/p-executor.ts';
 import { hasSecret } from '../project/secrets.ts';
 import { safeRoleName, safeRoleSetting } from '../project/role-record.ts';
-import { parseTeamSource, section, type TeamMember } from './model.ts';
-import { readTeamFile, safeTeamPath, teamFiles } from './store.ts';
+import { section, teamSourcePath, type TeamMember } from './model.ts';
+import { loadTeamMember, safeTeamPath, teamMemberNames } from './store.ts';
 import { resolveWorkerRole, roleInstruction, type WorkerRole } from './worker-role.ts';
 
 export const VERIFY_QUESTIONS = `정의 적재 단계가 끝나면 다음 네 질문에 답하세요. 기대 답을 추측해서 만들지 마세요.
@@ -85,17 +85,15 @@ export function evaluateRoleAnswer(name: string, keywords: string[], answer: str
   return missing.length ? result('확인 필요', missing.length === keywords.length ? '모든 금지 표지 누락: 미적재·의역 확인 필요' : '금지 항목 표현·키워드 확인 필요', missing) : result('pass', '이름·모든 명시 키워드 일치 (의미·진실성 검증 아님)');
 }
 export function verificationPrompt(role: WorkerRole): string { return `${roleInstruction(role)}\n\n## 이 점검의 검증 책임\n${VERIFY_LOAD_NOTICE}\n\n## 고정 질문\n${VERIFY_QUESTIONS}`; }
-const failure = (name: string, agent: AgentName, reason: string): VerifyRow => ({ member: name, agent, method: 'prompt', definition: `.pace/team/${name}.md`, hash: null, requested: null, observed: null, response: null, status: 'fail', reason, missing: [] });
+const failure = (name: string, agent: AgentName, reason: string): VerifyRow => ({ member: name, agent, method: 'prompt', definition: teamSourcePath(name), hash: null, requested: null, observed: null, response: null, status: 'fail', reason, missing: [] });
 /** Extra cwd/prompt are experiment injection only; CLI always uses the source checkout and normal prompt. */
 export async function verifyLoadedRole(root: string, role: WorkerRole, agent: AgentName, options: VerifyRunOptions & { cwd?: string; prompt?: string } = {}): Promise<VerifyRow> {
   const row = failure(role.member.name, agent, '호스트 실행 실패');
-  row.hash = role.member.hash; row.requested = role.settings;
+  row.definition = role.member.source; row.hash = role.member.hash; row.requested = role.settings;
   let keywords: string[];
   try {
-    const text = readTeamFile(root, role.member.source);
-    if (text === null) throw new Error('missing source');
-    const current = parseTeamSource(text, role.member.name);
-    if (current.hash !== role.member.hash || hasSecret(current.body)) throw new Error('changed or unsafe source');
+    const current = loadTeamMember(root, role.member.name);
+    if (current.source !== role.member.source || current.hash !== role.member.hash || hasSecret(current.body)) throw new Error('changed or unsafe source');
     keywords = verifyKeywords(current);
   } catch { row.reason = '호출 직전 원본·키워드·비밀 안전 검사 실패 (호스트 미호출)'; return row; }
   try {
@@ -108,8 +106,8 @@ export async function verifyLoadedRole(root: string, role: WorkerRole, agent: Ag
     // Never persist unsafe host text or arbitrary error diagnostics.
     if (result.text.isWellFormed() && Buffer.byteLength(result.text) <= 65536 && !hasSecret(result.text)) row.response = result.text;
     row.observed = { model: safeRoleSetting(result.model.value) ? result.model.value : null, source: ['reported', 'requested', 'model', 'table', 'unknown'].includes(result.model.source) ? result.model.source : 'unknown', effort: 'unconfirmed' };
-    const current = readTeamFile(root, role.member.source);
-    if (current === null || parseTeamSource(current, role.member.name).hash !== role.member.hash) {
+    const current = loadTeamMember(root, role.member.name);
+    if (current.source !== role.member.source || current.hash !== role.member.hash) {
       row.status = 'fail'; row.reason = '검사 중 원본 변경·삭제';
     }
   } catch { row.status = 'fail'; row.reason = '호스트 실행·원본 재확인 실패 (오류 원문 비저장)'; }
@@ -133,7 +131,7 @@ export function storeVerifyReport(root: string, report: VerifyReport, id: string
 export async function verifyTeam(root: string, selection: { name?: string; all?: boolean; agent?: AgentName }, options: VerifyRunOptions = {}): Promise<{ report: VerifyReport; path: string; code: number }> {
   if (!!selection.name === !!selection.all || (selection.name !== undefined && !safeRoleName(selection.name)) || (selection.agent !== undefined && selection.agent !== 'claude' && selection.agent !== 'codex')) throw new Error('verify 이름 또는 --all과 지원 host를 지정하세요');
   prepareOutput(root);
-  const names = selection.name ? [selection.name] : teamFiles(root, '.pace/team', '.md').map((f) => f.slice(0, -3));
+  const names = selection.name ? [selection.name] : teamMemberNames(root);
   if (names.some((name) => !safeRoleName(name))) throw new Error('verify 구성원 이름 안전 검사 실패');
   const agents: AgentName[] = selection.agent ? [selection.agent] : ['claude', 'codex'];
   const rows: VerifyRow[] = [];

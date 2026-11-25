@@ -1,5 +1,5 @@
 ---
-# pace-team-generated: .pace/team/pace-project-lead.md
+# pace-team-generated: .pace/team/agents/pace-project-lead.md
 # pace-team-source-sha256: 5fa845e94609cd80bc0f2ad17c2ce7ee2279e26daddb0c818f93171abf85011c
 # pace-team-mapping: {"model":"claude-opus-5-5","effort":"high"}
 # pace-team-mapping-sha256: 34bb92a28e1e78ae7f97dcd2530eace9512f1229c2efa96ed2d3e813c4cfed05
@@ -8,7 +8,7 @@ description: "lead · 분석, 설계, 구현, 검증, 마감 · 태스크 계약
 model: "claude-opus-5-5"
 effort: "high"
 ---
-생성물 — 원본 .pace/team/pace-project-lead.md
+생성물 — 원본 .pace/team/agents/pace-project-lead.md
 역할 메타: {"name":"pace-project-lead","role":"lead","stage":["분석","설계","구현","검증","마감"],"tier":"high","resources":[],"tools":["pace-project-dev","pace-team"]}
 도구 안내는 권한 제한이 아니다. 부모 도구를 상속하며 실행 측 권한 설정을 따른다.
 

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cpSync, existsSync, linkSync, lstatSync, mkdirSync, readFileSync, readdirSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, linkSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
@@ -36,7 +36,7 @@ test("team CLI: 첫 커밋 없는 저장소에서 세 역할을 만들고 두 �
     assert.equal(existsSync(join(root, ".claude", "agents", `${name}.md`)), true);
     assert.equal(existsSync(join(root, ".codex", "agents", `${name}.toml`)), true);
   }
-  const source = join(root, ".pace", "team", "builder.md");
+  const source = join(root, ".pace", "team", "agents", "builder.md");
   writeFileSync(source, readFileSync(source, "utf8") + "\n추가 업무 조건\n");
   assert.notEqual(run("team", "sync", "--check").status, 0);
   assert.equal(run("team", "sync").status, 0);
@@ -66,6 +66,33 @@ test("worker tier CLI: 별도 파일에 등급을 저장하고 일반 worker 설
   assert.equal(readFileSync(path, "utf8"), original);
 });
 
+test("team: 기존 원본과 생성물을 읽고 원본 이동만 동기화하며 중복 원본은 거부한다", () => {
+  const { root, run } = fixture();
+  const current = ".pace/team/agents/maker.md", legacy = ".pace/team/maker.md";
+  assert.equal(run("team", "new", "maker", "--role", "maker").status, 0);
+  renameSync(join(root, current), join(root, legacy));
+  assert.equal(loadTeamMember(root, "maker").source, legacy);
+  assert.equal(run("team", "new", "maker", "--role", "maker").status, 2);
+  assert.equal(run("team", "sync").status, 0);
+  assert.equal(run("team", "sync", "--check").status, 0);
+  const output = join(root, ".codex/agents/maker.toml");
+  const previous = readFileSync(output, "utf8");
+  assert.ok(previous.startsWith(`# pace-team-generated: ${legacy}\n`));
+  renameSync(join(root, legacy), join(root, current));
+  const check = run("team", "sync", "--check", "--json");
+  assert.equal(check.status, 1);
+  assert.deepEqual(JSON.parse(check.stdout).differences.map((d: { kind: string }) => d.kind), ["source", "source"]);
+  assert.equal(readFileSync(output, "utf8"), previous);
+  assert.equal(run("team", "sync").status, 0);
+  const updated = readFileSync(output, "utf8");
+  assert.ok(updated.startsWith(`# pace-team-generated: ${current}\n`));
+  assert.equal(run("team", "sync", "--check").status, 0);
+  cpSync(join(root, current), join(root, legacy));
+  assert.match(run("team", "list").stderr, /두 위치/);
+  assert.equal(run("team", "sync").status, 2);
+  assert.equal(readFileSync(output, "utf8"), updated);
+});
+
 test("team check JSON: 원본·설정·내용을 구별하고 복합 차이를 숨기지 않는다", () => {
   const { root, run } = fixture();
   assert.equal(run("team", "new", "sample", "--role", "maker").status, 0);
@@ -88,7 +115,7 @@ test("team check JSON: 원본·설정·내용을 구별하고 복합 차이를 �
   assert.deepEqual(JSON.parse(checked.stdout).differences.map((d: { kind: string }) => d.kind), ["settings", "content"]);
   assert.equal(run("team", "sync").status, 0);
   assert.equal(run("team", "sync", "--check").status, 0);
-  const source = join(root, ".pace/team/sample.md");
+  const source = join(root, ".pace/team/agents/sample.md");
   writeFileSync(source, readFileSync(source, "utf8") + "\n추가 조건\n");
   checked = run("team", "sync", "--check", "--json");
   assert.equal(JSON.parse(checked.stdout).differences.filter((d: { kind: string }) => d.kind === "source").length, 2);
@@ -102,7 +129,7 @@ test("team check JSON: 원본·설정·내용을 구별하고 복합 차이를 �
 test("team: CRLF 원본/생성물과 다른 위치에서도 입력이 같으면 일치한다", () => {
   const { root, run } = fixture();
   assert.equal(run("team", "new", "copy", "--role", "reviewer").status, 0);
-  const source = join(root, ".pace/team/copy.md");
+  const source = join(root, ".pace/team/agents/copy.md");
   const extra = "\n: 공백 # 주석이 아닌 본문\n- 선행\n'작은따옴표' \"큰따옴표\" \"\"\" ''' \\역슬래시\n다음 줄\n";
   writeFileSync(source, (readFileSync(source, "utf8") + extra).replaceAll("\n", "\r\n"));
   assert.equal(run("team", "sync").status, 0);
@@ -124,7 +151,7 @@ test("team: CRLF 원본/생성물과 다른 위치에서도 입력이 같으면 
 test("team schema: 필수/중복/타입/이름/절을 검증하고 설명은 첫 문단 500 코드포인트다", () => {
   const { root, run } = fixture();
   assert.equal(run("team", "new", "schema", "--role", "lead").status, 0);
-  const source = readFileSync(join(root, ".pace/team/schema.md"), "utf8");
+  const source = readFileSync(join(root, ".pace/team/agents/schema.md"), "utf8");
   const member = parseTeamSource(source, "schema");
   assert.deepEqual([member.role, member.stage, member.tier, member.resources, member.tools], ["lead", [], "high", [], []]);
   assert.match(member.body, /결정 요청에는 요청 내용·결정 주체·근거·선택지/);
@@ -144,9 +171,9 @@ test("team schema: 필수/중복/타입/이름/절을 검증하고 설명은 첫
   assert.equal(Array.from(description).length, 500);
   assert.equal(description, "lead · 설계 · " + "😀".repeat(488));
   assert.equal(description.includes("둘째"), false);
-  const previous = readFileSync(join(root, ".pace/team/schema.md"), "utf8");
+  const previous = readFileSync(join(root, ".pace/team/agents/schema.md"), "utf8");
   assert.equal(run("team", "new", "schema", "--role", "maker").status, 2);
-  assert.equal(readFileSync(join(root, ".pace/team/schema.md"), "utf8"), previous);
+  assert.equal(readFileSync(join(root, ".pace/team/agents/schema.md"), "utf8"), previous);
   for (const name of ["../out", "Con", "con", "has_space", "-option", "x".repeat(65)]) assert.equal(run("team", "new", name, "--role", "maker").status, 2);
 });
 
@@ -163,7 +190,7 @@ test("team 경로: 뒤 foreign 출력 충돌·관리 고아·무관 파일을 �
   assert.equal(run("team", "sync").status, 0);
   assert.equal(readFileSync(join(root, ".codex/agents/unrelated.toml"), "utf8"), "keep me\n");
   const original = readFileSync(join(root, ".claude/agents/last.md"), "utf8");
-  unlinkSync(join(root, ".pace/team/last.md"));
+  unlinkSync(join(root, ".pace/team/agents/last.md"));
   const checked = run("team", "sync", "--check", "--json");
   assert.equal(checked.status, 1);
   assert.equal(JSON.parse(checked.stdout).differences.filter((d: { kind: string }) => d.kind === "orphan").length, 2);
@@ -172,7 +199,7 @@ test("team 경로: 뒤 foreign 출력 충돌·관리 고아·무관 파일을 �
 });
 
 test("team 경로: 원본·출력·조상 링크와 하드링크는 따라가지 않는다", () => {
-  for (const target of [".pace", ".pace/team", ".claude", ".claude/agents", ".codex/agents"]) {
+  for (const target of [".pace", ".pace/team", ".pace/team/agents", ".claude", ".claude/agents", ".codex/agents"]) {
     const { root, run } = fixture(), external = tempDir("pace-team-outside-");
     writeFileSync(join(external, "sentinel"), "outside unchanged");
     if (!target.startsWith(".pace")) assert.equal(run("team", "new", "sample", "--role", "maker").status, 0);
@@ -187,7 +214,7 @@ test("team 경로: 원본·출력·조상 링크와 하드링크는 따라가지
   for (const hard of [false, true]) {
     const { root, run } = fixture();
     assert.equal(run("team", "new", "sample", "--role", "maker").status, 0);
-    const source = join(root, ".pace/team/sample.md"), outside = join(tempDir(), "source.md");
+    const source = join(root, ".pace/team/agents/sample.md"), outside = join(tempDir(), "source.md");
     const original = readFileSync(source, "utf8");
     if (hard) linkSync(source, outside);
     else { writeFileSync(outside, original); unlinkSync(source); symlinkSync(outside, source); }
@@ -201,7 +228,7 @@ test("team 경로: 원본·출력·조상 링크와 하드링크는 따라가지
 test("team JSON: 잘못된 원본과 인자/저장소 오류는2·단일 JSON이다", () => {
   const { root, run } = fixture();
   assert.equal(run("team", "new", "sample", "--role", "maker").status, 0);
-  writeFileSync(join(root, ".pace/team/sample.md"), "invalid");
+  writeFileSync(join(root, ".pace/team/agents/sample.md"), "invalid");
   for (const args of [["team", "sync", "--check", "--json"], ["team", "list", "--json"], ["team", "sync", "--bad", "--json"]]) {
     const result = run(...args);
     assert.equal(result.status, 2);
@@ -233,7 +260,7 @@ test("team 출력: 파일 링크·하드링크·본문 안 표지는 관리 소�
   assert.equal(run("team", "new", "sample", "--role", "maker").status, 0);
   mkdirSync(join(root, ".claude/agents"), { recursive: true });
   const path = join(root, ".claude/agents/sample.md");
-  const foreign = '---\nname: "user"\n---\n# pace-team-generated: .pace/team/sample.md\n';
+  const foreign = '---\nname: "user"\n---\n# pace-team-generated: .pace/team/agents/sample.md\n';
   writeFileSync(path, foreign);
   const denied = run("team", "sync", "--check", "--json");
   assert.equal(denied.status, 2);
@@ -298,7 +325,7 @@ test("team 실행 전 대조: 네 역할·두 생성물에 고정 책임을 보�
   const rule = "위임을 받으면 실행 전에 지시가 근거(사용자 원문·확인된 해석 또는 계약)와 같은 범위인지 대조한다. 범위가 달라졌거나 근거가 불명확하면 실행을 보류하고 결정 요청 형식(결정 주체·근거·선택지)으로 올린다. 미확인 해석을 승인된 것으로 바꾸지 않는다.";
   for (const role of ["lead", "maker", "reviewer", "coordinator"]) {
     assert.equal(run("team", "new", role, "--role", role).status, 0);
-    const text = readFileSync(join(root, `.pace/team/${role}.md`), "utf8");
+    const text = readFileSync(join(root, `.pace/team/agents/${role}.md`), "utf8");
     assert.equal(text.includes(rule), true, role);
     assert.match(text, /실행 전 대조에서 보류한 요청도 이 결정 요청 형식으로 올린다/);
   }
@@ -310,7 +337,7 @@ test("team 실행 전 대조: 네 역할·두 생성물에 고정 책임을 보�
     assert.equal(claude.includes(rule), true);
     assert.equal(instructions.includes(rule), true);
   }
-  const path = join(root, ".pace/team/maker.md"), source = readFileSync(path, "utf8");
+  const path = join(root, ".pace/team/agents/maker.md"), source = readFileSync(path, "utf8");
   const generated = readFileSync(join(root, ".codex/agents/maker.toml"), "utf8");
   const weakened = ["해당 없음", `    ${rule}`, `\t${rule}`, `<!--\n${rule}\n-->`, `\`\`\`text\n\n${rule}\n\n\`\`\``, `> ${rule}`, `"${rule}"`,
     ...["사용자 원문", "확인된 해석", "계약", "범위가 달라졌거나", "근거가 불명확하면", "실행을 보류하고", "결정 요청 형식(결정 주체·근거·선택지)", "미확인 해석을 승인된 것으로 바꾸지 않는다."].map((part) => rule.replace(part, ""))];
@@ -335,6 +362,6 @@ test("team 실행 전 대조: 네 역할·두 생성물에 고정 책임을 보�
 
 test("이전 책임 문단의 호칭은 의미를 보존해 읽고 새 사람 식별자는 owner로 유지한다", () => {
   const f = fixture(); assert.equal(f.run("team", "new", "builder", "--role", "maker").status, 0);
-  const file = join(f.root, ".pace/team/builder.md"), current = readFileSync(file, "utf8"); for (const phrase of ["캡틴 원문", "캡틴\n원문", "캡틴\n\n원문"]) { writeFileSync(file, current.replace("사용자 원문", phrase)); assert.equal(loadTeamMember(f.root, "builder").name, "builder"); assert.equal(f.run("team", "list").status, 0); }
+  const file = join(f.root, ".pace/team/agents/builder.md"), current = readFileSync(file, "utf8"); for (const phrase of ["캡틴 원문", "캡틴\n원문", "캡틴\n\n원문"]) { writeFileSync(file, current.replace("사용자 원문", phrase)); assert.equal(loadTeamMember(f.root, "builder").name, "builder"); assert.equal(f.run("team", "list").status, 0); }
   writeFileSync(file, current.replace("사용자 원문·확인된 해석 또는 계약", "사용자 원문")); assert.throws(() => loadTeamMember(f.root, "builder"), /실행 전 대조/);
 });

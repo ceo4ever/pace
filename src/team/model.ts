@@ -4,6 +4,11 @@ import { isWorkerTier, type WorkerTier } from "../core/worker-tiers.ts";
 
 export const TEAM_ROLES = ["lead", "maker", "reviewer", "coordinator"] as const;
 export type TeamRole = typeof TEAM_ROLES[number];
+export const TEAM_AGENTS_DIR = ".pace/team/agents";
+export const LEGACY_TEAM_DIR = ".pace/team";
+export function teamSourcePath(name: string, legacy = false): string {
+  return `${legacy ? LEGACY_TEAM_DIR : TEAM_AGENTS_DIR}/${name}.md`;
+}
 export interface TeamMember {
   name: string; role: TeamRole; stage: string[]; tier: WorkerTier; resources: string[]; tools: string[];
   body: string; source: string; hash: string;
@@ -67,7 +72,7 @@ function rawSection(body: string, heading: string): string {
   return lines.slice(at + 1, end < 0 ? undefined : end).join("\n");
 }
 export function section(body: string, heading: string): string { return rawSection(body, heading).trim(); }
-export function parseTeamSource(input: string, expectedName: string): TeamMember {
+export function parseTeamSource(input: string, expectedName: string, source = teamSourcePath(expectedName)): TeamMember {
   if (!validTeamName(expectedName)) throw new Error("팀 이름은 64자 이하 소문자 kebab 이름이어야 한다(예약명 제외)");
   const text = normalizeLines(input);
   if (!text.isWellFormed() || Buffer.byteLength(text) > 65536 || /[\x00-\x08\x0b-\x1f\x7f]/.test(text)) throw new Error("팀 원본 크기·Unicode 또는 제어문자 오류");
@@ -102,7 +107,7 @@ export function parseTeamSource(input: string, expectedName: string): TeamMember
     }
   }
   if (!hasExecutionRule(rawSection(parsed.body, "실행 전 대조"))) throw missingExecutionRule();
-  return { name, role, tier, stage: getList(parsed.data, "stage"), resources: getList(parsed.data, "resources"), tools: getList(parsed.data, "tools"), body: parsed.body, source: `.pace/team/${name}.md`, hash: sha256(text) };
+  return { name, role, tier, stage: getList(parsed.data, "stage"), resources: getList(parsed.data, "resources"), tools: getList(parsed.data, "tools"), body: parsed.body, source, hash: sha256(text) };
 }
 export function teamDescription(member: TeamMember): string {
   const paragraph = section(member.body, "맡는 일").split(/\n\s*\n/)[0]!.split("\n").map((line) => line.trim()).join(" ");

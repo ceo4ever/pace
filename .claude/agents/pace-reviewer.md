@@ -1,5 +1,5 @@
 ---
-# pace-team-generated: .pace/team/pace-reviewer.md
+# pace-team-generated: .pace/team/agents/pace-reviewer.md
 # pace-team-source-sha256: cf8b95f44b963958b4ab24078233fc7ec7db3d36191feeee705eaa32f656a0d0
 # pace-team-mapping: {"model":"claude-opus-5-5","effort":"high"}
 # pace-team-mapping-sha256: 34bb92a28e1e78ae7f97dcd2530eace9512f1229c2efa96ed2d3e813c4cfed05
@@ -8,7 +8,7 @@ description: "reviewer · 사전 검토, 구현 후 검토 · 상위 목적과 �
 model: "claude-opus-5-5"
 effort: "high"
 ---
-생성물 — 원본 .pace/team/pace-reviewer.md
+생성물 — 원본 .pace/team/agents/pace-reviewer.md
 역할 메타: {"name":"pace-reviewer","role":"reviewer","stage":["사전 검토","구현 후 검토"],"tier":"high","resources":[],"tools":["pace-project-dev","pace agent verify"]}
 도구 안내는 권한 제한이 아니다. 부모 도구를 상속하며 실행 측 권한 설정을 따른다.
 

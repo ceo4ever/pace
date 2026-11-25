@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
 import { parseTeamSource, type TeamMember } from "./model.ts";
-import { readTeamFile } from "./store.ts";
+import { findTeamSource, readTeamFile } from "./store.ts";
 import { resolveTeamSettings } from "../core/worker-tiers.ts";
 import { resolveWorkerSettings } from "../core/worker-settings.ts";
 import { safeRoleName, safeRoleSetting, validStartRole, type StartRoleRecord } from "../project/role-record.ts";
@@ -21,6 +21,7 @@ function refText(root: string, ref: string, path: string, strict = true): string
     return r.stdout;
   };
   const entry = run(["ls-tree", "-z", ref, "--", path]).toString("utf8");
+  if (!entry) return null;
   const match = /^(100644|100755|120000) blob ([a-f0-9]{40}|[a-f0-9]{64})\t([^\x00]+)\x00$/.exec(entry);
   if (!match || match[3] !== path) {
     if (!strict) return null;
@@ -64,14 +65,13 @@ export function resolveWorkerRole(root: string, projectPath: string, options: { 
   if (!safeRoleName(name)) throw new Error("작업자 역할은 비밀 후보 없는 유효한 팀 구성원 이름이어야 한다");
   const agent = typeof options.agent === "function" ? options.agent() : options.agent;
   if (agent !== "claude" && agent !== "codex") throw new Error("팀 역할은 --agent claude|codex에서 지원한다");
-  const path = `.pace/team/${name}.md`;
-  let text: string | null;
-  try { text = read(path); } catch (error) {
+  let source: ReturnType<typeof findTeamSource>;
+  try { source = findTeamSource(name, read); } catch (error) {
     if (options.ref) throw new Error(`사용할 수 있는 팀 역할이 없다: ${name} (ref 원본 누락·종류·크기·UTF-8 확인)`, { cause: error });
     throw error;
   }
-  if (text === null) throw new Error(`팀 역할이 없다: ${name}`);
-  const member = parseTeamSource(text, name), tier = resolveTeamSettings(agent, member.tier, options.env);
+  if (!source) throw new Error(`팀 역할이 없다: ${name}`);
+  const member = parseTeamSource(source.text, name, source.path), tier = resolveTeamSettings(agent, member.tier, options.env);
   const resolved = resolveWorkerSettings(agent, options.model ?? tier.model, options.effort ?? tier.effort, options.env);
   if (!safeRoleSetting(resolved.model) || (resolved.effort !== undefined && !safeRoleSetting(resolved.effort))) throw new Error("역할 model·effort는 비밀·선행 대시·제어문자 없는 1024자 이하 문자열이어야 한다");
   return { member, source: options.role === undefined ? "project" : "option", settings: { model: resolved.model, ...(resolved.effort !== undefined ? { effort: resolved.effort } : {}) } };

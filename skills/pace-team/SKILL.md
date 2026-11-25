@@ -29,7 +29,7 @@ description: 저장소의 실제 업무와 권한을 분석해 맞춤 에이전�
 
 ## ④ 작성·동기화
 
-설계와 쓰기 권한이 확인된 저장소에서 `pace team new <이름> --role <lead|maker|reviewer|coordinator>`로 원본을 만든다. `.pace/team/`의 원본에 단계, 업무, 금지 항목과 결정 경계를 채운다. 기존 원본·공통 실행 전 대조 문단·점검 표지를 보존하고 생성물은 직접 편집하지 않는다. `pace team sync`로 Claude와 Codex 대상 파일에 반영한다. 기존 역할 이전은 대상 역할과 추가 설정을 대조하고 승인된 변경만 적용한다.
+설계와 쓰기 권한이 확인된 저장소에서 `pace team new <이름> --role <lead|maker|reviewer|coordinator>`로 원본을 만든다. `.pace/team/agents/`의 원본에 단계, 업무, 금지 항목과 결정 경계를 채운다. 기존 원본·공통 실행 전 대조 문단·점검 표지를 보존하고 생성물은 직접 편집하지 않는다. `pace team sync`로 Claude와 Codex 대상 파일에 반영한다. 기존 역할 이전은 대상 역할과 추가 설정을 대조하고 승인된 변경만 적용한다.
 
 권한 조율은 lead, 산출물 제작은 maker, 독립 판정은 reviewer, 위임·승인 전달은 coordinator 종류를 검토한다. 실제 업무 배정은 `pace project start P### --role <이름> --agent <claude|codex>`에 역할과 제공자를 함께 지정한다.
 

@@ -714,7 +714,7 @@ export function launchWorker(ref: ProjectRef, worktree: string, cwd: string, opt
   let role = options.roleChoice;
   if (options.roleChecked || options.role !== undefined) {
     const current = resolveWorkerRole(worktree, `projects/${ref.dir}/PROJECT.md`, { role: options.role, agent, model: options.model, effort: options.effort, env });
-    if (options.roleChecked && (current?.member.name !== role?.member.name || current?.member.hash !== role?.member.hash || JSON.stringify(current?.settings) !== JSON.stringify(role?.settings))) {
+    if (options.roleChecked && (current?.member.name !== role?.member.name || current?.member.source !== role?.member.source || current?.member.hash !== role?.member.hash || JSON.stringify(current?.settings) !== JSON.stringify(role?.settings))) {
       throw new HarnessError("역할 원본/설정이 준비 뒤 달라졌다 — worktree는 보존했다. 원본/커밋을 확인하고 start --launch로 재시도하세요");
     }
     role = current;

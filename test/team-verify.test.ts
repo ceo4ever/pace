@@ -27,7 +27,7 @@ const result = (r: AgentRequest, text = answer(), isError = false) => normalizeR
 
 test('동일 시작 지시와 고정 질문만 전달하고 3명×두 host를 각각 판정한다', async () => {
   const f = fixture(['maker-a', 'maker-b', 'maker-c']), calls: AgentRequest[] = [];
-  const before = readFileSync(join(f.root, '.pace/team/maker-a.md'));
+  const before = readFileSync(join(f.root, '.pace/team/agents/maker-a.md'));
   const run = await verifyTeam(f.root, { all: true }, { env: f.env, invoke: async (r) => {
     calls.push(r);
     const name = /팀 구성원 (maker-[abc])/.exec(r.prompt)![1]!;
@@ -47,7 +47,7 @@ test('동일 시작 지시와 고정 질문만 전달하고 3명×두 host를 �
   assert.equal(stored.phase, 'result'); assert.equal(stored.status, 'pass');
   assert.equal(stored.loading_notice, VERIFY_LOAD_NOTICE); assert.equal(stored.session_self_hash_observed, false);
   assert.equal(stored.rows[0].observed.model, 'observed-model'); assert.equal(stored.rows[0].observed.effort, 'unconfirmed');
-  assert.deepEqual(readFileSync(join(f.root, '.pace/team/maker-a.md')), before);
+  assert.deepEqual(readFileSync(join(f.root, '.pace/team/agents/maker-a.md')), before);
 });
 
 test('판정은 독립 기대 표지와 정체성 경계를 사용하고 의역을 실패로 단정하지 않는다', () => {
@@ -88,7 +88,7 @@ test('새 기본 원본의 표지는 구성원마다 달라 형제 정의의 답
 
 test('legacy 원본은 변경하지 않고 실제 호출 뒤 확인 필요·종료2 보고서를 남긴다', async () => {
   const f = fixture();
-  const path = join(f.root, '.pace/team/maker-a.md');
+  const path = join(f.root, '.pace/team/agents/maker-a.md');
   writeFileSync(path, readFileSync(path, 'utf8').replace('`alpha-key`', '외부승인').replace('`beta-key`', '권한변경'));
   const before = readFileSync(path); let calls = 0;
   const run = await verifyTeam(f.root, { name: 'maker-a', agent: 'claude' }, { env: f.env, invoke: async r => { calls++; return result(r); } });
@@ -99,7 +99,7 @@ test('legacy 원본은 변경하지 않고 실제 호출 뒤 확인 필요·종�
 test('검사 중 원본 변경은 기존 이름·키워드가 맞아도 실패다', async () => {
   const f = fixture();
   const run = await verifyTeam(f.root, { name: 'maker-a', agent: 'codex' }, { env: f.env, invoke: async r => {
-    const p = join(f.root, '.pace/team/maker-a.md'); writeFileSync(p, readFileSync(p, 'utf8') + '\n변경\n'); return result(r);
+    const p = join(f.root, '.pace/team/agents/maker-a.md'); writeFileSync(p, readFileSync(p, 'utf8') + '\n변경\n'); return result(r);
   } });
   assert.equal(run.code, 1); assert.match(run.report.rows[0]!.reason, /변경/);
 });
@@ -119,7 +119,7 @@ test('비밀 답과 오류 원문을 저장하거나 stdout에 노출하지 않�
 
 test('source 링크·hardlink·손상은 host 없이 fail 보고서를 남기고 원본은 보존한다', async () => {
   for (const mode of ['link', 'hardlink', 'corrupt']) {
-    const f = fixture(), source = join(f.root, '.pace/team/maker-a.md'), outside = join(tempDir(), 'original.md');
+    const f = fixture(), source = join(f.root, '.pace/team/agents/maker-a.md'), outside = join(tempDir(), 'original.md');
     const original = readFileSync(source); writeFileSync(outside, original); unlinkSync(source);
     if (mode === 'link') symlinkSync(outside, source); else if (mode === 'hardlink') linkSync(outside, source); else writeFileSync(source, 'invalid');
     let calls = 0;
@@ -142,7 +142,7 @@ test('결과 경로 링크는 host 시작 전에 거부하고 파일 충돌·har
 });
 
 test('all은 현재 목록이고 빈 팀은 실패, 삭제 대상 이름은 명시해서 검사한다', async () => {
-  const f = fixture(); unlinkSync(join(f.root, '.pace/team/maker-a.md'));
+  const f = fixture(); unlinkSync(join(f.root, '.pace/team/agents/maker-a.md'));
   let calls = 0;
   const options = { env: f.env, invoke: async (r: AgentRequest) => { calls++; return result(r); } };
   assert.equal((await verifyTeam(f.root, { all: true }, options)).code, 1);

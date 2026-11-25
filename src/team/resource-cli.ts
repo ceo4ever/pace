@@ -1,12 +1,12 @@
 import { spawn, type ChildProcess } from "node:child_process";
-import { existsSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { fileURLToPath } from "node:url";
 import { hasSecret } from "../project/secrets.ts";
 import { ResourceLock, type Confirmation, type LockResult } from "./resource-lock.ts";
 import { projectResourceSink } from "./handoff-resources.ts";
 import { processIdentity, observeProcess, type ProcessIdentity } from "./resource-process.ts";
-import { loadTeamMember, safeTeamPath, teamRoot } from "./store.ts";
+import { parseTeamSource, validTeamName } from "./model.ts";
+import { findTeamSource, readTeamFile, teamRoot } from "./store.ts";
 import { safeResourceText } from "./resources.ts";
 
 const usage = "pace team lock <자원> --by <구성원|P###> [-- <명령> ...] | unlock <자원> --token <획득토큰> [--confirmed-by coordinator|owner --evidence <근거>] | status <자원>";
@@ -131,8 +131,9 @@ export async function resourceCommand(args: string[]): Promise<number> {
     const root = teamRoot(process.cwd()), lock = new ResourceLock(root, name, values.project ? { events: projectResourceSink(root, values.project) } : {});
     if (sub === "lock") {
       // A known team member must declare the resource. P###/other caller labels are coordination identities, not authentication.
-      if (values.by && /^[a-z][a-z0-9-]*$/.test(values.by) && existsSync(safeTeamPath(root, `.pace/team/${values.by}.md`))) {
-        if (!loadTeamMember(root, values.by).resources.includes(name)) throw new Error("지정한 팀 구성원의 resources에 없는 자원");
+      if (values.by && validTeamName(values.by) && values.by !== "resources") {
+        const source = findTeamSource(values.by, (path) => readTeamFile(root, path));
+        if (source && !parseTeamSource(source.text, values.by, source.path).resources.includes(name)) throw new Error("지정한 팀 구성원의 resources에 없는 자원");
       }
       return await runResourceCommand(lock, values.by!, argv);
     }

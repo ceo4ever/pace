@@ -2,7 +2,7 @@ import { dirname, join } from "node:path";
 import { mkdirSync } from "node:fs";
 import { writeFileAtomic } from "../core/fsutil.ts";
 import { resolveTeamSettings, validateTeamSettings, type TeamExecutionSettings } from "../core/worker-tiers.ts";
-import { normalizeLines, sha256, teamDescription, type TeamMember } from "./model.ts";
+import { normalizeLines, sha256, teamDescription, teamSourcePath, type TeamMember } from "./model.ts";
 import { loadTeam, readTeamFile, safeTeamPath, teamFiles } from "./store.ts";
 
 export type TeamHost = "claude" | "codex";
@@ -41,21 +41,23 @@ function metadata(text: string): { source: string; hash?: string; settings?: Tea
 }
 export function syncTeam(root: string, options: { check?: boolean; env?: NodeJS.ProcessEnv } = {}): { members: number; differences: TeamDifference[] } {
   const members = loadTeam(root), differences: TeamDifference[] = [];
-  const expected = new Map<string, { text: string; source: string }>();
+  const expected = new Map<string, { text: string; sources: string[] }>();
   for (const member of members) for (const host of ["claude", "codex"] as const) {
     const path = `.${host}/agents/${member.name}.${host === "claude" ? "md" : "toml"}`;
     const settings = resolveTeamSettings(host, member.tier, options.env);
     const text = renderTeamMember(member, host, settings);
     if (Buffer.byteLength(text) > 65536) throw new Error(`생성물 크기 초과: ${path}`);
     const current = readTeamFile(root, path);
-    expected.set(path, { text, source: member.source });
+    const sources = [member.source];
+    if (member.source === teamSourcePath(member.name)) sources.push(teamSourcePath(member.name, true));
+    expected.set(path, { text, sources });
     if (current === null) { differences.push({ path, kind: "missing" }); continue; }
     const meta = metadata(current);
-    if (!meta || meta.source !== member.source) throw new Error(`사용자 소유 출력과 충돌한다: ${path}`);
-    if (meta.hash !== member.hash) differences.push({ path, kind: "source" });
+    if (!meta || !sources.includes(meta.source)) throw new Error(`사용자 소유 출력과 충돌한다: ${path}`);
+    if (meta.source !== member.source || meta.hash !== member.hash) differences.push({ path, kind: "source" });
     if (meta.settings && encoded(meta.settings) !== encoded(settings)) differences.push({ path, kind: "settings" });
     // 이전 매핑으로 비교하여 설정 차이가 손수정을 가리지 않게 한다.
-    if (!meta.settings || normalizeLines(current) !== renderTeamMember(member, host, meta.settings)) differences.push({ path, kind: "content" });
+    if (!meta.settings || normalizeLines(current) !== renderTeamMember({ ...member, source: meta.source }, host, meta.settings)) differences.push({ path, kind: "content" });
   }
   for (const host of ["claude", "codex"] as const) {
     const dir = `.${host}/agents`, extension = host === "claude" ? ".md" : ".toml";
@@ -72,7 +74,7 @@ export function syncTeam(root: string, options: { check?: boolean; env?: NodeJS.
     mkdirSync(dirname(path), { recursive: true });
     safeTeamPath(root, rel);
     const existing = readTeamFile(root, rel);
-    if (existing !== null && metadata(existing)?.source !== entry.source) throw new Error(`사용자 소유 출력과 충돌한다: ${rel}`);
+    if (existing !== null && !entry.sources.includes(metadata(existing)?.source ?? "")) throw new Error(`사용자 소유 출력과 충돌한다: ${rel}`);
     if (existing !== entry.text) writeFileAtomic(join(root, ...rel.split("/")), entry.text);
   }
   return { members: members.length, differences };

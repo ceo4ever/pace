@@ -1,5 +1,5 @@
 ---
-# pace-team-generated: .pace/team/pace-implementer.md
+# pace-team-generated: .pace/team/agents/pace-implementer.md
 # pace-team-source-sha256: 68ee7a6619b7742884785b12c40796112bcf81bdc53d375a51fac2a5d87e8642
 # pace-team-mapping: {"model":"claude-opus-5-5","effort":"medium"}
 # pace-team-mapping-sha256: 1cfe652b19a777b6442e985808fa394e575010ba7526ae9148b5ee6006d05a5f
@@ -8,7 +8,7 @@ description: "maker · 구현, 수정 · 태스크 계약과 수정 경로에 �
 model: "claude-opus-5-5"
 effort: "medium"
 ---
-생성물 — 원본 .pace/team/pace-implementer.md
+생성물 — 원본 .pace/team/agents/pace-implementer.md
 역할 메타: {"name":"pace-implementer","role":"maker","stage":["구현","수정"],"tier":"medium","resources":[],"tools":["pace-project-dev","pace-tech-handbook"]}
 도구 안내는 권한 제한이 아니다. 부모 도구를 상속하며 실행 측 권한 설정을 따른다.
 
