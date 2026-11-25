@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "metricRef": "METRICS.md",
+  "unusedRoles": [
+    {
+      "role": "pace-implementer",
+      "coverage": "unconfirmed",
+      "refs": []
+    },
+    {
+      "role": "pace-reviewer",
+      "coverage": "unconfirmed",
+      "refs": []
+    },
+    {
+      "role": "pace-tester",
+      "coverage": "unconfirmed",
+      "refs": []
+    }
+  ],
+  "recurringFindings": [
+    {
+      "code": "review-blocking",
+      "count": 6,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-events.json"
+      ]
+    },
+    {
+      "code": "review-should-fix",
+      "count": 33,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-events.json"
+      ]
+    },
+    {
+      "code": "review-tester-fail",
+      "count": 5,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-events.json"
+      ]
+    }
+  ],
+  "definitionChanges": [
+    {
+      "role": "pace-backlog-planner",
+      "changeRef": "evidence/retrospective-definition.json",
+      "reasonRef": "evidence/retrospective-definition-reason.json"
+    }
+  ]
+}
