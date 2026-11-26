@@ -54,6 +54,26 @@ test("project role: no-role workerSpec matches the decision-rights golden", asyn
   assert.equal(workerSpec(ref, ref.worktree), readFileSync(new URL("./fixtures/worker-spec-before-role.txt", import.meta.url), "utf8"));
 });
 
+test("project role: troubleshooting separates early calls from the two hub handoffs", async () => {
+  const { workerSpec } = await import("../src/project/harness.ts");
+  const ref = { id: "P123", dir: "P123_261124_role-test", name: "role-test", branch: "project/P123", worktree: "/fixture/app.wt/P123" };
+  const spec = workerSpec(ref, ref.worktree);
+  const lines = spec.split("\n");
+  const upper = lines.findIndex((line) => line.includes("escalation.stage: upper_review"));
+  const exhausted = lines.findIndex((line) => line.includes("budget_exhausted"));
+  const early = lines.findIndex((line) => line.includes("test_failures"));
+  assert.ok(upper >= 0 && upper < exhausted && exhausted < early, "the handoff outputs take priority over early signals");
+  assert.match(lines[upper]!, /`verify`.*`review-record`.*`followup\.action: upper_review`/);
+  assert.match(lines[upper]!, /수정을 멈추고.*실패 원문·구조 진단 기록·바뀐 줄.*허브.*직접 호출하거나 결정하지 않는다/);
+  assert.match(lines[exhausted]!, /종료 16.*소진 보고·지적·재현 근거.*허브.*같은 기회에 직접 호출하지 않는다/);
+  assert.match(lines[exhausted]!, /공동 시도마다 한 번/);
+  assert.match(lines[early]!, /test_failures.*recurring_area.*superficial_fix.*워크트리 PM.*기회당 한 번.*`pace-troubleshooter`/);
+  assert.match(lines[early]!, /같은 검토 회차의 여러 조기 신호는 한 기회/);
+  assert.match(lines[early]!, /docs\/TEAM\.md.*`pace project log`.*호출 원장.*`review-note --diagnosis`는 쓰지 않는다/);
+  assert.match(spec, /상위 검토와 소진 인계를 조기 호출보다 먼저 확인/);
+  assert.match(spec, /reviewer\.md#태스크와-백로그의-수정-확인과-상위-검토/);
+});
+
 test("project role: workerSpec and all team sources apply the same decision and execution boundary", async () => {
   const { workerSpec } = await import("../src/project/harness.ts");
   const ref = { id: "P123", dir: "P123_261124_role-test", name: "role-test", branch: "project/P123", worktree: "/fixture/app.wt/P123" };

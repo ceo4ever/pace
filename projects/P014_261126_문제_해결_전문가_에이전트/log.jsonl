@@ -37,3 +37,7 @@
 {"ts":"2026-11-26T14:29:58.479Z","p":"P014","t":"T06","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T14:29:58.797Z","p":"P014","t":"T06","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T14:29:58.797Z","p":"P014","t":"T06","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T14:30:24.931Z","p":"P014","t":"T05","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T14:46:01.647Z","p":"P014","t":"T05","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T14:46:01.977Z","p":"P014","t":"T05","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T14:46:01.977Z","p":"P014","t":"T05","type":"task_done","by":"cli","msg":"done","ok":true}

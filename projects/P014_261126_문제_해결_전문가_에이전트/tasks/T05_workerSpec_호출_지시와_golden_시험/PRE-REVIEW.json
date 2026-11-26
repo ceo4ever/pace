@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "02fa1cf8e46d64eb7c827cac8d1dbb54288c0c96dd2e86120062ebb6485f591c",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new",
+      "permission": {
+        "mode": "implementation",
+        "paths": [
+          "src/project/harness.ts",
+          "src/agent/structured-review.ts",
+          "test/project-role.test.ts",
+          "test/fixtures/worker-spec-before-role.txt",
+          "test/agent-structured-review.test.ts"
+        ],
+        "protected": [
+          {
+            "from": 8,
+            "to": 45
+          }
+        ],
+        "base": "95ad0e687c5e223f3bf9559b17c0936a4ca93245",
+        "task_mode": "100644"
+      }
+    }
+  ]
+}

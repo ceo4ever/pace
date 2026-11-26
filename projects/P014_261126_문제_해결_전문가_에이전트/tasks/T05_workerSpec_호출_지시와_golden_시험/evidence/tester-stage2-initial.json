@@ -1,0 +1,27 @@
+{
+  "text": "**2단계 독립 판정은 부분 충족입니다.** T-1·T-2는 시작 지시 기준을 충족합니다. T-3은 선택 필드의 판독·판정 호환을 확인했고, T-4는 변경 경계를 확인했습니다. 지정 검사 범위에서 역할 지정 회귀, 선언 검사, 보안 검사는 미확인입니다.\n\n**검사 대상**은 `../latest-sha.txt`와 일치한 현재 `git diff`입니다. SHA-256은 `2bdba6cc7f4c5d697786bcd5f0d3197b700efdef55b462d38451301fe3377374`입니다. `observations/implementation.patch`는 SHA-256 `48b906735231d2b9677b748309e4e9c7954cff9e20097e823604f7677251bab5`인 1단계 패치입니다.\n\n- **T-1 충족.** 예산 안에서는 워크트리 PM이 같은 회차의 조기 신호를 한 기회로 묶어 직접 p로 한 번 호출하고, 목표·실패 원문·변경 줄을 전달합니다. 반환은 프로젝트 로그와 호출 원장에 남깁니다. 소진 시 보고·지적·재현 근거를 허브에 넘기고 워크트리 호출은 0회입니다. 허브의 공동 시도별 1회 규칙은 별개 다음 기회를 허용합니다. 시험은 지시 문구와 순서를 검출합니다. [harness.ts](/tmp/pace-p014-t05.PGhBRW/tester/src/project/harness.ts:691)\n- **T-2 충족.** `verify`와 `review-record`의 두 `upper_review` 출력은 모두 수정 중단과 실패 원문·구조 진단·변경 줄의 허브 인계로 이어집니다. 상위 검토와 소진을 조기 호출보다 먼저 확인하고, 조기 반환의 `review-note --diagnosis` 사용을 금지합니다. `review_failures` 분기와 상세 절차는 T04가 이어받는 절을 가리킵니다.\n- **T-3 호환 확인.** `same_class`와 `superficial_fix`는 평가 증거에만 추가됩니다. v2 모의 `verify`에서 `blocking`·`should_fix`·`note`의 적용 등급, 사유·인계, 판정, 예산 회차·호출 수와 원장 행의 의미가 같았습니다. 변경된 원문 해시는 저장 원문과 일치했습니다. v1은 생략·유효·해석 불가 값을 비교했습니다. 역할별 반환 문구와 실제 반환은 T04 범위입니다. [agent-structured-review.test.ts](/tmp/pace-p014-t05.PGhBRW/tester/test/agent-structured-review.test.ts:106)\n- **T-4 부분 확인.** 미지정 golden은 본문 전체를 비교하며 기존 문장은 보존됐습니다. 기존 역할 시험은 원본 경로·해시 접두와 동일 본문을 검사하며, 이번 패턴에는 포함되지 않았습니다. diff에서 제품 변경은 시작 지시 문자열과 선택 필드에 한정됐고 start·finish·merge 실행 설정 변경은 없었습니다. [project-role.test.ts](/tmp/pace-p014-t05.PGhBRW/tester/test/project-role.test.ts:51)\n\nP014의 자율 진행과 반복 낭비 감소 목적에 정합합니다. 실제 중복 방지, 다음 기회 호출, 반환 적용과 재검증을 통한 목적 달성은 T04 실측이 남아 있습니다.\n\n지정한 `node --test`는 **4건 통과, 실패 0건**, `git diff --check`는 통과했습니다. 파일 변경과 실제 호스트·역할 호출은 없었습니다.",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "reported_effort": "low",
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": null,
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 43062,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 80989
+  },
+  "usage_total_tokens": 80989,
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

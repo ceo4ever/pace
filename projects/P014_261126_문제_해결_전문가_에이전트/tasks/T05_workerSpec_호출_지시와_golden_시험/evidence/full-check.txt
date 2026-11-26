@@ -1,0 +1,33 @@
+전체 선언 검사 제1회 (exit 0) — npm run check -- --test-concurrency=6
+임시 PACE_HOME·TMPDIR, PACE_AGENT_CHILD 해제, PACE_SKIP_BROWSER_E2E=1, Git 자동 유지보수 해제.
+ℹ tests 1524
+ℹ suites 0
+ℹ pass 1507
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 552107.519042
+최신 후보의 explicit v2 회귀 포함 128개 집중 검사 (exit 0)
+ℹ tests 128
+ℹ suites 0
+ℹ pass 128
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 40797.153583
+최신 후보 npm run typecheck·node scripts/secret-scan.ts·git diff --check (exit 0)
+
+전체 선언 검사 제2회 (exit 0) — npm run check -- --test-concurrency=6, 최종 제품 소스·시작 지시 기준.
+
+제2회 시작 뒤에는 판정·원장 비교 시험 입력만 명시적 v2로 바꿨다. 그 최종 시험과 제품은 위 128개 집중 검사 및 타입 검사로 다시 확인했다.
+ℹ tests 1524
+ℹ suites 0
+ℹ pass 1507
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 487467.9485
+최종 후보 SHA-256 5458700a1f834a33cc03ef901b101a8c6d5acff2c5cd354fa82a47185828db4c

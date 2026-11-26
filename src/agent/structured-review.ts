@@ -46,6 +46,7 @@ type Impact = typeof impacts[number];
 type SafetyPath = { input: string; reached: string; result: string };
 type EvidenceState = "present" | "absent" | "unverified";
 type CriterionEvidence = { id: string; state: EvidenceState; observation: string | null };
+type Recurrence = "same_class" | "superficial_fix";
 
 type FindingInput = {
   id: string;
@@ -58,8 +59,10 @@ type FindingInput = {
   impact?: Impact;
   criterion?: string | null;
   safety_path?: unknown;
+  recurrence?: unknown;
 };
 type Finding = FindingInput & {
+  recurrence?: Recurrence;
   effective: Grade | "unverified";
   reason: "outside_question" | "missing_evidence" | "minor_impact" | "unknown_criterion" | "safety_unverified" | null;
   handoff: "implementation_review" | "project_design" | null;
@@ -139,12 +142,13 @@ function safetyPath(value: unknown): value is SafetyPath {
 }
 
 function assessFinding(stage: BudgetStage, input: FindingInput, criteria?: readonly string[]): Finding {
-  const { id, severity, category, confidence } = input;
-  const fields = {
+  const { id, severity, category, confidence, recurrence } = input;
+  const fields: Omit<Finding, "effective" | "reason" | "handoff"> = {
     id, severity, category, confidence,
     location: input.location?.trim() || null,
     scenario: input.scenario?.trim() || null,
     reproduction: input.reproduction?.trim() || null,
+    ...(recurrence === "same_class" || recurrence === "superficial_fix" ? { recurrence } : {}),
     ...(criteria === undefined ? {} : { impact: input.impact, criterion: input.criterion ?? null, safety_path: input.safety_path ?? null }),
   };
   if (outside.includes(category)) {

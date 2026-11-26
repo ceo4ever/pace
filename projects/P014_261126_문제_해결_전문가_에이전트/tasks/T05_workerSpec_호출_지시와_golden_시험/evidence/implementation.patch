@@ -1,0 +1,155 @@
+diff --git a/src/agent/structured-review.ts b/src/agent/structured-review.ts
+index 7b9bff5..547fa77 100644
+--- a/src/agent/structured-review.ts
++++ b/src/agent/structured-review.ts
+@@ -46,6 +46,7 @@ type Impact = typeof impacts[number];
+ type SafetyPath = { input: string; reached: string; result: string };
+ type EvidenceState = "present" | "absent" | "unverified";
+ type CriterionEvidence = { id: string; state: EvidenceState; observation: string | null };
++type Recurrence = "same_class" | "superficial_fix";
+ 
+ type FindingInput = {
+   id: string;
+@@ -58,8 +59,10 @@ type FindingInput = {
+   impact?: Impact;
+   criterion?: string | null;
+   safety_path?: unknown;
++  recurrence?: unknown;
+ };
+ type Finding = FindingInput & {
++  recurrence?: Recurrence;
+   effective: Grade | "unverified";
+   reason: "outside_question" | "missing_evidence" | "minor_impact" | "unknown_criterion" | "safety_unverified" | null;
+   handoff: "implementation_review" | "project_design" | null;
+@@ -139,12 +142,13 @@ function safetyPath(value: unknown): value is SafetyPath {
+ }
+ 
+ function assessFinding(stage: BudgetStage, input: FindingInput, criteria?: readonly string[]): Finding {
+-  const { id, severity, category, confidence } = input;
+-  const fields = {
++  const { id, severity, category, confidence, recurrence } = input;
++  const fields: Omit<Finding, "effective" | "reason" | "handoff"> = {
+     id, severity, category, confidence,
+     location: input.location?.trim() || null,
+     scenario: input.scenario?.trim() || null,
+     reproduction: input.reproduction?.trim() || null,
++    ...(recurrence === "same_class" || recurrence === "superficial_fix" ? { recurrence } : {}),
+     ...(criteria === undefined ? {} : { impact: input.impact, criterion: input.criterion ?? null, safety_path: input.safety_path ?? null }),
+   };
+   if (outside.includes(category)) {
+diff --git a/src/project/harness.ts b/src/project/harness.ts
+index eab17dc..f87c922 100644
+--- a/src/project/harness.ts
++++ b/src/project/harness.ts
+@@ -688,6 +688,10 @@ export function workerSpec(ref: ProjectRef, worktree: string, role?: WorkerRole)
+     `기술적 장애를 escalation으로 올릴 때도 직전에 pace project log ${ref.id} [T##] --type escalation --by agent --to coordinator --msg "장애 요약"을 기록하고 답을 받으면 같은 범위의 answer를 기록한다.`,
+     "skills/pace-project-dev/references/decision-rights.md(저장소에 없으면 설치된 pace-project-dev 스킬의 같은 참조 문서)의 A로 결정 주체를 판정한다. owner 결정은 A 항목에 해당할 때만 코디네이터를 통해 요청한다.",
+     "장애로 막히면 B에 따라 코디네이터에게 증거와 재현 조건을 보내 함께 해결한다. 회신의 결정과 근거를 적용하고 재검증한 뒤 태스크를 이어간다.",
++    "`verify`의 `escalation.stage: upper_review` 또는 `review-record`의 `followup.action: upper_review`를 받으면 수정을 멈추고 실패 원문·구조 진단 기록·바뀐 줄을 허브에 넘긴다. 워크트리 PM은 이 기회에 직접 호출하거나 결정하지 않는다.",
++    "예산 소진(`budget_exhausted`, 종료 16)은 소진 보고·지적·재현 근거를 허브에 넘긴다. 워크트리 PM은 같은 기회에 직접 호출하지 않는다. 허브가 공동 시도마다 한 번 부른다.",
++    "예산 안 조기 신호(`test_failures`, `recurring_area`, `superficial_fix`)에서는 워크트리 PM이 기회당 한 번 `pace-troubleshooter`를 부른다. `docs/TEAM.md`의 PACE 직접 p 수단으로 목표·실패 원문·바뀐 줄을 제공하고 반환은 `pace project log`와 호출 원장에만 남긴다. 조기 호출에서 `review-note --diagnosis`는 쓰지 않는다.",
++    "호출과 소진 인계, 수정 확인의 세부는 `skills/pace-project-dev/references/reviewer.md#태스크와-백로그의-수정-확인과-상위-검토`를 따른다.",
+     "코디네이터의 결정이 필요하면 주입된 지시의 ask 명령으로 묻는다. 코디네이터가 대신 답한 결정은 PROJECT.md 결정 메모에 \"(main 판단)\"으로 남긴다.",
+     "되돌리기 어렵거나 밖으로 나가는 행동(푸시·배포·삭제·외부 전송)은 하지 않는다. 병합은 main에서 사람이 승인한다.",
+     `모든 태스크가 끝나면 pace project finish ${ref.id}를 통과시킨 뒤 worker_done을 보낸다.`,
+diff --git a/test/agent-structured-review.test.ts b/test/agent-structured-review.test.ts
+index 0abf131..229fe58 100644
+--- a/test/agent-structured-review.test.ts
++++ b/test/agent-structured-review.test.ts
+@@ -6,6 +6,7 @@ import { normalizeResult, type Executor } from "../src/agent/contract.ts";
+ import { buildVerifyPrompt } from "../src/agent/verify.ts";
+ import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
+ import { ledgerPath, readLedger, textHash, type LedgerEntry } from "../src/agent/review-log.ts";
++import { assessStructuredReview } from "../src/agent/structured-review.ts";
+ import { reviewHash } from "../src/project/pre-review.ts";
+ import { evidenceReviewFixture, tempDir } from "./helpers.ts";
+ 
+@@ -102,6 +103,43 @@ test("구현 후 검토에서 증거가 갖춰진 blocking은 보고된 pass와
+   if (review?.type === "review") assert.deepEqual([review.verdict, review.structured_stage], ["fail", "post"]);
+ });
+ 
++test("선택 재발 표지는 판정, 적용 등급 및 기존 검토 원장의 의미를 바꾸지 않는다", async () => {
++  const old = fixture("post");
++  const current = fixture("post");
++  const rows = [finding, { ...finding, id: "F2", severity: "should_fix" }];
++  const withHints = rows.map((item, index) => ({ ...item, recurrence: index === 0 ? "same_class" : "superficial_fix" }));
++  const before = await old.verify(structured(rows, "pass"));
++  const after = await current.verify(structured(withHints, "pass"));
++  assert.equal(before.code, 0);
++  assert.equal(after.code, 0);
++  assert.deepEqual(after.output.review, before.output.review);
++  const { findings: afterFindings, ...afterAssessment } = after.output.assessment;
++  const { findings: beforeFindings, ...beforeAssessment } = before.output.assessment;
++  assert.deepEqual(afterAssessment, beforeAssessment);
++  assert.deepEqual(afterFindings.map(({ recurrence }: { recurrence: unknown }) => recurrence), ["same_class", "superficial_fix"]);
++  assert.deepEqual(afterFindings.map(({ recurrence: _, ...item }: Record<string, unknown>) => item), beforeFindings);
++  assert.deepEqual([after.output.budget.rounds, after.output.budget.calls], [before.output.budget.rounds, before.output.budget.calls]);
++
++  const recorded = JSON.parse(readFileSync(join(dirname(current.target), after.output.review.record), "utf8"));
++  assert.deepEqual(recorded.assessment, after.output.assessment);
++  const beforeLedger = readLedger(old.target).at(-1);
++  const afterLedger = readLedger(current.target).at(-1);
++  assert.ok(beforeLedger?.type === "review" && afterLedger?.type === "review");
++  const { at: _oldTime, call_id: _oldCall, result_hash: _oldHash, ...beforeStable } = beforeLedger;
++  const { at: _newTime, call_id: _newCall, result_hash: newHash, ...afterStable } = afterLedger;
++  assert.deepEqual(afterStable, beforeStable);
++  assert.equal(newHash, textHash(recorded.result.text));
++});
++
++test("구판 v1은 기존 판정을 유지하고 해석할 수 없는 선택 재발 표지는 건너뛴다", () => {
++  const baseline = assessStructuredReview("post", structured([finding], "fail"));
++  const current = assessStructuredReview("post", structured([{ ...finding, recurrence: "same_class" }], "fail"));
++  assert.deepEqual(current, { ...baseline, findings: [{ ...baseline.findings![0], recurrence: "same_class" }] });
++  for (const recurrence of [null, "other", { same_class: true }, ["same_class"]]) {
++    assert.deepEqual(assessStructuredReview("post", structured([{ ...finding, recurrence }], "fail")), baseline);
++  }
++});
++
+ for (const field of ["location", "scenario", "reproduction"] as const) {
+   test(`구현 후 blocking의 ${field} 근거가 없으면 should_fix로 기록한다`, async () => {
+     const h = fixture("post");
+diff --git a/test/fixtures/worker-spec-before-role.txt b/test/fixtures/worker-spec-before-role.txt
+index 8e42859..7b4aee0 100644
+--- a/test/fixtures/worker-spec-before-role.txt
++++ b/test/fixtures/worker-spec-before-role.txt
+@@ -4,6 +4,10 @@ projects/P123_261124_role-test/PROJECT.md의 태스크 표에서 대기·진행
+ 기술적 장애를 escalation으로 올릴 때도 직전에 pace project log P123 [T##] --type escalation --by agent --to coordinator --msg "장애 요약"을 기록하고 답을 받으면 같은 범위의 answer를 기록한다.
+ skills/pace-project-dev/references/decision-rights.md(저장소에 없으면 설치된 pace-project-dev 스킬의 같은 참조 문서)의 A로 결정 주체를 판정한다. owner 결정은 A 항목에 해당할 때만 코디네이터를 통해 요청한다.
+ 장애로 막히면 B에 따라 코디네이터에게 증거와 재현 조건을 보내 함께 해결한다. 회신의 결정과 근거를 적용하고 재검증한 뒤 태스크를 이어간다.
++`verify`의 `escalation.stage: upper_review` 또는 `review-record`의 `followup.action: upper_review`를 받으면 수정을 멈추고 실패 원문·구조 진단 기록·바뀐 줄을 허브에 넘긴다. 워크트리 PM은 이 기회에 직접 호출하거나 결정하지 않는다.
++예산 소진(`budget_exhausted`, 종료 16)은 소진 보고·지적·재현 근거를 허브에 넘긴다. 워크트리 PM은 같은 기회에 직접 호출하지 않는다. 허브가 공동 시도마다 한 번 부른다.
++예산 안 조기 신호(`test_failures`, `recurring_area`, `superficial_fix`)에서는 워크트리 PM이 기회당 한 번 `pace-troubleshooter`를 부른다. `docs/TEAM.md`의 PACE 직접 p 수단으로 목표·실패 원문·바뀐 줄을 제공하고 반환은 `pace project log`와 호출 원장에만 남긴다. 조기 호출에서 `review-note --diagnosis`는 쓰지 않는다.
++호출과 소진 인계, 수정 확인의 세부는 `skills/pace-project-dev/references/reviewer.md#태스크와-백로그의-수정-확인과-상위-검토`를 따른다.
+ 코디네이터의 결정이 필요하면 주입된 지시의 ask 명령으로 묻는다. 코디네이터가 대신 답한 결정은 PROJECT.md 결정 메모에 "(main 판단)"으로 남긴다.
+ 되돌리기 어렵거나 밖으로 나가는 행동(푸시·배포·삭제·외부 전송)은 하지 않는다. 병합은 main에서 사람이 승인한다.
+ 모든 태스크가 끝나면 pace project finish P123를 통과시킨 뒤 worker_done을 보낸다.
+\ No newline at end of file
+diff --git a/test/project-role.test.ts b/test/project-role.test.ts
+index 8797f60..49b409d 100644
+--- a/test/project-role.test.ts
++++ b/test/project-role.test.ts
+@@ -54,6 +54,24 @@ test("project role: no-role workerSpec matches the decision-rights golden", asyn
+   assert.equal(workerSpec(ref, ref.worktree), readFileSync(new URL("./fixtures/worker-spec-before-role.txt", import.meta.url), "utf8"));
+ });
+ 
++test("project role: troubleshooting separates early calls from the two hub handoffs", async () => {
++  const { workerSpec } = await import("../src/project/harness.ts");
++  const ref = { id: "P123", dir: "P123_261124_role-test", name: "role-test", branch: "project/P123", worktree: "/fixture/app.wt/P123" };
++  const spec = workerSpec(ref, ref.worktree);
++  const lines = spec.split("\n");
++  const upper = lines.findIndex((line) => line.includes("escalation.stage: upper_review"));
++  const exhausted = lines.findIndex((line) => line.includes("budget_exhausted"));
++  const early = lines.findIndex((line) => line.includes("test_failures"));
++  assert.ok(upper >= 0 && upper < exhausted && exhausted < early, "the handoff outputs take priority over early signals");
++  assert.match(lines[upper]!, /`verify`.*`review-record`.*`followup\.action: upper_review`/);
++  assert.match(lines[upper]!, /수정을 멈추고.*실패 원문·구조 진단 기록·바뀐 줄.*허브.*직접 호출하거나 결정하지 않는다/);
++  assert.match(lines[exhausted]!, /종료 16.*소진 보고·지적·재현 근거.*허브.*같은 기회에 직접 호출하지 않는다/);
++  assert.match(lines[exhausted]!, /공동 시도마다 한 번/);
++  assert.match(lines[early]!, /test_failures.*recurring_area.*superficial_fix.*워크트리 PM.*기회당 한 번.*`pace-troubleshooter`/);
++  assert.match(lines[early]!, /docs\/TEAM\.md.*`pace project log`.*호출 원장.*`review-note --diagnosis`는 쓰지 않는다/);
++  assert.match(spec, /reviewer\.md#태스크와-백로그의-수정-확인과-상위-검토/);
++});
++
+ test("project role: workerSpec and all team sources apply the same decision and execution boundary", async () => {
+   const { workerSpec } = await import("../src/project/harness.ts");
+   const ref = { id: "P123", dir: "P123_261124_role-test", name: "role-test", branch: "project/P123", worktree: "/fixture/app.wt/P123" };

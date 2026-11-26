@@ -1,0 +1,8 @@
+{
+  "baseline": "95ad0e687c5e223f3bf9559b17c0936a4ca93245",
+  "newWorkerInstructionLines": 4,
+  "otherWorkerSpecTextByteEqual": true,
+  "allHarnessOutsideWorkerSpecByteEqual": true,
+  "goldenPreviousTextByteEqual": true,
+  "noNewSubprocessOrFilesystemOperations": true
+}

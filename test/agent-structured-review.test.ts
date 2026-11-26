@@ -6,6 +6,7 @@ import { normalizeResult, type Executor } from "../src/agent/contract.ts";
 import { buildVerifyPrompt } from "../src/agent/verify.ts";
 import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
 import { ledgerPath, readLedger, textHash, type LedgerEntry } from "../src/agent/review-log.ts";
+import { assessStructuredReview } from "../src/agent/structured-review.ts";
 import { reviewHash } from "../src/project/pre-review.ts";
 import { evidenceReviewFixture, tempDir } from "./helpers.ts";
 
@@ -100,6 +101,54 @@ test("구현 후 검토에서 증거가 갖춰진 blocking은 보고된 pass와 
   const review = readLedger(h.target).at(-1);
   assert.equal(review?.type, "review");
   if (review?.type === "review") assert.deepEqual([review.verdict, review.structured_stage], ["fail", "post"]);
+});
+
+test("선택 재발 표지는 판정, 적용 등급 및 기존 검토 원장의 의미를 바꾸지 않는다", async () => {
+  const old = fixture("post");
+  const current = fixture("post");
+  writeFileSync(old.contract, twoCriteria);
+  writeFileSync(current.contract, twoCriteria);
+  const rows = [
+    { ...finding, impact: "criterion", criterion: "T-1" },
+    { ...finding, id: "F2", impact: "goal", category: "implementation" },
+    { ...finding, id: "F3", impact: "minor" },
+    { ...finding, id: "F4", impact: "goal", reproduction: null },
+  ];
+  const hints = ["same_class", "superficial_fix", "same_class", "superficial_fix"];
+  const withHints = rows.map((item, index) => ({ ...item, recurrence: hints[index] }));
+  const before = await old.verify(evidenceResponse(rows, completeEvidence));
+  const after = await current.verify(evidenceResponse(withHints, completeEvidence));
+  assert.equal(before.code, 0);
+  assert.equal(after.code, 0);
+  assert.deepEqual(after.output.review, before.output.review);
+  const { findings: afterFindings, ...afterAssessment } = after.output.assessment;
+  const { findings: beforeFindings, ...beforeAssessment } = before.output.assessment;
+  assert.deepEqual(afterAssessment, beforeAssessment);
+  assert.deepEqual(afterFindings.map(({ recurrence }: { recurrence: unknown }) => recurrence), hints);
+  assert.deepEqual(afterFindings.map(({ recurrence: _, ...item }: Record<string, unknown>) => item), beforeFindings);
+  assert.deepEqual(afterFindings.map(({ effective, reason }: Record<string, unknown>) => [effective, reason]), [
+    ["blocking", null], ["note", "outside_question"], ["should_fix", "minor_impact"], ["should_fix", "missing_evidence"],
+  ]);
+  assert.deepEqual([after.output.budget.rounds, after.output.budget.calls], [before.output.budget.rounds, before.output.budget.calls]);
+
+  const recorded = JSON.parse(readFileSync(join(dirname(current.target), after.output.review.record), "utf8"));
+  assert.deepEqual(recorded.assessment, after.output.assessment);
+  const beforeLedger = readLedger(old.target).at(-1);
+  const afterLedger = readLedger(current.target).at(-1);
+  assert.ok(beforeLedger?.type === "review" && afterLedger?.type === "review");
+  const { at: _oldTime, call_id: _oldCall, result_hash: _oldHash, ...beforeStable } = beforeLedger;
+  const { at: _newTime, call_id: _newCall, result_hash: newHash, ...afterStable } = afterLedger;
+  assert.deepEqual(afterStable, beforeStable);
+  assert.equal(newHash, textHash(recorded.result.text));
+});
+
+test("구판 v1은 기존 판정을 유지하고 해석할 수 없는 선택 재발 표지는 건너뛴다", () => {
+  const baseline = assessStructuredReview("post", structured([finding], "fail"));
+  const current = assessStructuredReview("post", structured([{ ...finding, recurrence: "same_class" }], "fail"));
+  assert.deepEqual(current, { ...baseline, findings: [{ ...baseline.findings![0], recurrence: "same_class" }] });
+  for (const recurrence of [null, "other", { same_class: true }, ["same_class"]]) {
+    assert.deepEqual(assessStructuredReview("post", structured([{ ...finding, recurrence }], "fail")), baseline);
+  }
 });
 
 for (const field of ["location", "scenario", "reproduction"] as const) {
