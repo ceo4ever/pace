@@ -1,0 +1,149 @@
+{
+  "roleSource": ".pace/team/agents-xhigh/pace-troubleshooter.md",
+  "roleSourceSha256": "b2b97a811a1bf444f67a23bfc19f0a6d636307634ff7e64ed8fce53517ff436b",
+  "roleBodySha256": "e691282db6787571b7e038ee3a06abcc41dde99f9824baa2962c60eddd9bb181",
+  "scope": "P002 synthetic pre-solution case, T01",
+  "runs": {
+    "claude": {
+      "ledgerRow": {
+        "version": 1,
+        "id": "04a843c8d1e970aed24f75290a2635c1",
+        "at": "2026-11-26T14:06:35.842Z",
+        "task": "T01",
+        "agent": "pace-troubleshooter",
+        "engine": "claude",
+        "route": "p",
+        "status": "completed",
+        "reason": null,
+        "replacement_reason": null,
+        "ref": null,
+        "model": {
+          "requested": {
+            "value": "claude-fable-5-2",
+            "source": "requested"
+          },
+          "actual": {
+            "value": "claude-fable-5-2",
+            "source": "host"
+          }
+        },
+        "effort": {
+          "requested": {
+            "value": "high",
+            "source": "requested"
+          },
+          "actual": {
+            "value": "high",
+            "source": "host"
+          }
+        },
+        "duration_ms": {
+          "value": 141188,
+          "source": "tool"
+        },
+        "tokens": {
+          "input": {
+            "value": 6,
+            "source": "tool"
+          },
+          "output": {
+            "value": 13377,
+            "source": "tool"
+          },
+          "total": {
+            "value": null,
+            "source": "unknown"
+          }
+        }
+      },
+      "requestFileSha256": "2c662bb45e57c970948e28eb68763284ef5f72344baaff02e9095a9a49577e55",
+      "sanitizedAnswerFile": "eval-answers/A-claude-xhigh.md",
+      "answerFileSha256": "345c3c8293c3abee325b7f23be506246ca9dde5777813ee04951fffac81c8da6",
+      "answerMatchesObservedResultAfterLocalPathMask": true,
+      "handoffLineNumber": 100,
+      "sanitizedHostFields": {
+        "init.model": "claude-fable-5-2",
+        "result.modelUsageKeys": [
+          "claude-fable-5-2"
+        ],
+        "Stop.effort.level": "high",
+        "roleTransport": "--system-prompt-file",
+        "hostSessionLocalEquality": [
+          "init",
+          "result",
+          "PACE result",
+          "Stop"
+        ]
+      }
+    },
+    "codex": {
+      "ledgerRow": {
+        "version": 1,
+        "id": "dd7f6eb655486e4dac7ba5639af4eaea",
+        "at": "2026-11-26T14:06:35.836Z",
+        "task": "T01",
+        "agent": "pace-troubleshooter",
+        "engine": "codex",
+        "route": "p",
+        "status": "completed",
+        "reason": null,
+        "replacement_reason": null,
+        "ref": null,
+        "model": {
+          "requested": {
+            "value": "gpt-6.2-astra",
+            "source": "requested"
+          },
+          "actual": {
+            "value": "gpt-6.2-astra",
+            "source": "host"
+          }
+        },
+        "effort": {
+          "requested": {
+            "value": "medium",
+            "source": "requested"
+          },
+          "actual": {
+            "value": "medium",
+            "source": "host"
+          }
+        },
+        "duration_ms": {
+          "value": 68444,
+          "source": "tool"
+        },
+        "tokens": {
+          "input": {
+            "value": null,
+            "source": "unknown"
+          },
+          "output": {
+            "value": null,
+            "source": "unknown"
+          },
+          "total": {
+            "value": 16453,
+            "source": "tool"
+          }
+        }
+      },
+      "requestFileSha256": "2c662bb45e57c970948e28eb68763284ef5f72344baaff02e9095a9a49577e55",
+      "sanitizedAnswerFile": "eval-answers/A-codex-xhigh.md",
+      "answerFileSha256": "08d39ccc9d4825111d53c6430a2b2c25e0a8324146a4760c7ef702e2efac4f0c",
+      "answerMatchesObservedResultAfterLocalPathMask": true,
+      "handoffLineNumber": 31,
+      "sanitizedHostFields": {
+        "model": "gpt-6.2-astra",
+        "reasoning effort": "medium",
+        "roleTransport": "--prompt-file, role body then same request",
+        "combinedPromptSha256": "4b0ffef4f955c44562a065f2d26c9ffa9b66fee30bb1b1e1d2987e333dabeca5",
+        "combinedPromptExactlyPresentInHostOutput": true,
+        "hostSessionLocalEquality": [
+          "exec header",
+          "PACE result"
+        ]
+      }
+    }
+  }
+}

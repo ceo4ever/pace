@@ -1,0 +1,25 @@
+{
+  "text": "# 단계 1 판정: `pace-troubleshooter` 목표 적합성\n\n## 결론\n\n- **목표 적합성: 대체로 맞다.** 역할 정의, 등급과 모델 매핑, 호출 수단, 모델 거부 시 보류하는 방식은 상위 목적에 맞게 설계됐다. 상위 목적은 PM이 반복 실패를 일찍 끊도록 독립 전문가에게서 근거 있는 해결안과 검증 계획을 받는 것이다.\n- **목적 달성: 아직 입증되지 않았다.** 이 역할이 실제로 반복 실패를 끊는 해결안을 내는지 보여 줄 과거 실패 비교 결과(P-6, BR06 완료 기준)가 디스크에 없다. 실제 역할 적용도 직접 실행 경로(`pace agent run`)에서만 확인됐다. 생성된 Codex native 정의가 지정 모델과 effort로 적용되는지는 확인되지 않았다.\n\n## 근거별 관측\n\n| 항목 | 관측 | 판단 |\n|---|---|---|\n| 역할 원본 (`.pace/team/agents-xhigh/pace-troubleshooter.md`) | reviewer, xhigh. 맡는 일·반환 계약·하지 않는 일·HANDOFF가 TS-07, TS-10~12와 맞는다. 목표를 먼저 다시 확인하고, 반증으로 원인 후보를 좁히고, 같은 부류를 없애는 안을 우선하고, 사실과 추정을 구분하라는 지시가 있다. pass/fail 판정 필드는 없다. | 맞다 |\n| 생성물 | `.claude/agents/pace-troubleshooter.md:4`는 `claude-fable-5-2/high`, `.codex/agents/pace-troubleshooter.toml:3`은 `gpt-6.2-astra/medium`이다. 두 파일의 원본 지문이 같다. `team-sync.json`은 차이 없이 ok이고, `team-contract.json`에서 표지 2개와 템플릿 일치를 확인했다. | 맞다 |\n| Claude 직접 실행 (`runtime-gate.json`) | 보고된 모델은 claude-fable-5-2다. effort high는 같은 세션의 `Stop` 기록에서 나왔고, 접근은 read-only, 141초, 출력 13377 토큰이다. | 요청값과 일치한다 |\n| Codex 직접 실행 | 실행 머리글이 gpt-6.2-astra/medium을 보고했다. 68초, 총 16453 토큰이다. | 요청값과 일치한다 |\n| Claude native (`route-probes.json`) | 호스트가 보고한 모델과 effort가 요청값과 같다. | 대체 실측으로 쓸 수 있다 |\n| Codex native | named spawn이 수락만 됐다. `runtimeModel`·`runtimeEffort`가 null이고 `untrustedProject: true`다. | **적용 확인 안 됨.** 문서(`docs/TEAM.md:192`)도 이를 인정하고 기본 수단에서 뺐다. |\n| 모델 거부 (`model-availability.json`) | 없는 모델명을 Codex에 요청했다. 호스트 거부 원문을 남겼고, 대체 시도는 0회, PM 처리는 보류다. | TS-13 보류 동작은 확인됐다. Claude 쪽 거부와 실제 지정 모델의 거부는 시험하지 않았다. |\n| 시간 초과 | 제한을 25ms로 인위적으로 걸어 `interrupted`로 기록됐다. | 기록 형식만 확인한 것이다. 실제 운용 조건이 아니다. |\n| 호출 위치 | `required-roles.json`은 `worktree`·조건부 한 줄뿐이다. TS-15는 허브와 worktree 둘 다를 요구한다. `docs/TEAM.md:149`가 허브 호출은 호출 표를 따른다고 설명한다. | 문서로 보완돼 있다. 다만 표지 형식으로는 두 위치를 함께 나타낼 수 없다. |\n\n## 확인이 필요한 불일치와 위험\n\n1. **능력 비교 결과가 없다(가장 큰 공백).** `observations/`에 과거 반복 실패 사례(2건 이상), high 대조군, 실행 전에 고정한 판정 기준, 독립 판정 결과가 하나도 없다. `runtime-gate.json`의 `\"case\": \"A\"`도 실제 응답 원문과 판정 근거가 보존되지 않았다. 그래서 반환 품질, 예를 들어 원인 층을 맞혔는지나 검증 계획이 해소와 재발을 구별하는지를 판단할 수 없다.\n2. **원장의 effort 기록이 실측과 맞지 않는다.** `runtime-gate.json`에서 Claude 쪽 `providerRuns.reportedEffort`는 high다. 그런데 같은 호출의 원장 행 `call.effort.actual`은 `null/unknown`이다(약 45~47행). TS-06은 원장 한 행에 실제값을 남기라고 요구한다. 관문 판정의 근거와 원장 기록이 따로 놀고 있다.\n3. **저장소의 프로젝트 호출 원장에 이 역할의 기록이 없다.** `projects/P014_…/calls/log.jsonl`에는 `pace-reviewer` 4행만 있고 `pace-troubleshooter` 행은 0이다. 관측 파일의 `callRows: 1`이 어디에 기록됐는지(임시 `PACE_HOME` 등) 확인할 수 없다.\n4. **문서가 가리키는 증거가 사본에 없다.** `docs/TEAM.md:192`는 `tasks/T06_…/evidence/route-probes.md`로 링크하지만, 이 사본에는 T06 폴더 자체가 없다. 단계 1 사본에서 뺀 것인지, 실제로 링크가 끊긴 것인지는 판단하지 않았다.\n5. **재현 능력에 제약이 있다.** 호출이 읽기 전용이라 이 역할은 시험을 실행하는 재현을 직접 하지 못할 수 있다. 역할 본문이 \"실제 실행과 제안한 재현을 구분\"하도록 한 것으로 한 겹 완화돼 있다. 실제로 원문 재현을 해냈는지는 1번의 능력 비교에서만 드러난다.\n6. **역할 본문에 저장소 내부 요건 ID가 들어 있다.** \"적용 요건은 TS-07~TS-15다\"라는 문장이 있지만 그 표는 프롬프트에 함께 실리지 않는다. 사소한 문제다.\n\n## 단계 2에서 볼 항목\n\n- P-6 능력 비교: 사례 원문이 실제로 남아 있는지, 해결 이전 커밋이나 사본에서 실행했는지, 실행 전에 고정한 문턱과 B3 기준, high 대조군, 작성자가 아닌 쪽의 판정, 사례별 시간과 토큰.\n- `runtime-gate`의 실제 응답 원문이 TS-11 반환 항목을 모두 채우는지, 사실과 추정을 구분하는지.\n- 원장 행의 effort가 `unknown`인 것을 관문에서 어떻게 처리했는지, 대체 수단 시도 횟수.\n- Codex native 정의의 적용이 미확인인 상태를 이슈나 A-1로 올렸는지, 아니면 기본 수단 밖이라 해당 없음으로 정리했는지.\n- `npm run check` 결과, `pace team list`와 `sync --check --json`의 실제 명령 출력(이번에는 `team-sync.json` 요약만 봤다).\n- T06 증거 폴더와 `route-probes.md` 링크가 실제로 있는지.\n- BR06 소관 요건 ID(TS-07~TS-15) 대조표.\n\n## 단계 1에서 본 자료 범위\n\n- **읽음:** `observations/` 7개 파일 전부, 역할 원본, Claude·Codex 생성물, `.pace/team/required-roles.json`, `docs/TEAM.md`(관련 줄 검색과 145~215행), `skills/pace-team/references/required-roles.md` 전체, `skills/pace-team/SKILL.md`(관련 줄 검색), brain 흐름 문서의 해당 절, BR06 전체, P014 `PROJECT.md`(T06과 P-4~P-6 관련 줄), 프로젝트 호출 원장의 agent 필드.\n- **읽지 않음:** git diff 원문, `templates/team/member.md`(`team-contract.py`의 단언 결과만 봤다), T01·T03·T07 증거 본문, 백로그 검토 기록.\n- **실행하지 않음:** 어떤 명령도 실행하지 않았고 파일도 고치지 않았다. 실측 결과는 위 관측 파일에 적힌 값만 인용했고 새로 만든 값은 없다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": null,
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 72680,
+  "usage": {
+    "input_tokens": 18,
+    "output_tokens": 7764
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

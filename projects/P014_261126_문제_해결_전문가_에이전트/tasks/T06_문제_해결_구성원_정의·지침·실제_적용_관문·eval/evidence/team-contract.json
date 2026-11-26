@@ -1,0 +1,12 @@
+{
+  "role": "pace-troubleshooter",
+  "sourceDigest": "b2b97a811a1bf444f67a23bfc19f0a6d636307634ff7e64ed8fce53517ff436b",
+  "commonAndSupplementaryExecutionContractMatchesTemplate": true,
+  "distinctReviewerMarkers": 2,
+  "hostsWithSameFingerprintAndExpectedMapping": 2,
+  "conditionPolicy": {
+    "scope": "worktree",
+    "conditional": true
+  },
+  "previousTrackedDefinitionsChanged": []
+}

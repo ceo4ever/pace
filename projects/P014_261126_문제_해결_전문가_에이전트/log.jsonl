@@ -31,3 +31,9 @@
 {"ts":"2026-11-26T13:59:02.701Z","p":"P014","t":"T07","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T13:59:08.008Z","p":"P014","t":"T07","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T13:59:08.008Z","p":"P014","t":"T07","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T13:59:22.500Z","p":"P014","t":"T06","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T14:29:05.426Z","p":"P014","t":"T06","type":"gate","by":"cli","msg":"check: command","ok":false,"data":{"check":1}}
+{"ts":"2026-11-26T14:29:45.104Z","p":"P014","t":"T06","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-26T14:29:58.479Z","p":"P014","t":"T06","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T14:29:58.797Z","p":"P014","t":"T06","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T14:29:58.797Z","p":"P014","t":"T06","type":"task_done","by":"cli","msg":"done","ok":true}

@@ -1,0 +1,160 @@
+{
+  "reject": {
+    "exit": 7,
+    "requestedModel": "pace-not-a-deployed-model",
+    "requestedEffort": "medium",
+    "reportedModel": null,
+    "modelSource": null,
+    "reportedEffort": null,
+    "effortSource": null,
+    "access": null,
+    "durationMs": null,
+    "tokens": {
+      "input": null,
+      "output": null,
+      "total": null
+    },
+    "tokenSource": "Codex exec tokens used total",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "codex",
+      "route": "p",
+      "status": "failed",
+      "reason": "agent_failed",
+      "model": {
+        "requested": {
+          "value": "pace-not-a-deployed-model",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "medium",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "duration_ms": {
+        "value": 4206,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    },
+    "errorCode": "agent_failed",
+    "hostRefusal": "The 'pace-not-a-deployed-model' model is not supported when using Codex with a ChatGPT account.",
+    "hostExit": 1,
+    "capturedInsideSameRun": true,
+    "paceErrorPreviewIncludesReason": false,
+    "pmDisposition": "hold and return same-run provider refusal; zero replacement calls",
+    "correlation": {
+      "callId": "671a127d89c99acf13fbb73dc72f9466",
+      "callStartedAt": "2026-11-26T14:22:00.524Z",
+      "oneLedgerAttempt": true,
+      "wrapperSha256": "01b9a7209fd882cba70be3ef53a6c609ff2b1c42b532e4fa2bc3d78a90c35346",
+      "wrapperStartOffsetFromCallMs": 383,
+      "wrapperEndOffsetFromCallMs": 4206,
+      "wrapperWindowInsideCall": true,
+      "samePrivateHostSessionIdComparedLocally": true,
+      "pacePreviewMatchesCapturedStderrPrefix": true,
+      "streamReceipt": {
+        "startedAt": "2026-11-26T14:22:00.907+00:00",
+        "finishedAt": "2026-11-26T14:22:04.730+00:00",
+        "hostExit": 1,
+        "stdoutBytes": 0,
+        "stderrBytes": 4982,
+        "forwardedStdoutBytes": 0,
+        "forwardedStderrBytes": 4982
+      }
+    }
+  },
+  "timeout": {
+    "exit": 6,
+    "requestedModel": "gpt-6.2-astra",
+    "requestedEffort": "medium",
+    "reportedModel": null,
+    "modelSource": null,
+    "reportedEffort": null,
+    "effortSource": null,
+    "access": null,
+    "durationMs": null,
+    "tokens": {
+      "input": null,
+      "output": null,
+      "total": null
+    },
+    "tokenSource": "Codex exec tokens used total",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "codex",
+      "route": "p",
+      "status": "interrupted",
+      "reason": "timeout",
+      "model": {
+        "requested": {
+          "value": "gpt-6.2-astra",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "medium",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "duration_ms": {
+        "value": 32,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    },
+    "errorCode": "timeout",
+    "timeLimitMs": 25,
+    "pmDisposition": "interrupted; not a denial of the model",
+    "durationObservations": "No completed tool result. Process duration is measured on the ledger row."
+  },
+  "fallbackAttempts": 0,
+  "earlierSeparateHostReproduction": 1
+}

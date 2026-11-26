@@ -1,0 +1,185 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# T06 사전 검토 (독립·읽기 전용)\n\n**판정: pass.** 계획은 목적을 증명할 수 있습니다. 다만 고칠 점이 3건(should_fix)이고, 참고 사항이 1건(note)입니다.\n\n## 첫 판단\n\n**목표 대조.** 상위 목적은 두 가지입니다. 하나는 PM이 검증할 수 있는 해결안을 돌려주는 독립 xhigh 문제 해결자를 정의하는 것입니다. 다른 하나는 두 호스트에서 owner가 정한 모델·effort가 실제로 적용되는지, 그리고 xhigh의 능력이 high보다 떨어지지 않는지 확인하는 것입니다. TASK의 목적·범위·기준은 BR06의 정의·금지·관문·거부·eval·요건 등록, 그리고 P-4·P-5·P-6·P-12·P-13과 같은 범위입니다. `src/**`, 기존 구성원, T04·T05, 설치·병합은 범위 밖으로 바르게 제외했습니다. 보안·데이터 기준을 범위 밖으로 뺀 곳은 없습니다.\n\n**목표 달성 여부.** 구현 전 계획 기준으로는 달성입니다. 판정 조건과 시험이 각 기준의 실패를 잡는지는 아래와 같습니다.\n\n- **T-1:** 동기화 검사, 생성물 차이 비교, 기존 생성물 불변 확인은 시험에 들어 있습니다. 하지만 공통 실행 전 대조 문단과 역할 표지가 보존되는지를 자동으로 잡는 장치가 없습니다. 기존 시험은 `.pace/team/agents`만 스캔합니다(`test/project-dev-skill.test.ts:144`). 새 원본이 놓일 `agents-xhigh`는 그 대상이 아닙니다.\n- **T-2:** 경로 실측이 이미 있습니다(`evidence/route-probes.md`). 그 기록에서 모델 값의 출처가 요청값과 호스트 보고로 구분돼 있습니다(route-probes.json의 `source`). S-2는 \"원하는 네 값 모두 실제 일치\"와 \"출처 구분\"을 기대 결과로 둡니다. 따라서 도구가 요청값을 그대로 돌려주는 경우나 effort 불일치에서 시험이 실패합니다.\n- **T-3:** 평가 기준을 실행 전에 고정했습니다(`evidence/eval-rubric.md`). 기준에는 원인 제거, 해소와 재발의 구별, high 대조군, 이름을 가린 독립 판정이 들어 있습니다. 남은 위험은 eval 입력에 사후 해답이 섞이는 것입니다.\n- **T-4:** S-5의 대조표와 선언 검사로 덮입니다.\n\n**한계와 올릴 단계.** 구현 결과는 요구하지 않았습니다. 세 should_fix는 모두 기존 기준을 유지하면서 검증을 강화하는 요구입니다. 따라서 A-1(합의 변경)에 해당하지 않습니다. 고칠 단계는 TASK의 테스트 표와 접근(계획 단계)입니다. 목표·전략은 고칠 필요가 없습니다.\n\n## 노출 범위\n\n**읽은 파일**\n- 검토 대상: TASK.md(호출문에 첨부된 원문)\n- 근거 자료: BR06, `PROJECT.md`(P-1~P-6, P-12, P-13 행), `decision-rights.md`의 A, `templates/team/member.md`, `skills/pace-team/references/required-roles.md`, `.pace/team/required-roles.json`\n- 증거: `evidence/route-probes.md`·`.json`, `evidence/eval-rubric.md`\n- 확인 목적: T01 `TASK-CLOSE.md`의 xhigh 관련 행, `test/project-dev-skill.test.ts:141-153`, `.pace/team/**` 목록\n\n**읽지 않은 파일:** `REVIEW-LOG.jsonl`, `review-records/R1.json`(이전 지적)\n\n**자동으로 받은 맥락:** SessionStart 훅은 \"자식 세션 — 부트 생략\"이었고 메모리는 읽지 않았습니다. 호스트가 CLAUDE.md·AGENTS.md, git status, 사용자 식별 정보를 첨부했지만 검토에는 쓰지 않았습니다.\n\n**검토 주체:** 이 호출에서는 Claude가 1단계만 수행했습니다. 2단계는 실행하지 않았습니다.\n\n```pace-review\n{\"version\":2,\"findings\":[{\"id\":\"F1\",\"severity\":\"should_fix\",\"category\":\"detection\",\"location\":\"TASK.md:40\",\"scenario\":\"S-4는 고정본과 해결 사본의 분리만 적었다. eval 실행 맥락에서 사후 해답을 읽을 수 없다는 관측이 없다. 실행 맥락은 '읽기 전용'일 뿐 읽기 범위가 제한된 것은 아니다. 저장소 전체(P005 T04 TASK-CLOSE.md S-3r, P013 T04 review-disposition.md, Git 이력, 관련 브레인 페이지)나 cwd 기준 호스트 자동 메모리가 보이면 high와 xhigh가 모두 해답을 보고 통과할 수 있다. 그러면 '두 사례 모두 통과'와 'high 이상'이 능력 결함을 검출하지 못한다.\",\"reproduction\":\"P014 worktree 또는 그 Git 이력을 가진 checkout에서 pace agent run을 실행한다. 역할이 P005 T04 TASK-CLOSE.md를 읽을 수 있는지 확인한다. 실행 작업 공간의 파일 목록과 git log 존재 여부를 기록하고 사후 핵심어(S-3r, review-disposition)를 검색해 0건인지 관측하는 단계를 S-4 기대 결과에 추가한다.\",\"confidence\":\"medium\",\"impact\":\"criterion\",\"criterion\":\"T-3\",\"safety_path\":null},{\"id\":\"F2\",\"severity\":\"should_fix\",\"category\":\"detection\",\"location\":\"TASK.md:37\",\"scenario\":\"T-1은 공통 실행 전 대조 문단과 역할 표지의 보존을 요구한다. 그런데 기존 문구 고정 시험은 .pace/team/agents/*.md만 스캔한다(test/project-dev-skill.test.ts:144). 새 원본은 .pace/team/agents-xhigh/에 놓인다. 허가 경로에 test/**가 없어 시험을 추가할 수도 없다. S-1의 기대 결과에는 템플릿 문단·표지와의 대조나 반환 계약 항목(막힌 목표~미확인), 금지 경계(수정·커밋·결정 대행·pass/fail 필드·verify 대체)의 원본 대조가 명시되지 않았다. 문단을 지우거나 고친 원본도 sync --check와 생성물 동일성을 통과한다.\",\"reproduction\":\"agents-xhigh 원본에서 '## 실행 전 대조' 문단을 지운 뒤 pace team sync, team list, sync --check --json을 실행하면 차이·오류 0으로 통과한다. npm run check의 project-dev-skill 시험도 이 경로를 보지 않는다.\",\"confidence\":\"high\",\"impact\":\"criterion\",\"criterion\":\"T-1\",\"safety_path\":null},{\"id\":\"F3\",\"severity\":\"should_fix\",\"category\":\"observable\",\"location\":\"TASK.md:39\",\"scenario\":\"S-3은 '지정 모델 사용 거부 한 건'을 어떤 입력으로 일으키는지 정하지 않았다(존재하지 않는 모델, 권한 거부 응답 스텁 등). 거부를 시간 초과·네트워크·일반 실패와 구별하는 판별 근거(호스트 오류 원문·종료 코드)도 정하지 않았다. 일반 실패로 분류해 같은 결과가 나와도 '거부 처리 동작'으로 기록될 수 있다. 반대로 진짜 거부를 일반 오류로 보고 재시도하는 결함도 관측 조건이 모호하다.\",\"reproduction\":\"S-3 조건에 거부를 일으키는 입력과 기대 호스트 오류 원문 형태를 적는다. 대조로 거부가 아닌 실패 한 건(예: 시간 초과)이 거부로 분류되지 않는지 관측한다. 원장에서 요청 모델, 실제값 '미확인', 다른 모델 행 0건을 확인한다.\",\"confidence\":\"medium\",\"impact\":\"criterion\",\"criterion\":\"T-2\",\"safety_path\":null},{\"id\":\"F4\",\"severity\":\"note\",\"category\":\"other\",\"location\":\"TASK.md:43-48\",\"scenario\":\"허가 경로에는 태스크 증거(evidence/의 관문 기록·eval 원응답·판정·대조표)가 없다. 하네스가 태스크 폴더 쓰기를 따로 허용하지 않으면 T-2·T-3·T-4가 요구하는 증거를 남길 수 없다. 또 required-roles.json에 넣을 scope 값(hub/worktree)을 정하지 않았다. 문제 해결자는 허브와 worktree 양쪽에서 호출될 수 있다.\",\"reproduction\":null,\"confidence\":\"low\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null}],\"criteria\":[{\"id\":\"T-1\",\"state\":\"present\",\"observation\":\"TASK.md:28은 조건부 reviewer/xhigh, 정본과 두 생성물의 동일성, 반환 항목, 금지 경계, 목록·동기화 통과를 기준으로 둔다. S-1(TASK.md:37)은 sync --check와 기존 생성물 불변을 관측한다. 접근(TASK.md:45)은 T01 마감의 agents-xhigh 방식, team new --role reviewer, sync로만 생성하는 절차와 일치한다. 템플릿 문단 보존의 검출은 F2로 보강이 필요하다.\"},{\"id\":\"T-2\",\"state\":\"present\",\"observation\":\"route-probes.md·json에 두 호스트 × 두 수단의 실측이 있다. Codex native는 사유와 함께 미확인으로 남겼고, 출처(requested/host/reported)를 구분했다. S-2(TASK.md:38)는 네 값의 실제 일치와 같은 시도인지를 기대 결과로 둔다. S-3은 보류, PM 반환, 차하위 호출 0을 원장과 대조한다. 대체 수단 2회 후 A-1은 BR06:45와 P-5에 대응한다. 거부 유발 입력과 판별 조건은 F3.\"},{\"id\":\"T-3\",\"state\":\"present\",\"observation\":\"eval-rubric.md는 실행 전 고정 기준 6항목(원인 제거와 해소·재발 구별 포함)을 둔다. xhigh는 두 사례 모두 통과하고 같은 제공자의 high 통과 건수 이상이어야 한다. 판정자는 이름을 가린 응답을 받고 시간·토큰·관측 범위를 기록한다. 사례 A·B의 사후 대조가 판정자 쪽에만 있다. 실행 맥락에서 해답이 섞이지 않았다는 관측은 F1.\"},{\"id\":\"T-4\",\"state\":\"present\",\"observation\":\"required-roles.md 문제 해결자 표(TS-01~06, BR02·03·07 소관)에 BR06 소관 행이 아직 없고, 등록 형식(ID·버전 1·구분)이 정해져 있다. TASK.md:31과 S-5(TASK.md:41)는 BR06 범위:29의 소관 항목 전부, 등록/정의 대조표, 선언 검사를 요구한다. P-13 회귀는 S-1의 기존 생성물 불변과 S-5의 전체 검사로 덮인다.\"}],\"permission\":{\"mode\":\"implementation\",\"paths\":[\".pace/team/agents-xhigh/pace-troubleshooter.md\",\".pace/team/required-roles.json\",\".claude/agents/pace-troubleshooter.md\",\".codex/agents/pace-troubleshooter.toml\",\"docs/TEAM.md\",\"skills/pace-team/SKILL.md\",\"skills/pace-team/references/required-roles.md\",\".pace/brain/pages/flow/작업-하네스-흐름.md\",\".pace/brain/log.md\"],\"protected\":[{\"from\":8,\"to\":48}]}}\n```\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 120429,
+    "usage": {
+      "input_tokens": 18,
+      "output_tokens": 12709
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "7fb46ed18a1e733c4ca420650f35256aa52d311bf2069507073a1128fe973f16",
+    "kind": "task",
+    "verdict": "pass",
+    "rereview_of": null,
+    "snapshot": "# T06 문제 해결 구성원 정의·지침·실제 적용 관문·eval\n\n- 프로젝트: [P014](../../PROJECT.md) · 브리프: [BR06](../../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR06_문제_해결_구성원_정의·지침·실제_적용_관문·eval.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\n반복 실패에서 호출한 PM이 검증할 수 있는 해결안을 얻도록 독립 `pace-troubleshooter`를 정의한다. 두 호스트가 각각 owner가 정한 모델과 effort를 실제 적용하는지, 같은 지침을 쓰는 `high` 대비 해결 능력이 떨어지지 않는지 확인한다.\n\n## 재료\n\n- owner 설정과 T01의 구판 호환 방식, T03 호출 행과 T07 호스트 보고 출처. [T01 마감](../T01_xhigh_등급과_호환_코드/TASK-CLOSE.md)\n- 설계 첫 단계의 두 호스트 × 두 수단 [실측](evidence/route-probes.md). `docs/TEAM.md`, `templates/team/member.md`, `skills/pace-team/references/required-roles.md` 및 결정 권한 정본 A.\n- 이전 반복 실패의 R9/R10(P005 T04)과 R1/R2(P013 T04), 각각 실패 당시 고정본과 사후 해결 기록. [실행 전 고정한 능력 판정](evidence/eval-rubric.md)\n\n## 증명 범위\n\n- 판정 주체: 명령 출력·실제 두 호스트 세션 보고·작성자와 별개 교차 reviewer 및 tester. 능력 판정자는 응답 작성과 입력 제작에 참여하지 않은 새 세션에서 모델과 등급 이름을 가린 응답을 본다.\n- 포함: 역할 원본과 생성물, 조건부 필수 역할 표지, 호출 수단·모델 거부·실제 적용 관문, 버전 1 요건 등록 및 대조, 이전 실패 능력 비교, 운영 문서와 브레인.\n- 범위 밖: `src/**` 변경, 일반 worker 매핑이나 기존 구성원 변경, 조기/소진 호출 절차(T04), PM 코드 연결(T05), 계정 신뢰 변경, 설치·병합.\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | `pace-troubleshooter`는 조건부 reviewer/xhigh로 정본과 두 생성물에서 동일하다. 공통 실행 전 대조와 역할 표지를 보존한다. 실패 원문에서 막힌 목표·재현·원인 층·반증·대안·추천·검증 계획·미확인을 제공하고 호출 PM에게 반환한다. 수정·커밋·결정 대행·pass/fail과 verify 대체의 경계가 원본에 있다. 목록과 동기화 검사가 차이·오류 없이 통과한다(P-4). |\n| T-2 | native 및 PACE 직접을 두 호스트에서 조사한 근거, 위치·호스트별 제공자와 기본 수단, xhigh의 effort 및 model 해석 예외·구판 호환을 문서화한다. 선택한 `pace agent run`의 실제 역할 본문으로 Claude `claude-fable-5-2/high`, Codex `gpt-6.2-astra/medium`의 모델·effort를 호스트 보고로 대조한다. 거부 시 요청·실제와 이유를 보존해 PM에게 보류를 반환한다. 불일치/미확인은 대체 수단 두 개까지 시도하고 계속 미달이면 A-1로 올린다(P-5). |\n| T-3 | 과거 반복 실패 2건을 해결 이전 고정 입력으로 제공자별 high/xhigh 각각 새 읽기 전용 맥락에서 실행한다. 실행 전 고정 평가에 따라 독립 판정하며 각 xhigh가 두 사례 모두 통과하고 같은 제공자의 high 통과 건수 이상이다. 실패 제거·재발 검출, 시간·토큰·측정 범위 및 원응답을 보존한다(P-6). |\n| T-4 | BR06의 정의·역할 종류·등급/모델/effort·지침·반환·금지·거부·실측 관문과 운영 위치를 요건 ID·버전 1로 등록하고 등록/정의 대조표의 해당 전부를 근거로 충족한다. 전체 선언 검사를 통과한다(P-4·P-5·P-12·P-13). |\n\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | check | T-1·T-4 | 기존 팀 원본·정본 템플릿·조건부 표지와 배포 등급 설정 | 원본 생성, 동기화, `team list`·`sync --check --json` 실행 및 여타 생성물 비교 | 새 역할 한 건, 두 생성물과 조건부 관측 기준, 기존 원본/생성물의 변화 없음, 차이·오류 0 | 저장소 CLI·Git diff·필수 역할 표 |\n| S-2 | e2e | T-2 | 임시 저장소·PACE_HOME·현재 CLI, 역할 본문과 공급자별 실제 세션 | 두 호스트에서 역할 호출, Claude Stop의 같은 세션 effort와 실행 결과 모델 대조, Codex 호스트 실행 모델/effort 대조 | 원하는 네 값 모두 실제 일치, 역할과 결과가 같은 시도, 출력과 원장 값 출처 구분 | 실제 도구, 호스트 관측·마스킹 보고 |\n| S-3 | e2e | T-2 | 지정 모델 사용 거부 한 건, 배포 로그 격리 | 모델 거부를 실제 CLI 입력에서 재현하여 운영 절차로 처리 | 보류, PM에게 이유와 근거, 요청과 미확인 실제값, 차하위 모델 호출 0 | 격리 공급자 거부 재현과 원장 대조 |\n| S-4 | e2e | T-3 | P005/P013 실패 고정본과 해결 사본 분리, 두 제공자 | 같은 입력·역할을 xhigh·high에서 실행, 응답을 가려 다른 세션에서 독립 채점 | 정해 둔 기준 충족, 원응답·판정·시간과 관측 가능한 토큰 출처 보존 | 격리 CLI와 독립 판정 |\n| S-5 | check | T-2·T-4 | 현재 정본·브리프·역할 원본·증거 | 요건 ID/버전, 공급자 선택, xhigh 예외, 구판·브레인 대조 및 선언 검사 | 요건 빠짐 0, 선언 검사 통과와 실행 한계 기록 | 대조표·타입·회귀·보안 검사 |\n\n## 접근\n\n- `pace team new pace-troubleshooter --role reviewer` 원본을 `.pace/team/agents-xhigh/`에 두고 xhigh로 바꾼다. `.pace/team/required-roles.json`, `skills/pace-team/references/required-roles.md`를 반영하고 `pace team sync`만으로 native 정의를 만든다. `docs/TEAM.md`, 역할 안내, 작업 하네스 흐름 브레인 페이지를 갱신한다.\n- `pace agent run --mode p`와 명시 모델·effort, 새 읽기 전용 맥락, 동일 원본의 본문, 호출 원장 역할 식별을 사용한다. 호출 작성자가 속한 제공자와 다른 제공자를 먼저 배정하고, 실제 불가하면 같은 제공자의 새 맥락 및 `cross_unavailable`을 남긴다. PM이 실제 역할·공급자·새 맥락 식별과 반환의 분석을 연결한다.\n- 사전 실측에서는 Claude native 실제가 관측됐고 Codex native는 시작만 확인됐다. 두 호스트에서 관측 가능한 직접 실행을 공통 기본으로 한다. 최종 원본을 써서 다시 관측한다. 모델 거부는 대체 실행 없이 PM에게 돌아간다.\n- eval 입력에서 사후 해답·채점 기준을 제외한다. 실패 당시 증거와 각 제공자에서 같은 지침·입력만 쓰고, 독립 판정에는 사후 기준과 식별자를 가린 원응답을 제공한다. 기본에서 실패한 경우에만 별도 표본의 높은 effort를 고려한다.\n",
+    "call_id": "a4550883-5cb4-4843-bcb7-421a3dd2cdb6",
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3",
+      "T-4"
+    ],
+    "permission_basis": {
+      "base": "16a4e443433e9edf97c9430aabd50b58ebe6e1f5",
+      "task_mode": "100644"
+    },
+    "permission": {
+      "mode": "implementation",
+      "paths": [
+        ".pace/team/agents-xhigh/pace-troubleshooter.md",
+        ".pace/team/required-roles.json",
+        ".claude/agents/pace-troubleshooter.md",
+        ".codex/agents/pace-troubleshooter.toml",
+        "docs/TEAM.md",
+        "skills/pace-team/SKILL.md",
+        "skills/pace-team/references/required-roles.md",
+        ".pace/brain/pages/flow/작업-하네스-흐름.md",
+        ".pace/brain/log.md"
+      ],
+      "protected": [
+        {
+          "from": 8,
+          "to": 48
+        }
+      ],
+      "base": "16a4e443433e9edf97c9430aabd50b58ebe6e1f5",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "pass",
+    "reported_verdict": "pass",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "should_fix",
+        "category": "detection",
+        "confidence": "medium",
+        "location": "TASK.md:40",
+        "scenario": "S-4는 고정본과 해결 사본의 분리만 적었다. eval 실행 맥락에서 사후 해답을 읽을 수 없다는 관측이 없다. 실행 맥락은 '읽기 전용'일 뿐 읽기 범위가 제한된 것은 아니다. 저장소 전체(P005 T04 TASK-CLOSE.md S-3r, P013 T04 review-disposition.md, Git 이력, 관련 브레인 페이지)나 cwd 기준 호스트 자동 메모리가 보이면 high와 xhigh가 모두 해답을 보고 통과할 수 있다. 그러면 '두 사례 모두 통과'와 'high 이상'이 능력 결함을 검출하지 못한다.",
+        "reproduction": "P014 worktree 또는 그 Git 이력을 가진 checkout에서 pace agent run을 실행한다. 역할이 P005 T04 TASK-CLOSE.md를 읽을 수 있는지 확인한다. 실행 작업 공간의 파일 목록과 git log 존재 여부를 기록하고 사후 핵심어(S-3r, review-disposition)를 검색해 0건인지 관측하는 단계를 S-4 기대 결과에 추가한다.",
+        "impact": "criterion",
+        "criterion": "T-3",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "should_fix",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:37",
+        "scenario": "T-1은 공통 실행 전 대조 문단과 역할 표지의 보존을 요구한다. 그런데 기존 문구 고정 시험은 .pace/team/agents/*.md만 스캔한다(test/project-dev-skill.test.ts:144). 새 원본은 .pace/team/agents-xhigh/에 놓인다. 허가 경로에 test/**가 없어 시험을 추가할 수도 없다. S-1의 기대 결과에는 템플릿 문단·표지와의 대조나 반환 계약 항목(막힌 목표~미확인), 금지 경계(수정·커밋·결정 대행·pass/fail 필드·verify 대체)의 원본 대조가 명시되지 않았다. 문단을 지우거나 고친 원본도 sync --check와 생성물 동일성을 통과한다.",
+        "reproduction": "agents-xhigh 원본에서 '## 실행 전 대조' 문단을 지운 뒤 pace team sync, team list, sync --check --json을 실행하면 차이·오류 0으로 통과한다. npm run check의 project-dev-skill 시험도 이 경로를 보지 않는다.",
+        "impact": "criterion",
+        "criterion": "T-1",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "observable",
+        "confidence": "medium",
+        "location": "TASK.md:39",
+        "scenario": "S-3은 '지정 모델 사용 거부 한 건'을 어떤 입력으로 일으키는지 정하지 않았다(존재하지 않는 모델, 권한 거부 응답 스텁 등). 거부를 시간 초과·네트워크·일반 실패와 구별하는 판별 근거(호스트 오류 원문·종료 코드)도 정하지 않았다. 일반 실패로 분류해 같은 결과가 나와도 '거부 처리 동작'으로 기록될 수 있다. 반대로 진짜 거부를 일반 오류로 보고 재시도하는 결함도 관측 조건이 모호하다.",
+        "reproduction": "S-3 조건에 거부를 일으키는 입력과 기대 호스트 오류 원문 형태를 적는다. 대조로 거부가 아닌 실패 한 건(예: 시간 초과)이 거부로 분류되지 않는지 관측한다. 원장에서 요청 모델, 실제값 '미확인', 다른 모델 행 0건을 확인한다.",
+        "impact": "criterion",
+        "criterion": "T-2",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "note",
+        "category": "other",
+        "confidence": "low",
+        "location": "TASK.md:43-48",
+        "scenario": "허가 경로에는 태스크 증거(evidence/의 관문 기록·eval 원응답·판정·대조표)가 없다. 하네스가 태스크 폴더 쓰기를 따로 허용하지 않으면 T-2·T-3·T-4가 요구하는 증거를 남길 수 없다. 또 required-roles.json에 넣을 scope 값(hub/worktree)을 정하지 않았다. 문제 해결자는 허브와 worktree 양쪽에서 호출될 수 있다.",
+        "reproduction": null,
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "TASK.md:28은 조건부 reviewer/xhigh, 정본과 두 생성물의 동일성, 반환 항목, 금지 경계, 목록·동기화 통과를 기준으로 둔다. S-1(TASK.md:37)은 sync --check와 기존 생성물 불변을 관측한다. 접근(TASK.md:45)은 T01 마감의 agents-xhigh 방식, team new --role reviewer, sync로만 생성하는 절차와 일치한다. 템플릿 문단 보존의 검출은 F2로 보강이 필요하다."
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "route-probes.md·json에 두 호스트 × 두 수단의 실측이 있다. Codex native는 사유와 함께 미확인으로 남겼고, 출처(requested/host/reported)를 구분했다. S-2(TASK.md:38)는 네 값의 실제 일치와 같은 시도인지를 기대 결과로 둔다. S-3은 보류, PM 반환, 차하위 호출 0을 원장과 대조한다. 대체 수단 2회 후 A-1은 BR06:45와 P-5에 대응한다. 거부 유발 입력과 판별 조건은 F3."
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "eval-rubric.md는 실행 전 고정 기준 6항목(원인 제거와 해소·재발 구별 포함)을 둔다. xhigh는 두 사례 모두 통과하고 같은 제공자의 high 통과 건수 이상이어야 한다. 판정자는 이름을 가린 응답을 받고 시간·토큰·관측 범위를 기록한다. 사례 A·B의 사후 대조가 판정자 쪽에만 있다. 실행 맥락에서 해답이 섞이지 않았다는 관측은 F1."
+        },
+        {
+          "id": "T-4",
+          "state": "present",
+          "observation": "required-roles.md 문제 해결자 표(TS-01~06, BR02·03·07 소관)에 BR06 소관 행이 아직 없고, 등록 형식(ID·버전 1·구분)이 정해져 있다. TASK.md:31과 S-5(TASK.md:41)는 BR06 범위:29의 소관 항목 전부, 등록/정의 대조표, 선언 검사를 요구한다. P-13 회귀는 S-1의 기존 생성물 불변과 S-5의 전체 검사로 덮인다."
+        }
+      ],
+      "issues": []
+    },
+    "permission": {
+      "mode": "implementation",
+      "paths": [
+        ".pace/team/agents-xhigh/pace-troubleshooter.md",
+        ".pace/team/required-roles.json",
+        ".claude/agents/pace-troubleshooter.md",
+        ".codex/agents/pace-troubleshooter.toml",
+        "docs/TEAM.md",
+        "skills/pace-team/SKILL.md",
+        "skills/pace-team/references/required-roles.md",
+        ".pace/brain/pages/flow/작업-하네스-흐름.md",
+        ".pace/brain/log.md"
+      ],
+      "protected": [
+        {
+          "from": 8,
+          "to": 48
+        }
+      ]
+    }
+  }
+}

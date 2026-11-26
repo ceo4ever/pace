@@ -1,0 +1,27 @@
+{
+  "text": "**T06 최종 PASS. T-2는 이전 FAIL에서 PASS로 변경합니다.**\n\n- **실제 모델·effort.** Claude는 같은 세션의 `init`·`result`·`Stop`에서 `claude-fable-5-2/high`, Codex는 실행 헤더와 PACE 결과에서 `gpt-6.2-astra/medium`을 확인했습니다. 두 시도의 역할 원본·본문과 요청 SHA-256, BR03 원장 각 1행, HANDOFF 응답 경로·행·저장 SHA-256이 일치했습니다. Codex 저장 응답은 로컬 경로 접두사를 제거하면 원응답과 일치했습니다.\n- **PM 거부 처리.** 미지원 모델 시도는 같은 실행에서 받은 호스트 거부 사유와 요청값, 실제값 미확인을 보존했습니다. PM 보류와 대체 호출 0회가 기록됐습니다. 거부는 `failed/agent_failed`, 25ms 시간 제한 대조는 `interrupted/timeout`으로 구별됐습니다.\n- **최종 범위.** 기존 T-1·T-3·T-4 PASS를 유지합니다. `focused-check.txt`는 30개 통과, 실패·건너뜀 0개입니다. 조기·소진 신호의 PM 연결은 T04 기준입니다.\n\n저장된 증거만 읽고 대조했습니다. 검사 재실행, 추가 모델 호출, 파일 변경은 없었습니다.",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "reported_effort": "low",
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "read-only",
+  "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+  "session_id": null,
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 74134,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 70485
+  },
+  "usage_total_tokens": 70485,
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

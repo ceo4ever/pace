@@ -1,0 +1,81 @@
+{
+  "provider": "anthropic",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "blindInputSha256": "f8500b8802a7769b9269cf1e91f822615ca9ec3a7096a15c32c2a46ea644ee1a",
+  "answersRevealedAfterGrading": {
+    "Q1": "B-codex-xhigh",
+    "Q2": "B-codex-high",
+    "Q3": "B-claude-high",
+    "Q4": "B-claude-xhigh"
+  },
+  "judgment": {
+    "Q1": {
+      "objectiveEvidence": true,
+      "causeLayer": true,
+      "alternatives": true,
+      "recommendation": true,
+      "verification": true,
+      "uncertaintyBoundary": true,
+      "reasons": [
+        "계약 원문(case.md:3)을 근거로 목표를 다시 확인했다. 보고된 사건 순서(R1 → 실패 2회 → 계약 변경 → verify)와 관측(rereview_of 생성, 좁은 프롬프트)을 case.md:5 위치로 인용했다. 직접 한 일은 정적 대조뿐이며 재실행하지 않았고, rereview_of의 실제 기록명과 프롬프트 원문은 사본에 없다고 밝혀 재현 범위를 명시했다.",
+        "원인 층을 구현의 기준점 선택으로 규정해 사후 기준과 일치한다. 경계도 구체적이다. readReviewBudget은 offset 이후 행과 현재 단계만 보지만, evidenceRereviewBase는 계약 기준점과 단계 없이 findLast로 unknown을 찾는다. 그래서 사이의 fail 두 건을 건너뛰고 이전 회차의 R1을 고를 수 있다고 짚었다(case.md:27, 165, 277). 이 경로가 당시 실제로 탔다는 점은 추정이라고 구분했다.",
+        "다른 설명 두 가지를 반증했다. 원문 손상이나 일반 형식 오류는 해시 불일치와 findings === null이 배제되므로 이 경로를 설명하지 못한다. 프롬프트나 rereview_of 출력만 고치는 땜질은 기준점이 입력 구성과 crossVerify 전달에 앞서 정해지므로 범위 축소를 없애지 못한다. 기존 필수 기준 대조가 과거 기록의 자체 일관성만 검사하고 현재 회차 소속은 증명하지 않는다는 점도 근거로 들었다.",
+        "A(공통 회차 기준 선택)와 B(호출부 국소 수정)를 목표 달성 방식·비용·위험·되돌리기로 비교했다. 추천안 A는 같은 원장·대상·단계·계약 기준점의 최신 유효 검토가 보완 가능한 증거 공백을 가진 unknown일 때만 이어가고, 아니면 더 오래된 unknown을 찾지 않으며, 회차 첫 호출은 전체 검토로 보낸다. 사후 원인인 현재 회차 선택 기준 누락을 제거하고, 첫 전체 검토와 같은 회차의 실제 증거 이어가기를 모두 구별한다.",
+        "실행기 주입 경로에서 실제 입력과 rereview_of를 함께 관찰하는 미실행 명세를 제시했다. 긍정 관찰은 R2 순서의 전체 검토(기준 ID가 같아도)와 새 단계 첫 호출이다. 음성 대조로는 같은 회차의 실제 증거 보완은 R1을 이어가야 한다는 것과, 해석 불가 반환은 기준점이 되지 않고 과거 unknown으로 건너뛰지도 않는다는 것을 두어 해소와 과잉 수정을 가른다. 실패하면 offset·entries·budget.latest·recovery·grant·firstReview·base.record 대조와 crossVerify 프롬프트 조사로 넘어가는 다음 수도 있다.",
+        "코드상 경계 차이는 확인한 사실로, R1 선택은 추정으로 구분했다. entries 구성과 당시 분기 상태가 발췌에 없다는 불확실성을 남겼다. 수정·커밋·판정을 대행하지 않았고, 적용 검토를 호출 PM에게 HANDOFF로 넘겼다."
+      ]
+    },
+    "Q2": {
+      "objectiveEvidence": true,
+      "causeLayer": true,
+      "alternatives": true,
+      "recommendation": true,
+      "verification": true,
+      "uncertaintyBoundary": true,
+      "reasons": [
+        "case.md:3으로 목표와 상위 목적의 정합을 다시 확인했다. case.md:5로 보고된 재현 순서와 기대·관측을 제시했다. 이번에 한 것은 발췌 코드의 정적 대조이고 verify나 실행 재현은 하지 않았다고 확인 범위를 구분했다.",
+        "층 이름은 '설계'로 붙였지만, 같은 문단에서 구현상 누락을 구체적으로 짚었다. 예산 계산은 원장 기준점 이후와 현재 단계로 거르지만, CLI의 별도 entries 검색은 기준점·단계·무효·중단 조건 없이 findLast로 사이의 fail을 건너뛴다는 것이다. 계약 자체에 결함을 돌리지 않았다. 따라서 사후 기준인 '구현에서 현재 계약 회차를 선택하는 기준의 누락'과 같은 경계를 특정한 것으로 인정한다.",
+        "loadRereview의 원장·기록·형식 일치 검사를 모두 통과해도 같은 회차라는 보장이 없다고 보여, 기존 검사가 막아 준다는 설명을 반증했다. firstReview가 참이었거나 entries에 R1이 없었다면 이 경로로 R2를 설명할 수 없다는 반증 조건도 명시했다. 국소 수정(A)은 별도 검색이 남아 다시 어긋날 수 있다는 한계도 지적했다.",
+        "A(CLI 후보 검색에 경계 적용)와 B(현재 회차 기록 공통 사용)를 목표 달성 방식·비용·위험·되돌리기로 비교했다. 추천안 B는 일반 기준점과 증거 보완 후보를 같은 회차 기록에서 고르고, 회차 첫 호출이나 후보 부재 시 전체 검토를 택한다. 기준 ID가 같은 계약 변경도 회차 경계로 처리하고 latestEvidenceGaps까지 같은 경계를 적용하도록 해 원인을 제거한다.",
+        "R2 순서 재현에 대해 수정 전에는 R1을 가리키는지, 수정 후에는 rereview_of가 비고 변경분 밖 내용까지 포함한 전체 프롬프트가 가는지를 관찰하도록 했다. 새 단계 첫 호출, 같은 회차 증거 보완의 이어가기 보존, 형식 해석 실패·무효·중단 후보를 배제하는 음성 대조, 이전 회차 공백으로 collect_evidence나 A-3이 생기지 않는지도 확인한다. 미재현·실패 시 offset·budget.latest·firstReview·참조 레코드 대조, 분기 추적, crossVerify·focus 확인으로 이어지는 다음 수가 있다.",
+        "당시 원장과 분기 값이 없어 실제 선택 경로가 미확인이라고 밝혔다. 원장·실제 프롬프트·파서·승인 상태 구현이 발췌 밖이라는 불확실성을 남겼고, 적용안 선택을 호출 PM에게 넘겼다. 수정이나 판정은 대행하지 않았다."
+      ]
+    },
+    "Q3": {
+      "objectiveEvidence": true,
+      "causeLayer": true,
+      "alternatives": true,
+      "recommendation": true,
+      "verification": true,
+      "uncertaintyBoundary": true,
+      "reasons": [
+        "목표를 case.md:3으로 다시 확인하고 상위 목적과의 정합을 판단했다. 증거 위치(case.md:165-167, 277, 30-32, 283-287, 309, 76-83)를 인용하며 '실행한 재현 없음'을 표제에 밝혔다. 보고된 사건 순서를 코드 경로에 대입한 결과는 추론이라고 구분했다.",
+        "'설계' 층이라고 이름 붙였지만, 실제로 짚은 경계는 구현 내부의 회차 선택 기준 누락이다. 회차 경계가 readReviewBudget에만 있고, evidenceRereviewBase는 !budget.latest라는 간접 신호와 원장 전체 탐색에 따로 의존한다는 것이다. offset·단계·void·interrupted·이후 검토 여부·현재 기준 일치를 보지 않는다는 점도 구체화했다. 목표와 계약에는 결함이 없다고 했으므로 사후 기준의 원인과 같은 경계로 인정한다.",
+        "H1~H4와 firstReview 부차 원인을 표로 나열했다. offsets 키 불일치, !scope 경로, recovery·joint grant의 latestDefinitive 각각에 rereview_of 대상이나 grant 기록 같은 가르는 관찰을 붙였다. H3는 R1에 required_criteria가 있다는 근거로 배제했다. 땜질안 A는 경계 로직 복제로 재발 위험이 있다고 반박했다.",
+        "A(땜질), B(회차 단일 계산), C(명시적 이어가기 선언)를 목표 달성·비용·위험·되돌리기로 비교했다. 추천안 B는 readReviewBudget 루프에서 현재 회차의 마지막 유효 검토가 해석 가능한 증거 공백 unknown이고 현재 기준과 일치할 때만 이어가기 값을 만든다. verify-cli와 latestEvidenceGaps가 그 값만 쓰게 하고, 회차에 검토가 없으면 이어가기 없음으로 처리한다. 원인을 제거하며 첫 전체 검토와 같은 회차 이어가기를 모두 보존한다.",
+        "수정 전 red 재현과 수정 후 rereview가 undefined이고 rereview_of가 null인지 관찰하며, 단계 변경 변형도 포함한다. 음성 대조는 같은 회차 이어가기 유지, 해석 불가 시 이어가기 없음, 이후 fail이 있으면 기준점이 F1, void 처리, 기준 변경 시 전체 검토다. 후속 보고·waiver 동일 부류 확인과 ROUND_LIMIT·escalation 회귀 감시도 있다. 실패하면 H2, 그다음 H4로 넘어가 실제 원장을 확보하는 다음 수를 제시했다.",
+        "실제 rereview_of·원장·offsets·grant 상태가 없어 H1과 H2·H4를 아직 가르지 못한다는 점을 남겼다. entries·budget.latest·firstReview·latestDefinitive 정의가 추정이라는 점과, 쓰기·외부 접속·재현 실행을 하지 않았다는 점도 밝혔다. 적용 결정은 PM에게, C 선택 시의 owner 결정은 정본 A 경로로 넘겼다."
+      ]
+    },
+    "Q4": {
+      "objectiveEvidence": true,
+      "causeLayer": true,
+      "alternatives": true,
+      "recommendation": true,
+      "verification": true,
+      "uncertaintyBoundary": true,
+      "reasons": [
+        "목표와 상위 목적을 case.md:3으로 다시 확인했다. 재현 순서와 관측을 case.md:5로, 변경 전후 기준점 선택 차이를 case.md:277·282-284로 인용했다. 정적 독해만 했고 재현을 실행하지 않았으며 src/를 열지 못했다고 밝혔다. 확인한 사실과 추정을 별도 목록으로 나눠 범위를 명시했다.",
+        "'설계(구현에서 발현)'로 표기했다. 다만 기획·구조 층은 아니고 변경 전 동작이 계약을 지켰다고 밝힌 뒤 구현 결함을 구체화했다. !budget.latest가 '회차 초기화'와 '증거 미확인만 있는 회차'를 구분하지 못하고, findLast 술어가 사이의 판정을 건너뛰며, loadRereview는 현재 scope.stage와 비교하지 않는다는 점이다. 사후 기준의 현재 회차 선택 기준 누락과 같은 경계다.",
+        "기준점 미적용, joint·복구 경로의 latestDefinitive, firstReview 누락을 경쟁 후보로 두고 각각 가르는 관찰을 제시했다. 수정 전 고정본에서 R1을 일반 실패로 바꿔도 좁으면 본 가설을 기각한다는 반증 실험도 설계했다. 해석 불가 반환은 findings === null로 이미 배제된다는 점도 확인했다.",
+        "A(국소 보정), B(회차 범위 단일화), C(이어가기 제거), D(회차 식별자 기록)를 목표 달성 방식·비용·위험·되돌리기 표로 비교했다. 추천안 B는 범위 내 최신 비무효·비중단 검토만 기준점과 latestEvidenceGaps에 쓰고 '현재 범위 밖이면 거부' 불변식을 둔다. 같은 원인과 경계를 제거하며, C가 계약의 뒷절반을 어긴다는 점을 들어 첫 전체 검토와 같은 회차 이어가기를 모두 지킨다.",
+        "긍정 관찰은 재현 순서의 전체 검토와 단계 전환 첫 호출이다. 음성 대조는 수정 전 R1 지목 확인, R1을 일반 실패로 바꾼 반증, 같은 회차 증거 보완 이어가기 보존, 해석 불가·무효 시 전체 검토, 이후 실패가 있으면 그 실패가 기준점이 되는 경우다. 실패하면 rereview_of 대상에 따라 분기하고 C 임시 적용을 결정 요청으로 올리며, 이어가기가 깨지면 범위 조건은 유지한 채 자격 조건을 완화하는 다음 수가 있다.",
+        "diff 밖 정의, verify.ts 프롬프트, 다른 독립 검토의 경로, latestEvidenceGaps 영향, decision-rights.md 부재를 불확실성으로 남겼다. 기준 집합 변경 해석, 이전 회차 공백 제외, C 임시 적용을 결정 요청 3건으로 PM에게 넘겼고 스스로 결정하거나 수정하지 않았다."
+      ]
+    }
+  },
+  "durationMs": 84836
+}

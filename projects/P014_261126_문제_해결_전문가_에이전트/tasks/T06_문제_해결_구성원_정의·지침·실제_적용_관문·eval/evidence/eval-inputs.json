@@ -1,0 +1,36 @@
+{
+  "A": {
+    "priorFailures": [
+      {
+        "path": "projects/P005_261119_PACE_daemon_사용_준비/tasks/T04_실사용_요청_검증/review-records/R9.json",
+        "verdict": "fail",
+        "snapshotSha256": "02fad171421ae2c433dbdc50aa4fd8c8ee222837563ec0807681894901688824"
+      },
+      {
+        "path": "projects/P005_261119_PACE_daemon_사용_준비/tasks/T04_실사용_요청_검증/review-records/R10.json",
+        "verdict": "fail",
+        "snapshotSha256": "02fad171421ae2c433dbdc50aa4fd8c8ee222837563ec0807681894901688824"
+      }
+    ],
+    "candidateInput": "case-A.md",
+    "candidateInputSha256": "41a59f37429a71ef3c4c61bdeb6b30bd89f6c6270078df864173af08c0387faa"
+  },
+  "B": {
+    "priorFailures": [
+      {
+        "path": "projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T04_영향_문턱과_기준별_증거_상태/evidence/review-records/R1.json",
+        "verdict": "fail",
+        "snapshotSha256": "d76ee67bbf7afe4ba7abd58b40ad4e30b9f7010f343b59964ff135b976f28c9c"
+      },
+      {
+        "path": "projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T04_영향_문턱과_기준별_증거_상태/evidence/review-records/R2.json",
+        "verdict": "fail",
+        "snapshotSha256": "d9c14b3e3af5eecb663e8125a183f74f6d069a4b3123ad6f446e147346e78d1a"
+      }
+    ],
+    "candidateInput": "case-B.md",
+    "candidateInputSha256": "7dc96906d405861f5b5ac5b8c7f7560bdb4508e917e75adf116f144361193d04",
+    "excerptNormalization": "Trailing whitespace removed from Markdown presentation; original snapshot digest retained."
+  },
+  "rubricSha256": "b357703c16249e5c83f42bd582a574cfb0f6b2e24483e9454404531375717736"
+}

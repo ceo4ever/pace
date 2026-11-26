@@ -1,0 +1,12 @@
+npm run check -- --test-concurrency=6 (exit 0)
+임시 PACE_HOME/TMPDIR, Orca 브라우저 E2E 스킵, PACE_AGENT_CHILD 해제, Git 자동 유지보수 해제.
+ℹ tests 1521
+ℹ suites 0
+ℹ pass 1504
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 445474.519334
+node scripts/secret-scan.ts (exit 0)
+git diff --check (exit 0)

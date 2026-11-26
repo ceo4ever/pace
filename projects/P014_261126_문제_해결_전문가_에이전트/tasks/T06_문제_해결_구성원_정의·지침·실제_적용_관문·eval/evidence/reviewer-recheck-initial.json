@@ -1,0 +1,25 @@
+{
+  "text": "**판정: blocking 1건. 문서 보완은 충분하지만 같은 실행이라는 증거가 입증 수준에 못 미칩니다.**\n\n## 확인한 것\n\n- **`docs/TEAM.md:194`**: 지적된 F1에 대응하는 문단이 있고, 패치 146행과 같습니다. 내용은 세 가지입니다.\n  - `agent_failed`나 앞부분이 잘린 오류만 있으면 거부 사유를 \"미확인\"으로 둔다.\n  - 거부 사유를 관측하려면 호출 시작 전에 설치본과 별개인 보호된 임시 실행기를 둔다. 이 실행기는 받은 인자·출력·종료값을 그대로 넘긴다.\n  - 증거에는 거부 문장과 출처만 남긴다.\n\n  모델 거부와 다른 실패를 섞지 않게 하는 절차로 타당합니다.\n- **코드 경로**: 증거의 값들은 서로 들어맞습니다.\n  - `src/agent/p-executor.ts:213`은 종료값이 0이 아니면 `agent_failed`를 냅니다. 이때 stderr와 stdout은 각각 앞 300자만 담깁니다.\n  - `src/agent/contract.ts:21`에서 `agent_failed`는 종료 코드 7입니다.\n  - `model-availability.json`의 값은 `hostExit: 1`, PACE `exit: 7`, `reason: agent_failed`, `callRows: 1`, `paceErrorPreviewIncludesReason: false`입니다. 위 경로대로라면 이렇게 나와야 합니다.\n- **기존 별도 재현과의 구분**: 키 이름이 `earlierSeparateHostReproduction`으로 바뀌어, 이제 거부의 근거로 쓰이지 않습니다.\n- **보안**: 증거에 세션 식별자와 stderr 원문 전체가 없습니다. 거부 문장 한 줄만 남아 있습니다. 비밀이나 개인정보 노출은 보이지 않습니다.\n- **음성 대조**: `team-negative.json`에서 실행 전 대조 문단을 지운 원본은 `team list` 종료 2와 진단으로 거부됐습니다. 기존 리뷰의 F5에 대한 대응입니다.\n\n## 남은 blocking (TS-13, 기존 리뷰 기준 T-2)\n\n요구 기준은 \"같은 PACE 실행의 호스트 stdout/stderr·종료값의 경계와 원장 한 행\"을 입증하는 것입니다. 현재 증거에는 다음이 빠져 있습니다.\n\n1. **stdout 경계가 없습니다.**\n   - `runtime-observation.md:7`은 래퍼가 \"stderr·종료값\"만 보관하고 넘겼다고 적습니다.\n   - 호스트 stdout이 비었는지, 그대로 넘어갔는지 기록이 없습니다. 그래서 PACE 오류 메시지의 `| stdout:` 부분에 무엇이 들어갔는지 알 수 없습니다.\n   - `docs/TEAM.md:194`는 \"출력\" 전체를 넘긴다고 적어, 증거와 범위가 다릅니다.\n2. **같은 실행이라는 연결이 작성자의 선언뿐입니다.**\n   - 근거는 `capturedInsideSameRun: true`라는 불리언 하나입니다.\n   - 래퍼 쪽 기록과 원장 행을 묶을 공통 키가 없습니다. 호출 ID, 시작 시각, 래퍼가 잰 소요 시간 중 무엇도 증거에 없습니다.\n   - 증거의 원장 행에는 `id`와 시각 필드도 빠져 있습니다. 소요 시간 4390ms를 대조할 래퍼 쪽 값도 없습니다.\n   - 래퍼 스크립트도 증거 폴더에 없습니다. 있는 것은 위 다섯 파일뿐입니다.\n   - 위의 값들이 서로 들어맞기는 하지만, 그것만으로 다른 실행에서 얻은 거부 문장을 붙였을 가능성을 배제하지 못합니다.\n\n**해소 조건**: 래퍼 스크립트(또는 그 해시), 같은 호출의 원장 `id`·시각, 래퍼가 기록한 시작·종료 시각이나 소요 시간, stdout 처리(빈 값인지, 넘겼는지)를 증거에 추가하면 됩니다.\n\n## 확인하지 못한 것\n\n명령은 하나도 실행하지 않았습니다. 패치 SHA-256 `75f15b44…`는 직접 계산하지 않아 일치 여부를 모릅니다. 검사 통과 여부도 다시 실행하지 않았습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": null,
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 46961,
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 4814
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

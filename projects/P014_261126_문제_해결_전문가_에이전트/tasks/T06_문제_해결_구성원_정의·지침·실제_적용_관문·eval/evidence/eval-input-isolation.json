@@ -1,0 +1,257 @@
+{
+  "A-claude-high": {
+    "fixtureFiles": [
+      ".claude/settings.json",
+      "case.md",
+      "projects/P002_261126_eval/PROJECT.md",
+      "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+    ],
+    "gitCommits": 1,
+    "gitHeadTreeEmpty": true,
+    "answerBearingMarkerHits": 0,
+    "toolRequests": [
+      {
+        "tool": "Read",
+        "path": "case.md"
+      },
+      {
+        "tool": "Glob",
+        "pattern": "projects/**/*"
+      },
+      {
+        "tool": "Read",
+        "path": "projects/P002_261126_eval/PROJECT.md"
+      },
+      {
+        "tool": "Read",
+        "path": "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+      },
+      {
+        "tool": "Glob",
+        "pattern": "**/{s3*.json,*review*,*R10*,*R9*}"
+      }
+    ]
+  },
+  "A-claude-xhigh": {
+    "fixtureFiles": [
+      ".claude/settings.json",
+      "case.md",
+      "projects/P002_261126_eval/PROJECT.md",
+      "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+    ],
+    "gitCommits": 1,
+    "gitHeadTreeEmpty": true,
+    "answerBearingMarkerHits": 0,
+    "toolRequests": [
+      {
+        "tool": "Read",
+        "path": "case.md"
+      },
+      {
+        "tool": "Glob",
+        "pattern": "projects/**/*"
+      },
+      {
+        "tool": "Glob",
+        "pattern": ".claude/**/*"
+      },
+      {
+        "tool": "Read",
+        "path": "projects/P002_261126_eval/PROJECT.md"
+      },
+      {
+        "tool": "Read",
+        "path": "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+      },
+      {
+        "tool": "Read",
+        "path": ".claude/settings.json"
+      },
+      {
+        "tool": "Glob",
+        "pattern": "**/*"
+      }
+    ]
+  },
+  "A-codex-high": {
+    "fixtureFiles": [
+      "case.md",
+      "projects/P002_261126_eval/PROJECT.md",
+      "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+    ],
+    "gitCommits": 1,
+    "gitHeadTreeEmpty": true,
+    "answerBearingMarkerHits": 0,
+    "toolRequests": [
+      {
+        "command": "'pwd && git status --short'"
+      },
+      {
+        "command": "\"rg --files --hidden -g '\"'!**/.git/**'\"'\""
+      },
+      {
+        "command": "'nl -ba case.md'"
+      },
+      {
+        "command": "'wc -l case.md projects/P002_261126_eval/PROJECT.md projects/P002_261126_eval/tasks/T01_case/TASK.md'"
+      },
+      {
+        "command": "'nl -ba projects/P002_261126_eval/PROJECT.md && nl -ba projects/P002_261126_eval/tasks/T01_case/TASK.md'"
+      },
+      {
+        "command": "\"rg --files --hidden --no-ignore -g '\"'!**/.git/**'\"'\""
+      }
+    ]
+  },
+  "A-codex-xhigh": {
+    "fixtureFiles": [
+      "case.md",
+      "projects/P002_261126_eval/PROJECT.md",
+      "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+    ],
+    "gitCommits": 1,
+    "gitHeadTreeEmpty": true,
+    "answerBearingMarkerHits": 0,
+    "toolRequests": [
+      {
+        "command": "'nl -ba case.md'"
+      },
+      {
+        "command": "\"rg --files --hidden -g '\"'!.git'\"'\""
+      },
+      {
+        "command": "'nl -ba projects/P002_261126_eval/PROJECT.md'"
+      },
+      {
+        "command": "'nl -ba projects/P002_261126_eval/tasks/T01_case/TASK.md'"
+      }
+    ]
+  },
+  "B-claude-high": {
+    "fixtureFiles": [
+      ".claude/settings.json",
+      "case.md",
+      "projects/P002_261126_eval/PROJECT.md",
+      "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+    ],
+    "gitCommits": 1,
+    "gitHeadTreeEmpty": true,
+    "answerBearingMarkerHits": 0,
+    "toolRequests": [
+      {
+        "tool": "Read",
+        "path": "case.md"
+      },
+      {
+        "tool": "Glob",
+        "pattern": "projects/**/*"
+      },
+      {
+        "tool": "Read",
+        "path": "projects/P002_261126_eval/PROJECT.md"
+      },
+      {
+        "tool": "Read",
+        "path": "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+      }
+    ]
+  },
+  "B-claude-xhigh": {
+    "fixtureFiles": [
+      ".claude/settings.json",
+      "case.md",
+      "projects/P002_261126_eval/PROJECT.md",
+      "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+    ],
+    "gitCommits": 1,
+    "gitHeadTreeEmpty": true,
+    "answerBearingMarkerHits": 0,
+    "toolRequests": [
+      {
+        "tool": "Read",
+        "path": "case.md"
+      },
+      {
+        "tool": "Glob",
+        "pattern": "projects/**"
+      },
+      {
+        "tool": "Glob",
+        "pattern": ".claude/**"
+      },
+      {
+        "tool": "Read",
+        "path": "projects/P002_261126_eval/PROJECT.md"
+      },
+      {
+        "tool": "Read",
+        "path": "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+      },
+      {
+        "tool": "Read",
+        "path": ".claude/settings.json"
+      },
+      {
+        "tool": "Glob",
+        "pattern": "**/*.ts"
+      }
+    ]
+  },
+  "B-codex-high": {
+    "fixtureFiles": [
+      "case.md",
+      "projects/P002_261126_eval/PROJECT.md",
+      "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+    ],
+    "gitCommits": 1,
+    "gitHeadTreeEmpty": true,
+    "answerBearingMarkerHits": 0,
+    "toolRequests": [
+      {
+        "command": "\"pwd && rg --files --hidden -g '\"'!**/.git/**'\"'\""
+      },
+      {
+        "command": "'ls -la && cat case.md'"
+      },
+      {
+        "command": "'nl -ba case.md'"
+      },
+      {
+        "command": "\"git ls-files && rg -n --hidden -g '\"'!**/.git/**'\"' 'TS-0|TS-1|A-3|계약|위임|HANDOFF' projects .claude && git status --short\""
+      },
+      {
+        "command": "\"awk '/\"'^diff --git / {f=$4; sub(/''^b'\"\\\\//,\\\"\\\",f)} /\"'^@@ / {split($3,a,\",\"); n=substr(a[1],2); next} f && /''^[ +]/ && !/''^'\"\\\\+\\\\+\\\\+/ {if (NR>=161 && NR<=331 || NR>=22 && NR<=42 || NR>=72 && NR<=83) printf \\\"%3d %s:%d %s\\\\n\\\",NR,f,n,\"'$0; n++}'\"' case.md\""
+      },
+      {
+        "command": "\"nl -ba projects/P002_261126_eval/PROJECT.md && nl -ba projects/P002_261126_eval/tasks/T01_case/TASK.md && rg --files --hidden --no-ignore -g '\"'!.git/**'\"'\""
+      },
+      {
+        "command": "'ls -la .git .claude && git status --short --branch && git rev-parse --show-toplevel'"
+      }
+    ]
+  },
+  "B-codex-xhigh": {
+    "fixtureFiles": [
+      "case.md",
+      "projects/P002_261126_eval/PROJECT.md",
+      "projects/P002_261126_eval/tasks/T01_case/TASK.md"
+    ],
+    "gitCommits": 1,
+    "gitHeadTreeEmpty": true,
+    "answerBearingMarkerHits": 0,
+    "toolRequests": [
+      {
+        "command": "\"rg --files --hidden -g '\"'!.git'\"'\""
+      },
+      {
+        "command": "'nl -ba case.md'"
+      },
+      {
+        "command": "'nl -ba projects/P002_261126_eval/tasks/T01_case/TASK.md'"
+      },
+      {
+        "command": "'nl -ba projects/P002_261126_eval/PROJECT.md'"
+      }
+    ]
+  }
+}

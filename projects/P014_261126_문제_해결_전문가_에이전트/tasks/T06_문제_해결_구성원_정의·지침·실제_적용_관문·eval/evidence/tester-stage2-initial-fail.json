@@ -1,0 +1,27 @@
+{
+  "text": "**최종 FAIL — T-2의 실제 적용 증거가 1단계 기준을 충족하지 못했고, 정상 진입점에서 반복 실패를 조기에 끊는 상위 목표도 미입증입니다.**\n\n- **T-1 PASS.** `check-team-contract.py`는 종료 0으로 공통 실행 계약 일치, reviewer 표지 2개, 양쪽 생성물의 지문·매핑 일치, `worktree` 조건부 정책, 기존 추적 정의 변경 0건을 확인했습니다. `team sync --check --json`도 종료 0, `members: 6`, `differences: []`, `ok: true`였습니다. 두 명령 모두 5초 이내였습니다.\n- **T-2 FAIL.** 합성 P002의 직접 호출 요약에는 Claude `claude-fable-5-2/high`와 Codex `gpt-6.2-astra/medium`이 요청과 일치합니다. Claude 원장의 effort는 동일 세션 Stop 관측 뒤 PM이 보강했습니다. F1의 거부 기록은 호출 ID·시각, 래퍼 구간, 호스트 세션 대조를 연결하며 PM 보류와 대체 호출 0회를 기록합니다. 거부 재현에는 가짜 모델을 사용했습니다. 성공 시도의 요청 지문·호스트 원출력·`HANDOFF` 원응답·원장 행을 한 시도로 독립 대조하고, 운영 문서만으로 Claude Stop을 확보할 수 있는지 확인하는 과제는 남습니다.\n- **T-3 PASS(기록 기준).** 과거 실패 2건의 새 읽기 전용 실행 8개에서 블라인드 판정은 양 제공자의 high·xhigh 모두 2/2였습니다. 시간·토큰 측정 출처가 기록됐고, 음성 대조는 결함 응답 0/6, 정상 응답 6/6이었습니다. 이 표본은 동률을 뒷받침합니다.\n- **T-4 PASS(기록 기준).** TS-07~15 v1 등록·정의 대조와 전체 검사 종료 0을 확인했습니다. 1,521개 중 1,504개 통과, 17개 건너뜀, 실패 0개였고 보안·diff 검사도 종료 0이었습니다. 집중 30개 재실행 결과는 지정 증거에서 확인되지 않았습니다.\n- **상위 목표 미입증.** T06 범위 밖인 정상 진입점의 조기·소진 신호부터 PM의 단일 호출, 적용 결정, 독립 재검증까지 이어지는 관측이 남습니다.\n\n증거는 1단계 원문, 지정 7개 파일, 두 확인 명령 출력으로 한정했습니다. 파일 열람에는 `cat`을 사용했습니다. 설치, 모델 호출, 시험 재실행은 없었습니다.",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "reported_effort": "low",
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "read-only",
+  "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+  "session_id": null,
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 37917,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 27294
+  },
+  "usage_total_tokens": 27294,
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

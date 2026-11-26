@@ -1,0 +1,574 @@
+{
+  "A-claude-high": {
+    "exit": 0,
+    "requestedModel": "claude-opus-5-5",
+    "requestedEffort": "high",
+    "reportedModel": "claude-opus-5-5",
+    "modelSource": "reported",
+    "reportedEffort": "high",
+    "effortSource": "Claude Stop effort.level, same session",
+    "access": "read-only",
+    "durationMs": 74024,
+    "tokens": {
+      "input": 8,
+      "output": 7386,
+      "total": null
+    },
+    "tokenSource": "Claude result usage input/output",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "claude",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "model": {
+        "requested": {
+          "value": "claude-opus-5-5",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "claude-opus-5-5",
+          "source": "host"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "high",
+          "source": "host"
+        }
+      },
+      "duration_ms": {
+        "value": 74024,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": 8,
+          "source": "tool"
+        },
+        "output": {
+          "value": 7386,
+          "source": "tool"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    },
+    "errorCode": null,
+    "answerSha256BeforeLocalPathMask": "6c13b1f9390c65a2e82a7441751e773ec89fea89aa40cbd12f8b8410c2c0c836",
+    "answerSha256": "6c13b1f9390c65a2e82a7441751e773ec89fea89aa40cbd12f8b8410c2c0c836",
+    "inputSha256": "41a59f37429a71ef3c4c61bdeb6b30bd89f6c6270078df864173af08c0387faa",
+    "case": "A",
+    "tier": "high",
+    "reportedModelCount": 1,
+    "claudeCacheTokens": {
+      "creationInput": 5955,
+      "readInput": 28616
+    }
+  },
+  "A-claude-xhigh": {
+    "exit": 0,
+    "requestedModel": "claude-fable-5-2",
+    "requestedEffort": "high",
+    "reportedModel": "claude-fable-5-2",
+    "modelSource": "reported",
+    "reportedEffort": "high",
+    "effortSource": "Claude Stop effort.level, same session",
+    "access": "read-only",
+    "durationMs": 141188,
+    "tokens": {
+      "input": 6,
+      "output": 13377,
+      "total": null
+    },
+    "tokenSource": "Claude result usage input/output",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "claude",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "model": {
+        "requested": {
+          "value": "claude-fable-5-2",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "claude-fable-5-2",
+          "source": "host"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "high",
+          "source": "host"
+        }
+      },
+      "duration_ms": {
+        "value": 141188,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": 6,
+          "source": "tool"
+        },
+        "output": {
+          "value": 13377,
+          "source": "tool"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    },
+    "errorCode": null,
+    "answerSha256BeforeLocalPathMask": "345c3c8293c3abee325b7f23be506246ca9dde5777813ee04951fffac81c8da6",
+    "answerSha256": "345c3c8293c3abee325b7f23be506246ca9dde5777813ee04951fffac81c8da6",
+    "inputSha256": "41a59f37429a71ef3c4c61bdeb6b30bd89f6c6270078df864173af08c0387faa",
+    "case": "A",
+    "tier": "xhigh",
+    "reportedModelCount": 1,
+    "claudeCacheTokens": {
+      "creationInput": 8078,
+      "readInput": 22372
+    }
+  },
+  "A-codex-high": {
+    "exit": 0,
+    "requestedModel": "gpt-6.2-sol",
+    "requestedEffort": "high",
+    "reportedModel": "gpt-6.2-sol",
+    "modelSource": "reported",
+    "reportedEffort": "high",
+    "effortSource": "codex exec reasoning effort",
+    "access": "read-only",
+    "durationMs": 77357,
+    "tokens": {
+      "input": null,
+      "output": null,
+      "total": 32393
+    },
+    "tokenSource": "Codex exec tokens used total",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "codex",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "model": {
+        "requested": {
+          "value": "gpt-6.2-sol",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "gpt-6.2-sol",
+          "source": "host"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "high",
+          "source": "host"
+        }
+      },
+      "duration_ms": {
+        "value": 77357,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": 32393,
+          "source": "tool"
+        }
+      }
+    },
+    "errorCode": null,
+    "answerSha256BeforeLocalPathMask": "85a5ae0d91239aac773ed6ba22d4372f6de331f9f222647ac30e084d8c38216e",
+    "answerSha256": "233de54fbf652d53d444e7a2e9bf5eebc7fd9b37aa24bf5ec9d99c5dbcba69d8",
+    "inputSha256": "41a59f37429a71ef3c4c61bdeb6b30bd89f6c6270078df864173af08c0387faa",
+    "case": "A",
+    "tier": "high"
+  },
+  "A-codex-xhigh": {
+    "exit": 0,
+    "requestedModel": "gpt-6.2-astra",
+    "requestedEffort": "medium",
+    "reportedModel": "gpt-6.2-astra",
+    "modelSource": "reported",
+    "reportedEffort": "medium",
+    "effortSource": "codex exec reasoning effort",
+    "access": "read-only",
+    "durationMs": 68444,
+    "tokens": {
+      "input": null,
+      "output": null,
+      "total": 16453
+    },
+    "tokenSource": "Codex exec tokens used total",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "codex",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "model": {
+        "requested": {
+          "value": "gpt-6.2-astra",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "gpt-6.2-astra",
+          "source": "host"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "medium",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "medium",
+          "source": "host"
+        }
+      },
+      "duration_ms": {
+        "value": 68444,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": 16453,
+          "source": "tool"
+        }
+      }
+    },
+    "errorCode": null,
+    "answerSha256BeforeLocalPathMask": "23323b2d79ff628e7a40958bea552725b83d5ea681e286552c6ac0d586d8d54d",
+    "answerSha256": "08d39ccc9d4825111d53c6430a2b2c25e0a8324146a4760c7ef702e2efac4f0c",
+    "inputSha256": "41a59f37429a71ef3c4c61bdeb6b30bd89f6c6270078df864173af08c0387faa",
+    "case": "A",
+    "tier": "xhigh"
+  },
+  "B-claude-high": {
+    "exit": 0,
+    "requestedModel": "claude-opus-5-5",
+    "requestedEffort": "high",
+    "reportedModel": "claude-opus-5-5",
+    "modelSource": "reported",
+    "reportedEffort": "high",
+    "effortSource": "Claude Stop effort.level, same session",
+    "access": "read-only",
+    "durationMs": 94231,
+    "tokens": {
+      "input": 6,
+      "output": 9617,
+      "total": null
+    },
+    "tokenSource": "Claude result usage input/output",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "claude",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "model": {
+        "requested": {
+          "value": "claude-opus-5-5",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "claude-opus-5-5",
+          "source": "host"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "high",
+          "source": "host"
+        }
+      },
+      "duration_ms": {
+        "value": 94231,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": 6,
+          "source": "tool"
+        },
+        "output": {
+          "value": 9617,
+          "source": "tool"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    },
+    "errorCode": null,
+    "answerSha256BeforeLocalPathMask": "5365e68af00b5d6f4960bf27e7723591296c0de0cc94b30c010a24480d3fcf7d",
+    "answerSha256": "5365e68af00b5d6f4960bf27e7723591296c0de0cc94b30c010a24480d3fcf7d",
+    "inputSha256": "7dc96906d405861f5b5ac5b8c7f7560bdb4508e917e75adf116f144361193d04",
+    "case": "B",
+    "tier": "high",
+    "reportedModelCount": 1,
+    "claudeCacheTokens": {
+      "creationInput": 16282,
+      "readInput": 29984
+    }
+  },
+  "B-claude-xhigh": {
+    "exit": 0,
+    "requestedModel": "claude-fable-5-2",
+    "requestedEffort": "high",
+    "reportedModel": "claude-fable-5-2",
+    "modelSource": "reported",
+    "reportedEffort": "high",
+    "effortSource": "Claude Stop effort.level, same session",
+    "access": "read-only",
+    "durationMs": 165326,
+    "tokens": {
+      "input": 6,
+      "output": 16137,
+      "total": null
+    },
+    "tokenSource": "Claude result usage input/output",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "claude",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "model": {
+        "requested": {
+          "value": "claude-fable-5-2",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "claude-fable-5-2",
+          "source": "host"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "high",
+          "source": "host"
+        }
+      },
+      "duration_ms": {
+        "value": 165326,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": 6,
+          "source": "tool"
+        },
+        "output": {
+          "value": 16137,
+          "source": "tool"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    },
+    "errorCode": null,
+    "answerSha256BeforeLocalPathMask": "49e360fe19fc0d872b7835311615d356e765b00310573ffeb1ea45374a541fce",
+    "answerSha256": "49e360fe19fc0d872b7835311615d356e765b00310573ffeb1ea45374a541fce",
+    "inputSha256": "7dc96906d405861f5b5ac5b8c7f7560bdb4508e917e75adf116f144361193d04",
+    "case": "B",
+    "tier": "xhigh",
+    "reportedModelCount": 1,
+    "claudeCacheTokens": {
+      "creationInput": 18060,
+      "readInput": 32796
+    }
+  },
+  "B-codex-high": {
+    "exit": 0,
+    "requestedModel": "gpt-6.2-sol",
+    "requestedEffort": "high",
+    "reportedModel": "gpt-6.2-sol",
+    "modelSource": "reported",
+    "reportedEffort": "high",
+    "effortSource": "codex exec reasoning effort",
+    "access": "read-only",
+    "durationMs": 78312,
+    "tokens": {
+      "input": null,
+      "output": null,
+      "total": 38917
+    },
+    "tokenSource": "Codex exec tokens used total",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "codex",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "model": {
+        "requested": {
+          "value": "gpt-6.2-sol",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "gpt-6.2-sol",
+          "source": "host"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "high",
+          "source": "host"
+        }
+      },
+      "duration_ms": {
+        "value": 78312,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": 38917,
+          "source": "tool"
+        }
+      }
+    },
+    "errorCode": null,
+    "answerSha256BeforeLocalPathMask": "8d8b3c78f5bb8ae717621212187f018f9d0a0a2f6115fdd07125afb32269b248",
+    "answerSha256": "74d3733e3169ea1190af40df244a8830db199db3e5f3f52aa85770deda794720",
+    "inputSha256": "7dc96906d405861f5b5ac5b8c7f7560bdb4508e917e75adf116f144361193d04",
+    "case": "B",
+    "tier": "high"
+  },
+  "B-codex-xhigh": {
+    "exit": 0,
+    "requestedModel": "gpt-6.2-astra",
+    "requestedEffort": "medium",
+    "reportedModel": "gpt-6.2-astra",
+    "modelSource": "reported",
+    "reportedEffort": "medium",
+    "effortSource": "codex exec reasoning effort",
+    "access": "read-only",
+    "durationMs": 65169,
+    "tokens": {
+      "input": null,
+      "output": null,
+      "total": 12260
+    },
+    "tokenSource": "Codex exec tokens used total",
+    "callRows": 1,
+    "call": {
+      "agent": "pace-troubleshooter",
+      "engine": "codex",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "model": {
+        "requested": {
+          "value": "gpt-6.2-astra",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "gpt-6.2-astra",
+          "source": "host"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "medium",
+          "source": "requested"
+        },
+        "actual": {
+          "value": "medium",
+          "source": "host"
+        }
+      },
+      "duration_ms": {
+        "value": 65169,
+        "source": "tool"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": 12260,
+          "source": "tool"
+        }
+      }
+    },
+    "errorCode": null,
+    "answerSha256BeforeLocalPathMask": "170be985626a5348cb313e63ec11cb1cbdf736593e089159ff924952fed8605c",
+    "answerSha256": "18ab6b34e0622ede5503b8bba6d498285f0ff7154b1848d35c42c524ebec615c",
+    "inputSha256": "7dc96906d405861f5b5ac5b8c7f7560bdb4508e917e75adf116f144361193d04",
+    "case": "B",
+    "tier": "xhigh"
+  }
+}

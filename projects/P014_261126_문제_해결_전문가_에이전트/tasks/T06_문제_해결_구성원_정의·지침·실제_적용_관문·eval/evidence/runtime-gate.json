@@ -1,0 +1,137 @@
+{
+  "sourceSha256": "b2b97a811a1bf444f67a23bfc19f0a6d636307634ff7e64ed8fce53517ff436b",
+  "appliedBodySha256": "e691282db6787571b7e038ee3a06abcc41dde99f9824baa2962c60eddd9bb181",
+  "case": "A",
+  "providerRuns": {
+    "claude": {
+      "exit": 0,
+      "requestedModel": "claude-fable-5-2",
+      "requestedEffort": "high",
+      "reportedModel": "claude-fable-5-2",
+      "modelSource": "reported",
+      "reportedEffort": "high",
+      "effortSource": "Claude Stop effort.level, same session",
+      "access": "read-only",
+      "durationMs": 141188,
+      "tokens": {
+        "input": 6,
+        "output": 13377,
+        "total": null
+      },
+      "tokenSource": "Claude result usage input/output",
+      "callRows": 1,
+      "call": {
+        "agent": "pace-troubleshooter",
+        "engine": "claude",
+        "route": "p",
+        "status": "completed",
+        "reason": null,
+        "model": {
+          "requested": {
+            "value": "claude-fable-5-2",
+            "source": "requested"
+          },
+          "actual": {
+            "value": "claude-fable-5-2",
+            "source": "host"
+          }
+        },
+        "effort": {
+          "requested": {
+            "value": "high",
+            "source": "requested"
+          },
+          "actual": {
+            "value": "high",
+            "source": "host"
+          }
+        },
+        "duration_ms": {
+          "value": 141188,
+          "source": "tool"
+        },
+        "tokens": {
+          "input": {
+            "value": 6,
+            "source": "tool"
+          },
+          "output": {
+            "value": 13377,
+            "source": "tool"
+          },
+          "total": {
+            "value": null,
+            "source": "unknown"
+          }
+        }
+      },
+      "errorCode": null
+    },
+    "codex": {
+      "exit": 0,
+      "requestedModel": "gpt-6.2-astra",
+      "requestedEffort": "medium",
+      "reportedModel": "gpt-6.2-astra",
+      "modelSource": "reported",
+      "reportedEffort": "medium",
+      "effortSource": "codex exec reasoning effort",
+      "access": "read-only",
+      "durationMs": 68444,
+      "tokens": {
+        "input": null,
+        "output": null,
+        "total": 16453
+      },
+      "tokenSource": "Codex exec tokens used total",
+      "callRows": 1,
+      "call": {
+        "agent": "pace-troubleshooter",
+        "engine": "codex",
+        "route": "p",
+        "status": "completed",
+        "reason": null,
+        "model": {
+          "requested": {
+            "value": "gpt-6.2-astra",
+            "source": "requested"
+          },
+          "actual": {
+            "value": "gpt-6.2-astra",
+            "source": "host"
+          }
+        },
+        "effort": {
+          "requested": {
+            "value": "medium",
+            "source": "requested"
+          },
+          "actual": {
+            "value": "medium",
+            "source": "host"
+          }
+        },
+        "duration_ms": {
+          "value": 68444,
+          "source": "tool"
+        },
+        "tokens": {
+          "input": {
+            "value": null,
+            "source": "unknown"
+          },
+          "output": {
+            "value": null,
+            "source": "unknown"
+          },
+          "total": {
+            "value": 16453,
+            "source": "tool"
+          }
+        }
+      },
+      "errorCode": null
+    }
+  },
+  "claudeEffortEnrichment": "PM wrote same ID and timestamp through project log after same-session Stop observation; one row preserved.",
+  "scope": "Synthetic P002 project, T01 case; project acceptance runs remain in P014 later."
+}

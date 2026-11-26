@@ -1,0 +1,50 @@
+{
+  "A-claude-high": {
+    "before": {
+      "value": null,
+      "source": "unknown"
+    },
+    "after": {
+      "value": "high",
+      "source": "host"
+    },
+    "rowCount": 1,
+    "sameAttempt": true
+  },
+  "A-claude-xhigh": {
+    "before": {
+      "value": null,
+      "source": "unknown"
+    },
+    "after": {
+      "value": "high",
+      "source": "host"
+    },
+    "rowCount": 1,
+    "sameAttempt": true
+  },
+  "B-claude-high": {
+    "before": {
+      "value": null,
+      "source": "unknown"
+    },
+    "after": {
+      "value": "high",
+      "source": "host"
+    },
+    "rowCount": 1,
+    "sameAttempt": true
+  },
+  "B-claude-xhigh": {
+    "before": {
+      "value": null,
+      "source": "unknown"
+    },
+    "after": {
+      "value": "high",
+      "source": "host"
+    },
+    "rowCount": 1,
+    "sameAttempt": true
+  }
+}

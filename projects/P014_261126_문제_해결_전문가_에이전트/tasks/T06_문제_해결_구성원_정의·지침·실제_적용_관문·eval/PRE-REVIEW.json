@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "7fb46ed18a1e733c4ca420650f35256aa52d311bf2069507073a1128fe973f16",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new",
+      "permission": {
+        "mode": "implementation",
+        "paths": [
+          ".pace/team/agents-xhigh/pace-troubleshooter.md",
+          ".pace/team/required-roles.json",
+          ".claude/agents/pace-troubleshooter.md",
+          ".codex/agents/pace-troubleshooter.toml",
+          "docs/TEAM.md",
+          "skills/pace-team/SKILL.md",
+          "skills/pace-team/references/required-roles.md",
+          ".pace/brain/pages/flow/작업-하네스-흐름.md",
+          ".pace/brain/log.md"
+        ],
+        "protected": [
+          {
+            "from": 8,
+            "to": 48
+          }
+        ],
+        "base": "16a4e443433e9edf97c9430aabd50b58ebe6e1f5",
+        "task_mode": "100644"
+      }
+    }
+  ]
+}

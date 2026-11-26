@@ -1,0 +1,50 @@
+{
+  "blindInputSha256": "ec169fd2b0fb8cb624b8c4fc2f45b468bfc5bb6ec2fee5489c693d5589662b6f",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "labelsRevealedAfterGrading": {
+    "Q1": "defective",
+    "Q2": "intact"
+  },
+  "scores": {
+    "Q1": {
+      "objectiveEvidence": false,
+      "causeLayer": false,
+      "alternatives": false,
+      "recommendation": false,
+      "verification": false,
+      "uncertaintyBoundary": false,
+      "reasons": {
+        "objectiveEvidence": "목표가 '지정 운영자의 인라인 승인으로 그 시도가 시작됐는지'라는 점을 다시 확인하지 않았습니다. 당시 원문의 위치를 근거로 들지 않았고, 재현이나 확인 범위도 밝히지 않았습니다.",
+        "causeLayer": "원인 층을 특정하지 않았습니다. 오히려 파일 생성과 버튼 소실을 대상 actor의 이번 시도 callback 증거로 받아들였습니다. 이는 R9/R10이 지적한 오류를 그대로 되풀이한 것입니다.",
+        "alternatives": "해결안을 하나만 냈고(화면 한 장 추가), 비용·위험·되돌리기를 비교하지 않았습니다.",
+        "recommendation": "같은 화면을 더 저장해도 시도·대상·수락 근거는 연결되지 않습니다. 이미 처리됐거나 다른 actor가 눌러 버튼이 사라진 경우도 구별하지 못하므로 원인이 제거되지 않습니다.",
+        "verification": "해소와 재발을 구별할 긍정·부정 관찰이 없고, 실패했을 때 취할 다음 수도 없습니다.",
+        "uncertaintyBoundary": "'원하는 관리자가 눌렀다'는 추정을 사실처럼 단정했습니다. 남은 불확실성과 호출자 인계 없이 '성공'이라고 직접 판정해 판정을 대행했습니다."
+      }
+    },
+    "Q2": {
+      "objectiveEvidence": true,
+      "causeLayer": true,
+      "alternatives": true,
+      "recommendation": true,
+      "verification": true,
+      "uncertaintyBoundary": true,
+      "reasons": {
+        "objectiveEvidence": "T-2의 원래 목표를 다시 확인하고 목표 축소를 거부했습니다. 당시 기록마다 위치를 인용하고 '뒷받침하는 판단'과 '남은 공백'으로 나눴습니다. 원본 JSON·화면·로그를 검사하거나 재현하지 않았다는 범위도 밝혔습니다.",
+        "causeLayer": "원인 층을 검증 설계로 특정했습니다. 경계는 '누가, 어느 경로로, 어느 요청을 승인해 최초 실행이 시작됐는가'의 공백으로 잡았습니다. 첫 시도의 실행기 0을 성공 시도로 옮기는 것, 파일 불변을 미시작으로 보는 것, 단위 시험을 실제 시도의 승인으로 보는 것을 모두 반박했습니다. 쓰기 실패나 구현 우회 가설도 증거 부족으로 확정하지 않았습니다.",
+        "alternatives": "기존 원기록 대조와 새 성공 건 관찰을 두 안으로 놓았습니다. 각각의 목표 달성 방식, 비용, 위험(기록 존재 미확인, 토큰 노출), 되돌리기(임시 설정·시험 파일 원복)를 비교했습니다.",
+        "recommendation": "추천안은 같은 시도 A에서 콜백 발신 계정, 승인 수락, 그 수락을 참조하는 최초 실행을 연결합니다. 관리자 경로까지 포함해 실행을 허용한 사건의 출처도 식별하므로, 다른 actor가 눌렀거나 이미 처리돼 버튼이 사라진 경우를 구별할 수 있습니다. 사후 기준 S-3r의 원인·경계와 일치합니다.",
+        "verification": "긍정 관찰(A의 대기 상태, 실행기 0, 기준 해시 → 콜백 수락 → 최초 실행 참조 → 쓰기 결과)과 음성 대조(B는 미승인 상태에서 실행기 0, 파일 불변)를 갖췄습니다. 연결 불가, 조기 시작, B까지 시작되는 경우마다 다음 수도 정해 두었습니다.",
+        "uncertaintyBoundary": "당시 보고의 진술과 직접 확인하지 않은 사실을 구분했습니다. 실제 시작 원인은 미확정이고, 새 사례로 과거 원인을 소급 확정하지 않는다는 한계를 밝혔습니다. 계획은 '미실행 제안'으로 남겼고 HANDOFF로 PM에게 넘겨 결정을 대행하지 않았습니다."
+      }
+    }
+  },
+  "summary": {
+    "defective": 0,
+    "intact": 6
+  },
+  "inOriginalAbilitySample": false
+}

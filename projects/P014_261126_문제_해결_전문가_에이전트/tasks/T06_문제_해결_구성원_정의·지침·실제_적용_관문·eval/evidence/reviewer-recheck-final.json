@@ -1,0 +1,25 @@
+{
+  "text": "**판정: F1 pass. 차단은 해소됐다.**\n\n같은 PACE 실행과 호스트 거부를 잇는 연결이 이제 `check-codex-rejection.py`의 assert로 강제된다. `model-availability.json`의 `correlation` 블록은 assert를 모두 통과해야만 출력되는 구조라서, 그 안의 `true` 값은 검사를 통과했다는 뜻이다.\n\n- **같은 호스트 세션**: 원문 stderr에서 뽑은 `session id:`와 PACE 오류 미리보기의 `session id:`가 같은지 로컬에서 직접 비교한다(31–33행). 식별자 값은 공개 증거에 없다. TEAM.md:194의 방침과 맞다.\n- **미리보기 일치**: `message == f\"codex 종료 코드 1: {stderr[:300]}\"`로 정확히 일치하는지 본다(30행). 거부 문장은 stderr에는 있고 미리보기에는 없어야 한다(35행). 그래서 `paceErrorPreviewIncludesReason: false`이고, 거부 사유의 출처는 호스트 기록이다. TEAM.md:194의 \"축약된 오류만으로는 미확인\" 기준과 맞다.\n- **원장 ID와 래퍼 시각**: 원장 행은 정확히 1개다(`callId 671a127d…`). 래퍼는 호출 시작 후 383ms에 시작해 4206ms에 끝났다. 호출 `duration_ms`도 4206이고, 검사는 10ms 여유를 둔 `0 ≤ start ≤ end ≤ duration+10`이라 구간 안에 든다.\n- **두 스트림 바이트**: stdout은 receipt, 전달량, 실제 파일 모두 0바이트다. stderr는 receipt 4982 = 전달 4982 = 실제 파일 길이로 맞는다(28–29행).\n- **종료값**: 호스트 1, PACE 7, `agent_failed`가 행과 결과에서 일치한다(23–24행). 대체 호출은 0건이다.\n\n**차단은 아닌 남은 점**\n- 원본이 공개되지 않아 검토자가 다시 실행해 확인할 수는 없다. 의도된 범위다.\n- 기록된 `wrapperSha256`(`01b9a720…`)이 커밋된 `capture-codex-rejection.py`와 같은 파일의 해시인지는 이번 범위에서 계산하지 않아 확인하지 않았다. 필요하면 `shasum -a 256` 한 번으로 닫을 수 있다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": null,
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 23016,
+  "usage": {
+    "input_tokens": 4,
+    "output_tokens": 2270
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

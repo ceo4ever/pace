@@ -148,3 +148,4 @@
 ## [2026-11-26] update | 세션 부트는 시작 훅 + 대체 규칙 (.pace/brain/pages/concept/session-boot-via-hooks.md)
 ## [2026-11-26] update | 변경 기반 검사와 실행 선언 신뢰 경계 (.pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md)
 ## [2026-11-26] update | 정의서 크기·분리 기준과 다운사이즈 검증 (.pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md)
+## [2026-11-26] update | 작업 하네스 흐름의 문제 해결자 호출 수단, 실제 관측, 모델 거부에서 보류하는 이유를 기록

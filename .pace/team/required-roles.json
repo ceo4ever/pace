@@ -5,6 +5,11 @@
       "role": "pace-backlog-planner",
       "scope": "hub",
       "conditional": false
+    },
+    {
+      "role": "pace-troubleshooter",
+      "scope": "worktree",
+      "conditional": true
     }
   ]
 }
