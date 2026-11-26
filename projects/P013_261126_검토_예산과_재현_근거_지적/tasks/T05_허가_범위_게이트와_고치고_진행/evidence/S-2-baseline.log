@@ -1,0 +1,75 @@
+✖ 허가 범위: 작업본·실제 index·중간 커밋에 범위 밖 변경이 남으면 진행하지 않는다 (3269.691917ms)
+✖ 허가 범위: 최신 원본과 대조해 여러 줄의 작은 수정만 진행하고 다음 검토에 보존한다 (2976.533708ms)
+✖ 허가 범위: verify가 Git 기준을 고정하고 잘못된 경로·보호 줄은 pass를 만들지 않는다 (2687.105417ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9319.41125
+
+✖ failing tests:
+
+test at ../../../../../../private/tmp/pace-p013-t05.AMdGSS/red/test/project-harness.test.ts:655:1
+✖ 허가 범위: 작업본·실제 index·중간 커밋에 범위 밖 변경이 남으면 진행하지 않는다 (3269.691917ms)
+  AssertionError [ERR_ASSERTION]: - 확인: 판정 통과 · 기준 1개(T-1) 모두 통과 · 절 4개 · 증거 파일 0개
+  통과
+  
+  
+  0 !== 1
+  
+      at reject (file:///private/tmp/pace-p013-t05.AMdGSS/red/test/project-harness.test.ts:669:14)
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t05.AMdGSS/red/test/project-harness.test.ts:676:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t05.AMdGSS/red/test/project-harness.test.ts:700:1
+✖ 허가 범위: 최신 원본과 대조해 여러 줄의 작은 수정만 진행하고 다음 검토에 보존한다 (2976.533708ms)
+  AssertionError [ERR_ASSERTION]: - 확인: 판정 통과 · 기준 1개(T-1) 모두 통과 · 절 4개 · 증거 파일 0개
+  통과
+  
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t05.AMdGSS/red/test/project-harness.test.ts:713:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t05.AMdGSS/red/test/project-harness.test.ts:780:1
+✖ 허가 범위: verify가 Git 기준을 고정하고 잘못된 경로·보호 줄은 pass를 만들지 않는다 (2687.105417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'pass' !== 'unknown'
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t05.AMdGSS/red/test/project-harness.test.ts:791:14)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'pass',
+    expected: 'unknown',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

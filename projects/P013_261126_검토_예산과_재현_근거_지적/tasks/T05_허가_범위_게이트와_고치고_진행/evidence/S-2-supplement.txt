@@ -1,0 +1,34 @@
+
+test("허가 범위 추가 확인: 실제 파일 모드·링크와 후보 조상", () => {
+  const h = permissionFixture();
+  h.seed();
+  git(h.wt, "add", "-A");
+  git(h.wt, "commit", "-qm", "검토 자료 준비");
+  const probe = join(h.wt, "src/probe.ts");
+  const head = git(h.wt, "rev-parse", "HEAD");
+  const before = [h.target, h.pre, join(h.project, "PROJECT.md")].map((file) => readFileSync(file, "utf8"));
+  if (process.platform !== "win32") {
+    chmodSync(probe, 0o755);
+    assert.match(h.gate("done").stdout, /일반 파일 변경으로 확인할 수 없다.*src\/probe\.ts/);
+    git(h.wt, "add", "src/probe.ts");
+    chmodSync(probe, 0o644);
+    const commit = gitRun(h.wt, ["commit", "-qm", "feat(P001/T01): mode"]);
+    assert.notEqual(commit.status, 0);
+    assert.match(commit.stdout + commit.stderr, /일반 파일 변경으로 확인할 수 없다.*src\/probe\.ts/);
+    git(h.wt, "add", "src/probe.ts");
+    const original = readFileSync(probe, "utf8");
+    rmSync(probe);
+    symlinkSync("feature.ts", probe);
+    assert.match(h.gate("done").stdout, /일반 파일 경로로 확인되지 않는다/);
+    rmSync(probe);
+    write(probe, original);
+  }
+  const unrelated = git(h.wt, "commit-tree", git(h.wt, "write-tree"), "-m", "후보 조상이 아닌 기준");
+  for (const path of [h.pre, h.ledger, h.record]) {
+    write(path, readFileSync(path, "utf8").replaceAll(h.base, unrelated));
+  }
+  assert.match(h.gate("check").stdout, /허가 기준 커밋이 검사 후보의 조상이 아니다/);
+  assert.equal(git(h.wt, "rev-parse", "HEAD"), head);
+  assert.equal(readFileSync(h.target, "utf8"), before[0]);
+  assert.equal(readFileSync(join(h.project, "PROJECT.md"), "utf8"), before[2]);
+});

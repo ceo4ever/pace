@@ -1,0 +1,9 @@
+✔ task: 표에 계획된 대기 행은 그 번호로 열고, 새 태스크는 계획 번호와 겹치지 않는다 (2083.977125ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2265.764167

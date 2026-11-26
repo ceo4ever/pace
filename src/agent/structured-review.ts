@@ -1,6 +1,7 @@
 import type { BudgetStage } from "./review-budget.ts";
 import { parseVerdict, type Verdict } from "./review-log.ts";
 import type { ReviewCriterion } from "./review-criteria.ts";
+import { parsePermission, type PermissionInput } from "../project/review-permission.ts";
 
 const questions = {
   backlog: {
@@ -74,9 +75,10 @@ export interface StructuredAssessment {
     criteria: CriterionEvidence[];
     issues: string[];
   };
+  permission?: PermissionInput;
 }
 
-export function reviewQuestionPrompt(stage: BudgetStage, criteria?: readonly ReviewCriterion[]): string[] {
+export function reviewQuestionPrompt(stage: BudgetStage, criteria?: readonly ReviewCriterion[], requirePermission = false): string[] {
   const { question, checks } = questions[stage];
   const allChecks = [...Object.entries(checks)].map(([key, check]) => `- ${key}: ${check}`);
   const category = Object.keys(checks)[0];
@@ -86,6 +88,7 @@ export function reviewQuestionPrompt(stage: BudgetStage, criteria?: readonly Rev
     version: 2,
     findings: [{ ...sample, impact: "criterion", criterion: criteria[0]?.id ?? null, safety_path: null }],
     criteria: (criteria.length ? [criteria[0]!] : []).map(({ id }) => ({ id, state: "present", observation: "관측 근거" })),
+    ...(requirePermission ? { permission: { mode: "probe", paths: ["test/probe.ts"], protected: [{ from: 1, to: 1 }] } } : {}),
   };
   return [
     question, ...allChecks,
@@ -104,6 +107,11 @@ export function reviewQuestionPrompt(stage: BudgetStage, criteria?: readonly Rev
       ...(!criteria.length ? ["필수 기준 자료를 판독할 수 없다. 근거의 미확인을 기록한다."] : []),
       "재검토에서 이전 기준 상태를 확인하고, 바뀐 증거와 그 영향만 새로 관측한다. 그대로 적용되는 확인의 근거를 함께 반환한다.",
     ]),
+    ...(requirePermission ? [
+      "사전 검토의 permission.mode에는 합의한 탐침(probe) 또는 구현(implementation)을 적는다. paths에는 허가한 저장소 상대 일반 파일 경로를 정확히 적는다.",
+      "probe의 빈 paths는 파일 변경을 허용하지 않는다. 구현 전체가 계약에 명시돼 있으면 implementation에 빈 paths를 사용할 수 있다.",
+      "permission.protected에는 pass의 근거로 사용한 TASK.md의 원래 줄 범위를 from/to로 적는다. 허용할 should_fix·note의 위치는 TASK.md:줄 또는 TASK.md:시작-끝으로 적는다.",
+    ] : []),
     "",
     "```pace-review",
     JSON.stringify(format),
@@ -193,7 +201,7 @@ function assessCriteria(value: unknown, expected: readonly string[]): NonNullabl
   return { criteria, issues: [...new Set(issues)] };
 }
 
-export function assessStructuredReview(stage: BudgetStage, text: string, criteria?: readonly string[]): StructuredAssessment {
+export function assessStructuredReview(stage: BudgetStage, text: string, criteria?: readonly string[], permissionLines?: number): StructuredAssessment {
   const reported_verdict = parseVerdict(text);
   const invalid: StructuredAssessment = { stage, verdict: "unknown", reported_verdict, differs: reported_verdict !== "unknown",
     findings: null, ...(criteria === undefined ? {} : { evidence: assessCriteria(undefined, criteria) }) };
@@ -202,19 +210,24 @@ export function assessStructuredReview(stage: BudgetStage, text: string, criteri
   const encoded = /^```pace-review[ \t]*\r?\n([\s\S]*?)\r?\n```[ \t]*\r?$/m.exec(text)?.[1];
   if (!encoded) return invalid;
   try {
-    const parsed: { version?: unknown; findings?: unknown; criteria?: unknown } = JSON.parse(encoded);
+    const parsed: { version?: unknown; findings?: unknown; criteria?: unknown; permission?: unknown } = JSON.parse(encoded);
     if (!parsed || !hasUniqueKeys(encoded) || parsed.version !== (criteria === undefined ? 1 : 2) || !Array.isArray(parsed.findings) ||
         !parsed.findings.every((finding: unknown) => findingInput(finding, stage, criteria !== undefined))) return invalid;
     if (new Set(parsed.findings.map((finding: FindingInput) => finding.id)).size !== parsed.findings.length) return invalid;
     const findings = parsed.findings.map((item: FindingInput) => assessFinding(stage, item, criteria));
     const evidence = criteria === undefined ? undefined : assessCriteria(parsed.criteria, criteria);
+    const requested = permissionLines === undefined ? null : parsePermission(parsed.permission);
+    const permission = permissionLines !== undefined && requested && requested.protected.length &&
+      requested.protected.every(({ to }) => to <= permissionLines) ? requested : undefined;
     if (evidence) {
       if (findings.some((finding) => finding.reason === "safety_unverified")) evidence.issues.push("safety_unverified");
       if (findings.some((finding) => finding.reason === "unknown_criterion")) evidence.issues.push("unknown_criterion");
+      if (permissionLines !== undefined && !permission) evidence.issues.push("permission_unverified");
     }
     const gap = evidence && (evidence.issues.length > 0 || evidence.criteria.some(({ state }) => state !== "present"));
     const verdict = findings.some((finding) => finding.effective === "blocking") ? "fail" : gap ? "unknown" : "pass";
-    return { stage, verdict, reported_verdict, differs: reported_verdict !== verdict, findings, ...(evidence ? { evidence } : {}) };
+    return { stage, verdict, reported_verdict, differs: reported_verdict !== verdict, findings,
+      ...(evidence ? { evidence } : {}), ...(permission ? { permission } : {}) };
   } catch {
     return invalid;
   }

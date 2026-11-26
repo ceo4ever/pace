@@ -1,0 +1,24 @@
+ℹ tests 1465
+ℹ pass 1447
+ℹ fail 1
+ℹ skipped 17
+✖ failing tests:
+
+test at test/project-harness.test.ts:513:1
+✖ task: 표에 계획된 대기 행은 그 번호로 열고, 새 태스크는 계획 번호와 겹치지 않는다 (3200.247959ms)
+  AssertionError [ERR_ASSERTION]: 폴더 없는 계획 행(T01·T05)의 번호도 비켜 간다
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P013/test/project-harness.test.ts:531:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '',
+    expected: /P001 T06:/,
+    operator: 'match',
+    diff: 'simple'
+  }

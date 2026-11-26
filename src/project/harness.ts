@@ -3,7 +3,8 @@ import { InputSnapshot } from "../core/input-snapshot.ts";
 import { assertTeamFinishDestination, assertTeamFinishInputs, assertTeamFinishScope, checkedTeamTarget, commitTeamFinish, hasTeamFinishHistory, teamFinishFile, writeTeamFinish } from "./team-finish.ts";
 import { resolveWorkerRole, roleInstruction, startRoleRecord, type WorkerRole } from "../team/worker-role.ts";
 import { safeTeamPath } from "../team/store.ts";
-import { reviewIssues } from "./pre-review.ts";
+import { hasPermissionReview, reviewIssues, workingReview, type PermissionCheck, type ReviewCandidate } from "./pre-review.ts";
+import { APPLIED_REVIEW, isGitObject, permissionPath, type ApprovedTaskEdit, type ReviewPermission } from "./review-permission.ts";
 import { shellState } from "./shell-result.ts";
 import { generateDashboard, refreshDashboard } from "./dashboard.ts";
 import { resolveWorkerSettings } from "../core/worker-settings.ts";
@@ -63,6 +64,7 @@ export interface Report {
   ok: boolean;
   issues: string[];
   notes: string[];
+  reviewEdit?: ApprovedTaskEdit;
 }
 
 // ── git ─────────────────────────────────────────────────────────────
@@ -1058,6 +1060,13 @@ function doneTaskRaw(repo: Repo, id: string, taskId: string): Report {
   const dir = taskDir(repo, ref, want);
   const writes = new Map<string, string>();
   const taskPath = join(dir, "TASK.md");
+  if (report.reviewEdit) {
+    const path = relativeGitPath(repo.root, join(dir, APPLIED_REVIEW));
+    if (workingPathKind(repo.root, path) === "unsafe") {
+      return { ok: false, issues: ["허용 TASK 변경 증거 경로가 안전하지 않다"], notes: [] };
+    }
+    writes.set(join(dir, APPLIED_REVIEW), reviewEditText(report.reviewEdit));
+  }
   writes.set(taskPath, setState(readFileSync(taskPath, "utf8"), "완료"));
   const projectPath = projectFile(repo, ref);
   const project = readFileSync(projectPath, "utf8");
@@ -1107,7 +1116,7 @@ function doneTaskRaw(repo: Repo, id: string, taskId: string): Report {
   }
   const changed: string[] = [];
   for (const [path, text] of writes) {
-    if (readFileSync(path, "utf8") === text) continue;
+    if (existsSync(path) && readFileSync(path, "utf8") === text) continue;
     writeFileAtomic(path, text);
     changed.push(relative(repo.root, path));
   }
@@ -1138,14 +1147,25 @@ function checkCriteria(contract: string, close: string, prefix: "T" | "P", label
 }
 
 interface TaskCandidateFiles {
+  head?: string;
   hasEntry(path: string): boolean;
   hasEvidence(path: string): boolean;
   hasProof(path: string): boolean;
   readText(path: string): string | null;
+  mode(path: string): string | null;
+  records(dir: string): string[];
+}
+
+const REVIEW_GIT_ENV = { GIT_NO_LAZY_FETCH: "1", GIT_NO_REPLACE_OBJECTS: "1" };
+
+function candidateRecordPaths(repo: Repo, dir: string, entries: Iterable<string>): string[] {
+  const prefix = relativeGitPath(repo.root, dir) + "/";
+  return [...entries].filter((path) => path.startsWith(prefix) && /^review-records\/R\d+\.json$/.test(path.slice(prefix.length)))
+    .map((path) => path.slice(prefix.length));
 }
 
 function taskCandidateFiles(repo: Repo, projectRel: string, head: string): TaskCandidateFiles {
-  const env = { GIT_NO_LAZY_FETCH: "1", GIT_NO_REPLACE_OBJECTS: "1" };
+  const env = REVIEW_GIT_ENV;
   const tree = gitSpawn(repo.root, ["--literal-pathspecs", "ls-tree", "-r", "-t", "-l", "-z", head, "--", `${projectRel}/tasks`], env);
   if (tree.status !== 0) throw new HarnessError("검사 후보의 태스크 Git tree를 읽지 못했다");
   const files = new Map<string, { mode: string; size: number }>();
@@ -1158,9 +1178,12 @@ function taskCandidateFiles(repo: Repo, projectRel: string, head: string): TaskC
   const metadata = (path: string) => files.get(relativeGitPath(repo.root, path));
   const regular = (entry: { mode: string } | undefined) => /^(100644|100755)$/.test(entry?.mode ?? "");
   return {
+    head,
     hasEntry: (path) => metadata(path) !== undefined,
     hasEvidence: (path) => { const entry = metadata(path); return regular(entry) || entry?.mode === "040000"; },
     hasProof: (path) => { const entry = metadata(path); return regular(entry) && entry!.size > 0; },
+    mode: (path) => metadata(path)?.mode ?? null,
+    records: (dir) => candidateRecordPaths(repo, dir, files.keys()),
     readText(path) {
       const rel = relativeGitPath(repo.root, path);
       if (!regular(files.get(rel))) return null;
@@ -1169,6 +1192,125 @@ function taskCandidateFiles(repo: Repo, projectRel: string, head: string): TaskC
       return content.stdout;
     },
   };
+}
+
+function indexTaskFiles(repo: Repo, dir: string): TaskCandidateFiles {
+  const scope = relativeGitPath(repo.root, dir);
+  const index = gitSpawn(repo.root, ["--literal-pathspecs", "ls-files", "--stage", "-z", "--", scope], REVIEW_GIT_ENV);
+  if (index.status !== 0) throw new HarnessError("검사 후보의 태스크 index를 읽지 못했다");
+  const files = new Map<string, { mode: string; oid: string }>();
+  for (const entry of index.stdout.split("\0").filter(Boolean)) {
+    const item = /^(\d+) ([a-f0-9]+) ([0-3])\t([\s\S]+)$/.exec(entry);
+    if (!item || !isGitObject(item[2])) throw new HarnessError("검사 후보의 태스크 index 형식을 확인하지 못했다");
+    files.set(item[4]!, { mode: item[3] === "0" ? item[1]! : "conflict", oid: item[2] });
+  }
+  const entries = [...files.keys()];
+  const metadata = (path: string) => files.get(relativeGitPath(repo.root, path));
+  const readText = (path: string) => {
+    const entry = metadata(path);
+    if (!entry || !/^100(644|755)$/.test(entry.mode)) return null;
+    const content = gitSpawn(repo.root, ["cat-file", "blob", entry.oid], REVIEW_GIT_ENV);
+    if (content.status !== 0) throw new HarnessError("검사 후보의 index 파일을 읽지 못했다");
+    return content.stdout;
+  };
+  return {
+    hasEntry: (path) => metadata(path) !== undefined,
+    hasEvidence: (path) => /^100(644|755)$/.test(metadata(path)?.mode ?? "") || entries.some((entry) => entry.startsWith(relativeGitPath(repo.root, path) + "/")),
+    hasProof: (path) => !!readText(path),
+    readText,
+    mode: (path) => metadata(path)?.mode ?? null,
+    records: (dir) => candidateRecordPaths(repo, dir, entries),
+  };
+}
+
+function candidateReviewAt(dir: string, source: TaskCandidateFiles): ReviewCandidate {
+  return {
+    hasEntry: (path) => source.hasEntry(join(dir, path)),
+    hasProof: (path) => source.hasProof(join(dir, path)),
+    readText: (path) => source.readText(join(dir, path)),
+    taskMode: (path) => source.mode(join(dir, path)),
+    records: () => source.records(dir),
+  };
+}
+
+function workingPathKind(root: string, path: string): "file" | "missing" | "unsafe" {
+  let current = root;
+  const parts = path.split("/");
+  for (const [index, part] of parts.entries()) {
+    try {
+      const names = readdirSync(current);
+      if (!names.includes(part)) {
+        return names.some((name) => name.toLowerCase() === part.toLowerCase()) ? "unsafe" : "missing";
+      }
+      current = join(current, part);
+      const stat = lstatSync(current);
+      if (index === parts.length - 1) return stat.isFile() && stat.nlink === 1 ? "file" : "unsafe";
+      if (!stat.isDirectory()) return "unsafe";
+    } catch { return "unsafe"; }
+  }
+  return "unsafe";
+}
+
+function permissionScopeIssues(repo: Repo, ref: ProjectRef, dir: string, permission: ReviewPermission, candidate?: TaskCandidateFiles): string[] {
+  const read = (args: string[]) => gitSpawn(repo.root, args, REVIEW_GIT_ENV);
+  const headResult = candidate?.head ? null : read(["rev-parse", "--verify", "HEAD"]);
+  const head = candidate?.head ?? headResult?.stdout.trim();
+  const base = permission.base;
+  if (!isGitObject(head) || (headResult && headResult.status !== 0) ||
+      read(["cat-file", "-t", base]).stdout.trim() !== "commit" ||
+      read(["merge-base", "--is-ancestor", base, head]).status !== 0) return ["허가 기준 커밋이 검사 후보의 조상이 아니다"];
+  if (permission.mode === "implementation" && permission.paths.length === 0) return [];
+  const project = relativeGitPath(repo.root, projectFile(repo, ref));
+  const projectDir = project.slice(0, project.lastIndexOf("/"));
+  const task = relativeGitPath(repo.root, dir);
+  const administrative = new Set([project, `${projectDir}/log.jsonl`, ".pace/memory/status.md", "backlogs/dashboard/data.js"]);
+  const taskFiles = /^(?:TASK(?:-CLOSE)?\.md|PRE-REVIEW\.json|REVIEW-(?:LOG\.jsonl|FOLLOWUPS\.json|ESCALATION-(?:pre|post)\.json)|(?:evidence|review-records)\/.+\.(?:md|json|jsonl|txt|log|patch|diff|csv|tsv|png|jpg|svg|html|pdf))$/;
+  const insideTask = (path: string) => path.startsWith(task + "/") && taskFiles.test(path.slice(task.length + 1));
+  const overview = read(["show", `${base}:${project}`]);
+  const source = overview.status === 0 ? backlogFolder(repo, join(repo.root, projectDir), overview.stdout) : null;
+  if (source && basename(source).startsWith("BL")) {
+    const backlink = relativeGitPath(repo.root, source);
+    administrative.add(`${backlink}/BACKLOG.md`);
+    const brief = listBriefs(repo.root, source).find((entry) => entry.id === basename(dir).slice(1, 3));
+    if (brief) administrative.add(relativeGitPath(repo.root, brief.path));
+  }
+  const permitted = new Set(permission.paths);
+  if (!candidate) {
+    const flags = read(["ls-files", "-v", "-z"]);
+    if (flags.status !== 0 || flags.stdout.split("\0").some((entry) => entry && !entry.startsWith("H "))) {
+      return ["작업본에서 추적 상태가 숨겨졌거나 확인할 수 없다"];
+    }
+    if (permission.paths.some((path) => workingPathKind(repo.root, path) === "unsafe")) return ["허가 경로가 일반 파일 경로로 확인되지 않는다"];
+  }
+  const changes = (args: string[]) => read(["-c", "core.fileMode=true", "-c", "core.fsmonitor=false", "diff", "--no-ext-diff", "--no-renames", "--no-relative", "--raw", "--abbrev=64", "-z", ...args, "--"]);
+  const history = base === head ? null : read(["log", "--format=", "--no-ext-diff", "--no-renames", "--raw", "--abbrev=64", "-m", "-z", `${base}..${head}`, "--"]);
+  const results = [history, candidate?.head ? changes([base, head]) : changes(["--cached", base]),
+    candidate ? null : changes([base]), candidate ? null : read(["ls-files", "--others", "--exclude-standard", "-z"])];
+  const errors = new Set<string>();
+  for (const [view, result] of results.entries()) {
+    if (!result) continue;
+    if (result.status !== 0) return ["후보의 허가 범위 변경을 확인하지 못했다"];
+    const parts = result.stdout.split("\0");
+    for (let index = 0; index < parts.length; index++) {
+      const item = view === 0 ? parts[index]!.replace(/^\n+/, "") : parts[index]!;
+      if (!item) continue;
+      const meta = view === 3 ? null : /^:(\d{6}) (\d{6}) [a-f0-9]+ [a-f0-9]+ [AMD][0-9]*$/.exec(item);
+      if (view !== 3 && !meta) return ["후보의 Git 변경 형식을 확인하지 못했다"];
+      const path = meta ? parts[++index] : item;
+      if (!permissionPath(path)) return ["후보의 변경 경로가 안전하지 않다"];
+      const legalMode = !meta || [meta[1], meta[2]].every((mode) => /^(000000|100644|100755)$/.test(mode ?? "")) &&
+        (meta[1] === "000000" || meta[2] === "000000" || meta[1] === meta[2]);
+      const workingSafe = view !== 2 && view !== 3 || workingPathKind(repo.root, path) === (meta?.[2] === "000000" ? "missing" : "file");
+      if ((!administrative.has(path) && !insideTask(path) && !permitted.has(path)) || !legalMode || !workingSafe) {
+        errors.add(`허가 범위 밖이거나 일반 파일 변경으로 확인할 수 없다 — ${path}`);
+      }
+    }
+  }
+  return [...errors];
+}
+
+function reviewEditText(edit: ApprovedTaskEdit): string {
+  return JSON.stringify({ version: 1, ...edit }, null, 2) + "\n";
 }
 
 /** 적힌 증거 경로가 있는지 확인하고, 서로 다른 경로 수를 돌려준다. */
@@ -1198,17 +1340,56 @@ function checkTaskRaw(repo: Repo, id: string, taskId: string, candidate?: TaskCa
   const label = `${ref.id} ${taskId.toUpperCase()}`;
   const contractPath = join(dir, "TASK.md");
   const closePath = join(dir, "TASK-CLOSE.md");
+  const working = workingReview(dir);
+  const projectRel = `projects/${ref.dir}`;
+  const hook = !candidate && process.env.PACE_COMMIT_CHECK === "1";
+  const index = !candidate ? indexTaskFiles(repo, dir) : undefined;
+  const head = gitSpawn(repo.root, ["rev-parse", "--verify", "HEAD"], REVIEW_GIT_ENV);
+  const headFiles = !candidate && head.status === 0 && isGitObject(head.stdout.trim()) ? taskCandidateFiles(repo, projectRel, head.stdout.trim()) : undefined;
+  const views = [index, candidate, headFiles].flatMap((view) => view ? [candidateReviewAt(dir, view)] : []);
+  const required = views.some(hasPermissionReview) || (!candidate && hasPermissionReview(working));
+  if (hook && required) candidate = index;
+  if (required && !candidate) {
+    for (const path of [contractPath, closePath]) {
+      if (workingPathKind(repo.root, relativeGitPath(repo.root, path)) === "unsafe") {
+        return { ok: false, issues: [`${label}: 허가 대상의 작업 경로가 안전하지 않다`], notes: [] };
+      }
+    }
+  }
   const close = candidate ? candidate.readText(closePath) : existsSync(closePath) ? readFileSync(closePath, "utf8") : null;
   if (close === null) return { ok: false, issues: [`${label}: TASK-CLOSE.md가 없다`], notes: [] };
   if (!/^- 태스크: .*판정: 통과/m.test(close)) issues.push(`${label}: 판정이 "통과"가 아니다`);
-  const contract = candidate ? candidate.readText(contractPath) : readFileSync(contractPath, "utf8");
+  const contract = candidate ? candidate.readText(contractPath) : required ? working.readText("TASK.md") : readFileSync(contractPath, "utf8");
   if (contract === null) return { ok: false, issues: [`${label}: 검사 후보의 TASK.md가 없다`], notes: [] };
-  const candidateReview = candidate ? {
-    hasEntry: (path: string) => candidate.hasEntry(join(dir, path)),
-    hasProof: (path: string) => candidate.hasProof(join(dir, path)),
-    readText: (path: string) => candidate.readText(join(dir, path)),
-  } : undefined;
-  issues.push(...reviewIssues(dir, contract, candidateReview).map(issue => `${label}: ${issue}`));
+  const reader = candidate ? candidateReviewAt(dir, candidate) : working;
+  const gate: PermissionCheck = { required, checkScope: (permission) => {
+    let range = candidate;
+    if (candidate?.head) {
+      const task = taskId.toUpperCase();
+      const completed = gitSpawn(repo.root, ["log", "-1", "--format=%H", "-F", `--grep=(${ref.id}/${task})`, candidate.head], REVIEW_GIT_ENV);
+      const commit = completed.stdout.trim();
+      if (completed.status !== 0 || !isGitObject(commit)) return ["검사 후보에 태스크 완료 커밋이 없다"];
+      range = { ...candidate, head: commit };
+    }
+    return permissionScopeIssues(repo, ref, dir, permission, range);
+  } };
+  issues.push(...reviewIssues(dir, contract, reader, gate).map(issue => `${label}: ${issue}`));
+  // Staging can leave a different TASK in the index than the reader just approved.
+  // Use the working approval to check any staged TASK without requiring unrelated evidence to be staged before done.
+  if (required && !candidate && index && issues.length === 0) {
+    const indexMode = index.mode(contractPath);
+    const indexContract = index.readText(contractPath);
+    if (indexMode !== (headFiles?.mode(contractPath) ?? null) || indexContract !== (headFiles?.readText(contractPath) ?? null)) {
+      if (indexContract === null) issues.push(`${label}: index의 검토 대상이 일반 파일로 확인되지 않는다 · 범위 재검토 필요`);
+      else {
+        const staged = { ...working, taskMode: () => indexMode };
+        issues.push(...reviewIssues(dir, indexContract, staged, { required }).map(issue => `${label} index: ${issue}`));
+      }
+    }
+  }
+  if (candidate && gate.edit && reader.readText(APPLIED_REVIEW) !== reviewEditText(gate.edit)) {
+    issues.push(`${label}: 허용 TASK 변경의 증거가 후보와 다르다 — done으로 기록한다`);
+  }
   checkCriteria(contract, close, "T", label, issues);
   const headings = ["## 단위 테스트", "## E2E", "## 리뷰", "## 남긴 것"];
   for (const heading of headings) {
@@ -1219,7 +1400,7 @@ function checkTaskRaw(repo: Repo, id: string, taskId: string, candidate?: TaskCa
   const evidence = checkEvidencePaths(dir, close, label, issues, candidate);
   const criteria = tableRows(contract, "## 기준").map((r) => r[0]!).filter((c) => /^T-\d+$/.test(c));
   const notes = issues.length === 0 ? [`확인: 판정 통과 · 기준 ${criteria.length}개(${criteria.join(", ")}) 모두 통과 · 절 ${headings.length}개 · 증거 파일 ${evidence}개`] : [];
-  return { ok: issues.length === 0, issues, notes };
+  return { ok: issues.length === 0, issues, notes, ...(gate.edit ? { reviewEdit: gate.edit } : {}) };
 }
 
 function stripComments(text: string): string {
@@ -1494,14 +1675,15 @@ function finishProjectRaw(repo: Repo, id: string, attempt: { source?: string; pr
   }
 
   // 1. 태스크
-  const taskCandidate = initialTeamRequired ? taskCandidateFiles(repo, projectRel, candidateHead) : undefined;
+  const taskCandidate = taskCandidateFiles(repo, projectRel, candidateHead);
   for (const row of taskRows(project)) {
     const [taskId, , , state] = row;
     if (!/^T\d{2}$/.test(taskId ?? "")) continue;
     if (state === "보류") continue;
     if (state !== "완료") issues.push(`${taskId}: 상태가 완료가 아니다 (${state || "빈칸"})`);
     else {
-      issues.push(...checkTaskRaw(repo, id, taskId!, taskCandidate).issues);
+      const useCandidate = initialTeamRequired || hasPermissionReview(candidateReviewAt(taskDir(repo, ref, taskId!), taskCandidate));
+      issues.push(...checkTaskRaw(repo, id, taskId!, useCandidate ? taskCandidate : undefined).issues);
       // 승인된 선반영 뒤에도 태스크 커밋은 HEAD의 조상이다. 다른 브랜치의 태그는 인정하지 않는다.
       const commits = git(repo.root, ["log", "-1", "--format=%h", "-F", `--grep=(${ref.id}/${taskId})`, "HEAD"]);
       if (commits === "") issues.push(`${taskId}: 태스크 커밋이 없다 — (${ref.id}/${taskId})`);

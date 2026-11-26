@@ -4,6 +4,7 @@ import { basename, dirname, join, relative, sep } from "node:path";
 import { proofScopeIssues, reviewHash } from "../project/pre-review.ts";
 import { appendLedger, LedgerError, readLedger, textHash, type ReviewCallEntry, type ReviewEntry } from "./review-log.ts";
 import { matchingCriteria } from "./review-criteria.ts";
+import { matchesPermissionBasis, parseGrantedPermission } from "../project/review-permission.ts";
 
 const ROUND_LIMIT = 2;
 // 독립 판정 2회와 중단·무효 등 판정이 없는 시도 2회를 허용한다.
@@ -120,8 +121,11 @@ export function readReviewBudget(scope: ReviewBudgetScope, offsets: Readonly<Rec
           recordedStage(scope, ledgerTarget, entry) !== scope.stage) continue;
       if (entry.type === "review" && !entry.interrupted) {
         const format = formats.get(entry.record);
-        if ((format || entry.required_criteria !== undefined) && (!format || format.target !== entry.target ||
-            format.hash !== entry.hash || !matchingCriteria(format.required_criteria, entry.required_criteria))) {
+        if ((format || entry.required_criteria !== undefined || entry.permission_basis || entry.permission) && (!format || format.target !== entry.target ||
+            format.hash !== entry.hash || !matchingCriteria(format.required_criteria, entry.required_criteria) ||
+            !matchesPermissionBasis(format.permission_basis, entry.permission_basis) ||
+            (entry.verdict === "pass" && format.permission_basis &&
+              (!parseGrantedPermission(entry.permission) || !matchesPermissionBasis(format.permission_basis, entry.permission))))) {
           throw new LedgerError(`필수 기준 기록과 검토 원장이 맞지 않는다: ${entry.record}`);
         }
       }

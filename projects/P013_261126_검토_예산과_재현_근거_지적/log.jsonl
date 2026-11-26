@@ -90,3 +90,13 @@
 {"ts":"2026-11-26T04:32:16.772Z","p":"P013","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T04:32:16.999Z","p":"P013","t":"T04","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T04:32:16.999Z","p":"P013","t":"T04","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T04:32:36.815Z","p":"P013","t":"T05","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T04:34:45.166Z","p":"P013","t":"T05","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 7 — 기준 커밋, 실제 후보, 원본 줄과 보호 위치, 허가 형식, 기존 구현의 실패 반례를 계약에 명시한다.","ref":"review-records/R1.json","data":{"blocking":0,"should_fix":7,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T04:38:35.807Z","p":"P013","t":"T05","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 5 — 하향 우회, 후보와 기준 커밋, 실제 사용자 훅·거부 상태와 탐침 경로 집합을 구현 시험에 포함한다.","ref":"evidence/pre-review-stage2.json","data":{"blocking":0,"should_fix":5,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T05:00:38.501Z","p":"P013","t":"T05","type":"review","by":"agent","msg":"reviewer fail blocking 1 should_fix 2 — 새 허가 표지에 기존 A-3 예외가 묶이는 회귀 및 허가 사본과 원본 표지 문제를 확인했다.","ref":"evidence/review-records/R1.json","data":{"blocking":1,"should_fix":2,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-26T05:00:38.722Z","p":"P013","t":"T05","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — 사용자 예외 복원, 이전 허가 유지, 양쪽 기록 표지의 대조를 검토했고 재검토 안내가 필요했다.","ref":"evidence/review-records/R2.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T05:01:12.529Z","p":"P013","t":"T05","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — 보안과 실제 계약을 대조했다. 선행 허가를 유지하는 사용자 예외의 결정 근거를 겹침 브리프에 연결했다.","ref":"evidence/security-stage2.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T05:01:12.742Z","p":"P013","t":"T05","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 — 최신 코드 지문과 실제 게이트 7건·사전 검토 회귀 5건을 대조했으며 예외의 검출력을 별도로 확인했다.","ref":"evidence/tester-final.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-26T05:06:00.432Z","p":"P013","t":"T05","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T05:06:00.668Z","p":"P013","t":"T05","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T05:06:00.668Z","p":"P013","t":"T05","type":"task_done","by":"cli","msg":"done","ok":true}

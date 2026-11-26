@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "fdb0563cca9d1975f349d9c63ad8722d258875382a158f886e448269291afc2c",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "f83687a748988efd7ecb5285ac4482c9f59892876473ad05410d29b6ecd088a4",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "허가 인증 입력, 후보 Git 범위, 원문 줄·보호와 반례를 구체화했다"
+    }
+  ]
+}

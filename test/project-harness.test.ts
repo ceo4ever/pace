@@ -8,7 +8,11 @@ import { basename, delimiter, dirname, join, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { packageRoot, templatesDir } from "../src/core/paths.ts";
 import { canonTouched, declaredCommand, findSecrets } from "../src/project/harness.ts";
-import { PACE_BIN, reusableGitFixture, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
+import { evidenceReviewFixture, PACE_BIN, reusableGitFixture, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
+import { normalizeResult, type Executor } from "../src/agent/contract.ts";
+import { verifyCommand } from "../src/agent/verify-cli.ts";
+import { reviewHash } from "../src/project/pre-review.ts";
+import { textHash } from "../src/agent/review-log.ts";
 
 const fixtureContexts = new Map<string, { home: string; bin: string }>();
 function gitRun(cwd: string, args: string[], extra: NodeJS.ProcessEnv = {}) {
@@ -600,6 +604,248 @@ function passTask(taskDir: string): void {
     "# 마감\n\n- 태스크: [TASK.md](TASK.md) · 판정: 통과\n\n## 기준 대조\n\n| # | 결과 | 증거 |\n|---|---|---|\n| T-1 | 통과 | S-1 |\n\n## 단위 테스트\n\n통과 1\n\n## E2E\n\n해당 없음\n\n## 리뷰\n\nblocking 0\n\n## 남긴 것\n\n없음\n",
   );
 }
+
+function permissionFixture() {
+  const { main, home } = repoFixture();
+  write(join(main, "src/probe.ts"), "export const probe = 1;\n");
+  write(join(main, "src/feature.ts"), "export const feature = 1;\n");
+  git(main, "add", "-A");
+  git(main, "commit", "-qm", "source");
+  assert.equal(runCli(home, main, "new", "범위").status, 0);
+  assert.equal(runCli(home, main, "start", "P001", "--no-launch").status, 0);
+  const wt = join(dirname(main), "app.wt", "P001");
+  assert.equal(runCli(home, wt, "task", "P001", "허가").status, 0);
+  const project = projectDir(wt);
+  const dir = join(project, "tasks", "T01_허가");
+  passTask(dir);
+  const target = join(dir, "TASK.md");
+  const snapshot = "# 허가\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n목적 고정\n\n## 증명 범위\n- 판정 주체: 독립 점검\n\n## 기준\n\n| # | 기준 |\n|---|---|\n| T-1 | 결과 |\n\n## 접근\n먼저 문구 A\n통과 근거\n나중 문구 B\n후속 문구 C\n";
+  write(target, snapshot);
+  const base = git(wt, "rev-parse", "HEAD");
+  const prompt = "- [필수 기준 T-1]\n```pace-review\n{\"version\":2,";
+  const finding = { id: "F1", severity: "should_fix", category: "scope", location: "TASK.md:19",
+    scenario: "설명을 구체화하면 동작이 잘 보인다", reproduction: "계약 설명과 사례를 비교한다", confidence: "high" };
+  const findings = [finding, { ...finding, id: "F2", location: "TASK.md:20-21" }];
+  const raw = (permission: unknown) => ["검토 본문", "```pace-review", JSON.stringify({ version: 1, findings, permission }), "```", "pass"].join("\n");
+  const permission = { mode: "probe", paths: ["src/probe.ts"], protected: [{ from: 20, to: 20 }] };
+  const grant = { ...permission, base, task_mode: "100644" };
+  const hash = reviewHash(snapshot);
+  const evidence = "review-records/R1.json";
+  const review = { target: "TASK.md", hash, verdict: "pass", structured_stage: "pre", required_criteria: ["T-1"],
+    permission_basis: { base, task_mode: "100644" }, permission: grant };
+  const text = evidenceReviewFixture(prompt, raw(permission));
+  const attempt = { hash, provider: "openai", cross: true, status: "pass", blocking: 0, evidence, continuity: "new", permission: grant };
+  const pre = join(dir, "PRE-REVIEW.json");
+  const ledger = join(dir, "REVIEW-LOG.jsonl");
+  const record = join(dir, evidence);
+  const save = (value = attempt) => write(pre, JSON.stringify({ version: 1, author: "anthropic", attempts: [value] }));
+  const seed = () => {
+    save();
+    write(record, JSON.stringify({ cross: true, review: { ...review, snapshot }, result: { text, provider: { value: "openai" } } }));
+    const at = "2026-11-26T00:00:00Z";
+    write(ledger, [
+      { type: "format", at, target: review.target, record: evidence, hash, required_criteria: ["T-1"], permission_basis: review.permission_basis },
+      { ...review, type: "review", at, kind: "task", verifier: "codex", provider: "openai", cross: true, rereview_of: null, record: evidence, result_hash: textHash(text) },
+    ].map((row) => JSON.stringify(row)).join("\n") + "\n");
+  };
+  return { home, main, wt, project, dir, target, snapshot, base, pre, ledger, record, permission, grant, attempt, raw, save, seed,
+    gate: (name: string) => runCli(home, wt, name, "P001", "T01") };
+}
+
+test("허가 범위: 작업본·실제 index·중간 커밋에 범위 밖 변경이 남으면 진행하지 않는다", () => {
+  const h = permissionFixture();
+  h.seed();
+  git(h.wt, "add", "-A");
+  git(h.wt, "commit", "-qm", "검토 자료 준비");
+  const outside = join(h.wt, "src/feature.ts");
+  const original = readFileSync(outside, "utf8");
+  const dirty = "export const feature = 2;\n";
+  const before = git(h.wt, "rev-parse", "HEAD");
+  const statePaths = [h.target, h.pre, join(h.project, "PROJECT.md")];
+  const prior = statePaths.map((path) => readFileSync(path, "utf8"));
+  const reject = () => {
+    for (const name of ["check", "done"]) {
+      const result = h.gate(name);
+      assert.equal(result.status, 1, result.stdout + result.stderr);
+      assert.match(result.stdout + result.stderr, /허가 범위 밖.*src\/feature\.ts/);
+    }
+    assert.deepEqual(statePaths.map((path) => readFileSync(path, "utf8")), prior);
+    assert.equal(git(h.wt, "rev-parse", "HEAD"), before);
+  };
+  write(outside, dirty);
+  reject();
+  const commit = (...args: string[]) => gitRun(h.wt, ["commit", "-qm", "feat(P001/T01): 허가", ...args]);
+  const all = commit("-a");
+  assert.notEqual(all.status, 0);
+  assert.match(all.stdout + all.stderr, /허가 범위 밖.*src\/feature\.ts/);
+  git(h.wt, "add", "src/feature.ts");
+  write(outside, original);
+  reject();
+  const staged = commit();
+  assert.notEqual(staged.status, 0);
+  assert.match(staged.stdout + staged.stderr, /허가 범위 밖.*src\/feature\.ts/);
+  // Path-limited commits use their own index. An unrelated staged change does not become part of that commit.
+  write(join(h.wt, "src/probe.ts"), "export const probe = 2;\n");
+  const partial = commit("--", "src/probe.ts");
+  assert.equal(partial.status, 0, partial.stdout + partial.stderr);
+  assert.match(git(h.wt, "diff", "--cached", "--name-only"), /src\/feature\.ts/);
+  git(h.wt, "commit", "-qm", "태스크 태그 없는 로컬 커밋");
+  git(h.wt, "add", "src/feature.ts");
+  git(h.wt, "commit", "-qm", "작업본 상태 복구");
+  const intermediate = h.gate("done");
+  assert.equal(intermediate.status, 1, intermediate.stdout + intermediate.stderr);
+  assert.match(intermediate.stdout + intermediate.stderr, /허가 범위 밖.*src\/feature\.ts/);
+});
+
+test("허가 범위: 최신 원본과 대조해 여러 줄의 작은 수정만 진행하고 다음 검토에 보존한다", async () => {
+  const h = permissionFixture();
+  h.seed();
+  const pristine = [h.pre, h.ledger, h.record].map((path) => readFileSync(path, "utf8"));
+  for (const [path, change] of [
+    [h.pre, (text: string) => text.replace('"mode":"probe"', '"mode":"implementation"')],
+    [h.pre, (text: string) => { const record = JSON.parse(text); delete record.attempts[0].permission; return JSON.stringify(record); }],
+    [h.ledger, (text: string) => text.replaceAll('"task_mode":"100644"', '"task_mode":"100755"')],
+    [h.record, (text: string) => text.replace("통과 근거", "변조한 근거")],
+  ] as const) {
+    const original = readFileSync(path, "utf8");
+    write(path, change(original));
+    const result = h.gate("check");
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    assert.match(result.stdout + result.stderr, /범위 재검토/);
+    write(path, original);
+  }
+  assert.deepEqual([h.pre, h.ledger, h.record].map((path) => readFileSync(path, "utf8")), pristine);
+  const stripped = pristine[1]!.trim().split("\n").map((line) => {
+    const row = JSON.parse(line);
+    delete row.permission;
+    delete row.permission_basis;
+    return JSON.stringify(row);
+  }).join("\n");
+  write(h.ledger, stripped);
+  const noPermission = JSON.parse(pristine[0]!);
+  delete noPermission.attempts[0].permission;
+  write(h.pre, JSON.stringify(noPermission));
+  assert.match(h.gate("check").stdout, /review\.permission/);
+  write(h.pre, pristine[0]!);
+  write(h.ledger, pristine[1]!);
+  for (const current of [
+    h.snapshot.replace("목적 고정", "새 목표"), h.snapshot.replace("통과 근거", "다른 근거"),
+    h.snapshot.replace("후속 문구 C", "위치 밖 수정"), h.snapshot.replace("먼저 문구 A", "먼저 문구 A\0"),
+    h.snapshot.replace("먼저 문구 A\n", ""), h.snapshot.replace("먼저 문구 A", "## 새로운 절"),
+  ]) {
+    write(h.target, current);
+    const result = h.gate("check");
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    assert.match(result.stdout + result.stderr, /범위 재검토/);
+  }
+  writeFileSync(h.target, Buffer.concat([Buffer.from(h.snapshot), Buffer.from([0xff])]));
+  assert.match(h.gate("check").stdout, /UTF-8 텍스트/);
+  write(h.target, h.snapshot);
+  chmodSync(h.target, 0o755);
+  assert.match(h.gate("check").stdout, /파일 모드/);
+  chmodSync(h.target, 0o644);
+  if (process.platform !== "win32") {
+    renameSync(h.target, join(h.dir, "옛 대상.md"));
+    symlinkSync(join(h.dir, "옛 대상.md"), h.target);
+    assert.match(h.gate("check").stdout, /경로가 안전하지 않다/);
+    rmSync(h.target);
+    renameSync(join(h.dir, "옛 대상.md"), h.target);
+  }
+  const edit = h.snapshot.replace("먼저 문구 A", "먼저 문구 A 수정\n보충 한 줄").replace("나중 문구 B", "나중 문구 B 수정");
+  write(h.target, h.snapshot.replace("통과 근거", "index 안의 보호 줄 변경"));
+  git(h.wt, "add", h.target);
+  write(h.target, h.snapshot);
+  assert.match(h.gate("done").stdout, /index: .*범위 재검토/);
+  git(h.wt, "reset", "-q", "HEAD", "--", h.target);
+  write(h.target, edit);
+  const receipt = join(h.dir, "evidence/REVIEW-APPLIED.json");
+  const checked = h.gate("check");
+  assert.equal(checked.status, 0, checked.stdout + checked.stderr);
+  assert.equal(existsSync(receipt), false);
+  const stopped = h.gate("done");
+  assert.equal(stopped.status, 0, stopped.stdout + stopped.stderr);
+  const applied = JSON.parse(readFileSync(receipt, "utf8"));
+  assert.deepEqual([applied.original_hash, applied.current_hash], [reviewHash(h.snapshot), reviewHash(edit)]);
+  assert.match(applied.diff, /- 먼저 문구 A\n\+ 먼저 문구 A 수정\n\+ 보충 한 줄/);
+  assert.match(applied.diff, /- 나중 문구 B\n\+ 나중 문구 B 수정/);
+  const implementation = join(h.dir, "evidence/implementation.patch");
+  write(implementation, "합성 구현 변경과 시험 결과\n");
+  const prompts: string[] = [];
+  const result = await reviewWithFixture(implementation, "```pace-review\n{\"version\":1,\"findings\":[]}\n```\npass", prompts);
+  assert.equal(result.code, 0, JSON.stringify(result.output));
+  assert.match(prompts[0]!, /사전 검토 허용 위치에서 반영한 TASK 변경/);
+  assert.ok(prompts[0]!.includes(applied.current_hash));
+  assert.ok(prompts[0]!.includes("나중 문구 B 수정"));
+  git(h.wt, "add", "-A");
+  git(h.wt, "commit", "-qm", "feat(P001/T01): 허용 수정");
+});
+
+async function reviewWithFixture(target: string, response: string, prompts: string[] = []) {
+  const executor: Executor = {
+    agent: "codex", mode: "p",
+    capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
+    async run(request) {
+      prompts.push(request.prompt);
+      return normalizeResult(request, { text: evidenceReviewFixture(request.prompt, response), provider: "openai" },
+        { durationMs: 1, enforcement: "fake" });
+    },
+  };
+  const outputs: string[] = [];
+  const code = await verifyCommand(["--target", target, "--author-agent", "claude", "--purpose", "검토 허가의 실제 기록 흐름"], {
+    executors: () => [executor], write: (text) => outputs.push(text),
+  });
+  return { code, output: JSON.parse(outputs.join("")) };
+}
+
+test("허가 범위: verify가 Git 기준을 고정하고 잘못된 경로·보호 줄은 pass를 만들지 않는다", async () => {
+  const h = permissionFixture();
+  const prompts: string[] = [];
+  for (const permission of [
+    { ...h.permission, paths: ["../src/probe.ts"] },
+    { ...h.permission, protected: [{ from: 1, to: 200 }] },
+    h.permission,
+  ]) {
+    const checked = await reviewWithFixture(h.target, h.raw(permission), prompts);
+    assert.equal(checked.code, 0, JSON.stringify(checked.output));
+    if (permission !== h.permission) {
+      assert.equal(checked.output.review.verdict, "unknown");
+      assert.ok(checked.output.assessment.evidence.issues.includes("permission_unverified"));
+      continue;
+    }
+    assert.deepEqual(checked.output.review.permission, h.grant);
+    assert.match(prompts.at(-1)!, /permission/);
+    h.save({ ...h.attempt, evidence: checked.output.review.record, permission: checked.output.review.permission });
+    const accepted = h.gate("check");
+    assert.equal(accepted.status, 0, accepted.stdout + accepted.stderr);
+  }
+});
+
+test("허가 범위: 사용자의 A-3 예외는 유지하고 이전 탐침 허가를 자동으로 넓히지 않는다", async () => {
+  const finding = { id: "F1", severity: "blocking", category: "scope", location: "TASK.md:11",
+    scenario: "일반 파일 경로를 검증하지 못하면 허가 범위를 판정할 수 없다", reproduction: "대조할 수 없는 경로로 판정 조건을 실행한다", confidence: "high" };
+  for (const prior of [false, true]) {
+    const h = permissionFixture();
+    if (prior) h.seed();
+    const response = ["검토 본문", "```pace-review", JSON.stringify({ version: 1, findings: [finding] }), "```", "fail"].join("\n");
+    const checked = await reviewWithFixture(h.target, response);
+    assert.equal(checked.output.review.verdict, "fail", JSON.stringify(checked.output));
+    const evidence = "evidence/owner-decision.md";
+    write(join(h.dir, evidence), "합성 owner 결정 · 검토 미충족을 수용한다.\n");
+    const fail = { hash: reviewHash(h.snapshot), provider: "openai", cross: true, status: "fail", blocking: 1,
+      evidence: checked.output.review.record, continuity: prior ? "changed" : "new", ...(prior ? { reason: "보완된 맥락" } : {}) };
+    const waiver = { by: "user", hash: reviewHash(h.snapshot), evidence, reason: "명시적으로 미충족 수용", date: "2026-11-26" };
+    const approval = { version: 1, author: "anthropic", attempts: prior ? [h.attempt, fail] : [fail], waiver };
+    write(h.pre, JSON.stringify({ ...approval, waiver: { ...waiver, by: "pm" } }));
+    assert.match(h.gate("check").stdout, /사용자 결정만/);
+    write(h.pre, JSON.stringify(approval));
+    const accepted = h.gate("check");
+    assert.equal(accepted.status, 0, accepted.stdout + accepted.stderr);
+    write(join(h.wt, "src/feature.ts"), "export const feature = 2;\n");
+    const narrowed = h.gate("check");
+    assert.equal(narrowed.status, prior ? 1 : 0, narrowed.stdout + narrowed.stderr);
+    if (prior) assert.match(narrowed.stdout, /사용자 예외는 앞선 허가 범위를 넓히지 않는다.*범위 재검토/);
+  }
+});
 
 test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다", async (ctx) => {
   const direct = createProjectCalls();
