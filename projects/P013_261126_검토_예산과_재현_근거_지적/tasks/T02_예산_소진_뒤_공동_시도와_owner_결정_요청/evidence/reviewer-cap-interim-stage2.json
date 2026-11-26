@@ -1,0 +1,25 @@
+{
+  "text": "## 2단계 작업 문서 대조: P013 T02 구현 diff (b3c96027…0f84)\n\n**결론: pass입니다.** 1단계에서 확인한 F1(수정 확인에서 나온 blocking 밖 fail이 B1 재실행의 pass로 덮이는 경로)은 해소됐습니다. 이번에 읽은 TASK.md(T-1~T-5), P-2, BR02, owner 결정 원문 두 건과도 충돌하지 않습니다. 남은 것은 should_fix 2건과, 마감 때 채워야 할 판정 공백 2건입니다. 다만 저는 테스트와 `npm run check`를 직접 돌리지 못했습니다. 아래 판단은 코드·테스트를 읽은 추론과 남아 있는 증거 파일에 근거합니다.\n\n### 1단계 판단 유지 여부\n1단계 판단을 그대로 유지합니다. 작업 문서를 읽고 나서 판단이 바뀐 부분은 없고, 대조 기준만 구체화됐습니다.\n- **추가 blocking:** T-5 마지막 문장(\"수정으로 인한 추가 blocking은 fail과 원문을 보존한다\")은 지금 구현의 `additional_blocking` 처리와 일치합니다.\n- **owner 결정 원문:**\n  - 07:44 원문(\"재검증을 해야 한다면 처리하고 사후 보고, 생략을 결정할 수 있는 상황이면 승인 요청\")은 A-3 행 문구, B-4 수정 확인 절, D16 eval과 일치합니다.\n  - 08:26 원문(\"a\", 같은 지적당 1회·태스크 전체 최대 2회·초과는 owner 결정 요청)과 허브 해석(ID·위치로 식별, 백로그는 폴더당 2회)은 `confirmationLimit`, 공유 원장 `REVIEW-FOLLOWUPS.jsonl`, 그리고 테스트 두 건(\"같은 지적 …새 지문이어도 A-1\", \"태스크 두 단계 합산과 백로그 폴더마다 두 번\")에 그대로 반영됐습니다.\n- **합의 영향(A-1):** BR02와 P-2를 고친 범위는 두 owner 결정의 범위 안입니다. 그래서 A-1 위반이 아닙니다.\n\n### 기준별 대조\n\n| 기준 | 판정 | 근거·한계 |\n|---|---|---|\n| T-1 (공동 재검증 상한) | 충족 | \"일반 공동 시도는 적용 기록만으로 소모되지 않고…\" 테스트가 태스크와 백로그 각각 두 회에서 멈추는지 확인합니다. 세 번째 공동 시도 기록은 종료 2입니다. 공동 재검증이 pass를 받으면 추가 공동 시도를 막습니다(`openFollowup` 공동 시도 분기). 미실행도 공동 시도 횟수로 세는 점은 문서에 명시됐습니다. |\n| T-2 (소진 보고) | 충족 | `followupReport`가 추이·호출·판정 요약·지적별 A 판정 칸을 채우고 `REVIEW-ESCALATION-<단계>.json`에 남깁니다. 판정 없이 호출만 다 쓴 경우는 \"유효 판정 없음(중단·무효 4회)\"로 표시합니다. A-3 요청은 추천·선택지·지적별 판정이 빠지면 거부됩니다(테스트와 smoke의 `recheck_as_waiver`). |\n| T-3 (owner 결정 전 차단) | 충족 | 요청이 열려 있으면 verify가 막힙니다(smoke `approval_pending` 종료 16). `--by pm`과 근거가 없는 user 입력은 거부되고, `--rounds`로 명시한 회차만 열립니다. 테스트가 호출 수로 확인합니다. |\n| T-4 (결정 권한 문구·eval·회귀) | 문구와 eval은 충족, 전체 회귀는 직접 확인 못 함 | A-3·B-4·사후 요약 문구는 `project-dev-skill.test.ts`가 고정합니다. eval D16(`eval-D16-cap.json`)은 (a) 사후 보고, (b) A-1, (c) A-3로 기대값과 일치합니다. 다만 저는 `npm run check` 출력을 보지 못했습니다. |\n| T-5 (수정 확인) | 충족 | 확인의 범위를 같은 ID·위치, 같은 해시로 묶습니다. 단위 상한 2회, 실행 직전 재대조, 동시 실행 거부가 있습니다. B1 복구는 판정을 못 받은 경우만 허용하고 유효한 fail·pass는 복구하지 못합니다. 승인 1회는 해당 요청에 한정되고, 추가 blocking의 fail은 보존됩니다. 확인 결과는 사후 보고 파일에 남습니다. |\n\n### 지적\n\n**S1 [should_fix] 해소된 지적을 인용한 pass가 미확인으로 굳음 (1단계 S1 유지)**\n- **위치:** `verify-cli.ts`의 `blocking_with_pass` 판정. 결과 원문에 `[blocking]`이 하나라도 있으면 해당합니다.\n- **문제:** 검토자가 \"F1 [blocking] … 해소\"처럼 해소 사실을 인용하며 pass를 내면 미확인(unknown)이 됩니다. 이 경우 B1 복구는 막혀 있어 확인 1회를 쓰고 A-1로 올라갑니다.\n- **영향:** 안전 쪽으로는 문제가 없습니다. 하지만 T-5의 \"상한 안에서 실행하고 사후 보고\"라는 목표와 불필요한 owner 요청이라는 면에서 손실입니다.\n\n**S2 [should_fix] 추가 blocking에 대한 허브 판정을 남길 길이 없음**\n- **상황:** 문서는 \"추가 blocking과 수정의 관계를 허브가 판정한다\"고 합니다. 그런데 허브가 그 지적을 수정과 무관하다고 판정해도 이를 기록할 도구 경로가 없습니다.\n- **결과:** fail이 그대로 남아 다음 조치는 A-1이나 A-3뿐입니다.\n- **판정에 넣지 않는 이유:** 보수적으로 동작하고 owner 결정의 취지(\"결함이 남으면 owner에게\")와 맞습니다.\n- **참고:** 이전 tester 원문(`tester-rereview.md`)은 같은 F9 사례를 \"범위 밖 판정 거부 미작동\"으로 보았습니다. 지금 계약(T-5 마지막 문장)은 fail 보존이 옳다고 정했습니다. 다만 허브 판정을 남기는 방법은 BR02 범위의 운영 공백으로 남습니다.\n\n### 실제 판정 공백 (diff의 결함은 아니며 마감 때 채울 항목)\n- **G1: 최신 지문의 독립 tester 판정이 없습니다.** 제가 본 tester 증거는 `tester-rereview.md` 하나이고, 판정은 fail입니다. 그때 지적된 두 가지(범위 밖 처리, 첫 전체 검토 미실행 복구)는 지금 코드에 각각 `additional_blocking` 계약과 `--recover-first`로 반영돼 있습니다. 그러나 이번 해시를 tester가 다시 판정한 원문은 보지 못했습니다. 기존 절차상 마감 전에 tester를 다시 돌려야 합니다.\n- **G2: `npm run check` 전체 출력이 증거에 없습니다.** tester도 전체 검사를 리드 범위로 남겼습니다. T-4의 \"전체 회귀 검사 통과\"는 아직 관측되지 않았습니다.\n\n### 묻는 것에 대한 답\n1. **목표와 결과:** 목표는 P-2와 owner 결정에 맞고, 결과는 T-1~T-5를 코드와 테스트 수준에서 이룹니다. 단, 실행으로 관측하는 일은 G1·G2로 남았습니다.\n2. **다른 길:** 추가 blocking은 fail로 보존하고 허브가 그 관계를 기록하는 별도 기록 유형을 두는 길이 있습니다(S2).\n3. **빠진 것:** S1, S2, 그리고 G1·G2의 실행 증거입니다.\n4. **결정 추적:** 이번 변경은 07:44와 08:26 owner 원문, B1 절, PRE-REVIEW 원칙으로 모두 추적됩니다. 추적되지 않는 결정은 찾지 못했습니다.\n\n### 읽은 범위와 독립성 한계\n- **읽은 파일:**\n  - T02 `TASK.md`\n  - `PROJECT.md`의 P-2 행(검색)\n  - `evidence/owner-decision.md`, `evidence/owner-confirmation-limit.md`\n  - `evidence/cli-smoke.json`, `evidence/tester-rereview.md`, `evidence/eval-D16-cap.json`\n  - T02 폴더 파일 목록\n  - BR02와 테스트 코드는 프롬프트의 diff로 읽었습니다.\n- **읽지 않은 파일:**\n  - `review-disposition.md`: 작성자의 지적 대응 문서라 제외했습니다.\n  - 이전 reviewer 판정 파일과 `PRE-REVIEW.json`\n  - 메모리와 brain\n- **실행하지 않은 것:** 테스트와 `npm run check`입니다. 이 세션에는 실행 도구가 없습니다.\n- **노출된 맥락:**\n  - 1단계의 직전 검토 원문, 바뀐 줄, diff 전문\n  - 자동 첨부된 CLAUDE.md와 AGENTS.md, git status 스냅숏\n  - 부트 생략 훅 메시지\n- **독립성:** 이 검토는 Anthropic Claude(Opus 5.5)가 읽기 전용으로 했습니다. eval D16도 같은 Claude 모델이 수행했습니다. 그래서 그 결과를 독립 근거로 볼 때는 같은 제공자라는 한계가 있습니다. 작성자의 제공자는 이 호출 안에서 확인하지 못했습니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": null,
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 61348,
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 6323
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

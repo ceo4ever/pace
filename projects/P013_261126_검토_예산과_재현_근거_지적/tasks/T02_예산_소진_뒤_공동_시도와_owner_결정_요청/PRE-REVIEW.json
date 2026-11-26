@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "eb337f8391d045ebd8071a123f92b5cb5ff2c32d7c204f73ef8c07a4663debf6",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 2,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "601a1954c34aed4a26c99f1ee09209372acad0dfd7b639f7798482475c671a44",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "직전 독립 검토 원문과 바뀐 줄을 기준으로 범위 재검토"
+    },
+    {
+      "hash": "12f3f3ebabd977e98c7a5f8428d03e498e0f2aa4b52ecb3a5e9446ade98a8b4d",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "수정 확인 실패 뒤 새 지문·B1 검증의 계약 보완"
+    },
+    {
+      "hash": "195465c44974048d63d9ece802870583fc58e3d58d11a99159e720707c8719cc",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R4.json",
+      "continuity": "changed",
+      "reason": "직전 판정 지문·재검토 B1 복구의 계약 대조"
+    },
+    {
+      "hash": "88ba491cd635be86f74bebb58512292cc038affa1fab1fbe68774aa889ab6bf8",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R5.json",
+      "continuity": "changed",
+      "reason": "owner 상한과 A-1·A-3의 계약 대조"
+    },
+    {
+      "hash": "dc007eb7ad1d355a8f806a0a853ef50ccf2f57f2567e9596ae3aa08ab977d0c5",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R6.json",
+      "continuity": "changed",
+      "reason": "B1의 원판정 보호, owner 주체 및 수정 영향의 테스트 범위 보완"
+    },
+    {
+      "hash": "ef5285abe80e5bbd005866e642b8b3bbdd04c79822e7b07da0f88d1856d592aa",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R7.json",
+      "continuity": "changed",
+      "reason": "첫 전체 판정 복구의 근거가 BR02·T/S 기준에 명시되지 않음"
+    },
+    {
+      "hash": "c34818d6d5932e17c3be64e4d5184d0909dd78218ce14c10f0f1cc36deeb0c6e",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R8.json",
+      "continuity": "changed",
+      "reason": "첫 판정 복구와 구조 재진단의 적용 범위 및 판정표를 대조했다"
+    },
+    {
+      "hash": "cbe7c00b943703f4f38c8fe434ba25e1306f0d32633f350364ae400c88c6b170",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R9.json",
+      "continuity": "changed",
+      "reason": "허브 분할 결정과 T02a 판정표의 범위 고정"
+    }
+  ]
+}

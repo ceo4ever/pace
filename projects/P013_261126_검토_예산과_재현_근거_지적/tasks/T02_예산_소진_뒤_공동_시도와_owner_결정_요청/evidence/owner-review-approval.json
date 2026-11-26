@@ -1,0 +1,45 @@
+{
+  "entry": {
+    "type": "confirmation",
+    "stage": "post",
+    "target": "evidence/impl-diff.patch",
+    "hash": "1e043e294311ba73964491e0d8f0bbcd1f9b7a4d1f7e21396fe459e26f786237",
+    "evidence": "evidence/owner-review-receipt.json",
+    "evidence_hash": "50ca4361361abc0967dc0d352a48ebfbd3b49e786773902c5872c07254958482",
+    "summary": "직전 독립 수정 확인 이후 고친 지적과 영향의 한정 검증",
+    "at": "2026-11-26T01:13:26.055Z",
+    "id": "93c7b7ff-a3ad-4be9-83dd-92f696cd8f01",
+    "record": "review-records/R6.json",
+    "findings": [
+      {
+        "id": "F1",
+        "location": "src/agent/review-followup.ts:280"
+      },
+      {
+        "id": "F2",
+        "location": "src/agent/review-followup.ts:421"
+      },
+      {
+        "id": "F3",
+        "location": "src/agent/review-followup.ts:296"
+      },
+      {
+        "id": "F4",
+        "location": "src/agent/verify-cli.ts:312"
+      },
+      {
+        "id": "F5",
+        "location": "src/agent/verify.ts:117"
+      }
+    ],
+    "reason": "unit_limit",
+    "rounds": 1,
+    "approval": {
+      "request": "cb018712-e448-402c-8811-95b7362cd1b8",
+      "evidence": "evidence/owner-decision.md",
+      "evidence_hash": "3cb799a395f2d6a0a6484bb4d3a54c9c8233e544732079e32064b0c8fe1fc372",
+      "choice": "수정 확인 1회 추가"
+    }
+  },
+  "approval_identity": "verify_owner_source"
+}

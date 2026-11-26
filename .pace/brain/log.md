@@ -126,3 +126,13 @@
 ## [2026-11-25] ingest | 저장소 팀 설계와 갱신 흐름 (.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md)
 ## [2026-11-25] update | pace-intent 의도 파악 기획 구조와 함정 (.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md)
 ## [2026-11-25] lint | P012 T05의 경로 C 위임·독립 검토와 B1/A-3을 기획 위키에 대조하고 오래된 근거를 갱신
+## [2026-11-26] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
+## [2026-11-26] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-26] update | 브레인은 필요한 것만 찾아 쓴다 (.pace/brain/pages/concept/brain-pull-not-push.md)
+## [2026-11-26] update | 백로그 대시보드 자동 갱신과 Git 경계 (.pace/brain/pages/concept/백로그-대시보드-자동-갱신과-git-경계.md)
+## [2026-11-26] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
+## [2026-11-26] lint | P013 검토 예산과 수정 확인 A-1·A-3 판정을 기록하고 CLI 근거 변경에 따른 브레인 후보 5개를 대조했다.
+## [2026-11-26] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
+## [2026-11-26] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-26] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
+## [2026-11-26] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)

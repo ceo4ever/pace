@@ -6,7 +6,7 @@ tags: [brain, search, lint]
 sources: [code:src/project/brain.ts, code:skills/pace-brain/SKILL.md, 대화:2026-10-22, code:src/cli.ts]
 related: [session-boot-via-hooks, memory-two-scopes]
 created: 2026-10-22
-updated: 2026-11-25
+updated: 2026-11-26
 status: active
 ---
 

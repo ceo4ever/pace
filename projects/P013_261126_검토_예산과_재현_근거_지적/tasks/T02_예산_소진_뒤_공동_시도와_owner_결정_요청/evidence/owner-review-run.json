@@ -1,0 +1,20 @@
+{
+  "id": "281ff152-97bc-4112-9c60-e8b9f438d758",
+  "grant": "93c7b7ff-a3ad-4be9-83dd-92f696cd8f01",
+  "approval": "cb018712-e448-402c-8811-95b7362cd1b8",
+  "target": "evidence/impl-diff.patch",
+  "hash": "1e043e294311ba73964491e0d8f0bbcd1f9b7a4d1f7e21396fe459e26f786237",
+  "reviewer": {
+    "verdict": "pass",
+    "provider": "anthropic",
+    "cross": true,
+    "record": "evidence/review-records/R7.json",
+    "hash": "fd420e98cd5ad3c28acfa88b0a98776cfdb05b91a98ff3a5a65dfa258cc0b79b"
+  },
+  "tester": {
+    "verdict": "fail",
+    "blocking": 2,
+    "record": "evidence/tester-owner-review.md"
+  },
+  "result": "fail"
+}

@@ -159,8 +159,8 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace daemon run|start|status|stop [--force]|logs [-n N]|release <경로>|install [--yes] [--start] [--agents --login --install-adapters]|uninstall [--yes]   기기 상시 실행(메신저·Gateway 요청을 워크트리에서 체인으로 실행) — 쓰기는 승인, 재시작 뒤 자동 재실행 없음. install은 --yes 없이는 계획만 출력
   pace daemon workspace add [<경로>] [--name <이름>] [--yes] | workspace list   읽기 전용 워크스페이스 추가·Telegram 토픽 결속·등록 연결 확인
   pace mcp --workspace <경로> --access read-only|write   PACE 도구 서버(stdio MCP) — ACP 세션에 주입된다. 워크스페이스·접근 권한은 기동 때 고정, 읽기 전용이면 변경 도구를 서버가 거부
-  pace agent verify --author-agent claude|codex --target <파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록>]   다른 제공자의 읽기 전용 검토. 미실행은 종료 10과 B1/A-3 안내. 태스크의 사전·구현 후 단계와 백로그 폴더마다 전체 1회·범위 재검토 1회, 호출 4회 상한. 원장을 기록하고 소진 뒤 종료 16
-  pace agent review-note --target <파일> (--diagnosis --layer structure|planning|design|other --summary <글> [--file <근거>] | --decision --by pm|user --choice <글> --summary <글> --file <결정 원문> | --void --record review-records/R<n>.json --summary <글> --file <근거>)   반복 실패의 근본 진단·PM/사용자 결정·도구 결함으로 무효인 검토를 검토 원장에 기록
+  pace agent verify --author-agent claude|codex --target <파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록>]   읽기 전용 독립 검토. 소진은 종료 16 및 허브 판정 자료
+  pace agent review-note --target <파일> (--diagnosis | --decision --by pm|user | --void | --joint | --request-waiver skip|weaken) --summary <글> [--file <근거>]   반복 실패와 검토 소진 후속 조치 기록
   pace project new "<이름>" [--from <BL 폴더 또는 앞부분>]   프로젝트 폴더·PROJECT.md (main)
   pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>
   pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]

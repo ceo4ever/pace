@@ -1,0 +1,25 @@
+{
+  "exhausted": {
+    "exit": 16,
+    "action": "classify_followup",
+    "decision": null
+  },
+  "joint_recorded": {
+    "exit": 0,
+    "ran": false
+  },
+  "actual_waiver": {
+    "exit": 0,
+    "decision": "A-3",
+    "ran": false
+  },
+  "pending_owner": {
+    "exit": 16,
+    "reason": "owner_decision_required",
+    "ran": false
+  },
+  "answer_outside_choices": {
+    "exit": 2,
+    "error": "invalid_request"
+  }
+}

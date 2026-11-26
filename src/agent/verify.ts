@@ -5,7 +5,7 @@ import { taskFormat } from "../project/pre-review.ts";
 // 다른 제공자 미실행 시 B1에 따라 같은 제공자 새 세션으로 대체하고 사유와 cross: false를 기록한다.
 
 export type VerifyOutcome =
-  | { ran: true; cross: boolean; verifier: AgentName; result: AgentResult }
+  | { ran: true; cross: boolean; verifier: AgentName; result: AgentResult; cross_unavailable?: string[] }
   | { ran: false; reason: string; ask: string };
 
 export interface VerifyOptions {
@@ -115,7 +115,8 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
       }
       return { ran: true, cross, verifier: executor.agent, result };
     } catch (error) {
-      if (error instanceof AgentError && notRunCodes.has(error.code)) {
+      if (error instanceof AgentError && (notRunCodes.has(error.code) ||
+          (cross && options.allowSameProvider && error.code === "timeout"))) {
         reasons.push(`${executor.agent}: ${error.code} — ${error.message}`);
         return null;
       }
@@ -127,18 +128,19 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
     const outcome = await attempt(executor, true);
     if (outcome) return outcome;
   }
+  if (candidates.length === 0) reasons.push("다른 제공자의 -p 실행기가 없다");
   if (options.allowSameProvider) {
+    const crossUnavailable = [...reasons];
     for (const executor of sameProvider) {
       const outcome = await attempt(executor, false);
-      if (outcome) return outcome;
+      if (outcome?.ran) return { ...outcome, cross_unavailable: crossUnavailable };
     }
   }
-  if (candidates.length === 0) reasons.push("다른 제공자의 -p 실행기가 없다");
   return {
     ran: false,
     reason: `교차 검증 미실행: ${reasons.join("; ")}`,
     ask: options.allowSameProvider
-      ? "다른 제공자와 같은 제공자 검토가 모두 미실행이다. 검토 생략 여부는 decision-rights.md A-3에 따라 owner 결정으로 요청한다."
+      ? "다른 제공자와 같은 제공자 검토가 모두 미실행이다. 허브와 필요한 검토를 복구한다. 생략·완화를 선택하려면 decision-rights.md A-3에 따라 owner 결정으로 요청한다."
       : "다른 제공자 검토가 미실행이다. 프로젝트의 태스크·백로그 검토는 decision-rights.md A-3의 B1에 따라 --allow-same-provider로 같은 제공자 새 세션 검토를 진행하고 사유와 cross: false를 기록한다.",
   };
 }

@@ -93,6 +93,20 @@ test('반복 실패 원장 단계와 결정 권한 정본을 연결한다', () =
   for (const id of ['E', 'E′', 'H', 'J']) assert.ok(scenarios.includes(`| ${id} |`));
 });
 
+test("검토 상한 뒤 필수 수정 확인과 A-3 승인 요청을 구분한다", () => {
+  const rights = readFileSync(join(skillDir, "references/decision-rights.md"), "utf8");
+  assert.match(rights, /필요한 독립 재검증을 수행하는 조치.*‘아니오’다/u);
+  assert.match(rights, /검증을 생략·완화하거나.*‘예’다/u);
+  assert.doesNotMatch(rights, /BL261124_04 적용 전에는|예산 소진 뒤 위험 수용/u);
+  assert.match(rights, /수정 확인[\s\S]*직전 독립 지적, 최신 변경 해시, 재현 조건[\s\S]*사후 요약/u);
+  assert.match(rights, /같은 지적\(직전 독립 지적 ID·원래 위치\)당 1회 또는 태스크 사전·사후 합산과 백로그 폴더마다 2회를 사용하면/u);
+  assert.match(rights, /합의한 목표·범위·완료 기준을 실제로 바꾸려면 A-1, 필수 검증을 생략·완화하거나 증거 공백·잔여 blocking을 안고 진행하려면 A-3/u);
+  const steps = readFileSync(join(skillDir, "references/task-steps.md"), "utf8");
+  assert.match(steps, /상한 뒤 수정 확인.*decision-rights\.md.*결과를 사후 보고한다.*A-3/u);
+  const scenarios = readFileSync(join(skillDir, "evals/scenarios.md"), "utf8");
+  assert.match(scenarios, /\| D16 \|.*독립 재검증을 수행하고 사후 보고.*A-3 결정 요청/u);
+});
+
 test("모든 변경 대상에서 기존 올림 기준을 제거하고 결정 권한 정본을 연결한다", () => {
   const team = readdirSync(join(root, ".pace/team/agents")).filter((name) => name.endsWith(".md"));
   const refs = ["coordinator", "verification", "reviewer", "goal-review", "cross-verify", "e2e"];

@@ -38,6 +38,9 @@ export interface ReviewEntry {
   call_id?: string;
   duration_ms?: number;
   usage?: AgentResult["usage"];
+  followup?: { type: "joint" | "confirmation" | "owner" | "recovery"; id: string };
+  cross_unavailable?: string[];
+  cross?: boolean;
   /** 중단 복구. 옛 fail 표기는 기존 진단에서만 세고 예산 판정·재검토 기준점에서 제외한다. */
   interrupted?: true;
 }
@@ -79,6 +82,10 @@ export function reviewUsage(value: unknown): value is AgentResult["usage"] {
   return [usage.input_tokens, usage.output_tokens].every((v) => v === null || isMeasure(v));
 }
 
+export function validCrossUnavailable(value: unknown): value is string[] {
+  return Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === "string" && !!item.trim());
+}
+
 /** 항목 종류별 필수 필드를 확인한다 — 필드가 빠진 decision이 연속 실패를 초기화하지 못하게 */
 function validEntry(v: Record<string, unknown>): boolean {
   if (!isStr(v.target) || !isStr(v.at)) return false;
@@ -86,11 +93,20 @@ function validEntry(v: Record<string, unknown>): boolean {
   if (v.type === "review") return isStr(v.kind) && isStr(v.hash) && ["pass", "fail", "unknown"].includes(v.verdict as string) && isStr(v.verifier) && (v.provider === null || isStr(v.provider)) && (v.rereview_of === null || isStr(v.rereview_of)) && isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.result_hash) && HEX64.test(v.result_hash) && (v.interrupted === undefined || (v.interrupted === true && v.verdict === "fail"))
     && (v.call_id === undefined || (isStr(v.call_id) && v.call_id !== ""))
     && (v.duration_ms === undefined || isMeasure(v.duration_ms))
-    && (v.usage === undefined || reviewUsage(v.usage));
+    && (v.usage === undefined || reviewUsage(v.usage))
+    && (v.followup === undefined || validFollowup(v.followup))
+    && (v.cross === undefined || typeof v.cross === "boolean")
+    && (v.cross_unavailable === undefined || validCrossUnavailable(v.cross_unavailable));
   if (v.type === "diagnosis") return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" && (v.file === undefined || isStr(v.file));
   if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "" && (v.by === undefined || v.by === 'pm' || v.by === 'user');
   if (v.type === "void") return isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.summary) && v.summary.trim() !== "" && isStr(v.file) && v.file !== "";
   return false;
+}
+
+export function validFollowup(value: unknown): value is NonNullable<ReviewEntry["followup"]> {
+  if (!value || typeof value !== "object") return false;
+  const item = value as Record<string, unknown>;
+  return ["joint", "confirmation", "owner", "recovery"].includes(String(item.type)) && isStr(item.id) && item.id !== "";
 }
 
 export function ledgerPath(target: string): string { return join(dirname(target), LEDGER_FILE); }

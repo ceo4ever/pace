@@ -71,6 +71,8 @@ F2 [should_fix] … (근거: typescript/INDEX — <절>)
 
 **단계 읽기.** 태스크는 루트와 `evidence/` 원장을 합산하고 사전·구현 후 예산을 따로 쓴다. 백로그는 폴더마다 한 예산을 쓴다. 단계마다 전체 검토 1회, 직전 유효 판정과 변경을 보는 범위 재검토 1회, 총 호출 4회가 상한이다. 중단·무효·unknown은 판정에서 빠지고 호출에는 남는다. 대상 변경·pass·결정 기록 뒤에도 예산이 유지된다. verify가 `budget.exhausted`를 내면 같은 단계의 다음 실행은 종료 16과 `reason: budget_exhausted`로 막힌다.
 
+소진 출력의 `classify_followup`을 받으면 허브가 [결정 권한 B](decision-rights.md#b-허브의-장애-대응)로 다음 조치를 판정한다. 필요한 수정 확인은 직전 지적 ID와 원래 위치, 최신 해시에 묶는다. 횟수 문턱에서는 허브가 구조 원인·수정·확인 범위를 기록하고 필요한 독립 확인을 수행한다. 진단과 누적 횟수·판정을 사후 보고한다. 실제 합의 변경은 A-1, 증거 공백·잔여 blocking을 안고 진행하거나 필수 검증을 생략·완화하는 선택은 A-3으로 요청한다.
+
 일반 산출물의 기존 관문에서는 세 번째 fail과 진단 뒤 첫 fail에 종료 0과 `escalation.stage: diagnose` 또는 `ask_user`가 붙는다. 기록 없이 다시 호출하면 종료 16이다. `ask_user`는 호환용 단계 이름이며 필요한 결정 기록을 먼저 남긴다. `recovered`가 있는 응답에도 같은 단계를 적용한다. 일반 산출물의 진단은 중단 복구(`interrupted`)도 센다. unknown과 중단 기록은 재검토 기준점에서 빠진다.
 
 진단 표지가 열린 동안에는 `review-note --diagnosis`로 기록한다. 그 기록 직후는 normal이다. 확정된 조치를 적용하고 `verify` 전체 검토로 넘어간다. `review-note --decision` 입력은 그 검토가 fail로 끝나 `ask_user` 단계가 열린 뒤에만 한다. 진단·normal에서 필요한 owner 응답은 원문을 진단 근거나 프로젝트 기록에 연결한다.
@@ -88,6 +90,8 @@ F2 [should_fix] … (근거: typescript/INDEX — <절>)
 워크트리 PM은 세 차례 근거와 진단을 허브에 보내 B로 근본 조치를 정한다. 단독 PM은 같은 절차를 수행한다. 근본 조치에 A를 적용한다. A 밖 조치는 PM이 결정하고 진단 증거를 남긴다. A에 걸리는 조치는 owner 결정 뒤 적용한다. diagnose 단계에서는 decision 대신 확인된 승인 원문 위치 또는 원장 영수증을 진단 증거에 연결한다. `pace agent review-note --target <대상> --diagnosis --layer <층> --summary <진단·조치> --file <진단 증거>`로 기록한다. 진단 뒤 첫 verify는 새 기준 **전체 검토**이며 이전 지적으로 purpose를 좁히지 않는다.
 
 ### ask_user — 분류에 따른 결정 기록
+
+이 절은 일반 산출물의 기존 단계에 적용한다. 필수 검증을 생략하거나 남은 blocking을 안고 진행하는 조치는 A-3으로 owner에게 요청한다.
 
 A 밖 조치는 PM이 `evidence/`의 근거 파일에 **분류 이유·근본 조치**를 쓰고 `pace agent review-note --target <대상> --decision --by pm --choice <선택> --summary <사유> --file <근거>`로 기록한다. 근본 조치 → 전체 재검증 → 사후 보고로 간다. PM 결정은 waiver가 아니며 사전 검토는 현재 TASK 해시에 대한 pass를 받아 PRE-REVIEW에 연결한다. 같은 영역이 또 지적되면 위 원인 층을 다시 진단한다.
 

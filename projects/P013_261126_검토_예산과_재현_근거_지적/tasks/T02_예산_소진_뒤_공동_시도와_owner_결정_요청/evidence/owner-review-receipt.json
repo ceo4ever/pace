@@ -1,0 +1,8 @@
+{
+  "target": "evidence/impl-diff.patch",
+  "record": "review-records/R6.json",
+  "previous_hash": "7b2f383b7feda2f6a2a6593a6eb54b955ffb209d303fdf7bde9d5f775105d1b9",
+  "finding_source": "evidence/owner-review-findings.md",
+  "finding_hash": "c95a4095738fdbb17dabb0f21b8c5e5ffbb28b808c0e07bf0f7893d253e4c482",
+  "reproduction": "독립 tester 원문의 관측과 집중 검사 79건에서 같은 입력·실행 조건을 대조한다"
+}

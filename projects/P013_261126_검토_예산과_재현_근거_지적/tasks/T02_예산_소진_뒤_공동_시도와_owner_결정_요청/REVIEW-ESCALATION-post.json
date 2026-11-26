@@ -1,0 +1,94 @@
+{
+  "action": "classify_followup",
+  "next": "필요한 독립 검증은 B의 상한 안에서 수행하고 사후 보고한다. 검증 생략·완화가 실제 제안일 때 A-3 요청을 기록한다.",
+  "decision": null,
+  "recommendation": null,
+  "choices": [],
+  "stage": "post",
+  "target": "evidence/impl-diff.patch",
+  "hash": "1e043e294311ba73964491e0d8f0bbcd1f9b7a4d1f7e21396fe459e26f786237",
+  "joint_attempts": 0,
+  "joint_decisions": [],
+  "confirmation_used": true,
+  "confirmation_attempts": 2,
+  "verdict_summary": "유효 판정 6회",
+  "review_history": [
+    {
+      "from": "evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "verdict": "fail",
+      "record": "review-records/R1.json",
+      "hash": "c89c77277cb1eb701e120b7f804e4f6909b16a6c8065d7d5b43e9cbe4db1c661",
+      "interrupted": false,
+      "blocking_count": 1,
+      "blocking": [
+        "**F1 [blocking] 도구가 모든 owner 요청을 A-3으로 만든다. 목표 ②와 정면으로 어긋난다.**"
+      ],
+      "invalidated": null
+    },
+    {
+      "from": "evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "verdict": "fail",
+      "record": "review-records/R2.json",
+      "hash": "c2da4ae03b16cfcc1e2e1c6d56d0301909b6b30807f5e2c5b4a528e4b66582fa",
+      "interrupted": false,
+      "blocking_count": 1,
+      "blocking": [
+        "**R1 [blocking] F1이 일부만 해소됐다. 필요한 재검증이 실제 명령 경로에서는 여전히 A-3 요청으로만 열린다.**"
+      ],
+      "invalidated": null
+    },
+    {
+      "from": "evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "verdict": "pass",
+      "record": "review-records/R3.json",
+      "hash": "0c0e30ea62a22642c50bde15f94bd26dd7a0afe18ee8af9a9043fef66b4dd8a9",
+      "interrupted": false,
+      "blocking_count": null,
+      "blocking": null,
+      "invalidated": null
+    },
+    {
+      "from": "evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "verdict": "fail",
+      "record": "review-records/R4.json",
+      "hash": "afda4e76e9a8a78744d71ea0065c29d8783a11b353e534a029761e0a8363d73d",
+      "interrupted": false,
+      "blocking_count": 2,
+      "blocking": [
+        "**F1 [blocking] `src/agent/verify-cli.ts` (confirmationIssue 계산부) + `src/agent/review-followup.ts` (`prepareFollowup`의 fallback 분기와 `outOfScopeConfirmation`)**",
+        "- `F1 [blocking] src/other.ts:7 … fail`이 unknown으로 기록됩니다."
+      ],
+      "invalidated": null
+    },
+    {
+      "from": "evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "verdict": "pass",
+      "record": "review-records/R5.json",
+      "hash": "b3c96027e45017c15d75f577045943487c7060b4d1c9cd735691534551c60f84",
+      "interrupted": false,
+      "blocking_count": null,
+      "blocking": null,
+      "invalidated": null
+    },
+    {
+      "from": "evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "verdict": "pass",
+      "record": "review-records/R6.json",
+      "hash": "7b2f383b7feda2f6a2a6593a6eb54b955ffb209d303fdf7bde9d5f775105d1b9",
+      "interrupted": false,
+      "blocking_count": null,
+      "blocking": null,
+      "invalidated": null
+    }
+  ],
+  "calls": [],
+  "diagnoses": [],
+  "voids": [],
+  "finding_assessments": []
+}

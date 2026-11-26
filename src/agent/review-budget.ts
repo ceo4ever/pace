@@ -22,7 +22,7 @@ export interface ReviewBudgetScope {
   name: string;
 }
 
-function recordedStage(scope: ReviewBudgetScope, ledgerTarget: string, entry: ReviewEntry | ReviewCallEntry): BudgetStage {
+export function recordedStage(scope: ReviewBudgetScope, ledgerTarget: string, entry: Pick<ReviewEntry | ReviewCallEntry, "target">): BudgetStage {
   if (scope.unit === "backlog") return "backlog";
   return ledgerTarget === scope.lockTarget && entry.target.toLowerCase() === "task.md" ? "pre" : "post";
 }
@@ -97,35 +97,43 @@ function legacyStructureOnly(ledgerTarget: string, entry: ReviewEntry): boolean 
   }
 }
 
-export function readReviewBudget(scope: ReviewBudgetScope): { status: BudgetStatus; latest?: BudgetReview } {
+export function readReviewBudget(scope: ReviewBudgetScope) {
   const reserved = new Set<string>();
   let unreserved = 0;
   const rounds: BudgetReview[] = [];
-  for (const ledgerTarget of scope.ledgerTargets) {
-    const entries = readLedger(ledgerTarget);
+  const ledgers = scope.ledgerTargets.map((target) => ({ target, entries: readLedger(target) }));
+  let latestDefinitive: BudgetReview | undefined;
+  for (const { target: ledgerTarget, entries } of ledgers) {
     const voided = new Map(entries.flatMap((entry) => entry.type === "void" ? [[entry.record, entry.target]] : []));
+    const followupCalls = new Set(entries.flatMap((entry) =>
+      entry.type === "review" && entry.followup && entry.call_id ? [entry.call_id] : []));
     for (const entry of entries) {
       if ((entry.type !== "call" && entry.type !== "review") ||
           recordedStage(scope, ledgerTarget, entry) !== scope.stage) continue;
-      if (entry.call_id) reserved.add(entry.call_id);
-      else unreserved++;
+      const separate = entry.type === "review" ? !!entry.followup : followupCalls.has(entry.call_id);
       if (entry.type === "review" && entry.interrupted !== true && entry.verdict !== "unknown" &&
           voided.get(entry.record) !== entry.target && !legacyStructureOnly(ledgerTarget, entry)) {
-        rounds.push({ ledgerTarget, entry });
+        const review = { ledgerTarget, entry };
+        if (!latestDefinitive || latestDefinitive.entry.at <= entry.at) latestDefinitive = review;
+        if (!separate) rounds.push(review);
       }
+      if (separate) continue;
+      if (entry.call_id) reserved.add(entry.call_id);
+      else unreserved++;
     }
   }
   const calls = reserved.size + unreserved;
-  const exhausted = calls >= CALL_LIMIT ? "calls" : rounds.length >= ROUND_LIMIT ? "rounds" : null;
+  const exhausted: BudgetStatus["exhausted"] = calls >= CALL_LIMIT ? "calls" : rounds.length >= ROUND_LIMIT ? "rounds" : null;
   return {
     status: { unit: scope.unit, root: scope.root, stage: scope.stage, rounds: rounds.length, calls, round_limit: ROUND_LIMIT, call_limit: CALL_LIMIT, exhausted },
     latest: rounds.sort((a, b) => a.entry.at.localeCompare(b.entry.at)).at(-1),
+    latestDefinitive,
+    ledgers,
   };
 }
 
 /** verify와 외부 검토 넘김이 실행 전에 부르는 공통 예약 지점. 호출자는 범위 잠금을 먼저 잡는다. */
-export function reserveReviewCall(scope: ReviewBudgetScope, at: Date) {
-  const budget = readReviewBudget(scope);
+export function reserveReviewCall(scope: ReviewBudgetScope, at: Date, budget = readReviewBudget(scope)) {
   if (budget.status.exhausted) return { ...budget, callId: null };
   const callId = randomUUID();
   try {

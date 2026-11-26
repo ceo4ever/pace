@@ -1,0 +1,44 @@
+{
+  "exhausted": {
+    "exit": 16,
+    "action": "classify_followup",
+    "decision": null
+  },
+  "same_finding_new_hash": {
+    "exit": 16,
+    "decision": null,
+    "reason": "same_finding",
+    "ran": false,
+    "confirmation_attempts": 1,
+    "report_action": "diagnose_structure"
+  },
+  "held_before_diagnosis": {
+    "exit": 16,
+    "reason": "budget_exhausted",
+    "ran": false
+  },
+  "diagnosis_recorded": {
+    "exit": 0,
+    "ran": false,
+    "recorded": "판정 분산"
+  },
+  "recheck_as_waiver": {
+    "exit": 2,
+    "error": {
+      "code": "invalid_request",
+      "message": "A-3 요청에는 실제 조치 skip 또는 weaken을 지정한다"
+    }
+  },
+  "skip": {
+    "exit": 0,
+    "decision": "A-3",
+    "assessments": [
+      {
+        "finding": "F1의 필수 확인",
+        "decision": "A-3",
+        "reason": "필수 검토 생략을 명시했다"
+      }
+    ],
+    "ran": false
+  }
+}
