@@ -1,13 +1,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { normalizeResult, type Executor } from "../src/agent/contract.ts";
 import { reviewHash, reviewIssues } from "../src/project/pre-review.ts";
 import { ledgerPath, readLedger, textHash } from "../src/agent/review-log.ts";
 import { verifyCommand } from "../src/agent/verify-cli.ts";
 import { effectiveBlocking } from "../src/agent/structured-review.ts";
+import { readAgentCalls, recordAgentCall, unknownCallValue, type AgentCall } from "../src/project/agent-calls.ts";
+import { reviewArtifactCommand } from "../src/agent/review-hand.ts";
+import { tryRecordCall } from "../src/agent/call-context.ts";
 import { evidenceReviewFixture, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
 
 const initial = "# T06 검토\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n기존 결과를 확인한다.\n\n## 증명 범위\n- 판정 주체: 자동 시험\n\n## 기준\n\n| # | 기준 |\n|---|---|\n| T-1 | 실제 결과가 보인다 |\n\n## 접근\n순서 A를 확인한다.\n";
@@ -424,4 +427,99 @@ test("T06 기존 고정 뒤 A-3 회신이 열리면 제출을 멈추고 승인 �
   assert.equal(native.executed, 1);
   assert.equal(native.body.review.verdict, "pass", JSON.stringify(native.body));
   assert.equal(native.body.followup.type, "owner");
+});
+
+test("T07 S-5: 외부 판정과 다른 호출을 연결하지 않고 부분 실패 뒤 같은 판정을 연결한다", () => {
+  const h = fixture();
+  const directory = "projects/P013_fixture";
+  const project = join(h.root, directory), target = { root: h.root, directory, task: "T06" };
+  writeFileSync(join(project, "PROJECT.md"), "# P013 fixture\n");
+  const first = h.hand();
+  assert.equal(first.status, 0, first.output);
+  const competing = h.hand();
+  assert.equal(competing.status, 0, competing.output);
+  assert.equal(readAgentCalls(target), null, "발급은 새 에이전트 실행이 아니다");
+  h.setReply(first.body.snapshot, raw());
+  const u = unknownCallValue;
+  const actual: AgentCall = {
+    version: 1, id: "a".repeat(32), at: new Date().toISOString(), task: target.task, agent: "claude", engine: "claude", route: "native",
+    status: "completed", reason: null, replacement_reason: null, ref: null, model: { requested: u, actual: u }, effort: { requested: u, actual: u },
+    duration_ms: { value: 79, source: "host" }, tokens: { input: u, output: u, total: { value: 204, source: "host" } },
+  };
+  for (const [changes, idPart] of [
+    [{ task: "T05" }, "b"], [{ agent: "pace-irrelevant" }, "c"], [{ engine: "codex" }, "d"],
+    [{ at: "2020-01-01T00:00:00.000Z" }, "e"], [{ at: "2090-01-01T00:00:00.000Z" }, "f"],
+  ] as const) {
+    const value = { ...actual, ...changes, id: idPart.repeat(32) };
+    recordAgentCall({ ...target, task: value.task }, value);
+    assert.equal(h.record(first.body.hand, ["--call-id", value.id]).status, 2);
+  }
+  assert.equal(h.record(first.body.hand, ["--call-id", "0".repeat(32)]).status, 2);
+  assert.equal(readLedger(h.target).filter((e) => e.type === "review").length, 0);
+  recordAgentCall(target, actual);
+  const count = readAgentCalls(target)!.length;
+  const lock = join(project, "calls", ".write.local.json");
+  let output = "";
+  const partial = reviewArtifactCommand("review-record", ["--target", h.target, "--hand", first.body.hand, "--provider", "anthropic",
+    "--reviewer", "claude", "--result-file", h.submitted, "--call-id", actual.id], {
+    write: (line) => { output += line; },
+    writeCall(target, value) {
+      writeFileSync(lock, `pace-agent-calls-v1 ${process.pid}\n`);
+      try { return tryRecordCall(target, value); } finally { unlinkSync(lock); }
+    },
+  });
+  assert.equal(partial, 0, output);
+  assert.equal(JSON.parse(output).agent_call_linked, false);
+  assert.equal(readAgentCalls(target)!.find((e) => e.id === actual.id)?.ref, null);
+  const originalLedger = readFileSync(ledgerPath(h.target), "utf8");
+  assert.equal(readLedger(h.target).filter((e) => e.type === "review").length, 1);
+  assert.equal(readLedger(h.target).filter((e) => e.type === "call").length, 2);
+  const otherHand = h.record(competing.body.hand, ["--call-id", actual.id]);
+  assert.equal(otherHand.status, 2);
+  assert.match(otherHand.body.error.message, /호출에 외부 검토를 예약할 수 없다/);
+  assert.equal(h.record(first.body.hand, ["--call-id", "b".repeat(32)]).status, 2);
+  const retry = h.record(first.body.hand, ["--call-id", actual.id]);
+  assert.equal(retry.status, 0, retry.output);
+  assert.equal(retry.body.agent_call_retry, true);
+  assert.equal(retry.body.agent_call_linked, true);
+  assert.equal(h.record(first.body.hand, ["--call-id", actual.id]).status, 0);
+  assert.equal(readFileSync(ledgerPath(h.target), "utf8"), originalLedger);
+  const row = readAgentCalls(target)!.find((e) => e.id === actual.id)!;
+  assert.equal(readAgentCalls(target)!.length, count);
+  assert.deepEqual(row.duration_ms, actual.duration_ms);
+  assert.deepEqual(row.tokens, actual.tokens);
+  assert.equal(row.ref, "tasks/T06_fixture/review-records/R1.json");
+  assert.deepEqual(retry.body.review.usage, { input_tokens: null, output_tokens: null });
+  assert.equal(retry.body.review.duration_ms, undefined);
+  const second = h.hand();
+  assert.equal(second.status, 0);
+  const failed = { ...actual, id: "1".repeat(32), status: "failed", reason: "agent_failed", at: new Date().toISOString(), ref: null };
+  recordAgentCall(target, failed);
+  assert.equal(readAgentCalls(target)!.find((e) => e.id === failed.id)?.ref, null);
+  assert.equal(readLedger(h.target).filter((e) => e.type === "review").length, 1);
+});
+
+test("T07 S-5: 백로그 원장은 외부 시도 한 개와 해당 판정 ref를 보존한다", () => {
+  const h = fixture(), directory = "backlogs/BL260101_01_fixture", root = join(h.root, directory);
+  mkdirSync(root, { recursive: true });
+  writeFileSync(join(root, "BACKLOG.md"), "# Backlog\n");
+  const brief = join(root, "BR01_fixture.md");
+  writeFileSync(brief, "# BR01 fixture\n");
+  const first = h.hand(brief);
+  assert.equal(first.status, 0, first.output);
+  const target = { root: h.root, directory, task: null };
+  assert.equal(readAgentCalls(target), null);
+  h.setReply(first.body.snapshot, raw());
+  const u = unknownCallValue;
+  const id = "2".repeat(32);
+  recordAgentCall(target, {
+    version: 1, id, at: new Date().toISOString(), task: null, agent: "claude", engine: "claude", route: "manual",
+    status: "completed", reason: null, replacement_reason: null, ref: null, model: { requested: u, actual: u }, effort: { requested: u, actual: u },
+    duration_ms: u, tokens: { input: u, output: u, total: u },
+  });
+  const verified = h.record(first.body.hand, ["--call-id", id], brief);
+  assert.equal(verified.status, 0, verified.output);
+  assert.equal(verified.body.agent_call_linked, true);
+  assert.equal(readAgentCalls(target)?.length, 1);
+  assert.equal(readAgentCalls(target)?.[0]?.ref, "review-records/R1.json");
 });

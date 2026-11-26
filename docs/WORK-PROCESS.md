@@ -63,7 +63,7 @@
 }
 ```
 
-실제 시도별로 서로 다른 32~64자리 소문자 16진 ID를 쓰고 같은 시도 재기록·보강에는 동일한 ID와 처음의 시작 시각을 쓴다. `route`는 p, acp, chain, verify, native, manual 중 하나다. `status`는 unknown, completed, failed, interrupted 중 하나이고 `reason`과 `replacement_reason`에는 정해진 오류 코드만 받을 수 있다. 측정 출처는 unknown(미확인), requested(요청), pm(PM 기록), tool(도구 측정), host(호스트 보고)다. 출처가 달라도 알려진 값이 상충하거나 귀속·상태·참조가 다르면 거부한다. 같은 값에 대해서는 실제 요청·호스트 보고·도구 측정을 PM 기록보다 우선한다. `ref`는 범위 안에 있는 기존 일반 파일의 상대 경로다. 비밀·세션 식별자·프롬프트·응답 원문은 입력에서 빼고 필요한 결과만 `ref`로 연결한다. 쓰기 잠금은 수행 프로세스의 종료가 확인된 경우에만 회수한다. 확인할 수 없는 잠금은 남기고 `calls/.write.local.json`의 진단과 재시도 안내를 표시한다.
+실제 시도별로 서로 다른 32~64자리 소문자 16진 ID를 쓰고 같은 시도 재기록·보강에는 동일한 ID와 처음의 시작 시각을 쓴다. `route`는 p, acp, chain, verify, native, manual 중 하나다. `status`는 unknown, completed, failed, interrupted 중 하나이고 `reason`과 `replacement_reason`에는 정해진 오류 코드만 받을 수 있다. 측정 출처는 unknown(미확인), requested(요청), pm(PM 기록), tool(도구 측정), host(호스트 보고)다. 출처가 달라도 알려진 값이 상충하거나 귀속·상태·참조가 다르면 거부한다. 외부 검토 명령만 호출 행에 예약 관계 `review_claim`을 만들 수 있다. Claude 자동 관측과 PM 수동 입력은 [호스트 호출 식별과 외부 검토 연결](AGENT-CALL.md#호스트의-팀-구성원-호출)에 따라 같은 시도 ID와 기록된 시각을 사용한다. 같은 값에 대해서는 실제 요청·호스트 보고·도구 측정을 PM 기록보다 우선한다. `ref`는 범위 안에 있는 기존 일반 파일의 상대 경로다. 비밀·세션 식별자·프롬프트·응답 원문은 입력에서 빼고 필요한 결과만 `ref`로 연결한다. 쓰기 잠금은 수행 프로세스의 종료가 확인된 경우에만 회수한다. 확인할 수 없는 잠금은 남기고 `calls/.write.local.json`의 진단과 재시도 안내를 표시한다.
 
 ## 선언 명령과 커밋 게이트
 

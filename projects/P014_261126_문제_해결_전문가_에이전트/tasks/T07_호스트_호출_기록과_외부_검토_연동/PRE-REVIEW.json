@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "11a71bd140f3ef64ddcc8fad22bf90129ab7eabba5a68aee2afe1ceafb7c18d2",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new",
+      "permission": {
+        "mode": "implementation",
+        "paths": [
+          "src/agent/call-hook.ts",
+          "src/cli.ts",
+          "src/project/agent-calls.ts",
+          "src/agent/call-context.ts",
+          "src/setup/install.ts",
+          "src/agent/review-hand.ts",
+          "docs/AGENT-CALL.md",
+          "docs/WORK-PROCESS.md",
+          "docs/SECURITY.md",
+          "skills/pace-team/references/required-roles.md",
+          "test/agent-calls.test.ts",
+          "test/install.test.ts",
+          "test/agent-review-hand.test.ts"
+        ],
+        "protected": [
+          {
+            "from": 8,
+            "to": 50
+          }
+        ],
+        "base": "6ff63bff90875cb489bfe848280287f439bb0634",
+        "task_mode": "100644"
+      }
+    }
+  ]
+}

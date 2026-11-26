@@ -543,3 +543,32 @@ test("기본 등록부는 재설치와 제거 뒤에도 보존된다", () => {
   uninstall({ home, repo });
   assert.equal(readFileSync(sentinel, "utf8"), "보존");
 });
+
+test("T07 Claude 호출 훅은 등록·재설치·제거에서 사용자 훅을 보존한다", () => {
+  const home = join(tempDir("pace-home-"), "team's fixture");
+  const file = join(home, ".claude", "settings.json");
+  const original = {
+    hooks: {
+      SubagentStart: [{ hooks: [{ type: "command", command: "user-start" }] }],
+      PostToolUse: [{ matcher: "Bash", hooks: [{ type: "command", command: "user-post" }] }],
+    },
+  };
+  write(file, JSON.stringify(original));
+  install({ home, repo, dryRun: true });
+  assert.deepEqual(json(file), original);
+  install({ home, repo });
+  const installed = json(file);
+  for (const event of ["SubagentStart", "SubagentStop", "PostToolUse"]) {
+    const groups = installed.hooks[event] as { matcher?: string; hooks: { type: string; command: string; timeout?: number }[] }[];
+    const managed = groups.filter((group) => group.hooks.some((hook) => hook.command.endsWith("# pace-managed-agent-call-v1")));
+    assert.equal(managed.length, 1);
+    assert.equal(managed[0]?.hooks[0]?.timeout, 10);
+    assert.match(managed[0]?.hooks[0]?.command ?? "", /agent call-hook --host claude/);
+    assert.ok(managed[0]?.hooks[0]?.command.includes("'\\''"), "작은따옴표가 섞인 경로도 리터럴");
+    assert.equal(managed[0]?.matcher, event === "PostToolUse" ? "Agent" : undefined);
+  }
+  install({ home, repo });
+  assert.deepEqual(json(file), installed);
+  uninstall({ home, repo });
+  assert.deepEqual(json(file), original);
+});

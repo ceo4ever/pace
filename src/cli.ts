@@ -26,6 +26,7 @@ import { renderDocs, verifyDocs, writeExamples, type Check } from "./intent/plan
 import { createPreview, verifyPreview } from "./intent/preview.ts";
 import { AgentError, errorPayload, runAgent, validateRequest } from "./agent/contract.ts";
 import { automaticCallTarget, callCancellation, namedCallTarget, observedAgentCall, requireCallAgent, tryRecordCall } from "./agent/call-context.ts";
+import { agentCallHookCommand, rememberNativeCallScope } from "./agent/call-hook.ts";
 import { allExecutors, findExecutor } from "./agent/registry.ts";
 import { ChainConfigError, checkChain, defaultChainFile, fileCooldownStore, loadChainConfig, outcomeExitCode, resolveChain, runChain } from "./agent/chain.ts";
 import { reviewNoteCommand, verifyCommand } from "./agent/verify-cli.ts";
@@ -44,7 +45,7 @@ import { applyAdoptOpal, formatPlan, planAdoptOpal } from "./project/adopt-opal.
 import { inspectWorkspaces, registerWorkspace, relocateWorkspace } from "./project/workspace-registry.ts";
 import { AGENT_BUDGET } from "./project/agent-definition.ts";
 import { agentEvent, ProjectLogError } from "./project/event-log.ts";
-import { AgentCallError, recordAgentCall } from "./project/agent-calls.ts";
+import { AgentCallError, parseAgentCall, recordAgentCall } from "./project/agent-calls.ts";
 import { findProject, statsRepo } from "./project/harness.ts";
 import { collectDashboard, formatDashboard, refreshProjectMetrics } from "./project/metrics-report.ts";
 import { existsSync, lstatSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
@@ -795,7 +796,8 @@ function projectCommand(args: string[]): number {
             throw new UsageError("pace project log <P###|BL번호> [T##] --type agent_call --call-file <JSON>");
           }
           const target = namedCallTarget(repo(), positionals[0]!, positionals[1]?.toUpperCase() ?? null);
-          const input = strictJson(utf8(regularBytes(resolve(cwd, values["call-file"]), 8192)));
+          const input = parseAgentCall(strictJson(utf8(regularBytes(resolve(cwd, values["call-file"]), 8192))));
+          if (input.route === "native" && input.task === target.task) rememberNativeCallScope(target, input.id);
           const row = recordAgentCall(target, input);
           out(values.json ? JSON.stringify({ id: row.id }) : `호출 기록: ${row.id}`);
           return 0;
@@ -984,6 +986,7 @@ function readVersion(): string {
 
 async function agentCommand(args: string[]): Promise<number> {
   const [sub, ...rest] = args;
+  if (sub === "call-hook" || sub === "call-id") return agentCallHookCommand(sub, rest);
   if (sub === "verify") return agentVerify(rest);
   if (sub === "review-note") return agentReviewNote(rest);
   if (sub === "review-hand" || sub === "review-record") return reviewArtifactCommand(sub, rest, { write: (t) => process.stdout.write(t) });

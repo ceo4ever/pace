@@ -1,0 +1,27 @@
+{
+  "text": "**Overall PASS for the scoped T07 retest.** Both initial defects are fixed in the tested scenarios. The prescribed command passed all 56 tests, and one standalone synthetic run passed both defect checks. The live-host portions of T07 were assessed against the supplied Claude and Codex observations.\n\n| Criterion | Result | Evidence |\n|---|---|---|\n| **T-1 — Claude hooks and installation** | Pass | Isolated installation, reinstallation, and removal preserved user hooks. Malformed or oversized input, a held lock, and a write error returned exit `0` without echoing the payload. The supplied Claude run recorded one completed child with model, effort, duration, and tokens attributed to their sources, and reported that raw private identifiers were absent. [Hook tests](/tmp/pace-p014-t07-final.LeUL9y/tester/test/agent-calls.test.ts:332) · [Install test](/tmp/pace-p014-t07-final.LeUL9y/tester/test/install.test.ts:547) |\n| **T-2 — One row per attempt** | Pass | Reordered and repeated hook and PM observations converged on one row per attempt. Distinct children and later turns had separate rows. In the two-backlog retest, start and stop both exited `0` silently. The first backlog kept one native row with its original ID and timestamp and gained host-reported effort. The second backlog had zero rows. There was one scope receipt. The supplied Codex run showed one confirmed start, zero automatic rows, and two manual writes converging on one row with unreported values `null` and status `unknown`. [Convergence test](/tmp/pace-p014-t07-final.LeUL9y/tester/test/agent-calls.test.ts:332) |\n| **T-3 — External verdict linkage** | Pass | With the call ledger locked before the claim, the first submission exited `2` and created zero verdict files. When the lock was injected after the claim, the first submission exited `0`, saved `R1.json`, and reported `agent_call_linked: false`. The other brief’s submission exited `2`. Retrying the original hand exited `0` and linked the sole call row to `review-records/R1.json`. The call retained its host measurements, and the focused tests confirmed that review usage and call counts remained separate. [Review tests](/tmp/pace-p014-t07-final.LeUL9y/tester/test/agent-review-hand.test.ts:432) |\n| **T-4 — TS-06 v1** | Pass | The canonical table registers TS-06 v1 and names the T03 ledger and T07 integration. The supplied `pace-troubleshooter` fixture shows all five required fields with provenance on one row and a reference to the external verdict. The final comparison against the actual P014 role remains part of PROJECT-CLOSE. [Canonical requirement](/tmp/pace-p014-t07-final.LeUL9y/tester/skills/pace-team/references/required-roles.md:51) |\n\n**Commands and counts**\n\n```sh\nenv -u PACE_AGENT_CHILD node --test --test-concurrency=3 test/agent-calls.test.ts test/agent-review-hand.test.ts test/install.test.ts\nenv -u PACE_AGENT_CHILD node /tmp/pace-p014-t07-final.LeUL9y/t07-retest.mjs\n```\n\n| Test file | Passed | Failed |\n|---|---:|---:|\n| `agent-calls.test.ts` | 11 | 0 |\n| `agent-review-hand.test.ts` | 15 | 0 |\n| `install.test.ts` | 30 | 0 |\n| **Total** | **56** | **0** |\n\nThe test command exited `0` with zero skipped, cancelled, or todo tests. The synthetic command exited `0` with two defect checks passed, and its temporary fixture was removed. The full suite, live host calls, and user installation were outside this retest. The original worktree was untouched. [Synthetic retest script](/tmp/pace-p014-t07-final.LeUL9y/t07-retest.mjs)",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "reported_effort": "medium",
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": null,
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 137232,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 63259
+  },
+  "usage_total_tokens": 63259,
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

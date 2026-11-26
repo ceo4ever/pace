@@ -1,0 +1,127 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# P014 T07 독립 검토: 고정된 구현 대조 (읽기 전용)\n\n**판정: 내보내도 됩니다.** 재현 가능한 blocking 결함은 남아 있지 않습니다. 다만 토큰 값이 실제로 무엇을 뜻하는지(should_fix)는 바로잡을 필요가 있습니다.\n\n## 노출 범위\n- **읽은 자료:** 프롬프트에 포함된 `implementation.patch` 전문, 1차 독립 검토 원문, TASK 기준, 마스킹된 실측 두 건(Claude·Codex), 증거 표.\n- **직접 연 파일:** `src/project/agent-calls.ts` 전체, `src/agent/call-context.ts`(`automaticCallTarget`·`tryRecordCall`), `src/setup/install.ts`(`isBootCommand`·`claudeCallHookCommand` 부근), `decision-rights.md`의 A-1.\n- **자동 맥락:** 부트는 생략됐습니다(\"자식 세션\"). 호스트가 git 상태와 CLAUDE.md/AGENTS.md를 붙였고, 메모리는 불러오지 않았습니다.\n- **실행하지 않은 것:** 테스트, 런타임 호출, 외부 호출 모두 하지 않았습니다.\n- **한계:** TASK 형식의 작업 문서가 프롬프트에 함께 들어 있어서 완전히 격리된 상태는 아니었습니다.\n\n## 1차 지적과 대조한 결과\n- **B1(같은 시도가 두 판정에 연결됨) → 해소.**\n  - 호출 잠금 안에서 `review_claim`을 예약합니다(`agent-calls.ts:217-224`). 예약 값은 `textHash(hand)`이고, 이미 다른 예약이 있으면 `enrich`의 `equalOrMissing`이 거부합니다(`:116`).\n  - 테스트 `otherHand`가 1차에서 낸 재현 시나리오를 그대로 덮습니다.\n  - 판정 기록 전에 연결 쓰기가 실패해도 같은 고정(`--hand`)으로 다시 시도하면 복구됩니다(`review-hand.ts` 재시도 경로).\n- **H1(Claude 훅 필드 가정) → 실측으로 해소.** 실제 Claude 실행에서 시도 1건, 영수증 1개, 최종 1행이 나왔습니다. 모델·effort는 requested와 host 출처가 각각 따로 남았고, 시간·토큰도 host 출처입니다. 원장은 1개, ref도 1개입니다.\n- **H2(이어서 실행한 자식) → 대부분 해소.** 호출 ID 해시에 `prompt_id`가 들어가서 같은 자식의 다른 턴이 별도 행이 됩니다. 다만 호스트가 `prompt_id`를 보내지 않는 버전이라면 예전처럼 하나로 합쳐질 위험이 남습니다(note).\n- **H4(같은 시도가 다른 원장에 들어가는 문제) → 해소.** Git 공통 디렉터리 아래 `pace/native-call-scopes/<id>.json` 영수증이 범위를 하나로 고정합니다. 수동 기록 경로도 `rememberNativeCallScope`로 같은 범위를 강제합니다.\n- **L2(이전 훅이 남는 문제) → 실질적으로 해소.** 따옴표로 감싼 `paceBin`도 `isBootCommand`(`install.ts:490-498`)가 알아보므로 같은 설치 위치 안에서는 제거됩니다. 설치 위치가 바뀌는 경우는 기존 부트 훅과 같은 한계입니다.\n- **L1(회수 가드), H3(충돌 하나에 관측 전체가 버려짐) → 남았지만 계약 범위 안.** 회수 가드는 이번 변경 밖의 T03 코드입니다. H3은 \"상충하면 거부\"라는 계약에 맞는 동작입니다.\n\n## 새로 찾은 것\n- **F1 (should_fix): 토큰 값의 의미.** Agent 결과의 `usage`와 `totalTokens`는 자식의 마지막 응답 하나에 대한 사용량으로 보입니다.\n  - 실측값이 입력 2, 출력 954, 총 9465입니다. 즉 캐시를 뺀 입력과 마지막 출력이고, 총값에는 캐시 토큰이 들어 있습니다.\n  - 그런데 이 값이 시도 전체의 입력·출력·총 토큰으로 기록되고 집계됩니다. 출처 표시(host)는 맞지만 값의 의미가 다릅니다.\n- **F2 (note): 범위 영수증이 계속 쌓입니다.** 자식 호출마다 Git 공통 디렉터리 아래에 정리되지 않는 영수증 파일이 하나씩 생깁니다. 또 영수증을 `wx`로 만든 직후, 내용을 쓰기 전에 프로세스가 죽으면 그 ID의 관측은 영구히 기록되지 않습니다.\n- **F3 (note): `prompt_id`에 의존합니다.** 시작·종료 이벤트 중 한쪽에만 `prompt_id`가 오거나 둘 다 없으면 ID가 갈라지거나 합쳐집니다. 현재 버전은 실측으로 정상이 확인됐지만 버전 회귀를 잡아 줄 신호가 없습니다.\n\n**합의 영향(A-1):** 위 지적은 모두 기존 기준을 유지하는 문서 보정이나 구조 보강입니다. 합의 변경에는 해당하지 않습니다(아니오).\n\n```pace-review\n{\"version\":2,\"findings\":[{\"id\":\"F1\",\"severity\":\"should_fix\",\"category\":\"criteria\",\"location\":\"src/agent/call-hook.ts:121-124\",\"scenario\":\"Claude Agent 결과의 usage·totalTokens는 자식의 마지막 응답 사용량(캐시 제외 입력, 마지막 출력, 마지막 문맥+출력)으로 보이는데, 이 값이 시도 전체의 input/output/total 토큰으로 기록·집계된다. 실측에서 input 2, output 954, total 9465가 나와 여러 턴을 도는 자식의 사용량이 과소 표기된다\",\"reproduction\":\"마스킹된 Claude 실측 claude-live.json의 tokens(input 2 / output 954 / total 9465)과 durationMs 14608 대조. 문서 docs/AGENT-CALL.md의 '호스트가 집계해 제공한 범위' 표현은 이 의미를 밝히지 않는다\",\"confidence\":\"medium\",\"impact\":\"criterion\",\"criterion\":\"T-1\",\"safety_path\":null},{\"id\":\"F2\",\"severity\":\"note\",\"category\":\"implementation\",\"location\":\"src/agent/call-hook.ts:52-70\",\"scenario\":\"자식 호출마다 Git 공통 디렉터리의 pace/native-call-scopes에 영수증이 영구히 쌓인다. wx로 연 직후 내용을 쓰기 전에 프로세스가 죽으면 빈 영수증이 남고, 그 ID의 이후 관측은 readScope 실패로 조용히 버려진다\",\"reproduction\":\"빈 <common>/pace/native-call-scopes/<id>.json을 만든 뒤 같은 session·agent·prompt로 call-hook 실행 → 행 없음\",\"confidence\":\"medium\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null},{\"id\":\"F3\",\"severity\":\"note\",\"category\":\"design\",\"location\":\"src/agent/call-hook.ts:19-23\",\"scenario\":\"호출 ID가 prompt_id에 의존한다. 호스트 버전에 따라 이벤트 중 한쪽에만 prompt_id가 오면 한 시도가 두 행으로 갈라지고, 둘 다 없으면 이어서 실행한 자식이 한 ID로 합쳐져 두 번째 시도가 충돌로 버려진다. 회귀를 알리는 신호가 없다\",\"reproduction\":\"SubagentStart에는 prompt_id를 넣고 PostToolUse에서는 빼서 call-hook 실행 → 두 행\",\"confidence\":\"low\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null}],\"criteria\":[{\"id\":\"T-1\",\"state\":\"present\",\"observation\":\"call-hook.ts: 1 MiB 상한, 엄격 JSON, 등록 역할만 기록(validTeamName+loadTeamMember), 호스트 ID는 도메인 분리 sha256만 저장, 모든 오류에서 종료 0·무출력(테스트로 잘린 입력·잠금·디렉터리 오류 확인). 요청값은 동기화된 생성물과 일치할 때만, 실제 effort는 SubagentStop에서만, 모델·시간·토큰은 Agent 결과에서만 읽는다. 설치는 관리 표지가 붙은 명령을 멱등 추가·제거하고 사용자 훅을 보존한다(install.test). 실측 Claude 1행에서 requested/host 출처 구분 확인, 원문 식별자 없음. 토큰 의미 보정은 F1\"},{\"id\":\"T-2\",\"state\":\"present\",\"observation\":\"enrich와 nativeObservation이 최초 at·task를 유지하고, 범위 영수증이 범위를 하나로 고정하며, prompt_id로 다른 턴을 구분한다. 테스트에서 역순·중복·두 자식·중단 수동 입력과 미확인 유지를 확인. Codex 실측은 확인된 시작 1건, 자동 0건, 수동 2회 기록 뒤 1행이며 모든 값이 null·unknown으로 남았다\"},{\"id\":\"T-3\",\"state\":\"present\",\"observation\":\"review-hand.ts의 externalCallLink가 범위·태스크·구성원·제공자·발급~제출 시각·상태·ref를 대조한다. 호출 잠금 안에서 review_claim으로 일대일 예약하고, 다른 고정의 예약은 거부한다(otherHand 테스트). 부분 실패 뒤 같은 고정·응답으로 재시도하면 원장 판정 추가 없이 ref를 복구한다. 검토 원장 usage는 null로 유지되고 두 CLI 명령은 행을 만들지 않는다. 실측에서 linked·linkRetry true, reviewRecords 1\"},{\"id\":\"T-4\",\"state\":\"present\",\"observation\":\"required-roles.md에 TS-06 버전 1 고정 요건 등록. 증거 표에서 pace-troubleshooter 실제 Claude 호출의 다섯 항목이 요청/실제/출처와 함께 한 행에 있음을 대조했고, P014 실제 원본 대조는 PROJECT-CLOSE로 추적한다\"}]}\n```\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 93075,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 9712
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "implementation.patch",
+    "hash": "cd723bca0c3c44a82f2324d798e730eda3187284a6a6642f3a6e1b2cc20f4d0f",
+    "verdict": "pass",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "70ac2d13457ad7dd87428ddfdb0d6eb4",
+  "assessment": {
+    "stage": "post",
+    "verdict": "pass",
+    "reported_verdict": "pass",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "should_fix",
+        "category": "criteria",
+        "confidence": "medium",
+        "location": "src/agent/call-hook.ts:121-124",
+        "scenario": "Claude Agent 결과의 usage·totalTokens는 자식의 마지막 응답 사용량(캐시 제외 입력, 마지막 출력, 마지막 문맥+출력)으로 보이는데, 이 값이 시도 전체의 input/output/total 토큰으로 기록·집계된다. 실측에서 input 2, output 954, total 9465가 나와 여러 턴을 도는 자식의 사용량이 과소 표기된다",
+        "reproduction": "마스킹된 Claude 실측 claude-live.json의 tokens(input 2 / output 954 / total 9465)과 durationMs 14608 대조. 문서 docs/AGENT-CALL.md의 '호스트가 집계해 제공한 범위' 표현은 이 의미를 밝히지 않는다",
+        "impact": "criterion",
+        "criterion": "T-1",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "note",
+        "category": "implementation",
+        "confidence": "medium",
+        "location": "src/agent/call-hook.ts:52-70",
+        "scenario": "자식 호출마다 Git 공통 디렉터리의 pace/native-call-scopes에 영수증이 영구히 쌓인다. wx로 연 직후 내용을 쓰기 전에 프로세스가 죽으면 빈 영수증이 남고, 그 ID의 이후 관측은 readScope 실패로 조용히 버려진다",
+        "reproduction": "빈 <common>/pace/native-call-scopes/<id>.json을 만든 뒤 같은 session·agent·prompt로 call-hook 실행 → 행 없음",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "note",
+        "category": "design",
+        "confidence": "low",
+        "location": "src/agent/call-hook.ts:19-23",
+        "scenario": "호출 ID가 prompt_id에 의존한다. 호스트 버전에 따라 이벤트 중 한쪽에만 prompt_id가 오면 한 시도가 두 행으로 갈라지고, 둘 다 없으면 이어서 실행한 자식이 한 ID로 합쳐져 두 번째 시도가 충돌로 버려진다. 회귀를 알리는 신호가 없다",
+        "reproduction": "SubagentStart에는 prompt_id를 넣고 PostToolUse에서는 빼서 call-hook 실행 → 두 행",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "call-hook.ts: 1 MiB 상한, 엄격 JSON, 등록 역할만 기록(validTeamName+loadTeamMember), 호스트 ID는 도메인 분리 sha256만 저장, 모든 오류에서 종료 0·무출력(테스트로 잘린 입력·잠금·디렉터리 오류 확인). 요청값은 동기화된 생성물과 일치할 때만, 실제 effort는 SubagentStop에서만, 모델·시간·토큰은 Agent 결과에서만 읽는다. 설치는 관리 표지가 붙은 명령을 멱등 추가·제거하고 사용자 훅을 보존한다(install.test). 실측 Claude 1행에서 requested/host 출처 구분 확인, 원문 식별자 없음. 토큰 의미 보정은 F1"
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "enrich와 nativeObservation이 최초 at·task를 유지하고, 범위 영수증이 범위를 하나로 고정하며, prompt_id로 다른 턴을 구분한다. 테스트에서 역순·중복·두 자식·중단 수동 입력과 미확인 유지를 확인. Codex 실측은 확인된 시작 1건, 자동 0건, 수동 2회 기록 뒤 1행이며 모든 값이 null·unknown으로 남았다"
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "review-hand.ts의 externalCallLink가 범위·태스크·구성원·제공자·발급~제출 시각·상태·ref를 대조한다. 호출 잠금 안에서 review_claim으로 일대일 예약하고, 다른 고정의 예약은 거부한다(otherHand 테스트). 부분 실패 뒤 같은 고정·응답으로 재시도하면 원장 판정 추가 없이 ref를 복구한다. 검토 원장 usage는 null로 유지되고 두 CLI 명령은 행을 만들지 않는다. 실측에서 linked·linkRetry true, reviewRecords 1"
+        },
+        {
+          "id": "T-4",
+          "state": "present",
+          "observation": "required-roles.md에 TS-06 버전 1 고정 요건 등록. 증거 표에서 pace-troubleshooter 실제 Claude 호출의 다섯 항목이 요청/실제/출처와 함께 한 행에 있음을 대조했고, P014 실제 원본 대조는 PROJECT-CLOSE로 추적한다"
+        }
+      ],
+      "issues": []
+    }
+  },
+  "budget": {
+    "unit": "task",
+    "root": "/Volumes/Data/AiStudio/workspace/pace.wt/P014/projects/P014_261126_문제_해결_전문가_에이전트/tasks/T07_호스트_호출_기록과_외부_검토_연동",
+    "stage": "post",
+    "rounds": 1,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}

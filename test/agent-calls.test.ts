@@ -88,7 +88,7 @@ test("T03 S-1: PM 보강·역순·병렬 입력과 백로그 귀속", async () =
   writeFileSync(abandoned, `pace-agent-calls-v1 ${previousOwner.pid}\n`);
   assert.equal(f.run(callFile(f, minimal)).status, 0);
   assert.equal(existsSync(abandoned), false);
-  const backlog = f.run(callFile(f, row({ task: null }), ["BL260101_01"]));
+  const backlog = f.run(callFile(f, row({ id: "f".repeat(32), task: null }), ["BL260101_01"]));
   assert.equal(backlog.status, 0, backlog.stderr);
   assert.equal(f.rows(f.backlog).length, 1);
   assert.equal(existsSync(join(f.project, "log.jsonl")), false);
@@ -327,4 +327,106 @@ test("T03 S-4·S-5: main에서 실행한 검토도 소유 worktree stats에서 �
   const stats = f.run(["project", "stats", "P001", "--json"]);
   assert.equal(stats.status, 0, stats.stderr);
   assert.equal(JSON.parse(stats.stdout).agentCalls.attempts, 2);
+});
+
+test("T07 S-1~S-3: 훅과 수동 관측은 서로 다른 순서에도 같은 자식 한 행으로 수렴한다", () => {
+  const f = fixture();
+  assert.equal(f.run(["team", "new", "pace-troubleshooter", "--role", "reviewer"]).status, 0);
+  assert.equal(f.run(["worker", "set", "claude", "tier.high.model", "claude-fixture-request"]).status, 0);
+  assert.equal(f.run(["worker", "set", "claude", "tier.high.effort", "low"]).status, 0);
+  assert.equal(f.run(["team", "sync"]).status, 0);
+  const hook = (payload: object) => f.run(["agent", "call-hook", "--host", "claude"], JSON.stringify(payload));
+  const session = "synthetic-session-raw";
+  const turn = "synthetic-first-turn";
+  const given = (agent: string, event: string, cwd = f.task) => ({
+    cwd, hook_event_name: event, agent_id: agent, session_id: session, agent_type: "pace-troubleshooter", prompt_id: turn,
+    prompt: "synthetic-private-parent-prompt", transcript_path: "synthetic-private-transcript-path",
+  });
+  const result = (agent: string) => ({
+    ...given(agent, "PostToolUse"), tool_name: "Agent", effort: { level: "medium" },
+    tool_input: { description: "synthetic-private-description", prompt: "synthetic-private-tool-prompt" },
+    tool_response: { agentId: agent, agentType: "pace-troubleshooter", status: "completed", resolvedModel: "claude-fixture-result",
+      totalTokens: 20, totalDurationMs: 8, usage: { input_tokens: 0, output_tokens: 7 }, content: "synthetic-private-result" },
+  });
+  const rawId = "synthetic-child-raw";
+  const idArgs = ["agent", "call-id", "--host", "claude"];
+  const key = (agent_id: string, prompt_id = turn) => f.run(idArgs, JSON.stringify({ session_id: session, agent_id, prompt_id })).stdout.trim();
+  assert.equal(hook(given(rawId, "SubagentStart", f.cwd)).status, 0);
+  assert.equal(existsSync(f.file), false, "일반 Git 루트는 프로젝트 범위로 추정하지 않음");
+  assert.equal(hook(given(rawId, "SubagentStart", f.bin)).status, 0);
+  assert.equal(existsSync(f.file), false, "Git 저장소 밖은 무기록");
+  assert.equal(hook({ ...given(rawId, "SubagentStart"), agent_type: "unregistered" }).status, 0);
+  assert.equal(existsSync(f.file), false, "등록 범위 밖 역할은 무기록");
+  assert.equal(hook(given("synthetic-backlog-child", "SubagentStart", f.backlog)).status, 0);
+  assert.equal(f.rows(f.backlog)[0]?.task, null);
+  assert.match(key(rawId), /^[a-f0-9]{64}$/);
+
+  const first = row({ id: key(rawId), agent: "pace-troubleshooter", status: "unknown" });
+  assert.equal(f.run(callFile(f, first)).status, 0);
+  const second = "synthetic-child-other";
+  for (const payload of [{ ...result(rawId), cwd: f.backlog }, result(second), given(rawId, "SubagentStart"),
+    { ...given(second, "SubagentStop"), effort: { level: "low" } }, given(second, "SubagentStart"),
+    { ...given(rawId, "SubagentStop"), effort: { level: "low" } }, result(rawId)]) {
+    const invoked = hook(payload);
+    assert.equal(invoked.status, 0, invoked.stderr);
+    assert.equal(invoked.stdout + invoked.stderr, "");
+  }
+  const calls = f.rows();
+  assert.equal(calls.length, 2);
+  assert.equal(f.rows(f.backlog).length, 1, "다른 범위의 훅도 처음 고른 위치만 사용");
+  assert.deepEqual(calls.map((call) => call.id), [key(rawId), key(second)]);
+  assert.equal(calls[0]?.at, first.at);
+  assert.ok(calls.every((call) => call.status === "completed" && call.model.requested.value === "claude-fixture-request" &&
+    call.model.actual.value === "claude-fixture-result" && call.effort.actual.value === "low" && call.tokens.input.value === 0 &&
+    call.tokens.total.value === 20 && call.duration_ms.value === 8));
+  assert.equal(f.run(callFile(f, calls[1]!)).status, 0, "자동에서 수동 순서");
+  assert.deepEqual(f.rows(), calls);
+  const interrupted = "synthetic-child-interrupted";
+  assert.equal(hook(given(interrupted, "SubagentStart")).status, 0);
+  const started = f.rows()[2]!;
+  assert.equal(started.status, "unknown", "종료 증거 없음");
+  assert.equal(f.run(callFile(f, { ...started, status: "interrupted", reason: "cancelled" })).status, 0);
+  assert.equal(f.rows()[2]?.status, "interrupted");
+  assert.equal(f.rows()[2]?.duration_ms.value, null);
+  assert.match(f.rows()[2]!.id, /^[a-f0-9]{64}$/);
+  assert.doesNotMatch(readFileSync(f.file, "utf8"), /synthetic-private|synthetic-session-raw|synthetic-child/);
+  const stats = f.run(["project", "stats", "P001", "--json"]);
+  assert.equal(JSON.parse(stats.stdout).team, undefined);
+  const forged = hook({ ...given(rawId, "PostToolUse"), tool_name: "Bash", tool_response: result(rawId).tool_response });
+  assert.equal(forged.status, 0);
+  assert.equal(f.rows().length, 3);
+  const resumed = "synthetic-later-turn";
+  assert.equal(hook({ ...given(rawId, "SubagentStart"), prompt_id: resumed }).status, 0);
+  assert.equal(hook({ ...result(rawId), prompt_id: resumed }).status, 0);
+  assert.equal(f.rows().length, 4, "같은 자식의 다른 턴은 별도 시도");
+  assert.equal(f.rows()[3]?.id, key(rawId, resumed));
+});
+
+test("T07 S-1: 훅은 잘린 입력·잠금·쓰기 오류에서도 정상 종료하고 원문을 내지 않는다", () => {
+  const f = fixture();
+  assert.equal(f.run(["team", "new", "pace-troubleshooter", "--role", "reviewer"]).status, 0);
+  const cmd = ["agent", "call-hook", "--host", "claude"];
+  const payload = JSON.stringify({ cwd: f.task, hook_event_name: "SubagentStart", agent_id: "sample-agent", session_id: "sample-session",
+    agent_type: "pace-troubleshooter", transcript_path: "private-fixture-path" });
+  for (const invalid of ["{truncated", "x".repeat(1024 * 1024 + 1)]) {
+    const r = f.run(cmd, invalid);
+    assert.equal(r.status, 0);
+    assert.equal(r.stdout + r.stderr, "");
+    assert.equal(existsSync(f.file), false);
+  }
+  mkdirSync(f.file, { recursive: true });
+  const error = f.run(cmd, payload);
+  assert.equal(error.status, 0);
+  assert.equal(error.stdout + error.stderr, "");
+  renameSync(f.file, join(f.home, "broken-file"));
+  const lock = join(dirname(f.file), ".write.local.json");
+  writeFileSync(lock, `pace-agent-calls-v1 ${process.pid}\n`);
+  const start = performance.now(), busy = f.run(cmd, payload);
+  assert.equal(busy.status, 0);
+  assert.equal(busy.stdout + busy.stderr, "");
+  assert.ok(performance.now() - start < 9000);
+  assert.equal(existsSync(f.file), false);
+  unlinkSync(lock);
+  assert.equal(f.run(cmd, payload).status, 0);
+  assert.equal(f.rows().length, 1);
 });

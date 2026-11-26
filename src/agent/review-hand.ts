@@ -5,7 +5,9 @@ import { parseArgs } from "node:util";
 import { regularBytes, utf8 } from "../project/handoff-files.ts";
 import { approvedTaskEdit, proofScopeIssues, reviewHash } from "../project/pre-review.ts";
 import { permissionBasis, type PermissionBasis } from "../project/review-permission.ts";
-import { AgentError, errorCodes, errorPayload } from "./contract.ts";
+import { readAgentCalls, recordAgentCall, type AgentCall, type CallTarget } from "../project/agent-calls.ts";
+import { AgentError, errorCodes, errorPayload, providerOf } from "./contract.ts";
+import { automaticCallTarget, tryRecordCall } from "./call-context.ts";
 import { reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope, type BudgetStage } from "./review-budget.ts";
 import { reviewCriteria } from "./review-criteria.ts";
 import { diagnosisLink, FOLLOWUPS_FILE, followupReport, readReviewState, recoveryGrant } from "./review-followup.ts";
@@ -15,7 +17,7 @@ import { buildVerifyPrompt } from "./verify.ts";
 import { evidenceRereviewBase, loadRereview, recoverBudgetOrphans, writeOrLedgerError } from "./verify-cli.ts";
 
 export const REVIEW_HAND_USAGE = "pace agent review-hand --target <파일> --author-provider <제공자> --purpose-file <파일>";
-export const REVIEW_RECORD_USAGE = "pace agent review-record --target <파일> --hand <ID> --provider <제공자> --reviewer <도구> --result-file <파일> [--unavailable-file <파일>]";
+export const REVIEW_RECORD_USAGE = "pace agent review-record --target <파일> --hand <ID> --provider <제공자> --reviewer <도구> --result-file <파일> [--unavailable-file <파일>] [--call-id <시도 ID>]";
 
 type ReviewState = ReturnType<typeof readReviewState>;
 type FixedReview = {
@@ -36,6 +38,34 @@ type FixedReview = {
 const TEXT_LIMIT = 16 * 1024 * 1024;
 
 function reject(message: string): never { throw new AgentError("invalid_request", message); }
+
+interface ExternalCallLink { target: CallTarget; call: AgentCall }
+function externalCallLink(target: string, id: string | undefined, reviewer: string, provider: string, issuedAt: string, submittedAt: string, prior?: string): ExternalCallLink | undefined {
+  if (id === undefined) return undefined;
+  if (!/^[a-f0-9]{32,64}$/.test(id)) return reject("--call-id는 호출 원장의 시도 ID여야 한다");
+  const callTarget = automaticCallTarget(dirname(target), undefined, undefined, target);
+  if (!callTarget) return reject("외부 검토에 연결할 호출 원장 범위를 확인할 수 없다");
+  const calls = readAgentCalls(callTarget) ?? [];
+  const call = calls.find((item) => item.id === id);
+  const ref = prior && externalCallRef(callTarget, prior);
+  if (!call || call.task !== callTarget.task || call.agent !== reviewer || (call.engine && providerOf[call.engine] !== provider) ||
+      Date.parse(call.at) < Date.parse(issuedAt) || Date.parse(call.at) > Date.parse(submittedAt) || call.route === "verify" ||
+      (call.status !== "completed" && call.status !== "unknown") || call.reason !== null || (call.ref !== null && call.ref !== ref) ||
+      (ref && calls.some((other) => other.id !== id && other.ref === ref))) {
+    return reject("이미 연결됐거나 범위·구성원·제공자·호출 시점·상태가 외부 검토와 맞지 않는다");
+  }
+  return { target: callTarget, call };
+}
+
+function externalCallRef(target: CallTarget, path: string): string {
+  return relative(join(target.root, target.directory), path).split(sep).join("/");
+}
+
+function recordExternalCallLink(link: ExternalCallLink, destination: string, writeCall: typeof tryRecordCall) {
+  const { target, call } = link;
+  const linked = writeCall(target, { ...call, ref: externalCallRef(target, destination) });
+  return { agent_call_id: call.id, agent_call_linked: linked };
+}
 
 export function reviewIdentity(value: unknown): value is string {
   return typeof value === "string" && /^[a-z][a-z0-9_-]{0,63}$/.test(value);
@@ -122,16 +152,17 @@ function fallbackReason(file: string | undefined, author: string, provider: stri
 }
 
 export function reviewArtifactCommand(action: "review-hand" | "review-record", args: string[],
-  deps: { write: (text: string) => void; now?: () => Date }): number {
+  deps: { write: (text: string) => void; now?: () => Date; writeCall?: typeof tryRecordCall }): number {
   const { values }: { values: Partial<Record<string, string>> } = action === "review-hand"
     ? parseArgs({ args, strict: true, options: {
       target: { type: "string" }, "author-provider": { type: "string" }, "purpose-file": { type: "string" },
     } })
     : parseArgs({ args, strict: true, options: {
       target: { type: "string" }, hand: { type: "string" }, provider: { type: "string" }, reviewer: { type: "string" },
-      "result-file": { type: "string" }, "unavailable-file": { type: "string" },
+      "result-file": { type: "string" }, "unavailable-file": { type: "string" }, "call-id": { type: "string" },
     } });
   const now = deps.now ?? (() => new Date());
+  const writeCall = deps.writeCall ?? tryRecordCall;
   let release: (() => void) | undefined;
   try {
     const target = reviewTarget(values.target);
@@ -185,7 +216,18 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
     }
     const reservation = state.budget.currentEntries.find((row) => row.type === "call" && row.call_id === id && row.target === scope.name);
     if (reservation?.type !== "call" || !reservation.frozen_digest) return reject("이 대상·단계의 원장에 예약된 외부 고정이 없다");
-    if (state.budget.currentEntries.some((row) => row.type === "review" && row.call_id === id)) return reject("이미 판정을 기록한 외부 고정이다");
+    const claim = textHash(`pace-external-review-call/v1\0${id}`);
+    const previous = state.budget.currentEntries.find((row): row is ReviewEntry => row.type === "review" && row.call_id === id);
+    if (previous) {
+      if (!values["call-id"] || previous.provider !== values.provider || previous.verifier !== values.reviewer || previous.interrupted ||
+          textHash(reviewInput(values["result-file"])) !== previous.result_hash) return reject("이미 판정을 기록한 외부 고정이다");
+      const destination = join(dirname(scope.ledgerTarget), previous.record);
+      const link = externalCallLink(target, values["call-id"], values.reviewer, values.provider, reservation.at, previous.at, destination)!;
+      if (link.call.review_claim !== claim) return reject("호출 시도가 기존 외부 예약과 맞지 않는다");
+      reply(deps.write, { recorded: true, source: "external", review: previous, ...recordExternalCallLink(link, destination, writeCall), agent_call_retry: true,
+        budget: state.budget.status, ...(state.recovery.upper ? { followup: followupReport(scope, state) } : {}) });
+      return 0;
+    }
     if (recovery || state.pending || state.budget.status.rounds >= state.budget.status.round_limit) {
       return reportsToVerify(scope, state, deps.write);
     }
@@ -202,6 +244,8 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
     }
     const raw = reviewInput(values["result-file"]);
     if (!raw.trim()) return reject("외부 검토 원문이 비었다");
+    const at = now().toISOString();
+    const link = externalCallLink(target, values["call-id"], values.reviewer, values.provider, reservation.at, at);
     const currentDiagnosis = state.activeDiagnosis && diagnosisLink(scope, target, state.activeDiagnosis);
     const criteria = reviewCriteria(scope, snapshot);
     const stale = fixed.hash !== hash || fixed.criteria_digest !== textHash(JSON.stringify(criteria)) ||
@@ -216,9 +260,12 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
       required_criteria: fixed.required_criteria,
       ...(fixed.permission_basis ? { permission_basis: fixed.permission_basis } : {}),
     };
-    const at = now().toISOString();
     const record = nextRecordName(scope.ledgerTarget);
     const destination = join(dirname(scope.ledgerTarget), record);
+    if (link) {
+      try { link.call = recordAgentCall(link.target, { ...link.call, review_claim: claim }, { claimReview: true }); }
+      catch { return reject("호출에 외부 검토를 예약할 수 없다. 기존 참조나 다른 예약을 확인한다"); }
+    }
     const cross_unavailable = unavailable ? [unavailable.reason] : undefined;
     const review = {
       target: scope.name, hash: fixed.hash, kind: scope.kind, verdict, rereview_of: fixed.rereview_of, call_id: id,
@@ -230,14 +277,16 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
     appendLedger(scope.ledgerTarget, { type: "format", at, target: review.target, hash: review.hash, record, ...format });
     writeOrLedgerError(destination, JSON.stringify({
       source: "external", verifier: values.reviewer, cross, cross_unavailable, cross_attempt: unavailable, assessment,
+      ...(link ? { agent_call_id: link.call.id } : {}),
       result: { text: raw, provider: { value: values.provider, source: "submitted" }, session_id: null, usage },
       review: { ...review, snapshot: fixed.snapshot },
     }, null, 2) + "\n", "외부 검토 기록");
     appendLedger(scope.ledgerTarget, { ...review, type: "review", at, provider: values.provider, verifier: values.reviewer,
       cross, ...(cross_unavailable ? { cross_unavailable } : {}), record, result_hash: textHash(raw), usage });
     const after = readReviewState(scope, hash);
+    const linked = link && recordExternalCallLink(link, destination, writeCall);
     const gaps = stale ? [] : evidenceGaps(assessment);
-    reply(deps.write, { recorded: true, source: "external", cross, review: { ...review, record }, assessment, budget: after.budget.status,
+    reply(deps.write, { recorded: true, source: "external", cross, review: { ...review, record }, assessment, budget: after.budget.status, ...linked,
       ...(gaps.length ? { evidence_action: { action: "collect_evidence", gaps, if_proceed_without_evidence: "A-3" } } : {}),
       ...(stale ? { warning: "고정 이후 대상이나 재검토 기준이 바뀌어 현재 허가는 기록하지 않았다" } : {}),
       ...(after.recovery.upper ? { followup: followupReport(scope, after) } : {}),

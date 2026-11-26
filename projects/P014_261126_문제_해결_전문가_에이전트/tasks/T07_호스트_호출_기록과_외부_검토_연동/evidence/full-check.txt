@@ -1,0 +1,13 @@
+최종 후보 선언 검사, 원본 CLI·임시 TMPDIR/PACE_HOME, 브라우저 E2E 끔.
+상속된 PACE_AGENT_CHILD 해제, 테스트 동시 실행 6, Git 자동 유지보수 해제.
+npm run check -- --test-concurrency=6 (exit 0)
+ℹ tests 1521
+ℹ suites 0
+ℹ pass 1504
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 448820.536458
+node scripts/secret-scan.ts (exit 0)
+git diff --check (exit 0)

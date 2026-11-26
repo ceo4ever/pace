@@ -1,0 +1,89 @@
+{
+  "attempts": 1,
+  "reportedToolResults": 1,
+  "durableScopeReceipts": 1,
+  "recorded": true,
+  "linked": true,
+  "linkRetry": true,
+  "verdict": "pass",
+  "reviewRecords": 1,
+  "reviewUsage": {
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "reviewHasDuration": false,
+  "agentCalls": {
+    "state": "recorded",
+    "attempts": 1,
+    "groups": [
+      {
+        "agent": "pace-troubleshooter",
+        "engine": "claude",
+        "attempts": 1,
+        "durationMs": {
+          "known": 14608,
+          "unknown": 0
+        },
+        "inputTokens": {
+          "known": 2,
+          "unknown": 0
+        },
+        "outputTokens": {
+          "known": 954,
+          "unknown": 0
+        },
+        "totalTokens": {
+          "known": 9465,
+          "unknown": 0
+        }
+      }
+    ]
+  },
+  "teamShown": false,
+  "attempt": {
+    "agent": "pace-troubleshooter",
+    "route": "native",
+    "status": "completed",
+    "model": {
+      "requested": {
+        "value": "claude-opus-5-5",
+        "source": "requested"
+      },
+      "actual": {
+        "value": "claude-opus-5-5",
+        "source": "host"
+      }
+    },
+    "effort": {
+      "requested": {
+        "value": "low",
+        "source": "requested"
+      },
+      "actual": {
+        "value": "low",
+        "source": "host"
+      }
+    },
+    "duration_ms": {
+      "value": 14608,
+      "source": "host"
+    },
+    "tokens": {
+      "input": {
+        "value": 2,
+        "source": "host"
+      },
+      "output": {
+        "value": 954,
+        "source": "host"
+      },
+      "total": {
+        "value": 9465,
+        "source": "host"
+      }
+    },
+    "ref": "tasks/T01_hook/evidence/review-records/R1.json"
+  },
+  "privateIdentifiersAbsent": true,
+  "scopeFixed": true
+}

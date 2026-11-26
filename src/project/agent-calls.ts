@@ -41,6 +41,7 @@ export interface AgentCall {
   duration_ms: CallValue<number>;
   tokens: { input: CallValue<number>; output: CallValue<number>; total: CallValue<number> };
   ref: string | null;
+  review_claim?: string;
 }
 
 export class AgentCallError extends Error {}
@@ -75,8 +76,10 @@ function checkedRef(value: unknown): value is string | null {
 }
 
 export function parseAgentCall(input: unknown): AgentCall {
-  const raw = exact(input, ["version", "id", "at", "task", "agent", "engine", "route", "status", "reason", "replacement_reason", "model", "effort", "duration_ms", "tokens", "ref"]);
-  const { version, id, at, task, agent, engine, route, status, reason, replacement_reason, ref } = raw;
+  const keys = ["version", "id", "at", "task", "agent", "engine", "route", "status", "reason", "replacement_reason", "model", "effort", "duration_ms", "tokens", "ref"];
+  if (input && typeof input === "object" && Object.hasOwn(input, "review_claim")) keys.push("review_claim");
+  const raw = exact(input, keys);
+  const { version, id, at, task, agent, engine, route, status, reason, replacement_reason, ref, review_claim } = raw;
   if (version !== 1 || typeof id !== "string" || !/^[a-f0-9]{32,64}$/.test(id) ||
       typeof at !== "string" || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,3})?(?:Z|[+-]\d\d:\d\d)$/.test(at) || !Number.isFinite(Date.parse(at)) ||
       (task !== null && (typeof task !== "string" || !/^T\d{2}$/.test(task))) ||
@@ -84,10 +87,12 @@ export function parseAgentCall(input: unknown): AgentCall {
       (engine !== null && !oneOf(engine, agentNames)) || !oneOf(route, routes) || !oneOf(status, statuses) ||
       (reason !== null && !oneOf(reason, reasons)) || (replacement_reason !== null && !oneOf(replacement_reason, reasons)) || !checkedRef(ref)) return invalid();
   if (status === "completed" && reason !== null) return invalid();
+  if (review_claim !== undefined && (typeof review_claim !== "string" || !/^[a-f0-9]{64}$/.test(review_claim))) return invalid();
   const tokens = exact(raw.tokens, ["input", "output", "total"]);
   return { version, id, at: new Date(at).toISOString(), task, agent, engine, route, status, reason, replacement_reason, ref,
     model: configuration(raw.model), effort: configuration(raw.effort), duration_ms: measurement(raw.duration_ms, natural, actualSources),
-    tokens: { input: measurement(tokens.input, natural, actualSources), output: measurement(tokens.output, natural, actualSources), total: measurement(tokens.total, natural, actualSources) } };
+    tokens: { input: measurement(tokens.input, natural, actualSources), output: measurement(tokens.output, natural, actualSources), total: measurement(tokens.total, natural, actualSources) },
+    ...(review_claim ? { review_claim } : {}) };
 }
 
 function equalOrMissing<T>(before: T | null, after: T | null): T | null {
@@ -108,12 +113,14 @@ function enrich(before: AgentCall, after: AgentCall): AgentCall {
     throw new AgentCallError("같은 호출 ID의 구성원·경로·태스크·시작 시각이 다르다");
   }
   const status = equalOrMissing(before.status === "unknown" ? null : before.status, after.status === "unknown" ? null : after.status) ?? "unknown";
+  const claim = equalOrMissing(before.review_claim ?? null, after.review_claim ?? null);
   return parseAgentCall({
     ...before, engine: equalOrMissing(before.engine, after.engine), status,
     reason: equalOrMissing(before.reason, after.reason), replacement_reason: equalOrMissing(before.replacement_reason, after.replacement_reason),
     model: mergeConfig(before.model, after.model), effort: mergeConfig(before.effort, after.effort),
     duration_ms: mergeValue(before.duration_ms, after.duration_ms), ref: equalOrMissing(before.ref, after.ref),
     tokens: { input: mergeValue(before.tokens.input, after.tokens.input), output: mergeValue(before.tokens.output, after.tokens.output), total: mergeValue(before.tokens.total, after.tokens.total) },
+    ...(claim ? { review_claim: claim } : {}),
   });
 }
 
@@ -191,9 +198,10 @@ function underCallLock<T>(path: string, operation: () => T): T {
   } finally { releaseCallLock(path, fd, owned); }
 }
 
-export function recordAgentCall(target: CallTarget, value: unknown): AgentCall {
+export function recordAgentCall(target: CallTarget, value: unknown, options?: { nativeObservation?: boolean; claimReview?: boolean }): AgentCall {
   const call = parseAgentCall(value);
   if (target.task !== call.task) throw new AgentCallError("호출 행과 기록 대상의 태스크가 다르다");
+  if (options?.nativeObservation && call.route !== "native") throw new AgentCallError("호스트 훅에는 native 호출이 필요하다");
   if (call.ref !== null) {
     const reference = safeTeamPath(target.root, `${target.directory}/${call.ref}`);
     if (!lstatSync(reference, { throwIfNoEntry: false })?.isFile()) throw new AgentCallError("호출 참조는 범위 안의 기존 일반 파일이어야 한다");
@@ -206,7 +214,16 @@ export function recordAgentCall(target: CallTarget, value: unknown): AgentCall {
     const rows = readAgentCalls(target) ?? [];
     const index = rows.findIndex(({ id }) => id === call.id);
     const previous = rows[index];
-    const row = previous ? enrich(previous, call) : call;
+    if (options?.claimReview && (!previous || !call.review_claim || previous.ref !== null ||
+        (previous.status !== "completed" && previous.status !== "unknown") ||
+        rows.some((row) => row.id !== call.id && row.review_claim === call.review_claim))) {
+      throw new AgentCallError("실행된 미연계 시도만 외부 검토로 예약할 수 있다");
+    }
+    if (!options?.claimReview && call.review_claim !== undefined && call.review_claim !== previous?.review_claim) {
+      throw new AgentCallError("외부 검토 예약은 검토 명령이 만든 값만 보존한다");
+    }
+    const observation = previous && options?.nativeObservation ? { ...call, at: previous.at, task: previous.task } : call;
+    const row = previous ? enrich(previous, observation) : call;
     if (previous && JSON.stringify(previous) === JSON.stringify(row)) return row;
     if (index < 0) rows.push(row); else rows[index] = row;
     const content = rows.map((entry) => JSON.stringify(entry)).join("\n") + "\n";

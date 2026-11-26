@@ -1,0 +1,47 @@
+{
+  "confirmedHostStarts": 1,
+  "autoHookRows": 0,
+  "manualWrites": 2,
+  "finalRows": 1,
+  "agent": "codex",
+  "status": "unknown",
+  "model": {
+    "requested": {
+      "value": null,
+      "source": "unknown"
+    },
+    "actual": {
+      "value": null,
+      "source": "unknown"
+    }
+  },
+  "effort": {
+    "requested": {
+      "value": null,
+      "source": "unknown"
+    },
+    "actual": {
+      "value": null,
+      "source": "unknown"
+    }
+  },
+  "duration_ms": {
+    "value": null,
+    "source": "unknown"
+  },
+  "tokens": {
+    "input": {
+      "value": null,
+      "source": "unknown"
+    },
+    "output": {
+      "value": null,
+      "source": "unknown"
+    },
+    "total": {
+      "value": null,
+      "source": "unknown"
+    }
+  },
+  "durableScopeReceipts": 1
+}

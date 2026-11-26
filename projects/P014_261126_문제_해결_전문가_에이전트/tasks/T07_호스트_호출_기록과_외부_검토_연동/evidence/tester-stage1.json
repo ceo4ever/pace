@@ -1,0 +1,27 @@
+{
+  "text": "**First-phase verdict: two defects reproduced.** The prescribed test command passed all 56 tests after I cleared the inherited `PACE_AGENT_CHILD` variable.\n\n| Test file | Passed | Failed |\n|---|---:|---:|\n| `agent-calls.test.ts` | 11 | 0 |\n| `agent-review-hand.test.ts` | 15 | 0 |\n| `install.test.ts` | 30 | 0 |\n| **Total** | **56** | **0** |\n\nThe initial run had 55 passes and 1 failure. The Antigravity fixture inherited `PACE_AGENT_CHILD=1`, so boot skipped role injection and the expected marker was missing. The rerun had zero skipped, cancelled, or todo tests. The existing statistics assertions passed. [Antigravity fixture](/tmp/pace-p014-t07-review.uYrBTS/tester/test/install.test.ts:506)\n\n1. **Two external reviews can claim the same attempt after a partial write.** Issue two review hands for different briefs in one backlog, then record one completed attempt after both hands were issued. Hold `calls/.write.local.json` with a live PID and submit the first review with `--call-id`. It exits `0`, saves `R1.json`, and returns `agent_call_linked: false`. Release the lock and submit the second review with the same ID. It exits `0`, saves `R2.json`, and returns `agent_call_linked: true`. Both review files contain the same `agent_call_id`. The single call row points to `R2.json`, and retrying the first submission exits `2`. The second submission accepts the call because its `ref` is still empty, even though the first review already claimed it. [Link validation](/tmp/pace-p014-t07-review.uYrBTS/tester/src/agent/review-hand.ts:43) · [Write order](/tmp/pace-p014-t07-review.uYrBTS/tester/src/agent/review-hand.ts:276)\n2. **One native attempt can produce two rows when hook events resolve to different scopes.** In a synthetic Git repo with two backlogs and one registered role, send `SubagentStart` with the first backlog as `cwd`, then `SubagentStop` with the second. Keep the session ID, agent ID, and role identical. Both hooks exit `0`. Each backlog ends with one row bearing the same call ID. Scope is resolved independently for each event, and deduplication only checks the selected ledger. This was reproduced with synthetic hook payloads. [Hook scope resolution](/tmp/pace-p014-t07-review.uYrBTS/tester/src/agent/call-hook.ts:38) · [Ledger lookup](/tmp/pace-p014-t07-review.uYrBTS/tester/src/project/agent-calls.ts:204)\n\nThe synthetic fixture was removed and the candidate checkout was left unchanged.",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "reported_effort": "medium",
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": null,
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 185868,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 73922
+  },
+  "usage_total_tokens": 73922,
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

@@ -1,0 +1,816 @@
+diff --git a/docs/AGENT-CALL.md b/docs/AGENT-CALL.md
+index aa01760..842d3c6 100644
+--- a/docs/AGENT-CALL.md
++++ b/docs/AGENT-CALL.md
+@@ -40,6 +40,16 @@
+ 
+ `pace agent verify`는 대상 파일이 속한 프로젝트 또는 백로그에 기록한다. 검토 결과 JSON의 `agent_call_id`로 판정에 연결된 시도를 찾을 수 있다. 검토 원장과 시도 행에 같은 값을 남긴다. Codex p의 `tokens used`는 기존 검토 원장의 출력 호환 슬롯과 호출 행의 총 토큰에 각각 같은 값을 둔다. 실패·중단은 판정 없이도 기록할 수 있다. 순수 예약·검증과 실행 전 거부는 호출로 세지 않는다. Codex p는 실행 머리글의 `reasoning effort`를 실제값으로 읽는다. 그 밖에 요청 effort만 확인한 경우 실제 effort는 미확인이다. ACP의 요청 모델은 설정 명령 수락만으로는 실제 모델 관측으로 쓰지 않는다. 시간 제한·회수한 취소는 중단으로 기록한다. 기록 I/O 실패는 경고로 알리고 기존 검토 판정·예산·실행 결과를 유지한다. 실행이 끝난 뒤 요청한 원본 출력의 로컬 보관이 실패해도 그 실행의 메타데이터는 남긴다. 체인은 단계별 변경 관측이 끝나면 다음 시도 전에 기록한다. PM 수동 입력과 저장 형식은 [작업 프로세스](WORK-PROCESS.md#에이전트-호출-원장)를 따른다.
+ 
++### 호스트의 팀 구성원 호출
++
++Claude 설치는 `SubagentStart`·`SubagentStop`·`PostToolUse(Agent)`를 등록한다. 프로젝트·백로그 위치에서 저장소에 정의된 구성원을 호출하면 프로젝트 또는 백로그 호출 원장에 동일 ID의 행을 보강한다. 설정 요청값은 동기화된 생성물에서 확인한다. 자식 effort는 종료 훅, 모델·시간·토큰은 Agent가 반환한 자식 보고에서 확인한다. 토큰은 호스트가 집계해 제공한 범위다. 백그라운드와 중단 등에서 결과를 받지 못하면 확인한 값만 기록한다.
++
++훅 입력에서 호스트별 세션과 자식 식별자를 알고 있다면 PM은 JSON에 `session_id`, `agent_id`를 넣고, Claude가 부모 턴의 `prompt_id`를 보고하면 그 필드도 함께 넣어 `pace agent call-id --host claude|codex`의 표준입력에 넣는다. 이 명령은 호출 ID 해시만 반환한다. 같은 자식의 연속 턴을 구분할 때는 보고된 턴 식별자를 함께 사용한다. 선택된 범위는 Git 로컬 영수증에 고정되고 뒤늦게 다른 작업 경로에서 온 이벤트도 같은 범위를 사용한다. 뒤이은 수동 입력은 그 ID, 기존 행의 `at`와 `task`, `route: "native"`를 사용한다. 자동 기록보다 먼저 쓰는 경우에도 같은 해시를 사용한다. 자동 관측이 시작 이후에 처음 도착하면 최초 관측 시각을 사용한다. 원장의 최초 시각과 귀속은 후속 관측으로 바뀌지 않는다. 자식의 상태·측정이 없으면 미확인으로 두며 PM이 호스트의 직접 관측으로 보강할 수 있다.
++
++Codex 설정의 프로젝트·훅 신뢰가 승인되기 전에는 PM이 같은 [호출 원장 입력](WORK-PROCESS.md#에이전트-호출-원장)으로 기록한다. 실제 네이티브 호출의 이름 또는 실행기를 쓰고, 개별 자식 수치를 호스트가 제공한 경우에만 채운다. 호출 범위가 분명하지 않은 작업은 해당 PACE 프로젝트·백로그 경로에서 호출하거나 PM 수동 입력으로 귀속한다.
++
++외부 검토는 `review-hand`의 예약 ID를 `review-record --hand`에 사용하고, 실제 시도의 호출 원장 ID를 `review-record --call-id`에 별도로 준다. 먼저 실행을 호출 원장에 기록한다. 등록 전에 호출 원장의 해당 행과 검토 예약을 일대일로 예약한다. 판정 등록이 완료되면 같은 행에 검토 기록 참조가 붙는다. 검토 원장의 외부 측정 표시와 판정은 기존 방식을 유지한다. `agent_call_linked: false`이면 링크만 미완료다. 동일한 예약·호출 ID·응답으로 다시 실행하면 원장 판정의 추가 없이 참조를 복구한다. 이전에 연결된 다른 호출이나 결과는 거부한다. 호출 ID를 지정하지 않은 기존 경로는 이전 계약을 유지한다.
++
+ ## PACE 도구 서버
+ 
+ - 경로: `src/mcp/`
+diff --git a/docs/SECURITY.md b/docs/SECURITY.md
+index 3945c4d..b74f0ad 100644
+--- a/docs/SECURITY.md
++++ b/docs/SECURITY.md
+@@ -13,6 +13,7 @@
+ | 경로 | 왜 민감한가 |
+ |---|---|
+ | `src/setup/`, `scripts/install.*` | 사용자 홈의 도구 설정(`~/.claude`·`~/.codex` 등) 쓰기·백업·삭제 |
++| `src/agent/call-hook.ts` | 호스트가 전달한 bounded JSON에서 확인된 저장소 역할·다섯 항목만 기록. 호스트 식별자는 도메인 분리 해시로만 보존하고 Git 로컬 범위 영수증은 같은 Git 원천에서만 조회 |
+ | `src/boot.ts`, `src/project/situation.ts` | 모든 세션 시작 경로 — 오류·지연이 세션을 막으면 안 된다(종료 코드 0, git timeout) |
+ | `src/core/fsutil.ts` | 원자적 파일 교체와 실패한 임시 파일 정리 — 이 호출이 만든 파일만 정리 |
+ | `src/test-runner/` | 경로·glob·실경로와 실행 대상을 검사, 고정 Node·Python·vitest 어댑터만 인자 배열로 실행(vitest file/unit은 프로젝트 루트 안의 로컬 `node_modules/vitest` 사용자 의존성 코드를 실행). 작업본 구성은 선택 범위 증거이며 사용자 코드 실행을 격리하지 않음. 테스트 코드는 결과 채널을 조작할 수 있으므로 신뢰한 코드만 실행하고 결과를 보안 증거로 취급하지 않음. `all`은 신뢰한 저장소의 검사 선언을 셸로 실행 |
+@@ -26,6 +27,8 @@
+ 
+ 체크리스트: `pace-project-dev` 스킬 `references/security.md`의 기본 체크리스트 + 위 민감 경로. 셸 실행은 인자 배열(`spawnSync`) — 예외는 정의서에 선언한 명령의 `sh -c` 실행과 Windows 온보딩의 LLM CLI 실행(`src/setup/onboard.ts`, `shell: win32`), 비밀 값은 환경 변수 이름만, 테스트는 실제 사용자 홈·Orca·도구 설정을 건드리지 않는다.
+ 
++Claude 호출 훅은 POSIX 셸에서 실행 파일 경로를 리터럴로 전달한다. 설치·제거는 관리 표지가 붙은 정확한 명령만 바꾸고, 사용자 훅은 보존한다. 입력이 잘리거나 저장소 범위·출처·파일을 확인할 수 없으면 호스트에 원문이나 쓰기 오류 세부를 내지 않고 종료 0을 반환한다. 로컬에 신고한 호출 측정·참조는 계정 인증이나 도구 권한의 증거가 아니다.
++
+ 프로젝트 역할 실행(`src/team/worker-role.ts`, `src/project/role-record.ts`)은 체크아웃될 Git blob 또는 실행 worktree의 일반 원본만 읽는다. Git 조회에 필터·훅을 사용하지 않고 크기·UTF-8·파일 종류와 실제 실행 직전 지문을 검사한다. model/effort와 원본 지침을 셸로 평가하지 않으며 start의 role 객체는 안전한 제한 필드만 기록한다. 역할 파일을 편집해 재시작할 수 있으므로 역할은 보안 경계가 아니고 prompt/tools 안내로 권한 차단을 주장하지 않는다. 실제 Orca 실측은 명시적으로 격리된 임시 저장소와 PACE_HOME에서 수행하며 초기 환경 상속을 별도로 관측한다.
+ 
+ ## 참여 소통의 로컬 원문
+diff --git a/docs/WORK-PROCESS.md b/docs/WORK-PROCESS.md
+index d221161..3e074da 100644
+--- a/docs/WORK-PROCESS.md
++++ b/docs/WORK-PROCESS.md
+@@ -63,7 +63,7 @@
+ }
+ ```
+ 
+-실제 시도별로 서로 다른 32~64자리 소문자 16진 ID를 쓰고 같은 시도 재기록·보강에는 동일한 ID와 처음의 시작 시각을 쓴다. `route`는 p, acp, chain, verify, native, manual 중 하나다. `status`는 unknown, completed, failed, interrupted 중 하나이고 `reason`과 `replacement_reason`에는 정해진 오류 코드만 받을 수 있다. 측정 출처는 unknown(미확인), requested(요청), pm(PM 기록), tool(도구 측정), host(호스트 보고)다. 출처가 달라도 알려진 값이 상충하거나 귀속·상태·참조가 다르면 거부한다. 같은 값에 대해서는 실제 요청·호스트 보고·도구 측정을 PM 기록보다 우선한다. `ref`는 범위 안에 있는 기존 일반 파일의 상대 경로다. 비밀·세션 식별자·프롬프트·응답 원문은 입력에서 빼고 필요한 결과만 `ref`로 연결한다. 쓰기 잠금은 수행 프로세스의 종료가 확인된 경우에만 회수한다. 확인할 수 없는 잠금은 남기고 `calls/.write.local.json`의 진단과 재시도 안내를 표시한다.
++실제 시도별로 서로 다른 32~64자리 소문자 16진 ID를 쓰고 같은 시도 재기록·보강에는 동일한 ID와 처음의 시작 시각을 쓴다. `route`는 p, acp, chain, verify, native, manual 중 하나다. `status`는 unknown, completed, failed, interrupted 중 하나이고 `reason`과 `replacement_reason`에는 정해진 오류 코드만 받을 수 있다. 측정 출처는 unknown(미확인), requested(요청), pm(PM 기록), tool(도구 측정), host(호스트 보고)다. 출처가 달라도 알려진 값이 상충하거나 귀속·상태·참조가 다르면 거부한다. 외부 검토 명령만 호출 행에 예약 관계 `review_claim`을 만들 수 있다. Claude 자동 관측과 PM 수동 입력은 [호스트 호출 식별과 외부 검토 연결](AGENT-CALL.md#호스트의-팀-구성원-호출)에 따라 같은 시도 ID와 기록된 시각을 사용한다. 같은 값에 대해서는 실제 요청·호스트 보고·도구 측정을 PM 기록보다 우선한다. `ref`는 범위 안에 있는 기존 일반 파일의 상대 경로다. 비밀·세션 식별자·프롬프트·응답 원문은 입력에서 빼고 필요한 결과만 `ref`로 연결한다. 쓰기 잠금은 수행 프로세스의 종료가 확인된 경우에만 회수한다. 확인할 수 없는 잠금은 남기고 `calls/.write.local.json`의 진단과 재시도 안내를 표시한다.
+ 
+ ## 선언 명령과 커밋 게이트
+ 
+diff --git a/skills/pace-team/references/required-roles.md b/skills/pace-team/references/required-roles.md
+index e9752cc..182e82e 100644
+--- a/skills/pace-team/references/required-roles.md
++++ b/skills/pace-team/references/required-roles.md
+@@ -48,6 +48,7 @@
+ | TS-03 | 같은 파일 영역의 유효 지적이 다시 나오면 경계 재발을 알린다. 지적 ID나 근접 행이 바뀌어도 잡고, 같은 파일의 무관한 지적은 걸러낸다. | [BR02 경계 재발](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR02_조기_호출_도구_신호와_문턱.md#범위) | P013 구조화 검토 위치·기준, P014 T02 영역 대조 | 1 | 고정 요건 |
+ | TS-04 | 수정 파일의 같은 영역에서 같은 적용 등급이 재지적될 때 겉만 고침의 대리 신호를 낸다. | [BR02 겉만 고침](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR02_조기_호출_도구_신호와_문턱.md#범위) | P014 T02 검토 스냅숏 파일 변화와 적용 등급 대조 | 1 | 고정 요건 |
+ | TS-05 | 신호의 종류·단위·근거 회차를 도구 출력 또는 기록에서 확인할 수 있다. 문턱 직전과 기록 밖 시험 및 무관한 지적은 음성 대조한다. | [BR02 출력과 완료 기준](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR02_조기_호출_도구_신호와_문턱.md#완료-기준) | P014 T02 신호 출력과 음성 시험 | 1 | 고정 요건 |
++| TS-06 | 실제 호출 시도마다 에이전트·모델·effort·실행 시간·토큰을 호출 원장 한 행으로 남긴다. 요청·실제·출처와 미확인을 표시하고 외부 검토 판정은 같은 행의 참조로 연결한다. | [BR03 계산과 기록](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR03_에이전트_호출_기록.md#완료-기준), [BR07 호스트 호출 기록](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR07_호스트_호출_기록과_외부_검토_연동.md#완료-기준) | P014 T03 호출 원장, T07 호스트 훅·PM 수동 기록·외부 검토 참조 | 1 | 고정 요건 |
+ 
+ ## 등록 대조
+ 
+diff --git a/src/agent/review-hand.ts b/src/agent/review-hand.ts
+index 137afb4..d42869e 100644
+--- a/src/agent/review-hand.ts
++++ b/src/agent/review-hand.ts
+@@ -5,7 +5,9 @@ import { parseArgs } from "node:util";
+ import { regularBytes, utf8 } from "../project/handoff-files.ts";
+ import { approvedTaskEdit, proofScopeIssues, reviewHash } from "../project/pre-review.ts";
+ import { permissionBasis, type PermissionBasis } from "../project/review-permission.ts";
+-import { AgentError, errorCodes, errorPayload } from "./contract.ts";
++import { readAgentCalls, recordAgentCall, type AgentCall, type CallTarget } from "../project/agent-calls.ts";
++import { AgentError, errorCodes, errorPayload, providerOf } from "./contract.ts";
++import { automaticCallTarget, tryRecordCall } from "./call-context.ts";
+ import { reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope, type BudgetStage } from "./review-budget.ts";
+ import { reviewCriteria } from "./review-criteria.ts";
+ import { diagnosisLink, FOLLOWUPS_FILE, followupReport, readReviewState, recoveryGrant } from "./review-followup.ts";
+@@ -15,7 +17,7 @@ import { buildVerifyPrompt } from "./verify.ts";
+ import { evidenceRereviewBase, loadRereview, recoverBudgetOrphans, writeOrLedgerError } from "./verify-cli.ts";
+ 
+ export const REVIEW_HAND_USAGE = "pace agent review-hand --target <파일> --author-provider <제공자> --purpose-file <파일>";
+-export const REVIEW_RECORD_USAGE = "pace agent review-record --target <파일> --hand <ID> --provider <제공자> --reviewer <도구> --result-file <파일> [--unavailable-file <파일>]";
++export const REVIEW_RECORD_USAGE = "pace agent review-record --target <파일> --hand <ID> --provider <제공자> --reviewer <도구> --result-file <파일> [--unavailable-file <파일>] [--call-id <시도 ID>]";
+ 
+ type ReviewState = ReturnType<typeof readReviewState>;
+ type FixedReview = {
+@@ -37,6 +39,34 @@ const TEXT_LIMIT = 16 * 1024 * 1024;
+ 
+ function reject(message: string): never { throw new AgentError("invalid_request", message); }
+ 
++interface ExternalCallLink { target: CallTarget; call: AgentCall }
++function externalCallLink(target: string, id: string | undefined, reviewer: string, provider: string, issuedAt: string, submittedAt: string, prior?: string): ExternalCallLink | undefined {
++  if (id === undefined) return undefined;
++  if (!/^[a-f0-9]{32,64}$/.test(id)) return reject("--call-id는 호출 원장의 시도 ID여야 한다");
++  const callTarget = automaticCallTarget(dirname(target), undefined, undefined, target);
++  if (!callTarget) return reject("외부 검토에 연결할 호출 원장 범위를 확인할 수 없다");
++  const calls = readAgentCalls(callTarget) ?? [];
++  const call = calls.find((item) => item.id === id);
++  const ref = prior && externalCallRef(callTarget, prior);
++  if (!call || call.task !== callTarget.task || call.agent !== reviewer || (call.engine && providerOf[call.engine] !== provider) ||
++      Date.parse(call.at) < Date.parse(issuedAt) || Date.parse(call.at) > Date.parse(submittedAt) || call.route === "verify" ||
++      (call.status !== "completed" && call.status !== "unknown") || call.reason !== null || (call.ref !== null && call.ref !== ref) ||
++      (ref && calls.some((other) => other.id !== id && other.ref === ref))) {
++    return reject("이미 연결됐거나 범위·구성원·제공자·호출 시점·상태가 외부 검토와 맞지 않는다");
++  }
++  return { target: callTarget, call };
++}
++
++function externalCallRef(target: CallTarget, path: string): string {
++  return relative(join(target.root, target.directory), path).split(sep).join("/");
++}
++
++function recordExternalCallLink(link: ExternalCallLink, destination: string, writeCall: typeof tryRecordCall) {
++  const { target, call } = link;
++  const linked = writeCall(target, { ...call, ref: externalCallRef(target, destination) });
++  return { agent_call_id: call.id, agent_call_linked: linked };
++}
++
+ export function reviewIdentity(value: unknown): value is string {
+   return typeof value === "string" && /^[a-z][a-z0-9_-]{0,63}$/.test(value);
+ }
+@@ -122,16 +152,17 @@ function fallbackReason(file: string | undefined, author: string, provider: stri
+ }
+ 
+ export function reviewArtifactCommand(action: "review-hand" | "review-record", args: string[],
+-  deps: { write: (text: string) => void; now?: () => Date }): number {
++  deps: { write: (text: string) => void; now?: () => Date; writeCall?: typeof tryRecordCall }): number {
+   const { values }: { values: Partial<Record<string, string>> } = action === "review-hand"
+     ? parseArgs({ args, strict: true, options: {
+       target: { type: "string" }, "author-provider": { type: "string" }, "purpose-file": { type: "string" },
+     } })
+     : parseArgs({ args, strict: true, options: {
+       target: { type: "string" }, hand: { type: "string" }, provider: { type: "string" }, reviewer: { type: "string" },
+-      "result-file": { type: "string" }, "unavailable-file": { type: "string" },
++      "result-file": { type: "string" }, "unavailable-file": { type: "string" }, "call-id": { type: "string" },
+     } });
+   const now = deps.now ?? (() => new Date());
++  const writeCall = deps.writeCall ?? tryRecordCall;
+   let release: (() => void) | undefined;
+   try {
+     const target = reviewTarget(values.target);
+@@ -185,7 +216,18 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
+     }
+     const reservation = state.budget.currentEntries.find((row) => row.type === "call" && row.call_id === id && row.target === scope.name);
+     if (reservation?.type !== "call" || !reservation.frozen_digest) return reject("이 대상·단계의 원장에 예약된 외부 고정이 없다");
+-    if (state.budget.currentEntries.some((row) => row.type === "review" && row.call_id === id)) return reject("이미 판정을 기록한 외부 고정이다");
++    const claim = textHash(`pace-external-review-call/v1\0${id}`);
++    const previous = state.budget.currentEntries.find((row): row is ReviewEntry => row.type === "review" && row.call_id === id);
++    if (previous) {
++      if (!values["call-id"] || previous.provider !== values.provider || previous.verifier !== values.reviewer || previous.interrupted ||
++          textHash(reviewInput(values["result-file"])) !== previous.result_hash) return reject("이미 판정을 기록한 외부 고정이다");
++      const destination = join(dirname(scope.ledgerTarget), previous.record);
++      const link = externalCallLink(target, values["call-id"], values.reviewer, values.provider, reservation.at, previous.at, destination)!;
++      if (link.call.review_claim !== claim) return reject("호출 시도가 기존 외부 예약과 맞지 않는다");
++      reply(deps.write, { recorded: true, source: "external", review: previous, ...recordExternalCallLink(link, destination, writeCall), agent_call_retry: true,
++        budget: state.budget.status, ...(state.recovery.upper ? { followup: followupReport(scope, state) } : {}) });
++      return 0;
++    }
+     if (recovery || state.pending || state.budget.status.rounds >= state.budget.status.round_limit) {
+       return reportsToVerify(scope, state, deps.write);
+     }
+@@ -202,6 +244,8 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
+     }
+     const raw = reviewInput(values["result-file"]);
+     if (!raw.trim()) return reject("외부 검토 원문이 비었다");
++    const at = now().toISOString();
++    const link = externalCallLink(target, values["call-id"], values.reviewer, values.provider, reservation.at, at);
+     const currentDiagnosis = state.activeDiagnosis && diagnosisLink(scope, target, state.activeDiagnosis);
+     const criteria = reviewCriteria(scope, snapshot);
+     const stale = fixed.hash !== hash || fixed.criteria_digest !== textHash(JSON.stringify(criteria)) ||
+@@ -216,9 +260,12 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
+       required_criteria: fixed.required_criteria,
+       ...(fixed.permission_basis ? { permission_basis: fixed.permission_basis } : {}),
+     };
+-    const at = now().toISOString();
+     const record = nextRecordName(scope.ledgerTarget);
+     const destination = join(dirname(scope.ledgerTarget), record);
++    if (link) {
++      try { link.call = recordAgentCall(link.target, { ...link.call, review_claim: claim }, { claimReview: true }); }
++      catch { return reject("호출에 외부 검토를 예약할 수 없다. 기존 참조나 다른 예약을 확인한다"); }
++    }
+     const cross_unavailable = unavailable ? [unavailable.reason] : undefined;
+     const review = {
+       target: scope.name, hash: fixed.hash, kind: scope.kind, verdict, rereview_of: fixed.rereview_of, call_id: id,
+@@ -230,14 +277,16 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
+     appendLedger(scope.ledgerTarget, { type: "format", at, target: review.target, hash: review.hash, record, ...format });
+     writeOrLedgerError(destination, JSON.stringify({
+       source: "external", verifier: values.reviewer, cross, cross_unavailable, cross_attempt: unavailable, assessment,
++      ...(link ? { agent_call_id: link.call.id } : {}),
+       result: { text: raw, provider: { value: values.provider, source: "submitted" }, session_id: null, usage },
+       review: { ...review, snapshot: fixed.snapshot },
+     }, null, 2) + "\n", "외부 검토 기록");
+     appendLedger(scope.ledgerTarget, { ...review, type: "review", at, provider: values.provider, verifier: values.reviewer,
+       cross, ...(cross_unavailable ? { cross_unavailable } : {}), record, result_hash: textHash(raw), usage });
+     const after = readReviewState(scope, hash);
++    const linked = link && recordExternalCallLink(link, destination, writeCall);
+     const gaps = stale ? [] : evidenceGaps(assessment);
+-    reply(deps.write, { recorded: true, source: "external", cross, review: { ...review, record }, assessment, budget: after.budget.status,
++    reply(deps.write, { recorded: true, source: "external", cross, review: { ...review, record }, assessment, budget: after.budget.status, ...linked,
+       ...(gaps.length ? { evidence_action: { action: "collect_evidence", gaps, if_proceed_without_evidence: "A-3" } } : {}),
+       ...(stale ? { warning: "고정 이후 대상이나 재검토 기준이 바뀌어 현재 허가는 기록하지 않았다" } : {}),
+       ...(after.recovery.upper ? { followup: followupReport(scope, after) } : {}),
+diff --git a/src/cli.ts b/src/cli.ts
+index e8fe687..f1ac1f2 100644
+--- a/src/cli.ts
++++ b/src/cli.ts
+@@ -26,6 +26,7 @@ import { renderDocs, verifyDocs, writeExamples, type Check } from "./intent/plan
+ import { createPreview, verifyPreview } from "./intent/preview.ts";
+ import { AgentError, errorPayload, runAgent, validateRequest } from "./agent/contract.ts";
+ import { automaticCallTarget, callCancellation, namedCallTarget, observedAgentCall, requireCallAgent, tryRecordCall } from "./agent/call-context.ts";
++import { agentCallHookCommand, rememberNativeCallScope } from "./agent/call-hook.ts";
+ import { allExecutors, findExecutor } from "./agent/registry.ts";
+ import { ChainConfigError, checkChain, defaultChainFile, fileCooldownStore, loadChainConfig, outcomeExitCode, resolveChain, runChain } from "./agent/chain.ts";
+ import { reviewNoteCommand, verifyCommand } from "./agent/verify-cli.ts";
+@@ -44,7 +45,7 @@ import { applyAdoptOpal, formatPlan, planAdoptOpal } from "./project/adopt-opal.
+ import { inspectWorkspaces, registerWorkspace, relocateWorkspace } from "./project/workspace-registry.ts";
+ import { AGENT_BUDGET } from "./project/agent-definition.ts";
+ import { agentEvent, ProjectLogError } from "./project/event-log.ts";
+-import { AgentCallError, recordAgentCall } from "./project/agent-calls.ts";
++import { AgentCallError, parseAgentCall, recordAgentCall } from "./project/agent-calls.ts";
+ import { findProject, statsRepo } from "./project/harness.ts";
+ import { collectDashboard, formatDashboard, refreshProjectMetrics } from "./project/metrics-report.ts";
+ import { existsSync, lstatSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
+@@ -795,7 +796,8 @@ function projectCommand(args: string[]): number {
+             throw new UsageError("pace project log <P###|BL번호> [T##] --type agent_call --call-file <JSON>");
+           }
+           const target = namedCallTarget(repo(), positionals[0]!, positionals[1]?.toUpperCase() ?? null);
+-          const input = strictJson(utf8(regularBytes(resolve(cwd, values["call-file"]), 8192)));
++          const input = parseAgentCall(strictJson(utf8(regularBytes(resolve(cwd, values["call-file"]), 8192))));
++          if (input.route === "native" && input.task === target.task) rememberNativeCallScope(target, input.id);
+           const row = recordAgentCall(target, input);
+           out(values.json ? JSON.stringify({ id: row.id }) : `호출 기록: ${row.id}`);
+           return 0;
+@@ -984,6 +986,7 @@ function readVersion(): string {
+ 
+ async function agentCommand(args: string[]): Promise<number> {
+   const [sub, ...rest] = args;
++  if (sub === "call-hook" || sub === "call-id") return agentCallHookCommand(sub, rest);
+   if (sub === "verify") return agentVerify(rest);
+   if (sub === "review-note") return agentReviewNote(rest);
+   if (sub === "review-hand" || sub === "review-record") return reviewArtifactCommand(sub, rest, { write: (t) => process.stdout.write(t) });
+diff --git a/src/project/agent-calls.ts b/src/project/agent-calls.ts
+index a2e353a..1c14a30 100644
+--- a/src/project/agent-calls.ts
++++ b/src/project/agent-calls.ts
+@@ -41,6 +41,7 @@ export interface AgentCall {
+   duration_ms: CallValue<number>;
+   tokens: { input: CallValue<number>; output: CallValue<number>; total: CallValue<number> };
+   ref: string | null;
++  review_claim?: string;
+ }
+ 
+ export class AgentCallError extends Error {}
+@@ -75,8 +76,10 @@ function checkedRef(value: unknown): value is string | null {
+ }
+ 
+ export function parseAgentCall(input: unknown): AgentCall {
+-  const raw = exact(input, ["version", "id", "at", "task", "agent", "engine", "route", "status", "reason", "replacement_reason", "model", "effort", "duration_ms", "tokens", "ref"]);
+-  const { version, id, at, task, agent, engine, route, status, reason, replacement_reason, ref } = raw;
++  const keys = ["version", "id", "at", "task", "agent", "engine", "route", "status", "reason", "replacement_reason", "model", "effort", "duration_ms", "tokens", "ref"];
++  if (input && typeof input === "object" && Object.hasOwn(input, "review_claim")) keys.push("review_claim");
++  const raw = exact(input, keys);
++  const { version, id, at, task, agent, engine, route, status, reason, replacement_reason, ref, review_claim } = raw;
+   if (version !== 1 || typeof id !== "string" || !/^[a-f0-9]{32,64}$/.test(id) ||
+       typeof at !== "string" || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,3})?(?:Z|[+-]\d\d:\d\d)$/.test(at) || !Number.isFinite(Date.parse(at)) ||
+       (task !== null && (typeof task !== "string" || !/^T\d{2}$/.test(task))) ||
+@@ -84,10 +87,12 @@ export function parseAgentCall(input: unknown): AgentCall {
+       (engine !== null && !oneOf(engine, agentNames)) || !oneOf(route, routes) || !oneOf(status, statuses) ||
+       (reason !== null && !oneOf(reason, reasons)) || (replacement_reason !== null && !oneOf(replacement_reason, reasons)) || !checkedRef(ref)) return invalid();
+   if (status === "completed" && reason !== null) return invalid();
++  if (review_claim !== undefined && (typeof review_claim !== "string" || !/^[a-f0-9]{64}$/.test(review_claim))) return invalid();
+   const tokens = exact(raw.tokens, ["input", "output", "total"]);
+   return { version, id, at: new Date(at).toISOString(), task, agent, engine, route, status, reason, replacement_reason, ref,
+     model: configuration(raw.model), effort: configuration(raw.effort), duration_ms: measurement(raw.duration_ms, natural, actualSources),
+-    tokens: { input: measurement(tokens.input, natural, actualSources), output: measurement(tokens.output, natural, actualSources), total: measurement(tokens.total, natural, actualSources) } };
++    tokens: { input: measurement(tokens.input, natural, actualSources), output: measurement(tokens.output, natural, actualSources), total: measurement(tokens.total, natural, actualSources) },
++    ...(review_claim ? { review_claim } : {}) };
+ }
+ 
+ function equalOrMissing<T>(before: T | null, after: T | null): T | null {
+@@ -108,12 +113,14 @@ function enrich(before: AgentCall, after: AgentCall): AgentCall {
+     throw new AgentCallError("같은 호출 ID의 구성원·경로·태스크·시작 시각이 다르다");
+   }
+   const status = equalOrMissing(before.status === "unknown" ? null : before.status, after.status === "unknown" ? null : after.status) ?? "unknown";
++  const claim = equalOrMissing(before.review_claim ?? null, after.review_claim ?? null);
+   return parseAgentCall({
+     ...before, engine: equalOrMissing(before.engine, after.engine), status,
+     reason: equalOrMissing(before.reason, after.reason), replacement_reason: equalOrMissing(before.replacement_reason, after.replacement_reason),
+     model: mergeConfig(before.model, after.model), effort: mergeConfig(before.effort, after.effort),
+     duration_ms: mergeValue(before.duration_ms, after.duration_ms), ref: equalOrMissing(before.ref, after.ref),
+     tokens: { input: mergeValue(before.tokens.input, after.tokens.input), output: mergeValue(before.tokens.output, after.tokens.output), total: mergeValue(before.tokens.total, after.tokens.total) },
++    ...(claim ? { review_claim: claim } : {}),
+   });
+ }
+ 
+@@ -191,9 +198,10 @@ function underCallLock<T>(path: string, operation: () => T): T {
+   } finally { releaseCallLock(path, fd, owned); }
+ }
+ 
+-export function recordAgentCall(target: CallTarget, value: unknown): AgentCall {
++export function recordAgentCall(target: CallTarget, value: unknown, options?: { nativeObservation?: boolean; claimReview?: boolean }): AgentCall {
+   const call = parseAgentCall(value);
+   if (target.task !== call.task) throw new AgentCallError("호출 행과 기록 대상의 태스크가 다르다");
++  if (options?.nativeObservation && call.route !== "native") throw new AgentCallError("호스트 훅에는 native 호출이 필요하다");
+   if (call.ref !== null) {
+     const reference = safeTeamPath(target.root, `${target.directory}/${call.ref}`);
+     if (!lstatSync(reference, { throwIfNoEntry: false })?.isFile()) throw new AgentCallError("호출 참조는 범위 안의 기존 일반 파일이어야 한다");
+@@ -206,7 +214,16 @@ export function recordAgentCall(target: CallTarget, value: unknown): AgentCall {
+     const rows = readAgentCalls(target) ?? [];
+     const index = rows.findIndex(({ id }) => id === call.id);
+     const previous = rows[index];
+-    const row = previous ? enrich(previous, call) : call;
++    if (options?.claimReview && (!previous || !call.review_claim || previous.ref !== null ||
++        (previous.status !== "completed" && previous.status !== "unknown") ||
++        rows.some((row) => row.id !== call.id && row.review_claim === call.review_claim))) {
++      throw new AgentCallError("실행된 미연계 시도만 외부 검토로 예약할 수 있다");
++    }
++    if (!options?.claimReview && call.review_claim !== undefined && call.review_claim !== previous?.review_claim) {
++      throw new AgentCallError("외부 검토 예약은 검토 명령이 만든 값만 보존한다");
++    }
++    const observation = previous && options?.nativeObservation ? { ...call, at: previous.at, task: previous.task } : call;
++    const row = previous ? enrich(previous, observation) : call;
+     if (previous && JSON.stringify(previous) === JSON.stringify(row)) return row;
+     if (index < 0) rows.push(row); else rows[index] = row;
+     const content = rows.map((entry) => JSON.stringify(entry)).join("\n") + "\n";
+diff --git a/src/setup/install.ts b/src/setup/install.ts
+index b3db4d5..97d722a 100644
+--- a/src/setup/install.ts
++++ b/src/setup/install.ts
+@@ -105,7 +105,8 @@ export function uninstall(options: InstallOptions): Action[] {
+   const ctx = context(options);
+   assertRegistrySeparation(ctx, options.dataHome ?? ctx.paceHome);
+   const ours = (c: string) => isBootCommand(ctx, c);
+-  for (const dir of ctx.claudeDirs) editExistingJson(ctx, join(dir, "settings.json"), (s) => removeHookGroups(s, ours));
++  for (const dir of ctx.claudeDirs) editExistingJson(ctx, join(dir, "settings.json"), (s) =>
++    removeHookGroups(s, (command) => ours(command) || command === claudeCallHookCommand(ctx)));
+   for (const dir of ctx.codexDirs) editExistingJson(ctx, join(dir, "hooks.json"), (s) => removeHookGroups(s, ours));
+   const geminiRootSafe = safeGeminiRoot(ctx);
+   if (geminiRootSafe) editExistingJson(ctx, join(ctx.home, ".gemini", "settings.json"), (s) => removeHookGroups(s, ours));
+@@ -613,14 +614,25 @@ function sameTree(a: string, b: string, ignore: string[] = [], includeSource?: (
+ 
+ function installClaudeHook(ctx: Ctx): void {
+   const command = bootCommand(ctx, "claude");
++  const callCommand = claudeCallHookCommand(ctx);
+   for (const dir of ctx.claudeDirs) {
+     editJson(ctx, join(dir, "settings.json"), (settings) => {
+-      removeHookGroups(settings, (c) => isBootCommand(ctx, c));
++      removeHookGroups(settings, (c) => isBootCommand(ctx, c) || c === callCommand);
+       addHookGroup(settings, "SessionStart", { hooks: [{ type: "command", command, timeout: 10 }] });
++      for (const event of ["SubagentStart", "SubagentStop", "PostToolUse"]) {
++        addHookGroup(settings, event, { ...(event === "PostToolUse" ? { matcher: "Agent" } : {}), hooks: [{ type: "command", command: callCommand, timeout: 10 }] });
++      }
+     });
+   }
+ }
+ 
++function claudeCallHookCommand(ctx: Ctx): string {
++  // Claude uses a POSIX shell for these hooks, including Git Bash on Windows.
++  const path = ctx.windows ? slash(join(ctx.appDir, "bin", "pace.ts")) : ctx.paceBin;
++  const quotedPath = "'" + path.replaceAll("'", "'\\''") + "'";
++  return `${ctx.windows ? "node " : ""}${quotedPath} agent call-hook --host claude # pace-managed-agent-call-v1`;
++}
++
+ function installCodex(ctx: Ctx): void {
+   for (const dir of ctx.codexDirs) installCodexDir(ctx, dir);
+ }
+diff --git a/test/agent-calls.test.ts b/test/agent-calls.test.ts
+index 4c52983..c817e29 100644
+--- a/test/agent-calls.test.ts
++++ b/test/agent-calls.test.ts
+@@ -88,7 +88,7 @@ test("T03 S-1: PM 보강·역순·병렬 입력과 백로그 귀속", async () =
+   writeFileSync(abandoned, `pace-agent-calls-v1 ${previousOwner.pid}\n`);
+   assert.equal(f.run(callFile(f, minimal)).status, 0);
+   assert.equal(existsSync(abandoned), false);
+-  const backlog = f.run(callFile(f, row({ task: null }), ["BL260101_01"]));
++  const backlog = f.run(callFile(f, row({ id: "f".repeat(32), task: null }), ["BL260101_01"]));
+   assert.equal(backlog.status, 0, backlog.stderr);
+   assert.equal(f.rows(f.backlog).length, 1);
+   assert.equal(existsSync(join(f.project, "log.jsonl")), false);
+@@ -328,3 +328,105 @@ test("T03 S-4·S-5: main에서 실행한 검토도 소유 worktree stats에서 
+   assert.equal(stats.status, 0, stats.stderr);
+   assert.equal(JSON.parse(stats.stdout).agentCalls.attempts, 2);
+ });
++
++test("T07 S-1~S-3: 훅과 수동 관측은 서로 다른 순서에도 같은 자식 한 행으로 수렴한다", () => {
++  const f = fixture();
++  assert.equal(f.run(["team", "new", "pace-troubleshooter", "--role", "reviewer"]).status, 0);
++  assert.equal(f.run(["worker", "set", "claude", "tier.high.model", "claude-fixture-request"]).status, 0);
++  assert.equal(f.run(["worker", "set", "claude", "tier.high.effort", "low"]).status, 0);
++  assert.equal(f.run(["team", "sync"]).status, 0);
++  const hook = (payload: object) => f.run(["agent", "call-hook", "--host", "claude"], JSON.stringify(payload));
++  const session = "synthetic-session-raw";
++  const turn = "synthetic-first-turn";
++  const given = (agent: string, event: string, cwd = f.task) => ({
++    cwd, hook_event_name: event, agent_id: agent, session_id: session, agent_type: "pace-troubleshooter", prompt_id: turn,
++    prompt: "synthetic-private-parent-prompt", transcript_path: "synthetic-private-transcript-path",
++  });
++  const result = (agent: string) => ({
++    ...given(agent, "PostToolUse"), tool_name: "Agent", effort: { level: "medium" },
++    tool_input: { description: "synthetic-private-description", prompt: "synthetic-private-tool-prompt" },
++    tool_response: { agentId: agent, agentType: "pace-troubleshooter", status: "completed", resolvedModel: "claude-fixture-result",
++      totalTokens: 20, totalDurationMs: 8, usage: { input_tokens: 0, output_tokens: 7 }, content: "synthetic-private-result" },
++  });
++  const rawId = "synthetic-child-raw";
++  const idArgs = ["agent", "call-id", "--host", "claude"];
++  const key = (agent_id: string, prompt_id = turn) => f.run(idArgs, JSON.stringify({ session_id: session, agent_id, prompt_id })).stdout.trim();
++  assert.equal(hook(given(rawId, "SubagentStart", f.cwd)).status, 0);
++  assert.equal(existsSync(f.file), false, "일반 Git 루트는 프로젝트 범위로 추정하지 않음");
++  assert.equal(hook(given(rawId, "SubagentStart", f.bin)).status, 0);
++  assert.equal(existsSync(f.file), false, "Git 저장소 밖은 무기록");
++  assert.equal(hook({ ...given(rawId, "SubagentStart"), agent_type: "unregistered" }).status, 0);
++  assert.equal(existsSync(f.file), false, "등록 범위 밖 역할은 무기록");
++  assert.equal(hook(given("synthetic-backlog-child", "SubagentStart", f.backlog)).status, 0);
++  assert.equal(f.rows(f.backlog)[0]?.task, null);
++  assert.match(key(rawId), /^[a-f0-9]{64}$/);
++
++  const first = row({ id: key(rawId), agent: "pace-troubleshooter", status: "unknown" });
++  assert.equal(f.run(callFile(f, first)).status, 0);
++  const second = "synthetic-child-other";
++  for (const payload of [{ ...result(rawId), cwd: f.backlog }, result(second), given(rawId, "SubagentStart"),
++    { ...given(second, "SubagentStop"), effort: { level: "low" } }, given(second, "SubagentStart"),
++    { ...given(rawId, "SubagentStop"), effort: { level: "low" } }, result(rawId)]) {
++    const invoked = hook(payload);
++    assert.equal(invoked.status, 0, invoked.stderr);
++    assert.equal(invoked.stdout + invoked.stderr, "");
++  }
++  const calls = f.rows();
++  assert.equal(calls.length, 2);
++  assert.equal(f.rows(f.backlog).length, 1, "다른 범위의 훅도 처음 고른 위치만 사용");
++  assert.deepEqual(calls.map((call) => call.id), [key(rawId), key(second)]);
++  assert.equal(calls[0]?.at, first.at);
++  assert.ok(calls.every((call) => call.status === "completed" && call.model.requested.value === "claude-fixture-request" &&
++    call.model.actual.value === "claude-fixture-result" && call.effort.actual.value === "low" && call.tokens.input.value === 0 &&
++    call.tokens.total.value === 20 && call.duration_ms.value === 8));
++  assert.equal(f.run(callFile(f, calls[1]!)).status, 0, "자동에서 수동 순서");
++  assert.deepEqual(f.rows(), calls);
++  const interrupted = "synthetic-child-interrupted";
++  assert.equal(hook(given(interrupted, "SubagentStart")).status, 0);
++  const started = f.rows()[2]!;
++  assert.equal(started.status, "unknown", "종료 증거 없음");
++  assert.equal(f.run(callFile(f, { ...started, status: "interrupted", reason: "cancelled" })).status, 0);
++  assert.equal(f.rows()[2]?.status, "interrupted");
++  assert.equal(f.rows()[2]?.duration_ms.value, null);
++  assert.match(f.rows()[2]!.id, /^[a-f0-9]{64}$/);
++  assert.doesNotMatch(readFileSync(f.file, "utf8"), /synthetic-private|synthetic-session-raw|synthetic-child/);
++  const stats = f.run(["project", "stats", "P001", "--json"]);
++  assert.equal(JSON.parse(stats.stdout).team, undefined);
++  const forged = hook({ ...given(rawId, "PostToolUse"), tool_name: "Bash", tool_response: result(rawId).tool_response });
++  assert.equal(forged.status, 0);
++  assert.equal(f.rows().length, 3);
++  const resumed = "synthetic-later-turn";
++  assert.equal(hook({ ...given(rawId, "SubagentStart"), prompt_id: resumed }).status, 0);
++  assert.equal(hook({ ...result(rawId), prompt_id: resumed }).status, 0);
++  assert.equal(f.rows().length, 4, "같은 자식의 다른 턴은 별도 시도");
++  assert.equal(f.rows()[3]?.id, key(rawId, resumed));
++});
++
++test("T07 S-1: 훅은 잘린 입력·잠금·쓰기 오류에서도 정상 종료하고 원문을 내지 않는다", () => {
++  const f = fixture();
++  assert.equal(f.run(["team", "new", "pace-troubleshooter", "--role", "reviewer"]).status, 0);
++  const cmd = ["agent", "call-hook", "--host", "claude"];
++  const payload = JSON.stringify({ cwd: f.task, hook_event_name: "SubagentStart", agent_id: "sample-agent", session_id: "sample-session",
++    agent_type: "pace-troubleshooter", transcript_path: "private-fixture-path" });
++  for (const invalid of ["{truncated", "x".repeat(1024 * 1024 + 1)]) {
++    const r = f.run(cmd, invalid);
++    assert.equal(r.status, 0);
++    assert.equal(r.stdout + r.stderr, "");
++    assert.equal(existsSync(f.file), false);
++  }
++  mkdirSync(f.file, { recursive: true });
++  const error = f.run(cmd, payload);
++  assert.equal(error.status, 0);
++  assert.equal(error.stdout + error.stderr, "");
++  renameSync(f.file, join(f.home, "broken-file"));
++  const lock = join(dirname(f.file), ".write.local.json");
++  writeFileSync(lock, `pace-agent-calls-v1 ${process.pid}\n`);
++  const start = performance.now(), busy = f.run(cmd, payload);
++  assert.equal(busy.status, 0);
++  assert.equal(busy.stdout + busy.stderr, "");
++  assert.ok(performance.now() - start < 9000);
++  assert.equal(existsSync(f.file), false);
++  unlinkSync(lock);
++  assert.equal(f.run(cmd, payload).status, 0);
++  assert.equal(f.rows().length, 1);
++});
+diff --git a/test/agent-review-hand.test.ts b/test/agent-review-hand.test.ts
+index dfa6a40..cfe172b 100644
+--- a/test/agent-review-hand.test.ts
++++ b/test/agent-review-hand.test.ts
+@@ -1,13 +1,16 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { spawnSync } from "node:child_process";
+-import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
++import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
+ import { dirname, join } from "node:path";
+ import { normalizeResult, type Executor } from "../src/agent/contract.ts";
+ import { reviewHash, reviewIssues } from "../src/project/pre-review.ts";
+ import { ledgerPath, readLedger, textHash } from "../src/agent/review-log.ts";
+ import { verifyCommand } from "../src/agent/verify-cli.ts";
+ import { effectiveBlocking } from "../src/agent/structured-review.ts";
++import { readAgentCalls, recordAgentCall, unknownCallValue, type AgentCall } from "../src/project/agent-calls.ts";
++import { reviewArtifactCommand } from "../src/agent/review-hand.ts";
++import { tryRecordCall } from "../src/agent/call-context.ts";
+ import { evidenceReviewFixture, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
+ 
+ const initial = "# T06 검토\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n기존 결과를 확인한다.\n\n## 증명 범위\n- 판정 주체: 자동 시험\n\n## 기준\n\n| # | 기준 |\n|---|---|\n| T-1 | 실제 결과가 보인다 |\n\n## 접근\n순서 A를 확인한다.\n";
+@@ -425,3 +428,98 @@ test("T06 기존 고정 뒤 A-3 회신이 열리면 제출을 멈추고 승인 
+   assert.equal(native.body.review.verdict, "pass", JSON.stringify(native.body));
+   assert.equal(native.body.followup.type, "owner");
+ });
++
++test("T07 S-5: 외부 판정과 다른 호출을 연결하지 않고 부분 실패 뒤 같은 판정을 연결한다", () => {
++  const h = fixture();
++  const directory = "projects/P013_fixture";
++  const project = join(h.root, directory), target = { root: h.root, directory, task: "T06" };
++  writeFileSync(join(project, "PROJECT.md"), "# P013 fixture\n");
++  const first = h.hand();
++  assert.equal(first.status, 0, first.output);
++  const competing = h.hand();
++  assert.equal(competing.status, 0, competing.output);
++  assert.equal(readAgentCalls(target), null, "발급은 새 에이전트 실행이 아니다");
++  h.setReply(first.body.snapshot, raw());
++  const u = unknownCallValue;
++  const actual: AgentCall = {
++    version: 1, id: "a".repeat(32), at: new Date().toISOString(), task: target.task, agent: "claude", engine: "claude", route: "native",
++    status: "completed", reason: null, replacement_reason: null, ref: null, model: { requested: u, actual: u }, effort: { requested: u, actual: u },
++    duration_ms: { value: 79, source: "host" }, tokens: { input: u, output: u, total: { value: 204, source: "host" } },
++  };
++  for (const [changes, idPart] of [
++    [{ task: "T05" }, "b"], [{ agent: "pace-irrelevant" }, "c"], [{ engine: "codex" }, "d"],
++    [{ at: "2020-01-01T00:00:00.000Z" }, "e"], [{ at: "2090-01-01T00:00:00.000Z" }, "f"],
++  ] as const) {
++    const value = { ...actual, ...changes, id: idPart.repeat(32) };
++    recordAgentCall({ ...target, task: value.task }, value);
++    assert.equal(h.record(first.body.hand, ["--call-id", value.id]).status, 2);
++  }
++  assert.equal(h.record(first.body.hand, ["--call-id", "0".repeat(32)]).status, 2);
++  assert.equal(readLedger(h.target).filter((e) => e.type === "review").length, 0);
++  recordAgentCall(target, actual);
++  const count = readAgentCalls(target)!.length;
++  const lock = join(project, "calls", ".write.local.json");
++  let output = "";
++  const partial = reviewArtifactCommand("review-record", ["--target", h.target, "--hand", first.body.hand, "--provider", "anthropic",
++    "--reviewer", "claude", "--result-file", h.submitted, "--call-id", actual.id], {
++    write: (line) => { output += line; },
++    writeCall(target, value) {
++      writeFileSync(lock, `pace-agent-calls-v1 ${process.pid}\n`);
++      try { return tryRecordCall(target, value); } finally { unlinkSync(lock); }
++    },
++  });
++  assert.equal(partial, 0, output);
++  assert.equal(JSON.parse(output).agent_call_linked, false);
++  assert.equal(readAgentCalls(target)!.find((e) => e.id === actual.id)?.ref, null);
++  const originalLedger = readFileSync(ledgerPath(h.target), "utf8");
++  assert.equal(readLedger(h.target).filter((e) => e.type === "review").length, 1);
++  assert.equal(readLedger(h.target).filter((e) => e.type === "call").length, 2);
++  const otherHand = h.record(competing.body.hand, ["--call-id", actual.id]);
++  assert.equal(otherHand.status, 2);
++  assert.match(otherHand.body.error.message, /호출에 외부 검토를 예약할 수 없다/);
++  assert.equal(h.record(first.body.hand, ["--call-id", "b".repeat(32)]).status, 2);
++  const retry = h.record(first.body.hand, ["--call-id", actual.id]);
++  assert.equal(retry.status, 0, retry.output);
++  assert.equal(retry.body.agent_call_retry, true);
++  assert.equal(retry.body.agent_call_linked, true);
++  assert.equal(h.record(first.body.hand, ["--call-id", actual.id]).status, 0);
++  assert.equal(readFileSync(ledgerPath(h.target), "utf8"), originalLedger);
++  const row = readAgentCalls(target)!.find((e) => e.id === actual.id)!;
++  assert.equal(readAgentCalls(target)!.length, count);
++  assert.deepEqual(row.duration_ms, actual.duration_ms);
++  assert.deepEqual(row.tokens, actual.tokens);
++  assert.equal(row.ref, "tasks/T06_fixture/review-records/R1.json");
++  assert.deepEqual(retry.body.review.usage, { input_tokens: null, output_tokens: null });
++  assert.equal(retry.body.review.duration_ms, undefined);
++  const second = h.hand();
++  assert.equal(second.status, 0);
++  const failed = { ...actual, id: "1".repeat(32), status: "failed", reason: "agent_failed", at: new Date().toISOString(), ref: null };
++  recordAgentCall(target, failed);
++  assert.equal(readAgentCalls(target)!.find((e) => e.id === failed.id)?.ref, null);
++  assert.equal(readLedger(h.target).filter((e) => e.type === "review").length, 1);
++});
++
++test("T07 S-5: 백로그 원장은 외부 시도 한 개와 해당 판정 ref를 보존한다", () => {
++  const h = fixture(), directory = "backlogs/BL260101_01_fixture", root = join(h.root, directory);
++  mkdirSync(root, { recursive: true });
++  writeFileSync(join(root, "BACKLOG.md"), "# Backlog\n");
++  const brief = join(root, "BR01_fixture.md");
++  writeFileSync(brief, "# BR01 fixture\n");
++  const first = h.hand(brief);
++  assert.equal(first.status, 0, first.output);
++  const target = { root: h.root, directory, task: null };
++  assert.equal(readAgentCalls(target), null);
++  h.setReply(first.body.snapshot, raw());
++  const u = unknownCallValue;
++  const id = "2".repeat(32);
++  recordAgentCall(target, {
++    version: 1, id, at: new Date().toISOString(), task: null, agent: "claude", engine: "claude", route: "manual",
++    status: "completed", reason: null, replacement_reason: null, ref: null, model: { requested: u, actual: u }, effort: { requested: u, actual: u },
++    duration_ms: u, tokens: { input: u, output: u, total: u },
++  });
++  const verified = h.record(first.body.hand, ["--call-id", id], brief);
++  assert.equal(verified.status, 0, verified.output);
++  assert.equal(verified.body.agent_call_linked, true);
++  assert.equal(readAgentCalls(target)?.length, 1);
++  assert.equal(readAgentCalls(target)?.[0]?.ref, "review-records/R1.json");
++});
+diff --git a/test/install.test.ts b/test/install.test.ts
+index cde8698..76db404 100644
+--- a/test/install.test.ts
++++ b/test/install.test.ts
+@@ -543,3 +543,32 @@ test("기본 등록부는 재설치와 제거 뒤에도 보존된다", () => {
+   uninstall({ home, repo });
+   assert.equal(readFileSync(sentinel, "utf8"), "보존");
+ });
++
++test("T07 Claude 호출 훅은 등록·재설치·제거에서 사용자 훅을 보존한다", () => {
++  const home = join(tempDir("pace-home-"), "team's fixture");
++  const file = join(home, ".claude", "settings.json");
++  const original = {
++    hooks: {
++      SubagentStart: [{ hooks: [{ type: "command", command: "user-start" }] }],
++      PostToolUse: [{ matcher: "Bash", hooks: [{ type: "command", command: "user-post" }] }],
++    },
++  };
++  write(file, JSON.stringify(original));
++  install({ home, repo, dryRun: true });
++  assert.deepEqual(json(file), original);
++  install({ home, repo });
++  const installed = json(file);
++  for (const event of ["SubagentStart", "SubagentStop", "PostToolUse"]) {
++    const groups = installed.hooks[event] as { matcher?: string; hooks: { type: string; command: string; timeout?: number }[] }[];
++    const managed = groups.filter((group) => group.hooks.some((hook) => hook.command.endsWith("# pace-managed-agent-call-v1")));
++    assert.equal(managed.length, 1);
++    assert.equal(managed[0]?.hooks[0]?.timeout, 10);
++    assert.match(managed[0]?.hooks[0]?.command ?? "", /agent call-hook --host claude/);
++    assert.ok(managed[0]?.hooks[0]?.command.includes("'\\''"), "작은따옴표가 섞인 경로도 리터럴");
++    assert.equal(managed[0]?.matcher, event === "PostToolUse" ? "Agent" : undefined);
++  }
++  install({ home, repo });
++  assert.deepEqual(json(file), installed);
++  uninstall({ home, repo });
++  assert.deepEqual(json(file), original);
++});
+diff --git a/src/agent/call-hook.ts b/src/agent/call-hook.ts
+new file mode 100644
+index 0000000..c2c2129
+--- /dev/null
++++ b/src/agent/call-hook.ts
+@@ -0,0 +1,162 @@
++import { createHash } from "node:crypto";
++import { closeSync, lstatSync, mkdirSync, openSync, writeFileSync } from "node:fs";
++import { dirname, isAbsolute } from "node:path";
++import { parseArgs } from "node:util";
++import { parseFrontmatter } from "../core/frontmatter.ts";
++import { AgentCallError, callIdentifier, recordAgentCall, unknownCallValue, type AgentCall, type CallTarget, type CallValue } from "../project/agent-calls.ts";
++import { regularBytes, strictJson, utf8 } from "../project/handoff-files.ts";
++import { normalizeLines, validTeamName, type TeamMember } from "../team/model.ts";
++import { commonGitDirectory } from "../team/resource-lock.ts";
++import { loadTeamMember, readTeamFile, safeTeamPath, teamRoot } from "../team/store.ts";
++import { renderTeamMember } from "../team/sync.ts";
++import { automaticCallTarget } from "./call-context.ts";
++
++type JsonObject = Record<string, unknown>;
++const object = (value: unknown): JsonObject | undefined =>
++  value !== null && typeof value === "object" && !Array.isArray(value) ? value as JsonObject : undefined;
++const validHostId = (value: unknown): value is string => typeof value === "string" && /^[A-Za-z0-9_/-]{1,128}$/.test(value);
++
++function nativeCallId(host: "claude" | "codex", session: unknown, agent: unknown, prompt: unknown): string | null {
++  if (!validHostId(session) || !validHostId(agent) || (prompt !== undefined && !validHostId(prompt))) return null;
++  // A resumed child can retain its agent ID in a later turn.
++  return createHash("sha256").update(`pace-native-agent-call/v1\0${host}\0${session}\0${agent}\0${prompt ?? ""}`).digest("hex");
++}
++const textValue = (value: unknown, source: "host" | "requested"): CallValue<string> =>
++  callIdentifier(value) ? { value, source } : unknownCallValue;
++const hostAmount = (value: unknown): CallValue<number> =>
++  typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? { value, source: "host" } : unknownCallValue;
++
++const routeWait = new Int32Array(new SharedArrayBuffer(4));
++function readScope(path: string, common: string): CallTarget {
++  let value: JsonObject | undefined;
++  // A concurrent first writer may still be finishing its single small receipt.
++  for (let attempt = 0; attempt < 10; attempt++) {
++    try { value = object(strictJson(utf8(regularBytes(path, 8192)))); if (value) break; }
++    catch { /* Missing, incomplete and unsafe receipts never select a new destination. */ }
++    Atomics.wait(routeWait, 0, 0, 20);
++  }
++  const root = value?.root, directory = value?.directory, task = value?.task;
++  if (!value || Object.keys(value).length !== 3 || typeof root !== "string" || !isAbsolute(root) || typeof directory !== "string" ||
++      !/^(?:projects\/P\d{3}_[^/]+|backlogs\/BL\d{6}_\d{2}_[^/]+)$/.test(directory) ||
++      (task !== null && (typeof task !== "string" || !/^T\d{2}$/.test(task))) || commonGitDirectory(root) !== common) {
++    throw new AgentCallError("호스트 호출의 기존 범위를 확인할 수 없다");
++  }
++  const marker = directory.startsWith("projects/") ? "PROJECT.md" : "BACKLOG.md";
++  if (!lstatSync(safeTeamPath(root, `${directory}/${marker}`), { throwIfNoEntry: false })?.isFile()) {
++    throw new AgentCallError("호스트 호출의 기존 범위 문서를 확인할 수 없다");
++  }
++  return { root, directory, task };
++}
++
++function nativeScope(cwd: string, id: string, candidate: CallTarget | undefined): CallTarget | undefined {
++  const common = commonGitDirectory(candidate?.root ?? teamRoot(cwd));
++  const rel = `pace/native-call-scopes/${id}.json`;
++  const path = safeTeamPath(common, rel);
++  if (candidate) {
++    mkdirSync(safeTeamPath(common, "pace/native-call-scopes", true), { recursive: true, mode: 0o700 });
++    let fd: number | undefined;
++    try { fd = openSync(safeTeamPath(common, rel), "wx", 0o600); }
++    catch (error) { if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error; }
++    if (fd !== undefined) {
++      try { writeFileSync(fd, JSON.stringify(candidate) + "\n"); } finally { closeSync(fd); }
++      return candidate;
++    }
++  } else {
++    try { regularBytes(path, 8192); } catch (error) {
++      if ((error as NodeJS.ErrnoException).code === "ENOENT") return undefined;
++      throw error;
++    }
++  }
++  return readScope(path, common);
++}
++
++export function rememberNativeCallScope(target: CallTarget, id: string): void {
++  const routed = nativeScope(target.root, id, target);
++  if (!routed || routed.root !== target.root || routed.directory !== target.directory || routed.task !== target.task) {
++    throw new AgentCallError("호스트 호출 ID는 처음 기록한 범위에만 쓸 수 있다");
++  }
++}
++
++function generatedRequest(root: string, member: TeamMember): { model: CallValue<string>; effort: CallValue<string> } | null {
++  try {
++    const content = readTeamFile(root, `.claude/agents/${member.name}.md`);
++    if (content === null) return null;
++    const { data } = parseFrontmatter(content);
++    const { model, effort } = data;
++    if (!callIdentifier(model) || !callIdentifier(effort)) return null;
++    if (normalizeLines(content) !== renderTeamMember(member, "claude", { model, effort })) return null;
++    return { model: textValue(model, "requested"), effort: textValue(effort, "requested") };
++  } catch { return null; }
++}
++
++function claudeHook(input: JsonObject): void {
++  const event = input.hook_event_name;
++  if (event !== "SubagentStart" && event !== "SubagentStop" && event !== "PostToolUse") return;
++  const post = event === "PostToolUse";
++  if (post && input.tool_name !== "Agent") return;
++  const result = post ? object(input.tool_response) : undefined;
++  const role = post ? result?.agentType ?? object(input.tool_input)?.subagent_type : input.agent_type;
++  const id = nativeCallId("claude", input.session_id, post ? result?.agentId : input.agent_id, input.prompt_id);
++  if (!id || typeof role !== "string" || !validTeamName(role) || typeof input.cwd !== "string" || input.cwd.length > 4096 || !isAbsolute(input.cwd)) return;
++  const observedTarget = automaticCallTarget(input.cwd);
++  let observedMember: TeamMember | undefined;
++  // Only a registered role can establish a new scope. A later event may arrive in another checkout.
++  if (observedTarget) try { observedMember = loadTeamMember(observedTarget.root, role); } catch { /* Try the existing scope below. */ }
++  const target = nativeScope(input.cwd, id, observedMember ? observedTarget : undefined);
++  if (!target) return;
++  let member: TeamMember;
++  try { member = observedMember && observedTarget?.root === target.root ? observedMember : loadTeamMember(target.root, role); }
++  catch { return; }
++  const requested = event === "SubagentStart" ? generatedRequest(target.root, member) : null;
++  const status = result?.status === "completed" ? "completed"
++    : result?.status === "failed" ? "failed"
++    : result?.status === "cancelled" || result?.status === "canceled" ? "interrupted" : "unknown";
++  const reason = status === "failed" ? "agent_failed" : status === "interrupted" ? "cancelled" : null;
++  const reported = status !== "unknown" ? result : undefined;
++  const usage = object(reported?.usage);
++  const row: AgentCall = {
++    version: 1, id, at: new Date().toISOString(), task: target.task, agent: member.name, engine: "claude", route: "native",
++    status, reason, replacement_reason: null, ref: null,
++    model: { requested: requested?.model ?? unknownCallValue, actual: textValue(reported?.resolvedModel, "host") },
++    effort: { requested: requested?.effort ?? unknownCallValue, actual: textValue(event === "SubagentStop" ? object(input.effort)?.level : undefined, "host") },
++    duration_ms: hostAmount(reported?.totalDurationMs),
++    tokens: { input: hostAmount(usage?.input_tokens), output: hostAmount(usage?.output_tokens), total: hostAmount(reported?.totalTokens) },
++  };
++  recordAgentCall(target, row, { nativeObservation: true });
++}
++
++const maxHookBytes = 1024 * 1024;
++async function inputObject(): Promise<JsonObject | undefined> {
++  if (process.stdin.isTTY) return undefined;
++  const chunks: Buffer[] = [];
++  let length = 0;
++  for await (const chunk of process.stdin) {
++    const bytes = chunk as Buffer;
++    length += bytes.length;
++    if (length > maxHookBytes) return undefined;
++    chunks.push(bytes);
++  }
++  return object(strictJson(utf8(Buffer.concat(chunks, length))));
++}
++
++export async function agentCallHookCommand(action: "call-hook" | "call-id", args: string[]): Promise<number> {
++  try {
++    const { values } = parseArgs({ args, options: { host: { type: "string" } }, strict: true });
++    const host = values.host;
++    if (action === "call-hook") {
++      if (host === "claude") {
++        const input = await inputObject();
++        if (input) claudeHook(input);
++      }
++      return 0;
++    }
++    if (host === "claude" || host === "codex") {
++      const input = await inputObject();
++      const id = nativeCallId(host, input?.session_id, input?.agent_id, input?.prompt_id);
++      if (id) { process.stdout.write(id + "\n"); return 0; }
++    }
++  } catch { /* A hook must let its host continue and must never echo raw payload or I/O diagnostics. */ }
++  if (action === "call-hook") return 0;
++  process.stderr.write("pace: 에이전트 호출 ID에 유효한 호스트와 두 식별자가 필요하다\n");
++  return 2;
++}
