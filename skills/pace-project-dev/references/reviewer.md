@@ -91,6 +91,15 @@ F2 [should_fix] … (근거: typescript/INDEX — <절>)
 
 진단 표지가 열린 동안에는 `review-note --diagnosis`로 기록한다. 그 기록 직후는 normal이다. 확정된 조치를 적용하고 `verify` 전체 검토로 넘어간다. `review-note --decision` 입력은 그 검토가 fail로 끝나 `ask_user` 단계가 열린 뒤에만 한다. 진단·normal에서 필요한 owner 응답은 원문을 진단 근거나 프로젝트 기록에 연결한다.
 
+### 태스크와 백로그의 수정 확인과 상위 검토
+
+- `followup.action: confirm_findings`이면 일반·공동 검토의 최신 유효 지적을 확인한다. 조치 전 [A](decision-rights.md#a-결정-주체)로 합의 영향을 대조한다. 필요한 수정을 적용한 뒤 `review-note --confirm <ID> --location <원래 위치> --impact <수정 영향> --summary <조치> --file <근거>`를 기록하고 `verify`를 실행한다. 패치에서 바뀐 파일은 영향 범위에 넣는다. 한정 확인은 원래 판정과 다른 지적을 유지한다. 확인 결과로 원래 지적을 모두 해소했으면 보고가 `confirmed_findings`를 표시한다.
+- 지적당 1회 또는 단위 합산 2회 뒤에는 `review-note --diagnosis --layer <층> --summary <원인과 조치·확인 범위> --file <근거>`로 같은 원장에 기록한다. 수정과 한정 확인을 한 번 더 수행한다. 미실행·미확인 근거는 보존하고 기존 확인에서 복구한다. 진단 뒤 한정 확인의 fail은 `escalation.stage: upper_review`를 반환하며 다음 보통 검토는 종료 16으로 보류된다. 이때 해당 단위의 임의 수정도 보류한다.
+- `followup.upper`의 trigger·slot·대상·지문을 독립 검토 원문에 연결한다. `review-note --upper-review --summary <근본 원인> --file <근거>`는 `trigger`, `slot`, `target`, `hash`, `reviewer`, `author`, `worker`, `provider`, 비밀이 없는 별도 맥락 식별자 `context`, `cross`, 검토 원문 `analysis`를 가진 JSON 근거를 받는다. B1 대체는 `cross_unavailable` 사유도 남긴다. 두 번째 상위 검토에는 실제 계약·백로그 대조의 `contract`와 `backlog`를 붙인다. 허브는 독립성과 원문을 직접 대조한다.
+- 허브는 합의 범위 안의 해결안을 적용하고 `review-note --upper-check --impact <수정 영향> --summary <조치> --file <근거>`를 기록한다. 근거 JSON은 상위 검토 ID인 `upper`, 적용 내용 `change`, 확인된 합의 `agreement: "confirmed"`, 기존 필수 확인 `verification: "required"`를 담는다. `verify`는 같은 대상과 최신 지문에 한 번의 유효 확인을 열고 기존 예산은 유지한다. 같은 진단 뒤의 첫 확인 fail이면 별도 새 맥락의 두 번째 상위 검토를 받고, 그 확인도 fail이면 `agreement_required`로 A-1 합의 조정·보류를 요청한다.
+- 합의 영향이 있거나 대조 뒤 가릴 수 없으면 A-1으로 확인한 뒤 적용한다. 실제 승인대로 계약이 바뀌면 `review-note --contract-change --summary <합의 변경> --file <근거>`에 `by: "user"`, `decision: "A-1"`, 이전 `previous`와 새 `contract` 지문, 승인 원문의 `receipt`를 연결한다. 이전 지문과 현재 지문은 `followup.upper`에서 확인한다. 기존 합의에서 문구만 명확히 했다면 상위 검토 또는 확인 근거에 `agreement: "equivalent"`, `previous`·`contract` 지문과 `comparison`을 기록한다. 허브가 대조한 뒤 한정 확인을 수행하며 일반 예산은 유지한다. 해당 단계의 일반 예산이 다시 시작되고 단위 누적과 상위 검토 근거는 남는다.
+- 필수 검증 생략·완화 또는 증거 공백·잔여 blocking을 수용하는 실제 제안은 A-3 요청에 연결한다. 기존 기준을 충족하는 필요한 확인은 실행하고 `REVIEW-ESCALATION-<단계>.json`의 근거·수치·판정으로 사후 보고한다. [결정 권한 B·C](decision-rights.md#b-허브의-장애-대응)
+
 ### 조치 전 영향 분류
 
 [결정 권한 정본 A](decision-rights.md#a-결정-주체)로 실제 조치를 대조하고, 근거가 부족하거나 조치에서 막히면 [B](decision-rights.md#b-허브의-장애-대응)로 허브와 해결한다. owner에게 요청하는 경우 확인한 증거와 남은 불확실성, 해당 A 번호를 붙인다. 원장이 센 회차와 blocking 수는 근본 조치 시점을 알려 준다.

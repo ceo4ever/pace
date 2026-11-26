@@ -1,17 +1,18 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { decideReviewAdmission, type AdmissionState } from "../src/agent/review-admission.ts";
 import { AgentError, normalizeResult, type Executor } from "../src/agent/contract.ts";
 import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
+import { reviewHash } from "../src/project/pre-review.ts";
 import { scopedReviewFixture, tempDir } from "./helpers.ts";
 
-function fixture(unit = "task") {
+function fixture(unit = "task", artifact?: string) {
   const root = join(tempDir("pace-followup-"), unit === "task"
     ? "projects/P013_review/tasks/T02_followup" : "backlogs/BL261126_01_review");
   mkdirSync(join(root, "evidence"), { recursive: true });
-  const target = join(root, unit === "task" ? "change.patch" : "BACKLOG.md");
+  const target = join(root, artifact ?? (unit === "task" ? "change.patch" : "BACKLOG.md"));
   const proof = join(root, "evidence/finding.md");
   const waiver = join(root, "evidence/waiver.json");
   writeFileSync(proof, "독립 tester의 지적, 재현 조건 V1, 실패 재현 원문\nfail\n");
@@ -27,7 +28,8 @@ function fixture(unit = "task") {
       async run(request) {
         prompts.push(request.prompt);
         await wait?.();
-        return normalizeResult(request, { text: scopedReviewFixture(request.prompt, reply), provider: "openai" }, { durationMs: 1, enforcement: "fake" });
+        const text = reply.includes("```pace-review") ? reply : scopedReviewFixture(request.prompt, reply);
+        return normalizeResult(request, { text, provider: "openai" }, { durationMs: 1, enforcement: "fake" });
       },
     };
     const deps = { executors: () => [...(available ? [executor] : []), ...(alternate ? [alternate] : [])],
@@ -167,7 +169,8 @@ test("일반 공동 시도는 적용 기록만으로 소모되지 않고 단위�
     assert.equal(blocked.code, 16);
     assert.equal(blocked.json.followup.joint_attempts, 2);
     assert.equal(blocked.json.followup.decision, null);
-    assert.ok(readFileSync(join(h.root, blocked.json.followup.report), "utf8").includes('"classify_followup"'));
+    assert.equal(blocked.json.followup.action, "confirm_findings");
+    assert.equal(JSON.parse(readFileSync(join(h.root, blocked.json.followup.report), "utf8")).action, "confirm_findings");
   }
 });
 
@@ -275,3 +278,283 @@ for (const [name, state, expected] of cases) {
     assert.deepEqual(decideReviewAdmission({ ...initial, ...state }), expected);
   });
 }
+
+function stageFailure(category: string, ...findings: [string, string][]) {
+  return ["```pace-review", JSON.stringify({
+    version: 1, findings: findings.map(([id, location]) => ({ id, location, category, severity: "blocking", scenario: "재현",
+      reproduction: "수정 전 입력을 다시 실행한다", confidence: "high" })),
+  }), "```", "fail"].join("\n");
+}
+
+async function recoveryFixture(unit = "task", useCallCap = false, finalReply?: string) {
+  const h = fixture(unit, unit === "backlog" ? "BR01_example.md" : undefined);
+  const contract = join(h.root, unit === "task" ? "TASK.md" : "BACKLOG.md");
+  writeFileSync(contract, "합의한 계약과 검증 기준\n");
+  writeFileSync(h.target, "수정 전\n");
+  if (useCallCap) {
+    h.setAvailable(false);
+    assert.equal((await h.verify()).code, 10);
+    assert.equal((await h.verify()).code, 10);
+    h.setAvailable(true);
+  }
+  await h.exhaust();
+  for (const n of [1, 2]) {
+    writeFileSync(h.target, `공동 확인 ${n}\n`);
+    assert.equal((await h.note(["--joint", "--choice", "독립 지적 보완"])).code, 0);
+    assert.equal((await h.verify([], n === 2 ? finalReply : undefined)).code, 0);
+  }
+  const focus = (id = "F1", location = "fixture.ts:1", impact = "fixture.ts의 저장과 재입력 범위") =>
+    h.note(["--confirm", id, "--location", location, "--impact", impact]);
+  const proof = (name: string, fields: object) => {
+    const path = join(h.root, "evidence", name);
+    writeFileSync(path, JSON.stringify(fields));
+    return path;
+  };
+  const recordRoot = (trigger: string, slot: 1 | 2, changes: Record<string, unknown> = {}) => h.note([
+    "--upper-review", "--file", proof(`root-${slot}.json`, {
+      trigger, slot, reviewer: "independent-reviewer", author: "author", worker: "worker",
+      target: relative(h.root, h.target), hash: reviewHash(readFileSync(h.target, "utf8")),
+      provider: "openai", context: `independent-context-${slot}`, cross: true, analysis: "원인과 대안 및 포착 범위를 관측했다",
+      ...(slot === 2 ? { contract: "태스크의 판정 기준을 대조했다", backlog: "백로그 목적과 인수 기준을 대조했다" } : {}),
+      ...changes,
+    }),
+  ]);
+  const recordFix = (upper: string, changes: Record<string, unknown> = {}) => h.note(["--upper-check", "--impact", "fixture.ts 저장과 재입력",
+    "--file", proof("root-fix.json", { upper, agreement: "confirmed", verification: "required", change: "저장 기준과 원인 조치", ...changes })]);
+  return { ...h, contract, focus, proof, recordRoot, recordFix };
+}
+
+async function failThroughDiagnosis(h: Awaited<ReturnType<typeof recoveryFixture>>, diagnosedReply?: string) {
+  writeFileSync(h.target, "첫 지적 수정\n");
+  const focus = await h.focus();
+  assert.equal(focus.code, 0, JSON.stringify(focus.json));
+  assert.equal((await h.verify()).json.followup.type, "confirmation");
+  writeFileSync(h.target, "구조 원인 수정\n");
+  assert.equal((await h.focus()).code, 2);
+  assert.match((await h.verify()).json.followup.action, /^diagnose$/);
+  const diagnosed = await h.note(["--diagnosis", "--layer", "structure"]);
+  assert.equal(diagnosed.code, 0);
+  assert.equal(diagnosed.json.entry.type, "diagnosis");
+  assert.equal((await h.focus()).json.entry.diagnosed, true);
+  const failed = await h.verify([], diagnosedReply);
+  assert.equal(failed.json.escalation.stage, "upper_review");
+  assert.equal(failed.json.followup.type, "confirmation");
+  return (await h.verify()).json.followup;
+}
+
+test("T09는 일반·공동 소진 뒤 지적과 수정 영향을 확인하고 미실행은 같은 확인에서 복구한다", async () => {
+  const h = await recoveryFixture("task", true);
+  writeFileSync(h.target, "diff --git a/fixture.ts b/fixture.ts\n--- a/fixture.ts\n+++ b/fixture.ts\ndiff --git a/save.ts b/save.ts\n--- a/save.ts\n+++ b/save.ts\n");
+  assert.equal((await h.focus("F2")).code, 2);
+  assert.equal((await h.focus("F1", "fixture.ts:2")).code, 2);
+  assert.equal((await h.focus()).code, 2);
+  const grant = await h.focus("F1", "fixture.ts:1", "fixture.ts save.ts의 데이터 저장과 재입력을 확인한다");
+  assert.equal(grant.code, 0);
+  h.setAvailable(false);
+  assert.equal((await h.verify()).code, 10);
+  h.setAvailable(true);
+  const checked = await h.verify();
+  assert.equal(checked.code, 0);
+  assert.equal(checked.json.followup.id, grant.json.entry.id);
+  assert.match(h.prompts.at(-1)!, /F1의 원래 위치 fixture\.ts:1.*수정 영향.*save\.ts/);
+  assert.deepEqual([checked.json.budget.calls, checked.json.budget.rounds], [4, 2]);
+  const held = await h.verify();
+  assert.equal(held.json.followup.confirmation_count, 1);
+  assert.equal(held.json.followup.diagnostic_confirmation_count, 0);
+  assert.equal(held.json.followup.action, "diagnose");
+});
+
+test("T09 수정 확인은 태스크의 사전·사후가 두 회를 나눠 쓴다", async () => {
+  const h = await recoveryFixture("task", false, stageFailure("defect", ["F2", "save.ts:2"], ["F3", "load.ts:3"]));
+  await h.exhaust(h.contract);
+  writeFileSync(h.contract, "사전 지적 변경\n");
+  const first = await h.note(["--confirm", "F1", "--location", "fixture.ts:1", "--impact", "사전 기준"], h.contract);
+  assert.equal(first.code, 0);
+  assert.equal((await h.verify([], "pass", h.contract)).code, 0);
+  writeFileSync(h.target, "사후의 두 번째 지적을 수정\n");
+  assert.equal((await h.focus("F2", "save.ts:2", "save.ts의 저장 경로")).code, 0);
+  assert.equal((await h.verify([], "pass")).code, 0);
+  writeFileSync(h.target, "사후의 세 번째 지적을 수정\n");
+  const held = await h.verify();
+  assert.equal(held.json.followup.confirmation_count, 2);
+  assert.equal(held.json.followup.action, "diagnose");
+  assert.deepEqual(held.json.followup.confirmation_findings, [{ id: "F3", location: "load.ts:3" }]);
+  assert.equal((await h.focus("F3", "load.ts:3", "load.ts의 재입력 경로")).code, 2);
+  assert.equal((await h.note(["--diagnosis", "--layer", "design"])).code, 0);
+  assert.equal((await h.focus("F3", "load.ts:3", "load.ts의 재입력 경로")).json.entry.diagnosed, true);
+});
+
+test("T09는 양쪽 상한을 다 쓴 뒤 진단 재실패로 단위를 상위 검토까지 보류한다", async () => {
+  const h = await recoveryFixture("task", true);
+  const report = await failThroughDiagnosis(h);
+  assert.equal(report.action, "upper_review");
+  assert.deepEqual([report.joint_attempts, report.confirmation_count, report.diagnostic_confirmation_count], [2, 1, 1]);
+  assert.equal((await h.verify([], "never", h.contract)).json.escalation.stage, "upper_review");
+  assert.equal((await h.note(["--joint", "--choice", "다시 검토"], h.contract)).code, 2);
+  assert.equal((await h.note(["--void", "--record", report.upper.source])).code, 2);
+  assert.equal((await h.recordFix("unknown")).code, 2);
+  assert.equal((await h.recordRoot(report.upper.trigger, 1, { reviewer: "worker" })).code, 2);
+  assert.equal((await h.recordRoot(report.upper.trigger, 1, { cross: false })).code, 2);
+  const root = await h.recordRoot(report.upper.trigger, 1);
+  assert.equal(root.code, 0);
+  writeFileSync(h.target, "상위에서 확인한 변경\n");
+  assert.equal((await h.recordFix(root.json.entry.id, { agreement: "uncertain" })).code, 2);
+  assert.equal((await h.recordFix(root.json.entry.id, { verification: "weaken" })).code, 2);
+  assert.equal((await h.recordFix(root.json.entry.id)).code, 0);
+  const result = await h.verify([], "pass");
+  assert.equal(result.code, 0);
+  assert.equal(result.json.followup.type, "upper");
+  assert.equal(result.json.review.verdict, "pass");
+  assert.deepEqual([result.json.budget.calls, result.json.budget.rounds], [4, 2]);
+  assert.match(h.prompts.at(-1)!, /상위 근본 검토 해결안의 한정 재검증/);
+  assert.equal((await h.verify()).code, 16);
+});
+
+test("T09는 별도 2차 상위 근거와 한 번의 확인 뒤 A-1로 종료한다", async () => {
+  const h = await recoveryFixture("backlog", true);
+  const report = await failThroughDiagnosis(h);
+  const first = await h.recordRoot(report.upper.trigger, 1);
+  assert.equal(first.code, 0);
+  writeFileSync(h.target, "첫 상위 해결안 반영\n");
+  assert.equal((await h.recordFix(first.json.entry.id)).code, 0);
+  assert.equal((await h.verify()).json.escalation.stage, "upper_review");
+  assert.equal((await h.recordRoot(report.upper.trigger, 2, { context: "independent-context-1" })).code, 2);
+  assert.equal((await h.recordRoot(report.upper.trigger, 2, { backlog: null })).code, 2);
+  const second = await h.recordRoot(report.upper.trigger, 2);
+  assert.equal(second.code, 0);
+  writeFileSync(h.target, "두 번째 상위 해결안 반영\n");
+  assert.equal((await h.recordFix(second.json.entry.id)).code, 0);
+  const failed = await h.verify();
+  assert.equal(failed.json.escalation.stage, "agreement_required");
+  const next = await h.verify();
+  assert.equal(next.code, 16);
+  assert.equal(next.json.followup.decision, "A-1");
+  assert.deepEqual(next.json.followup.choices, ["합의 조정", "보류"]);
+  assert.equal(next.json.followup.upper_reviews.length, 2);
+  assert.equal(next.json.followup.confirmation_count, 1);
+  assert.deepEqual([next.json.budget.calls, next.json.budget.rounds], [4, 2]);
+});
+
+test("T09는 실제 계약 변경과 일치하는 A-1 근거가 있을 때 해당 단계의 일반 예산만 다시 센다", async () => {
+  const h = await recoveryFixture("task", true);
+  await h.exhaust(h.contract);
+  const report = await failThroughDiagnosis(h);
+  const root = await h.recordRoot(report.upper.trigger, 1);
+  assert.equal(root.code, 0);
+  writeFileSync(h.contract, "승인 대상으로 제시한 새 계약\n");
+  writeFileSync(h.target, "새 계약을 반영한 변경\n");
+  const denied = await h.recordFix(root.json.entry.id);
+  assert.equal(denied.code, 2);
+  assert.match(denied.json.error.message, /A-1/);
+  assert.equal((await h.verify()).code, 16);
+  const nextHash = reviewHash(readFileSync(h.contract, "utf8"));
+  const agreement = (contract: string) => h.note(["--contract-change", "--file", h.proof("owner-agreement.json", {
+    by: "user", decision: "A-1", previous: report.upper.contract, contract, receipt: "합의 변경 원문의 영수증",
+  })]);
+  assert.equal((await agreement(report.upper.contract)).code, 2);
+  const approved = await agreement(nextHash);
+  assert.equal(approved.code, 0, JSON.stringify(approved.json));
+  assert.equal((await h.recordFix(root.json.entry.id)).code, 0);
+  const checked = await h.verify([], "pass");
+  assert.equal(checked.code, 0);
+  assert.equal(checked.json.followup.type, "upper");
+  assert.deepEqual([checked.json.budget.calls, checked.json.budget.rounds], [0, 0]);
+  const pre = await h.verify([], "never", h.contract);
+  assert.equal(pre.code, 16);
+  assert.equal(pre.json.budget.rounds, 2);
+  assert.deepEqual([pre.json.followup.joint_attempts, pre.json.followup.confirmation_count], [2, 1]);
+  const ordinary = await h.verify([], "pass");
+  assert.equal(ordinary.code, 0);
+  assert.equal(ordinary.json.review.rereview_of, null);
+  assert.deepEqual([ordinary.json.budget.calls, ordinary.json.budget.rounds], [1, 1]);
+});
+
+test("T09는 필수 확인을 복구하고 실제 검증 완화나 잔여 blocking 수용은 A-3 요청으로 분리한다", async () => {
+  const h = await recoveryFixture();
+  const report = await failThroughDiagnosis(h);
+  const root = await h.recordRoot(report.upper.trigger, 1);
+  assert.equal(root.code, 0);
+  writeFileSync(h.target, "새 해결안을 적용했다\n");
+  assert.equal((await h.recordFix(root.json.entry.id, { verification: "accept_blocking" })).code, 2);
+  const request = await h.note(["--request-waiver", "weaken", "--choice", "필수 증거 확보"]);
+  assert.equal(request.code, 0, JSON.stringify(request.json));
+  assert.equal(request.json.followup.decision, "A-3");
+  assert.equal((await h.verify()).json.followup.action, "owner_decision_required");
+  assert.equal((await h.recordFix(root.json.entry.id)).code, 2);
+  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "필수 증거 확보"])).code, 0);
+  assert.equal((await h.recordFix(root.json.entry.id)).code, 0);
+  const out = await h.verify([], "읽을 수 없는 응답");
+  assert.equal(out.json.review.verdict, "unknown");
+  assert.equal(out.json.escalation, undefined);
+  const checked = await h.verify([], "pass");
+  assert.equal(checked.json.review.verdict, "pass");
+  assert.equal(checked.json.followup.id, out.json.followup.id);
+});
+
+test("T09 한정 확인이 실패해도 판정 범위와 원래 유효 지적 목록을 유지한다", async () => {
+  const h = await recoveryFixture("task", false, stageFailure("defect", ["F1", "fixture.ts:1"], ["F2", "save.ts:2"]));
+  const original = (await h.verify()).json.followup.confirmation_source;
+  writeFileSync(h.target, "첫 지적을 확인할 수정\n");
+  assert.equal((await h.focus()).code, 0);
+  assert.equal((await h.verify([], stageFailure("defect", ["F1", "fixture.ts:1"]))).code, 0);
+  const prompt = h.prompts.at(-1)!;
+  assert.match(prompt, /지정한 지적과 적용한 수정의 영향만 판정한다/);
+  assert.doesNotMatch(prompt, /판정 범위: 직전 검토의 blocking이 해소/);
+  const held = (await h.verify()).json.followup;
+  assert.equal(held.confirmation_source, original);
+  assert.deepEqual(held.confirmation_findings, [{ id: "F1", location: "fixture.ts:1" }, { id: "F2", location: "save.ts:2" }]);
+  writeFileSync(h.target, "두 번째 지적을 확인할 수정\n");
+  assert.equal((await h.focus("F2", "save.ts:2", "save.ts의 저장과 재입력")).code, 0);
+  assert.equal((await h.verify([], "pass")).code, 0);
+  assert.deepEqual((await h.verify()).json.followup.confirmation_findings, [{ id: "F1", location: "fixture.ts:1" }]);
+});
+
+test("T09는 기존 합의 안의 계약 문구 변경을 실행·보고하며 일반 예산을 다시 열지 않는다", async () => {
+  const h = await recoveryFixture();
+  const report = await failThroughDiagnosis(h);
+  const root = await h.recordRoot(report.upper.trigger, 1);
+  writeFileSync(h.contract, "기존 검증 대상의 표현을 명확히 한 계약\n");
+  writeFileSync(h.target, "대조한 문구를 반영한 수정\n");
+  const current = reviewHash(readFileSync(h.contract, "utf8"));
+  assert.equal((await h.recordFix(root.json.entry.id)).code, 2);
+  const fixed = await h.recordFix(root.json.entry.id, {
+    agreement: "equivalent", previous: report.upper.contract, contract: current,
+    comparison: "기준의 대상·동작·필수 검증을 그대로 두고 대상명만 명확히 했다",
+  });
+  assert.equal(fixed.code, 0, JSON.stringify(fixed.json));
+  assert.equal((await h.verify([], "pass")).json.review.verdict, "pass");
+  const next = await h.verify();
+  assert.equal(next.code, 16);
+  assert.deepEqual([next.json.budget.calls, next.json.budget.rounds, next.json.followup.decision], [2, 2, null]);
+});
+
+test("T09는 원래 지적을 모두 확인하면 한정 확인 결과를 단계 pass와 구별해 보고한다", async () => {
+  const h = await recoveryFixture();
+  writeFileSync(h.target, "결함을 고친 변경\n");
+  assert.equal((await h.focus()).code, 0);
+  const done = await h.verify([], "pass");
+  assert.equal(done.json.followup.next, "confirmed_findings");
+  const held = await h.verify();
+  assert.equal(held.json.followup.action, "confirmed_findings");
+  assert.deepEqual(held.json.followup.confirmation_findings, []);
+  assert.equal(held.json.followup.confirmations[0].verdict, "pass");
+});
+
+test("T09는 상위 검토 전에 확인된 문구 동등성과 진단 실패의 최신 원문을 잇는다", async () => {
+  const h = await recoveryFixture();
+  const report = await failThroughDiagnosis(h, stageFailure("defect", ["F9", "diagnosis.ts:9"]));
+  writeFileSync(h.contract, "합의한 계약과 검증 기준의 용어 명확화\n");
+  const current = reviewHash(readFileSync(h.contract, "utf8"));
+  assert.equal((await h.recordRoot(report.upper.trigger, 1)).code, 2);
+  const root = await h.recordRoot(report.upper.trigger, 1, {
+    agreement: "equivalent", previous: report.upper.contract, contract: current,
+    comparison: "검증 대상과 성공·실패 조건을 동일하게 유지했다",
+  });
+  assert.equal(root.code, 0, JSON.stringify(root.json));
+  writeFileSync(h.target, "진단 뒤의 새 결함까지 해결한 변경\n");
+  assert.equal((await h.recordFix(root.json.entry.id)).code, 0);
+  const checked = await h.verify([], "pass");
+  assert.equal(checked.code, 0);
+  assert.match(h.prompts.at(-1)!, /F9 \[blocking\] diagnosis\.ts:9/);
+  assert.equal(checked.json.review.rereview_of, report.upper.source);
+});

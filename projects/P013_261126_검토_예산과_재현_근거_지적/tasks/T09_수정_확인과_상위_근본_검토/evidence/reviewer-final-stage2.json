@@ -1,0 +1,25 @@
+{
+  "text": "# P013 T09 구현 2단계 대조 (SHA-256 60ccc6be…)\n\n## 검토 주체와 노출 범위\n- **검토 주체**: 1단계와 같은 세션, 같은 제공자(Anthropic)다. PROJECT.md 기준 작업자는 codex라서 다른 제공자의 검토다.\n- **독립성**: 1단계 판단은 위에 원문 그대로 있고, 이번 단계에서 작업 문서를 받은 뒤 다시 대조했다.\n- **이번에 읽은 파일**:\n  - T09 `TASK.md`\n  - `PROJECT.md`\n  - BR09 전문\n  - T02 `evidence/upper-review.md`\n  - BL261125_01 `BACKLOG.md`의 BR04 언급(Grep으로 확인)\n- **읽지 않은 것**: 작성자 마감·자체 판정·지적 대응 문서, S-7 E2E 실행 증거.\n\n## 1단계 판단과 작업 문서 대조\n- 1단계의 목표 달성 판단은 유지한다. 근거는 아래 항목별 대조다.\n\n### 이번 최신 변경\n- **한정 판정과 원래 근거 유지 (T-1, S-1)**\n  - 수정 확인 판정은 `latestDefinitive`를 바꾸지 않는다.\n  - focus 문구가 판정 범위를 지정한 지적과 수정 영향으로 좁힌다. 그 밖의 기존 지적은 note로 남긴다.\n  - 원래 F1·F2 목록이 유지되는지 시험이 단언한다.\n  - 지적당 1회·단위 2회 한도는 태스크 사전·사후가 함께 쓰는 원장으로 확인된다(T-1의 편법 증가 금지).\n- **실제 합의 영향과 문구 차이 (T-4, S-5)**\n  - 실제 계약 변경: A-1 owner 근거가 없으면 `recordFix`가 거부되고 종료 16이 된다. `previous`·`contract` 지문이 맞는 `contract_reset`이 있을 때만 해당 단계의 일반 예산을 offset으로 다시 시작한다. 다른 단계와 공동·수정 확인 누적은 보존된다(pre는 2 rounds, 누적 [2,1]).\n  - 문구만 바뀐 경우: `equivalent` 근거로 진행하며 일반 예산은 다시 열지 않는다. 시험에서 [2,2]가 유지된다.\n  - 상위 검토 전에 문구만 바뀐 경우도 이번에 `root_review`에서 받는다.\n- **진단 실패 원문 (T-3)**: 해결안 확인의 재검토 기준점이 `upper.failed`다. 1차 확인에는 진단 뒤 실패 원문이 들어간다. F9 원문이 프롬프트에 포함되는 것을 시험이 단언한다.\n- **같은 진단 계기의 상위 확인 두 번 (T-3, T-4, S-3, S-4)**\n  - `readRecovery.upperPhase`가 같은 `trigger`의 slot 1·2만 센다. 둘 다 실패하면 `agreement_required`가 되고, A-1의 `[\"합의 조정\",\"보류\"]`과 함께 종료 16이 된다.\n  - 시험이 확인하는 것:\n    - 맥락 재사용 거부\n    - 2차에서 `backlog` 누락 시 거부\n    - reviewer가 작업자일 때 거부\n    - `cross: false`에 사유가 없을 때 거부\n  - 상위 확인은 calls/rounds를 늘리지 않는다(시험에서 4/2 유지). BR09의 \"상위 검토는 상한에 세지 않는다\"와 맞다.\n- **A-3 분리 (T-4, S-6)**: 다음 시도는 거부되고, A-3 결정 전에는 `recordFix`가 차단된다.\n  - `verification`이 `weaken` 또는 `accept_blocking`인 경우\n  - `agreement`가 `uncertain`인 경우\n\n  필수 확인의 B1 복구(unknown 판정 뒤 같은 확인 재실행)는 같은 id로 이어진다.\n\n### 사용자 경계\n- **파일 수정 권한 (T05)**: diff는 문서에 \"임의 수정 보류\"를 적고, 검토와 기록 진입만 차단한다. 편집을 강제로 막지는 않아 TASK의 범위 밖 선언과 맞다.\n- **전문가 호출 자동화 (BL261125_01 BR04)**: diff는 하네스 상태·차단·기록 연결만 구현했다. 자동 호출은 없어 BR09 18행과 맞다.\n\n### 주체 변경\n- 1단계의 should_fix(BR04 링크 대상이 없음)는 이번 단계에서 note로 낮춘다.\n- **이유**: TASK, PROJECT, upper-review.md 18행, 사용자 지시가 모두 BL261125_01 BR04를 합의된 이관 대상으로 지정한다. 대상 파일이 이 worktree에 아직 없는 것은 산출물 결함이 아니라 후속 백로그의 상태로 본다.\n\n## 지적\n- **[note]** BL261125_01의 `BR04_호출_절차_연결.md`가 이 worktree에 없다. 현재 BR01~BR03만 있다. 병합 전에 main에 생겼는지 확인하고, 없으면 링크를 정리한다.\n- **[note]** upper-review.md 14행은 아직 \"BL261125_01 BR02\"라고 적혀 있어 같은 파일 18행(BR04)과 어긋난다. diff 밖의 증거라 이번 판정에는 넣지 않았다.\n- **[note]** T-4는 \"실제 합의 변경 시 A-1에 올린다\"고 한다. 현재 이 경우는 거부 메시지와 `upper.contract`·`current_contract` 불일치로만 드러난다. 보고의 `decision`은 `null`로 남는다.\n  - 상위 검토 전에 실제 합의가 바뀌면 원복 말고는 경로가 없다(1단계 note와 같은 내용).\n  - 보고에 A-1 신호를 넣으면 T-4 문구와 더 잘 맞는다.\n- **[note]** `--impact`의 기계 대조는 patch 대상에만 적용된다. TASK·BACKLOG 대상은 비어 있지 않은지만 확인한다. 나머지는 증명 범위대로 허브 대조에 맡긴다.\n- **[note]** `equivalent`와 `by: \"user\"`·`receipt`는 자기 선언 필드다. TASK 증명 범위의 판정 주체(허브가 원문과 기록의 일치를 확인)에 따른다.\n- **[note]** 범위가 시험으로 직접 단언되지 않은 부분이 있다.\n  - 2차 확인의 기준점이 1차 해결안 확인의 실패 원문인지\n  - S-1의 중복 요청 처리\n  - S-7의 실제 CLI E2E는 diff에 증거가 없어 미확인이다. 마감 증거에서 확인해야 한다.\n\nblocking은 없다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": null,
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 51508,
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 5238
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

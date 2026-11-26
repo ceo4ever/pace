@@ -97,7 +97,7 @@ function legacyStructureOnly(ledgerTarget: string, entry: ReviewEntry): boolean 
   }
 }
 
-export function readReviewBudget(scope: ReviewBudgetScope) {
+export function readReviewBudget(scope: ReviewBudgetScope, offsets: Readonly<Record<string, number>> = {}) {
   const reserved = new Set<string>();
   let unreserved = 0;
   const rounds: BudgetReview[] = [];
@@ -107,14 +107,19 @@ export function readReviewBudget(scope: ReviewBudgetScope) {
     const voided = new Map(entries.flatMap((entry) => entry.type === "void" ? [[entry.record, entry.target]] : []));
     const followupCalls = new Set(entries.flatMap((entry) =>
       entry.type === "review" && entry.followup && entry.call_id ? [entry.call_id] : []));
-    for (const entry of entries) {
+    const key = relative(scope.root, ledgerTarget).split(sep).join("/");
+    const offset = Object.hasOwn(offsets, key) ? offsets[key] ?? 0 : 0;
+    if (offset > entries.length) throw new LedgerError("계약 변경의 원장 기준점을 확인할 수 없다");
+    for (const entry of entries.slice(offset)) {
       if ((entry.type !== "call" && entry.type !== "review") ||
           recordedStage(scope, ledgerTarget, entry) !== scope.stage) continue;
       const separate = entry.type === "review" ? !!entry.followup : followupCalls.has(entry.call_id);
       if (entry.type === "review" && entry.interrupted !== true && entry.verdict !== "unknown" &&
           voided.get(entry.record) !== entry.target && !legacyStructureOnly(ledgerTarget, entry)) {
         const review = { ledgerTarget, entry };
-        if (!latestDefinitive || latestDefinitive.entry.at <= entry.at) latestDefinitive = review;
+        // 한 지적의 확인은 원래 단계 판정과 그 지적 목록을 교체하지 않는다.
+        if (entry.followup?.type !== "confirmation" &&
+            (!latestDefinitive || latestDefinitive.entry.at <= entry.at)) latestDefinitive = review;
         if (!separate) rounds.push(review);
       }
       if (separate) continue;

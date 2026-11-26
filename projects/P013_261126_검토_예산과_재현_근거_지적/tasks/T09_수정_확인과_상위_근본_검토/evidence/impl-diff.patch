@@ -1,0 +1,1406 @@
+diff --git a/.pace/brain/log.md b/.pace/brain/log.md
+index 37cc009..1c90bd9 100644
+--- a/.pace/brain/log.md
++++ b/.pace/brain/log.md
+@@ -136,3 +136,7 @@
+ ## [2026-11-26] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+ ## [2026-11-26] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
+ ## [2026-11-26] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
++## [2026-11-26] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
++## [2026-11-26] update | 프로필 = 독립 에이전트, 역할은 AI 비서 고정 (.pace/brain/pages/concept/profile-is-independent-agent.md)
++## [2026-11-26] update | pace-intent 의도 파악 기획 구조와 함정 (.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md)
++## [2026-11-26] update | 저장소 팀 설계와 갱신 흐름 (.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md)
+diff --git a/.pace/brain/pages/concept/profile-is-independent-agent.md b/.pace/brain/pages/concept/profile-is-independent-agent.md
+index ebec84e..f9fc5ea 100644
+--- a/.pace/brain/pages/concept/profile-is-independent-agent.md
++++ b/.pace/brain/pages/concept/profile-is-independent-agent.md
+@@ -6,7 +6,7 @@ tags: [profile, identity, design-history]
+ sources: [code:src/profile/profile.ts, code:templates/RULES.md, code:src/profile/onboarding.ts, url:https://hermes-agent.nousresearch.com/docs/user-guide/profiles, doc:skills/pace-project-dev/references/decision-rights.md]
+ related: [memory-two-scopes]
+ created: 2026-10-22
+-updated: 2026-11-25
++updated: 2026-11-26
+ status: active
+ ---
+ 
+diff --git a/.pace/brain/pages/concept/검토-반복-실패-하네스.md b/.pace/brain/pages/concept/검토-반복-실패-하네스.md
+index cabd0d5..5411575 100644
+--- a/.pace/brain/pages/concept/검토-반복-실패-하네스.md
++++ b/.pace/brain/pages/concept/검토-반복-실패-하네스.md
+@@ -3,7 +3,7 @@ type: concept
+ title: 검토 반복 실패 하네스
+ summary: 명시적 증명 범위와 영향 분류로 검토를 집중하고 PM/user를 기록한다; 옛 주체는 unknown이며 일반 갭은 재검증 후 보고한다
+ tags: []
+-sources: [code:src/agent/review-log.ts, code:src/agent/verify-cli.ts, code:src/agent/verify.ts, doc:skills/pace-project-dev/references/reviewer.md, doc:docs/AGENT-CALL.md, doc:projects/P007_261123_검토_반복_실패_근본_진단_하네스/tasks/T01_verify_재검토_모드와_반복_실패_단계/TASK-CLOSE.md, doc:projects/P007_261123_검토_반복_실패_근본_진단_하네스/tasks/T02_스킬_진단·결정_절차/TASK-CLOSE.md, code:src/project/pre-review.ts, doc:templates/project/TASK.md, doc:projects/P008_261123_검토_반복_실패_결정_주체_구분/PROJECT.md, doc:skills/pace-project-dev/references/decision-rights.md, code:src/agent/review-followup.ts, test:test/agent-review-followup.test.ts, code:src/agent/review-admission.ts]
++sources: [code:src/agent/review-log.ts, code:src/agent/verify-cli.ts, code:src/agent/verify.ts, doc:skills/pace-project-dev/references/reviewer.md, doc:docs/AGENT-CALL.md, doc:projects/P007_261123_검토_반복_실패_근본_진단_하네스/tasks/T01_verify_재검토_모드와_반복_실패_단계/TASK-CLOSE.md, doc:projects/P007_261123_검토_반복_실패_근본_진단_하네스/tasks/T02_스킬_진단·결정_절차/TASK-CLOSE.md, code:src/project/pre-review.ts, doc:templates/project/TASK.md, doc:projects/P008_261123_검토_반복_실패_결정_주체_구분/PROJECT.md, doc:skills/pace-project-dev/references/decision-rights.md, code:src/agent/review-followup.ts, test:test/agent-review-followup.test.ts, code:src/agent/review-admission.ts, code:src/agent/review-recovery.ts]
+ related: [작업-하네스-흐름]
+ created: 2026-11-23
+ updated: 2026-11-26
+@@ -48,4 +48,4 @@ P009 T06은 팀 마감에서 TASK와 사전 검토 기록, 시도와 예외의 
+ 
+ ## P013의 단계별 예산과 공동 검토
+ 
+-태스크 사전·사후와 백로그의 일반 예산은 단계별로 센다. T02a의 공동 시도는 단위 합산 두 회이며, 모든 유형의 마지막 유효 판정과 일치하는 허브 적용 기록을 확인한다. 검증 생략·완화와 미확인 증거·잔여 blocking 수용은 A-3 요청으로 차단한다. B1은 별도 상태 없이 같은 제공자 사용과 교차 미실행 사유를 실제 시도에 보존한다. T02b는 T03의 지적 구조화를 선행해 수정 확인과 진단 뒤 상위 검토를 맡는다.
++태스크 사전·사후와 백로그의 일반 예산은 단계별로 센다. T02a의 공동 시도는 단위 합산 두 회이며, 모든 유형의 마지막 유효 판정과 일치하는 허브 적용 기록을 확인한다. 검증 생략·완화와 미확인 증거·잔여 blocking 수용은 A-3 요청으로 차단한다. B1은 별도 상태 없이 같은 제공자 사용과 교차 미실행 사유를 실제 시도에 보존한다. T03은 단계별 질문과 유효한 지적의 구조를 판정·고아 복구·재검토에 공통으로 적용한다. T09(T02b)는 지적 ID·원래 위치와 변경 지문으로 수정 확인을 묶고, 지적별 또는 단위 합산 문턱에서 기존 진단 원장을 쓴다. 그 뒤 실패하면 같은 단위를 보류하고, 새 맥락 근본 검토와 한정 재검증을 최대 두 차례 수행해 끝낸다. 같은 기준에 필요한 수정과 재검증은 실행·보고한다. 실제 A-1 승인으로 계약이 바뀌면 해당 단계 일반 예산만 재개한다.
+diff --git a/.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md b/.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md
+index ed90c78..1c18493 100644
+--- a/.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md
++++ b/.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md
+@@ -6,7 +6,7 @@ tags: []
+ sources: [doc:skills/pace-team/SKILL.md, doc:docs/TEAM.md, doc:docs/TEAM-METRICS.md, code:src/team/store.ts]
+ related: [작업-하네스-흐름, 프로젝트-지표-해석과-세션-기록-함정]
+ created: 2026-11-25
+-updated: 2026-11-25
++updated: 2026-11-26
+ status: active
+ ---
+ 
+diff --git a/.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md b/.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md
+index c5ee271..20731d3 100644
+--- a/.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md
++++ b/.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md
+@@ -6,7 +6,7 @@ tags: [pace-intent, intent, planning, pitfalls]
+ sources: [code:src/intent/, doc:skills/pace-intent/SKILL.md, doc:skills/pace-intent/references/handoff.md, doc:skills/pace-canvas-skills/canvas-wireframe/SKILL.md, doc:skills/pace-project-dev/references/document-shape.md, doc:skills/pace-intent/references/preview.md, code:src/intent/preview.ts, doc:skills/pace-project-dev/references/decision-rights.md, doc:skills/pace-team/references/required-roles.md]
+ related: [pace-scout-기회-탐색-구조와-함정, 작업-하네스-실측-함정]
+ created: 2026-10-29
+-updated: 2026-11-25
++updated: 2026-11-26
+ status: active
+ ---
+ 
+@@ -41,7 +41,7 @@ pace-intent는 pace-scout와 같은 세 레이어다. 프로세스(`skills/pace-
+ 
+ 기획의 인계는 ⑨다. 경로 C의 목적·범위가 확정되면 저장소 쓰기를 확인받고, 허브는 백로그 기획자에게 정본 BP-09로 위임한다. 저장소에 해당 역할이 없으면 허브가 승인 범위의 초안을 작성한다. 기존 백로그 최신화는 근거·상태의 일반 정정을 맡긴 뒤 합의 영향과 미확인 근거만 결정 권한에 대조한다.
+ 
+-⑧은 승인 범위의 초안과 큰 변경을 작성자와 별개의 reviewer가 목적 중심으로 검토하는 단계다. C 경로에서 다른 제공자 호출이 불가능하면 미실행 사유와 같은 제공자의 별도 새 세션을 B1에 따른 cross: false로 기록한다. 양쪽이 모두 불가능하면 초안 수용 전에 허브가 A-3을 요청한다. 목적·전략 지적이 합의를 바꾸려면 A-1로 owner에게 올린다. 다른 대형 문서에는 기존의 미실행 기록과 사용자 확인을 적용한다. 인계 확인은 쓰기 전에 하고, 초안 검토의 두 단계에는 첫 독립 판단을 받은 뒤 작업 문서를 전달한다.
++⑧은 승인 범위의 초안과 큰 변경을 작성자와 별개의 reviewer가 목적 중심으로 검토하는 단계다. C 경로에서 다른 제공자 호출이 불가능하면 미실행 사유와 같은 제공자의 별도 새 세션을 B1에 따른 cross: false로 기록한다. 양쪽이 모두 불가능하면 허브는 초안 수용을 보류하고 독립 검토를 복구한다. 검토 생략·완화 또는 증거 공백 수용을 선택할 때 A-3을 요청한다. 목적·전략 지적이 합의를 바꾸려면 A-1로 owner에게 올린다. 다른 대형 문서에는 기존의 미실행 기록과 사용자 확인을 적용한다. 인계 확인은 쓰기 전에 하고, 초안 검토의 두 단계에는 첫 독립 판단을 받은 뒤 작업 문서를 전달한다.
+ 
+ ## Canvas와 기획 정본
+ 
+diff --git a/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BACKLOG.md b/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BACKLOG.md
+index 60b8dda..e4a63fb 100644
+--- a/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BACKLOG.md
++++ b/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BACKLOG.md
+@@ -74,7 +74,7 @@ O1~O5는 owner 결정 Q1~Q5 범위 안의 해석·설계 세부라 허브 PM이
+ | [BR06 verify 밖 검토 고정과 사전 검토 기록 생성](BR06_verify_밖_검토_고정과_사전_검토_기록_생성.md) | 대기 | BR02, BR03, BR05 | — | 코드 `src/agent/`·`pre-review.ts`. 현장 문제 3 |
+ | [BR07 검토 측정과 전후 비교](BR07_검토_측정과_전후_비교.md) | 대기 | BR01, BR02, BR04 | — | 코드 `src/project/metrics.ts` 계열. 효과 확인 |
+ | [BR08 작은 계획 경고와 검토 문서 축소](BR08_작은_계획_경고와_검토_문서_축소.md) | 대기 | BR01~BR06 | — | 문서 위주 + `pre-review.ts` 경고. BR05 문서 반영 포함 |
+-| [BR09 수정 확인과 상위 근본 검토](BR09_수정_확인과_상위_근본_검토.md) | 대기 | BR02, BR03 | P013 | T02b. 수정 확인·동일 진단 원장·상위 근본 검토 |
++| [BR09 수정 확인과 상위 근본 검토](BR09_수정_확인과_상위_근본_검토.md) | 진행 | BR02, BR03 | P013 | T02b. 수정 확인·동일 진단 원장·상위 근본 검토 |
+ 
+ ## 결정·기록
+ 
+diff --git a/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BR02_예산_소진_뒤_공동_시도와_owner_결정_요청.md b/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BR02_예산_소진_뒤_공동_시도와_owner_결정_요청.md
+index 8ff7f17..4e394ff 100644
+--- a/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BR02_예산_소진_뒤_공동_시도와_owner_결정_요청.md
++++ b/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BR02_예산_소진_뒤_공동_시도와_owner_결정_요청.md
+@@ -16,8 +16,6 @@
+ - 소진 보고는 원장 추이·진단·조치·무효 근거를 담는다. 필수 검증 생략·완화나 미확인 증거·잔여 blocking 수용의 실제 선택은 A-3으로 요청한다. 열린 요청은 단위 검토를 차단하며 PM 결정으로 통과시킬 수 없다. 같은 대상·해시의 owner 결정에 명시된 회차만 연다.
+ - 태스크와 백로그의 판정표, 실제 명령 처리, 일반 검토 호환을 독립 검증하고 전체 검사를 통과한다.
+ 
+-## T02b 범위
++## T02b 인계
+ 
+-- 직전 독립 지적 ID·원래 위치·현재 해시·재현 조건에 묶인 필요한 수정 확인을 수행하고 사후 보고한다. 지적당 1회 또는 단위 2회 문턱에서 원장 진단과 확인 진단을 하나로 기록한 뒤 확인 1회를 실행한다.
+-- 진단 뒤 독립 실패는 현재 `ask_user` 자리를 잇는 `upper_review`로 단위의 수정과 재검증을 차단한다. 새 맥락 독립 검토를 연결하고 허브가 판정한다. 이 호출은 공동 시도와 총 상한에서 제외한다. 계약을 실제 변경하면 새 계약의 검토 예산을 새로 시작한다. A-1 합의 변경 또는 A-3 실제 조치에서만 owner 결정을 요청한다.
+-- 새 맥락 독립 검토자를 사용한다. 문제 해결 전문가 자동 호출 연결은 BL261125_01 BR02가 맡는다. [사용자 결정](../../projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T02_예산_소진_뒤_공동_시도와_owner_결정_요청/evidence/owner-decision.md#t02b-문턱-뒤-상위-검토)
++일반·공동 시도 뒤의 수정 확인, 동일 원장 진단, 상위 검토의 두 차례 종료 조건과 단계 일반 예산 재시작은 [BR09](BR09_수정_확인과_상위_근본_검토.md)에서 다룬다. 전문가 자동 호출 연결은 [BL261125_01 BR04](../BL261125_01_문제_해결_전문가_에이전트/BR04_호출_절차_연결.md)를 따른다.
+diff --git a/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BR09_수정_확인과_상위_근본_검토.md b/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BR09_수정_확인과_상위_근본_검토.md
+index e55fae3..bee779d 100644
+--- a/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BR09_수정_확인과_상위_근본_검토.md
++++ b/backlogs/BL261124_04_검토_예산과_재현_근거_지적/BR09_수정_확인과_상위_근본_검토.md
+@@ -1,6 +1,6 @@
+ # BR09 수정 확인과 상위 근본 검토
+ 
+-- 상태: 대기
++- 상태: 진행
+ - 백로그: [BL261124_04](BACKLOG.md)
+ - 선행: BR02(T02a), BR03(T03)
+ 
+diff --git a/docs/AGENT-CALL.md b/docs/AGENT-CALL.md
+index 1e03f74..0e43939 100644
+--- a/docs/AGENT-CALL.md
++++ b/docs/AGENT-CALL.md
+@@ -17,6 +17,8 @@
+ 
+ 예산이 끝나면 `budget_exhausted`와 소진 보고를 반환한다. 보고에는 단계의 판정과 호출·진단·무효 근거가 남는다. 미통과 단계는 `review-note --joint --choice <적용한 조치> --summary <원인> --file <근거>`로 허브 조치를 기록한 대상·해시에서 공동 검토를 한 번 열 수 있다. 공동 시도는 태스크 두 단계 합산 또는 백로그 폴더당 최대 2회다. 호출 상한에서 유효 판정이 없으면 이 명령으로 첫 전체 판정을 복구할 수 있으며 공동 시도 1회로 센다. B1의 같은 제공자 검토는 한 시도 안의 `cross: false`와 `cross_unavailable`로 응답·기록·원장·후속 보고에 남는다.
+ 
++공동 시도 뒤 `confirm_findings`는 최신 유효 지적의 ID·원래 위치와 수정 영향을 기록하고 변경본을 한정 확인하는 단계다. 지적당 1회 또는 단위당 2회 문턱은 기존 `--diagnosis` 원장 기록을 사용한다. 진단 뒤 한정 확인이 fail이면 해당 단위의 검토를 `upper_review`로 보류한다. 독립 상위 검토와 해결안의 한정 확인은 기존 예산 밖에서 최대 두 차례 수행한다. 두 번째 확인도 fail이면 A-1의 합의 조정·보류를 반환한다. 실제 A-1 승인으로 계약이 바뀌면 해당 단계의 일반 예산만 다시 센다. 도구는 원장과 근거·해시를 대조하며 허브는 근거의 진위·독립성과 계약 영향을 확인한다. [추가 명령과 증거](../skills/pace-project-dev/references/reviewer.md#태스크와-백로그의-수정-확인과-상위-검토)
++
+ 필수 검증 생략·완화 또는 미확인 증거·잔여 blocking 수용을 제안하면 `review-note --request-waiver skip|weaken --choice <추천> --summary <사유> --file <근거>`로 A-3 요청을 만든다. 근거 JSON의 `choices`는 선택지, `assessments`는 지적별 `finding`·`decision`·`reason`이다. 요청이 열려 있는 단위의 검토는 종료 16으로 차단한다. `review-note --decision --by user --choice <결정> --summary <사유> --file <승인 원문> [--resume|--rounds <회차>]`는 승인 원문과 같은 대상·해시·선택지에 적용한다. 회차를 지정한 경우에만 한정 검토를 열며 승인 자체는 검토 판정을 만들지 않는다. 후속 기록은 단위 공유 원장 `REVIEW-FOLLOWUPS.jsonl`에 남는다.
+ 
+ ## PACE 도구 서버
+diff --git a/skills/pace-intent/SKILL.md b/skills/pace-intent/SKILL.md
+index 35991e8..8313c6c 100644
+--- a/skills/pace-intent/SKILL.md
++++ b/skills/pace-intent/SKILL.md
+@@ -128,7 +128,7 @@ If more than two proof checks fail on the first run, do not patch: tell the user
+ 
+ ⑧ **Cross-check before handoff** — for a backlog or other large document, prefer an independent reviewer from a different provider (host-native call if available, else `pace agent verify …`, read-only). Record findings with accept/reject reasons.
+ 
+-For route C, review the planner's draft after the route and its write are confirmed. The hub assigns an independent reviewer, receives the findings, and routes revisions to the planner under [BP-07 and BP-08](../pace-team/references/required-roles.md#백로그-기획자-요건). Apply [decision rights A and B1](../pace-project-dev/references/decision-rights.md#a-결정-주체). When the other provider is unavailable, record why and use a fresh, independent same-provider session labelled `cross: false`. When neither can run, the hub requests an A-3 decision before accepting the draft. The hub checks goal or strategy disagreements against the agreed outcome under A-1 and asks the owner before changing the agreement. It routes the other A decisions to the owner as well.
++For route C, review the planner's draft after the route and its write are confirmed. The hub assigns an independent reviewer, receives the findings, and routes revisions to the planner under [BP-07 and BP-08](../pace-team/references/required-roles.md#백로그-기획자-요건). Apply [decision rights A and B1](../pace-project-dev/references/decision-rights.md#a-결정-주체). When the other provider is unavailable, record why and use a fresh, independent same-provider session labelled `cross: false`. When neither can run, the hub holds the draft and restores independent review. If the next decision is to skip or weaken the review or proceed with an unresolved evidence gap, the hub requests an A-3 decision. The hub checks goal or strategy disagreements against the agreed outcome under A-1 and asks the owner before changing the agreement. It routes the other A decisions to the owner as well.
+ 
+ For other large documents, raise goal or strategy disagreements with the user. If no other-provider agent is available, record "cross-check not run" and ask the user. An authorized same-provider fresh-context review is labelled "not cross".
+ 
+diff --git a/skills/pace-project-dev/references/decision-rights.md b/skills/pace-project-dev/references/decision-rights.md
+index b6a32a8..9fc3f53 100644
+--- a/skills/pace-project-dev/references/decision-rights.md
++++ b/skills/pace-project-dev/references/decision-rights.md
+@@ -35,7 +35,8 @@ A로 결정 주체를 고른 뒤, 승인 게이트에 입력하는 쪽이 원문
+ 2. 원인 층을 가린다. 환경 문제는 허브가 조사하고, 설계 문제는 대안을 비교한다. 필요하면 다른 제공자의 두 번째 의견을 받는다. 조치를 적용하기 전에 합의와 실제 영향에 A를 적용한다. 도구·하네스 수정도 A-3의 안전 기준 완화 여부를 확인한다. A에 해당하면 owner 결정을 기다린다.
+ 3. 작은 도구·하네스 결함은 owner의 S1 위임과 AGENTS.md의 main 작업 절차에 따라 허브가 결정 후 수정하고 필요시 재설치한다. 병합 대기 중이면 main 커밋은 병합 뒤로 미루고, 격리 사본의 수정·검증 등 기존 게이트와 검증 대상을 보존할 안전한 우회를 찾는다. 허브는 결정·근거·재검증 기준을 회신한다. 막힌 조치만 보류하고 독립 작업을 이어간다. 작업자는 회신을 `(main 판단)`으로 기록하고 적용 뒤 재검증해서 태스크를 재개한다.
+ 4. **허브 회신 → 워크트리 적용 → 재검증**을 마쳐야 공동 시도 1회다. 상한은 2회다. 재검토에서 blocking이 3→1→1이었던 [실측](../../../.pace/brain/pages/concept/검토-반복-실패-하네스.md#실측)을 참고한 초기값이다. 2회 뒤에는 안전하게 되돌릴 수 있는 차선(선택 태스크 보류, 이슈로 기록 후 독립 작업 진행)을 고르고 C에 따라 사후 요약한다. 필수 태스크 보류나 기준 미달 마감이면 A-1로 요청하고 그 조치를 보류한다. 원인이 풀렸다는 도구 수정·환경 복구·결정 증거가 생기면 보류 태스크를 재개한다.
+-   - **수정 확인.** 허브가 기존 기준을 충족하기 위해 독립 재검증이 필요하다고 판단하면 직전 독립 지적, 최신 변경 해시, 재현 조건과 확인 범위를 기록한다. 확인 범위는 지적의 해소와 수정 영향이다. 같은 지적(직전 독립 지적 ID·원래 위치)당 1회 또는 태스크 사전·사후 합산과 백로그 폴더마다 2회를 사용하면 다음 확인 전에 구조적 원인·적용한 조치·재검증 범위를 기록한다. 필요한 구조 수정과 독립 재검증을 수행하고 진단과 누적 확인 횟수, 판정과 증거를 C의 사후 요약에 남긴다. 판정을 받지 못한 같은 확인의 B1 복구는 기존 1회로 센다. 같은 구조 원인이 반복되면 해당 근거로 허브가 다시 진단한다.
++   - **수정 확인.** 허브가 기존 기준을 충족하기 위해 독립 재검증이 필요하다고 판단하면 직전 독립 지적, 최신 변경 해시, 재현 조건과 확인 범위를 기록한다. 확인 범위는 지적의 해소와 수정 영향이다. 같은 지적(직전 독립 지적 ID·원래 위치)당 1회 또는 태스크 사전·사후 합산과 백로그 폴더마다 2회를 사용하면 다음 확인 전에 구조적 원인·적용한 조치·재검증 범위를 같은 원장에 기록한다. 필요한 구조 수정과 독립 재검증을 수행하고 진단과 누적 확인 횟수, 판정과 증거를 C의 사후 요약에 남긴다. 판정을 받지 못한 같은 확인의 B1 복구는 기존 1회로 센다.
++   - **상위 근본 검토.** 진단 뒤 한정 확인이 다시 실패하면 해당 단위의 보통 수정과 검토를 보류한다. 작성자·작업자와 다른 독립 검토자가 새 맥락에서 원인과 해결안을 확인한다. 허브는 적용 전에 A에 따라 영향을 판단하고, 합의 범위의 해결안을 적용해 독립 확인을 한 번 수행한 뒤 보고한다. 실패하면 계약·백로그를 대조하는 두 번째 새 맥락의 상위 검토와 독립 확인을 한 번 수행한다. 여전히 실패하면 A-1의 합의 조정·보류를 요청한다. 상위 검토와 그 해결안 확인은 일반·공동·수정 확인 예산에 더하지 않는다. 승인 원문에 맞춰 실제 계약을 바꿨으면 해당 단계의 일반 예산만 다시 시작한다. [명령과 증거](reviewer.md#태스크와-백로그의-수정-확인과-상위-검토)
+ 
+ ## C. owner에게 전할 내용
+ 
+diff --git a/skills/pace-project-dev/references/reviewer.md b/skills/pace-project-dev/references/reviewer.md
+index 6d597ec..6b9bc58 100644
+--- a/skills/pace-project-dev/references/reviewer.md
++++ b/skills/pace-project-dev/references/reviewer.md
+@@ -91,6 +91,15 @@ F2 [should_fix] … (근거: typescript/INDEX — <절>)
+ 
+ 진단 표지가 열린 동안에는 `review-note --diagnosis`로 기록한다. 그 기록 직후는 normal이다. 확정된 조치를 적용하고 `verify` 전체 검토로 넘어간다. `review-note --decision` 입력은 그 검토가 fail로 끝나 `ask_user` 단계가 열린 뒤에만 한다. 진단·normal에서 필요한 owner 응답은 원문을 진단 근거나 프로젝트 기록에 연결한다.
+ 
++### 태스크와 백로그의 수정 확인과 상위 검토
++
++- `followup.action: confirm_findings`이면 일반·공동 검토의 최신 유효 지적을 확인한다. 조치 전 [A](decision-rights.md#a-결정-주체)로 합의 영향을 대조한다. 필요한 수정을 적용한 뒤 `review-note --confirm <ID> --location <원래 위치> --impact <수정 영향> --summary <조치> --file <근거>`를 기록하고 `verify`를 실행한다. 패치에서 바뀐 파일은 영향 범위에 넣는다. 한정 확인은 원래 판정과 다른 지적을 유지한다. 확인 결과로 원래 지적을 모두 해소했으면 보고가 `confirmed_findings`를 표시한다.
++- 지적당 1회 또는 단위 합산 2회 뒤에는 `review-note --diagnosis --layer <층> --summary <원인과 조치·확인 범위> --file <근거>`로 같은 원장에 기록한다. 수정과 한정 확인을 한 번 더 수행한다. 미실행·미확인 근거는 보존하고 기존 확인에서 복구한다. 진단 뒤 한정 확인의 fail은 `escalation.stage: upper_review`를 반환하며 다음 보통 검토는 종료 16으로 보류된다. 이때 해당 단위의 임의 수정도 보류한다.
++- `followup.upper`의 trigger·slot·대상·지문을 독립 검토 원문에 연결한다. `review-note --upper-review --summary <근본 원인> --file <근거>`는 `trigger`, `slot`, `target`, `hash`, `reviewer`, `author`, `worker`, `provider`, 비밀이 없는 별도 맥락 식별자 `context`, `cross`, 검토 원문 `analysis`를 가진 JSON 근거를 받는다. B1 대체는 `cross_unavailable` 사유도 남긴다. 두 번째 상위 검토에는 실제 계약·백로그 대조의 `contract`와 `backlog`를 붙인다. 허브는 독립성과 원문을 직접 대조한다.
++- 허브는 합의 범위 안의 해결안을 적용하고 `review-note --upper-check --impact <수정 영향> --summary <조치> --file <근거>`를 기록한다. 근거 JSON은 상위 검토 ID인 `upper`, 적용 내용 `change`, 확인된 합의 `agreement: "confirmed"`, 기존 필수 확인 `verification: "required"`를 담는다. `verify`는 같은 대상과 최신 지문에 한 번의 유효 확인을 열고 기존 예산은 유지한다. 같은 진단 뒤의 첫 확인 fail이면 별도 새 맥락의 두 번째 상위 검토를 받고, 그 확인도 fail이면 `agreement_required`로 A-1 합의 조정·보류를 요청한다.
++- 합의 영향이 있거나 대조 뒤 가릴 수 없으면 A-1으로 확인한 뒤 적용한다. 실제 승인대로 계약이 바뀌면 `review-note --contract-change --summary <합의 변경> --file <근거>`에 `by: "user"`, `decision: "A-1"`, 이전 `previous`와 새 `contract` 지문, 승인 원문의 `receipt`를 연결한다. 이전 지문과 현재 지문은 `followup.upper`에서 확인한다. 기존 합의에서 문구만 명확히 했다면 상위 검토 또는 확인 근거에 `agreement: "equivalent"`, `previous`·`contract` 지문과 `comparison`을 기록한다. 허브가 대조한 뒤 한정 확인을 수행하며 일반 예산은 유지한다. 해당 단계의 일반 예산이 다시 시작되고 단위 누적과 상위 검토 근거는 남는다.
++- 필수 검증 생략·완화 또는 증거 공백·잔여 blocking을 수용하는 실제 제안은 A-3 요청에 연결한다. 기존 기준을 충족하는 필요한 확인은 실행하고 `REVIEW-ESCALATION-<단계>.json`의 근거·수치·판정으로 사후 보고한다. [결정 권한 B·C](decision-rights.md#b-허브의-장애-대응)
++
+ ### 조치 전 영향 분류
+ 
+ [결정 권한 정본 A](decision-rights.md#a-결정-주체)로 실제 조치를 대조하고, 근거가 부족하거나 조치에서 막히면 [B](decision-rights.md#b-허브의-장애-대응)로 허브와 해결한다. owner에게 요청하는 경우 확인한 증거와 남은 불확실성, 해당 A 번호를 붙인다. 원장이 센 회차와 blocking 수는 근본 조치 시점을 알려 준다.
+diff --git a/src/agent/review-budget.ts b/src/agent/review-budget.ts
+index 0ea2e11..60c0b95 100644
+--- a/src/agent/review-budget.ts
++++ b/src/agent/review-budget.ts
+@@ -97,7 +97,7 @@ function legacyStructureOnly(ledgerTarget: string, entry: ReviewEntry): boolean
+   }
+ }
+ 
+-export function readReviewBudget(scope: ReviewBudgetScope) {
++export function readReviewBudget(scope: ReviewBudgetScope, offsets: Readonly<Record<string, number>> = {}) {
+   const reserved = new Set<string>();
+   let unreserved = 0;
+   const rounds: BudgetReview[] = [];
+@@ -107,14 +107,19 @@ export function readReviewBudget(scope: ReviewBudgetScope) {
+     const voided = new Map(entries.flatMap((entry) => entry.type === "void" ? [[entry.record, entry.target]] : []));
+     const followupCalls = new Set(entries.flatMap((entry) =>
+       entry.type === "review" && entry.followup && entry.call_id ? [entry.call_id] : []));
+-    for (const entry of entries) {
++    const key = relative(scope.root, ledgerTarget).split(sep).join("/");
++    const offset = Object.hasOwn(offsets, key) ? offsets[key] ?? 0 : 0;
++    if (offset > entries.length) throw new LedgerError("계약 변경의 원장 기준점을 확인할 수 없다");
++    for (const entry of entries.slice(offset)) {
+       if ((entry.type !== "call" && entry.type !== "review") ||
+           recordedStage(scope, ledgerTarget, entry) !== scope.stage) continue;
+       const separate = entry.type === "review" ? !!entry.followup : followupCalls.has(entry.call_id);
+       if (entry.type === "review" && entry.interrupted !== true && entry.verdict !== "unknown" &&
+           voided.get(entry.record) !== entry.target && !legacyStructureOnly(ledgerTarget, entry)) {
+         const review = { ledgerTarget, entry };
+-        if (!latestDefinitive || latestDefinitive.entry.at <= entry.at) latestDefinitive = review;
++        // 한 지적의 확인은 원래 단계 판정과 그 지적 목록을 교체하지 않는다.
++        if (entry.followup?.type !== "confirmation" &&
++            (!latestDefinitive || latestDefinitive.entry.at <= entry.at)) latestDefinitive = review;
+         if (!separate) rounds.push(review);
+       }
+       if (separate) continue;
+diff --git a/src/agent/review-followup.ts b/src/agent/review-followup.ts
+index 4d64a50..93401ad 100644
+--- a/src/agent/review-followup.ts
++++ b/src/agent/review-followup.ts
+@@ -1,11 +1,14 @@
+ import { randomUUID } from "node:crypto";
+-import { appendFileSync, lstatSync, readFileSync, realpathSync } from "node:fs";
+-import { dirname, isAbsolute, join, relative, sep } from "node:path";
++import { appendFileSync, existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
++import { basename, dirname, isAbsolute, join, relative, sep } from "node:path";
++import { listBriefs, resolveBacklog } from "../project/backlog.ts";
++import { reviewHash } from "../project/pre-review.ts";
+ import { AgentError } from "./contract.ts";
+ import { decideReviewAdmission } from "./review-admission.ts";
+ import { readReviewBudget, recordedStage, type BudgetStage, type ReviewBudgetScope } from "./review-budget.ts";
+-import { LedgerError, ledgerPath, textHash, type ReviewEntry } from "./review-log.ts";
++import { LedgerError, ledgerPath, textHash, type DiagnosisEntry, type ReviewEntry } from "./review-log.ts";
+ import { assessStructuredReview, effectiveBlocking } from "./structured-review.ts";
++import { readRecovery, sameFinding, type FindingKey, type FocusedCheck, type RecoveryEvent, type RootCheck } from "./review-recovery.ts";
+ 
+ export const FOLLOWUPS_FILE = "REVIEW-FOLLOWUPS.jsonl";
+ const HASH = /^[a-f0-9]{64}$/;
+@@ -19,12 +22,22 @@ type Grant = ScopeKey & Proof & RecordHeader & { type: "joint" | "owner"; choice
+ type Waiver = ScopeKey & Proof & RecordHeader & Proposal & { type: "waiver_request"; choice: string; proposed: "skip" | "weaken" };
+ type Started = RecordHeader & { type: "started"; grant: string };
+ type Historical = ScopeKey & Proof & RecordHeader & { type: "confirmation" | "confirmation_request" | "recovery" | "withdrawal"; request?: string };
+-type Event = Grant | Waiver | Started | Historical;
++type Event = Grant | Waiver | Started | Historical | RecoveryEvent;
+ 
+ function nonempty(value: unknown): value is string {
+   return typeof value === "string" && value.trim() !== "";
+ }
+ 
++function isHash(value: unknown): value is string {
++  return typeof value === "string" && HASH.test(value);
++}
++
++function validFinding(value: unknown): value is FindingKey {
++  if (!value || typeof value !== "object") return false;
++  const { id, location } = value as Record<string, unknown>;
++  return typeof id === "string" && /^F\d+$/.test(id) && nonempty(location);
++}
++
+ function proposalValid(value: Record<string, unknown>, choice: string): boolean {
+   const { choices, assessments } = value;
+   return Array.isArray(choices) && choices.every(nonempty) && new Set(choices).size >= 2 && choices.includes(choice) &&
+@@ -47,6 +60,16 @@ function eventValid(item: unknown): item is Event {
+     nonempty(row.choice) && proposalValid(row, row.choice);
+   if (row.type === "joint") return row.rounds === 1 && nonempty(row.choice);
+   if (row.type === "owner") return Number.isSafeInteger(row.rounds) && Number(row.rounds) >= 0 && nonempty(row.choice);
++  if (row.type === "focused_check") return isHash(row.contract) && nonempty(row.source) &&
++    validFinding(row.finding) && typeof row.diagnosed === "boolean" && nonempty(row.impact);
++  if (row.type === "root_review") return isHash(row.contract) && nonempty(row.trigger) && (row.slot === 1 || row.slot === 2) &&
++    nonempty(row.reviewer) && nonempty(row.provider) && nonempty(row.context) && typeof row.cross === "boolean" &&
++    (row.cross_unavailable === undefined || nonempty(row.cross_unavailable));
++  if (row.type === "root_check") return isHash(row.contract) && nonempty(row.root_review) && nonempty(row.impact);
++  if (row.type === "contract_reset") return isHash(row.contract) && nonempty(row.trigger) && typeof row.finish === "boolean" &&
++    (row.root_review === undefined || nonempty(row.root_review)) &&
++    !!row.offsets && typeof row.offsets === "object" && !Array.isArray(row.offsets) &&
++    Object.values(row.offsets).every((offset) => Number.isSafeInteger(offset) && offset >= 0);
+   if (row.type === "withdrawal") return nonempty(row.request);
+   return row.type === "confirmation" || row.type === "confirmation_request" || row.type === "recovery";
+ }
+@@ -98,8 +121,15 @@ function readProof(scope: ReviewBudgetScope, target: string, file: string) {
+ }
+ 
+ export function readReviewState(scope: ReviewBudgetScope, hash: string) {
+-  const budget = readReviewBudget(scope);
+   const events = loadEvents(scope);
++  const recoveryEvents = events.filter((event): event is RecoveryEvent =>
++    event.type === "focused_check" || event.type === "root_review" || event.type === "root_check" || event.type === "contract_reset");
++  const reset = recoveryEvents.findLast((event) => event.type === "contract_reset" && event.stage === scope.stage);
++  const budget = readReviewBudget(scope, reset?.type === "contract_reset" ? reset.offsets : undefined);
++  const recovery = readRecovery(recoveryEvents, budget.ledgers.flatMap(({ entries }) => {
++    const voided = new Set(entries.flatMap((entry) => entry.type === "void" ? [entry.record] : []));
++    return entries.filter((entry): entry is ReviewEntry => entry.type === "review" && !voided.has(entry.record));
++  }));
+   const current: ScopeKey = { stage: scope.stage, target: relativeName(scope, join(dirname(scope.ledgerTarget), scope.name)), hash };
+   const starts = new Map<string, number>();
+   for (const event of events) {
+@@ -122,12 +152,12 @@ export function readReviewState(scope: ReviewBudgetScope, hash: string) {
+     jointAttempts, jointRecorded: !!joint && !starts.get(joint.id), ownerRounds: owner ? owner.rounds - (starts.get(owner.id) ?? 0) : null,
+   });
+   const grant = decision.kind === "owner" ? owner : decision.kind === "joint" ? joint : undefined;
+-  return { budget, current, decision, pending, grant, jointAttempts, jointDecisions };
++  return { budget, current, decision, pending, grant, jointAttempts, jointDecisions, recovery };
+ }
+ 
+ type ReviewState = ReturnType<typeof readReviewState>;
+ 
+-export function checkGrant(scope: ReviewBudgetScope, target: string, grant: Grant) {
++export function checkGrant(scope: ReviewBudgetScope, target: string, grant: Pick<Proof, "evidence" | "evidence_hash">) {
+   const proof = readProof(scope, target, join(scope.root, grant.evidence));
+   if (proof.evidence_hash !== grant.evidence_hash) reject("후속 조치 근거가 기록 이후 바뀌었다");
+ }
+@@ -138,6 +168,7 @@ export function openFollowup(scope: ReviewBudgetScope, target: string, hash: str
+   const { evidence, evidence_hash, text } = readProof(scope, target, selection.file);
+   const facts = { ...state.current, evidence, evidence_hash, summary: selection.summary, at: at.toISOString(), id: randomUUID() };
+   const choice = selection.choice ?? "";
++  if (state.recovery.upper && selection.type === "joint") reject("이 단위의 상위 검토 또는 합의 결정이 열려 있다");
+   if (selection.type !== "owner" && state.pending) reject("승인 요청이 열려 있다");
+   let entry: Grant | Waiver;
+   switch (selection.type) {
+@@ -175,19 +206,265 @@ export function recordFollowupExecution(scope: ReviewBudgetScope, grant: string,
+   append(scope, { type: "started", grant, id, at: at.toISOString() });
+ }
+ 
+-function rawBlocking(ledger: string, row: ReviewEntry): string[] | null {
+-  if (row.verdict !== "fail" || row.interrupted) return null;
++function recordText(ledger: string, row: ReviewEntry): string | null {
++  try {
++    const record = JSON.parse(readFileSync(join(dirname(ledger), row.record), "utf8"));
++    const text = record.result?.text;
++    return record.review?.hash === row.hash && typeof text === "string" && textHash(text) === row.result_hash ? text : null;
++  } catch {
++    return null;
++  }
++}
++
++function proofObject(text: string): Record<string, unknown> {
++  try {
++    const parsed = JSON.parse(text);
++    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
++  } catch { /* 명령의 공통 오류를 쓴다. */ }
++  return reject("후속 근거에 필요한 JSON 필드를 확인할 수 없다");
++}
++
++function equivalentAgreement(data: Record<string, unknown>, previous: string, current: string): boolean {
++  return data.agreement === "equivalent" && data.previous === previous && data.contract === current && nonempty(data.comparison);
++}
++
++function agreementSections(text: string): string[] {
++  return text.replace(/\r\n/g, "\n").split(/(?=^## )/m)
++    .filter((section) => /^## (?:목적|목표|기준|합격 기준|완료 기준|범위|증명 범위)[ \t]*$/m.test(section))
++    .map((section) => section.trim());
++}
++
++function contractHash(scope: ReviewBudgetScope): string {
++  const task = scope.unit === "task";
++  const file = join(scope.root, task ? "TASK.md" : "BACKLOG.md");
+   try {
+-    const result: { result?: { text?: unknown }; review?: { hash?: unknown } } =
+-      JSON.parse(readFileSync(join(dirname(ledger), row.record), "utf8"));
+-    const text = result.result?.text;
+-    if (result.review?.hash === row.hash && typeof text === "string" && textHash(text) === row.result_hash) {
+-      if (row.structured_stage) return effectiveBlocking(assessStructuredReview(row.structured_stage, text));
+-      const findings = text.split("\n").filter((line) => /\[blocking\]/i.test(line)).map((line) => line.trim());
+-      return findings.length ? findings : null;
++    if (!lstatSync(file).isFile()) throw new Error();
++    const text = readFileSync(file, "utf8");
++    const clauses = agreementSections(text);
++    const related: string[][] = [];
++    if (task) {
++      const project = dirname(dirname(scope.root));
++      const projectFile = join(project, "PROJECT.md");
++      if (existsSync(projectFile)) {
++        const projectText = readFileSync(projectFile, "utf8");
++        related.push(agreementSections(projectText));
++        const source = /^- 출처:.*?\b(BL\d{6}_\d{2})(?:_|\b)/m.exec(projectText)?.[1];
++        const number = /^T(\d+)/.exec(basename(scope.root))?.[1];
++        if (source && number) {
++          const repo = dirname(dirname(project));
++          const backlog = resolveBacklog(repo, source);
++          related.push(agreementSections(readFileSync(join(backlog, "BACKLOG.md"), "utf8")));
++          const brief = listBriefs(repo, backlog).find((entry) => entry.id === number);
++          if (brief) related.push(agreementSections(readFileSync(brief.path, "utf8")));
++        }
++      }
++    } else if (/^BR\d{2}_.+\.md$/.test(scope.name)) {
++      const artifact = join(dirname(scope.ledgerTarget), scope.name);
++      related.push(agreementSections(readFileSync(artifact, "utf8")));
+     }
+-  } catch { /* 구 원장에는 판정 본문이 없을 수 있다. */ }
+-  return null;
++    return related.some((sections) => sections.length) || clauses.length
++      ? textHash(JSON.stringify([clauses.length ? clauses : [reviewHash(text)], ...related])) : reviewHash(text);
++  } catch {
++    return reject("TASK·PROJECT·백로그의 합의 근거를 확인할 수 없다");
++  }
++}
++
++function checkImpact(target: string, impact: string): void {
++  const artifact = readFileSync(target, "utf8");
++  // patch 대상일 때 기계로 관측되는 파일을 확인 범위에 모두 명시한다.
++  if (!/^diff --git /m.test(artifact)) return;
++  const files = new Set([...artifact.matchAll(/^(?:--- a\/|\+\+\+ b\/)([^\t\r\n]+?)[ \t]*\r?$/gm)].map((match) => match[1]));
++  for (const file of files) {
++    if (!file) continue;
++    const path = file.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
++    if (!new RegExp(`(^|[^\\p{L}\\p{N}._/-])${path}(?=$|[^a-zA-Z0-9._/-])`, "u").test(impact)) {
++      reject(`수정 영향이 빠졌다: ${file}. 확인 범위를 보완한다`);
++    }
++  }
++}
++
++function confirmationSource(scope: ReviewBudgetScope, state: ReviewState) {
++  const base = state.budget.latestDefinitive;
++  if (!base || base.ledgerTarget !== scope.ledgerTarget || base.entry.target !== scope.name ||
++      base.entry.verdict !== "fail" || base.entry.structured_stage !== scope.stage) return undefined;
++  const source = relativeName(scope, join(dirname(base.ledgerTarget), base.entry.record));
++  const resolved = state.recovery.completed.filter((attempt) => attempt.grant.source === source && attempt.result.verdict === "pass");
++  const text = recordText(base.ledgerTarget, base.entry);
++  const known = text === null ? [] : assessStructuredReview(scope.stage, text).findings?.flatMap((finding) =>
++    finding.effective === "blocking" && finding.location ? [{ id: finding.id, location: finding.location }] : []) ?? [];
++  if (!known.length) return undefined;
++  const findings = known.filter((finding) => !resolved.some(({ grant }) => grant.diagnosed || sameFinding(grant.finding, finding)));
++  const diagnoses = state.budget.ledgers.find(({ target }) => target === scope.ledgerTarget)?.entries;
++  const diagnosis = diagnoses?.findLast((row): row is DiagnosisEntry =>
++    row.type === "diagnosis" && row.target === scope.name && row.confirmation?.source === source);
++  return { ...base, source, findings, diagnosis };
++}
++
++function canConfirm(state: ReviewState): boolean {
++  return state.decision.kind === "exhausted" && state.jointAttempts >= 2 && !state.pending && !state.recovery.upper;
++}
++
++export function confirmationDiagnosis(scope: ReviewBudgetScope, target: string, hash: string, file: string | undefined, legacyAllowed: boolean) {
++  const state = readReviewState(scope, hash);
++  const origin = confirmationSource(scope, state);
++  if (!canConfirm(state) || !origin?.findings.length || origin.diagnosis ||
++      (state.recovery.ordinary.length < 2 &&
++        !origin.findings.some((finding) => state.recovery.ordinary.some(({ grant }) => sameFinding(finding, grant.finding))))) {
++    if (legacyAllowed && !canConfirm(state)) return undefined;
++    return reject("수정 확인 문턱에 도달한 최신 독립 지적에 한해 진단을 기록한다");
++  }
++  const proof = readProof(scope, target, file ?? "");
++  return { source: origin.source, evidence_hash: proof.evidence_hash };
++}
++
++type RecoverySelection =
++  | { type: "focused_check"; finding: FindingKey; impact: string; file: string; summary: string }
++  | { type: "root_review"; file: string; summary: string }
++  | { type: "contract_reset"; file: string; summary: string }
++  | { type: "root_check"; impact: string; file: string; summary: string };
++
++export function openRecovery(scope: ReviewBudgetScope, target: string, hash: string, at: Date, selection: RecoverySelection) {
++  const state = readReviewState(scope, hash);
++  const { text, ...proof } = readProof(scope, target, selection.file);
++  const facts = { ...state.current, ...proof, id: randomUUID(), at: at.toISOString(), summary: selection.summary };
++  const contract = contractHash(scope);
++  const upper = state.recovery.upper;
++  if (state.pending) reject("실제 A-3 제안의 owner 결정이 열려 있다");
++  let event: RecoveryEvent;
++  if (selection.type === "focused_check") {
++    const origin = confirmationSource(scope, state);
++    if (!canConfirm(state) || !origin || !origin.findings.some((finding) => sameFinding(finding, selection.finding)) ||
++        origin.entry.hash === hash) return reject("일반·공동 예산과 최신 지적 ID·원래 위치 및 수정 지문을 대조한다");
++    checkImpact(target, selection.impact);
++    const previous = state.recovery.ordinary.some(({ grant }) => sameFinding(grant.finding, selection.finding));
++    const needsDiagnosis = previous || state.recovery.ordinary.length >= 2;
++    if (needsDiagnosis && !origin.diagnosis) reject("수정 확인 한도에 도달했다. 같은 원장에 구조 진단을 먼저 기록한다");
++    if (origin.diagnosis) {
++      if (state.recovery.diagnosed.some(({ grant }) => grant.source === origin.source)) {
++        reject("이미 이 진단의 한정 확인을 기록했다");
++      }
++      if (!origin.diagnosis.file || !origin.diagnosis.confirmation ||
++          readProof(scope, target, origin.diagnosis.file).evidence_hash !== origin.diagnosis.confirmation.evidence_hash) {
++        reject("진단 근거가 기록과 맞지 않는다");
++      }
++    }
++    event = { ...facts, type: selection.type, source: origin.source, finding: selection.finding,
++      diagnosed: !!origin.diagnosis, impact: selection.impact, contract };
++    const same = state.recovery.confirmations.findLast((prior) => sameTarget(prior, event) &&
++      prior.source === origin.source && sameFinding(prior.finding, selection.finding) &&
++      prior.evidence_hash === proof.evidence_hash && prior.contract === contract && prior.impact === selection.impact &&
++      prior.diagnosed === !!origin.diagnosis);
++    if (same) return same;
++  } else {
++    if (!upper || upper.trigger.grant.stage !== scope.stage || upper.trigger.grant.target !== state.current.target) {
++      return reject("차단된 검토 단위의 원래 대상에 상위 근거를 연결한다");
++    }
++    const original = expectedContract(state, upper);
++    if (selection.type === "contract_reset") {
++      if (upper.action === "upper_review") reject("계약 변경의 근거가 되는 상위 검토 원문을 먼저 기록한다");
++      const decision = proofObject(text);
++      if (decision.by !== "user" || decision.decision !== "A-1" || decision.previous !== original ||
++          decision.contract !== contract || original === contract || !nonempty(decision.receipt)) {
++        reject("계약의 실제 변경과 이전·현재 계약 지문에 맞는 A-1 owner 원문이 필요하다");
++      }
++      event = { ...facts, type: selection.type, trigger: upper.trigger.grant.id, contract,
++        finish: upper.action === "agreement_required",
++        ...(upper.action === "upper_recheck" ? { root_review: upper.review.id } : {}),
++        offsets: Object.fromEntries(state.budget.ledgers.map(({ target: ledger, entries }) => [relativeName(scope, ledger), entries.length])) };
++    } else {
++      if (selection.type === "root_review") {
++        if (upper.action !== "upper_review" || hash !== upper.failed.hash) {
++          return reject("실패 기준점의 현재 대상에서 상위 검토를 기록한다");
++        }
++        const data = proofObject(text);
++        if (contract !== original && !equivalentAgreement(data, original, contract)) {
++          reject("상위 검토를 열기 전에 변경된 합의 근거를 실패 당시 상태와 대조한다");
++        }
++        const { reviewer, author, worker, provider, context, cross } = data;
++        if (data.trigger !== upper.trigger.grant.id || data.slot !== upper.slot ||
++            data.target !== state.current.target || data.hash !== hash ||
++            !nonempty(reviewer) || !nonempty(author) || !nonempty(worker) ||
++            [author, worker].includes(reviewer) || !nonempty(provider) || !nonempty(context) ||
++            state.recovery.rootReviews.some((prior) => prior.context === context) ||
++            typeof cross !== "boolean" || (!cross && !nonempty(data.cross_unavailable)) ||
++            !nonempty(data.analysis) || (upper.slot === 2 && (!nonempty(data.contract) || !nonempty(data.backlog)))) {
++          return reject("독립 reviewer·별도 맥락·제공자와 근본 검토 원문을 대조한다");
++        }
++        event = { ...facts, type: selection.type, trigger: upper.trigger.grant.id, slot: upper.slot,
++          reviewer, provider, context, cross, contract,
++          ...(!cross && nonempty(data.cross_unavailable) ? { cross_unavailable: data.cross_unavailable } : {}) };
++      } else {
++        if (upper.action !== "upper_recheck") return reject("독립 상위 검토 원문을 먼저 기록한다");
++        checkImpact(target, selection.impact);
++        checkGrant(scope, target, upper.review);
++        if (hash === upper.review.hash) reject("상위 해결안을 적용한 최신 변경 지문이 필요하다");
++        const data = proofObject(text);
++        if (data.agreement === "uncertain" || data.agreement === "changed") reject("A-1: 합의에 미치는 영향을 확인한 owner 결정이 필요하다");
++        const agreementConfirmed = data.agreement === "confirmed" && contract === original;
++        if (!agreementConfirmed && !equivalentAgreement(data, original, contract)) {
++          reject("계약 문구의 전후 지문과 합의 영향 대조를 기록한다. 실제 합의가 바뀌면 A-1 결정이 필요하다");
++        }
++        if (data.verification !== "required" || data.upper !== upper.review.id || !nonempty(data.change)) {
++          reject("필수 검증을 축소하거나 미확인 증거·잔여 blocking을 수용하려면 A-3 요청을 기록한다");
++        }
++        event = { ...facts, type: "root_check", root_review: upper.review.id, impact: selection.impact, contract };
++      }
++    }
++  }
++  if (!eventValid(event)) return reject("후속 조치의 필수 필드가 비거나 잘못됐다");
++  append(scope, event);
++  return event;
++}
++
++function expectedContract(state: ReviewState, upper: NonNullable<ReviewState["recovery"]["upper"]>): string {
++  const approval = upper.action === "upper_recheck" ? state.recovery.resets.findLast((reset) =>
++    reset.trigger === upper.trigger.grant.id && reset.root_review === upper.review.id) : undefined;
++  return approval?.contract ?? (upper.action === "upper_recheck" ? upper.review.contract : upper.contract);
++}
++
++export function recoveryGrant(scope: ReviewBudgetScope, state: ReviewState): FocusedCheck | RootCheck | undefined {
++  if (state.pending) return undefined;
++  const upper = state.recovery.upper;
++  if (upper) {
++    const grant = upper.action === "upper_recheck" ? upper.grant : undefined;
++    return grant && sameTarget(grant, state.current) ? grant : undefined;
++  }
++  if (!canConfirm(state)) return undefined;
++  const origin = confirmationSource(scope, state);
++  return state.recovery.confirmations.findLast((grant) => sameTarget(grant, state.current) &&
++    grant.source === origin?.source && !state.recovery.completed.some((entry) => entry.grant.id === grant.id));
++}
++
++export function checkRecoveryProof(scope: ReviewBudgetScope, target: string, grant: FocusedCheck | RootCheck, state: ReviewState, out?: string): void {
++  if (grant.contract !== contractHash(scope)) reject("적용 당시의 계약 지문과 달라졌다. 합의 영향을 대조하고 확인 근거를 갱신한다");
++  checkGrant(scope, target, grant);
++  const protectedFiles = [join(scope.root, grant.evidence)];
++  if (grant.type === "root_check") {
++    const upper = state.recovery.upper;
++    if (upper?.action !== "upper_recheck" || upper.review.id !== grant.root_review) reject("상위 근거와 확인의 연결이 달라졌다");
++    checkGrant(scope, target, upper.review);
++    protectedFiles.push(join(scope.root, upper.review.evidence));
++  } else if (grant.diagnosed) {
++    const diagnosis = confirmationSource(scope, state)?.diagnosis;
++    if (!diagnosis?.file || !diagnosis.confirmation ||
++        readProof(scope, target, diagnosis.file).evidence_hash !== diagnosis.confirmation.evidence_hash) {
++      reject("수정 확인의 진단 근거가 기록과 맞지 않는다");
++    }
++    protectedFiles.push(diagnosis.file);
++  }
++  if (out) {
++    const output = join(realpathSync(dirname(out)), basename(out)).toLowerCase();
++    if (protectedFiles.some((file) => file.toLowerCase() === output)) reject("--out이 이번 독립 검토나 수정의 근거를 가리킨다");
++  }
++}
++
++function rawBlocking(ledger: string, row: ReviewEntry): string[] | null {
++  if (row.verdict !== "fail" || row.interrupted) return null;
++  const text = recordText(ledger, row);
++  if (text === null) return null;
++  if (row.structured_stage) return effectiveBlocking(assessStructuredReview(row.structured_stage, text));
++  const findings = text.split("\n").filter((line) => /\[blocking\]/i.test(line)).map((line) => line.trim());
++  return findings.length ? findings : null;
+ }
+ 
+ function reviewHistory(scope: ReviewBudgetScope, state: ReviewState) {
+@@ -215,15 +492,40 @@ export function followupReport(scope: ReviewBudgetScope, state: ReviewState) {
+     !row.invalidated && !row.interrupted && row.verdict !== "unknown");
+   const noVerdict = history.filter((row) => row.interrupted || row.invalidated).length;
+   const rounds = state.budget.status.rounds;
++  const upper = state.recovery.upper;
++  const source = canConfirm(state) && confirmationSource(scope, state);
++  const diagnosisRequired = source && source.findings.length && !source.diagnosis && (state.recovery.ordinary.length >= 2 ||
++    source.findings.every((finding) => state.recovery.ordinary.some(({ grant }) => sameFinding(finding, grant.finding))));
++  const action = request ? "owner_decision_required" : upper?.action ??
++    (source ? !source.findings.length ? "confirmed_findings" : diagnosisRequired ? "diagnose" : "confirm_findings" : "classify_followup");
+   return {
+     ...state.current,
+-    action: request ? "owner_decision_required" : "classify_followup",
+-    decision: request ? "A-3" : null,
++    action,
++    decision: request ? "A-3" : upper?.action === "agreement_required" ? "A-1" : null,
+     recommendation: request?.choice ?? null,
+-    choices: request?.choices ?? [],
++    choices: request?.choices ?? (upper?.action === "agreement_required" ? ["합의 조정", "보류"] : []),
+     ...(request ? { request } : {}),
+     joint_attempts: state.jointAttempts,
+     joint_decisions: state.jointDecisions,
++    confirmation_count: state.recovery.ordinary.length,
++    diagnostic_confirmation_count: state.recovery.diagnosed.length,
++    confirmations: state.recovery.completed.map(({ grant, result }) => ({
++      id: grant.id, finding: grant.finding, source: grant.source, target: grant.target, hash: result.hash,
++      verdict: result.verdict, record: result.record, diagnosed: grant.diagnosed, cross: result.cross,
++      ...(result.cross_unavailable ? { cross_unavailable: result.cross_unavailable } : {}),
++    })),
++    ...(source ? { confirmation_source: source.source, confirmation_findings: source.findings } : {}),
++    upper_reviews: state.recovery.rootReviews.map(({ id, slot, evidence, provider, cross, cross_unavailable }) =>
++      ({ id, slot, evidence, provider, cross, ...(cross_unavailable ? { cross_unavailable } : {}) })),
++    upper_results: state.recovery.upperResults.map(({ grant, result }) => ({
++      root_review: grant.root_review, target: grant.target, hash: result.hash, record: result.record, verdict: result.verdict,
++      cross: result.cross, ...(result.cross_unavailable ? { cross_unavailable: result.cross_unavailable } : {}),
++    })),
++    ...(upper ? { upper: { trigger: upper.trigger.grant.id, stage: upper.trigger.grant.stage,
++      target: upper.trigger.grant.target, source: upper.failed.record, hash: upper.failed.hash,
++      contract: expectedContract(state, upper),
++      ...(state.current.target === upper.trigger.grant.target ? { current_contract: contractHash(scope) } : {}),
++      ...(upper.action !== "agreement_required" ? { slot: upper.slot } : {}) } } : {}),
+     verdict_summary: !state.budget.latestDefinitive ? `유효 판정 없음(중단·무효 ${noVerdict}회)`
+       : `일반 유효 판정 ${rounds}회, 최신 유효 판정 ${state.budget.latestDefinitive.entry.verdict}`,
+     review_history: history,
+diff --git a/src/agent/review-log.ts b/src/agent/review-log.ts
+index 9b58a77..98ded8d 100644
+--- a/src/agent/review-log.ts
++++ b/src/agent/review-log.ts
+@@ -39,7 +39,7 @@ export interface ReviewEntry {
+   call_id?: string;
+   duration_ms?: number;
+   usage?: AgentResult["usage"];
+-  followup?: { type: "joint" | "confirmation" | "owner" | "recovery"; id: string };
++  followup?: { type: "joint" | "confirmation" | "owner" | "recovery" | "upper"; id: string };
+   cross_unavailable?: string[];
+   cross?: boolean;
+   structured_stage?: BudgetStage;
+@@ -53,7 +53,15 @@ export interface ReviewCallEntry {
+   kind: string;
+   call_id: string;
+ }
+-export interface DiagnosisEntry { type: "diagnosis"; at: string; target: string; layer: Layer; summary: string; file?: string }
++export interface DiagnosisEntry {
++  type: "diagnosis";
++  at: string;
++  target: string;
++  layer: Layer;
++  summary: string;
++  file?: string;
++  confirmation?: { source: string; evidence_hash: string };
++}
+ export type DecisionBy = 'pm' | 'user';
+ export interface DecisionEntry { type: "decision"; at: string; target: string; choice: string; summary: string; file: string; /** 옛 항목의 생략은 unknown이며 user로 추정하지 않는다. */ by?: DecisionBy }
+ /** 검토 도구 결함(프롬프트·옵션·열람 불가 등)으로 무효인 검토 — 횟수·기준점에서 뺀다. 대상은 그대로여도 다시 검토할 수 있게 한다 */
+@@ -100,7 +108,13 @@ function validEntry(v: Record<string, unknown>): boolean {
+     && (v.cross === undefined || typeof v.cross === "boolean")
+     && (v.structured_stage === undefined || v.structured_stage === "pre" || v.structured_stage === "post" || v.structured_stage === "backlog")
+     && (v.cross_unavailable === undefined || validCrossUnavailable(v.cross_unavailable));
+-  if (v.type === "diagnosis") return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" && (v.file === undefined || isStr(v.file));
++  if (v.type === "diagnosis") {
++    const key = v.confirmation as Record<string, unknown> | undefined;
++    return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" &&
++      (v.file === undefined || isStr(v.file)) &&
++      (key === undefined || (key && isStr(v.file) && isStr(key.source) && key.source !== "" &&
++        isStr(key.evidence_hash) && HEX64.test(key.evidence_hash)));
++  }
+   if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "" && (v.by === undefined || v.by === 'pm' || v.by === 'user');
+   if (v.type === "void") return isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.summary) && v.summary.trim() !== "" && isStr(v.file) && v.file !== "";
+   return false;
+@@ -109,7 +123,7 @@ function validEntry(v: Record<string, unknown>): boolean {
+ export function validFollowup(value: unknown): value is NonNullable<ReviewEntry["followup"]> {
+   if (!value || typeof value !== "object") return false;
+   const item = value as Record<string, unknown>;
+-  return ["joint", "confirmation", "owner", "recovery"].includes(String(item.type)) && isStr(item.id) && item.id !== "";
++  return ["joint", "confirmation", "owner", "recovery", "upper"].includes(String(item.type)) && isStr(item.id) && item.id !== "";
+ }
+ 
+ export function ledgerPath(target: string): string { return join(dirname(target), LEDGER_FILE); }
+diff --git a/src/agent/verify-cli.ts b/src/agent/verify-cli.ts
+index 342a285..b0aca14 100644
+--- a/src/agent/verify-cli.ts
++++ b/src/agent/verify-cli.ts
+@@ -8,8 +8,8 @@ import {
+   acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, RECOVERY_LOCK_FILE, reviewStage,
+   lineDiff, reviewUsage, targetName, textHash, validCrossUnavailable, validFollowup, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
+ } from "./review-log.ts";
+-import { readReviewBudget, recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
+-import { checkGrant, followupReport, FOLLOWUPS_FILE, openFollowup, readReviewState, recordFollowupExecution } from "./review-followup.ts";
++import { recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
++import { checkGrant, checkRecoveryProof, confirmationDiagnosis, followupReport, FOLLOWUPS_FILE, openFollowup, openRecovery, readReviewState, recordFollowupExecution, recoveryGrant } from "./review-followup.ts";
+ import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
+ import { assessStructuredReview, effectiveBlocking, hasStructuredReviewFence, isStructuredStage } from "./structured-review.ts";
+ 
+@@ -22,7 +22,7 @@ export interface VerifyCliDeps {
+ }
+ 
+ export const VERIFY_USAGE = "pace agent verify --author-agent claude|codex --target <산출물 파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록 파일>]";
+-export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis | --decision --by pm|user [--resume] [--rounds <회차>] | --void --record <검토 기록> | --joint | --request-waiver skip|weaken) --summary "<근거 요약>" [--choice "<조치 또는 추천>"] [--file <근거>]';
++export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis | --decision --by pm|user [--resume] [--rounds <회차>] | --void --record <검토 기록> | --joint | --request-waiver skip|weaken | --confirm <지적 ID> --location <원래 위치> --impact <수정 영향> | --upper-review | --upper-check --impact <수정 영향> | --contract-change) --summary "<근거 요약>" [--choice "<조치 또는 추천>"] [--file <근거>]';
+ 
+ const ESCALATION_EXIT = errorCodes.review_escalation;
+ 
+@@ -205,17 +205,20 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     const entries = readLedger(ledgerTarget);
+     const state = scope && readReviewState(scope, hash);
+     const grant = state?.grant;
+-    if (scope && state && (state.decision.kind === "exhausted" || state.decision.kind === "owner_pending")) {
++    const recovery = scope && state ? recoveryGrant(scope, state) : undefined;
++    if (scope && state && !recovery && (state.recovery.upper || state.decision.kind === "exhausted" || state.decision.kind === "owner_pending")) {
+       const followup = exhaustedFollowup(scope, state);
+-      const reason = state.pending ? "owner_decision_required" : "budget_exhausted";
++      const reason = state.pending ? "owner_decision_required" : state.recovery.upper?.action ?? "budget_exhausted";
+       const response = JSON.stringify({ ran: false, reason, budget: state.budget.status, followup,
++        ...(state.recovery.upper ? { escalation: { stage: state.recovery.upper.action, next: followup.action } } : {}),
+         ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n";
+       if (out !== undefined) writeOrLedgerError(out, response, "--out 사본");
+       deps.write(response);
+       return ESCALATION_EXIT;
+     }
+-    const budget = scope && state?.decision.kind === "ordinary" ? reserveReviewCall(scope, now(), state.budget) : undefined;
++    const budget = scope && !recovery && state?.decision.kind === "ordinary" ? reserveReviewCall(scope, now(), state.budget) : undefined;
+     if (scope && grant) checkGrant(scope, target, grant);
++    if (scope && state && recovery) checkRecoveryProof(scope, target, recovery, state, out);
+     // 기계로 확인되는 구조 누락은 호출에만 남긴다. 첫 독립 판정은 목적·안전을 평가할 수 있어야 한다.
+     if (scope?.stage === "pre") {
+       const issues = proofScopeIssues(artifact);
+@@ -226,16 +229,26 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+       deps.write(JSON.stringify({ ran: false, reason: "검토 반복 실패 단계", escalation: escalation(before, target), ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n");
+       return ESCALATION_EXIT;
+     }
+-    const base = grant?.type === "owner" || state?.decision.firstReview ? undefined
++    const upper = state?.recovery.upper;
++    const base = recovery?.type === "root_check" && upper?.action === "upper_recheck" ? { ledgerTarget, entry: upper.failed }
++      : recovery ? state?.budget.latestDefinitive : grant?.type === "owner" || state?.decision.firstReview ? undefined
+       : grant?.type === "joint" ? state?.budget.latestDefinitive
+       : budget?.latest ?? (!scope && before.base ? { ledgerTarget, entry: before.base } : undefined);
+     const rereview = base && loadRereview(base.ledgerTarget, base.entry, target, hash, artifact, kind, scope);
++    if (recovery && !rereview) throw new AgentError("invalid_request", "한정 확인의 실패 기준점 원문을 확인할 수 없다");
+     const previousRecord = rereview && base
+       ? relative(dirname(ledgerTarget), join(dirname(base.ledgerTarget), base.entry.record)).split(sep).join("/")
+       : null;
+     const call: Pick<ReviewEntry, "call_id" | "followup"> = budget?.callId ? { call_id: budget.callId } : {};
+-    if (grant) call.followup = { type: grant.type, id: randomUUID() };
+-    const followup = grant && call.followup ? { ...call.followup, target: grant.target, hash, evidence: grant.evidence } : undefined;
++    if (recovery) call.followup = { type: recovery.type === "focused_check" ? "confirmation" : "upper", id: recovery.id };
++    else if (grant) call.followup = { type: grant.type, id: randomUUID() };
++    const proof = recovery ?? grant;
++    const followup = proof && call.followup ? { ...call.followup, target: proof.target, hash, evidence: proof.evidence } : undefined;
++    const focus = recovery?.type === "focused_check"
++      ? `수정 확인의 지적은 ${recovery.finding.id}의 원래 위치 ${recovery.finding.location}이다. 해소 여부와 수정 영향(${recovery.impact})을 함께 판정한다.${
++        recovery.diagnosed ? " 진단 뒤 한정 확인이므로 직전 원문의 다른 잔여 blocking도 해소됐는지 확인한다."
++          : " 지정한 지적과 적용한 수정의 영향만 판정한다. 수정 영향 밖의 다른 기존 지적은 note로 남긴다."}`
++      : recovery ? `상위 근본 검토 해결안의 한정 재검증이다. 수정 영향(${recovery.impact})과 합의한 기준을 함께 대조한다.` : undefined;
+ 
+     // 실행 전에 이번 기록 자리를 먼저 만든다 — 실행 뒤 기록·원장 확정이 끊기면 원장에 없는 기록으로 남아 다음 검토를 막는다
+     const recordName = nextRecordName(ledgerTarget);
+@@ -245,7 +258,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     let outcome: Awaited<ReturnType<typeof crossVerify>>;
+     try {
+       outcome = await crossVerify({
+-        kind, rereview, reviewStage: scope?.stage,
++        kind, rereview, reviewStage: scope?.stage, focus,
+         authorAgent: author, authorProvider: values["author-provider"] as "anthropic" | "openai" | undefined,
+         purpose, artifact, artifactName: target,
+         cwd: values.cwd ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout),
+@@ -261,14 +274,23 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+         ...outcome,
+         ...(followup ? { followup: { ...followup, verdict: "unavailable" } } : {}),
+         ...(recovered.length ? { recovered } : {}),
+-        ...(scope ? { budget: readReviewBudget(scope).status } : {}),
++        ...(scope ? { budget: readReviewState(scope, hash).budget.status } : {}),
+       }, null, 2) + "\n";
+       if (out !== undefined) writeOrLedgerError(out, text, "--out 사본");
+       deps.write(text);
+       return 10;
+     }
+ 
+-    if (scope && grant && call.followup) recordFollowupExecution(scope, grant.id, call.followup.id, now());
++    if (scope && recovery) {
++      try {
++        if (reviewHash(readFileSync(target, "utf8")) !== hash) throw new AgentError("invalid_request", "수정 확인 중 대상이 바뀌었다");
++        checkRecoveryProof(scope, target, recovery, readReviewState(scope, hash));
++      } catch (error) {
++        clearPending(recordFile);
++        throw error;
++      }
++    }
++    if (scope && grant && !recovery && call.followup) recordFollowupExecution(scope, grant.id, call.followup.id, now());
+     const assessment = scope ? assessStructuredReview(scope.stage, outcome.result.text) : undefined;
+     const verdict = assessment?.verdict ?? parseVerdict(outcome.result.text);
+     const format = scope ? { structured_stage: scope.stage } : {};
+@@ -297,8 +319,17 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     else if (assessment?.differs) output.warning = "원문 마지막 판정과 도구 판정이 다르다. 지적별 근거와 적용 등급을 확인한다.";
+     if (followup) output.followup = { action: "report_review", ...followup, verdict, record: recordName, cross: outcome.cross,
+       ...(outcome.cross_unavailable ? { cross_unavailable: outcome.cross_unavailable } : {}) };
+-    if (scope) output.budget = readReviewBudget(scope).status;
+-    else if (after.stage !== "normal") output.escalation = escalation(after, target);
++    if (scope) {
++      const current = readReviewState(scope, hash);
++      output.budget = current.budget.status;
++      if (recovery) {
++        const report = exhaustedFollowup(scope, current);
++        output.followup = { ...output.followup as object, report: report.report, next: report.action };
++        if (current.recovery.upper?.action === "upper_review" || current.recovery.upper?.action === "agreement_required") {
++          output.escalation = { stage: current.recovery.upper.action, next: report.action };
++        }
++      }
++    } else if (after.stage !== "normal") output.escalation = escalation(after, target);
+     // 원장과 수정 확인 보고가 끝난 뒤 보조 사본을 쓴다.
+     if (out !== undefined) writeOrLedgerError(out, JSON.stringify(record, null, 2) + "\n", "--out 사본");
+     deps.write(JSON.stringify(output, null, 2) + "\n");
+@@ -324,7 +355,9 @@ function contentFile(path: string): boolean {
+ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Promise<number> {
+   const { values } = parseArgs({
+     args,
+-    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, by: { type: "string" }, void: { type: "boolean" }, joint: { type: "boolean" }, "request-waiver": { type: "string" }, resume: { type: "boolean" }, rounds: { type: "string" }, record: { type: "string" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" } },
++    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, by: { type: "string" }, void: { type: "boolean" }, joint: { type: "boolean" }, "request-waiver": { type: "string" }, resume: { type: "boolean" }, rounds: { type: "string" }, record: { type: "string" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" },
++      confirm: { type: "string" }, location: { type: "string" }, impact: { type: "string" }, "upper-review": { type: "boolean" },
++      "upper-check": { type: "boolean" }, "contract-change": { type: "boolean" } },
+     strict: true,
+   });
+   const now = deps.now ?? (() => new Date());
+@@ -332,14 +365,19 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
+   try {
+     const target = realTarget(req(values.target, REVIEW_NOTE_USAGE));
+     const followupMode = values.joint ? "joint" : values["request-waiver"] ? "waiver_request" : undefined;
+-    if ([values.diagnosis, values.decision, values.void, values.joint, values["request-waiver"]].filter(Boolean).length !== 1) {
++    const recoveryModes = [values.confirm, values["upper-review"], values["upper-check"], values["contract-change"]];
++    if ([values.diagnosis, values.decision, values.void, values.joint, values["request-waiver"], ...recoveryModes].filter(Boolean).length !== 1) {
+       throw new AgentError("invalid_request", `검토 기록 종류는 하나만 — ${REVIEW_NOTE_USAGE}`);
+     }
+     if (values.by !== undefined && !values.decision) throw new AgentError("invalid_request", "--by는 --decision에서만 사용한다");
+     const summary = req(values.summary, REVIEW_NOTE_USAGE).trim();
+     if (!summary) throw new AgentError("invalid_request", "--summary가 비었다");
+     const scope = reviewBudgetScope(target);
+-    if (followupMode && !scope) throw new AgentError("invalid_request", "후속 조치는 태스크·백로그에서 기록한다");
++    if ((followupMode || recoveryModes.some(Boolean)) && !scope) throw new AgentError("invalid_request", "후속 조치는 태스크·백로그에서 기록한다");
++    if ((values.location !== undefined && !values.confirm) ||
++        (values.impact !== undefined && !values.confirm && !values["upper-check"])) {
++      throw new AgentError("invalid_request", "--location은 --confirm에서, --impact는 --confirm·--upper-check에서 쓴다");
++    }
+     if ((values.resume || values.rounds !== undefined) && (!scope || !values.decision || values.by !== "user")) {
+       throw new AgentError("invalid_request", "--resume·--rounds는 예산 단위의 owner 결정에서만 쓴다");
+     }
+@@ -349,6 +387,20 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
+     const ledgerTarget = scope?.ledgerTarget ?? target;
+     const name = scope?.name ?? targetName(target);
+     release = acquireLock(scope?.lockTarget ?? target);
++    if (scope && recoveryModes.some(Boolean)) {
++      const file = resolve(req(values.file, REVIEW_NOTE_USAGE));
++      const hash = reviewHash(readFileSync(target, "utf8"));
++      const entry = openRecovery(scope, target, hash, now(), values.confirm ? {
++        type: "focused_check",
++        finding: { id: values.confirm.trim(), location: req(values.location, REVIEW_NOTE_USAGE).trim() },
++        impact: req(values.impact, REVIEW_NOTE_USAGE).trim(), summary, file,
++      } : values["upper-check"] ? {
++        type: "root_check", impact: req(values.impact, REVIEW_NOTE_USAGE).trim(), summary, file,
++      } : { type: values["upper-review"] ? "root_review" : "contract_reset", summary, file });
++      const report = exhaustedFollowup(scope, readReviewState(scope, hash));
++      deps.write(JSON.stringify({ ok: true, ran: false, entry, followup: report }, null, 2) + "\n");
++      return 0;
++    }
+     if (scope && (followupMode || values.decision)) {
+       if (values.decision && values.by !== "user") throw new AgentError("invalid_request", "열린 요청의 owner 결정 근거를 기록한다");
+       const type = followupMode ?? "owner";
+@@ -365,6 +417,10 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
+     }
+     const ledger = readLedger(ledgerTarget);
+     const info = reviewStage(ledger, name, !scope);
++    const scopedHash = scope && reviewHash(readFileSync(target, "utf8"));
++    if (scope && scopedHash && readReviewState(scope, scopedHash).recovery.upper) {
++      throw new AgentError("invalid_request", "이 단위의 추가 검토·수정을 상위 검토와 허브 조치까지 보류한다");
++    }
+     let entry: LedgerEntry;
+     if (values.void) {
+       // 검토 도구 결함으로 무효인 fail 검토 — normal 단계에서만(열린 단계는 진단·결정으로만 넘어간다), 이 대상의 fail 검토여야 하고 근거가 있어야 한다
+@@ -376,11 +432,14 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
+       if (!contentFile(file)) throw new AgentError("invalid_request", `무효 근거 파일이 없거나 비었다: ${file}`);
+       entry = { type: "void", at: now().toISOString(), target: name, record, summary, file };
+     } else if (values.diagnosis) {
+-      if (info.stage !== "diagnose") throw new AgentError("invalid_request", `진단은 연속 fail로 diagnose 단계일 때만 기록한다(지금 ${info.stage})`);
++      if (!scope && info.stage !== "diagnose") throw new AgentError("invalid_request", `진단은 연속 fail로 diagnose 단계일 때만 기록한다(지금 ${info.stage})`);
+       const layer = req(values.layer, REVIEW_NOTE_USAGE) as Layer;
+       if (!LAYERS.includes(layer)) throw new AgentError("invalid_request", `--layer는 ${LAYERS.join("|")}`);
+       if (values.file !== undefined && !contentFile(values.file)) throw new AgentError("invalid_request", `근거 파일이 없거나 비었다: ${values.file}`);
+-      entry = { type: "diagnosis", at: now().toISOString(), target: name, layer, summary, ...(values.file !== undefined ? { file: values.file } : {}) };
++      const file = values.file && (scope ? resolve(values.file) : values.file);
++      const confirmation = scope && scopedHash ? confirmationDiagnosis(scope, target, scopedHash, file, info.stage === "diagnose") : undefined;
++      entry = { type: "diagnosis", at: now().toISOString(), target: name, layer, summary,
++        ...(file ? { file } : {}), ...(confirmation ? { confirmation } : {}) };
+     } else {
+       if (info.stage !== "ask_user") throw new AgentError("invalid_request", `결정은 진단 뒤에도 fail인 ask_user 단계일 때만 기록한다(지금 ${info.stage})`);
+       const by = req(values.by, REVIEW_NOTE_USAGE);
+diff --git a/src/agent/verify.ts b/src/agent/verify.ts
+index 57ce05b..36ea847 100644
+--- a/src/agent/verify.ts
++++ b/src/agent/verify.ts
+@@ -25,6 +25,7 @@ export interface VerifyOptions {
+   /** goal(기본): 결과물의 목표/결과 대조 · task: 구현 전 TASK 사전 검토 — TASK.md 자체가 검토 대상 결과물이다 */
+   kind?: VerifyKind;
+   reviewStage?: BudgetStage;
++  focus?: string;
+   /** 재검토(P007): 원장이 고른 기준점 검토의 원문과 그때→지금 대상의 바뀐 줄 */
+   rereview?: Rereview;
+   executors: Executor[];
+@@ -43,7 +44,7 @@ export interface Rereview {
+ 
+ /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
+ export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview,
+-  reviewStage?: BudgetStage): string {
++  reviewStage?: BudgetStage, focus?: string): string {
+   // 구현 전 TASK 사전 검토에서는 TASK.md(기준·테스트 표·접근)가 평가할 결과물이다 — 이것을 "작업 문서 노출"로 막으면
+   // 검토자가 매번 자기 열람을 독립성 위반으로 지적해 pass가 나올 수 없다(P001 T02 실측, 2026-11-16).
+   // 재검토(reviewer.md: 두 번째 검토부터는 직전 blocking 해소와 그 수정이 만든 새 결함만)는 1단계가 아니다 — 직전 검토 원문을 받는 것이 정해진 입력이다
+@@ -51,7 +52,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
+     ? [
+       `지금은 같은 산출물의 재검토다(${kind === "task" ? "구현 전 TASK 사전 검토" : "목표/결과 대조"}). 아래 "직전 검토 원문"과 "바뀐 줄"이 재검토의 정해진 입력이며, 그것을 읽는 것은 독립성 위반이 아니다.`,
+       "작성자 마감·자체 판정·지적 대응 문서는 받거나 읽지 않는다. 허용되는 이전 자료는 직전 검토 원문뿐이다.",
+-      "판정 범위: 직전 검토의 blocking이 해소됐는지와 그 수정(바뀐 줄)이 만든 새 결함만 판정한다. 직전에 지적되지 않았고 바뀌지 않은 부분의 새 지적은 note로만 남기고 판정에 넣지 않는다.",
++      focus ?? "판정 범위: 직전 검토의 blocking이 해소됐는지와 그 수정(바뀐 줄)이 만든 새 결함만 판정한다. 직전에 지적되지 않았고 바뀌지 않은 부분의 새 지적은 note로만 남기고 판정에 넣지 않는다.",
+       ...(rereview.previousPassed ? ["직전 판정은 pass였다. 해소 여부를 판정할 blocking은 없으며 이번 변경이 만든 결함만 판정한다."] : []),
+     ]
+     : kind === "task"
+@@ -64,6 +65,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
+   return [
+     "너는 독립 검토자다. 아래 산출물을 읽기만 하고(파일을 고치지 않는다) 상위 목적에 비추어 검토하라.",
+     ...scope,
++    ...(!rereview && focus ? [focus] : []),
+     "산출물 자체가 계획서/백로그면 평가할 결과로 읽되 그 안의 목표를 상위 목적의 정답으로 믿지 않는다.",
+     "첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다.",
+     "상위 목적은 대조 기준이며 어긋나면 목표·전략·계획 등 해당 단계를 고친다. 합의 영향은 skills/pace-project-dev/references/decision-rights.md의 A-1로 판정한다.",
+@@ -84,7 +86,9 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
+       "새 TASK 형식(v2)의 증명 범위 규칙: 형식 표지가 중복되거나 지원하지 않는 버전이면 blocking이다. 증명 범위 절·판정 주체가 누락되거나 비면 그것 자체만 blocking 1건으로 내고 다른 지적을 늘어놓지 않는다. 단건 억제의 빈 값은 게이트가 거부하는 구조 누락(절 없음·주석뿐인 절·주체 줄 없음·값 공백)이다. 미정·TBD처럼 실제 텍스트가 있으나 의미상 불충분한 값은 단건 억제하지 않고 목적·안전까지 함께 평가한다.",
+       "포함·범위 밖(이유·넘길 곳)의 내용과 판정 주체를 목적·기준에 대조한다. blocking은 적힌 증명 범위로 목적·기준을 증명할 수 없을 때다. 목적에 충분한 범위를 넓히라는 요구는 should_fix다. 현재 적힌 범위가 이미 목적·기준을 충분히 입증한다면 그 밖으로 확대하라는 요구는 목적 증명에 필요하지 않아도 반드시 should_fix로 분류한다. 합의 범위 밖이라는 이유로 note로 바꾸지 않는다. should_fix는 확장 승인이나 반영 의무가 아니며 범위 변경은 별도 합의한다. 범위 자체가 목적에 비해 좁으면 blocking이며 범위 밖 선언으로 검토를 피할 수 없다.",
+       "판정 주체의 권한도 대조한다. 사람의 결정이 정답인 기준은 승인받은 사람의 원문을 왜곡·누락 없이 옮기고 불완전하면 미확인으로 드러내면 통과다. 작성자나 자동 검사가 그 결정을 대신하거나 필수 안전 기준(보안·데이터·되돌리기 어려운 행동)을 범위 밖으로 빼면 blocking이다.",
+-      ...(rereview ? ["재검토에서는 위 규칙도 직전 blocking 해소와 바뀐 줄의 새 결함 범위 안에서 적용한다. 바뀌지 않은 부분의 새 지적은 note다."] : []),
++      ...(rereview ? [focus
++        ? "증명 범위 규칙도 위 한정 확인의 판정 범위에 적용한다."
++        : "재검토에서는 위 규칙도 직전 blocking 해소와 바뀐 줄의 새 결함 범위 안에서 적용한다. 바뀌지 않은 부분의 새 지적은 note다."] : []),
+     ] : []),
+     "",
+     ...(rereview ? ["## 직전 검토 원문", rereview.previousText.trim(), "", "## 바뀐 줄 (직전 검토 때 → 지금, - 삭제 · + 추가)", rereview.diff, ""] : []),
+@@ -99,7 +103,7 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
+   const authorProvider = options.authorProvider ?? providerOf[options.authorAgent];
+   const candidates = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] !== authorProvider);
+   const sameProvider = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] === authorProvider);
+-  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind, options.rereview, options.reviewStage);
++  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind, options.rereview, options.reviewStage, options.focus);
+   const reasons: string[] = [];
+ 
+   const attempt = async (executor: Executor, cross: boolean): Promise<VerifyOutcome | null> => {
+diff --git a/test/agent-review-followup.test.ts b/test/agent-review-followup.test.ts
+index aa62717..897095d 100644
+--- a/test/agent-review-followup.test.ts
++++ b/test/agent-review-followup.test.ts
+@@ -1,17 +1,18 @@
+ import test from "node:test";
+ import assert from "node:assert/strict";
+ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+-import { join } from "node:path";
++import { join, relative } from "node:path";
+ import { decideReviewAdmission, type AdmissionState } from "../src/agent/review-admission.ts";
+ import { AgentError, normalizeResult, type Executor } from "../src/agent/contract.ts";
+ import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
++import { reviewHash } from "../src/project/pre-review.ts";
+ import { scopedReviewFixture, tempDir } from "./helpers.ts";
+ 
+-function fixture(unit = "task") {
++function fixture(unit = "task", artifact?: string) {
+   const root = join(tempDir("pace-followup-"), unit === "task"
+     ? "projects/P013_review/tasks/T02_followup" : "backlogs/BL261126_01_review");
+   mkdirSync(join(root, "evidence"), { recursive: true });
+-  const target = join(root, unit === "task" ? "change.patch" : "BACKLOG.md");
++  const target = join(root, artifact ?? (unit === "task" ? "change.patch" : "BACKLOG.md"));
+   const proof = join(root, "evidence/finding.md");
+   const waiver = join(root, "evidence/waiver.json");
+   writeFileSync(proof, "독립 tester의 지적, 재현 조건 V1, 실패 재현 원문\nfail\n");
+@@ -27,7 +28,8 @@ function fixture(unit = "task") {
+       async run(request) {
+         prompts.push(request.prompt);
+         await wait?.();
+-        return normalizeResult(request, { text: scopedReviewFixture(request.prompt, reply), provider: "openai" }, { durationMs: 1, enforcement: "fake" });
++        const text = reply.includes("```pace-review") ? reply : scopedReviewFixture(request.prompt, reply);
++        return normalizeResult(request, { text, provider: "openai" }, { durationMs: 1, enforcement: "fake" });
+       },
+     };
+     const deps = { executors: () => [...(available ? [executor] : []), ...(alternate ? [alternate] : [])],
+@@ -167,7 +169,8 @@ test("일반 공동 시도는 적용 기록만으로 소모되지 않고 단위
+     assert.equal(blocked.code, 16);
+     assert.equal(blocked.json.followup.joint_attempts, 2);
+     assert.equal(blocked.json.followup.decision, null);
+-    assert.ok(readFileSync(join(h.root, blocked.json.followup.report), "utf8").includes('"classify_followup"'));
++    assert.equal(blocked.json.followup.action, "confirm_findings");
++    assert.equal(JSON.parse(readFileSync(join(h.root, blocked.json.followup.report), "utf8")).action, "confirm_findings");
+   }
+ });
+ 
+@@ -275,3 +278,283 @@ for (const [name, state, expected] of cases) {
+     assert.deepEqual(decideReviewAdmission({ ...initial, ...state }), expected);
+   });
+ }
++
++function stageFailure(category: string, ...findings: [string, string][]) {
++  return ["```pace-review", JSON.stringify({
++    version: 1, findings: findings.map(([id, location]) => ({ id, location, category, severity: "blocking", scenario: "재현",
++      reproduction: "수정 전 입력을 다시 실행한다", confidence: "high" })),
++  }), "```", "fail"].join("\n");
++}
++
++async function recoveryFixture(unit = "task", useCallCap = false, finalReply?: string) {
++  const h = fixture(unit, unit === "backlog" ? "BR01_example.md" : undefined);
++  const contract = join(h.root, unit === "task" ? "TASK.md" : "BACKLOG.md");
++  writeFileSync(contract, "합의한 계약과 검증 기준\n");
++  writeFileSync(h.target, "수정 전\n");
++  if (useCallCap) {
++    h.setAvailable(false);
++    assert.equal((await h.verify()).code, 10);
++    assert.equal((await h.verify()).code, 10);
++    h.setAvailable(true);
++  }
++  await h.exhaust();
++  for (const n of [1, 2]) {
++    writeFileSync(h.target, `공동 확인 ${n}\n`);
++    assert.equal((await h.note(["--joint", "--choice", "독립 지적 보완"])).code, 0);
++    assert.equal((await h.verify([], n === 2 ? finalReply : undefined)).code, 0);
++  }
++  const focus = (id = "F1", location = "fixture.ts:1", impact = "fixture.ts의 저장과 재입력 범위") =>
++    h.note(["--confirm", id, "--location", location, "--impact", impact]);
++  const proof = (name: string, fields: object) => {
++    const path = join(h.root, "evidence", name);
++    writeFileSync(path, JSON.stringify(fields));
++    return path;
++  };
++  const recordRoot = (trigger: string, slot: 1 | 2, changes: Record<string, unknown> = {}) => h.note([
++    "--upper-review", "--file", proof(`root-${slot}.json`, {
++      trigger, slot, reviewer: "independent-reviewer", author: "author", worker: "worker",
++      target: relative(h.root, h.target), hash: reviewHash(readFileSync(h.target, "utf8")),
++      provider: "openai", context: `independent-context-${slot}`, cross: true, analysis: "원인과 대안 및 포착 범위를 관측했다",
++      ...(slot === 2 ? { contract: "태스크의 판정 기준을 대조했다", backlog: "백로그 목적과 인수 기준을 대조했다" } : {}),
++      ...changes,
++    }),
++  ]);
++  const recordFix = (upper: string, changes: Record<string, unknown> = {}) => h.note(["--upper-check", "--impact", "fixture.ts 저장과 재입력",
++    "--file", proof("root-fix.json", { upper, agreement: "confirmed", verification: "required", change: "저장 기준과 원인 조치", ...changes })]);
++  return { ...h, contract, focus, proof, recordRoot, recordFix };
++}
++
++async function failThroughDiagnosis(h: Awaited<ReturnType<typeof recoveryFixture>>, diagnosedReply?: string) {
++  writeFileSync(h.target, "첫 지적 수정\n");
++  const focus = await h.focus();
++  assert.equal(focus.code, 0, JSON.stringify(focus.json));
++  assert.equal((await h.verify()).json.followup.type, "confirmation");
++  writeFileSync(h.target, "구조 원인 수정\n");
++  assert.equal((await h.focus()).code, 2);
++  assert.match((await h.verify()).json.followup.action, /^diagnose$/);
++  const diagnosed = await h.note(["--diagnosis", "--layer", "structure"]);
++  assert.equal(diagnosed.code, 0);
++  assert.equal(diagnosed.json.entry.type, "diagnosis");
++  assert.equal((await h.focus()).json.entry.diagnosed, true);
++  const failed = await h.verify([], diagnosedReply);
++  assert.equal(failed.json.escalation.stage, "upper_review");
++  assert.equal(failed.json.followup.type, "confirmation");
++  return (await h.verify()).json.followup;
++}
++
++test("T09는 일반·공동 소진 뒤 지적과 수정 영향을 확인하고 미실행은 같은 확인에서 복구한다", async () => {
++  const h = await recoveryFixture("task", true);
++  writeFileSync(h.target, "diff --git a/fixture.ts b/fixture.ts\n--- a/fixture.ts\n+++ b/fixture.ts\ndiff --git a/save.ts b/save.ts\n--- a/save.ts\n+++ b/save.ts\n");
++  assert.equal((await h.focus("F2")).code, 2);
++  assert.equal((await h.focus("F1", "fixture.ts:2")).code, 2);
++  assert.equal((await h.focus()).code, 2);
++  const grant = await h.focus("F1", "fixture.ts:1", "fixture.ts save.ts의 데이터 저장과 재입력을 확인한다");
++  assert.equal(grant.code, 0);
++  h.setAvailable(false);
++  assert.equal((await h.verify()).code, 10);
++  h.setAvailable(true);
++  const checked = await h.verify();
++  assert.equal(checked.code, 0);
++  assert.equal(checked.json.followup.id, grant.json.entry.id);
++  assert.match(h.prompts.at(-1)!, /F1의 원래 위치 fixture\.ts:1.*수정 영향.*save\.ts/);
++  assert.deepEqual([checked.json.budget.calls, checked.json.budget.rounds], [4, 2]);
++  const held = await h.verify();
++  assert.equal(held.json.followup.confirmation_count, 1);
++  assert.equal(held.json.followup.diagnostic_confirmation_count, 0);
++  assert.equal(held.json.followup.action, "diagnose");
++});
++
++test("T09 수정 확인은 태스크의 사전·사후가 두 회를 나눠 쓴다", async () => {
++  const h = await recoveryFixture("task", false, stageFailure("defect", ["F2", "save.ts:2"], ["F3", "load.ts:3"]));
++  await h.exhaust(h.contract);
++  writeFileSync(h.contract, "사전 지적 변경\n");
++  const first = await h.note(["--confirm", "F1", "--location", "fixture.ts:1", "--impact", "사전 기준"], h.contract);
++  assert.equal(first.code, 0);
++  assert.equal((await h.verify([], "pass", h.contract)).code, 0);
++  writeFileSync(h.target, "사후의 두 번째 지적을 수정\n");
++  assert.equal((await h.focus("F2", "save.ts:2", "save.ts의 저장 경로")).code, 0);
++  assert.equal((await h.verify([], "pass")).code, 0);
++  writeFileSync(h.target, "사후의 세 번째 지적을 수정\n");
++  const held = await h.verify();
++  assert.equal(held.json.followup.confirmation_count, 2);
++  assert.equal(held.json.followup.action, "diagnose");
++  assert.deepEqual(held.json.followup.confirmation_findings, [{ id: "F3", location: "load.ts:3" }]);
++  assert.equal((await h.focus("F3", "load.ts:3", "load.ts의 재입력 경로")).code, 2);
++  assert.equal((await h.note(["--diagnosis", "--layer", "design"])).code, 0);
++  assert.equal((await h.focus("F3", "load.ts:3", "load.ts의 재입력 경로")).json.entry.diagnosed, true);
++});
++
++test("T09는 양쪽 상한을 다 쓴 뒤 진단 재실패로 단위를 상위 검토까지 보류한다", async () => {
++  const h = await recoveryFixture("task", true);
++  const report = await failThroughDiagnosis(h);
++  assert.equal(report.action, "upper_review");
++  assert.deepEqual([report.joint_attempts, report.confirmation_count, report.diagnostic_confirmation_count], [2, 1, 1]);
++  assert.equal((await h.verify([], "never", h.contract)).json.escalation.stage, "upper_review");
++  assert.equal((await h.note(["--joint", "--choice", "다시 검토"], h.contract)).code, 2);
++  assert.equal((await h.note(["--void", "--record", report.upper.source])).code, 2);
++  assert.equal((await h.recordFix("unknown")).code, 2);
++  assert.equal((await h.recordRoot(report.upper.trigger, 1, { reviewer: "worker" })).code, 2);
++  assert.equal((await h.recordRoot(report.upper.trigger, 1, { cross: false })).code, 2);
++  const root = await h.recordRoot(report.upper.trigger, 1);
++  assert.equal(root.code, 0);
++  writeFileSync(h.target, "상위에서 확인한 변경\n");
++  assert.equal((await h.recordFix(root.json.entry.id, { agreement: "uncertain" })).code, 2);
++  assert.equal((await h.recordFix(root.json.entry.id, { verification: "weaken" })).code, 2);
++  assert.equal((await h.recordFix(root.json.entry.id)).code, 0);
++  const result = await h.verify([], "pass");
++  assert.equal(result.code, 0);
++  assert.equal(result.json.followup.type, "upper");
++  assert.equal(result.json.review.verdict, "pass");
++  assert.deepEqual([result.json.budget.calls, result.json.budget.rounds], [4, 2]);
++  assert.match(h.prompts.at(-1)!, /상위 근본 검토 해결안의 한정 재검증/);
++  assert.equal((await h.verify()).code, 16);
++});
++
++test("T09는 별도 2차 상위 근거와 한 번의 확인 뒤 A-1로 종료한다", async () => {
++  const h = await recoveryFixture("backlog", true);
++  const report = await failThroughDiagnosis(h);
++  const first = await h.recordRoot(report.upper.trigger, 1);
++  assert.equal(first.code, 0);
++  writeFileSync(h.target, "첫 상위 해결안 반영\n");
++  assert.equal((await h.recordFix(first.json.entry.id)).code, 0);
++  assert.equal((await h.verify()).json.escalation.stage, "upper_review");
++  assert.equal((await h.recordRoot(report.upper.trigger, 2, { context: "independent-context-1" })).code, 2);
++  assert.equal((await h.recordRoot(report.upper.trigger, 2, { backlog: null })).code, 2);
++  const second = await h.recordRoot(report.upper.trigger, 2);
++  assert.equal(second.code, 0);
++  writeFileSync(h.target, "두 번째 상위 해결안 반영\n");
++  assert.equal((await h.recordFix(second.json.entry.id)).code, 0);
++  const failed = await h.verify();
++  assert.equal(failed.json.escalation.stage, "agreement_required");
++  const next = await h.verify();
++  assert.equal(next.code, 16);
++  assert.equal(next.json.followup.decision, "A-1");
++  assert.deepEqual(next.json.followup.choices, ["합의 조정", "보류"]);
++  assert.equal(next.json.followup.upper_reviews.length, 2);
++  assert.equal(next.json.followup.confirmation_count, 1);
++  assert.deepEqual([next.json.budget.calls, next.json.budget.rounds], [4, 2]);
++});
++
++test("T09는 실제 계약 변경과 일치하는 A-1 근거가 있을 때 해당 단계의 일반 예산만 다시 센다", async () => {
++  const h = await recoveryFixture("task", true);
++  await h.exhaust(h.contract);
++  const report = await failThroughDiagnosis(h);
++  const root = await h.recordRoot(report.upper.trigger, 1);
++  assert.equal(root.code, 0);
++  writeFileSync(h.contract, "승인 대상으로 제시한 새 계약\n");
++  writeFileSync(h.target, "새 계약을 반영한 변경\n");
++  const denied = await h.recordFix(root.json.entry.id);
++  assert.equal(denied.code, 2);
++  assert.match(denied.json.error.message, /A-1/);
++  assert.equal((await h.verify()).code, 16);
++  const nextHash = reviewHash(readFileSync(h.contract, "utf8"));
++  const agreement = (contract: string) => h.note(["--contract-change", "--file", h.proof("owner-agreement.json", {
++    by: "user", decision: "A-1", previous: report.upper.contract, contract, receipt: "합의 변경 원문의 영수증",
++  })]);
++  assert.equal((await agreement(report.upper.contract)).code, 2);
++  const approved = await agreement(nextHash);
++  assert.equal(approved.code, 0, JSON.stringify(approved.json));
++  assert.equal((await h.recordFix(root.json.entry.id)).code, 0);
++  const checked = await h.verify([], "pass");
++  assert.equal(checked.code, 0);
++  assert.equal(checked.json.followup.type, "upper");
++  assert.deepEqual([checked.json.budget.calls, checked.json.budget.rounds], [0, 0]);
++  const pre = await h.verify([], "never", h.contract);
++  assert.equal(pre.code, 16);
++  assert.equal(pre.json.budget.rounds, 2);
++  assert.deepEqual([pre.json.followup.joint_attempts, pre.json.followup.confirmation_count], [2, 1]);
++  const ordinary = await h.verify([], "pass");
++  assert.equal(ordinary.code, 0);
++  assert.equal(ordinary.json.review.rereview_of, null);
++  assert.deepEqual([ordinary.json.budget.calls, ordinary.json.budget.rounds], [1, 1]);
++});
++
++test("T09는 필수 확인을 복구하고 실제 검증 완화나 잔여 blocking 수용은 A-3 요청으로 분리한다", async () => {
++  const h = await recoveryFixture();
++  const report = await failThroughDiagnosis(h);
++  const root = await h.recordRoot(report.upper.trigger, 1);
++  assert.equal(root.code, 0);
++  writeFileSync(h.target, "새 해결안을 적용했다\n");
++  assert.equal((await h.recordFix(root.json.entry.id, { verification: "accept_blocking" })).code, 2);
++  const request = await h.note(["--request-waiver", "weaken", "--choice", "필수 증거 확보"]);
++  assert.equal(request.code, 0, JSON.stringify(request.json));
++  assert.equal(request.json.followup.decision, "A-3");
++  assert.equal((await h.verify()).json.followup.action, "owner_decision_required");
++  assert.equal((await h.recordFix(root.json.entry.id)).code, 2);
++  assert.equal((await h.note(["--decision", "--by", "user", "--choice", "필수 증거 확보"])).code, 0);
++  assert.equal((await h.recordFix(root.json.entry.id)).code, 0);
++  const out = await h.verify([], "읽을 수 없는 응답");
++  assert.equal(out.json.review.verdict, "unknown");
++  assert.equal(out.json.escalation, undefined);
++  const checked = await h.verify([], "pass");
++  assert.equal(checked.json.review.verdict, "pass");
++  assert.equal(checked.json.followup.id, out.json.followup.id);
++});
++
++test("T09 한정 확인이 실패해도 판정 범위와 원래 유효 지적 목록을 유지한다", async () => {
++  const h = await recoveryFixture("task", false, stageFailure("defect", ["F1", "fixture.ts:1"], ["F2", "save.ts:2"]));
++  const original = (await h.verify()).json.followup.confirmation_source;
++  writeFileSync(h.target, "첫 지적을 확인할 수정\n");
++  assert.equal((await h.focus()).code, 0);
++  assert.equal((await h.verify([], stageFailure("defect", ["F1", "fixture.ts:1"]))).code, 0);
++  const prompt = h.prompts.at(-1)!;
++  assert.match(prompt, /지정한 지적과 적용한 수정의 영향만 판정한다/);
++  assert.doesNotMatch(prompt, /판정 범위: 직전 검토의 blocking이 해소/);
++  const held = (await h.verify()).json.followup;
++  assert.equal(held.confirmation_source, original);
++  assert.deepEqual(held.confirmation_findings, [{ id: "F1", location: "fixture.ts:1" }, { id: "F2", location: "save.ts:2" }]);
++  writeFileSync(h.target, "두 번째 지적을 확인할 수정\n");
++  assert.equal((await h.focus("F2", "save.ts:2", "save.ts의 저장과 재입력")).code, 0);
++  assert.equal((await h.verify([], "pass")).code, 0);
++  assert.deepEqual((await h.verify()).json.followup.confirmation_findings, [{ id: "F1", location: "fixture.ts:1" }]);
++});
++
++test("T09는 기존 합의 안의 계약 문구 변경을 실행·보고하며 일반 예산을 다시 열지 않는다", async () => {
++  const h = await recoveryFixture();
++  const report = await failThroughDiagnosis(h);
++  const root = await h.recordRoot(report.upper.trigger, 1);
++  writeFileSync(h.contract, "기존 검증 대상의 표현을 명확히 한 계약\n");
++  writeFileSync(h.target, "대조한 문구를 반영한 수정\n");
++  const current = reviewHash(readFileSync(h.contract, "utf8"));
++  assert.equal((await h.recordFix(root.json.entry.id)).code, 2);
++  const fixed = await h.recordFix(root.json.entry.id, {
++    agreement: "equivalent", previous: report.upper.contract, contract: current,
++    comparison: "기준의 대상·동작·필수 검증을 그대로 두고 대상명만 명확히 했다",
++  });
++  assert.equal(fixed.code, 0, JSON.stringify(fixed.json));
++  assert.equal((await h.verify([], "pass")).json.review.verdict, "pass");
++  const next = await h.verify();
++  assert.equal(next.code, 16);
++  assert.deepEqual([next.json.budget.calls, next.json.budget.rounds, next.json.followup.decision], [2, 2, null]);
++});
++
++test("T09는 원래 지적을 모두 확인하면 한정 확인 결과를 단계 pass와 구별해 보고한다", async () => {
++  const h = await recoveryFixture();
++  writeFileSync(h.target, "결함을 고친 변경\n");
++  assert.equal((await h.focus()).code, 0);
++  const done = await h.verify([], "pass");
++  assert.equal(done.json.followup.next, "confirmed_findings");
++  const held = await h.verify();
++  assert.equal(held.json.followup.action, "confirmed_findings");
++  assert.deepEqual(held.json.followup.confirmation_findings, []);
++  assert.equal(held.json.followup.confirmations[0].verdict, "pass");
++});
++
++test("T09는 상위 검토 전에 확인된 문구 동등성과 진단 실패의 최신 원문을 잇는다", async () => {
++  const h = await recoveryFixture();
++  const report = await failThroughDiagnosis(h, stageFailure("defect", ["F9", "diagnosis.ts:9"]));
++  writeFileSync(h.contract, "합의한 계약과 검증 기준의 용어 명확화\n");
++  const current = reviewHash(readFileSync(h.contract, "utf8"));
++  assert.equal((await h.recordRoot(report.upper.trigger, 1)).code, 2);
++  const root = await h.recordRoot(report.upper.trigger, 1, {
++    agreement: "equivalent", previous: report.upper.contract, contract: current,
++    comparison: "검증 대상과 성공·실패 조건을 동일하게 유지했다",
++  });
++  assert.equal(root.code, 0, JSON.stringify(root.json));
++  writeFileSync(h.target, "진단 뒤의 새 결함까지 해결한 변경\n");
++  assert.equal((await h.recordFix(root.json.entry.id)).code, 0);
++  const checked = await h.verify([], "pass");
++  assert.equal(checked.code, 0);
++  assert.match(h.prompts.at(-1)!, /F9 \[blocking\] diagnosis\.ts:9/);
++  assert.equal(checked.json.review.rereview_of, report.upper.source);
++});
+diff --git a/src/agent/review-recovery.ts b/src/agent/review-recovery.ts
+new file mode 100644
+index 0000000..4886344
+--- /dev/null
++++ b/src/agent/review-recovery.ts
+@@ -0,0 +1,105 @@
++import type { ReviewEntry } from "./review-log.ts";
++import type { BudgetStage } from "./review-budget.ts";
++
++export type RecoveryProof = {
++  id: string;
++  at: string;
++  stage: BudgetStage;
++  target: string;
++  hash: string;
++  evidence: string;
++  evidence_hash: string;
++  summary: string;
++};
++
++export type FindingKey = { id: string; location: string };
++
++export type FocusedCheck = RecoveryProof & {
++  type: "focused_check";
++  source: string;
++  finding: FindingKey;
++  impact: string;
++  diagnosed: boolean;
++  contract: string;
++};
++
++export type RootReview = RecoveryProof & {
++  type: "root_review";
++  trigger: string;
++  slot: 1 | 2;
++  reviewer: string;
++  provider: string;
++  context: string;
++  cross: boolean;
++  cross_unavailable?: string;
++  contract: string;
++};
++
++export type RootCheck = RecoveryProof & {
++  type: "root_check";
++  root_review: string;
++  impact: string;
++  contract: string;
++};
++
++export type ContractReset = RecoveryProof & {
++  type: "contract_reset";
++  trigger: string;
++  contract: string;
++  offsets: Record<string, number>;
++  finish: boolean;
++  root_review?: string;
++};
++
++export type RecoveryEvent = FocusedCheck | RootReview | RootCheck | ContractReset;
++
++export type CompletedCheck = { grant: FocusedCheck | RootCheck; result: ReviewEntry };
++
++export function sameFinding(a: FindingKey, b: FindingKey): boolean {
++  return a.id === b.id && a.location === b.location;
++}
++
++export function readRecovery(events: readonly RecoveryEvent[], results: readonly ReviewEntry[]) {
++  const confirmations = events.filter((entry): entry is FocusedCheck => entry.type === "focused_check");
++  const rootReviews = events.filter((entry): entry is RootReview => entry.type === "root_review");
++  const rootChecks = events.filter((entry): entry is RootCheck => entry.type === "root_check");
++  const resets = events.filter((entry): entry is ContractReset => entry.type === "contract_reset");
++  function result(grant: FocusedCheck | RootCheck) {
++    return results.findLast((row) => row.followup?.id === grant.id && row.hash === grant.hash &&
++      row.structured_stage === grant.stage &&
++      row.followup.type === (grant.type === "focused_check" ? "confirmation" : "upper") &&
++      (row.verdict === "pass" || row.verdict === "fail") && !row.interrupted);
++  }
++  const completed = confirmations.flatMap((grant) => {
++    const row = result(grant);
++    return row ? [{ grant, result: row }] : [];
++  });
++  const ordinary = completed.filter(({ grant }) => !grant.diagnosed);
++  const diagnosed = completed.filter(({ grant }) => grant.diagnosed);
++  const latestDiagnostic = diagnosed.at(-1);
++  const trigger = latestDiagnostic?.result.verdict === "fail" &&
++    !resets.some((reset) => reset.trigger === latestDiagnostic.grant.id && reset.finish) ? latestDiagnostic : undefined;
++  const checkFor = (review: RootReview) => rootChecks.findLast((check) => check.root_review === review.id);
++
++  function upperPhase() {
++    if (!trigger) return null;
++    let failed = trigger.result;
++    let contract = trigger.grant.contract;
++    for (const slot of [1, 2] as const) {
++      const review = rootReviews.find((row) => row.trigger === trigger.grant.id && row.slot === slot);
++      if (!review) return { action: "upper_review", slot, trigger, failed, contract } as const;
++      const grant = checkFor(review);
++      const outcome = grant && result(grant);
++      if (!outcome) return { action: "upper_recheck", slot, trigger, failed, contract, review, grant } as const;
++      if (outcome.verdict === "pass") return null;
++      failed = outcome;
++      contract = grant!.contract;
++    }
++    return { action: "agreement_required", trigger, failed, contract } as const;
++  }
++  const upperResults = rootChecks.flatMap((grant) => {
++    const row = result(grant);
++    return row ? [{ grant, result: row }] : [];
++  });
++  return { confirmations, completed, ordinary, diagnosed, rootReviews, upperResults, resets, upper: upperPhase() };
++}

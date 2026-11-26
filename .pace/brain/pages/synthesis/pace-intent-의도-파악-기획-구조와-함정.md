@@ -6,7 +6,7 @@ tags: [pace-intent, intent, planning, pitfalls]
 sources: [code:src/intent/, doc:skills/pace-intent/SKILL.md, doc:skills/pace-intent/references/handoff.md, doc:skills/pace-canvas-skills/canvas-wireframe/SKILL.md, doc:skills/pace-project-dev/references/document-shape.md, doc:skills/pace-intent/references/preview.md, code:src/intent/preview.ts, doc:skills/pace-project-dev/references/decision-rights.md, doc:skills/pace-team/references/required-roles.md]
 related: [pace-scout-기회-탐색-구조와-함정, 작업-하네스-실측-함정]
 created: 2026-10-29
-updated: 2026-11-25
+updated: 2026-11-26
 status: active
 ---
 
@@ -41,7 +41,7 @@ pace-intent는 pace-scout와 같은 세 레이어다. 프로세스(`skills/pace-
 
 기획의 인계는 ⑨다. 경로 C의 목적·범위가 확정되면 저장소 쓰기를 확인받고, 허브는 백로그 기획자에게 정본 BP-09로 위임한다. 저장소에 해당 역할이 없으면 허브가 승인 범위의 초안을 작성한다. 기존 백로그 최신화는 근거·상태의 일반 정정을 맡긴 뒤 합의 영향과 미확인 근거만 결정 권한에 대조한다.
 
-⑧은 승인 범위의 초안과 큰 변경을 작성자와 별개의 reviewer가 목적 중심으로 검토하는 단계다. C 경로에서 다른 제공자 호출이 불가능하면 미실행 사유와 같은 제공자의 별도 새 세션을 B1에 따른 cross: false로 기록한다. 양쪽이 모두 불가능하면 초안 수용 전에 허브가 A-3을 요청한다. 목적·전략 지적이 합의를 바꾸려면 A-1로 owner에게 올린다. 다른 대형 문서에는 기존의 미실행 기록과 사용자 확인을 적용한다. 인계 확인은 쓰기 전에 하고, 초안 검토의 두 단계에는 첫 독립 판단을 받은 뒤 작업 문서를 전달한다.
+⑧은 승인 범위의 초안과 큰 변경을 작성자와 별개의 reviewer가 목적 중심으로 검토하는 단계다. C 경로에서 다른 제공자 호출이 불가능하면 미실행 사유와 같은 제공자의 별도 새 세션을 B1에 따른 cross: false로 기록한다. 양쪽이 모두 불가능하면 허브는 초안 수용을 보류하고 독립 검토를 복구한다. 검토 생략·완화 또는 증거 공백 수용을 선택할 때 A-3을 요청한다. 목적·전략 지적이 합의를 바꾸려면 A-1로 owner에게 올린다. 다른 대형 문서에는 기존의 미실행 기록과 사용자 확인을 적용한다. 인계 확인은 쓰기 전에 하고, 초안 검토의 두 단계에는 첫 독립 판단을 받은 뒤 작업 문서를 전달한다.
 
 ## Canvas와 기획 정본
 

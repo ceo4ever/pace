@@ -1,0 +1,39 @@
+✖ Gateway: 읽지 않는 구독자의 송신 버퍼가 상한을 넘으면 서버가 그 연결을 닫는다(느린 소비자 격리) (6.371792ms)
+✔ Conn: ping 응답도 송신 상한을 거치고, 이번 프레임으로 상한을 넘으면 즉시 닫는다 (0.506041ms)
+✖ Gateway: 모든 수신자가 송신을 거부하면 알림 전달은 실패(던짐)해 outbox가 남는다 (2.513208ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 111.530834
+
+✖ failing tests:
+
+test at test/daemon-gateway.test.ts:7:1
+✖ Gateway: 읽지 않는 구독자의 송신 버퍼가 상한을 넘으면 서버가 그 연결을 닫는다(느린 소비자 격리) (6.371792ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at test/daemon-gateway.test.ts:61:1
+✖ Gateway: 모든 수신자가 송신을 거부하면 알림 전달은 실패(던짐)해 outbox가 남는다 (2.513208ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }

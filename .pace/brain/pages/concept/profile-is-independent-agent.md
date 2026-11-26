@@ -6,7 +6,7 @@ tags: [profile, identity, design-history]
 sources: [code:src/profile/profile.ts, code:templates/RULES.md, code:src/profile/onboarding.ts, url:https://hermes-agent.nousresearch.com/docs/user-guide/profiles, doc:skills/pace-project-dev/references/decision-rights.md]
 related: [memory-two-scopes]
 created: 2026-10-22
-updated: 2026-11-25
+updated: 2026-11-26
 status: active
 ---
 

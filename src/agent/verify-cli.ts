@@ -8,8 +8,8 @@ import {
   acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, RECOVERY_LOCK_FILE, reviewStage,
   lineDiff, reviewUsage, targetName, textHash, validCrossUnavailable, validFollowup, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
 } from "./review-log.ts";
-import { readReviewBudget, recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
-import { checkGrant, followupReport, FOLLOWUPS_FILE, openFollowup, readReviewState, recordFollowupExecution } from "./review-followup.ts";
+import { recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
+import { checkGrant, checkRecoveryProof, confirmationDiagnosis, followupReport, FOLLOWUPS_FILE, openFollowup, openRecovery, readReviewState, recordFollowupExecution, recoveryGrant } from "./review-followup.ts";
 import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
 import { assessStructuredReview, effectiveBlocking, hasStructuredReviewFence, isStructuredStage } from "./structured-review.ts";
 
@@ -22,7 +22,7 @@ export interface VerifyCliDeps {
 }
 
 export const VERIFY_USAGE = "pace agent verify --author-agent claude|codex --target <산출물 파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록 파일>]";
-export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis | --decision --by pm|user [--resume] [--rounds <회차>] | --void --record <검토 기록> | --joint | --request-waiver skip|weaken) --summary "<근거 요약>" [--choice "<조치 또는 추천>"] [--file <근거>]';
+export const REVIEW_NOTE_USAGE = 'pace agent review-note --target <파일> (--diagnosis | --decision --by pm|user [--resume] [--rounds <회차>] | --void --record <검토 기록> | --joint | --request-waiver skip|weaken | --confirm <지적 ID> --location <원래 위치> --impact <수정 영향> | --upper-review | --upper-check --impact <수정 영향> | --contract-change) --summary "<근거 요약>" [--choice "<조치 또는 추천>"] [--file <근거>]';
 
 const ESCALATION_EXIT = errorCodes.review_escalation;
 
@@ -205,17 +205,20 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     const entries = readLedger(ledgerTarget);
     const state = scope && readReviewState(scope, hash);
     const grant = state?.grant;
-    if (scope && state && (state.decision.kind === "exhausted" || state.decision.kind === "owner_pending")) {
+    const recovery = scope && state ? recoveryGrant(scope, state) : undefined;
+    if (scope && state && !recovery && (state.recovery.upper || state.decision.kind === "exhausted" || state.decision.kind === "owner_pending")) {
       const followup = exhaustedFollowup(scope, state);
-      const reason = state.pending ? "owner_decision_required" : "budget_exhausted";
+      const reason = state.pending ? "owner_decision_required" : state.recovery.upper?.action ?? "budget_exhausted";
       const response = JSON.stringify({ ran: false, reason, budget: state.budget.status, followup,
+        ...(state.recovery.upper ? { escalation: { stage: state.recovery.upper.action, next: followup.action } } : {}),
         ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n";
       if (out !== undefined) writeOrLedgerError(out, response, "--out 사본");
       deps.write(response);
       return ESCALATION_EXIT;
     }
-    const budget = scope && state?.decision.kind === "ordinary" ? reserveReviewCall(scope, now(), state.budget) : undefined;
+    const budget = scope && !recovery && state?.decision.kind === "ordinary" ? reserveReviewCall(scope, now(), state.budget) : undefined;
     if (scope && grant) checkGrant(scope, target, grant);
+    if (scope && state && recovery) checkRecoveryProof(scope, target, recovery, state, out);
     // 기계로 확인되는 구조 누락은 호출에만 남긴다. 첫 독립 판정은 목적·안전을 평가할 수 있어야 한다.
     if (scope?.stage === "pre") {
       const issues = proofScopeIssues(artifact);
@@ -226,16 +229,26 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
       deps.write(JSON.stringify({ ran: false, reason: "검토 반복 실패 단계", escalation: escalation(before, target), ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n");
       return ESCALATION_EXIT;
     }
-    const base = grant?.type === "owner" || state?.decision.firstReview ? undefined
+    const upper = state?.recovery.upper;
+    const base = recovery?.type === "root_check" && upper?.action === "upper_recheck" ? { ledgerTarget, entry: upper.failed }
+      : recovery ? state?.budget.latestDefinitive : grant?.type === "owner" || state?.decision.firstReview ? undefined
       : grant?.type === "joint" ? state?.budget.latestDefinitive
       : budget?.latest ?? (!scope && before.base ? { ledgerTarget, entry: before.base } : undefined);
     const rereview = base && loadRereview(base.ledgerTarget, base.entry, target, hash, artifact, kind, scope);
+    if (recovery && !rereview) throw new AgentError("invalid_request", "한정 확인의 실패 기준점 원문을 확인할 수 없다");
     const previousRecord = rereview && base
       ? relative(dirname(ledgerTarget), join(dirname(base.ledgerTarget), base.entry.record)).split(sep).join("/")
       : null;
     const call: Pick<ReviewEntry, "call_id" | "followup"> = budget?.callId ? { call_id: budget.callId } : {};
-    if (grant) call.followup = { type: grant.type, id: randomUUID() };
-    const followup = grant && call.followup ? { ...call.followup, target: grant.target, hash, evidence: grant.evidence } : undefined;
+    if (recovery) call.followup = { type: recovery.type === "focused_check" ? "confirmation" : "upper", id: recovery.id };
+    else if (grant) call.followup = { type: grant.type, id: randomUUID() };
+    const proof = recovery ?? grant;
+    const followup = proof && call.followup ? { ...call.followup, target: proof.target, hash, evidence: proof.evidence } : undefined;
+    const focus = recovery?.type === "focused_check"
+      ? `수정 확인의 지적은 ${recovery.finding.id}의 원래 위치 ${recovery.finding.location}이다. 해소 여부와 수정 영향(${recovery.impact})을 함께 판정한다.${
+        recovery.diagnosed ? " 진단 뒤 한정 확인이므로 직전 원문의 다른 잔여 blocking도 해소됐는지 확인한다."
+          : " 지정한 지적과 적용한 수정의 영향만 판정한다. 수정 영향 밖의 다른 기존 지적은 note로 남긴다."}`
+      : recovery ? `상위 근본 검토 해결안의 한정 재검증이다. 수정 영향(${recovery.impact})과 합의한 기준을 함께 대조한다.` : undefined;
 
     // 실행 전에 이번 기록 자리를 먼저 만든다 — 실행 뒤 기록·원장 확정이 끊기면 원장에 없는 기록으로 남아 다음 검토를 막는다
     const recordName = nextRecordName(ledgerTarget);
@@ -245,7 +258,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     let outcome: Awaited<ReturnType<typeof crossVerify>>;
     try {
       outcome = await crossVerify({
-        kind, rereview, reviewStage: scope?.stage,
+        kind, rereview, reviewStage: scope?.stage, focus,
         authorAgent: author, authorProvider: values["author-provider"] as "anthropic" | "openai" | undefined,
         purpose, artifact, artifactName: target,
         cwd: values.cwd ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout),
@@ -261,14 +274,23 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
         ...outcome,
         ...(followup ? { followup: { ...followup, verdict: "unavailable" } } : {}),
         ...(recovered.length ? { recovered } : {}),
-        ...(scope ? { budget: readReviewBudget(scope).status } : {}),
+        ...(scope ? { budget: readReviewState(scope, hash).budget.status } : {}),
       }, null, 2) + "\n";
       if (out !== undefined) writeOrLedgerError(out, text, "--out 사본");
       deps.write(text);
       return 10;
     }
 
-    if (scope && grant && call.followup) recordFollowupExecution(scope, grant.id, call.followup.id, now());
+    if (scope && recovery) {
+      try {
+        if (reviewHash(readFileSync(target, "utf8")) !== hash) throw new AgentError("invalid_request", "수정 확인 중 대상이 바뀌었다");
+        checkRecoveryProof(scope, target, recovery, readReviewState(scope, hash));
+      } catch (error) {
+        clearPending(recordFile);
+        throw error;
+      }
+    }
+    if (scope && grant && !recovery && call.followup) recordFollowupExecution(scope, grant.id, call.followup.id, now());
     const assessment = scope ? assessStructuredReview(scope.stage, outcome.result.text) : undefined;
     const verdict = assessment?.verdict ?? parseVerdict(outcome.result.text);
     const format = scope ? { structured_stage: scope.stage } : {};
@@ -297,8 +319,17 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     else if (assessment?.differs) output.warning = "원문 마지막 판정과 도구 판정이 다르다. 지적별 근거와 적용 등급을 확인한다.";
     if (followup) output.followup = { action: "report_review", ...followup, verdict, record: recordName, cross: outcome.cross,
       ...(outcome.cross_unavailable ? { cross_unavailable: outcome.cross_unavailable } : {}) };
-    if (scope) output.budget = readReviewBudget(scope).status;
-    else if (after.stage !== "normal") output.escalation = escalation(after, target);
+    if (scope) {
+      const current = readReviewState(scope, hash);
+      output.budget = current.budget.status;
+      if (recovery) {
+        const report = exhaustedFollowup(scope, current);
+        output.followup = { ...output.followup as object, report: report.report, next: report.action };
+        if (current.recovery.upper?.action === "upper_review" || current.recovery.upper?.action === "agreement_required") {
+          output.escalation = { stage: current.recovery.upper.action, next: report.action };
+        }
+      }
+    } else if (after.stage !== "normal") output.escalation = escalation(after, target);
     // 원장과 수정 확인 보고가 끝난 뒤 보조 사본을 쓴다.
     if (out !== undefined) writeOrLedgerError(out, JSON.stringify(record, null, 2) + "\n", "--out 사본");
     deps.write(JSON.stringify(output, null, 2) + "\n");
@@ -324,7 +355,9 @@ function contentFile(path: string): boolean {
 export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Promise<number> {
   const { values } = parseArgs({
     args,
-    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, by: { type: "string" }, void: { type: "boolean" }, joint: { type: "boolean" }, "request-waiver": { type: "string" }, resume: { type: "boolean" }, rounds: { type: "string" }, record: { type: "string" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" } },
+    options: { target: { type: "string" }, diagnosis: { type: "boolean" }, decision: { type: "boolean" }, by: { type: "string" }, void: { type: "boolean" }, joint: { type: "boolean" }, "request-waiver": { type: "string" }, resume: { type: "boolean" }, rounds: { type: "string" }, record: { type: "string" }, layer: { type: "string" }, summary: { type: "string" }, choice: { type: "string" }, file: { type: "string" },
+      confirm: { type: "string" }, location: { type: "string" }, impact: { type: "string" }, "upper-review": { type: "boolean" },
+      "upper-check": { type: "boolean" }, "contract-change": { type: "boolean" } },
     strict: true,
   });
   const now = deps.now ?? (() => new Date());
@@ -332,14 +365,19 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
   try {
     const target = realTarget(req(values.target, REVIEW_NOTE_USAGE));
     const followupMode = values.joint ? "joint" : values["request-waiver"] ? "waiver_request" : undefined;
-    if ([values.diagnosis, values.decision, values.void, values.joint, values["request-waiver"]].filter(Boolean).length !== 1) {
+    const recoveryModes = [values.confirm, values["upper-review"], values["upper-check"], values["contract-change"]];
+    if ([values.diagnosis, values.decision, values.void, values.joint, values["request-waiver"], ...recoveryModes].filter(Boolean).length !== 1) {
       throw new AgentError("invalid_request", `검토 기록 종류는 하나만 — ${REVIEW_NOTE_USAGE}`);
     }
     if (values.by !== undefined && !values.decision) throw new AgentError("invalid_request", "--by는 --decision에서만 사용한다");
     const summary = req(values.summary, REVIEW_NOTE_USAGE).trim();
     if (!summary) throw new AgentError("invalid_request", "--summary가 비었다");
     const scope = reviewBudgetScope(target);
-    if (followupMode && !scope) throw new AgentError("invalid_request", "후속 조치는 태스크·백로그에서 기록한다");
+    if ((followupMode || recoveryModes.some(Boolean)) && !scope) throw new AgentError("invalid_request", "후속 조치는 태스크·백로그에서 기록한다");
+    if ((values.location !== undefined && !values.confirm) ||
+        (values.impact !== undefined && !values.confirm && !values["upper-check"])) {
+      throw new AgentError("invalid_request", "--location은 --confirm에서, --impact는 --confirm·--upper-check에서 쓴다");
+    }
     if ((values.resume || values.rounds !== undefined) && (!scope || !values.decision || values.by !== "user")) {
       throw new AgentError("invalid_request", "--resume·--rounds는 예산 단위의 owner 결정에서만 쓴다");
     }
@@ -349,6 +387,20 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
     const ledgerTarget = scope?.ledgerTarget ?? target;
     const name = scope?.name ?? targetName(target);
     release = acquireLock(scope?.lockTarget ?? target);
+    if (scope && recoveryModes.some(Boolean)) {
+      const file = resolve(req(values.file, REVIEW_NOTE_USAGE));
+      const hash = reviewHash(readFileSync(target, "utf8"));
+      const entry = openRecovery(scope, target, hash, now(), values.confirm ? {
+        type: "focused_check",
+        finding: { id: values.confirm.trim(), location: req(values.location, REVIEW_NOTE_USAGE).trim() },
+        impact: req(values.impact, REVIEW_NOTE_USAGE).trim(), summary, file,
+      } : values["upper-check"] ? {
+        type: "root_check", impact: req(values.impact, REVIEW_NOTE_USAGE).trim(), summary, file,
+      } : { type: values["upper-review"] ? "root_review" : "contract_reset", summary, file });
+      const report = exhaustedFollowup(scope, readReviewState(scope, hash));
+      deps.write(JSON.stringify({ ok: true, ran: false, entry, followup: report }, null, 2) + "\n");
+      return 0;
+    }
     if (scope && (followupMode || values.decision)) {
       if (values.decision && values.by !== "user") throw new AgentError("invalid_request", "열린 요청의 owner 결정 근거를 기록한다");
       const type = followupMode ?? "owner";
@@ -365,6 +417,10 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
     }
     const ledger = readLedger(ledgerTarget);
     const info = reviewStage(ledger, name, !scope);
+    const scopedHash = scope && reviewHash(readFileSync(target, "utf8"));
+    if (scope && scopedHash && readReviewState(scope, scopedHash).recovery.upper) {
+      throw new AgentError("invalid_request", "이 단위의 추가 검토·수정을 상위 검토와 허브 조치까지 보류한다");
+    }
     let entry: LedgerEntry;
     if (values.void) {
       // 검토 도구 결함으로 무효인 fail 검토 — normal 단계에서만(열린 단계는 진단·결정으로만 넘어간다), 이 대상의 fail 검토여야 하고 근거가 있어야 한다
@@ -376,11 +432,14 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
       if (!contentFile(file)) throw new AgentError("invalid_request", `무효 근거 파일이 없거나 비었다: ${file}`);
       entry = { type: "void", at: now().toISOString(), target: name, record, summary, file };
     } else if (values.diagnosis) {
-      if (info.stage !== "diagnose") throw new AgentError("invalid_request", `진단은 연속 fail로 diagnose 단계일 때만 기록한다(지금 ${info.stage})`);
+      if (!scope && info.stage !== "diagnose") throw new AgentError("invalid_request", `진단은 연속 fail로 diagnose 단계일 때만 기록한다(지금 ${info.stage})`);
       const layer = req(values.layer, REVIEW_NOTE_USAGE) as Layer;
       if (!LAYERS.includes(layer)) throw new AgentError("invalid_request", `--layer는 ${LAYERS.join("|")}`);
       if (values.file !== undefined && !contentFile(values.file)) throw new AgentError("invalid_request", `근거 파일이 없거나 비었다: ${values.file}`);
-      entry = { type: "diagnosis", at: now().toISOString(), target: name, layer, summary, ...(values.file !== undefined ? { file: values.file } : {}) };
+      const file = values.file && (scope ? resolve(values.file) : values.file);
+      const confirmation = scope && scopedHash ? confirmationDiagnosis(scope, target, scopedHash, file, info.stage === "diagnose") : undefined;
+      entry = { type: "diagnosis", at: now().toISOString(), target: name, layer, summary,
+        ...(file ? { file } : {}), ...(confirmation ? { confirmation } : {}) };
     } else {
       if (info.stage !== "ask_user") throw new AgentError("invalid_request", `결정은 진단 뒤에도 fail인 ask_user 단계일 때만 기록한다(지금 ${info.stage})`);
       const by = req(values.by, REVIEW_NOTE_USAGE);

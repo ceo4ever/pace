@@ -1,0 +1,17 @@
+r2 F1/F2 observations {"first":"fail","remaining":[{"id":"F1","location":"fixture.ts:1"},{"id":"F2","location":"save.ts:2"}],"afterF2":[{"id":"F1","location":"fixture.ts:1"}],"action":"diagnose","budget":{"unit":"task","root":"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-3I6UMb/pace-followup-hvmvvx/projects/P013_review/tasks/T02_followup","stage":"post","rounds":2,"calls":2,"round_limit":2,"call_limit":4,"exhausted":"rounds"}}
+r2 equivalent observations {"next":"classify_followup","action":"classify_followup","budget":{"unit":"task","root":"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-3I6UMb/pace-followup-ySVDq0/projects/P013_review/tasks/T02_followup","stage":"post","rounds":2,"calls":2,"round_limit":2,"call_limit":4,"exhausted":"rounds"},"upper_results":[{"root_review":"cabfca27-de51-4164-b784-9d987d737f4e","target":"change.patch","hash":"a98c25b299e6e2ca67c76db5ea2b6f7468c6dd03794e067030f8d35dc8045cc7","record":"review-records/R7.json","verdict":"pass","cross":true}]}
+r2 confirmed observations {"action":"confirmed_findings","summary":"일반 유효 판정 2회, 최신 유효 판정 fail","confirmations":[{"finding":{"id":"F1","location":"fixture.ts:1"},"verdict":"pass"},{"finding":{"id":"F2","location":"save.ts:2"},"verdict":"pass"}],"budget":{"unit":"task","root":"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-3I6UMb/pace-followup-OfeRm3/projects/P013_review/tasks/T02_followup","stage":"post","rounds":2,"calls":2,"round_limit":2,"call_limit":4,"exhausted":"rounds"}}
+r2 B1 observations {"sameGrant":true,"count":1,"cross":false,"reasons":["다른 제공자의 -p 실행기가 없다"]}
+✔ r2 independent F1 fail preserves F2, F2 pass preserves F1, prompt stays focused (32.498291ms)
+✔ r2 independent equivalent wording keeps budget and rejects stale or incomplete proof (25.914583ms)
+✔ r2 independent fully resolved original findings reports confirmation, not a new ordinary pass (13.179541ms)
+✔ r2 independent B1 resumes the same confirmation and preserves provenance (11.89925ms)
+✔ r2 independent changed upper evidence blocks execution before executor call (22.16825ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 219.518417

@@ -1,11 +1,14 @@
 import { randomUUID } from "node:crypto";
-import { appendFileSync, lstatSync, readFileSync, realpathSync } from "node:fs";
-import { dirname, isAbsolute, join, relative, sep } from "node:path";
+import { appendFileSync, existsSync, lstatSync, readFileSync, realpathSync } from "node:fs";
+import { basename, dirname, isAbsolute, join, relative, sep } from "node:path";
+import { listBriefs, resolveBacklog } from "../project/backlog.ts";
+import { reviewHash } from "../project/pre-review.ts";
 import { AgentError } from "./contract.ts";
 import { decideReviewAdmission } from "./review-admission.ts";
 import { readReviewBudget, recordedStage, type BudgetStage, type ReviewBudgetScope } from "./review-budget.ts";
-import { LedgerError, ledgerPath, textHash, type ReviewEntry } from "./review-log.ts";
+import { LedgerError, ledgerPath, textHash, type DiagnosisEntry, type ReviewEntry } from "./review-log.ts";
 import { assessStructuredReview, effectiveBlocking } from "./structured-review.ts";
+import { readRecovery, sameFinding, type FindingKey, type FocusedCheck, type RecoveryEvent, type RootCheck } from "./review-recovery.ts";
 
 export const FOLLOWUPS_FILE = "REVIEW-FOLLOWUPS.jsonl";
 const HASH = /^[a-f0-9]{64}$/;
@@ -19,10 +22,20 @@ type Grant = ScopeKey & Proof & RecordHeader & { type: "joint" | "owner"; choice
 type Waiver = ScopeKey & Proof & RecordHeader & Proposal & { type: "waiver_request"; choice: string; proposed: "skip" | "weaken" };
 type Started = RecordHeader & { type: "started"; grant: string };
 type Historical = ScopeKey & Proof & RecordHeader & { type: "confirmation" | "confirmation_request" | "recovery" | "withdrawal"; request?: string };
-type Event = Grant | Waiver | Started | Historical;
+type Event = Grant | Waiver | Started | Historical | RecoveryEvent;
 
 function nonempty(value: unknown): value is string {
   return typeof value === "string" && value.trim() !== "";
+}
+
+function isHash(value: unknown): value is string {
+  return typeof value === "string" && HASH.test(value);
+}
+
+function validFinding(value: unknown): value is FindingKey {
+  if (!value || typeof value !== "object") return false;
+  const { id, location } = value as Record<string, unknown>;
+  return typeof id === "string" && /^F\d+$/.test(id) && nonempty(location);
 }
 
 function proposalValid(value: Record<string, unknown>, choice: string): boolean {
@@ -47,6 +60,16 @@ function eventValid(item: unknown): item is Event {
     nonempty(row.choice) && proposalValid(row, row.choice);
   if (row.type === "joint") return row.rounds === 1 && nonempty(row.choice);
   if (row.type === "owner") return Number.isSafeInteger(row.rounds) && Number(row.rounds) >= 0 && nonempty(row.choice);
+  if (row.type === "focused_check") return isHash(row.contract) && nonempty(row.source) &&
+    validFinding(row.finding) && typeof row.diagnosed === "boolean" && nonempty(row.impact);
+  if (row.type === "root_review") return isHash(row.contract) && nonempty(row.trigger) && (row.slot === 1 || row.slot === 2) &&
+    nonempty(row.reviewer) && nonempty(row.provider) && nonempty(row.context) && typeof row.cross === "boolean" &&
+    (row.cross_unavailable === undefined || nonempty(row.cross_unavailable));
+  if (row.type === "root_check") return isHash(row.contract) && nonempty(row.root_review) && nonempty(row.impact);
+  if (row.type === "contract_reset") return isHash(row.contract) && nonempty(row.trigger) && typeof row.finish === "boolean" &&
+    (row.root_review === undefined || nonempty(row.root_review)) &&
+    !!row.offsets && typeof row.offsets === "object" && !Array.isArray(row.offsets) &&
+    Object.values(row.offsets).every((offset) => Number.isSafeInteger(offset) && offset >= 0);
   if (row.type === "withdrawal") return nonempty(row.request);
   return row.type === "confirmation" || row.type === "confirmation_request" || row.type === "recovery";
 }
@@ -98,8 +121,15 @@ function readProof(scope: ReviewBudgetScope, target: string, file: string) {
 }
 
 export function readReviewState(scope: ReviewBudgetScope, hash: string) {
-  const budget = readReviewBudget(scope);
   const events = loadEvents(scope);
+  const recoveryEvents = events.filter((event): event is RecoveryEvent =>
+    event.type === "focused_check" || event.type === "root_review" || event.type === "root_check" || event.type === "contract_reset");
+  const reset = recoveryEvents.findLast((event) => event.type === "contract_reset" && event.stage === scope.stage);
+  const budget = readReviewBudget(scope, reset?.type === "contract_reset" ? reset.offsets : undefined);
+  const recovery = readRecovery(recoveryEvents, budget.ledgers.flatMap(({ entries }) => {
+    const voided = new Set(entries.flatMap((entry) => entry.type === "void" ? [entry.record] : []));
+    return entries.filter((entry): entry is ReviewEntry => entry.type === "review" && !voided.has(entry.record));
+  }));
   const current: ScopeKey = { stage: scope.stage, target: relativeName(scope, join(dirname(scope.ledgerTarget), scope.name)), hash };
   const starts = new Map<string, number>();
   for (const event of events) {
@@ -122,12 +152,12 @@ export function readReviewState(scope: ReviewBudgetScope, hash: string) {
     jointAttempts, jointRecorded: !!joint && !starts.get(joint.id), ownerRounds: owner ? owner.rounds - (starts.get(owner.id) ?? 0) : null,
   });
   const grant = decision.kind === "owner" ? owner : decision.kind === "joint" ? joint : undefined;
-  return { budget, current, decision, pending, grant, jointAttempts, jointDecisions };
+  return { budget, current, decision, pending, grant, jointAttempts, jointDecisions, recovery };
 }
 
 type ReviewState = ReturnType<typeof readReviewState>;
 
-export function checkGrant(scope: ReviewBudgetScope, target: string, grant: Grant) {
+export function checkGrant(scope: ReviewBudgetScope, target: string, grant: Pick<Proof, "evidence" | "evidence_hash">) {
   const proof = readProof(scope, target, join(scope.root, grant.evidence));
   if (proof.evidence_hash !== grant.evidence_hash) reject("후속 조치 근거가 기록 이후 바뀌었다");
 }
@@ -138,6 +168,7 @@ export function openFollowup(scope: ReviewBudgetScope, target: string, hash: str
   const { evidence, evidence_hash, text } = readProof(scope, target, selection.file);
   const facts = { ...state.current, evidence, evidence_hash, summary: selection.summary, at: at.toISOString(), id: randomUUID() };
   const choice = selection.choice ?? "";
+  if (state.recovery.upper && selection.type === "joint") reject("이 단위의 상위 검토 또는 합의 결정이 열려 있다");
   if (selection.type !== "owner" && state.pending) reject("승인 요청이 열려 있다");
   let entry: Grant | Waiver;
   switch (selection.type) {
@@ -175,19 +206,265 @@ export function recordFollowupExecution(scope: ReviewBudgetScope, grant: string,
   append(scope, { type: "started", grant, id, at: at.toISOString() });
 }
 
+function recordText(ledger: string, row: ReviewEntry): string | null {
+  try {
+    const record = JSON.parse(readFileSync(join(dirname(ledger), row.record), "utf8"));
+    const text = record.result?.text;
+    return record.review?.hash === row.hash && typeof text === "string" && textHash(text) === row.result_hash ? text : null;
+  } catch {
+    return null;
+  }
+}
+
+function proofObject(text: string): Record<string, unknown> {
+  try {
+    const parsed = JSON.parse(text);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) return parsed;
+  } catch { /* 명령의 공통 오류를 쓴다. */ }
+  return reject("후속 근거에 필요한 JSON 필드를 확인할 수 없다");
+}
+
+function equivalentAgreement(data: Record<string, unknown>, previous: string, current: string): boolean {
+  return data.agreement === "equivalent" && data.previous === previous && data.contract === current && nonempty(data.comparison);
+}
+
+function agreementSections(text: string): string[] {
+  return text.replace(/\r\n/g, "\n").split(/(?=^## )/m)
+    .filter((section) => /^## (?:목적|목표|기준|합격 기준|완료 기준|범위|증명 범위)[ \t]*$/m.test(section))
+    .map((section) => section.trim());
+}
+
+function contractHash(scope: ReviewBudgetScope): string {
+  const task = scope.unit === "task";
+  const file = join(scope.root, task ? "TASK.md" : "BACKLOG.md");
+  try {
+    if (!lstatSync(file).isFile()) throw new Error();
+    const text = readFileSync(file, "utf8");
+    const clauses = agreementSections(text);
+    const related: string[][] = [];
+    if (task) {
+      const project = dirname(dirname(scope.root));
+      const projectFile = join(project, "PROJECT.md");
+      if (existsSync(projectFile)) {
+        const projectText = readFileSync(projectFile, "utf8");
+        related.push(agreementSections(projectText));
+        const source = /^- 출처:.*?\b(BL\d{6}_\d{2})(?:_|\b)/m.exec(projectText)?.[1];
+        const number = /^T(\d+)/.exec(basename(scope.root))?.[1];
+        if (source && number) {
+          const repo = dirname(dirname(project));
+          const backlog = resolveBacklog(repo, source);
+          related.push(agreementSections(readFileSync(join(backlog, "BACKLOG.md"), "utf8")));
+          const brief = listBriefs(repo, backlog).find((entry) => entry.id === number);
+          if (brief) related.push(agreementSections(readFileSync(brief.path, "utf8")));
+        }
+      }
+    } else if (/^BR\d{2}_.+\.md$/.test(scope.name)) {
+      const artifact = join(dirname(scope.ledgerTarget), scope.name);
+      related.push(agreementSections(readFileSync(artifact, "utf8")));
+    }
+    return related.some((sections) => sections.length) || clauses.length
+      ? textHash(JSON.stringify([clauses.length ? clauses : [reviewHash(text)], ...related])) : reviewHash(text);
+  } catch {
+    return reject("TASK·PROJECT·백로그의 합의 근거를 확인할 수 없다");
+  }
+}
+
+function checkImpact(target: string, impact: string): void {
+  const artifact = readFileSync(target, "utf8");
+  // patch 대상일 때 기계로 관측되는 파일을 확인 범위에 모두 명시한다.
+  if (!/^diff --git /m.test(artifact)) return;
+  const files = new Set([...artifact.matchAll(/^(?:--- a\/|\+\+\+ b\/)([^\t\r\n]+?)[ \t]*\r?$/gm)].map((match) => match[1]));
+  for (const file of files) {
+    if (!file) continue;
+    const path = file.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (!new RegExp(`(^|[^\\p{L}\\p{N}._/-])${path}(?=$|[^a-zA-Z0-9._/-])`, "u").test(impact)) {
+      reject(`수정 영향이 빠졌다: ${file}. 확인 범위를 보완한다`);
+    }
+  }
+}
+
+function confirmationSource(scope: ReviewBudgetScope, state: ReviewState) {
+  const base = state.budget.latestDefinitive;
+  if (!base || base.ledgerTarget !== scope.ledgerTarget || base.entry.target !== scope.name ||
+      base.entry.verdict !== "fail" || base.entry.structured_stage !== scope.stage) return undefined;
+  const source = relativeName(scope, join(dirname(base.ledgerTarget), base.entry.record));
+  const resolved = state.recovery.completed.filter((attempt) => attempt.grant.source === source && attempt.result.verdict === "pass");
+  const text = recordText(base.ledgerTarget, base.entry);
+  const known = text === null ? [] : assessStructuredReview(scope.stage, text).findings?.flatMap((finding) =>
+    finding.effective === "blocking" && finding.location ? [{ id: finding.id, location: finding.location }] : []) ?? [];
+  if (!known.length) return undefined;
+  const findings = known.filter((finding) => !resolved.some(({ grant }) => grant.diagnosed || sameFinding(grant.finding, finding)));
+  const diagnoses = state.budget.ledgers.find(({ target }) => target === scope.ledgerTarget)?.entries;
+  const diagnosis = diagnoses?.findLast((row): row is DiagnosisEntry =>
+    row.type === "diagnosis" && row.target === scope.name && row.confirmation?.source === source);
+  return { ...base, source, findings, diagnosis };
+}
+
+function canConfirm(state: ReviewState): boolean {
+  return state.decision.kind === "exhausted" && state.jointAttempts >= 2 && !state.pending && !state.recovery.upper;
+}
+
+export function confirmationDiagnosis(scope: ReviewBudgetScope, target: string, hash: string, file: string | undefined, legacyAllowed: boolean) {
+  const state = readReviewState(scope, hash);
+  const origin = confirmationSource(scope, state);
+  if (!canConfirm(state) || !origin?.findings.length || origin.diagnosis ||
+      (state.recovery.ordinary.length < 2 &&
+        !origin.findings.some((finding) => state.recovery.ordinary.some(({ grant }) => sameFinding(finding, grant.finding))))) {
+    if (legacyAllowed && !canConfirm(state)) return undefined;
+    return reject("수정 확인 문턱에 도달한 최신 독립 지적에 한해 진단을 기록한다");
+  }
+  const proof = readProof(scope, target, file ?? "");
+  return { source: origin.source, evidence_hash: proof.evidence_hash };
+}
+
+type RecoverySelection =
+  | { type: "focused_check"; finding: FindingKey; impact: string; file: string; summary: string }
+  | { type: "root_review"; file: string; summary: string }
+  | { type: "contract_reset"; file: string; summary: string }
+  | { type: "root_check"; impact: string; file: string; summary: string };
+
+export function openRecovery(scope: ReviewBudgetScope, target: string, hash: string, at: Date, selection: RecoverySelection) {
+  const state = readReviewState(scope, hash);
+  const { text, ...proof } = readProof(scope, target, selection.file);
+  const facts = { ...state.current, ...proof, id: randomUUID(), at: at.toISOString(), summary: selection.summary };
+  const contract = contractHash(scope);
+  const upper = state.recovery.upper;
+  if (state.pending) reject("실제 A-3 제안의 owner 결정이 열려 있다");
+  let event: RecoveryEvent;
+  if (selection.type === "focused_check") {
+    const origin = confirmationSource(scope, state);
+    if (!canConfirm(state) || !origin || !origin.findings.some((finding) => sameFinding(finding, selection.finding)) ||
+        origin.entry.hash === hash) return reject("일반·공동 예산과 최신 지적 ID·원래 위치 및 수정 지문을 대조한다");
+    checkImpact(target, selection.impact);
+    const previous = state.recovery.ordinary.some(({ grant }) => sameFinding(grant.finding, selection.finding));
+    const needsDiagnosis = previous || state.recovery.ordinary.length >= 2;
+    if (needsDiagnosis && !origin.diagnosis) reject("수정 확인 한도에 도달했다. 같은 원장에 구조 진단을 먼저 기록한다");
+    if (origin.diagnosis) {
+      if (state.recovery.diagnosed.some(({ grant }) => grant.source === origin.source)) {
+        reject("이미 이 진단의 한정 확인을 기록했다");
+      }
+      if (!origin.diagnosis.file || !origin.diagnosis.confirmation ||
+          readProof(scope, target, origin.diagnosis.file).evidence_hash !== origin.diagnosis.confirmation.evidence_hash) {
+        reject("진단 근거가 기록과 맞지 않는다");
+      }
+    }
+    event = { ...facts, type: selection.type, source: origin.source, finding: selection.finding,
+      diagnosed: !!origin.diagnosis, impact: selection.impact, contract };
+    const same = state.recovery.confirmations.findLast((prior) => sameTarget(prior, event) &&
+      prior.source === origin.source && sameFinding(prior.finding, selection.finding) &&
+      prior.evidence_hash === proof.evidence_hash && prior.contract === contract && prior.impact === selection.impact &&
+      prior.diagnosed === !!origin.diagnosis);
+    if (same) return same;
+  } else {
+    if (!upper || upper.trigger.grant.stage !== scope.stage || upper.trigger.grant.target !== state.current.target) {
+      return reject("차단된 검토 단위의 원래 대상에 상위 근거를 연결한다");
+    }
+    const original = expectedContract(state, upper);
+    if (selection.type === "contract_reset") {
+      if (upper.action === "upper_review") reject("계약 변경의 근거가 되는 상위 검토 원문을 먼저 기록한다");
+      const decision = proofObject(text);
+      if (decision.by !== "user" || decision.decision !== "A-1" || decision.previous !== original ||
+          decision.contract !== contract || original === contract || !nonempty(decision.receipt)) {
+        reject("계약의 실제 변경과 이전·현재 계약 지문에 맞는 A-1 owner 원문이 필요하다");
+      }
+      event = { ...facts, type: selection.type, trigger: upper.trigger.grant.id, contract,
+        finish: upper.action === "agreement_required",
+        ...(upper.action === "upper_recheck" ? { root_review: upper.review.id } : {}),
+        offsets: Object.fromEntries(state.budget.ledgers.map(({ target: ledger, entries }) => [relativeName(scope, ledger), entries.length])) };
+    } else {
+      if (selection.type === "root_review") {
+        if (upper.action !== "upper_review" || hash !== upper.failed.hash) {
+          return reject("실패 기준점의 현재 대상에서 상위 검토를 기록한다");
+        }
+        const data = proofObject(text);
+        if (contract !== original && !equivalentAgreement(data, original, contract)) {
+          reject("상위 검토를 열기 전에 변경된 합의 근거를 실패 당시 상태와 대조한다");
+        }
+        const { reviewer, author, worker, provider, context, cross } = data;
+        if (data.trigger !== upper.trigger.grant.id || data.slot !== upper.slot ||
+            data.target !== state.current.target || data.hash !== hash ||
+            !nonempty(reviewer) || !nonempty(author) || !nonempty(worker) ||
+            [author, worker].includes(reviewer) || !nonempty(provider) || !nonempty(context) ||
+            state.recovery.rootReviews.some((prior) => prior.context === context) ||
+            typeof cross !== "boolean" || (!cross && !nonempty(data.cross_unavailable)) ||
+            !nonempty(data.analysis) || (upper.slot === 2 && (!nonempty(data.contract) || !nonempty(data.backlog)))) {
+          return reject("독립 reviewer·별도 맥락·제공자와 근본 검토 원문을 대조한다");
+        }
+        event = { ...facts, type: selection.type, trigger: upper.trigger.grant.id, slot: upper.slot,
+          reviewer, provider, context, cross, contract,
+          ...(!cross && nonempty(data.cross_unavailable) ? { cross_unavailable: data.cross_unavailable } : {}) };
+      } else {
+        if (upper.action !== "upper_recheck") return reject("독립 상위 검토 원문을 먼저 기록한다");
+        checkImpact(target, selection.impact);
+        checkGrant(scope, target, upper.review);
+        if (hash === upper.review.hash) reject("상위 해결안을 적용한 최신 변경 지문이 필요하다");
+        const data = proofObject(text);
+        if (data.agreement === "uncertain" || data.agreement === "changed") reject("A-1: 합의에 미치는 영향을 확인한 owner 결정이 필요하다");
+        const agreementConfirmed = data.agreement === "confirmed" && contract === original;
+        if (!agreementConfirmed && !equivalentAgreement(data, original, contract)) {
+          reject("계약 문구의 전후 지문과 합의 영향 대조를 기록한다. 실제 합의가 바뀌면 A-1 결정이 필요하다");
+        }
+        if (data.verification !== "required" || data.upper !== upper.review.id || !nonempty(data.change)) {
+          reject("필수 검증을 축소하거나 미확인 증거·잔여 blocking을 수용하려면 A-3 요청을 기록한다");
+        }
+        event = { ...facts, type: "root_check", root_review: upper.review.id, impact: selection.impact, contract };
+      }
+    }
+  }
+  if (!eventValid(event)) return reject("후속 조치의 필수 필드가 비거나 잘못됐다");
+  append(scope, event);
+  return event;
+}
+
+function expectedContract(state: ReviewState, upper: NonNullable<ReviewState["recovery"]["upper"]>): string {
+  const approval = upper.action === "upper_recheck" ? state.recovery.resets.findLast((reset) =>
+    reset.trigger === upper.trigger.grant.id && reset.root_review === upper.review.id) : undefined;
+  return approval?.contract ?? (upper.action === "upper_recheck" ? upper.review.contract : upper.contract);
+}
+
+export function recoveryGrant(scope: ReviewBudgetScope, state: ReviewState): FocusedCheck | RootCheck | undefined {
+  if (state.pending) return undefined;
+  const upper = state.recovery.upper;
+  if (upper) {
+    const grant = upper.action === "upper_recheck" ? upper.grant : undefined;
+    return grant && sameTarget(grant, state.current) ? grant : undefined;
+  }
+  if (!canConfirm(state)) return undefined;
+  const origin = confirmationSource(scope, state);
+  return state.recovery.confirmations.findLast((grant) => sameTarget(grant, state.current) &&
+    grant.source === origin?.source && !state.recovery.completed.some((entry) => entry.grant.id === grant.id));
+}
+
+export function checkRecoveryProof(scope: ReviewBudgetScope, target: string, grant: FocusedCheck | RootCheck, state: ReviewState, out?: string): void {
+  if (grant.contract !== contractHash(scope)) reject("적용 당시의 계약 지문과 달라졌다. 합의 영향을 대조하고 확인 근거를 갱신한다");
+  checkGrant(scope, target, grant);
+  const protectedFiles = [join(scope.root, grant.evidence)];
+  if (grant.type === "root_check") {
+    const upper = state.recovery.upper;
+    if (upper?.action !== "upper_recheck" || upper.review.id !== grant.root_review) reject("상위 근거와 확인의 연결이 달라졌다");
+    checkGrant(scope, target, upper.review);
+    protectedFiles.push(join(scope.root, upper.review.evidence));
+  } else if (grant.diagnosed) {
+    const diagnosis = confirmationSource(scope, state)?.diagnosis;
+    if (!diagnosis?.file || !diagnosis.confirmation ||
+        readProof(scope, target, diagnosis.file).evidence_hash !== diagnosis.confirmation.evidence_hash) {
+      reject("수정 확인의 진단 근거가 기록과 맞지 않는다");
+    }
+    protectedFiles.push(diagnosis.file);
+  }
+  if (out) {
+    const output = join(realpathSync(dirname(out)), basename(out)).toLowerCase();
+    if (protectedFiles.some((file) => file.toLowerCase() === output)) reject("--out이 이번 독립 검토나 수정의 근거를 가리킨다");
+  }
+}
+
 function rawBlocking(ledger: string, row: ReviewEntry): string[] | null {
   if (row.verdict !== "fail" || row.interrupted) return null;
-  try {
-    const result: { result?: { text?: unknown }; review?: { hash?: unknown } } =
-      JSON.parse(readFileSync(join(dirname(ledger), row.record), "utf8"));
-    const text = result.result?.text;
-    if (result.review?.hash === row.hash && typeof text === "string" && textHash(text) === row.result_hash) {
-      if (row.structured_stage) return effectiveBlocking(assessStructuredReview(row.structured_stage, text));
-      const findings = text.split("\n").filter((line) => /\[blocking\]/i.test(line)).map((line) => line.trim());
-      return findings.length ? findings : null;
-    }
-  } catch { /* 구 원장에는 판정 본문이 없을 수 있다. */ }
-  return null;
+  const text = recordText(ledger, row);
+  if (text === null) return null;
+  if (row.structured_stage) return effectiveBlocking(assessStructuredReview(row.structured_stage, text));
+  const findings = text.split("\n").filter((line) => /\[blocking\]/i.test(line)).map((line) => line.trim());
+  return findings.length ? findings : null;
 }
 
 function reviewHistory(scope: ReviewBudgetScope, state: ReviewState) {
@@ -215,15 +492,40 @@ export function followupReport(scope: ReviewBudgetScope, state: ReviewState) {
     !row.invalidated && !row.interrupted && row.verdict !== "unknown");
   const noVerdict = history.filter((row) => row.interrupted || row.invalidated).length;
   const rounds = state.budget.status.rounds;
+  const upper = state.recovery.upper;
+  const source = canConfirm(state) && confirmationSource(scope, state);
+  const diagnosisRequired = source && source.findings.length && !source.diagnosis && (state.recovery.ordinary.length >= 2 ||
+    source.findings.every((finding) => state.recovery.ordinary.some(({ grant }) => sameFinding(finding, grant.finding))));
+  const action = request ? "owner_decision_required" : upper?.action ??
+    (source ? !source.findings.length ? "confirmed_findings" : diagnosisRequired ? "diagnose" : "confirm_findings" : "classify_followup");
   return {
     ...state.current,
-    action: request ? "owner_decision_required" : "classify_followup",
-    decision: request ? "A-3" : null,
+    action,
+    decision: request ? "A-3" : upper?.action === "agreement_required" ? "A-1" : null,
     recommendation: request?.choice ?? null,
-    choices: request?.choices ?? [],
+    choices: request?.choices ?? (upper?.action === "agreement_required" ? ["합의 조정", "보류"] : []),
     ...(request ? { request } : {}),
     joint_attempts: state.jointAttempts,
     joint_decisions: state.jointDecisions,
+    confirmation_count: state.recovery.ordinary.length,
+    diagnostic_confirmation_count: state.recovery.diagnosed.length,
+    confirmations: state.recovery.completed.map(({ grant, result }) => ({
+      id: grant.id, finding: grant.finding, source: grant.source, target: grant.target, hash: result.hash,
+      verdict: result.verdict, record: result.record, diagnosed: grant.diagnosed, cross: result.cross,
+      ...(result.cross_unavailable ? { cross_unavailable: result.cross_unavailable } : {}),
+    })),
+    ...(source ? { confirmation_source: source.source, confirmation_findings: source.findings } : {}),
+    upper_reviews: state.recovery.rootReviews.map(({ id, slot, evidence, provider, cross, cross_unavailable }) =>
+      ({ id, slot, evidence, provider, cross, ...(cross_unavailable ? { cross_unavailable } : {}) })),
+    upper_results: state.recovery.upperResults.map(({ grant, result }) => ({
+      root_review: grant.root_review, target: grant.target, hash: result.hash, record: result.record, verdict: result.verdict,
+      cross: result.cross, ...(result.cross_unavailable ? { cross_unavailable: result.cross_unavailable } : {}),
+    })),
+    ...(upper ? { upper: { trigger: upper.trigger.grant.id, stage: upper.trigger.grant.stage,
+      target: upper.trigger.grant.target, source: upper.failed.record, hash: upper.failed.hash,
+      contract: expectedContract(state, upper),
+      ...(state.current.target === upper.trigger.grant.target ? { current_contract: contractHash(scope) } : {}),
+      ...(upper.action !== "agreement_required" ? { slot: upper.slot } : {}) } } : {}),
     verdict_summary: !state.budget.latestDefinitive ? `유효 판정 없음(중단·무효 ${noVerdict}회)`
       : `일반 유효 판정 ${rounds}회, 최신 유효 판정 ${state.budget.latestDefinitive.entry.verdict}`,
     review_history: history,

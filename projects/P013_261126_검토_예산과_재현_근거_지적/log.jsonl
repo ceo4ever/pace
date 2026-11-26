@@ -59,3 +59,14 @@
 {"ts":"2026-11-26T03:10:11.380Z","p":"P013","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T03:10:11.579Z","p":"P013","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T03:10:11.579Z","p":"P013","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T03:10:22.157Z","p":"P013","t":"T09","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T03:12:31.208Z","p":"P013","t":"T09","type":"review","by":"agent","msg":"reviewer fail blocking 1 should_fix 3 — 해결안 적용의 A-1·A-3 경계 검출, 수정 영향 및 독립성의 반례를 계약에 추가한다.","ref":"review-records/R1.json","data":{"blocking":1,"should_fix":3,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-26T03:15:21.627Z","p":"P013","t":"T09","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2 — A-1·A-3 반례와 독립성 기준을 확인했다. 합의 영향과 수정 영향의 범위를 구현·시험에서 대조한다.","ref":"evidence/pre-review-stage2.json","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T03:33:12.516Z","p":"P013","t":"T09","type":"review","by":"agent","msg":"reviewer fail blocking 1 should_fix 3 — 한정 확인의 판정 범위와 원래 지적 목록을 고친다. 합의 영향과 지적 해소 집계를 구분한다.","ref":"evidence/review-records/R1.json","data":{"blocking":1,"should_fix":3,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-26T03:36:58.947Z","p":"P013","t":"T09","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2 — 한정 판정과 원래 지적 추적을 확인했다. 상위 검토 전의 동등 대조와 실패 원문 연결을 보완한다.","ref":"evidence/review-records/R2.json","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T03:38:38.637Z","p":"P013","t":"T09","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 1 — 실패 이후 원래 지적과 한정 판정, 합의 유지와 B1을 독립 재현했다.","ref":"evidence/tester-r2.md","data":{"blocking":0,"should_fix":1,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-26T03:41:05.427Z","p":"P013","t":"T09","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — 최신 실패 원문과 합의 동등성을 확인했고, main 미커밋 브리프는 번호와 제목으로 인용한다.","ref":"evidence/reviewer-final-stage2.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T03:41:05.740Z","p":"P013","t":"T09","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 — 보완된 109건과 독립 반례에서 문구 동등성, 최신 실패 원문과 원래 지적 추적을 대조했다.","ref":"evidence/tester-final.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-26T03:50:24.629Z","p":"P013","t":"T09","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T03:50:24.866Z","p":"P013","t":"T09","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T03:50:24.866Z","p":"P013","t":"T09","type":"task_done","by":"cli","msg":"done","ok":true}

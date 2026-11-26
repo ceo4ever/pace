@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "58d7d3622ce0dae083da26fa5dc151a0e37d5b5283058038c682bd7366b780b7",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "8b4cf237c886430576815e2eed490859592952279489f11f8f33a92ff4212476",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "같은 대상의 자동 재검토와 직전 blocking 대조"
+    }
+  ]
+}

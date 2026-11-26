@@ -136,3 +136,7 @@
 ## [2026-11-26] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
 ## [2026-11-26] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
 ## [2026-11-26] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-26] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
+## [2026-11-26] update | 프로필 = 독립 에이전트, 역할은 AI 비서 고정 (.pace/brain/pages/concept/profile-is-independent-agent.md)
+## [2026-11-26] update | pace-intent 의도 파악 기획 구조와 함정 (.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md)
+## [2026-11-26] update | 저장소 팀 설계와 갱신 흐름 (.pace/brain/pages/flow/저장소-팀-설계와-갱신-흐름.md)

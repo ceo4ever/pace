@@ -1,0 +1,27 @@
+{
+  "setup": "합성 대상과 주입 검토기, 상위 단계 보류와 근거 등록은 공개 bin/pace.ts CLI",
+  "ordinary": {
+    "calls": 4,
+    "rounds": 2
+  },
+  "joint": 2,
+  "confirmations": {
+    "ordinary": 1,
+    "diagnostic": 1
+  },
+  "blocked": {
+    "same": 16,
+    "sameStage": "upper_review",
+    "other": 16,
+    "otherStage": "upper_review",
+    "missingReview": 2
+  },
+  "upper": {
+    "slot": 1,
+    "registered": 0,
+    "recheck": 0,
+    "verdict": "pass",
+    "calls": 4,
+    "rounds": 2
+  }
+}
