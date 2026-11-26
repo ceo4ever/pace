@@ -1,0 +1,23 @@
+{
+  "text": "## P013 독립 목표 검토 1단계 결과\n\n**판정 요약:** 구현은 상위 목적에 맞습니다. 계약 성과는 코드와 테스트로 확인되지만, 시간·토큰 절감과 자율 완료라는 현장 효과는 아직 미확인입니다.\n\n### 읽은 범위\n- **원시 관측:** `observed/` 5개 파일을 모두 읽었습니다(`final-task.patch` 532줄 전체, `comparison.json`, `t07-npm-check.log`, `t08-cli.log`, `t08-compatibility.log`).\n- **코드:** 아래 위치를 grep으로 부분 확인했고, 파일 전체를 읽지는 않았습니다.\n  - `src/agent/verify-cli.ts`, `review-followup.ts`, `review-budget.ts`의 한도 상수\n  - `src/project/pre-review.ts:299`\n- **문서:** `skills/pace-project-dev/references/` 중 목표 달성 규칙이 남아 있는지만 grep으로 확인했습니다.\n- **읽지 않은 것:** `projects/`, `backlogs/`, TASK·TASK-CLOSE, 마감 문서, 작성자 자체 평가와 결과표는 지시대로 열지 않았습니다.\n- **자동 노출:** CLAUDE.md→AGENTS.md(저장소 규칙), git status와 최근 커밋 제목(T04~T07, T09), SessionStart 훅의 \"부트 생략\" 안내가 자동으로 들어왔습니다. 커밋 제목으로 태스크 이름은 알게 됐지만 판단 근거로 쓰지 않았습니다.\n\n### 독립 목표 대조: 맞음\n상위 목적별로 코드에서 확인한 내용입니다.\n- **필수 검증 생략·완화는 실제 승인으로만 가능:**\n  - A-3 요청은 `skip`/`weaken`만 받습니다(`review-followup.ts:207`).\n  - 요청이 열려 있는 동안에는 검토를 막고, 그 요청에 대한 결정은 `--by user`만 받습니다(`verify-cli.ts:310`, `:523`).\n  - PRE-REVIEW waiver도 `by: \"user\"`만 허용합니다(`pre-review.ts:299`).\n- **기준 변경은 A-1 승인이 필요:**\n  - `contract-change`는 `by:\"user\"`, `decision:\"A-1\"`, 이전·새 계약 지문, 승인 영수증(`receipt`)을 모두 요구합니다(`review-followup.ts:419-420`).\n  - 합의 영향이 `uncertain`/`changed`이면 거부합니다(`:455`).\n- **반복 검토 상한:**\n  - 단계마다 범위 재검토 2회, 호출 4회가 상한이고, 넘으면 `budget_exhausted`로 막습니다(`review-budget.ts:9-11`, `:147`).\n  - 그 뒤에는 공동 검토 → 수정 확인 → `upper_review` → `agreement_required` 순서로 넘어갑니다.\n- **기존 기준의 확인은 수행하고 사후 보고:**\n  - 상위 검토 확인 근거에 `agreement:\"confirmed\"`와 `verification:\"required\"`가 있어야 확인이 열립니다.\n  - 상위 검토와 그 확인은 기존 예산에 더하지 않습니다.\n  - 스킬 문서(decision-rights B, reviewer)도 \"필요한 확인은 수행하고 사후 보고, owner 요청은 A-1·A-3만\"으로 맞춰져 있습니다.\n- **최종 태스크(T08) 변경:**\n  - 계획 경고(80줄 초과, 기준·테스트 절에 다른 태스크 번호)는 알림만 하고 판정을 바꾸지 않습니다. 테스트가 이를 확인합니다.\n  - 시나리오 S8(소진 뒤에도 owner에게 묻지 않고 허브와 진행)과 S9(취향 수준의 blocking은 note로 넘김)가 의도를 직접 겨냥합니다.\n\n### 목표 달성\n**계약 성과(관측됨)**\n- `t07-npm-check.log`: 1486개 중 통과 1469, 실패 0, 건너뜀 17.\n- `t08-cli.log`: 7개 통과, `t08-compatibility.log`: 17개 통과. A-3 승인 정본 연결, 사용자 예외 게이트, 옛 형식 호환을 확인합니다.\n\n**현장 효과(미확인)**\n- **시간·토큰:** P013의 64회 호출 중 시간·토큰이 기록된 것은 2회입니다. 입력 토큰 합계는 8로 비현실적이어서 집계 방식(캐시 제외 등)이 의심됩니다. P007~P012는 전부 `null`이라 비교할 기준선이 없습니다.\n- **자율 완료:** `jointAttempts`, `escalations`, `upperReviews`가 모든 프로젝트에서 0이고, 예산을 예약한 호출(`reserved`)도 2/64뿐입니다. 소진 → 공동 검토 → 상위 검토 경로가 실제 작업에서 한 번도 돌지 않았습니다. 그래서 \"owner 없이 자율로 마친다\"는 효과는 확인되지 않았습니다.\n- **해소율:** `resolutionProxy.eligible`이 모든 프로젝트에서 0이라 계산할 수 없습니다.\n- 회차 수(P013은 원장 17개에 64회)만으로는 절감 여부를 판단할 수 없습니다.\n\n### 필요한 보완\n1. **(마감 전 필수)** T08 최종 상태에서 `npm run check` 전체를 돌린 기록이 없습니다. 관측된 것은 T07 전체 검사와 T08 대상 테스트뿐인데, T08이 `harness.ts`의 검사 경로를 바꿨으므로 전체 검사가 필요합니다. T08 변경은 아직 커밋되지 않았습니다.\n2. **(should_fix)** 토큰 측정이 비현실적입니다. 입력 토큰 8은 실제 비용을 반영하지 못하니 제공자가 보고하는 필드를 매핑하는 방식을 확인해야 합니다. 그렇지 않으면 \"토큰 절감\" 효과는 앞으로도 측정할 수 없습니다.\n3. **(should_fix)** 예산 수치(범위 재검토 2회·호출 4회, 공동 검토 2회)가 `AGENT-CALL.md`와 `reviewer.md`에서 빠지고 코드와 출력에만 남았습니다. 허브가 계획을 세울 때 참고할 수 있도록 정본 한 곳에 수치를 남기는 편이 낫습니다.\n4. **(note)** `--by user`가 실제 사람의 결정인지는 영수증과 원문 대조에 의존하며 기계가 보증하지 않습니다. 문서에 이미 한계로 적혀 있습니다.\n\n### 올릴 단계\n현장 효과는 계약 밖이므로 이 프로젝트를 막지 않고 미확인·한계로 기록합니다. 다음 프로젝트 몇 건에서 아래를 관측하도록 메모리 `idea`나 새 백로그로 올리길 권합니다.\n- 소진·공동 검토·상위 검토 경로가 실제로 발생하는지\n- 시간·토큰 보고율\n- owner 질문 수\n\n**pass**",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 64256,
+  "usage": {
+    "input_tokens": 20,
+    "output_tokens": 6245
+  },
+  "process_cleanup": "verified"
+}

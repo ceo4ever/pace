@@ -6,9 +6,10 @@ tags: []
 sources: [대화:2026-10-24, code:src/project/harness.ts]
 related: [brain-pull-not-push, 작업-하네스-흐름]
 created: 2026-10-24
-updated: 2026-11-25
+updated: 2026-11-26
 status: active
 ---
+
 
 ## 결정
 - 메모리는 부트가 매 세션 주입하지만 브레인은 지침으로만 '필요할 때 찾게' 되어 있어 놓치기 쉬웠다(2026-10-23 세션: 옛 백업은 직접 여러 번 뒤지고 브레인 검색은 두 번).
@@ -38,3 +39,7 @@ P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움�
 ## 팀/소통 하네스 추가 뒤 관문 대조 (2026-11-24)
 
 P009의 role start·소통 privacy·팀 회고 필수 판정은 new의 brainCandidates/withBrainMaterials와 finish의 checkBrainRow/brainUpdateCandidates/lint를 대체하지 않는다. 현재 harness.ts의 세 경로와 test/project-harness.test.ts의 후보·정본 행·후보별 이유 회귀를 직접 대조했다. 팀 회고 누락도 추가 보류 원인이며 브레인 행 통과가 이를 대신하지 않는다. 과거 P004 검사 수치는 해당 후보의 역사적 실행 범위로 유지한다.
+
+## P013 근거 대조 (2026-11-26)
+
+P013 finish는 Git의 태스크 후보에서 사전 검토 허가를 확인한 뒤 프로젝트 정본·브레인 행을 대조한다. 브레인 후보와 페이지 lint는 각각 프로젝트 마감 요건이다.

@@ -6,9 +6,10 @@ tags: [boot, hooks, platform]
 sources: [code:src/boot.ts, code:src/setup/install.ts, 대화:2026-10-22, url:https://github.com/anthropics/claude-code/blob/v2.1.316/CHANGELOG.md, url:https://learn.chatgpt.com/docs/hooks, url:https://cursor.com/docs/hooks, url:https://antigravity.google/docs/hooks, url:https://antigravity.google/docs/rules/, code:scripts/benchmark-boot.ts, code:src/project/harness.ts, code:src/project/workspace-registry.ts, test:test/boot.test.ts, doc:templates/RULES.md]
 related: [platform-hook-behavior, llm-cannot-speak-first, situational-boot-greeting]
 created: 2026-10-22
-updated: 2026-11-25
+updated: 2026-11-26
 status: active
 ---
+
 
 ## 결정
 
@@ -82,3 +83,7 @@ P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움�
 ## 근거 변경 대조 (2026-11-24)
 
 현재 boot.ts의 활성 AGENT 조회·worktree fallback·8000자 예산과 harness.ts의 projectWorktreeMainRoot를 대조했다. P009 start --role의 팀 정의 전달은 이 활성 프로젝트 AGENT/프로필 부트와 별도이며 기존 신원·보호 절 우선순위를 바꾸지 않는다. 실제 호스트 수신의 과거 한계는 유지한다.
+
+## P013 근거 대조 (2026-11-26)
+
+P013의 check/done/finish 변경은 태스크의 사전 검토와 후보 증거를 읽는다. 세션 시작의 역할 전달은 `startProjectRaw`와 기존 boot 역할 검사가 맡는다.

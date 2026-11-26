@@ -6,9 +6,10 @@ tags: [install, pitfalls, macos, windows]
 sources: [code:scripts/install.sh, code:scripts/install.ps1, code:src/setup/onboard.ts, 실측:2026-10-22, code:src/project/harness.ts, test:test/project-harness.test.ts, code:src/project/brain.ts, test:test/brain.test.ts, code:src/setup/install.ts, test:test/install-windows-wrapper.test.ts, test/intent-preview.test.ts, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/TASK-CLOSE.md, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/existing-test-body-audit.json]
 related: [llm-cannot-speak-first]
 created: 2026-10-22
-updated: 2026-11-25
+updated: 2026-11-26
 status: active
 ---
+
 
 | 함정 | 증상 | 대응 |
 |---|---|---|
@@ -62,3 +63,7 @@ P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움�
 ## 팀 역할 start/finish 추가 뒤 기존 설치 한계 대조 (2026-11-24)
 
 현재 harness.ts는 역할 start에 팀 측정 marker와 버전 사건을 추가하고 finish에 팀/소통 검사를 더했다. 기존 sectionStart/appendRow의 LF·CRLF 처리와 상태 변경 보존, project-harness의 CRLF·기존 표 회귀는 유지된다. 실제 사용자 설치기는 이 변경에서 실행하지 않았으며 기존 OS/Claude 지연/훅 신뢰의 역사적 관측을 새로운 실기 통과로 확대하지 않는다. 팀 정의 적재와 원문 영수증은 별도 참여 프로토콜이고 임의 도구 직접 호출까지 인증하지 않는다.
+
+## P013 근거 대조 (2026-11-26)
+
+P013에서 새 태스크 경고의 CRLF 정규화와 사전 검토 해시의 호환성을 확인했다. CRLF fixture는 태스크 번호·기준과 기존 상태 판정도 대조한다. 실제 Windows 설치는 이 검사의 범위 밖이다.

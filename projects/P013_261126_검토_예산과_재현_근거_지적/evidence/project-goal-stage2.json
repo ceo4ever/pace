@@ -1,0 +1,23 @@
+{
+  "text": "# P013 목표 검토 2단계 결과\n\n**판정: pass.** 필수 목적 세 가지(기존 독립 재검증의 자율 수행, A-1/A-3의 실제 사용자 결정, 양쪽 검토·판정 기록)가 모두 충족됩니다. 검토 원문·증거 위치·보안·실제 판정에 blocking은 없습니다. 다만 아래 should_fix가 남습니다.\n\n## 맥락과 열람 범위\n- **맥락:** 1단계(`observed/stage1.json`)와 다른 새 Claude 맥락입니다. 1단계 결과는 원문으로만 받았습니다. 도구는 Read·Grep·Glob만 썼고 명령·시험은 실행하지 않았습니다. 파일은 수정하지 않았습니다.\n- **자동으로 들어온 것:** CLAUDE.md→AGENTS.md, git 상태와 최근 커밋 제목(T04~T08), 부트 생략 훅.\n- **읽은 파일:**\n  - `observed/stage1.json`, `PROJECT.md`, `PROJECT-CLOSE.md`, `log.jsonl` 전체\n  - 아홉 TASK-CLOSE 전체\n  - owner 원문 4개: T01 `owner-decision-3bb679de.md`, T02 `owner-decision.md`·`owner-confirmation-limit.md`, T09 `owner-endpoint.md`\n  - T08 `tester-behavior.md`·`tester-sealed.md`·`reviewer-sealed.json`·`full-check.log`\n  - T07 `project-comparison.json`의 P007과 P013 항목\n  - T05 `security-stage2.json`\n  - BACKLOG.md 진행 현황, 후속 메모리 파일이 있는지\n- **읽지 않은 것:** 소스 코드, 각 TASK.md·BR 본문, 19개 사례의 원응답 JSON, 기타 reviewer·tester 원문.\n\n## P-1~P-5 대조\n| # | 판정 | 근거 |\n|---|---|---|\n| P-1 | 충족 | 아홉 TASK-CLOSE의 기준 T-n이 모두 증거 링크와 함께 통과입니다. BACKLOG 현황표는 BR01~BR09가 모두 완료이고, log에 아홉 태스크의 check·done이 있습니다. |\n| P-2 | 충족 | 예산·공동 2회·수정 확인 문턱→구조 진단→상위 검토→A-1 종료를 확인했습니다. 근거는 T01·T02·T09 시험과 실제 CLI 전이(`cli-smoke-final.json`, 종료 16)입니다. A-3 요청은 `--by user`만 받습니다(T08 reviewer의 코드 대조). |\n| P-3 | 충족 | 다른 제공자 실제 verify 원문은 T03 `real-review-result.json`(fail, blocking 1)과 T04 합성 백로그 원문입니다. 미확인이면 pass가 안 되는 것은 T04가 확인했습니다. |\n| P-4 | 충족 | `stats` 원장 집계가 있습니다. PROJECT-CLOSE 비교표의 P013 행(64/64, 160459ms, 입력 8, 출력 16239, blocking 17, 미확인 15)은 JSON과 일치합니다. |\n| P-5 | 충족 | 태스크마다 전체 검사 실패 0이고 건너뜀은 기존 17건입니다. 문구 고정 시험 `project-dev-skill.test.ts`도 통과했습니다. 초기에 실패한 3건(부트 시간 제한, 계획 행, R27)은 단독 실행과 최종 전체 실행에서 통과했습니다. |\n\n## 필수 목적\n1. **기존 독립 재검증의 자율 수행: 충족, 다만 진행 중에 정착함**\n   - T01·T02 초반에는 허브가 재검증 1회 허용을 owner에게 물었습니다(log 9·23행). 이 1회 승인에는 A-1 라벨이 붙었는데, 실제 합의 변경이 아니어서 라벨이 맞지 않습니다.\n   - owner가 두 번 정정했습니다(log 10·29행, owner 원문 대조).\n   - 그 뒤 T03~T08에서는 fail→수정→재검증이 여러 차례 있었지만 owner 질문이 0건입니다. 정정 이후로는 자율 수행이 실제 기록으로 확인됩니다.\n2. **A-1/A-3의 실제 사용자 결정: 충족**\n   - `by:\"user\"` 기록은 모두 허브가 전달한 owner 원문 파일에 연결됩니다.\n   - T09의 종료점 결정은 기록상 `by:\"agent\"`이지만 `owner-endpoint.md`에 owner 원문이 연결돼 있습니다.\n   - 실제 A-3 생략·완화 결정은 이 프로젝트에서 생기지 않았고, 합성 시험으로만 검증됐습니다.\n   - 원문이 진짜인지는 기계가 보증하지 않습니다. 이 한계는 문서에 적혀 있습니다.\n3. **양쪽 검토·판정 기록: 충족**\n   - 각 태스크에 tester와 다른 제공자 reviewer의 원문, 지문, 2단계 계약 대조가 있습니다.\n   - 판정은 log의 review 항목과 서로 맞습니다.\n\n## T07·T08 확인\n- **T07:** 비교표는 원장 필드를 그대로 옮겼고, 미보고·미관측을 표시했습니다. 인과를 주장하지 않습니다.\n  - P013 자체의 공동 시도·escalation은 log에 있지만 원장 지표에는 0(미관측)으로 나옵니다. 실제 검토를 기존 설치본으로 돌렸기 때문이며, T01에 이 사정이 적혀 있습니다.\n  - 효과 추정은 하지 않습니다.\n- **T08:** 고정된 19개 사례(S1~S6, S7-A·B·C·C′·D·E·E′·F·G·H·J, S8, S9)를 네 차수 돌렸습니다. 최종 tester는 19/19 pass입니다.\n  - 첫 tester(`tester-behavior.md`)는 T-5 증거가 없어 fail을 냈습니다.\n  - 봉인 판정(`tester-sealed.md`)에서 전체 검사 1,489건(통과 1,472, 실패 0), 문서 호환성 17/17, A-3 시험 3/3, reviewer 두 판정 pass를 확인해 pass가 됐습니다.\n  - 마지막 reviewer가 낸 F1(`--resume`·`--rounds` 안내 누락)은 해소됐습니다.\n\n## blocking 점검\n- **검토 원문:** 없음. 원문 JSON에 모델·제공자·접근(read-only)·강제 방식이 보존돼 있습니다.\n- **증거 위치:** 없음. 링크 대상이 실제로 있습니다(후속 메모리 포함). 다만 T08 tester가 인용한 기대표 경로(`격리-작업본/observed/expected.json`)는 저장소 밖에 있습니다. 저장소 안의 정본은 `scenarios-before-docs.md`입니다(note).\n- **보안:** 없음.\n  - T05 보안 reviewer는 pass이고, 사용자 예외 회귀를 해소했습니다.\n  - T08의 `harness.ts` 변경은 `notes`에만 경고를 더하고 `ok`·`issues`는 바꾸지 않습니다(reviewer-sealed의 코드 대조).\n  - 남은 지적은 should_fix·note 수준입니다: N1 문서화, void 처리된 pass, 시험 검출력의 빈 곳.\n- **실제 판정:** 없음. 마지막 유효 판정이 모두 pass이고 blocking은 0입니다.\n\n## should_fix(차단 아님)\n1. **T08 전체 검사가 어느 트리에서 돌았는지 묶여 있지 않음:** `full-check.log`는 요약 8줄뿐이라 대상 트리나 해시가 없습니다. 그 뒤 변경은 문서뿐이고(tester-sealed가 확인), finish가 전체 검사를 다시 돌리니 그때 확정하면 됩니다.\n2. **토큰 집계:** 입력 토큰이 20·30·8처럼 나옵니다. 캐시를 뺀 값으로 보이며, 1단계 지적과 같습니다. 이대로면 토큰 효과를 측정할 수 없습니다.\n3. **표 정리:** BACKLOG 현황의 프로젝트 칸은 BR04·BR09에만 P013이 있습니다. PROJECT.md의 T08 커밋 칸은 비어 있지만 실제 커밋은 `f836ae6`입니다. finish 때 맞춰야 합니다.\n4. **A-1 라벨:** T02의 재검증 1회 승인에 A-1을 붙였습니다. owner 정정으로 원문은 보존됐지만, 라벨 오용으로 따로 남겨 두는 편이 낫습니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 111136,
+  "usage": {
+    "input_tokens": 34,
+    "output_tokens": 11589
+  },
+  "process_cleanup": "verified"
+}

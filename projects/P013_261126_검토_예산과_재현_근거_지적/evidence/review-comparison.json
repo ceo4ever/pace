@@ -1,0 +1,458 @@
+[
+  {
+    "id": "P007",
+    "ledgers": 2,
+    "calls": 8,
+    "rounds": 8,
+    "durationMs": {
+      "total": null,
+      "reported": 0,
+      "missing": 8
+    },
+    "inputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 8
+    },
+    "outputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 8
+    },
+    "blocking": 21,
+    "unobservedBlockingRounds": 0,
+    "resolutionProxy": {
+      "eligible": 0,
+      "resolved": 0,
+      "ratio": null,
+      "unobservedRounds": 8
+    },
+    "downgraded": {},
+    "rereviewsByImpact": {
+      "미확인": {
+        "rounds": 4,
+        "durationMs": {
+          "total": null,
+          "reported": 0,
+          "missing": 4
+        }
+      }
+    },
+    "jointAttempts": 0,
+    "escalations": 0,
+    "diagnoses": 2,
+    "upperReviews": 0,
+    "unobservedFollowupRounds": 8,
+    "issues": [],
+    "callSources": {
+      "reserved": 0,
+      "unreserved": 8,
+      "unfinished": 0,
+      "interrupted": 0,
+      "voided": 0
+    },
+    "phases": {
+      "pre": {
+        "calls": 4,
+        "rounds": 4
+      },
+      "post": {
+        "calls": 4,
+        "rounds": 4
+      }
+    }
+  },
+  {
+    "id": "P008",
+    "ledgers": 7,
+    "calls": 15,
+    "rounds": 14,
+    "durationMs": {
+      "total": null,
+      "reported": 0,
+      "missing": 15
+    },
+    "inputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 15
+    },
+    "outputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 15
+    },
+    "blocking": 5,
+    "unobservedBlockingRounds": 0,
+    "resolutionProxy": {
+      "eligible": 0,
+      "resolved": 0,
+      "ratio": null,
+      "unobservedRounds": 14
+    },
+    "downgraded": {},
+    "rereviewsByImpact": {
+      "미확인": {
+        "rounds": 3,
+        "durationMs": {
+          "total": null,
+          "reported": 0,
+          "missing": 3
+        }
+      }
+    },
+    "jointAttempts": 0,
+    "escalations": 0,
+    "diagnoses": 0,
+    "upperReviews": 0,
+    "unobservedFollowupRounds": 14,
+    "issues": [],
+    "callSources": {
+      "reserved": 0,
+      "unreserved": 15,
+      "unfinished": 0,
+      "interrupted": 1,
+      "voided": 0
+    },
+    "phases": {
+      "pre": {
+        "calls": 4,
+        "rounds": 4
+      },
+      "post": {
+        "calls": 7,
+        "rounds": 6
+      },
+      "backlog": {
+        "calls": 4,
+        "rounds": 4
+      }
+    }
+  },
+  {
+    "id": "P009",
+    "ledgers": 18,
+    "calls": 152,
+    "rounds": 152,
+    "durationMs": {
+      "total": null,
+      "reported": 0,
+      "missing": 152
+    },
+    "inputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 152
+    },
+    "outputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 152
+    },
+    "blocking": 168,
+    "unobservedBlockingRounds": 8,
+    "resolutionProxy": {
+      "eligible": 0,
+      "resolved": 0,
+      "ratio": null,
+      "unobservedRounds": 152
+    },
+    "downgraded": {},
+    "rereviewsByImpact": {
+      "미확인": {
+        "rounds": 58,
+        "durationMs": {
+          "total": null,
+          "reported": 0,
+          "missing": 58
+        }
+      }
+    },
+    "jointAttempts": 0,
+    "escalations": 0,
+    "diagnoses": 16,
+    "upperReviews": 0,
+    "unobservedFollowupRounds": 152,
+    "issues": [],
+    "callSources": {
+      "reserved": 0,
+      "unreserved": 152,
+      "unfinished": 0,
+      "interrupted": 0,
+      "voided": 0
+    },
+    "phases": {
+      "pre": {
+        "calls": 33,
+        "rounds": 33
+      },
+      "post": {
+        "calls": 110,
+        "rounds": 110
+      },
+      "backlog": {
+        "calls": 7,
+        "rounds": 7
+      },
+      "project": {
+        "calls": 2,
+        "rounds": 2
+      }
+    }
+  },
+  {
+    "id": "P010",
+    "ledgers": 3,
+    "calls": 5,
+    "rounds": 5,
+    "durationMs": {
+      "total": null,
+      "reported": 0,
+      "missing": 5
+    },
+    "inputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 5
+    },
+    "outputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 5
+    },
+    "blocking": 3,
+    "unobservedBlockingRounds": 0,
+    "resolutionProxy": {
+      "eligible": 0,
+      "resolved": 0,
+      "ratio": null,
+      "unobservedRounds": 5
+    },
+    "downgraded": {},
+    "rereviewsByImpact": {},
+    "jointAttempts": 0,
+    "escalations": 0,
+    "diagnoses": 0,
+    "upperReviews": 0,
+    "unobservedFollowupRounds": 5,
+    "issues": [],
+    "callSources": {
+      "reserved": 0,
+      "unreserved": 5,
+      "unfinished": 0,
+      "interrupted": 0,
+      "voided": 0
+    },
+    "phases": {
+      "pre": {
+        "calls": 4,
+        "rounds": 4
+      },
+      "backlog": {
+        "calls": 1,
+        "rounds": 1
+      }
+    }
+  },
+  {
+    "id": "P011",
+    "ledgers": 3,
+    "calls": 8,
+    "rounds": 8,
+    "durationMs": {
+      "total": null,
+      "reported": 0,
+      "missing": 8
+    },
+    "inputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 8
+    },
+    "outputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 8
+    },
+    "blocking": 3,
+    "unobservedBlockingRounds": 0,
+    "resolutionProxy": {
+      "eligible": 0,
+      "resolved": 0,
+      "ratio": null,
+      "unobservedRounds": 8
+    },
+    "downgraded": {},
+    "rereviewsByImpact": {
+      "미확인": {
+        "rounds": 2,
+        "durationMs": {
+          "total": null,
+          "reported": 0,
+          "missing": 2
+        }
+      }
+    },
+    "jointAttempts": 0,
+    "escalations": 0,
+    "diagnoses": 0,
+    "upperReviews": 0,
+    "unobservedFollowupRounds": 8,
+    "issues": [],
+    "callSources": {
+      "reserved": 0,
+      "unreserved": 8,
+      "unfinished": 0,
+      "interrupted": 0,
+      "voided": 0
+    },
+    "phases": {
+      "pre": {
+        "calls": 3,
+        "rounds": 3
+      },
+      "post": {
+        "calls": 2,
+        "rounds": 2
+      },
+      "backlog": {
+        "calls": 3,
+        "rounds": 3
+      }
+    }
+  },
+  {
+    "id": "P012",
+    "ledgers": 11,
+    "calls": 25,
+    "rounds": 25,
+    "durationMs": {
+      "total": null,
+      "reported": 0,
+      "missing": 25
+    },
+    "inputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 25
+    },
+    "outputTokens": {
+      "total": null,
+      "reported": 0,
+      "missing": 25
+    },
+    "blocking": 4,
+    "unobservedBlockingRounds": 0,
+    "resolutionProxy": {
+      "eligible": 0,
+      "resolved": 0,
+      "ratio": null,
+      "unobservedRounds": 25
+    },
+    "downgraded": {},
+    "rereviewsByImpact": {
+      "미확인": {
+        "rounds": 2,
+        "durationMs": {
+          "total": null,
+          "reported": 0,
+          "missing": 2
+        }
+      }
+    },
+    "jointAttempts": 0,
+    "escalations": 0,
+    "diagnoses": 1,
+    "upperReviews": 0,
+    "unobservedFollowupRounds": 25,
+    "issues": [],
+    "callSources": {
+      "reserved": 0,
+      "unreserved": 25,
+      "unfinished": 0,
+      "interrupted": 0,
+      "voided": 0
+    },
+    "phases": {
+      "pre": {
+        "calls": 6,
+        "rounds": 6
+      },
+      "post": {
+        "calls": 15,
+        "rounds": 15
+      },
+      "backlog": {
+        "calls": 4,
+        "rounds": 4
+      }
+    }
+  },
+  {
+    "id": "P013",
+    "ledgers": 18,
+    "calls": 66,
+    "rounds": 66,
+    "durationMs": {
+      "total": 160459,
+      "reported": 2,
+      "missing": 64
+    },
+    "inputTokens": {
+      "total": 8,
+      "reported": 2,
+      "missing": 64
+    },
+    "outputTokens": {
+      "total": 16239,
+      "reported": 2,
+      "missing": 64
+    },
+    "blocking": 17,
+    "unobservedBlockingRounds": 15,
+    "resolutionProxy": {
+      "eligible": 0,
+      "resolved": 0,
+      "ratio": null,
+      "unobservedRounds": 66
+    },
+    "downgraded": {},
+    "rereviewsByImpact": {
+      "미확인": {
+        "rounds": 21,
+        "durationMs": {
+          "total": 68164,
+          "reported": 1,
+          "missing": 20
+        }
+      }
+    },
+    "jointAttempts": 0,
+    "escalations": 0,
+    "diagnoses": 1,
+    "upperReviews": 0,
+    "unobservedFollowupRounds": 64,
+    "issues": [],
+    "callSources": {
+      "reserved": 2,
+      "unreserved": 64,
+      "unfinished": 0,
+      "interrupted": 0,
+      "voided": 0
+    },
+    "phases": {
+      "pre": {
+        "calls": 24,
+        "rounds": 24
+      },
+      "post": {
+        "calls": 37,
+        "rounds": 37
+      },
+      "backlog": {
+        "calls": 5,
+        "rounds": 5
+      }
+    }
+  }
+]
