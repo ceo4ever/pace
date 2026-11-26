@@ -1,0 +1,45 @@
+{
+  "authorizedScope": [
+    "skills/pace-project-dev/SKILL.md",
+    "skills/pace-project-dev/evals/scenarios.md",
+    "skills/pace-project-dev/references/coordinator.md",
+    "skills/pace-project-dev/references/reviewer.md",
+    "skills/pace-team/references/required-roles.md"
+  ],
+  "implementationPatchSha256": "8a6a5d833a482c95eb2faf177f59846c52daeaf739eb19eba0104b40c4c6529b",
+  "finalSourceSha256": {
+    "skills/pace-project-dev/SKILL.md": "7a9e4a58a17af3c711c073e9bf89cd9fa4a91858208fd70c0b60172b0c3893b1",
+    "skills/pace-project-dev/evals/scenarios.md": "f1c7bbd715cb7968e0c3af559bdad5d4ed89624e14f561b427de52a8c94d97cf",
+    "skills/pace-project-dev/references/coordinator.md": "17a5848049cf0ad1ebb28612aefc00b37e665d9a6d44cd1fee3cd448c0f99a47",
+    "skills/pace-project-dev/references/reviewer.md": "aabac4ff6a0bdeae5210165795168d06465b63207b3f58836dbd5ef610e4de92",
+    "skills/pace-team/references/required-roles.md": "f6642a1fc4296bcef5ab719b2e949fa06eebdb8905057cf64f9b9e6dfe0ce40d"
+  },
+  "unchangedGolden": true,
+  "workerSpecAnchor": "#태스크와-백로그의-수정-확인과-상위-검토",
+  "requiredRoleIds": [
+    "TS-01",
+    "TS-02",
+    "TS-03",
+    "TS-04",
+    "TS-05",
+    "TS-06",
+    "TS-07",
+    "TS-08",
+    "TS-09",
+    "TS-10",
+    "TS-11",
+    "TS-12",
+    "TS-13",
+    "TS-14",
+    "TS-15",
+    "TS-16",
+    "TS-17",
+    "TS-18",
+    "TS-19",
+    "TS-20",
+    "TS-21",
+    "TS-22"
+  ],
+  "skillBytes": 10770,
+  "gitDiffCheck": true
+}

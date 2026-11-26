@@ -1,0 +1,81 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "review": {
+    "target": "implementation-final.patch",
+    "hash": "8a6a5d833a482c95eb2faf177f59846c52daeaf739eb19eba0104b40c4c6529b",
+    "verdict": "unknown",
+    "rereview_of": "review-records/R1.json",
+    "record": "review-records/R2.json"
+  },
+  "assessment": {
+    "stage": "post",
+    "verdict": "unknown",
+    "reported_verdict": "fail",
+    "differs": true,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "should_fix",
+        "category": "criteria",
+        "confidence": "high",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T04_호출_절차_연결/evidence/eval-summary.md:20",
+        "scenario": "최종 패치(8a6a5d83…)와 최종 reviewer.md(aabac4ff…)로 53건을 다시 실행했다는 주장의 근거로 eval-exact-proof.json을 링크했으나 이 파일이 워크트리에 없다. eval-disposition.json은 여전히 3차 판정을 근거로 쓰고, tester-final.json은 39건이 최종 이전 reviewer.md를 받았다고 적는다. aabac4ff… 해시를 담은 eval 산출물이 없어 최종 정본으로 S1~S9·D·H·W 회귀를 통과했다는 사실이 관측되지 않는다.",
+        "reproduction": "Glob **/eval-exact-proof* 결과 0건, evidence/eval-* 목록에 없음, .gitignore는 *.local.json·*.local.md만 제외, Grep aabac4ff 결과 scope-proof.json에만 있음",
+        "impact": "criterion",
+        "criterion": "T-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "note",
+        "category": "criteria",
+        "confidence": "medium",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T04_호출_절차_연결/evidence/eval-disposition.json:10",
+        "scenario": "F1을 보완하더라도 사례별 최종 출처 파일(eval-disposition.json)과 eval-summary.md:12의 53/53 합산 설명이 옛 3차·재검증 기준에 머물러, 최종 재실행 결과와 출처가 갈린다.",
+        "reproduction": "eval-disposition.json:11 evidence가 eval-round3-grades.json임",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "패치가 바뀌지 않았으므로(scope-proof.json:9 8a6a5d83…, 바뀐 줄 없음) 직전 관측을 그대로 적용한다. reviewer 호출 표·기회 규칙, coordinator 호출 절, SKILL.md 지시, TS-16~18이 있고, W05 합성 원장 3행과 actual-early의 diagnosisRows 0을 확인했다. eval 근거가 최종 정본으로 확인되지 않는 한계는 F1에 둔다."
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "패치가 바뀌지 않아 직전 관측을 유지한다. reviewer upper_review 행에서 중단·인계를, coordinator 절에서 허브 입력·call_ref·허브 조치/A-1/A-3 영향표·agreement_required 보고와 대기를 확인했다. 이는 decision-rights.md:41과 일치한다. 도구 상한은 P013 T09 인용이다."
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "직전 관측(actual-early: worktree_pm/early-1, actual-upper: hub_pm/upper-1, model.actual claude-fable-5-2·high, 출처 host)을 유지한다. 추가로 root-evidence-original.json이 원본 근거 사본임을 확인했다. author·worker는 fixture 식별자이며 call_ref는 calls/log.jsonl id fc9a48c9…와 receipt를 가리킨다. 해시 대조는 직접 하지 않았다."
+        },
+        {
+          "id": "T-4",
+          "state": "unverified",
+          "observation": "TS-16~22 등록, requirements 대조표, reviewer 반환 안내, W01~W12 시나리오는 있다. eval-summary.md:18-20은 최종 패치로 53건을 재실행했다고 주장하지만, 근거 파일 eval-exact-proof.json이 없다. 최종 reviewer.md(aabac4ff…)로 실행했다는 해시 근거도 관측되지 않는다(F1)."
+        },
+        {
+          "id": "T-5",
+          "state": "present",
+          "observation": "full-check.txt:26-43에서 15:24:35Z~15:32:06Z에 1524건을 실행해 1507 통과, 실패 0, skip 17, 종료 0을 확인했다. 실행 전후 구현 패치와 제품 diff SHA는 모두 8a6a5d83…였다. security.txt:1-3에서 15:33:25Z에 같은 SHA로 비밀 검사 통과(8799개 파일)를 확인했다. golden anchor와 gitDiffCheck true(scope-proof.json)는 직전 관측대로 유지된다."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "agent_call_id": "82237e8d3c5001755eb56ab607b0252e"
+}

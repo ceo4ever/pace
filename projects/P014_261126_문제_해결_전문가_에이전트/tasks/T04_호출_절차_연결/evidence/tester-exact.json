@@ -1,0 +1,12 @@
+{
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "readOnly": true,
+  "text": "`tester-final.json`의 **T-1~T-5 충족 판정을 유지**하며, T-4의 구버전 문서 입력 유보와 T-5의 최종 패치 전체 검사 유보는 최신 증거로 해소됐습니다. [기존 판정](evidence/tester-final.json)\n\n- T-4의 `finalByCase`는 최종 패치에서 복원한 사례·필수·금지 조건과 53건 모두 일치했고, 전부 통과했으며 최초 결과는 행동 통과 51건·실패 1건·타임아웃 1건이었습니다. [행동 평가](evidence/eval-exact-proof.json)\n- 응답이 나온 후보 세션 55개의 프롬프트와 문서 사본 SHA를 다시 계산해 기록과 대조했고, 제공된 변경 문서는 최종 패치의 적용 후 Git blob과 일치했으며 S6에는 스킬 이름과 설명만 제공됐습니다. [행동 평가](evidence/eval-exact-proof.json) [최종 패치](evidence/implementation-final.patch)\n- S7-A는 같은 대상의 `verify` 재호출 누락으로 실패했고, 동일 프롬프트로 새 세션에서 재시도해 해당 단계를 포함한 응답이 교차 채점을 통과했습니다. [행동 평가](evidence/eval-exact-proof.json)\n- D01은 Codex 타임아웃 두 번과 Claude의 외부 변경 승인 후 재검증 기준 누락을 거쳤고, 같은 문서·판정 기준에서 분기별 독립 확인을 명시하도록 프롬프트를 보강한 뒤 Codex 교차 채점을 통과했습니다. [행동 평가](evidence/eval-exact-proof.json)\n- T-5의 전체 선언 검사 원로그는 1,524건 중 1,507건 통과·0건 실패·17건 스킵을 기록했고, 실행 전후 구현 패치와 제품 diff의 SHA-256 네 값이 재계산한 패치 SHA `8a6a5d83…`와 일치했습니다. [전체 검사](evidence/full-check.txt)\n- 비밀 검사 기록은 같은 패치 SHA에 귀속되며, 명시된 제외 범위를 적용해 8,802개 파일을 검사하고 통과했습니다. [비밀 검사](evidence/security.txt)\n- T-3의 원본 근거 JSON, 분석 본문, 끝 개행을 포함한 반환 파일의 SHA-256을 각각 재계산해 `af3ff67b…`, `0742e97b…`, `a872064b…`를 확인했고, `root_review` 슬롯 1의 근거 해시와 `call_ref`가 원장 한 행 및 같은 호출 영수증에 연결됐습니다. [원본 근거](evidence/root-evidence-original.json) [상위 호출 기록](evidence/actual-upper.json)"
+}

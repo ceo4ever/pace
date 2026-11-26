@@ -41,3 +41,11 @@
 {"ts":"2026-11-26T14:46:01.647Z","p":"P014","t":"T05","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T14:46:01.977Z","p":"P014","t":"T05","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T14:46:01.977Z","p":"P014","t":"T05","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T14:46:29.384Z","p":"P014","t":"T04","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T15:00:35.539Z","p":"P014","t":"T04","type":"question","by":"agent","msg":"P-11 실제 상위 근본 검토의 허브 호출 주체 관측 요청","to":"coordinator"}
+{"ts":"2026-11-26T15:04:21.372Z","p":"P014","t":"T04","type":"answer","by":"agent","msg":"허브가 격리 상위 검토의 실제 Fable/high 호출 한 건을 완료했다. 종료 0과 한 행을 보고받아 원장·반환을 대조한다."}
+{"ts":"2026-11-26T15:38:38.685Z","p":"P014","t":"T04","type":"gate","by":"cli","msg":"check: contract","ok":false,"data":{"check":1}}
+{"ts":"2026-11-26T15:38:46.818Z","p":"P014","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T15:38:47.141Z","p":"P014","t":"T04","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T15:38:47.141Z","p":"P014","t":"T04","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T15:39:13.824Z","p":"P014","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}

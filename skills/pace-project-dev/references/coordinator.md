@@ -20,18 +20,36 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
 
 ## 메시지별 처리
 
-- **검토·검사 장애는 도구로 재현한다.** 원문·노출 범위·실행 조건을 대조하고 [B](decision-rights.md#b-허브의-장애-대응)를 따른다. 다음 검토 조치는 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)의 도구 상태에서 확인한다.
+- **검토·검사 장애는 도구로 재현한다.** 원문·노출 범위·실행 조건을 대조하고 [B](decision-rights.md#b-허브의-장애-대응)를 따른다. 재현·원인 판별 단계의 [전문가 호출](#문제-해결자-호출)과 결정·검증 결과 회신을 연결한다. 다음 검토 조치는 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)의 도구 상태에서 확인한다.
 
 - `question`: 작업자가 ask 직전 `pace project log P### [T##] --type question --by agent --to coordinator --msg "질문 요약"`, 답 수신 직후 같은 범위의 `--type answer --by agent`를 기록한다. 코디네이터는 답변 전에 질문 기록을 확인하고 누락된 것만 `--by coordinator --to coordinator`로 보완한다. 답 사건은 작업자가 수신 시각에 한 번만 기록한다. [A](decision-rights.md#a-결정-주체)에 따라 답하고 조사나 재현이 필요하면 B로 이어간다.
 - `escalation`: 작업자의 `--type escalation --to coordinator` 기록을 확인한다. [B](decision-rights.md#b-허브의-장애-대응)로 원인을 조사·재현하고 작업자에게 결정·근거·재검증 기준을 회신한다. 조치가 A에 걸려 owner에게 실제로 전달할 때 같은 범위의 `--type escalation --by coordinator --to owner --ref tasks/T01_이름/evidence/question-links.md`를 기록한다. owner 답을 받으면 코디네이터가 전달 사건의 answer를 기록한 뒤 reply하고, 작업자는 원래 escalation의 answer를 기록한다. 질문 전달과 같은 수명·연결 규칙을 적용한다.
 - `worker_done`: 검증 대상 커밋과 최종 변경 범위, 검사 결과·독립 판정·증거·미해결 사항을 확인한다(`pace project list`, PROJECT-CLOSE, METRICS.md, projects/METRICS.md 비교표). 재검사 범위는 [검증 책임](verification.md)을 따르고 부족한 근거는 해당 부분과 이유를 특정해 워크트리 PM에게 보완 요청한다. [C](decision-rights.md#c-owner에게-전할-내용)의 사후 요약과 승인 확인을 적용한다. 보고에는 이전 프로젝트 대비 태스크 수·작업 시간·작업자 출력 토큰·blocking 차이를 한 줄로 포함한다. 규모·도구·기록 누락 차이를 함께 밝힌다.
   작업자 터미널은 정리 결정을 한다 — 결과를 보관하고 놓아 주거나(`worker-release`), 디버깅할 일이 있으면 남긴다(`worker-retain`).
 
+### 문제 해결자 호출
+
+[B](decision-rights.md#b-허브의-장애-대응)의 재현·원인 판별, 백로그 검토의 조기·소진, 워크트리에서 인계받은 공동 시도에 실제 `pace-troubleshooter`를 배정한다. 목표·실패 원문·실험 조건·변경을 준다. 허브가 반환과 [A](decision-rights.md#a-결정-주체)의 영향을 대조해 결정하고, 구현자 또는 백로그 기획자가 적용하고 독립 검토자가 재검증한다. 단계별 일반 예산(전체 1회와 범위 재검토 1회) 및 뒤 공동 시도 2회의 허용은 원장을 따르고, 각 공동 시도에서 원인을 대조하는 전문 호출은 한 번이다. 필요한 구조 수정·확인은 끝까지 수행하고 근거와 회차를 사후 보고한다. 한도만으로 별도 승인 요청을 만들지 않는다.
+
+워크트리에서 받은 `upper_review`는 남은 공동 시도·수정 확인 횟수와 관계없이 먼저 처리한다. 실패 원문·진단 기록·바뀐 줄, 상위 목적과 owner 원문, 현재 TASK·브리프·설계, 백로그 해석과 출처를 대조한다. 작성자·작업자와 분리된 새 맥락에서 [지정 모델과 노력값의 문제 해결자](../../../docs/TEAM.md#문제-해결자-호출과-실제-적용)를 한 번 부른다. 대조한 상위 목적·owner 원문·계약·설계·백로그 해석과 출처·검토 원장·진단·바뀐 줄을 호출 입력으로 제공한다. 계약이나 설계가 상위 목적과 맞는지, owner 근거 없이 상태와 장치가 누적됐는지 평가하는 범위를 준다. 두 번째 `upper_review`는 계약·백로그 자체를 다시 대조한다.
+
+`pace agent review-note --upper-review --target … --summary … --file <근거 JSON>`으로 같은 실패 지문 및 전문가 원문을 잇는다. 근거에 현재 `trigger`, `slot`, `target`, `hash`, 호출자·작성자와 다른 `reviewer`, `author`, `worker`, 실제 `provider`, 별개의 `context`, `cross`, `analysis`를 둔다. `cross: false`이면 `cross_unavailable`의 실제 사유를 쓰고 슬롯 2에는 `contract`·`backlog` 대조도 둔다. `call_ref`가 `ledger`(`calls/log.jsonl`), 동일 행 `id`, `receipt` 경로를 가리키게 한다. receipt는 호출 `ref`의 caller·기회·반환 근거다. 실제 모델·effort는 이 호출 원장에서 확인한다. 세션 원문 ID와 비밀은 남기지 않는다.
+
+| 해결안의 영향 | 허브가 하는 일 |
+|---|---|
+| 기존 합의를 충족하는 수정·독립 확인 | 적용을 배정하고 `--upper-check --impact <영향> --file <근거>`를 기록한 뒤 해당 독립 재검증을 한 번 한다. 결과를 사후 보고한다. |
+| 목표·범위·완료 기준 변경 | A-1을 owner에게 올리고 결정을 기다린다. |
+| 필수 검증 생략·완화 또는 잔여 blocking 수용 | 검증 범위 또는 판정에의 영향을 써서 A-3으로 owner에게 올리고 결정을 기다린다. |
+
+두 번째 근본 검토의 독립 확인까지 fail이면 `agreement_required`에서 멈춘다. 허브는 `--upper-check`에 추천 선택과 이유를 넣는다. `followup.endpoint`에서 대상·단위, 회차별 추이, 두 원인·해결안, 마지막 재현과 기준 조정/보류/한 번 더의 선택지를 확인하고, 참조된 `review-records/R*.json`에서 회차별 blocking 수를 세어 A-1 정리 보고에 더한다. 추천과 이유를 함께 적고 결정 전 추가 검토를 열지 않는다. 상위 호출과 딸린 재검증은 공동 시도·수정 확인에 더하지 않는다. 계약을 실제 바꾼 경우 정본 B에 따라 해당 단계의 일반 예산만 새로 연다.
+
 ## 결정과 근거
 
 [A](decision-rights.md#a-결정-주체)로 결정 주체를 고르고 직접 확인한 계약·규칙·파일·명령 결과를 답에 연결한다. 확인이 필요한 근거는 [B](decision-rights.md#b-허브의-장애-대응)로 조사한다. A에 해당하면 [C](decision-rights.md#c-owner에게-전할-내용)의 요청을 하고 owner 답을 작업자에게 그대로 전한다. 담당 PM이 내린 결정은 C의 사후 요약에 모으고, 작업자는 허브 결정을 `PROJECT.md` 결정 메모에 "(main 판단)"으로 남긴다.
 
 백로그 기획·작성·관리는 저장소의 기획자에게 위임한다. 허브는 [BP-09](../../pace-team/references/required-roles.md#백로그-기획자-요건)에 따라 확인한 범위와 입력을 넘기고 반환과 근거를 받는다. 새 초안과 규모가 큰 백로그 변경은 [독립 목표 대조](goal-review.md)에 따라 작성자와 별개인 reviewer에게 맡긴다. 다른 제공자를 우선하고 미실행 시 B1을 적용한다. 검토 지적은 [BP-07·BP-08](../../pace-team/references/required-roles.md#백로그-기획자-요건)로 기획자에게 전달한다. A에 따른 결정 요청과 owner 소통은 허브가 맡고, 범위 안의 기존 백로그 정정은 [백로그·BR 규칙](backlog.md#백로그br-규칙)으로 기획자가 처리한다.
+
+확정한 백로그 범위 밖의 새 결과를 포함할지 남았다면 허브가 A-1을 판정한다. 다른 계정으로 공유하자는 제안은 범위 변경 여부와 실제 전송·권한의 A 판단을 각각 대조한다. 합의 범위 안의 행 번호·상태 정정은 기획자가 처리하고 결과와 근거를 허브에 반환한다. 확대 제안은 기획자가 현재 근거·선택지와 함께 허브의 결정 대조에 올린다. 합의한 본래 작업은 계속한다.
 
 ## 질문 수신자와 사용자 개입
 

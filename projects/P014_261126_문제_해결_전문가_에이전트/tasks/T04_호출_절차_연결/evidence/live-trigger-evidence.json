@@ -1,0 +1,49 @@
+{
+  "ordinaryReviewProviderControlled": true,
+  "expertProviderReal": true,
+  "early": {
+    "firstVerdict": "unknown",
+    "firstSignalCount": 0,
+    "verdict": "fail",
+    "rounds": 1,
+    "exhausted": null,
+    "signals": [
+      {
+        "kind": "recurring_area",
+        "unit": {
+          "kind": "task",
+          "ref": "T01_early/post"
+        },
+        "evidence": [
+          "review-records/R1.json",
+          "review-records/R2.json"
+        ],
+        "file": "src/codec.ts"
+      },
+      {
+        "kind": "superficial_fix",
+        "unit": {
+          "kind": "task",
+          "ref": "T01_early/post"
+        },
+        "evidence": [
+          "review-records/R1.json",
+          "review-records/R2.json"
+        ],
+        "file": "src/codec.ts"
+      }
+    ]
+  },
+  "upper": {
+    "diagnosis": "diagnosis",
+    "launchVerdict": "fail",
+    "exposedEscalation": "upper_review",
+    "triggerExit": 0,
+    "nextVerifyExit": 16,
+    "nextVerifyRan": false,
+    "slot": 1,
+    "source": "review-records/R2.json",
+    "jointAttemptsAtTrigger": 0
+  },
+  "recovery": "같은 실패 판정을 보존해 검토 근거의 macOS realpath를 적용했다. 조기 전문가 호출 시도는 한 번이고 프로젝트 사건의 fixture 표 수정 뒤 같은 ID·시각으로 보강했다."
+}

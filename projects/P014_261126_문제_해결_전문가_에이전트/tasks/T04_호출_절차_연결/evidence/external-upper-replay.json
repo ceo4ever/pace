@@ -1,0 +1,131 @@
+{
+  "syntheticReviewer": true,
+  "entrypoint": "pace agent review-hand / review-record",
+  "firstVerdict": "fail",
+  "diagnosisEntry": {
+    "type": "diagnosis",
+    "at": "2026-11-26T15:20:23.948Z",
+    "target": "implementation.patch",
+    "layer": "structure",
+    "summary": "입력과 저장 경계의 독립 확인",
+    "recovery_id": "61a537e1-b4e0-408d-8253-861ac17c4784",
+    "recovery_evidence": {
+      "source": "evidence/review-records/R1.json",
+      "evidence_hash": "5bfee8d4b606a20ae5b6e33c33af0fd039695960ec4a91f218de10aa0f6a202d"
+    }
+  },
+  "releasePath": {
+    "exitCode": 0,
+    "source": "external",
+    "record": "review-records/R2.json",
+    "verdict": "fail",
+    "followup": {
+      "stage": "post",
+      "target": "evidence/implementation.patch",
+      "hash": "a74b566274a9b66845d65ffc1acb2e8efd8850373c822608d9f46eb8076db2c9",
+      "action": "upper_review",
+      "decision": null,
+      "recommendation": null,
+      "choices": [],
+      "joint_attempts": 0,
+      "joint_decisions": [],
+      "confirmation_count": 0,
+      "diagnostic_confirmation_count": 0,
+      "confirmations": [],
+      "upper_reviews": [],
+      "upper_results": [],
+      "upper": {
+        "trigger": "61a537e1-b4e0-408d-8253-861ac17c4784",
+        "stage": "post",
+        "target": "evidence/implementation.patch",
+        "source": "review-records/R2.json",
+        "hash": "a74b566274a9b66845d65ffc1acb2e8efd8850373c822608d9f46eb8076db2c9",
+        "contract": "f47e6e74f077ae44fbfc1b2629daa44fa92fb590410d7ce3873cb7f49526d246",
+        "current_contract": "f47e6e74f077ae44fbfc1b2629daa44fa92fb590410d7ce3873cb7f49526d246",
+        "slot": 1
+      },
+      "verdict_summary": "일반 유효 판정 2회, 최신 유효 판정 fail",
+      "review_history": [
+        {
+          "from": "evidence/REVIEW-LOG.jsonl",
+          "at": "2026-11-26T15:20:23.786Z",
+          "target": "implementation.patch",
+          "hash": "eb025fdbd36577bbd25c8971dcd8c2cd83065f7df12879a3c7081f26f8f17015",
+          "record": "review-records/R1.json",
+          "verdict": "fail",
+          "interrupted": false,
+          "invalidated": null,
+          "cross": true,
+          "blocking": [
+            "F8 [blocking] src/storage.ts:5 — 거절 중 기존 두 기록을 덮는다"
+          ]
+        },
+        {
+          "from": "evidence/REVIEW-LOG.jsonl",
+          "at": "2026-11-26T15:20:24.266Z",
+          "target": "implementation.patch",
+          "hash": "a74b566274a9b66845d65ffc1acb2e8efd8850373c822608d9f46eb8076db2c9",
+          "record": "review-records/R2.json",
+          "verdict": "fail",
+          "interrupted": false,
+          "invalidated": null,
+          "cross": true,
+          "blocking": [
+            "F8 [blocking] src/storage.ts:5 — 거절 중 기존 두 기록을 덮는다"
+          ]
+        }
+      ],
+      "calls": [
+        {
+          "type": "call",
+          "at": "2026-11-26T15:20:23.620Z",
+          "target": "implementation.patch",
+          "kind": "goal",
+          "call_id": "6f3716ad-8909-4732-bec4-7675ac702ad9",
+          "frozen_digest": "e23e31bd4b793824ca1006fe4a173a97e75960ddf720d841828efbff1abde08e",
+          "from": "evidence/REVIEW-LOG.jsonl"
+        },
+        {
+          "type": "call",
+          "at": "2026-11-26T15:20:24.112Z",
+          "target": "implementation.patch",
+          "kind": "goal",
+          "call_id": "911635b6-a9ce-4f57-a43a-7668b88a7cea",
+          "frozen_digest": "19debf64e3e7acb61718c94b343c4c1af2b30a6b418c5dcdfaf10b540c540bb1",
+          "from": "evidence/REVIEW-LOG.jsonl"
+        }
+      ],
+      "diagnoses": [
+        {
+          "type": "diagnosis",
+          "at": "2026-11-26T15:20:23.948Z",
+          "target": "implementation.patch",
+          "layer": "structure",
+          "summary": "입력과 저장 경계의 독립 확인",
+          "file": "projects/P002_261126_call_routes/tasks/T02_upper/evidence/diagnosis.md",
+          "recovery_id": "61a537e1-b4e0-408d-8253-861ac17c4784",
+          "recovery_evidence": {
+            "source": "evidence/review-records/R1.json",
+            "evidence_hash": "5bfee8d4b606a20ae5b6e33c33af0fd039695960ec4a91f218de10aa0f6a202d"
+          },
+          "from": "evidence/REVIEW-LOG.jsonl"
+        }
+      ],
+      "voids": [],
+      "finding_assessments": [
+        {
+          "finding": "F8 [blocking] src/storage.ts:5 — 거절 중 기존 두 기록을 덮는다",
+          "decision": null,
+          "reason": null
+        }
+      ]
+    }
+  },
+  "followingHand": {
+    "exitCode": 16,
+    "reason": "upper_review",
+    "reviewRan": false,
+    "reviewLedgerSha256": "db51d55693626b0df8a53593536b818567b85e15cee1f055e9a0cd4d00ecd9e4",
+    "ledgerUnchanged": true
+  }
+}

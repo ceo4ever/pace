@@ -1,0 +1,85 @@
+{
+  "projectLogRef": "tasks/T01_early/evidence/troubleshooter-receipt.json",
+  "diagnosisRows": 0,
+  "roundsBeforeExpert": 1,
+  "call": {
+    "version": 1,
+    "id": "f6149313b606685194e0fd006a1a5387",
+    "at": "2026-11-26T14:55:25.173Z",
+    "task": "T01",
+    "agent": "pace-troubleshooter",
+    "engine": "claude",
+    "route": "p",
+    "status": "completed",
+    "reason": null,
+    "replacement_reason": null,
+    "ref": "tasks/T01_early/evidence/troubleshooter-receipt.json",
+    "model": {
+      "requested": {
+        "value": "claude-fable-5-2",
+        "source": "requested"
+      },
+      "actual": {
+        "value": "claude-fable-5-2",
+        "source": "host"
+      }
+    },
+    "effort": {
+      "requested": {
+        "value": "high",
+        "source": "requested"
+      },
+      "actual": {
+        "value": "high",
+        "source": "host"
+      }
+    },
+    "duration_ms": {
+      "value": 114542,
+      "source": "tool"
+    },
+    "tokens": {
+      "input": {
+        "value": 8,
+        "source": "tool"
+      },
+      "output": {
+        "value": 11561,
+        "source": "tool"
+      },
+      "total": {
+        "value": null,
+        "source": "unknown"
+      }
+    }
+  },
+  "receipt": {
+    "caller": "worktree_pm",
+    "opportunity": {
+      "unit": "P002/T01",
+      "stage": "post",
+      "trigger": [
+        "review-records/R1.json",
+        "review-records/R2.json"
+      ],
+      "round": "early-1"
+    },
+    "callId": "f6149313b606685194e0fd006a1a5387",
+    "return": "tasks/T01_early/evidence/troubleshooter-response.md",
+    "observedModel": {
+      "value": "claude-fable-5-2",
+      "source": "host"
+    },
+    "observedEffort": {
+      "value": "high",
+      "source": "host"
+    },
+    "sameSessionStop": true,
+    "isolatedRealRole": true,
+    "responseSha256": "1f8270d5692828b7109325cbcf56061e30f365c052b096b019b9ded6340b1a83",
+    "roleBodySha256": "e691282db6787571b7e038ee3a06abcc41dde99f9824baa2962c60eddd9bb181"
+  },
+  "answersFile": "tasks/T01_early/evidence/troubleshooter-response.md",
+  "expertRows": 1,
+  "controlledVerifier": true
+}

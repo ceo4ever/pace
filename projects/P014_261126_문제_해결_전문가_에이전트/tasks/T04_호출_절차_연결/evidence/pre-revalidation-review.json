@@ -1,0 +1,126 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "review": {
+    "target": "implementation-final.patch",
+    "hash": "8a6a5d833a482c95eb2faf177f59846c52daeaf739eb19eba0104b40c4c6529b",
+    "verdict": "unknown",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "assessment": {
+    "stage": "post",
+    "verdict": "unknown",
+    "reported_verdict": "fail",
+    "differs": true,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "should_fix",
+        "category": "criteria",
+        "confidence": "high",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T04_호출_절차_연결/evidence/eval-inputs-and-sources.json:1664",
+        "scenario": "최종 reviewer.md(sha256 aabac4ff…, scope-proof.json:14)가 아닌 이전 판(a2fc6cc3…, 3차 접근 기록 14324바이트)으로 53사례 중 40건이 판정됐다. 최종 문구가 바뀐 S9(B 오분류 복구)·W05(기회별 시도 ID)·W01·W03·W04·W08~W12가 여기에 해당한다. 재검증 13건에는 원본 해시가 없어 최종 정본에 대한 S1~S9·D·H·W 회귀 통과가 관측되지 않는다.",
+        "reproduction": "scope-proof.json:14와 eval-inputs-and-sources.json:1664의 sha256 비교, eval-round3-access.json:28 fileBytes 14324, eval-recheck-*.json에 sourceFiles 해시 없음",
+        "impact": "criterion",
+        "criterion": "T-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "should_fix",
+        "category": "criteria",
+        "confidence": "high",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T04_호출_절차_연결/evidence/full-check.txt:14",
+        "scenario": "1524개 전체 선언 검사는 최종 문서 문구 전에 실행됐고 최신 사본에는 140개 집중 검사만 실행됐다. security.txt에는 대상 해시·시각이 없어 고정 패치 8a6a5d83…에 대한 전체 선언 검사와 보안 검사 통과가 확인되지 않는다.",
+        "reproduction": "full-check.txt:14 문구, security.txt에 패치 해시 부재",
+        "impact": "criterion",
+        "criterion": "T-5",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "note",
+        "category": "criteria",
+        "confidence": "medium",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T04_호출_절차_연결/evidence/root-evidence-fields.json:1",
+        "scenario": "근본 검토 근거가 원본 사본이 아닌 요약(analysis 대신 analysis_sha256, 추가 키)이라 root_review의 evidence_hash af3ff67…와 대조할 수 없다. cross:true는 fixture author·worker 식별자에 기댄 가정이며 그 사실이 표시돼 있다.",
+        "reproduction": "actual-upper.json:8의 evidence_hash와 root-evidence-fields.json의 키 구성 비교",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "note",
+        "category": "design",
+        "confidence": "medium",
+        "location": "skills/pace-project-dev/references/reviewer.md:37",
+        "scenario": "tester의 recurrence 반환 안내가 reviewer.md에만 있고 tester.md에는 없다. 전달은 PM의 --purpose-file에 의존하며, tester가 이 안내를 실제로 받는 경로를 직접 관측한 eval은 없다.",
+        "reproduction": "Grep recurrence: skills/pace-project-dev/references/tester.md 일치 0건",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "note",
+        "category": "other",
+        "confidence": "medium",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T04_호출_절차_연결/evidence/live-trigger-evidence.json:48",
+        "scenario": "조기 프로젝트 사건을 fixture 표 수정 뒤 같은 ID·시각으로 보강했다는데, 원래 행이 보존됐는지 확인할 근거가 없다. 실제 관측 두 건은 공용 fixture 저장소에서 인접 진단·반환을 읽었다(처리 문서가 한계로 인정).",
+        "reproduction": "원래 log.jsonl 행 사본 없음",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "reviewer.md 호출 표·기회 규칙, coordinator 문제 해결자 호출 절, SKILL.md 지시, TS-16~18에서 조기 워크트리 1회·소진 인계·허브 공동 시도마다 1회·document_pm·B/백로그 허브 결정과 기획자 적용·첫 무신호 0·조기 진단 금지를 확인했다. W05 합성 원장 3행에 caller·opportunity·ref가 있고 같은 ID 재입력 시 추가 0행이다. actual-early는 diagnosisRows 0이다. eval 판정 다수가 이전 reviewer.md로 얻은 것이라는 한계는 F1에 둔다."
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "reviewer 표의 verify·review-record upper_review 행에서 워크트리 중단·인계를 확인했다. coordinator 절에서 허브 입력(상위 목적·owner 원문·계약·설계·백로그·원장), call_ref, 허브 조치/A-1/A-3 영향표, agreement_required 뒤 R*.json의 blocking 수·추천과 이유·대기를 확인했다. decision-rights.md:41과 일치하고 --upper-check·--impact·--choice가 verify-cli 사용법에 있다. 도구 상한은 P013 T09 인용이다(시험 원문은 이번에 직접 읽지 않음). W08~W12의 eval 근거는 F1 한계가 있다."
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "actual-early는 worktree_pm·early-1·callId f6149313…이고, actual-upper는 hub_pm·upper-1·callId fc9a48c9…이다. 두 호출 모두 model.actual claude-fable-5-2/effort high이며 출처는 host이고 요청값과 같다. live-trigger-evidence에서 조기 신호 2개가 1회 호출로 묶였고, upper_review는 종료 0, 다음 verify는 종료 16으로 실행되지 않았다. root_review slot 1의 call_ref가 같은 ID·receipt를 가리킨다. 일반 검토는 fixture로 통제됐고 전문가만 실제 실행이다. F3·F5 한계가 있다."
+        },
+        {
+          "id": "T-4",
+          "state": "unverified",
+          "observation": "TS-16~22 v1 등록과 requirements.md 대조표, reviewer 반환 안내, W01~W12 시나리오는 있다. 그러나 최종 reviewer.md(aabac4ff…)로 S1~S9·D·H·W를 실행한 해시 근거가 없다(F1)."
+        },
+        {
+          "id": "T-5",
+          "state": "unverified",
+          "observation": "golden anchor #태스크와-백로그의-수정-확인과-상위-검토가 reviewer.md:45, harness.ts:694, project-role.test.ts:74에 유지되고 gitDiffCheck도 true다. 그러나 전체 선언 검사 1524개는 최종 문구 전에 실행됐고 보안 검사에는 대상 해시가 없다(F2)."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "agent_call_id": "bb1c9f80b7bb127fd7543a430e3c66f7"
+}

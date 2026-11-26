@@ -1,0 +1,20 @@
+{
+  "trigger": "48e54436-7afe-419c-adc6-3fc71e11a034",
+  "slot": 1,
+  "target": "evidence/implementation.patch",
+  "hash": "a74b566274a9b66845d65ffc1acb2e8efd8850373c822608d9f46eb8076db2c9",
+  "reviewer": "pace-troubleshooter",
+  "author": "fixture-author-codex",
+  "worker": "fixture-worktree-pm-codex",
+  "provider": "anthropic",
+  "context": "isolated-p-76bc39bb6b5ec8d0efd4a946",
+  "cross": true,
+  "call_ref": {
+    "ledger": "calls/log.jsonl",
+    "id": "fc9a48c9ce5580ba46007ffd423c88fe",
+    "receipt": "tasks/T02_upper/evidence/troubleshooter-receipt.json"
+  },
+  "fixture_provider_assumption": "격리 fixture 리뷰의 작성자·작업자 식별값과 실제 전문가 제공자가 다르다. 이 검증은 리뷰 구현이 가정한 교차성이다.",
+  "response_file_sha256": "a872064b2b045276f167781eebc5343d7245806aa844e5936d894338758dea40",
+  "analysis_sha256": "0742e97b023dc8f1bb57c4bb6207c0fd39b0d384f8876f45053148fa9cb7f433"
+}

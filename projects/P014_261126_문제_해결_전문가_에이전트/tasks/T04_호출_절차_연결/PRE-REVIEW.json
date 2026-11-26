@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "807a187651114b9b59c5f82b09384ae21410528f61bcd2df25c3e193531a124b",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "7f9cdff8585bdd958c4acd82da0a1d2f7331b23111a857e86d72fed7decde07b",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R1.json에서 재검토",
+      "permission": {
+        "mode": "implementation",
+        "paths": [
+          "skills/pace-project-dev/SKILL.md",
+          "skills/pace-project-dev/references/reviewer.md",
+          "skills/pace-project-dev/references/coordinator.md",
+          "skills/pace-project-dev/evals/scenarios.md",
+          "skills/pace-team/references/required-roles.md"
+        ],
+        "protected": [
+          {
+            "from": 8,
+            "to": 49
+          }
+        ],
+        "base": "9936978001318dce54ff8f5284122188ff8180ae",
+        "task_mode": "100644"
+      }
+    }
+  ]
+}

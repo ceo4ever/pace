@@ -1,0 +1,221 @@
+{
+  "case": "W05",
+  "syntheticOnly": true,
+  "sameIdReplayRowsAdded": 0,
+  "worktreeCallsOnExhaustion": 0,
+  "ledgerPath": "calls/log.jsonl",
+  "ledger": [
+    {
+      "version": 1,
+      "id": "0b2082ccd7bc903f232d7d567d326bd3",
+      "at": "2026-11-26T15:10:05.436Z",
+      "task": "T01",
+      "agent": "pace-troubleshooter",
+      "engine": "claude",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "replacement_reason": null,
+      "ref": "tasks/T01_joint/evidence/early-1-receipt.json",
+      "model": {
+        "requested": {
+          "value": "claude-fable-5-2",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "duration_ms": {
+        "value": null,
+        "source": "unknown"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    },
+    {
+      "version": 1,
+      "id": "d9684469aad566b977bf114249b471c7",
+      "at": "2026-11-26T15:10:06.320Z",
+      "task": "T01",
+      "agent": "pace-troubleshooter",
+      "engine": "claude",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "replacement_reason": null,
+      "ref": "tasks/T01_joint/evidence/joint-1-receipt.json",
+      "model": {
+        "requested": {
+          "value": "claude-fable-5-2",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "duration_ms": {
+        "value": null,
+        "source": "unknown"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    },
+    {
+      "version": 1,
+      "id": "690fc64b36780c83d35c17aad503af9c",
+      "at": "2026-11-26T15:10:07.961Z",
+      "task": "T01",
+      "agent": "pace-troubleshooter",
+      "engine": "claude",
+      "route": "p",
+      "status": "completed",
+      "reason": null,
+      "replacement_reason": null,
+      "ref": "tasks/T01_joint/evidence/joint-2-receipt.json",
+      "model": {
+        "requested": {
+          "value": "claude-fable-5-2",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "effort": {
+        "requested": {
+          "value": "high",
+          "source": "requested"
+        },
+        "actual": {
+          "value": null,
+          "source": "unknown"
+        }
+      },
+      "duration_ms": {
+        "value": null,
+        "source": "unknown"
+      },
+      "tokens": {
+        "input": {
+          "value": null,
+          "source": "unknown"
+        },
+        "output": {
+          "value": null,
+          "source": "unknown"
+        },
+        "total": {
+          "value": null,
+          "source": "unknown"
+        }
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "path": "tasks/T01_joint/evidence/early-1-receipt.json",
+      "receipt": {
+        "caller": "worktree_pm",
+        "opportunity": {
+          "unit": "P003/T01",
+          "stage": "post",
+          "trigger": [
+            "R1.json"
+          ],
+          "round": "early-1"
+        },
+        "callId": "0b2082ccd7bc903f232d7d567d326bd3",
+        "return": "tasks/T01_joint/evidence/early-1-return.md",
+        "returnSha256": "cf7267226867bef0aa8c0ce27914dd35bdafda432a7e758734db11c4a3158635",
+        "synthetic": true
+      },
+      "returnText": "예산 안 조기 신호 이후 원인과 확인 방법 제안 (합성 원장 대조용 데이터)\n"
+    },
+    {
+      "path": "tasks/T01_joint/evidence/joint-1-receipt.json",
+      "receipt": {
+        "caller": "hub_pm",
+        "opportunity": {
+          "unit": "P003/T01",
+          "stage": "post",
+          "trigger": [
+            "budget-exhausted.json"
+          ],
+          "round": "joint-1"
+        },
+        "callId": "d9684469aad566b977bf114249b471c7",
+        "return": "tasks/T01_joint/evidence/joint-1-return.md",
+        "returnSha256": "6b445a48fcb37a8db8985e739be14f643b8c263ee8bf3fb5003fe876ed08d762",
+        "synthetic": true
+      },
+      "returnText": "소진 인계를 받은 허브 공동 1차 해결안과 독립 검증 계획 (합성 원장 대조용 데이터)\n"
+    },
+    {
+      "path": "tasks/T01_joint/evidence/joint-2-receipt.json",
+      "receipt": {
+        "caller": "hub_pm",
+        "opportunity": {
+          "unit": "P003/T01",
+          "stage": "post",
+          "trigger": [
+            "joint-review-1.json"
+          ],
+          "round": "joint-2"
+        },
+        "callId": "690fc64b36780c83d35c17aad503af9c",
+        "return": "tasks/T01_joint/evidence/joint-2-return.md",
+        "returnSha256": "53ba8d574f0e991d5e4e365da4adfbb4b284f8f20bade1cc729f2740e2be0001",
+        "synthetic": true
+      },
+      "returnText": "공동 1차 실패 이후 허브 공동 2차 해결안과 독립 검증 계획 (합성 원장 대조용 데이터)\n"
+    }
+  ]
+}
