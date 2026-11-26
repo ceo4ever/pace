@@ -47,6 +47,7 @@
 - [역할-지문-crlf-호스트-대조](역할-지문-crlf-호스트-대조.md) — Windows CRLF checkout에서 역할 지문 정규화와 정상 원본 보류 여부를 실제 호스트로 확인한다
 - [잠금 소유자 조회 미확정](잠금-소유자-조회-미확정.md) — 첫 실측의 owner unknown 원인을 확정하지 말고 재발 시 ownerCheck와 조회 실패 조건을 수집한다
 - [daemon 마법사 S-19 간헐 실패](daemon-마법사-s-19-간헐-실패.md) — test/daemon-wizard-follow.test.ts S-19 대화형 수동 입력이 전체 검사 부하에서 저장 시크릿 undefined로 간헐 실패 — 단독은 통과, 원인을 찾는다
+- [team-lock 자기 갱신 시작 조회 간헐 실패](team-lock-자기-갱신-시작-조회-간헐-실패.md) — 전체 검사 부하에서 team-lock 자기 갱신 시험이 간헐 실패한다 — S-19와 같은 부류인지 원인 확인
 
 ## 할 일
 
