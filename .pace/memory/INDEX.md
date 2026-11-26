@@ -105,7 +105,9 @@
 - [소통 원장 운영 보강](소통-원장-운영-보강.md) — 실사용 근거로 영수증 형식·부분 stats·증분 조회와 guard 가용성 보강을 설계한다
 - [Codex 작업자 worktree 신뢰 사전 점검](codex-작업자-worktree-신뢰-사전-점검.md) — 작업자를 Codex로 바꿀 때 worker-start가 agent-trust-workspace로 막힌다 — 착수 전 계정별 신뢰 점검·안내를 넣는다
 - [Orca ack 안내 불일치와 우편함 비보존](orca-ack-안내-불일치와-우편함-비보존.md) — Orca check --ack에 delivery id가 필요한데 메시지에 없고, 코디네이터 터미널 우편함은 닫으면 사라진다 — Orca 상류 전달 또는 PACE 쪽 보존 절차를 검토한다
+- [upper_review 종료 뒤 owner 재개 경로](upper-review-종료-뒤-owner-재개-경로.md) — 두 번째 상위 근본 검토 뒤 owner가 '한 번 더'나 범위를 정해 재개하는 결정을 기록·해제하는 하네스 경로가 없다 — 새 백로그로 발의한다
 - [단계형 백로그 중간 관문 병합](단계형-백로그-중간-관문-병합.md) — 백로그 1개=프로젝트 1개라 중간 관문 결과를 먼저 병합할 길이 없다 — 단계형 업무 안내나 부분 병합을 검토한다
 - [백로그 brief 명령 worktree 실행 제한](백로그-brief-명령-worktree-실행-제한.md) — pace backlog brief는 main 체크아웃에서만 돌아 프로젝트 worktree에서 BR을 추가하려면 임시 main 사본 우회가 필요하다 — worktree 실행 허용 또는 안내를 검토한다
+- [백로그 전체 검토의 예산 원장 연결](백로그-전체-검토의-예산-원장-연결.md) — 백로그 폴더 전체를 묶은 스냅숏을 verify 대상으로 쓰면 백로그 검토 예산·공동 시도 원장이 적용되지 않는다 — 폴더 단위 검토 대상을 지원하거나 절차를 안내한다
 - [병합 대기 중 memory 쓰기가 merge 차단](병합-대기-중-memory-쓰기가-merge-차단.md) — 병합 대기 중 pace memory가 main에 파일을 써서 merge가 커밋 안 한 변경으로 막힌다 — merge 전 메모리 변경 처리 절차·게이트를 검토한다
 - [의도적 대기 작업자 경보 억제](의도적-대기-작업자-경보-억제.md) — owner 응답을 일부러 기다리는 작업자를 '보고 없이 멈춤'으로 escalation하지 않게 workerSpec에 대기 신호를 둔다
