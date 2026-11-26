@@ -49,3 +49,5 @@
 {"ts":"2026-11-26T15:38:47.141Z","p":"P014","t":"T04","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T15:38:47.141Z","p":"P014","t":"T04","type":"task_done","by":"cli","msg":"done","ok":true}
 {"ts":"2026-11-26T15:39:13.824Z","p":"P014","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T15:59:56.132Z","p":"P014","type":"finish","by":"cli","msg":"finish","ok":true}
+{"ts":"2026-11-26T15:59:56.132Z","p":"P014","type":"gate","by":"cli","msg":"finish","ok":true,"src":"finish:c285adec26088f9229a3253b","data":{"finish":1}}
