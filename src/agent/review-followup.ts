@@ -8,7 +8,7 @@ import { decideReviewAdmission } from "./review-admission.ts";
 import { readReviewBudget, recordedStage, type BudgetStage, type ReviewBudgetScope } from "./review-budget.ts";
 import { LedgerError, ledgerPath, textHash, type DiagnosisEntry, type ReviewEntry } from "./review-log.ts";
 import { assessStructuredReview, effectiveBlocking } from "./structured-review.ts";
-import { readRecovery, sameFinding, type FindingKey, type FocusedCheck, type RecoveryEvent, type RootCheck } from "./review-recovery.ts";
+import { endpointChoices, readRecovery, sameFinding, type EndpointChoice, type FindingKey, type FocusedCheck, type RecoveryEvent, type RootCheck } from "./review-recovery.ts";
 
 export const FOLLOWUPS_FILE = "REVIEW-FOLLOWUPS.jsonl";
 const HASH = /^[a-f0-9]{64}$/;
@@ -38,6 +38,12 @@ function validFinding(value: unknown): value is FindingKey {
   return typeof id === "string" && /^F\d+$/.test(id) && nonempty(location);
 }
 
+function validRecommendation(value: unknown): value is NonNullable<RootCheck["recommendation"]> {
+  if (!value || typeof value !== "object") return false;
+  const { choice, reason } = value as Record<string, unknown>;
+  return endpointChoices.includes(choice as EndpointChoice) && nonempty(reason);
+}
+
 function proposalValid(value: Record<string, unknown>, choice: string): boolean {
   const { choices, assessments } = value;
   return Array.isArray(choices) && choices.every(nonempty) && new Set(choices).size >= 2 && choices.includes(choice) &&
@@ -64,8 +70,9 @@ function eventValid(item: unknown): item is Event {
     validFinding(row.finding) && typeof row.diagnosed === "boolean" && nonempty(row.impact);
   if (row.type === "root_review") return isHash(row.contract) && nonempty(row.trigger) && (row.slot === 1 || row.slot === 2) &&
     nonempty(row.reviewer) && nonempty(row.provider) && nonempty(row.context) && typeof row.cross === "boolean" &&
-    (row.cross_unavailable === undefined || nonempty(row.cross_unavailable));
-  if (row.type === "root_check") return isHash(row.contract) && nonempty(row.root_review) && nonempty(row.impact);
+    (row.cross_unavailable === undefined || nonempty(row.cross_unavailable)) && (row.root_cause === undefined || nonempty(row.root_cause));
+  if (row.type === "root_check") return isHash(row.contract) && nonempty(row.root_review) && nonempty(row.impact) &&
+    (row.change === undefined || nonempty(row.change)) && (row.recommendation === undefined || validRecommendation(row.recommendation));
   if (row.type === "contract_reset") return isHash(row.contract) && nonempty(row.trigger) && typeof row.finish === "boolean" &&
     (row.root_review === undefined || nonempty(row.root_review)) &&
     !!row.offsets && typeof row.offsets === "object" && !Array.isArray(row.offsets) &&
@@ -126,10 +133,26 @@ export function readReviewState(scope: ReviewBudgetScope, hash: string) {
     event.type === "focused_check" || event.type === "root_review" || event.type === "root_check" || event.type === "contract_reset");
   const reset = recoveryEvents.findLast((event) => event.type === "contract_reset" && event.stage === scope.stage);
   const budget = readReviewBudget(scope, reset?.type === "contract_reset" ? reset.offsets : undefined);
-  const recovery = readRecovery(recoveryEvents, budget.ledgers.flatMap(({ entries }) => {
+  const validReviews = budget.ledgers.flatMap(({ target: ledger, entries }) => {
     const voided = new Set(entries.flatMap((entry) => entry.type === "void" ? [entry.record] : []));
-    return entries.filter((entry): entry is ReviewEntry => entry.type === "review" && !voided.has(entry.record));
-  }));
+    return entries.flatMap((row) => row.type === "review" && !voided.has(row.record) ? [{ row, ledger }] : []);
+  });
+  const latestDiagnosis = budget.ledgers.flatMap(({ target: ledger, entries }) => entries.flatMap((row) =>
+    row.type === "diagnosis" && row.recovery_id ? [{ row, ledger }] : []))
+    .sort((a, b) => a.row.at.localeCompare(b.row.at)).at(-1);
+  const diagnosed = latestDiagnosis && validReviews.filter(({ row, ledger }) => row.after_diagnosis?.id === latestDiagnosis.row.recovery_id &&
+    !row.interrupted && (row.verdict === "fail" ||
+      (row.verdict === "pass" && ledger === latestDiagnosis.ledger && row.target === latestDiagnosis.row.target)))
+    .sort((a, b) => a.row.at.localeCompare(b.row.at))[0];
+  const wasFocused = diagnosed && recoveryEvents.some((event) =>
+    event.type === "focused_check" && event.diagnosed && event.id === diagnosed.row.followup?.id);
+  const diagnosedFailure = diagnosed && !wasFocused && diagnosed.row.verdict === "fail" && diagnosed.row.after_diagnosis ? {
+    grant: { id: diagnosed.row.after_diagnosis.id, contract: diagnosed.row.after_diagnosis.contract,
+      stage: recordedStage(scope, diagnosed.ledger, diagnosed.row), target: relativeName(scope, join(dirname(diagnosed.ledger), diagnosed.row.target)) },
+    result: diagnosed.row,
+  } : undefined;
+  const recovery = readRecovery(recoveryEvents, validReviews.map(({ row }) => row), diagnosedFailure);
+  const activeDiagnosis = diagnosed ? undefined : latestDiagnosis?.row;
   const current: ScopeKey = { stage: scope.stage, target: relativeName(scope, join(dirname(scope.ledgerTarget), scope.name)), hash };
   const starts = new Map<string, number>();
   for (const event of events) {
@@ -152,7 +175,7 @@ export function readReviewState(scope: ReviewBudgetScope, hash: string) {
     jointAttempts, jointRecorded: !!joint && !starts.get(joint.id), ownerRounds: owner ? owner.rounds - (starts.get(owner.id) ?? 0) : null,
   });
   const grant = decision.kind === "owner" ? owner : decision.kind === "joint" ? joint : undefined;
-  return { budget, current, decision, pending, grant, jointAttempts, jointDecisions, recovery };
+  return { budget, current, decision, pending, grant, jointAttempts, jointDecisions, recovery, activeDiagnosis };
 }
 
 type ReviewState = ReturnType<typeof readReviewState>;
@@ -304,17 +327,30 @@ function canConfirm(state: ReviewState): boolean {
   return state.decision.kind === "exhausted" && state.jointAttempts >= 2 && !state.pending && !state.recovery.upper;
 }
 
-export function confirmationDiagnosis(scope: ReviewBudgetScope, target: string, hash: string, file: string | undefined, legacyAllowed: boolean) {
+export function confirmationDiagnosis(scope: ReviewBudgetScope, target: string, hash: string, file: string | undefined) {
   const state = readReviewState(scope, hash);
-  const origin = confirmationSource(scope, state);
-  if (!canConfirm(state) || !origin?.findings.length || origin.diagnosis ||
-      (state.recovery.ordinary.length < 2 &&
-        !origin.findings.some((finding) => state.recovery.ordinary.some(({ grant }) => sameFinding(finding, grant.finding))))) {
-    if (legacyAllowed && !canConfirm(state)) return undefined;
-    return reject("수정 확인 문턱에 도달한 최신 독립 지적에 한해 진단을 기록한다");
+  if (state.activeDiagnosis) reject("이 단위의 기록된 진단에 대한 독립 판정이 아직 없다");
+  const latest = state.budget.latestDefinitive;
+  if (state.pending || !latest || latest.entry.verdict !== "fail" ||
+      latest.ledgerTarget !== scope.ledgerTarget || latest.entry.target !== scope.name) {
+    return reject("같은 대상의 최신 유효 실패를 대조한 뒤 구조 진단을 기록한다");
   }
+  const origin = confirmationSource(scope, state);
+  if (origin && !origin.findings.length) reject("최신 독립 지적의 확인이 끝났다");
   const proof = readProof(scope, target, file ?? "");
-  return { source: origin.source, evidence_hash: proof.evidence_hash };
+  const source = relativeName(scope, join(dirname(latest.ledgerTarget), latest.entry.record));
+  const focused = canConfirm(state) && !!origin && !origin.diagnosis && (state.recovery.ordinary.length >= 2 ||
+    origin.findings.some((finding) => state.recovery.ordinary.some(({ grant }) => sameFinding(finding, grant.finding))));
+  return { basis: { source, evidence_hash: proof.evidence_hash }, focused };
+}
+
+export function diagnosisLink(scope: ReviewBudgetScope, target: string,
+  diagnosis: DiagnosisEntry): NonNullable<ReviewEntry["after_diagnosis"]> {
+  if (!diagnosis.recovery_id || !diagnosis.file || !diagnosis.recovery_evidence ||
+      readProof(scope, target, diagnosis.file).evidence_hash !== diagnosis.recovery_evidence.evidence_hash) {
+    return reject("구조 진단의 근거 파일이 기록과 맞지 않는다");
+  }
+  return { id: diagnosis.recovery_id, contract: contractHash(scope) };
 }
 
 type RecoverySelection =
@@ -391,7 +427,7 @@ export function openRecovery(scope: ReviewBudgetScope, target: string, hash: str
           return reject("독립 reviewer·별도 맥락·제공자와 근본 검토 원문을 대조한다");
         }
         event = { ...facts, type: selection.type, trigger: upper.trigger.grant.id, slot: upper.slot,
-          reviewer, provider, context, cross, contract,
+          reviewer, provider, context, cross, contract, root_cause: nonempty(data.root_cause) ? data.root_cause : data.analysis,
           ...(!cross && nonempty(data.cross_unavailable) ? { cross_unavailable: data.cross_unavailable } : {}) };
       } else {
         if (upper.action !== "upper_recheck") return reject("독립 상위 검토 원문을 먼저 기록한다");
@@ -407,7 +443,9 @@ export function openRecovery(scope: ReviewBudgetScope, target: string, hash: str
         if (data.verification !== "required" || data.upper !== upper.review.id || !nonempty(data.change)) {
           reject("필수 검증을 축소하거나 미확인 증거·잔여 blocking을 수용하려면 A-3 요청을 기록한다");
         }
-        event = { ...facts, type: "root_check", root_review: upper.review.id, impact: selection.impact, contract };
+        if (data.recommendation !== undefined && !validRecommendation(data.recommendation)) reject("허브 추천은 종료 선택지와 이유를 담는다");
+        event = { ...facts, type: "root_check", root_review: upper.review.id, impact: selection.impact, contract, change: data.change,
+          ...(validRecommendation(data.recommendation) ? { recommendation: data.recommendation } : {}) };
       }
     }
   }
@@ -481,6 +519,63 @@ function reviewHistory(scope: ReviewBudgetScope, state: ReviewState) {
   })).sort((a, b) => a.at.localeCompare(b.at));
 }
 
+function endpointReport(scope: ReviewBudgetScope, state: ReviewState,
+  upper: Extract<NonNullable<ReviewState["recovery"]["upper"]>, { action: "agreement_required" }>) {
+  const attempts = state.budget.ledgers.flatMap(({ target: ledger, entries }) => entries.flatMap((row) => {
+    if (row.type !== "review") return [];
+    return [{ at: row.at, stage: recordedStage(scope, ledger, row),
+      target: relativeName(scope, join(dirname(ledger), row.target)),
+      record: relativeName(scope, join(dirname(ledger), row.record)),
+      verdict: row.verdict, cross: row.cross, interrupted: row.interrupted ?? false,
+      invalidated: entries.some((entry) => entry.type === "void" && entry.record === row.record && entry.target === row.target),
+      phase: row.followup?.type ?? "ordinary", ...(row.followup ? { id: row.followup.id } : {}) }];
+  })).sort((a, b) => a.at.localeCompare(b.at));
+  const last = state.recovery.upperResults.find(({ result }) => result === upper.failed);
+  const ledger = state.budget.ledgers.find(({ entries }) => entries.includes(upper.failed))?.target;
+  const text = ledger ? recordText(ledger, upper.failed) : null;
+  const assessment = text !== null && upper.failed.structured_stage
+    ? assessStructuredReview(upper.failed.structured_stage, text) : undefined;
+  const recommendation = last?.grant.recommendation ?? {
+    choice: "보류" as const,
+    reason: "두 차례의 상위 해결안 확인 뒤에도 유효 판정이 실패했다. 실패를 재현하고 현재 기준을 유지할 수 있는지 결정할 때까지 단위를 보류한다.",
+  };
+  return {
+    unit: { type: scope.unit, root: scope.root },
+    target: upper.trigger.grant.target, stage: upper.trigger.grant.stage, hash: upper.failed.hash,
+    timeline: {
+      ordinary_calls: state.budget.ledgers.flatMap(({ target: ledger, entries }) => entries.flatMap((row) =>
+        row.type === "call" ? [{ at: row.at, stage: recordedStage(scope, ledger, row),
+          target: relativeName(scope, join(dirname(ledger), row.target)) }] : [])).sort((a, b) => a.at.localeCompare(b.at)),
+      ordinary: attempts.filter((row) => row.phase === "ordinary"),
+      joint: attempts.filter((row) => row.phase === "joint"),
+      diagnoses: state.budget.ledgers.flatMap(({ target: ledger, entries }) => entries.flatMap((row) =>
+        row.type === "diagnosis" ? [{ at: row.at, stage: recordedStage(scope, ledger, row), layer: row.layer,
+          target: relativeName(scope, join(dirname(ledger), row.target)), summary: row.summary,
+          ...(row.recovery_evidence ? { evidence: row.recovery_evidence } : {}) }] : []))
+        .sort((a, b) => a.at.localeCompare(b.at)),
+      confirmation: attempts.filter((row) => row.phase === "confirmation").map((row) => ({
+        ...row, diagnosed: state.recovery.confirmations.find((grant) => grant.id === row.id)?.diagnosed ?? null,
+      })),
+      upper: state.recovery.rootReviews.filter((row) => row.trigger === upper.trigger.grant.id).map((row) => {
+        const checked = state.recovery.upperResults.find(({ grant }) => grant.root_review === row.id);
+        return { slot: row.slot, root_cause: row.root_cause ?? row.summary, review_evidence: row.evidence,
+          applied_solution: checked?.grant.change ?? checked?.grant.summary ?? null,
+          change_evidence: checked?.grant.evidence ?? null, verdict: checked?.result.verdict ?? null,
+          result_record: checked && attempts.findLast((attempt) => attempt.phase === "upper" &&
+            attempt.id === checked.grant.id && attempt.verdict === checked.result.verdict)?.record };
+      }),
+    },
+    remaining_failure: {
+      verdict: upper.failed.verdict,
+      record: ledger ? relativeName(scope, join(dirname(ledger), upper.failed.record)) : null,
+      findings: assessment?.findings?.flatMap(({ id, location, scenario, reproduction, confidence, effective }) =>
+        effective === "blocking" ? [{ id, location, scenario, reproduction, confidence }] : []) ?? null,
+    },
+    choices: endpointChoices,
+    recommendation: { ...recommendation, source: last?.grant.recommendation ? "hub" : "default" },
+  };
+}
+
 export function followupReport(scope: ReviewBudgetScope, state: ReviewState) {
   const history = reviewHistory(scope, state);
   const entries = state.budget.ledgers.flatMap(({ target, entries }) => entries
@@ -493,6 +588,7 @@ export function followupReport(scope: ReviewBudgetScope, state: ReviewState) {
   const noVerdict = history.filter((row) => row.interrupted || row.invalidated).length;
   const rounds = state.budget.status.rounds;
   const upper = state.recovery.upper;
+  const endpoint = upper?.action === "agreement_required" ? endpointReport(scope, state, upper) : undefined;
   const source = canConfirm(state) && confirmationSource(scope, state);
   const diagnosisRequired = source && source.findings.length && !source.diagnosis && (state.recovery.ordinary.length >= 2 ||
     source.findings.every((finding) => state.recovery.ordinary.some(({ grant }) => sameFinding(finding, grant.finding))));
@@ -502,8 +598,9 @@ export function followupReport(scope: ReviewBudgetScope, state: ReviewState) {
     ...state.current,
     action,
     decision: request ? "A-3" : upper?.action === "agreement_required" ? "A-1" : null,
-    recommendation: request?.choice ?? null,
-    choices: request?.choices ?? (upper?.action === "agreement_required" ? ["합의 조정", "보류"] : []),
+    recommendation: request?.choice ?? endpoint?.recommendation.choice ?? null,
+    choices: request?.choices ?? endpoint?.choices ?? [],
+    ...(endpoint ? { endpoint } : {}),
     ...(request ? { request } : {}),
     joint_attempts: state.jointAttempts,
     joint_decisions: state.jointDecisions,

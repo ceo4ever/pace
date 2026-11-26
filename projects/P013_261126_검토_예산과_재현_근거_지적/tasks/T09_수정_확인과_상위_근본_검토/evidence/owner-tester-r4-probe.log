@@ -1,0 +1,24 @@
+{"probe":"task-other-target","failure":"fail","trigger":"TASK.md","blocked":16}
+{"probe":"task-same-target-pass","verdict":"pass","activeDiagnosis":false}
+{"probe":"task-proof","missing":2,"otherTarget":2,"tampered":2,"executorCallsAdded":0}
+{"probe":"backlog-other-target","unrelatedPassDiagnosisActive":true,"unknown":"unknown","failure":"fail","blocked":16}
+{"probe":"backlog-same-target-pass","verdict":"pass","activeDiagnosis":false}
+{"probe":"backlog-proof","missing":2,"otherTarget":2,"tampered":2,"executorCallsAdded":0}
+{"probe":"same-name-other-ledger","activeDiagnosis":true}
+{"probe":"default-endpoint","endpoint":{"unit":{"type":"task","root":"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-UYJXsx/pace-followup-S6sFMz/projects/P013_review/tasks/T02_followup"},"target":"change.patch","stage":"post","hash":"efe459d1693043ac459eb55349bf4a16749c4ca1c6324bd91bbd2b839a9dc07e","timeline":{"ordinary_calls":[{"at":"2026-11-26T00:00:00.000Z","stage":"post","target":"change.patch"},{"at":"2026-11-26T00:00:00.002Z","stage":"post","target":"change.patch"}],"ordinary":[{"at":"2026-11-26T00:00:00.001Z","stage":"post","target":"change.patch","record":"review-records/R1.json","verdict":"fail","cross":true,"interrupted":false,"invalidated":false,"phase":"ordinary"},{"at":"2026-11-26T00:00:00.003Z","stage":"post","target":"change.patch","record":"review-records/R2.json","verdict":"fail","cross":true,"interrupted":false,"invalidated":false,"phase":"ordinary"}],"joint":[{"at":"2026-11-26T00:00:00.006Z","stage":"post","target":"change.patch","record":"review-records/R3.json","verdict":"fail","cross":true,"interrupted":false,"invalidated":false,"phase":"joint","id":"cec2f036-b850-4827-b5a7-fe5821a744a9"},{"at":"2026-11-26T00:00:00.009Z","stage":"post","target":"change.patch","record":"review-records/R4.json","verdict":"fail","cross":true,"interrupted":false,"invalidated":false,"phase":"joint","id":"8a966433-2621-47c8-a09c-22aae3b21a87"}],"diagnoses":[{"at":"2026-11-26T00:00:00.013Z","stage":"post","layer":"structure","target":"change.patch","summary":"기존 지적의 재현과 조치","evidence":{"source":"review-records/R4.json","evidence_hash":"509fb63b8955e57869d683e52c8a655e663246e6cc937f745ec120875a25b225"}}],"confirmation":[{"at":"2026-11-26T00:00:00.011Z","stage":"post","target":"change.patch","record":"review-records/R5.json","verdict":"fail","cross":true,"interrupted":false,"invalidated":false,"phase":"confirmation","id":"72541c79-d12f-4cad-9cf6-32b983a20937","diagnosed":false},{"at":"2026-11-26T00:00:00.015Z","stage":"post","target":"change.patch","record":"review-records/R6.json","verdict":"fail","cross":true,"interrupted":false,"invalidated":false,"phase":"confirmation","id":"10e79ed4-5485-4ad9-8f21-7ad5c1c109bf","diagnosed":true}],"upper":[{"slot":1,"root_cause":"근본 원인 1","review_evidence":"evidence/root-1.json","applied_solution":"실제 적용 1","change_evidence":"evidence/root-fix.json","verdict":"fail","result_record":"review-records/R7.json"},{"slot":2,"root_cause":"근본 원인 2","review_evidence":"evidence/root-2.json","applied_solution":"실제 적용 2","change_evidence":"evidence/root-fix.json","verdict":"fail","result_record":"review-records/R8.json"}]},"remaining_failure":{"verdict":"fail","record":"review-records/R8.json","findings":[{"id":"F7","location":"failure.ts:2","scenario":"재현","reproduction":"수정 전 입력을 다시 실행한다","confidence":"high"}]},"choices":["기준 조정","보류","한 번 더"],"recommendation":{"choice":"보류","reason":"두 차례의 상위 해결안 확인 뒤에도 유효 판정이 실패했다. 실패를 재현하고 현재 기준을 유지할 수 있는지 결정할 때까지 단위를 보류한다.","source":"default"}}}
+✔ 직접 반례 task: 다른 대상 pass와 unknown은 진단을 닫지 않고 다른 대상 fail도 단위를 막는다 (38.594708ms)
+✔ 직접 반례 task: 원래 대상 pass가 진단을 닫은 뒤 다른 대상 fail은 상위 검토를 발동하지 않는다 (17.424292ms)
+✔ 직접 반례 task: 진단 근거 누락·타 대상 진단·변조는 실행 전에 거부한다 (9.226458ms)
+✔ 직접 반례 backlog: 다른 대상 pass와 unknown은 진단을 닫지 않고 다른 대상 fail도 단위를 막는다 (17.853209ms)
+✔ 직접 반례 backlog: 원래 대상 pass가 진단을 닫은 뒤 다른 대상 fail은 상위 검토를 발동하지 않는다 (8.802625ms)
+✔ 직접 반례 backlog: 진단 근거 누락·타 대상 진단·변조는 실행 전에 거부한다 (13.253083ms)
+✔ 직접 반례: 사후 두 원장의 동일 이름 pass도 원래 진단을 닫지 않는다 (21.210542ms)
+✔ 직접 반례: 두 번 상위 실패의 기본 추천·재현과 공식 세 선택은 파일/응답에 일치한다 (76.542042ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 399.851042

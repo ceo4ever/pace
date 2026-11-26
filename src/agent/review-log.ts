@@ -43,6 +43,7 @@ export interface ReviewEntry {
   cross_unavailable?: string[];
   cross?: boolean;
   structured_stage?: BudgetStage;
+  after_diagnosis?: { id: string; contract: string };
   /** 중단 복구. 옛 fail 표기는 기존 진단에서만 세고 예산 판정·재검토 기준점에서 제외한다. */
   interrupted?: true;
 }
@@ -61,6 +62,8 @@ export interface DiagnosisEntry {
   summary: string;
   file?: string;
   confirmation?: { source: string; evidence_hash: string };
+  recovery_id?: string;
+  recovery_evidence?: { source: string; evidence_hash: string };
 }
 export type DecisionBy = 'pm' | 'user';
 export interface DecisionEntry { type: "decision"; at: string; target: string; choice: string; summary: string; file: string; /** 옛 항목의 생략은 unknown이며 user로 추정하지 않는다. */ by?: DecisionBy }
@@ -107,11 +110,16 @@ function validEntry(v: Record<string, unknown>): boolean {
     && (v.followup === undefined || validFollowup(v.followup))
     && (v.cross === undefined || typeof v.cross === "boolean")
     && (v.structured_stage === undefined || v.structured_stage === "pre" || v.structured_stage === "post" || v.structured_stage === "backlog")
+    && (v.after_diagnosis === undefined || validDiagnosisLink(v.after_diagnosis))
     && (v.cross_unavailable === undefined || validCrossUnavailable(v.cross_unavailable));
   if (v.type === "diagnosis") {
     const key = v.confirmation as Record<string, unknown> | undefined;
+    const diagnosis = v.recovery_evidence as Record<string, unknown> | undefined;
     return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" &&
       (v.file === undefined || isStr(v.file)) &&
+      ((v.recovery_id === undefined && diagnosis === undefined) ||
+        (isStr(v.recovery_id) && v.recovery_id !== "" && !!diagnosis && isStr(v.file) &&
+          isStr(diagnosis.source) && diagnosis.source !== "" && isStr(diagnosis.evidence_hash) && HEX64.test(diagnosis.evidence_hash))) &&
       (key === undefined || (key && isStr(v.file) && isStr(key.source) && key.source !== "" &&
         isStr(key.evidence_hash) && HEX64.test(key.evidence_hash)));
   }
@@ -124,6 +132,12 @@ export function validFollowup(value: unknown): value is NonNullable<ReviewEntry[
   if (!value || typeof value !== "object") return false;
   const item = value as Record<string, unknown>;
   return ["joint", "confirmation", "owner", "recovery", "upper"].includes(String(item.type)) && isStr(item.id) && item.id !== "";
+}
+
+export function validDiagnosisLink(value: unknown): value is NonNullable<ReviewEntry["after_diagnosis"]> {
+  if (!value || typeof value !== "object") return false;
+  const link = value as Record<string, unknown>;
+  return isStr(link.id) && link.id !== "" && isStr(link.contract) && HEX64.test(link.contract);
 }
 
 export function ledgerPath(target: string): string { return join(dirname(target), LEDGER_FILE); }

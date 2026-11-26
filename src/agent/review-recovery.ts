@@ -13,6 +13,8 @@ export type RecoveryProof = {
 };
 
 export type FindingKey = { id: string; location: string };
+export const endpointChoices = ["기준 조정", "보류", "한 번 더"] as const;
+export type EndpointChoice = typeof endpointChoices[number];
 
 export type FocusedCheck = RecoveryProof & {
   type: "focused_check";
@@ -32,6 +34,7 @@ export type RootReview = RecoveryProof & {
   context: string;
   cross: boolean;
   cross_unavailable?: string;
+  root_cause?: string;
   contract: string;
 };
 
@@ -40,6 +43,8 @@ export type RootCheck = RecoveryProof & {
   root_review: string;
   impact: string;
   contract: string;
+  change?: string;
+  recommendation?: { choice: EndpointChoice; reason: string };
 };
 
 export type ContractReset = RecoveryProof & {
@@ -54,12 +59,16 @@ export type ContractReset = RecoveryProof & {
 export type RecoveryEvent = FocusedCheck | RootReview | RootCheck | ContractReset;
 
 export type CompletedCheck = { grant: FocusedCheck | RootCheck; result: ReviewEntry };
+export type DiagnosisTrigger = {
+  grant: Pick<FocusedCheck, "id" | "stage" | "target" | "contract">;
+  result: ReviewEntry;
+};
 
 export function sameFinding(a: FindingKey, b: FindingKey): boolean {
   return a.id === b.id && a.location === b.location;
 }
 
-export function readRecovery(events: readonly RecoveryEvent[], results: readonly ReviewEntry[]) {
+export function readRecovery(events: readonly RecoveryEvent[], results: readonly ReviewEntry[], diagnosedFailure?: DiagnosisTrigger) {
   const confirmations = events.filter((entry): entry is FocusedCheck => entry.type === "focused_check");
   const rootReviews = events.filter((entry): entry is RootReview => entry.type === "root_review");
   const rootChecks = events.filter((entry): entry is RootCheck => entry.type === "root_check");
@@ -76,7 +85,8 @@ export function readRecovery(events: readonly RecoveryEvent[], results: readonly
   });
   const ordinary = completed.filter(({ grant }) => !grant.diagnosed);
   const diagnosed = completed.filter(({ grant }) => grant.diagnosed);
-  const latestDiagnostic = diagnosed.at(-1);
+  const focused = diagnosed.at(-1);
+  const latestDiagnostic = !focused || (diagnosedFailure && focused.result.at <= diagnosedFailure.result.at) ? diagnosedFailure : focused;
   const trigger = latestDiagnostic?.result.verdict === "fail" &&
     !resets.some((reset) => reset.trigger === latestDiagnostic.grant.id && reset.finish) ? latestDiagnostic : undefined;
   const checkFor = (review: RootReview) => rootChecks.findLast((check) => check.root_review === review.id);

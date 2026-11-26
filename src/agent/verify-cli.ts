@@ -6,10 +6,10 @@ import { proofScopeIssues, reviewHash } from "../project/pre-review.ts";
 import { AgentError, errorCodes, errorPayload, type Executor } from "./contract.ts";
 import {
   acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, RECOVERY_LOCK_FILE, reviewStage,
-  lineDiff, reviewUsage, targetName, textHash, validCrossUnavailable, validFollowup, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
+  lineDiff, reviewUsage, targetName, textHash, validCrossUnavailable, validDiagnosisLink, validFollowup, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
 } from "./review-log.ts";
 import { recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
-import { checkGrant, checkRecoveryProof, confirmationDiagnosis, followupReport, FOLLOWUPS_FILE, openFollowup, openRecovery, readReviewState, recordFollowupExecution, recoveryGrant } from "./review-followup.ts";
+import { checkGrant, checkRecoveryProof, confirmationDiagnosis, diagnosisLink, followupReport, FOLLOWUPS_FILE, openFollowup, openRecovery, readReviewState, recordFollowupExecution, recoveryGrant } from "./review-followup.ts";
 import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
 import { assessStructuredReview, effectiveBlocking, hasStructuredReviewFence, isStructuredStage } from "./structured-review.ts";
 
@@ -119,7 +119,7 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
   const notes: string[] = [];
   for (const rel of orphanRecords(target, readLedger(target))) {
     const file = join(dirname(target), rel);
-    let rec: { pending?: unknown; verifier?: unknown; cross?: unknown; cross_unavailable?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown; followup?: unknown; confirmation_issue?: unknown; structured_stage?: unknown } };
+    let rec: { pending?: unknown; verifier?: unknown; cross?: unknown; cross_unavailable?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown; followup?: unknown; confirmation_issue?: unknown; structured_stage?: unknown; after_diagnosis?: unknown } };
     try { rec = JSON.parse(readFileSync(file, "utf8")); } catch { throw new LedgerError(`원장에 없는 검토 기록을 읽을 수 없다: ${file} — 확인해 고치거나 지운 뒤 다시 실행한다`); }
     // 기록은 그 기록의 대상에 귀속한다 — 같은 폴더의 다른 대상(예: TASK.md와 구현 diff) 기록을 지금 대상의 fail로 가져가지 않는다
     const owner = typeof rec.review?.target === "string" && rec.review.target !== "" ? rec.review.target : name;
@@ -137,6 +137,7 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
     const recordedCall = {
       ...(typeof rec.review?.call_id === "string" ? { call_id: rec.review.call_id } : {}),
       ...(validFollowup(rec.review?.followup) ? { followup: rec.review.followup } : {}),
+      ...(validDiagnosisLink(rec.review?.after_diagnosis) ? { after_diagnosis: rec.review.after_diagnosis } : {}),
     };
     let entry: ReviewEntry;
     // 기록 안의 판정을 그대로 믿지 않는다 — 원문의 판정·스냅숏 해시와 맞을 때만 그 판정으로, 아니면 fail(중단)으로 복구한다(위조·손상 기록으로 차단을 풀지 못하게)
@@ -239,7 +240,8 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     const previousRecord = rereview && base
       ? relative(dirname(ledgerTarget), join(dirname(base.ledgerTarget), base.entry.record)).split(sep).join("/")
       : null;
-    const call: Pick<ReviewEntry, "call_id" | "followup"> = budget?.callId ? { call_id: budget.callId } : {};
+    const call: Pick<ReviewEntry, "call_id" | "followup" | "after_diagnosis"> = budget?.callId ? { call_id: budget.callId } : {};
+    if (scope && state?.activeDiagnosis) call.after_diagnosis = diagnosisLink(scope, target, state.activeDiagnosis);
     if (recovery) call.followup = { type: recovery.type === "focused_check" ? "confirmation" : "upper", id: recovery.id };
     else if (grant) call.followup = { type: grant.type, id: randomUUID() };
     const proof = recovery ?? grant;
@@ -322,7 +324,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     if (scope) {
       const current = readReviewState(scope, hash);
       output.budget = current.budget.status;
-      if (recovery) {
+      if (recovery || (call.after_diagnosis && current.recovery.upper)) {
         const report = exhaustedFollowup(scope, current);
         output.followup = { ...output.followup as object, report: report.report, next: report.action };
         if (current.recovery.upper?.action === "upper_review" || current.recovery.upper?.action === "agreement_required") {
@@ -437,9 +439,11 @@ export async function reviewNoteCommand(args: string[], deps: VerifyCliDeps): Pr
       if (!LAYERS.includes(layer)) throw new AgentError("invalid_request", `--layer는 ${LAYERS.join("|")}`);
       if (values.file !== undefined && !contentFile(values.file)) throw new AgentError("invalid_request", `근거 파일이 없거나 비었다: ${values.file}`);
       const file = values.file && (scope ? resolve(values.file) : values.file);
-      const confirmation = scope && scopedHash ? confirmationDiagnosis(scope, target, scopedHash, file, info.stage === "diagnose") : undefined;
+      const diagnosis = scope && scopedHash ? confirmationDiagnosis(scope, target, scopedHash, file) : undefined;
       entry = { type: "diagnosis", at: now().toISOString(), target: name, layer, summary,
-        ...(file ? { file } : {}), ...(confirmation ? { confirmation } : {}) };
+        ...(file ? { file } : {}),
+        ...(diagnosis ? { recovery_id: randomUUID(), recovery_evidence: diagnosis.basis } : {}),
+        ...(diagnosis?.focused ? { confirmation: diagnosis.basis } : {}) };
     } else {
       if (info.stage !== "ask_user") throw new AgentError("invalid_request", `결정은 진단 뒤에도 fail인 ask_user 단계일 때만 기록한다(지금 ${info.stage})`);
       const by = req(values.by, REVIEW_NOTE_USAGE);

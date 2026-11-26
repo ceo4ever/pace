@@ -39,3 +39,9 @@
 
 - 실제 독립성과 승인 원문의 진위, 합의의 의미가 달라졌는지는 허브가 원문과 적용 내용을 대조한다.
 - 전문 에이전트 호출 자동화는 BL261125_01의 BR04다. 파일 허가 범위 게이트는 T05, 기준별 증거 상태와 영향 문턱은 다음 T04에서 다룬다.
+
+## owner 후속 검증
+
+- 두 결정의 추가 기준 R-1~R-4가 통과했다. 같은 단위의 원장 구조 진단과 수정 확인 진단 모두에서 다음 유효 재실패가 남은 예산과 관계없이 즉시 상위 검토를 연다. 다른 대상의 통과로 원래 진단을 닫을 수 없다. 두 번째 상위 실패 뒤 문제 이력과 원인·조치·재현, 선택지와 허브 추천을 묶는다. [결정 원문](evidence/owner-endpoint.md) [후속 계약](evidence/owner-followup-contract.md)
+- 최종 후속 패치 `bce3f4ab90b19b99dd1b02a9f35889f4bbe8c09a318f5f847ef6c271850a8fd5`의 독립 reviewer 두 단계, tester 집중 113건 및 직접 반례 8건이 통과했다. 대상 구별을 제거한 변이본에서 두 반례가 실패했다. 실제 CLI에서도 A-1 종료와 보류 기본 추천의 출처·이유를 확인했다. [패치](evidence/owner-followup.patch) [계약 대조](evidence/owner-stage2-final.json) [독립 시험](evidence/owner-tester-final.md) [종료 보고](evidence/owner-endpoint-report.json)
+- 직전 후속 변경의 선언 전체 검사 1,451건 중 1,434건 통과, 건너뜀 17건, 실패 0건. 최신 변경도 T04 전체 검사에 포함한다.

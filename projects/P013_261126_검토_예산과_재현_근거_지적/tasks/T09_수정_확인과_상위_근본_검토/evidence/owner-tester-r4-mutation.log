@@ -1,0 +1,48 @@
+✖ 직접 반례 task: 다른 대상 pass와 unknown은 진단을 닫지 않고 다른 대상 fail도 단위를 막는다 (24.044792ms)
+✖ 직접 반례: 사후 두 원장의 동일 이름 pass도 원래 진단을 닫지 않는다 (12.708625ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 294.118
+
+✖ failing tests:
+
+test at ../../../../../../../../tmp/owner-r4-mutant-x1du5yxr/projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T09_수정_확인과_상위_근본_검토/evidence/owner-tester-r4-probe.test.ts:135:3
+✖ 직접 반례 task: 다른 대상 pass와 unknown은 진단을 닫지 않고 다른 대상 fail도 단위를 막는다 (24.044792ms)
+  AssertionError [ERR_ASSERTION]: {"code":0,"json":{"ran":true,"cross":true,"verifier":"codex","result":{"text":"F8 [blocking] 다른 대상 재현\nfail\n```pace-review\n{\"version\":1,\"findings\":[{\"id\":\"F1\",\"severity\":\"blocking\",\"category\":\"scope\",\"location\":\"fixture.ts:1\",\"scenario\":\"다른 대상 재현\",\"reproduction\":\"고정 입력으로 기존 동작을 실행한다\",\"confidence\":\"high\"}]}\n```\nfail","agent":"codex","mode":"p","model":{"value":null,"source":"unknown"},"provider":{"value":"openai","source":"reported"},"access":"read-only","enforcement":"fake","session_id":null,"stop_reason":null,"is_error":false,"duration_ms":1,"usage":{"input_tokens":null,"output_tokens":null},"raw_path":null,"process_cleanup":"verified"},"last_decision_by":null,"review":{"target":"TASK.md","hash":"1ff30440b86bd579a371e18e13b437e1d39f7ad60f26c2a47635f2bac7d36fdc","verdict":"fail","rereview_of":"review-records/R2.json","record":"review-records/R4.json"},"assessment":{"stage":"pre","verdict":"fail","reported_verdict":"fail","differs":false,"findings":[{"id":"F1","severity":"blocking","category":"scope","confidence":"high","location":"fixture.ts:1","scenario":"다른 대상 재현","reproduction":"고정 입력으로 기존 동작을 실행한다","effective":"blocking","reason":null,"handoff":null}]},"budget":{"unit":"task","root":"/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-buOltt/pace-followup-G9icXL/projects/P013_review/tasks/T02_followup","stage":"pre","rounds":2,"calls":3,"round_limit":2,"call_limit":4,"exhausted":"rounds"}}}
+  + actual - expected
+  
+  + undefined
+  - 'upper_review'
+  
+      at TestContext.<anonymous> (file:///private/tmp/owner-r4-mutant-x1du5yxr/projects/P013_261126_%EA%B2%80%ED%86%A0_%EC%98%88%EC%82%B0%EA%B3%BC_%EC%9E%AC%ED%98%84_%EA%B7%BC%EA%B1%B0_%EC%A7%80%EC%A0%81/tasks/T09_%EC%88%98%EC%A0%95_%ED%99%95%EC%9D%B8%EA%B3%BC_%EC%83%81%EC%9C%84_%EA%B7%BC%EB%B3%B8_%EA%B2%80%ED%86%A0/evidence/owner-tester-r4-probe.test.ts:172:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'upper_review',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../../../tmp/owner-r4-mutant-x1du5yxr/projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T09_수정_확인과_상위_근본_검토/evidence/owner-tester-r4-probe.test.ts:222:1
+✖ 직접 반례: 사후 두 원장의 동일 이름 pass도 원래 진단을 닫지 않는다 (12.708625ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(s.activeDiagnosis)
+  
+      at TestContext.<anonymous> (file:///private/tmp/owner-r4-mutant-x1du5yxr/projects/P013_261126_%EA%B2%80%ED%86%A0_%EC%98%88%EC%82%B0%EA%B3%BC_%EC%9E%AC%ED%98%84_%EA%B7%BC%EA%B1%B0_%EC%A7%80%EC%A0%81/tasks/T09_%EC%88%98%EC%A0%95_%ED%99%95%EC%9D%B8%EA%B3%BC_%EC%83%81%EC%9C%84_%EA%B7%BC%EB%B3%B8_%EA%B2%80%ED%86%A0/evidence/owner-tester-r4-probe.test.ts:234:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

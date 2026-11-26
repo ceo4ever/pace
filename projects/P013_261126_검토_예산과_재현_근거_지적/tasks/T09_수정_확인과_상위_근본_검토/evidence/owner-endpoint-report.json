@@ -1,0 +1,172 @@
+{
+  "source_hash": "bce3f4ab90b19b99dd1b02a9f35889f4bbe8c09a318f5f847ef6c271850a8fd5",
+  "synthetic_provider": true,
+  "exit": 16,
+  "decision": "A-1",
+  "endpoint": {
+    "unit": {
+      "type": "task"
+    },
+    "target": "change.patch",
+    "stage": "post",
+    "hash": "a79c83bc5a9e50dac55916566f9c761101b5aebd30b8c01f99681cb9bfd2a2f2",
+    "timeline": {
+      "ordinary_calls": [
+        {
+          "at": "2026-11-26T04:23:32.487Z",
+          "stage": "post",
+          "target": "change.patch"
+        },
+        {
+          "at": "2026-11-26T04:23:33.056Z",
+          "stage": "post",
+          "target": "change.patch"
+        },
+        {
+          "at": "2026-11-26T04:23:33.900Z",
+          "stage": "post",
+          "target": "change.patch"
+        },
+        {
+          "at": "2026-11-26T04:23:35.163Z",
+          "stage": "post",
+          "target": "change.patch"
+        }
+      ],
+      "ordinary": [
+        {
+          "at": "2026-11-26T04:23:34.206Z",
+          "stage": "post",
+          "target": "change.patch",
+          "record": "review-records/R1.json",
+          "verdict": "fail",
+          "cross": true,
+          "interrupted": false,
+          "invalidated": false,
+          "phase": "ordinary"
+        },
+        {
+          "at": "2026-11-26T04:23:35.458Z",
+          "stage": "post",
+          "target": "change.patch",
+          "record": "review-records/R2.json",
+          "verdict": "fail",
+          "cross": true,
+          "interrupted": false,
+          "invalidated": false,
+          "phase": "ordinary"
+        }
+      ],
+      "joint": [
+        {
+          "at": "2026-11-26T04:23:37.162Z",
+          "stage": "post",
+          "target": "change.patch",
+          "record": "review-records/R3.json",
+          "verdict": "fail",
+          "cross": true,
+          "interrupted": false,
+          "invalidated": false,
+          "phase": "joint",
+          "id": "d6f606af-58fe-4002-9f1f-e9bc99bf5499"
+        },
+        {
+          "at": "2026-11-26T04:23:38.438Z",
+          "stage": "post",
+          "target": "change.patch",
+          "record": "review-records/R4.json",
+          "verdict": "fail",
+          "cross": true,
+          "interrupted": false,
+          "invalidated": false,
+          "phase": "joint",
+          "id": "73387d6e-0d55-4058-b018-f0628a102cb3"
+        }
+      ],
+      "diagnoses": [
+        {
+          "at": "2026-11-26T04:23:41.334Z",
+          "stage": "post",
+          "layer": "structure",
+          "target": "change.patch",
+          "summary": "independent CLI fixture",
+          "evidence": {
+            "source": "review-records/R4.json",
+            "evidence_hash": "98ec2a787e7ae2eeb40ffbb40f45f2777792cce3c3ed9ce8400404b1b641a542"
+          }
+        }
+      ],
+      "confirmation": [
+        {
+          "at": "2026-11-26T04:23:39.936Z",
+          "stage": "post",
+          "target": "change.patch",
+          "record": "review-records/R5.json",
+          "verdict": "fail",
+          "cross": true,
+          "interrupted": false,
+          "invalidated": false,
+          "phase": "confirmation",
+          "id": "25ff544c-65bf-4975-ac51-d1879fc8b214",
+          "diagnosed": false
+        },
+        {
+          "at": "2026-11-26T04:23:42.667Z",
+          "stage": "post",
+          "target": "change.patch",
+          "record": "review-records/R6.json",
+          "verdict": "fail",
+          "cross": true,
+          "interrupted": false,
+          "invalidated": false,
+          "phase": "confirmation",
+          "id": "fd2b4d9e-779f-48da-ac1f-9dee8d015575",
+          "diagnosed": true
+        }
+      ],
+      "upper": [
+        {
+          "slot": 1,
+          "root_cause": "independent root cause and alternatives",
+          "review_evidence": "evidence/proof-16.json",
+          "applied_solution": "fix root cause",
+          "change_evidence": "evidence/proof-17.json",
+          "verdict": "fail",
+          "result_record": "review-records/R7.json"
+        },
+        {
+          "slot": 2,
+          "root_cause": "independent root cause and alternatives",
+          "review_evidence": "evidence/proof-19.json",
+          "applied_solution": "fix root cause",
+          "change_evidence": "evidence/proof-20.json",
+          "verdict": "fail",
+          "result_record": "review-records/R8.json"
+        }
+      ]
+    },
+    "remaining_failure": {
+      "verdict": "fail",
+      "record": "review-records/R8.json",
+      "findings": [
+        {
+          "id": "F1",
+          "location": "fixture.ts:1",
+          "scenario": "관측한 실패",
+          "reproduction": "고정 입력으로 기존 동작을 실행한다",
+          "confidence": "high"
+        }
+      ]
+    },
+    "choices": [
+      "기준 조정",
+      "보류",
+      "한 번 더"
+    ],
+    "recommendation": {
+      "choice": "보류",
+      "reason": "두 차례의 상위 해결안 확인 뒤에도 유효 판정이 실패했다. 실패를 재현하고 현재 기준을 유지할 수 있는지 결정할 때까지 단위를 보류한다.",
+      "source": "default"
+    }
+  }
+}
