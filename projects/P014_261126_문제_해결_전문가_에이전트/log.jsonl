@@ -51,3 +51,4 @@
 {"ts":"2026-11-26T15:39:13.824Z","p":"P014","t":"T04","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T15:59:56.132Z","p":"P014","type":"finish","by":"cli","msg":"finish","ok":true}
 {"ts":"2026-11-26T15:59:56.132Z","p":"P014","type":"gate","by":"cli","msg":"finish","ok":true,"src":"finish:c285adec26088f9229a3253b","data":{"finish":1}}
+{"ts":"2026-11-26T22:07:05.427Z","p":"P014","type":"merge","by":"cli","msg":"merge: 사용자 승인","ok":true,"data":{"approved":1,"commits":10}}
