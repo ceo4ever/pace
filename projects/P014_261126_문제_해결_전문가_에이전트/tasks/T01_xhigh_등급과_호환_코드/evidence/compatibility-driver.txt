@@ -1,0 +1,109 @@
+from hashlib import sha256
+from pathlib import Path
+from tempfile import mkdtemp
+import json
+import os
+import subprocess
+import sys
+
+new = Path.cwd() / "bin/pace.ts"
+revision = "5cddecd00c68ab61f7e31cd80984dc34517bdc46"
+base = Path(mkdtemp(prefix="pace-xhigh-compat-")).resolve()
+old, work, home = (base / name for name in ("old", "repo", "home"))
+for path in (old, work, home):
+    path.mkdir()
+archive = subprocess.check_output(["git", "archive", revision, "bin", "src", "templates", "package.json"])
+subprocess.run(["tar", "-xf", "-", "-C", str(old)], input=archive, check=True)
+env = {k: v for k, v in os.environ.items() if not k.startswith(("ORCA_", "PACE_"))}
+env.update(HOME=str(home), USERPROFILE=str(home), PACE_HOME=str(home / ".pace"),
+           GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_SYSTEM=os.devnull, GIT_CONFIG_NOSYSTEM="1")
+(home / ".pace").mkdir()
+def git(*args):
+    subprocess.run(["git", *args], cwd=work, env=env, check=True, capture_output=True)
+def run(version, *args, expected=0, cwd=None):
+    command = old / "bin/pace.ts" if version == "old" else new
+    r = subprocess.run([str(command), *args], cwd=cwd or work, env=env, check=False, text=True, capture_output=True, timeout=20)
+    if r.returncode != expected:
+        print(f"{version} {args}: {r.returncode}: {r.stderr} {r.stdout}", file=sys.stderr)
+        sys.exit(1)
+    return r.stdout
+def get(version, *args, cwd=None):
+    return json.loads(run(version, *args, cwd=cwd))
+def new_readers(project_dir):
+    command = 'import {readEvents} from "./src/project/event-log.ts"; import {readTeamEvents} from "./src/project/team-input.ts"; const dir=process.argv[1]; console.log(JSON.stringify([readEvents(dir), readTeamEvents(dir,"P001")].map(rows=>rows.find(row=>row.type==="start").role)));'
+    result = subprocess.check_output(["node", "--input-type=module", "-e", command, str(project_dir)], cwd=new.parent.parent, env=env, text=True)
+    return json.loads(result)
+def files(names):
+    return [work / f".{host}/agents/{name}.{ext}" for name in names for host, ext in (("claude", "md"), ("codex", "toml"))]
+def hashes(paths):
+    return {str(path.relative_to(work)): sha256(path.read_bytes()).hexdigest() for path in paths}
+def roles(data):
+    return [role["name"] for role in data["team"]["roles"]]
+git("init", "-q", "-b", "main")
+git("config", "user.name", "Fixture")
+git("config", "user.email", "fixture@example.invalid")
+(work / "docs").mkdir()
+(work / "docs/README.md").write_text("# Fixture\n\n## 환경\n\n- 검사: `true`\n- 보안 검사: `true`\n")
+git("add", "docs")
+git("commit", "-qm", "fixture")
+run("old", "project", "new", "호환 기준")
+project = next((work / "projects").glob("P001_*/PROJECT.md"))
+project.write_text(project.read_text().replace("\n## ", "\n- 팀 측정: v1\n\n## ", 1))
+old_names = ["builder", "check-high", "check-low"]
+for name in old_names:
+    run("old", "team", "new", name, "--role", "reviewer" if name == "check-high" else "maker")
+low = work / ".pace/team/agents/check-low.md"
+low.write_text(low.read_text().replace("tier: medium", "tier: low"))
+run("old", "worker", "set", "codex", "tier.high.model", "baseline-codex")
+run("old", "team", "sync")
+prior = hashes(files(old_names))
+legacy_settings = get("old", "worker", "show")["teamTiers"]
+old_stats = get("old", "project", "stats", "P001", "--json")
+assert roles(old_stats) == old_names
+run("new", "team", "new", "specialist", "--role", "reviewer")
+standard = work / ".pace/team/agents/specialist.md"
+promoted = work / ".pace/team/agents-xhigh/specialist.md"
+promoted.parent.mkdir()
+standard.rename(promoted)
+promoted.write_text(promoted.read_text().replace("tier: high", "tier: xhigh"))
+(work / ".pace/team/required-roles.json").write_text(json.dumps({
+    "version": 1, "roles": [{"role": "specialist", "scope": "worktree", "conditional": True}]
+}))
+run("new", "worker", "set", "codex", "tier.xhigh.model", "compat-codex")
+run("new", "worker", "set", "codex", "tier.xhigh.effort", "high")
+run("new", "team", "sync")
+after_new = hashes(files(["specialist"]))
+assert 'model = "compat-codex"' in files(["specialist"])[1].read_text()
+git("add", ".pace", ".claude", ".codex")
+git("commit", "-qm", "role fixture")
+run("new", "project", "start", "P001", "--role", "specialist", "--agent", "codex", "--no-launch")
+worktree = base / "repo.wt/P001"
+project_dir = next((worktree / "projects").glob("P001_*"))
+wire = next(row for row in map(json.loads, (project_dir / "log.jsonl").read_text().splitlines()) if row["type"] == "start")
+assert wire["role"]["definition"] == ".pace/team/agents/specialist.md"
+assert wire["data"]["xhighRoleDefinition"] == 1
+assert wire["role"]["hash"] == sha256(promoted.read_bytes()).hexdigest()
+assert wire["role"]["model"] == "compat-codex" and wire["role"]["effort"] == "high"
+restored = new_readers(project_dir)
+assert len(restored) == 2 and all(r["definition"] == ".pace/team/agents-xhigh/specialist.md" and r["hash"] == wire["role"]["hash"] for r in restored)
+work = worktree
+assert hashes(files(old_names)) == prior
+assert hashes(files(["specialist"])) == after_new
+runs = []
+for repeat in range(2):
+    for version in ("old", "new"):
+        team_list = run(version, "team", "list")
+        assert ("| specialist |" in team_list) == (version == "new")
+        precheck = get(version, "team", "sync", "--check", "--json")
+        assert precheck["ok"] and precheck["differences"] == []
+        run(version, "team", "sync")
+        assert hashes(files(old_names)) == prior
+        assert hashes(files(["specialist"])) == after_new
+        shown = get(version, "worker", "show")["teamTiers"]
+        assert {host: {t: shown[host][t] for t in legacy_settings[host]} for host in shown} == legacy_settings
+        current = get(version, "project", "stats", "P001", "--json", cwd=worktree)
+        assert roles(current) == old_names + ["specialist"]
+        assert current["project"]["start"] == wire["ts"] and current["project"]["source"] == "events"
+        assert "팀 원본 관측 미확인" not in " ".join(current["team"]["warnings"])
+        runs.append({"round": repeat + 1, "version": version, "check": precheck, "xhighInTeamList": "| specialist |" in team_list, "syncExit": 0, "statsRoles": roles(current), "source": current["project"]["source"], "settingsPreserved": True, "generationPreserved": True})
+print(json.dumps({"base": revision, "wireStart": {"role": wire["role"], "data": wire["data"]}, "newReadDefinitions": [r["definition"] for r in restored], "oldNative": prior, "xhighNative": after_new, "runs": runs}, ensure_ascii=False, indent=2))

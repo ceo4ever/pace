@@ -2,12 +2,15 @@ import { dirname, join } from "node:path";
 import { mkdirSync } from "node:fs";
 import { writeFileAtomic } from "../core/fsutil.ts";
 import { resolveTeamSettings, validateTeamSettings, type TeamExecutionSettings } from "../core/worker-tiers.ts";
-import { normalizeLines, sha256, teamDescription, teamSourcePath, type TeamMember } from "./model.ts";
+import { normalizeLines, sha256, teamDescription, teamSourcePath, xhighTeamSourcePath, XHIGH_AGENTS_DIR, type TeamMember } from "./model.ts";
 import { loadTeam, readTeamFile, safeTeamPath, teamFiles } from "./store.ts";
 
 export type TeamHost = "claude" | "codex";
 export interface TeamDifference { path: string; kind: "missing" | "source" | "settings" | "content" | "orphan" }
 const MARKER = "# pace-team-generated: ";
+// 구판에서는 이름을 모르는 생성물로 취급하므로 원본 없는 생성물로 오인하지 않는다.
+const XHIGH_MARKER = "# pace-team-xhigh-generated: ";
+const markerFor = (source: string) => source.startsWith(`${XHIGH_AGENTS_DIR}/`) ? XHIGH_MARKER : MARKER;
 const sourceLine = "# pace-team-source-sha256: ";
 const mappingLine = "# pace-team-mapping: ";
 const mappingHashLine = "# pace-team-mapping-sha256: ";
@@ -19,7 +22,7 @@ function instructions(member: TeamMember): string {
 export function renderTeamMember(member: TeamMember, host: TeamHost, settings: TeamExecutionSettings): string {
   validateTeamSettings(settings);
   const mapping = encoded(settings);
-  const comments = [MARKER + member.source, sourceLine + member.hash, mappingLine + mapping, mappingHashLine + sha256(mapping)];
+  const comments = [markerFor(member.source) + member.source, sourceLine + member.hash, mappingLine + mapping, mappingHashLine + sha256(mapping)];
   const quote = JSON.stringify;
   if (host === "claude") return ["---", ...comments, `name: ${quote(member.name)}`, `description: ${quote(teamDescription(member))}`, `model: ${quote(settings.model)}`, `effort: ${quote(settings.effort)}`, "---", instructions(member)].join("\n") + "\n";
   return [...comments, `name = ${quote(member.name)}`, `description = ${quote(teamDescription(member))}`, `model = ${quote(settings.model)}`, `model_reasoning_effort = ${quote(settings.effort)}`, `developer_instructions = ${quote(instructions(member))}`, ""].join("\n");
@@ -28,8 +31,11 @@ function metadata(text: string): { source: string; hash?: string; settings?: Tea
   const lines = normalizeLines(text).split("\n");
   const offset = lines[0] === "---" ? 1 : 0;
   const first = lines[offset];
-  if (!first?.startsWith(MARKER)) return null;
-  const result: { source: string; hash?: string; settings?: TeamExecutionSettings } = { source: first.slice(MARKER.length) };
+  const marker = [MARKER, XHIGH_MARKER].find((prefix) => first?.startsWith(prefix));
+  if (!marker) return null;
+  const source = first!.slice(marker.length);
+  if (marker !== markerFor(source)) return null;
+  const result: { source: string; hash?: string; settings?: TeamExecutionSettings } = { source };
   if (lines[offset + 1]?.startsWith(sourceLine)) result.hash = lines[offset + 1]!.slice(sourceLine.length);
   try {
     if (!lines[offset + 2]?.startsWith(mappingLine) || !lines[offset + 3]?.startsWith(mappingHashLine)) return result;
@@ -49,7 +55,9 @@ export function syncTeam(root: string, options: { check?: boolean; env?: NodeJS.
     if (Buffer.byteLength(text) > 65536) throw new Error(`생성물 크기 초과: ${path}`);
     const current = readTeamFile(root, path);
     const sources = [member.source];
-    if (member.source === teamSourcePath(member.name)) sources.push(teamSourcePath(member.name, true));
+    const standard = teamSourcePath(member.name), xhigh = xhighTeamSourcePath(member.name);
+    if (member.source === standard) sources.push(teamSourcePath(member.name, true), xhigh);
+    if (member.source === xhigh) sources.push(standard, teamSourcePath(member.name, true));
     expected.set(path, { text, sources });
     if (current === null) { differences.push({ path, kind: "missing" }); continue; }
     const meta = metadata(current);

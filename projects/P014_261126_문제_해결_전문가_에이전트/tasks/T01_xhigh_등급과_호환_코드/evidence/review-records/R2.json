@@ -1,0 +1,109 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# 독립 검토 1단계: P014 T01 xhigh 등급과 구판 호환\n\n## 결론\n**목표 달성**으로 판정합니다. 단, 모두 코드와 기존 실행 결과를 읽고 내린 판정입니다. 이 호출에서는 셸을 쓸 수 없어 `npm run check`와 `compatibility-driver.txt`를 직접 다시 돌리지 못했습니다. 차단할 결함이나 회귀는 찾지 못했고, 짚을 점은 낮은 수준(note) 두 건입니다.\n\n## 독립 목표 대조\n상위 목적은 세 가지입니다. xhigh 전문가 설정을 전달하고, 기존 등급과 구판 동기화를 보존하고, 채택 프로젝트의 팀 측정을 보존하는 것입니다.\n\n- **xhigh 설정 전달**\n  - 설정은 `worker-tiers-xhigh.json` 파일에만 따로 저장됩니다. 기본값은 Claude `claude-fable-5-2/high`, Codex `gpt-6.2-astra/medium`입니다(`src/core/worker-tiers.ts:17-20`, `:54-55`).\n  - xhigh 원본은 `.pace/team/agents-xhigh/` 폴더에 둘 때만 받아들입니다(`src/team/model.ts:103`).\n  - 이 설정이 생성물, `project start`의 인자, 시작 기록까지 이어집니다(`src/team/worker-role.ts:74-83`).\n- **기존 등급 보존**\n  - 기존 설정 파일은 xhigh 키를 거부해 두 파일이 섞이지 않습니다(`worker-tiers.ts:54`).\n  - 기존 등급의 기본 effort는 등급 이름 그대로이고, 자동 배정(`src/team/store.ts:93`)은 바뀌지 않았습니다.\n- **구판 호환**\n  - 시작 기록에는 구판이 이미 읽는 경로를 쓰고 `data.xhighRoleDefinition:1` 표지를 함께 남깁니다. 신판은 이 표지를 보고 실제 xhigh 경로를 되살립니다(`src/project/event-log.ts:37-54`).\n  - 호출자가 표지를 직접 넣으면 기록을 거부합니다.\n  - xhigh 생성물에는 별도 표지를 붙입니다(`src/team/sync.ts:269-270`, `:289-292`). 구판은 이 파일을 관리 대상이 아닌 파일로 보고 건드리지 않으며, 고아 생성물로도 잡지 않습니다.\n- **실행 결과(`compatibility.json`)**\n  - 검토 대상 경로의 파일과 checkout의 사본이 기준 커밋·hash·라운드 값에서 같았습니다.\n  - 구판과 신판을 두 번씩 번갈아 실행한 4회 모두 결과가 같습니다. check는 차이 없음, sync 종료 코드 0, 집계된 역할 4개, 출처 `events`, 기존 설정과 생성물 바이트 유지입니다.\n  - 신판의 두 판독기는 모두 원본 경로를 `.pace/team/agents-xhigh/specialist.md`로 정확히 되살렸습니다.\n  - driver는 assert가 모두 통과해야만 결과를 출력하는 구조라, 이 출력 자체가 각 조건의 근거가 됩니다.\n\n## 한계와 노출 범위\n- **읽은 파일:** `CLAUDE.md`/`AGENTS.md`(자동 첨부), `compatibility-driver.txt`, `implementation.patch`, `compatibility.json`(Grep으로 대조), `src/project/event-log.ts`, `src/team/worker-role.ts`, `src/team/sync.ts`. 그 밖에 `src/`를 Grep으로 검색했습니다.\n- **열지 않은 것:** TASK, 리뷰, 마감 문서는 찾거나 열지 않았습니다.\n- **함께 받은 맥락:** 부트는 생략됐습니다(자식 세션). 호스트가 git 상태를 첨부했는데, 여기에 미커밋 변경 목록이 들어 있었습니다.\n- **직접 실행 안 함:** 테스트와 driver를 다시 돌리지 않았습니다. 구판 쪽 실제 실행 근거는 Codex 호스트 경로 하나뿐입니다. Claude 호스트는 신판 테스트 코드로만 다룹니다.\n- **보안 위험:** 따로 볼 것은 찾지 못했습니다.\n  - 표지 위조와 경로 위조는 거부됩니다.\n  - 링크, 크기, UTF-8 검증이 xhigh 설정 파일과 원본에도 적용됩니다.\n  - 실패하면 기존 생성물을 보존합니다.\n- **올릴 단계:** 없음. 목표, 전략, 계획을 고칠 만한 어긋남은 찾지 못했습니다.\n\n```pace-review\n{\"version\":2,\"findings\":[{\"id\":\"F1\",\"severity\":\"note\",\"category\":\"other\",\"location\":\"compatibility-driver.txt:79\",\"scenario\":\"구판·신판 교대 실행 증거가 codex 호스트의 --no-launch 시작 1건만 다룬다. claude 호스트 xhigh 시작 행을 구판이 집계하는지는 실제 실행으로 관측되지 않았다(인코딩은 호스트와 무관하므로 위험은 낮다).\",\"reproduction\":\"driver의 project start에 --agent claude 변형을 추가해 구판 project stats --json을 비교\",\"confidence\":\"medium\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null},{\"id\":\"F2\",\"severity\":\"note\",\"category\":\"implementation\",\"location\":\"src/core/worker-tiers.ts:92\",\"scenario\":\"worker-tiers-xhigh.json이 손상되면 teamTierTable 전체가 실패한다. 그래서 worker show가 정상인 기존 등급 표까지 보여 주지 못한다(종료 2). sync와 기존 등급 해석은 영향받지 않는다.\",\"reproduction\":\"PACE_HOME/worker-tiers-xhigh.json에 '{\\\"codex\\\":{\\\"high\\\":{}}}'를 쓰고 pace worker show 실행(test/team.test.ts의 xhigh 거부 시험이 종료 2를 기대)\",\"confidence\":\"high\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null}],\"criteria\":[{\"id\":\"T-1\",\"state\":\"present\",\"observation\":\"worker-tiers.ts:16-20,54-55,75-81은 xhigh를 별도 파일로 저장한다. 기본값은 claude-fable-5-2/high와 gpt-6.2-astra/medium이고 override를 기본값보다 먼저 적용한다. 기존 등급의 effort는 등급 이름이며 자동 배정(store.ts:93)은 바뀌지 않았다. test/team.test.ts의 'worker xhigh: CLI defaults…' 시험이 set/reset/show와 기존 파일 바이트 보존을 확인한다. 시험은 읽기만 했고 재실행하지 않았다.\"},{\"id\":\"T-2\",\"state\":\"present\",\"observation\":\"store.ts:235-250은 agents-xhigh 폴더를 목록과 원본 탐색에 포함한다. sync.ts:53-60은 xhigh 설정으로 두 생성물을 만든다. worker-role.ts:74-83은 start 인자와 시작 기록에 같은 설정을 쓴다. test/project-role.test.ts의 xhigh 시험(claude·codex)이 orca 인자(--model/--effort/--spec)와 시작 행의 model·effort 일치, override 우선을 확인한다. driver:76,86도 같은 결과를 관측했다. 시험은 재실행하지 않았다.\"},{\"id\":\"T-3\",\"state\":\"present\",\"observation\":\"compatibility.json의 원시 결과에서 old/new 2회씩 4회 모두 check 차이 없음, sync 종료 0, statsRoles 4개, source events, settingsPreserved·generationPreserved true였다. driver:100-107의 assert(기존 생성물 hash가 prior와 같음, xhigh 생성물이 after_new와 같음, 구판 project.start가 xhigh 시작 행 ts와 같음)가 모두 통과해야 출력되는 구조다. newReadDefinitions는 두 신판 판독기가 agents-xhigh 경로를 정확히 복원했음을 보인다. driver는 직접 재실행하지 않았다.\"},{\"id\":\"T-4\",\"state\":\"present\",\"observation\":\"model.ts:103은 등급과 경로의 불일치를 거부한다. store.ts:239는 중복 원본을 거부한다. sync.ts:64,79,85,289-292는 비관리 출력·위조 표지·고아 생성물을 쓰기 전에 거부한다. event-log.ts:38,48-52는 표지 주입, 표지 없는 xhigh 경로, 다른 역할명·경로, 값이 1이 아닌 표지를 거부한다. 시험은 정의만 읽었다. 위조 행 9종의 두 판독기 거부와 기록 거부, 파일 종류·0xff·64KiB 초과·심볼릭 링크 원본 거부, 손상·링크된 xhigh 설정의 바이트 보존, 충돌·중복·고아 시 생성물 보존을 다룬다. 시험은 재실행하지 않았다.\"}]}\n```\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 96770,
+    "usage": {
+      "input_tokens": 16,
+      "output_tokens": 9108
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "compatibility.json",
+    "hash": "6273ee98454d1c03c67244796cd36ab5dc714eb2fc16b2589293672560a56f9b",
+    "kind": "goal",
+    "verdict": "pass",
+    "rereview_of": null,
+    "snapshot": "{\n  \"base\": \"5cddecd00c68ab61f7e31cd80984dc34517bdc46\",\n  \"wireStart\": {\n    \"role\": {\n      \"name\": \"specialist\",\n      \"source\": \"option\",\n      \"definition\": \".pace/team/agents/specialist.md\",\n      \"hash\": \"7fb2ac5fcbeb1ca79ad5d64653bf99cbf3953189ee2c3d9b0e4a2adc39e591d2\",\n      \"method\": \"prompt\",\n      \"model\": \"compat-codex\",\n      \"effort\": \"high\",\n      \"settingsStatus\": \"planned\",\n      \"toolsPermissionApplied\": false,\n      \"runtimeObserved\": false\n    },\n    \"data\": {\n      \"teamMetricsVersion\": 1,\n      \"xhighRoleDefinition\": 1\n    }\n  },\n  \"newReadDefinitions\": [\n    \".pace/team/agents-xhigh/specialist.md\",\n    \".pace/team/agents-xhigh/specialist.md\"\n  ],\n  \"oldNative\": {\n    \".claude/agents/builder.md\": \"ab717cb9830a34db32ca29f44adee6e9d5f21552fee8f52a11c4b825d29953da\",\n    \".codex/agents/builder.toml\": \"cfe45a1751ffed2dce43536aeea5c5b41fb8c7a73a0befc958828c3a40220496\",\n    \".claude/agents/check-high.md\": \"7b6c15c508cb7dcb162499eef6fb250545dee91f4fa46474f3044fd40eb879ee\",\n    \".codex/agents/check-high.toml\": \"070ab137bf47958ed1f98d33b85c974466f168a26d24b93aa76c782229e92db5\",\n    \".claude/agents/check-low.md\": \"7e44f01a62143c28636c78074db6aeeed27ea1b0c275ea698367176a0a1e609f\",\n    \".codex/agents/check-low.toml\": \"73f5ec9d8798193072408c80f4fa78105450c98bb82a2e643eb0a847cefc0bcb\"\n  },\n  \"xhighNative\": {\n    \".claude/agents/specialist.md\": \"52e6a10b6170beee2ce8d34c3e58fb9353c042397b58c6714a5912923b8fcced\",\n    \".codex/agents/specialist.toml\": \"5f8fbe3221b8f07f0e6a238a3fcf79895716915d349b214218efb701c130f927\"\n  },\n  \"runs\": [\n    {\n      \"round\": 1,\n      \"version\": \"old\",\n      \"check\": {\n        \"members\": 3,\n        \"differences\": [],\n        \"ok\": true\n      },\n      \"xhighInTeamList\": false,\n      \"syncExit\": 0,\n      \"statsRoles\": [\n        \"builder\",\n        \"check-high\",\n        \"check-low\",\n        \"specialist\"\n      ],\n      \"source\": \"events\",\n      \"settingsPreserved\": true,\n      \"generationPreserved\": true\n    },\n    {\n      \"round\": 1,\n      \"version\": \"new\",\n      \"check\": {\n        \"members\": 4,\n        \"differences\": [],\n        \"ok\": true\n      },\n      \"xhighInTeamList\": true,\n      \"syncExit\": 0,\n      \"statsRoles\": [\n        \"builder\",\n        \"check-high\",\n        \"check-low\",\n        \"specialist\"\n      ],\n      \"source\": \"events\",\n      \"settingsPreserved\": true,\n      \"generationPreserved\": true\n    },\n    {\n      \"round\": 2,\n      \"version\": \"old\",\n      \"check\": {\n        \"members\": 3,\n        \"differences\": [],\n        \"ok\": true\n      },\n      \"xhighInTeamList\": false,\n      \"syncExit\": 0,\n      \"statsRoles\": [\n        \"builder\",\n        \"check-high\",\n        \"check-low\",\n        \"specialist\"\n      ],\n      \"source\": \"events\",\n      \"settingsPreserved\": true,\n      \"generationPreserved\": true\n    },\n    {\n      \"round\": 2,\n      \"version\": \"new\",\n      \"check\": {\n        \"members\": 4,\n        \"differences\": [],\n        \"ok\": true\n      },\n      \"xhighInTeamList\": true,\n      \"syncExit\": 0,\n      \"statsRoles\": [\n        \"builder\",\n        \"check-high\",\n        \"check-low\",\n        \"specialist\"\n      ],\n      \"source\": \"events\",\n      \"settingsPreserved\": true,\n      \"generationPreserved\": true\n    }\n  ]\n}\n",
+    "call_id": "00bd62c2-6fa5-4e16-a047-037a2125a77d",
+    "structured_stage": "post",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3",
+      "T-4"
+    ]
+  },
+  "assessment": {
+    "stage": "post",
+    "verdict": "pass",
+    "reported_verdict": "pass",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "note",
+        "category": "other",
+        "confidence": "medium",
+        "location": "compatibility-driver.txt:79",
+        "scenario": "구판·신판 교대 실행 증거가 codex 호스트의 --no-launch 시작 1건만 다룬다. claude 호스트 xhigh 시작 행을 구판이 집계하는지는 실제 실행으로 관측되지 않았다(인코딩은 호스트와 무관하므로 위험은 낮다).",
+        "reproduction": "driver의 project start에 --agent claude 변형을 추가해 구판 project stats --json을 비교",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "note",
+        "category": "implementation",
+        "confidence": "high",
+        "location": "src/core/worker-tiers.ts:92",
+        "scenario": "worker-tiers-xhigh.json이 손상되면 teamTierTable 전체가 실패한다. 그래서 worker show가 정상인 기존 등급 표까지 보여 주지 못한다(종료 2). sync와 기존 등급 해석은 영향받지 않는다.",
+        "reproduction": "PACE_HOME/worker-tiers-xhigh.json에 '{\"codex\":{\"high\":{}}}'를 쓰고 pace worker show 실행(test/team.test.ts의 xhigh 거부 시험이 종료 2를 기대)",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "worker-tiers.ts:16-20,54-55,75-81은 xhigh를 별도 파일로 저장한다. 기본값은 claude-fable-5-2/high와 gpt-6.2-astra/medium이고 override를 기본값보다 먼저 적용한다. 기존 등급의 effort는 등급 이름이며 자동 배정(store.ts:93)은 바뀌지 않았다. test/team.test.ts의 'worker xhigh: CLI defaults…' 시험이 set/reset/show와 기존 파일 바이트 보존을 확인한다. 시험은 읽기만 했고 재실행하지 않았다."
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "store.ts:235-250은 agents-xhigh 폴더를 목록과 원본 탐색에 포함한다. sync.ts:53-60은 xhigh 설정으로 두 생성물을 만든다. worker-role.ts:74-83은 start 인자와 시작 기록에 같은 설정을 쓴다. test/project-role.test.ts의 xhigh 시험(claude·codex)이 orca 인자(--model/--effort/--spec)와 시작 행의 model·effort 일치, override 우선을 확인한다. driver:76,86도 같은 결과를 관측했다. 시험은 재실행하지 않았다."
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "compatibility.json의 원시 결과에서 old/new 2회씩 4회 모두 check 차이 없음, sync 종료 0, statsRoles 4개, source events, settingsPreserved·generationPreserved true였다. driver:100-107의 assert(기존 생성물 hash가 prior와 같음, xhigh 생성물이 after_new와 같음, 구판 project.start가 xhigh 시작 행 ts와 같음)가 모두 통과해야 출력되는 구조다. newReadDefinitions는 두 신판 판독기가 agents-xhigh 경로를 정확히 복원했음을 보인다. driver는 직접 재실행하지 않았다."
+        },
+        {
+          "id": "T-4",
+          "state": "present",
+          "observation": "model.ts:103은 등급과 경로의 불일치를 거부한다. store.ts:239는 중복 원본을 거부한다. sync.ts:64,79,85,289-292는 비관리 출력·위조 표지·고아 생성물을 쓰기 전에 거부한다. event-log.ts:38,48-52는 표지 주입, 표지 없는 xhigh 경로, 다른 역할명·경로, 값이 1이 아닌 표지를 거부한다. 시험은 정의만 읽었다. 위조 행 9종의 두 판독기 거부와 기록 거부, 파일 종류·0xff·64KiB 초과·심볼릭 링크 원본 거부, 손상·링크된 xhigh 설정의 바이트 보존, 충돌·중복·고아 시 생성물 보존을 다룬다. 시험은 재실행하지 않았다."
+        }
+      ],
+      "issues": []
+    }
+  }
+}

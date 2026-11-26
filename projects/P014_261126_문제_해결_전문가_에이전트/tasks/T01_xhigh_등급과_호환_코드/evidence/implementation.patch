@@ -1,0 +1,555 @@
+diff --git a/src/core/worker-tiers.ts b/src/core/worker-tiers.ts
+index 172e80c..ae90424 100644
+--- a/src/core/worker-tiers.ts
++++ b/src/core/worker-tiers.ts
+@@ -4,12 +4,16 @@ import { paceHome } from "./paths.ts";
+ import { writeFileAtomic } from "./fsutil.ts";
+ import { resolveWorkerSettings, validValue } from "./worker-settings.ts";
+ 
+-export const WORKER_TIERS = ["high", "medium", "low"] as const;
++export const WORKER_TIERS = ["high", "medium", "low", "xhigh"] as const;
+ export type WorkerTier = typeof WORKER_TIERS[number];
+ export interface TeamExecutionSettings { model: string; effort: string }
+ type Overrides = Record<string, Partial<Record<WorkerTier, Partial<TeamExecutionSettings>>>>;
+ export function isWorkerTier(value: string): value is WorkerTier { return WORKER_TIERS.some((tier) => tier === value); }
+-const pathFor = (env: NodeJS.ProcessEnv) => join(paceHome(env), "worker-tiers.json");
++const pathFor = (env: NodeJS.ProcessEnv, xhigh: boolean) => join(paceHome(env), xhigh ? "worker-tiers-xhigh.json" : "worker-tiers.json");
++const XHIGH_DEFAULTS = new Map<string, TeamExecutionSettings>([
++  ["claude", { model: "claude-fable-5-2", effort: "high" }],
++  ["codex", { model: "gpt-6.2-astra", effort: "medium" }],
++]);
+ const agentValid = (agent: string) => /^[a-z][a-z0-9-]*$/.test(agent);
+ const valueValid = (value: unknown): value is string => validValue(value) && value.length <= 1024 && value.isWellFormed();
+ export function validateTeamSettings(value: unknown): asserts value is TeamExecutionSettings {
+@@ -23,7 +27,9 @@ function ordinaryFile(path: string): void {
+   if (!stat.isFile() || stat.nlink !== 1 || stat.size > 65536) throw new Error("등급 설정은 64KiB 이하의 일반 단일 링크 파일이어야 한다");
+ }
+ export function readWorkerTiers(env: NodeJS.ProcessEnv = process.env): Overrides {
+-  const path = pathFor(env);
++  return readTierOverrides(pathFor(env, false), false);
++}
++function readTierOverrides(path: string, xhigh: boolean): Overrides {
+   let text: string;
+   try {
+     ordinaryFile(path);
+@@ -45,7 +51,7 @@ export function readWorkerTiers(env: NodeJS.ProcessEnv = process.env): Overrides
+     for (const [agent, tiers] of Object.entries(data)) {
+       if (!agentValid(agent) || !tiers || typeof tiers !== "object" || Array.isArray(tiers)) throw new Error();
+       for (const [tier, settings] of Object.entries(tiers)) {
+-        if (!isWorkerTier(tier) || !settings || typeof settings !== "object" || Array.isArray(settings)) throw new Error();
++        if (!isWorkerTier(tier) || (tier === "xhigh") !== xhigh || !settings || typeof settings !== "object" || Array.isArray(settings)) throw new Error();
+         for (const [key, value] of Object.entries(settings)) {
+           if (!["model", "effort"].includes(key) || !valueValid(value) || (key === "effort" && value === "default")) throw new Error();
+         }
+@@ -56,19 +62,22 @@ export function readWorkerTiers(env: NodeJS.ProcessEnv = process.env): Overrides
+ }
+ export function resolveTeamSettings(agent: string, tier: WorkerTier, env: NodeJS.ProcessEnv = process.env): TeamExecutionSettings {
+   if (!agentValid(agent) || !isWorkerTier(tier)) throw new Error("작업자 또는 등급이 올바르지 않다");
+-  const data = readWorkerTiers(env);
++  const xhigh = tier === "xhigh";
++  const data = readTierOverrides(pathFor(env, xhigh), xhigh);
+   const override = Object.hasOwn(data, agent) ? data[agent]?.[tier] : undefined;
+-  const base = resolveWorkerSettings(agent, undefined, undefined, env);
+-  const result = { model: override?.model ?? base.model, effort: override?.effort ?? tier };
++  const base = xhigh ? XHIGH_DEFAULTS.get(agent) : { model: resolveWorkerSettings(agent, undefined, undefined, env).model, effort: tier };
++  const result = { model: override?.model ?? base?.model, effort: override?.effort ?? base?.effort };
+   validateTeamSettings(result);
+   return result;
+ }
+ export function setWorkerTier(agent: string, field: string, value: string | undefined, env: NodeJS.ProcessEnv = process.env): void {
+-  const match = /^tier\.(high|medium|low)\.(model|effort)$/.exec(field);
+-  if (!agentValid(agent) || !match) throw new Error("등급 설정 항목: tier.<high|medium|low>.<model|effort>");
+-  const tier = match[1] as WorkerTier, key = match[2] as keyof TeamExecutionSettings;
++  const match = /^tier\.([a-z]+)\.(model|effort)$/.exec(field);
++  const tier = match?.[1];
++  if (!agentValid(agent) || !match || tier === undefined || !isWorkerTier(tier)) throw new Error(`등급 설정 항목: tier.<${WORKER_TIERS.join("|")}>.<model|effort>`);
++  const key = match[2] as keyof TeamExecutionSettings;
+   if (value !== undefined && (!valueValid(value) || (key === "effort" && value === "default"))) throw new Error("등급 설정값이 올바르지 않다");
+-  const data = readWorkerTiers(env);
++  const xhigh = tier === "xhigh", path = pathFor(env, xhigh);
++  const data = readTierOverrides(path, xhigh);
+   const tiers = Object.hasOwn(data, agent) ? data[agent]! : {};
+   const entry = Object.hasOwn(tiers, tier) ? tiers[tier]! : {};
+   if (value === undefined) delete entry[key]; else entry[key] = value;
+@@ -76,8 +85,8 @@ export function setWorkerTier(agent: string, field: string, value: string | unde
+   if (Object.keys(tiers).length) data[agent] = tiers; else delete data[agent];
+   const text = JSON.stringify(data, null, 2) + "\n";
+   if (Buffer.byteLength(text) > 65536) throw new Error("등급 설정 크기 초과");
+-  try { ordinaryFile(pathFor(env)); } catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+-  writeFileAtomic(pathFor(env), text);
++  try { ordinaryFile(path); } catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
++  writeFileAtomic(path, text);
+ }
+ export function teamTierTable(env: NodeJS.ProcessEnv = process.env): Record<string, Record<WorkerTier, TeamExecutionSettings>> {
+   return Object.fromEntries(["claude", "codex"].map((agent) => [agent, Object.fromEntries(WORKER_TIERS.map((tier) => [tier, resolveTeamSettings(agent, tier, env)]))])) as Record<string, Record<WorkerTier, TeamExecutionSettings>>;
+diff --git a/src/project/event-log.ts b/src/project/event-log.ts
+index dfc9c34..98e2f95 100644
+--- a/src/project/event-log.ts
++++ b/src/project/event-log.ts
+@@ -5,6 +5,7 @@ import { dirname, isAbsolute, join } from "node:path";
+ import { writeFileAtomic } from "../core/fsutil.ts";
+ import { hasSecret } from "./secrets.ts";
+ import { hasTeamContract } from "./team-contract.ts";
++import { teamSourcePath, xhighTeamSourcePath } from "../team/model.ts";
+ export const LOG_TYPES = ["start", "approval", "task_start", "gate", "task_done", "finish", "merge", "decision", "change", "review", "question", "answer", "escalation", "note"] as const;
+ export type LogType = typeof LOG_TYPES[number];
+ export type LogActor = "cli" | "agent" | "coordinator" | "user";
+@@ -32,6 +33,25 @@ export function validateEvent(event: ProjectEvent): void {
+   if (event.ref !== undefined && (!validText(event.ref, 240) || isAbsolute(event.ref) || /^[a-z]+:/i.test(event.ref) || event.ref.split(/[/\\]/).includes(".."))) throw new ProjectLogError("사건 ref는 프로젝트의 상대 파일이어야 한다");
+   if (event.data !== undefined && (!event.data || typeof event.data !== "object" || Array.isArray(event.data) || Object.entries(event.data).some(([key, n]) => !/^[a-zA-Z][a-zA-Z0-9_]*$/.test(key) || !Number.isSafeInteger(n) || n < 0))) throw new ProjectLogError("사건 data는 음이 아닌 정수만 허용한다");
+ }
++/** 구판은 정규 경로 슬롯을 읽고, 신판은 표지에서 같은 역할의 실제 원본 경로를 복원한다. */
++function encodeEvent(event: ProjectEvent): ProjectEvent {
++  if (event.data?.xhighRoleDefinition !== undefined) throw new ProjectLogError("xhigh 원본 표지는 시작 기록기가 만든다");
++  const role = event.role;
++  if (!role || role.definition !== xhighTeamSourcePath(role.name)) return event;
++  return { ...event, role: { ...role, definition: teamSourcePath(role.name) }, data: { ...event.data, xhighRoleDefinition: 1 } };
++}
++
++export function decodeEvent(event: ProjectEvent): ProjectEvent {
++  validateEvent(event);
++  const role = event.role;
++  const { xhighRoleDefinition, ...data } = event.data ?? {};
++  if (xhighRoleDefinition === undefined) {
++    if (role && role.definition === xhighTeamSourcePath(role.name)) throw new ProjectLogError("xhigh 시작 행의 원본 표지가 없다");
++    return event;
++  }
++  if (xhighRoleDefinition !== 1 || !role || role.definition !== teamSourcePath(role.name)) throw new ProjectLogError("xhigh 시작 행의 원본 표지가 올바르지 않다");
++  return { ...event, role: { ...role, definition: xhighTeamSourcePath(role.name) }, ...(Object.keys(data).length ? { data } : { data: undefined }) };
++}
+ function assertDir(dir: string): void {
+   if (!lstatSync(dir).isDirectory() || !lstatSync(dirname(dir)).isDirectory()) throw new ProjectLogError("로그 폴더는 일반 디렉터리여야 한다");
+ }
+@@ -68,7 +88,7 @@ export function recordEvents(dir: string, events: readonly ProjectEvent[]): bool
+     const lines = events.map((event) => {
+       validateEvent(event);
+       const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.requestId !== undefined ? { requestId: event.requestId } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
+-      return `${JSON.stringify(safe)}\n`;
++      return `${JSON.stringify(encodeEvent(safe))}\n`;
+     });
+     const fd = openLog(join(dir, "log.jsonl"), true);
+     try {
+@@ -80,7 +100,7 @@ export function recordEvents(dir: string, events: readonly ProjectEvent[]): bool
+ }
+ export function eventLines(text: string): ProjectEvent[] {
+   return text.split("\n").flatMap((line) => {
+-    try { const event = JSON.parse(line) as ProjectEvent; validateEvent(event); return [event]; } catch { return []; }
++    try { return [decodeEvent(JSON.parse(line) as ProjectEvent)]; } catch { return []; }
+   }).sort((a, b) => Date.parse(a.ts) - Date.parse(b.ts));
+ }
+ export function readEvents(dir: string, inputs?: InputTrace): ProjectEvent[] {
+diff --git a/src/project/role-record.ts b/src/project/role-record.ts
+index f2a6127..600493d 100644
+--- a/src/project/role-record.ts
++++ b/src/project/role-record.ts
+@@ -1,4 +1,4 @@
+-import { teamSourcePath, validTeamName } from "../team/model.ts";
++import { teamSourcePath, validTeamName, xhighTeamSourcePath } from "../team/model.ts";
+ import { hasSecret } from "./secrets.ts";
+ export interface StartRoleRecord {
+   name: string;
+@@ -25,7 +25,7 @@ export function validStartRole(value: unknown): value is StartRoleRecord {
+   const required = ["name", "source", "definition", "hash", "method", "model", "settingsStatus", "toolsPermissionApplied", "runtimeObserved"];
+   return required.every((key) => Object.hasOwn(r, key)) && Object.keys(r).every((key) => required.includes(key) || key === "effort") &&
+     safeRoleName(r.name) && (r.source === "option" || r.source === "project") &&
+-    (r.definition === teamSourcePath(r.name) || r.definition === teamSourcePath(r.name, true)) &&
++    (r.definition === teamSourcePath(r.name) || r.definition === teamSourcePath(r.name, true) || r.definition === xhighTeamSourcePath(r.name)) &&
+     typeof r.hash === "string" && /^[a-f0-9]{64}$/.test(r.hash) &&
+     r.method === "prompt" && safeRoleSetting(r.model) && (r.effort === undefined || safeRoleSetting(r.effort)) &&
+     ["planned", "arguments", "unconfirmed", "rejected"].includes(r.settingsStatus as string) &&
+diff --git a/src/project/team-input.ts b/src/project/team-input.ts
+index 458ec1e..5cd7b87 100644
+--- a/src/project/team-input.ts
++++ b/src/project/team-input.ts
+@@ -6,7 +6,7 @@ import { actor, sourceRef, stable } from "../team/handoff-model.ts";
+ import type { DeliveryClaim } from "./handoff-report.ts";
+ import { fields, hashValue, HandoffError, HandoffSizeError, identifier, object, regularBytes, shortText, strictJson, utf8 } from "./handoff-files.ts";
+ import { hasSecret } from "./secrets.ts";
+-import { validateEvent, type ProjectEvent } from "./event-log.ts";
++import { decodeEvent, type ProjectEvent } from "./event-log.ts";
+ import { observeHandoffLedger } from "./handoff-store.ts";
+ 
+ export const MANUAL_KEYS = ["owner_manual_role_corrections", "owner_file_edits", "owner_command_runs", "coordinator_extra_instructions", "normal_role_assignment", "owner_approvals", "owner_merge_approvals", "owner_deploy_approvals", "owner_scope_approvals"] as const;
+@@ -341,9 +341,9 @@ export function readTeamEvents(dir: string, project: string, inputs?: InputTrace
+       const value = strictJson(line);
+       fields(value, ["ts", "p", "t", "type", "by", "msg", "to", "requestId", "role", "ok", "src", "ref", "data"], ["ts", "p", "type", "by", "msg"]);
+       for (const key of ["ts", "p", "t", "type", "by", "msg", "to", "requestId", "src", "ref"]) if (value[key] !== undefined && typeof value[key] !== "string") throw new HandoffError("팀 사건의 문자열 필드에 다른 JSON 타입을 쓸 수 없다");
+-      validateEvent(value as unknown as ProjectEvent);
+-      if (value.p !== project) throw new HandoffError("다른 프로젝트의 사건 행");
+-      events.push(value as unknown as ProjectEvent);
++      const event = decodeEvent(value as unknown as ProjectEvent);
++      if (event.p !== project) throw new HandoffError("다른 프로젝트의 사건 행");
++      events.push(event);
+     }
+     inputs?.record(join(dir, "log.jsonl"), inputHash(text));
+     return events.sort((a, b) => Date.parse(a.ts) - Date.parse(b.ts));
+diff --git a/src/team/model.ts b/src/team/model.ts
+index a96e2f3..42f9129 100644
+--- a/src/team/model.ts
++++ b/src/team/model.ts
+@@ -5,10 +5,14 @@ import { isWorkerTier, type WorkerTier } from "../core/worker-tiers.ts";
+ export const TEAM_ROLES = ["lead", "maker", "reviewer", "coordinator"] as const;
+ export type TeamRole = typeof TEAM_ROLES[number];
+ export const TEAM_AGENTS_DIR = ".pace/team/agents";
++export const XHIGH_AGENTS_DIR = ".pace/team/agents-xhigh";
+ export const LEGACY_TEAM_DIR = ".pace/team";
+ export function teamSourcePath(name: string, legacy = false): string {
+   return `${legacy ? LEGACY_TEAM_DIR : TEAM_AGENTS_DIR}/${name}.md`;
+ }
++export function xhighTeamSourcePath(name: string): string {
++  return `${XHIGH_AGENTS_DIR}/${name}.md`;
++}
+ export interface TeamMember {
+   name: string; role: TeamRole; stage: string[]; tier: WorkerTier; resources: string[]; tools: string[];
+   body: string; source: string; hash: string;
+@@ -96,6 +100,7 @@ export function parseTeamSource(input: string, expectedName: string, source = te
+   const parsed = parseFrontmatter(text);
+   const name = getString(parsed.data, "name"), role = getString(parsed.data, "role"), tier = getString(parsed.data, "tier");
+   if (name !== expectedName || !isTeamRole(role) || !isWorkerTier(tier)) throw new Error("팀 이름·역할·등급 오류");
++  if ((tier === "xhigh") !== (source === xhighTeamSourcePath(name))) throw new Error("xhigh 등급과 별도 팀 원본 경로가 일치해야 한다");
+   for (const key of ["stage", "resources", "tools"]) {
+     const value = parsed.data[key];
+     if (!Array.isArray(value) || value.some((item) => !item.trim() || item !== item.trim() || item.length > 256 || /[\x00-\x1f\x7f]/.test(item)) || new Set(value).size !== value.length) throw new Error(`팀 ${key}는 중복 없는 문자열 배열이어야 한다`);
+diff --git a/src/team/store.ts b/src/team/store.ts
+index 61c3a32..35da0a2 100644
+--- a/src/team/store.ts
++++ b/src/team/store.ts
+@@ -5,7 +5,7 @@ import { closeSync, constants, fstatSync, lstatSync, mkdirSync, openSync, readSy
+ import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+ import { packageRoot, assertSafeGitPath } from "../core/paths.ts";
+ import { fillTemplate } from "../core/fsutil.ts";
+-import { isTeamRole, LEGACY_TEAM_DIR, parseTeamSource, TEAM_AGENTS_DIR, teamSourcePath, validTeamName, type TeamMember } from "./model.ts";
++import { isTeamRole, LEGACY_TEAM_DIR, parseTeamSource, TEAM_AGENTS_DIR, XHIGH_AGENTS_DIR, teamSourcePath, xhighTeamSourcePath, validTeamName, type TeamMember } from "./model.ts";
+ 
+ export function teamRoot(cwd: string): string {
+   assertSafeGitPath(cwd);
+@@ -61,11 +61,12 @@ export function teamFiles(root: string, rel: string, extension: string, inputs?:
+ }
+ export function findTeamSource(name: string, read: (path: string) => string | null): { path: string; text: string } | null {
+   if (!validTeamName(name) || name === "resources") throw new Error("팀 이름이 올바르지 않거나 예약된 메타파일 이름이다");
+-  const path = teamSourcePath(name), legacyPath = teamSourcePath(name, true);
+-  const text = read(path), legacy = read(legacyPath);
+-  if (text !== null && legacy !== null) throw new Error(`팀 역할 원본이 두 위치에 존재한다: ${path}, ${legacyPath}`);
+-  if (text !== null) return { path, text };
+-  return legacy === null ? null : { path: legacyPath, text: legacy };
++  const sources = [teamSourcePath(name), teamSourcePath(name, true), xhighTeamSourcePath(name)].flatMap((path) => {
++    const text = read(path);
++    return text === null ? [] : [{ path, text }];
++  });
++  if (sources.length > 1) throw new Error(`팀 역할 원본이 두 위치 이상에 존재한다: ${sources.map(({ path }) => path).join(", ")}`);
++  return sources[0] ?? null;
+ }
+ export function loadTeamMember(root: string, name: string, inputs?: InputTrace): TeamMember {
+   const source = findTeamSource(name, (path) => readTeamFile(root, path));
+@@ -74,7 +75,7 @@ export function loadTeamMember(root: string, name: string, inputs?: InputTrace):
+   return parseTeamSource(source.text, name, source.path);
+ }
+ export function teamMemberNames(root: string, inputs?: InputTrace): string[] {
+-  const files = [TEAM_AGENTS_DIR, LEGACY_TEAM_DIR].flatMap((dir) => teamFiles(root, dir, ".md", inputs));
++  const files = [TEAM_AGENTS_DIR, LEGACY_TEAM_DIR, XHIGH_AGENTS_DIR].flatMap((dir) => teamFiles(root, dir, ".md", inputs));
+   return [...new Set(files)].sort().map((file) => file.slice(0, -3));
+ }
+ export function loadTeam(root: string, inputs?: InputTrace): TeamMember[] {
+diff --git a/src/team/sync.ts b/src/team/sync.ts
+index e31a19a..62f846b 100644
+--- a/src/team/sync.ts
++++ b/src/team/sync.ts
+@@ -2,12 +2,15 @@ import { dirname, join } from "node:path";
+ import { mkdirSync } from "node:fs";
+ import { writeFileAtomic } from "../core/fsutil.ts";
+ import { resolveTeamSettings, validateTeamSettings, type TeamExecutionSettings } from "../core/worker-tiers.ts";
+-import { normalizeLines, sha256, teamDescription, teamSourcePath, type TeamMember } from "./model.ts";
++import { normalizeLines, sha256, teamDescription, teamSourcePath, xhighTeamSourcePath, XHIGH_AGENTS_DIR, type TeamMember } from "./model.ts";
+ import { loadTeam, readTeamFile, safeTeamPath, teamFiles } from "./store.ts";
+ 
+ export type TeamHost = "claude" | "codex";
+ export interface TeamDifference { path: string; kind: "missing" | "source" | "settings" | "content" | "orphan" }
+ const MARKER = "# pace-team-generated: ";
++// 구판에서는 이름을 모르는 생성물로 취급하므로 원본 없는 생성물로 오인하지 않는다.
++const XHIGH_MARKER = "# pace-team-xhigh-generated: ";
++const markerFor = (source: string) => source.startsWith(`${XHIGH_AGENTS_DIR}/`) ? XHIGH_MARKER : MARKER;
+ const sourceLine = "# pace-team-source-sha256: ";
+ const mappingLine = "# pace-team-mapping: ";
+ const mappingHashLine = "# pace-team-mapping-sha256: ";
+@@ -19,7 +22,7 @@ function instructions(member: TeamMember): string {
+ export function renderTeamMember(member: TeamMember, host: TeamHost, settings: TeamExecutionSettings): string {
+   validateTeamSettings(settings);
+   const mapping = encoded(settings);
+-  const comments = [MARKER + member.source, sourceLine + member.hash, mappingLine + mapping, mappingHashLine + sha256(mapping)];
++  const comments = [markerFor(member.source) + member.source, sourceLine + member.hash, mappingLine + mapping, mappingHashLine + sha256(mapping)];
+   const quote = JSON.stringify;
+   if (host === "claude") return ["---", ...comments, `name: ${quote(member.name)}`, `description: ${quote(teamDescription(member))}`, `model: ${quote(settings.model)}`, `effort: ${quote(settings.effort)}`, "---", instructions(member)].join("\n") + "\n";
+   return [...comments, `name = ${quote(member.name)}`, `description = ${quote(teamDescription(member))}`, `model = ${quote(settings.model)}`, `model_reasoning_effort = ${quote(settings.effort)}`, `developer_instructions = ${quote(instructions(member))}`, ""].join("\n");
+@@ -28,8 +31,11 @@ function metadata(text: string): { source: string; hash?: string; settings?: Tea
+   const lines = normalizeLines(text).split("\n");
+   const offset = lines[0] === "---" ? 1 : 0;
+   const first = lines[offset];
+-  if (!first?.startsWith(MARKER)) return null;
+-  const result: { source: string; hash?: string; settings?: TeamExecutionSettings } = { source: first.slice(MARKER.length) };
++  const marker = [MARKER, XHIGH_MARKER].find((prefix) => first?.startsWith(prefix));
++  if (!marker) return null;
++  const source = first!.slice(marker.length);
++  if (marker !== markerFor(source)) return null;
++  const result: { source: string; hash?: string; settings?: TeamExecutionSettings } = { source };
+   if (lines[offset + 1]?.startsWith(sourceLine)) result.hash = lines[offset + 1]!.slice(sourceLine.length);
+   try {
+     if (!lines[offset + 2]?.startsWith(mappingLine) || !lines[offset + 3]?.startsWith(mappingHashLine)) return result;
+@@ -49,7 +55,9 @@ export function syncTeam(root: string, options: { check?: boolean; env?: NodeJS.
+     if (Buffer.byteLength(text) > 65536) throw new Error(`생성물 크기 초과: ${path}`);
+     const current = readTeamFile(root, path);
+     const sources = [member.source];
+-    if (member.source === teamSourcePath(member.name)) sources.push(teamSourcePath(member.name, true));
++    const standard = teamSourcePath(member.name), xhigh = xhighTeamSourcePath(member.name);
++    if (member.source === standard) sources.push(teamSourcePath(member.name, true), xhigh);
++    if (member.source === xhigh) sources.push(standard, teamSourcePath(member.name, true));
+     expected.set(path, { text, sources });
+     if (current === null) { differences.push({ path, kind: "missing" }); continue; }
+     const meta = metadata(current);
+diff --git a/test/project-role.test.ts b/test/project-role.test.ts
+index 33ef9ad..8797f60 100644
+--- a/test/project-role.test.ts
++++ b/test/project-role.test.ts
+@@ -110,6 +110,120 @@ function fakeOrca(home: string, mode: "ok" | "unknown" | "fail" = "ok") {
+ function starts(worktree: string) {
+   return readFileSync(join(projectPath(worktree), "../log.jsonl"), "utf8").trim().split("\n").map((line) => JSON.parse(line)).filter((event) => event.type === "start");
+ }
++const xhighBuilderSource = ".pace/team/agents-xhigh/builder.md";
++function promoteBuilder(f: ReturnType<typeof fixture>): string {
++  const original = join(f.root, ".pace/team/agents/builder.md"), promoted = join(f.root, xhighBuilderSource);
++  mkdirSync(join(f.root, ".pace/team/agents-xhigh"));
++  renameSync(original, promoted);
++  const text = readFileSync(promoted, "utf8").replace("tier: medium", "tier: xhigh");
++  writeFileSync(promoted, text);
++  f.git("add", ".pace/team"); f.git("commit", "-qm", "xhigh role");
++  return text;
++}
++
++for (const [host, model, effort] of [
++  ["claude", "claude-fable-5-2", "high"],
++  ["codex", "gpt-6.2-astra", "medium"],
++] as const) test(`project role ${host}: xhigh settings and old-readable start row`, async () => {
++  const f = fixture(), orca = fakeOrca(f.home);
++  const definition = promoteBuilder(f);
++  const args = ["project", "start", "P001", "--agent", host, "--role", "builder"];
++  const run = (...extra: string[]) => runPace([...args, ...extra], { cwd: f.root, home: f.home, env: { ...f.env, ...orca.env }, timeout: 30000 });
++  const launched = run();
++  assert.equal(launched.status, 0, launched.stderr);
++  const worker = orca.calls().find((entry) => entry[1] === "worker-start")!;
++  const value = (flag: string) => worker[worker.indexOf(flag) + 1];
++  assert.equal(value("--model"), model);
++  assert.equal(value("--effort"), effort);
++  assert.ok(value("--spec")?.startsWith(`먼저 ${xhighBuilderSource}를 읽고`));
++  const stored = starts(f.worktree).at(-1)!;
++  assert.equal(stored.role.definition, ".pace/team/agents/builder.md", "the existing wire slot is accepted by the old reader");
++  assert.deepEqual(stored.data, { teamMetricsVersion: 1, xhighRoleDefinition: 1 });
++  assert.equal(stored.role.model, model);
++  assert.equal(stored.role.effort, effort);
++  const { readEvents } = await import("../src/project/event-log.ts");
++  const { readTeamEvents } = await import("../src/project/team-input.ts");
++  const dir = join(projectPath(f.worktree), "..");
++  for (const read of [readEvents(dir), readTeamEvents(dir, "P001")!]) {
++    const restored = read.find((event) => event.type === "start")!;
++    assert.deepEqual(restored.role, { ...stored.role, definition: xhighBuilderSource });
++    assert.deepEqual(restored.data, { teamMetricsVersion: 1 });
++    assert.equal(restored.role!.hash, createHash("sha256").update(definition.replaceAll("\r\n", "\n")).digest("hex"));
++  }
++  assert.equal(f.run("worker", "set", host, "tier.xhigh.model", "xhigh-override").status, 0);
++  assert.equal(f.run("worker", "set", host, "tier.xhigh.effort", "low").status, 0);
++  const relaunched = run("--launch");
++  assert.equal(relaunched.status, 0, relaunched.stderr);
++  assert.equal(starts(f.worktree).at(-1)!.role.model, "xhigh-override");
++  assert.equal(starts(f.worktree).at(-1)!.role.effort, "low");
++});
++
++test("project role: both start readers reject malformed xhigh path and marker combinations", async () => {
++  const { readEvents, recordEvent } = await import("../src/project/event-log.ts");
++  const { readTeamEvents } = await import("../src/project/team-input.ts");
++  const dir = tempDir("pace-xhigh-record-");
++  const role = { name: "builder", source: "option", definition: ".pace/team/agents/builder.md", hash: "a".repeat(64), method: "prompt", model: "fixture-model", effort: "medium", settingsStatus: "planned", toolsPermissionApplied: false, runtimeObserved: false } as const;
++  const start = { ts: "2026-11-26T00:00:00Z", p: "P001", type: "start", by: "cli", ok: true, msg: "start", role, data: { teamMetricsVersion: 1, xhighRoleDefinition: 1 } } as const;
++  const path = join(dir, "log.jsonl");
++  for (const bad of [
++    { ...start, role: { ...role, name: "other" } },
++    ...[".pace/team/agents/other.md", ".pace/team/builder.md", ".pace/team/other/builder.md", ".pace/team/agents/../builder.md", ".pace/team/agents/*.md", xhighBuilderSource]
++      .map((definition) => ({ ...start, role: { ...role, definition } })),
++    { ...start, role: { ...role, definition: xhighBuilderSource }, data: { teamMetricsVersion: 1 } },
++    { ...start, data: { ...start.data, xhighRoleDefinition: 2 } },
++    { ...start, data: { ...start.data, xhighRoleDefinition: "1" } },
++    { ...start, type: "note", role: undefined, data: { xhighRoleDefinition: 1 } },
++  ]) {
++    writeFileSync(path, JSON.stringify(bad) + "\n");
++    assert.deepEqual(readEvents(dir), []);
++    assert.throws(() => readTeamEvents(dir, "P001"), /팀 사건 로그 손상/);
++  }
++  const before = readFileSync(path);
++  assert.equal(recordEvent(dir, start), false, "callers cannot inject the internal marker");
++  assert.deepEqual(readFileSync(path), before);
++});
++
++test("project role: xhigh source rejects unsafe file types, bytes and size", async () => {
++  const f = fixture();
++  const original = promoteBuilder(f);
++  const { resolveWorkerRole } = await import("../src/team/worker-role.ts");
++  const path = join(f.root, xhighBuilderSource);
++  const resolve = (ref?: string) => resolveWorkerRole(f.root, "PROJECT.md", { role: "builder", agent: "codex", ref, env: { PACE_HOME: f.home } });
++  for (const malformed of [Buffer.from([0xff]), " ".repeat(65537)]) {
++    writeFileSync(path, malformed);
++    f.git("add", xhighBuilderSource); f.git("commit", "-qm", "invalid source fixture");
++    assert.throws(() => resolve());
++    assert.throws(() => resolve("HEAD"));
++  }
++  unlinkSync(path);
++  mkdirSync(path);
++  assert.throws(() => resolve());
++  if (process.platform === "win32") return;
++  const outside = join(f.home, "outside.md");
++  writeFileSync(outside, original);
++  const parked = path + ".fixture-dir";
++  renameSync(path, parked);
++  symlinkSync(outside, path);
++  f.git("add", xhighBuilderSource); f.git("commit", "-qm", "linked source fixture");
++  assert.throws(() => resolve());
++  assert.throws(() => resolve("HEAD"));
++  assert.equal(readFileSync(outside, "utf8"), original);
++});
++
++test("project role: xhigh source edits during preparation hold launch", () => {
++  const f = fixture(), orca = fakeOrca(f.home);
++  promoteBuilder(f);
++  writeFileSync(join(f.root, "prepare.mjs"), `import { appendFileSync } from "node:fs"; appendFileSync(${JSON.stringify(xhighBuilderSource)}, "\\nPREPARED-XHIGH-CHANGE\\n");\n`);
++  const docs = join(f.root, "docs/README.md");
++  writeFileSync(docs, readFileSync(docs, "utf8") + "- worktree 준비: `node prepare.mjs`\n");
++  f.git("add", "docs", "prepare.mjs"); f.git("commit", "-qm", "prepare");
++  const result = runPace(["project", "start", "P001", "--role", "builder", "--agent", "codex"], { cwd: f.root, home: f.home, env: { ...f.env, ...orca.env }, timeout: 30000 });
++  assert.notEqual(result.status, 0);
++  assert.match(result.stderr, /준비 뒤 달라졌다/);
++  assert.deepEqual(orca.calls(), []);
++  assert.match(readFileSync(join(f.worktree, xhighBuilderSource), "utf8"), /PREPARED-XHIGH-CHANGE/);
++});
++
+ for (const host of ["claude", "codex"]) test(`project role ${host}: argv overrides, default effort, and start provenance`, () => {
+   const f = fixture(), orca = fakeOrca(f.home);
+   writeFileSync(join(f.home, "worker-settings.json"), JSON.stringify({ [host]: { model: `worker-${host}`, effort: "general" } }));
+diff --git a/test/team.test.ts b/test/team.test.ts
+index 38fc7e4..f05e14d 100644
+--- a/test/team.test.ts
++++ b/test/team.test.ts
+@@ -273,7 +273,9 @@ test("worker tiers: 두 호스트×세 등급·잘못된 값·손상·링크를
+   for (const agent of ["claude", "codex"]) {
+     setWorkerSettings(agent, "model", `${agent}-base`, env);
+     setWorkerSettings(agent, "effort", "high", env);
+-    for (const tier of WORKER_TIERS) assert.deepEqual(resolveTeamSettings(agent, tier, env), { model: `${agent}-base`, effort: tier });
++    for (const tier of WORKER_TIERS.filter((tier) => tier !== "xhigh")) {
++      assert.deepEqual(resolveTeamSettings(agent, tier, env), { model: `${agent}-base`, effort: tier });
++    }
+     setWorkerTier(agent, "tier.high.model", `${agent}-override`, env);
+     setWorkerTier(agent, "tier.high.effort", "low", env);
+     assert.deepEqual(resolveTeamSettings(agent, "high", env), { model: `${agent}-override`, effort: "low" });
+@@ -295,6 +297,107 @@ test("worker tiers: 두 호스트×세 등급·잘못된 값·손상·링크를
+   assert.equal(readFileSync(outside, "utf8"), "{}");
+ });
+ 
++test("worker xhigh: CLI defaults, isolated overrides and rejection", () => {
++  const { home, run } = fixture();
++  const legacy = join(home, "worker-tiers.json"), xhigh = join(home, "worker-tiers-xhigh.json");
++  assert.equal(run("worker", "set", "codex", "model", "general-model").status, 0);
++  assert.equal(run("worker", "set", "codex", "tier.high.model", "legacy-model").status, 0);
++  const legacyBytes = readFileSync(legacy);
++  const shown = () => {
++    const result = run("worker", "show");
++    assert.equal(result.status, 0, result.stderr);
++    return JSON.parse(result.stdout).teamTiers;
++  };
++  const defaults = {
++    claude: { model: "claude-fable-5-2", effort: "high" },
++    codex: { model: "gpt-6.2-astra", effort: "medium" },
++  };
++  for (const [host, settings] of Object.entries(defaults)) {
++    const before = shown()[host];
++    assert.deepEqual(before.xhigh, settings);
++    for (const tier of ["high", "medium", "low"]) assert.equal(before[tier].effort, tier);
++    assert.equal(run("worker", "set", host, "tier.xhigh.model", "override-model").status, 0);
++    assert.deepEqual(shown()[host].xhigh, { ...settings, model: "override-model" });
++    assert.equal(run("worker", "set", host, "tier.xhigh.effort", "low").status, 0);
++    assert.deepEqual(shown()[host].xhigh, { model: "override-model", effort: "low" });
++    assert.equal(run("worker", "reset", host, "tier.xhigh.model").status, 0);
++    assert.deepEqual(shown()[host].xhigh, { ...settings, effort: "low" });
++    assert.equal(run("worker", "reset", host, "tier.xhigh.effort").status, 0);
++    assert.deepEqual(shown()[host].xhigh, settings);
++  }
++  assert.deepEqual(readFileSync(legacy), legacyBytes);
++  assert.deepEqual(JSON.parse(readFileSync(xhigh, "utf8")), {});
++  const invalidTier = run("worker", "set", "codex", "tier.ultra.effort", "high");
++  assert.equal(invalidTier.status, 1);
++  assert.match(invalidTier.stderr, /xhigh/);
++  for (const content of ['{"codex":{"high":{}}}', '{"codex":{"xhigh":{"effort":"default"}}}', " ".repeat(65537), Buffer.from([0xff])]) {
++    writeFileSync(xhigh, content);
++    assert.equal(run("worker", "show").status, 2);
++    assert.equal(run("worker", "set", "codex", "tier.xhigh.model", "override-model").status, 1);
++    assert.deepEqual(readFileSync(xhigh), Buffer.from(content));
++    assert.equal(resolveTeamSettings("codex", "high", { PACE_HOME: home }).model, "legacy-model");
++  }
++});
++
++test("team xhigh: explicit promotion and protected generation ownership", () => {
++  const { root, run } = fixture();
++  for (const [name, role] of [["lead", "lead"], ["builder", "maker"], ["specialist", "reviewer"]]) {
++    assert.equal(run("team", "new", name!, "--role", role!).status, 0);
++  }
++  assert.equal(loadTeamMember(root, "specialist").tier, "high");
++  assert.equal(run("team", "sync").status, 0);
++  const ordinary = [join(root, ".claude/agents/lead.md"), join(root, ".codex/agents/builder.toml")];
++  const originalBytes = ordinary.map((path) => readFileSync(path));
++  const path = join(root, ".pace/team/agents/specialist.md"), promoted = join(root, ".pace/team/agents-xhigh/specialist.md");
++  const original = readFileSync(path, "utf8");
++  const xhigh = original.replace("tier: high", "tier: xhigh");
++  writeFileSync(path, xhigh);
++  assert.equal(run("team", "list").status, 2, "the original location does not accept xhigh");
++  mkdirSync(join(root, ".pace/team/agents-xhigh"));
++  renameSync(path, promoted);
++  assert.match(run("team", "list").stdout, /specialist.*xhigh/);
++  assert.equal(run("team", "sync").status, 0);
++  assert.equal(run("team", "sync", "--check", "--json").status, 0);
++  assert.deepEqual(ordinary.map((file) => readFileSync(file)), originalBytes);
++  const claude = join(root, ".claude/agents/specialist.md"), codex = join(root, ".codex/agents/specialist.toml");
++  const claudeBefore = readFileSync(claude), codexBefore = readFileSync(codex);
++  assert.match(claudeBefore.toString(), /^---\n# pace-team-xhigh-generated: \.pace\/team\/agents-xhigh\/specialist\.md\n/);
++  assert.match(claudeBefore.toString(), /model: "claude-fable-5-2"\neffort: "high"/);
++  assert.match(codexBefore.toString(), /model = "gpt-6.2-astra"\nmodel_reasoning_effort = "medium"/);
++  assert.equal(run("worker", "set", "codex", "tier.xhigh.model", "specialist-override").status, 0);
++  assert.equal(run("team", "sync").status, 0);
++  assert.match(readFileSync(codex, "utf8"), /model = "specialist-override"/);
++  assert.deepEqual(readFileSync(claude), claudeBefore);
++  const foreign = readFileSync(codex, "utf8").replace("/specialist.md", "/somebody-else.md");
++  writeFileSync(codex, foreign);
++  assert.equal(run("team", "sync").status, 2);
++  assert.equal(readFileSync(codex, "utf8"), foreign);
++  assert.deepEqual(readFileSync(claude), claudeBefore);
++  writeFileSync(codex, codexBefore);
++  writeFileSync(path, original);
++  assert.equal(run("team", "sync").status, 2, "duplicate sources are rejected before writes");
++  assert.deepEqual(readFileSync(codex), codexBefore);
++  unlinkSync(path);
++  writeFileSync(promoted, original);
++  assert.equal(run("team", "list").status, 2, "the separate location requires xhigh");
++  renameSync(promoted, promoted + ".bak");
++  const orphan = run("team", "sync", "--check", "--json");
++  assert.equal(orphan.status, 1);
++  assert.deepEqual(JSON.parse(orphan.stdout).differences.map((d: { kind: string }) => d.kind), ["orphan", "orphan"]);
++  assert.equal(run("team", "sync").status, 2);
++  assert.deepEqual(readFileSync(codex), codexBefore);
++});
++
++test("worker xhigh: rejecting a linked configuration preserves the target", { skip: process.platform === "win32" }, () => {
++  const { home, run } = fixture();
++  const outside = join(tempDir(), "tiers.json");
++  writeFileSync(outside, "{}");
++  symlinkSync(outside, join(home, "worker-tiers-xhigh.json"));
++  assert.equal(run("worker", "show").status, 2);
++  assert.equal(run("worker", "set", "codex", "tier.xhigh.model", "new").status, 1);
++  assert.equal(readFileSync(outside, "utf8"), "{}");
++});
++
+ test("worker tiers: constructor 이름은 상속 객체 대신 자기 설정에 저장한다", () => {
+   const { home, run } = fixture();
+   assert.equal(run("worker", "set", "constructor", "tier.high.model", "fixture-model").status, 0);

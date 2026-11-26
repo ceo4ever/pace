@@ -1,0 +1,119 @@
+{
+  "base": "5cddecd00c68ab61f7e31cd80984dc34517bdc46",
+  "wireStart": {
+    "role": {
+      "name": "specialist",
+      "source": "option",
+      "definition": ".pace/team/agents/specialist.md",
+      "hash": "7fb2ac5fcbeb1ca79ad5d64653bf99cbf3953189ee2c3d9b0e4a2adc39e591d2",
+      "method": "prompt",
+      "model": "compat-codex",
+      "effort": "high",
+      "settingsStatus": "planned",
+      "toolsPermissionApplied": false,
+      "runtimeObserved": false
+    },
+    "data": {
+      "teamMetricsVersion": 1,
+      "xhighRoleDefinition": 1
+    }
+  },
+  "newReadDefinitions": [
+    ".pace/team/agents-xhigh/specialist.md",
+    ".pace/team/agents-xhigh/specialist.md"
+  ],
+  "oldNative": {
+    ".claude/agents/builder.md": "ab717cb9830a34db32ca29f44adee6e9d5f21552fee8f52a11c4b825d29953da",
+    ".codex/agents/builder.toml": "cfe45a1751ffed2dce43536aeea5c5b41fb8c7a73a0befc958828c3a40220496",
+    ".claude/agents/check-high.md": "7b6c15c508cb7dcb162499eef6fb250545dee91f4fa46474f3044fd40eb879ee",
+    ".codex/agents/check-high.toml": "070ab137bf47958ed1f98d33b85c974466f168a26d24b93aa76c782229e92db5",
+    ".claude/agents/check-low.md": "7e44f01a62143c28636c78074db6aeeed27ea1b0c275ea698367176a0a1e609f",
+    ".codex/agents/check-low.toml": "73f5ec9d8798193072408c80f4fa78105450c98bb82a2e643eb0a847cefc0bcb"
+  },
+  "xhighNative": {
+    ".claude/agents/specialist.md": "52e6a10b6170beee2ce8d34c3e58fb9353c042397b58c6714a5912923b8fcced",
+    ".codex/agents/specialist.toml": "5f8fbe3221b8f07f0e6a238a3fcf79895716915d349b214218efb701c130f927"
+  },
+  "runs": [
+    {
+      "round": 1,
+      "version": "old",
+      "check": {
+        "members": 3,
+        "differences": [],
+        "ok": true
+      },
+      "xhighInTeamList": false,
+      "syncExit": 0,
+      "statsRoles": [
+        "builder",
+        "check-high",
+        "check-low",
+        "specialist"
+      ],
+      "source": "events",
+      "settingsPreserved": true,
+      "generationPreserved": true
+    },
+    {
+      "round": 1,
+      "version": "new",
+      "check": {
+        "members": 4,
+        "differences": [],
+        "ok": true
+      },
+      "xhighInTeamList": true,
+      "syncExit": 0,
+      "statsRoles": [
+        "builder",
+        "check-high",
+        "check-low",
+        "specialist"
+      ],
+      "source": "events",
+      "settingsPreserved": true,
+      "generationPreserved": true
+    },
+    {
+      "round": 2,
+      "version": "old",
+      "check": {
+        "members": 3,
+        "differences": [],
+        "ok": true
+      },
+      "xhighInTeamList": false,
+      "syncExit": 0,
+      "statsRoles": [
+        "builder",
+        "check-high",
+        "check-low",
+        "specialist"
+      ],
+      "source": "events",
+      "settingsPreserved": true,
+      "generationPreserved": true
+    },
+    {
+      "round": 2,
+      "version": "new",
+      "check": {
+        "members": 4,
+        "differences": [],
+        "ok": true
+      },
+      "xhighInTeamList": true,
+      "syncExit": 0,
+      "statsRoles": [
+        "builder",
+        "check-high",
+        "check-low",
+        "specialist"
+      ],
+      "source": "events",
+      "settingsPreserved": true,
+      "generationPreserved": true
+    }
+  ]
+}

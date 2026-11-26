@@ -6,7 +6,7 @@ import { actor, sourceRef, stable } from "../team/handoff-model.ts";
 import type { DeliveryClaim } from "./handoff-report.ts";
 import { fields, hashValue, HandoffError, HandoffSizeError, identifier, object, regularBytes, shortText, strictJson, utf8 } from "./handoff-files.ts";
 import { hasSecret } from "./secrets.ts";
-import { validateEvent, type ProjectEvent } from "./event-log.ts";
+import { decodeEvent, type ProjectEvent } from "./event-log.ts";
 import { observeHandoffLedger } from "./handoff-store.ts";
 
 export const MANUAL_KEYS = ["owner_manual_role_corrections", "owner_file_edits", "owner_command_runs", "coordinator_extra_instructions", "normal_role_assignment", "owner_approvals", "owner_merge_approvals", "owner_deploy_approvals", "owner_scope_approvals"] as const;
@@ -341,9 +341,9 @@ export function readTeamEvents(dir: string, project: string, inputs?: InputTrace
       const value = strictJson(line);
       fields(value, ["ts", "p", "t", "type", "by", "msg", "to", "requestId", "role", "ok", "src", "ref", "data"], ["ts", "p", "type", "by", "msg"]);
       for (const key of ["ts", "p", "t", "type", "by", "msg", "to", "requestId", "src", "ref"]) if (value[key] !== undefined && typeof value[key] !== "string") throw new HandoffError("팀 사건의 문자열 필드에 다른 JSON 타입을 쓸 수 없다");
-      validateEvent(value as unknown as ProjectEvent);
-      if (value.p !== project) throw new HandoffError("다른 프로젝트의 사건 행");
-      events.push(value as unknown as ProjectEvent);
+      const event = decodeEvent(value as unknown as ProjectEvent);
+      if (event.p !== project) throw new HandoffError("다른 프로젝트의 사건 행");
+      events.push(event);
     }
     inputs?.record(join(dir, "log.jsonl"), inputHash(text));
     return events.sort((a, b) => Date.parse(a.ts) - Date.parse(b.ts));

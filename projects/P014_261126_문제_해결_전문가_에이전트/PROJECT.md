@@ -127,13 +127,14 @@
 |---|---|
 | `src/core/worker-tiers.ts` | T01 — `xhigh` 등급, 도구별 기본 모델·effort 예외, 설정 키·오류 문구 |
 | `src/team/` | T01 — `xhigh` 해석·생성물 매핑·옛 판독기 호환(파일은 호환 방식 설계에서 정함) |
+| `src/project/role-record.ts`·`src/project/event-log.ts`·`src/project/team-input.ts` | T01 — 정확한 xhigh 원본 경로 검증과 구판 호환 시작 행의 저장·복원 |
 | `src/agent/` | T02 — 신호 1~4 호출 권고 출력(위치는 설계). T05가 필요하면 `src/agent/structured-review.ts` 신호 4 반환 항목. T02 신호 2 기록이 `src/test-runner/`·`src/project/`에 가면 그 파일도 바꾼다 |
 | `src/project/event-log.ts` | T03 — 호출 기록 사건 종류·필드·수동 기록 허용. 설계에 따라 `src/cli.ts`·`src/agent/contract.ts`·`src/setup/install.ts`(훅 등록)·`src/project/metrics*.ts`(별도 집계)도 바꾼다 |
 | `src/project/harness.ts` | T05 — `workerSpec` 호출·인계 지시만 |
 | `test/fixtures/worker-spec-before-role.txt` | T05 — no-role golden 갱신 |
 | `docs/WORK-PROCESS.md` | T03 — 사건 형식·사건 작성 절. 집계 방식·한계는 필요하면 `docs/TEAM-METRICS.md`. 훅 등록이 바뀌면 `docs/SECURITY.md` |
 | `docs/TEAM.md` | T06 — tier 표에 `xhigh`, 두 예외(effort·모델 해석 순서), 호환 방식, 호출 수단 표 |
-| `.pace/team/agents/pace-troubleshooter.md` | T06 — 새 팀 원본(생성물 `.claude/agents/`·`.codex/agents/`는 `pace team sync`가 만든다) |
+| `.pace/team/agents-xhigh/pace-troubleshooter.md` | T06 — 새 팀 원본(생성물 `.claude/agents/`·`.codex/agents/`는 `pace team sync`가 만든다) |
 | `.pace/team/required-roles.json` | T06 — `pace-troubleshooter` 조건부 필수 역할 표지 |
 | `skills/pace-team/references/required-roles.md` | T02·T03·T04·T06 — 문제 해결자 요건 행(신호·기록·절차·정의~관문). 역할 안내 문서는 필요하면 `skills/pace-team/` 안에서 고친다 |
 | `skills/pace-project-dev/SKILL.md` | T04 — §6 멈춤 조건의 호출 절차 |
@@ -145,7 +146,7 @@
 
 | T | 이름 | 상태 | 커밋 |
 |---|---|---|---|
-| T01 | xhigh 등급과 호환 코드 | 대기 | |
+| T01 | xhigh 등급과 호환 코드 | 완료 | |
 | T02 | 조기 호출 도구 신호와 문턱 | 대기 | |
 | T03 | 에이전트 호출 기록 | 대기 | |
 | T06 | 문제 해결 구성원 정의·지침·실제 적용 관문·eval | 대기 | |
@@ -160,3 +161,5 @@
 | 2026-11-26 20:12 | 착수 결정 — 출처: BL261125_01 착수 전 재검토 pass(Codex 재검증 blocking 0, `reviews/2026-11-26-cross-9-pass.json`, BACKLOG 17:57 행)와 owner 착수 지시(2026-11-26, 허브 전달) "BL261125_01 재검토하고 진행해줘.", 작업자 도구 선택 "b"(Codex, 허브 전달). 작업자 codex, 역할 pace-project-lead, 태스크 6개(BR0n = T0n) |
 | 2026-11-26 20:12 | 실행 순서 T01 → T02 → T03 → T06 → T05 → T04(BACKLOG 관련·순서, 17:40 행 — 선행: T06←T01, T05←T02·T06, T04←T02·T03·T05·T06). 작업자가 표의 대기 중 맨 앞부터 열기 때문에 태스크 표를 이 순서로 둔다. 번호·이름은 BR과 1:1로 유지한다(선례 P009) |
 | 2026-11-26 20:12 | 정의 작성자 해석(허브 확정 2026-11-26 — 세 건 모두 그대로). (1) BR의 "BRxx 병합 뒤" 선행은 한 브랜치에서 "선행 태스크 done 커밋 뒤"로 읽는다. 공동 목표 종결의 실제 `pace-troubleshooter` 호출(P-12)은 main 병합 전 worktree의 PROJECT-CLOSE에서 한다. (2) T03이 훅 등록(`src/setup/`)을 바꿔도 설치는 main에서만 한다. worktree 실측은 임시 `PACE_HOME`과 `./bin/pace.ts`로 하고, 설치본 반영은 병합 뒤 허브가 한다. T01 (나)안의 게이트 실행본 문제와 같은 축이다. (3) S4 분량 재비교로 T03·T04를 나누면, finish가 BR·태스크·진행 현황 1:1을 검사하므로 허브가 main에서 새 BR을 먼저 기획해 worktree에 반영해야 한다 |
+| 2026-11-26 20:21 | T01은 별도 xhigh 원본과 전용 생성물 표지를 사용한다 (main 판단). 구판 sync 호환과 두 호스트 start 검증을 함께 만족하도록 BR01 범위에 `src/project/role-record.ts`의 정확 경로 허용 한 건을 추가한다. |
+| 2026-11-26 20:26 | T01 시작 기록 호환 (main 판단). R1은 구판의 팀 측정이 새 원본 경로를 직접 쓴 start 행을 거부한다고 지적했다. 재현을 확인해 `role-record.ts`의 정확 경로 검증과 `event-log.ts`·`team-input.ts`의 구판 호환 저장·양쪽 판독 복원만 BR01에 포함한다. |

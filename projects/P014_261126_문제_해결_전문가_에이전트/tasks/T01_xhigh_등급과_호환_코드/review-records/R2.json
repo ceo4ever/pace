@@ -1,0 +1,178 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "## 첫 판단\n\n- **목적과 직접 대조한 결과**: 상위 목적의 요구는 두 가지입니다. ① 실제 start가 기존 경로 슬롯과 숫자 표지로 기록되어 구판 stats와 팀 측정이 보존될 것. ② 신판은 원본 경로를 검증하고 일반 판독과 팀 판독에서 xhigh 경로를 정확히 복원할 것.\n  - 바뀐 T-3·T-4(30-31행)가 이 두 요구를 기준으로 옮겼습니다.\n  - 접근 47행이 기록 형식을 정했습니다: `data.xhighRoleDefinition=1`, 기존 슬롯, 같은 이름일 때만 결합.\n  - S-3(39행)은 이제 신판의 실제 `start --role` 뒤에 구판 list, check/sync 교대, stats를 실행하고 \"시작 행 구판 팀 측정에 포함\"을 관측합니다.\n- **목표 달성: 달성(계획 수준).** 직전 blocking F1은 해소됐습니다. 구판 소스로 다음을 확인했습니다.\n  - 구판 `validStartRole`은 role 객체의 키 목록과 정의 경로를 정확히 비교합니다(`src/project/role-record.ts:26,28`). 기존 경로 슬롯을 쓰면 이 검사를 통과합니다.\n  - 구판 `validateEvent`는 `data`에 음이 아닌 정수인 임의 키를 허용합니다(`src/project/event-log.ts:33`). 따라서 `xhighRoleDefinition=1`은 구판 `eventLines`와 `readTeamEvents`(`src/project/team-input.ts:342-344`)를 모두 통과합니다.\n  - 구판 팀 측정은 role의 `name`만 사용하고 `hash`와 원본 파일을 대조하지 않습니다(`src/project/team-metrics.ts:344,351`, `team-retrospective.ts:184`).\n  - 구판이 data 키를 열거하는 곳은 gate 판정(`team-metrics.ts:110`)뿐이라 start 행에는 영향이 없습니다.\n  - 그러므로 설계대로 구현하면 구판 집계가 보존되고, S-3는 신판 writer가 xhigh 경로를 직접 쓰는 결함을 실제로 잡아냅니다.\n- **근거와 한계**: 정적으로 읽어서 확인했고, 구판 CLI는 실행하지 않았습니다. 결정 메모 54행의 \"종료 0, 역할 보존\" 실측은 작성자 주장이라 검증하지 않았습니다.\n- **올릴 단계**: 없습니다. 바뀐 47행과 고치지 않은 46·53행이 서로 어긋나므로, 이 부분의 문구 정리를 should_fix로 남깁니다. A-1 판정은 **아니오**입니다. T-2와 P-3를 줄이지 않고 두 기준을 모두 만족하는 기록 형식을 찾았기 때문에 owner 결정이 필요 없습니다. 직전 F2(충돌 미처리)도 이 형식으로 해소됐습니다.\n\n## 노출 범위\n\n- **재검토 입력**: 직전 검토 원문, 도구 판정 요약, 바뀐 줄을 받았습니다. 검토 주체는 같은 계열(Claude, 별도 세션)이며 작성자 마감·대응 문서는 읽지 않았습니다.\n- **읽은 파일**:\n  - 프롬프트로 받은 TASK.md 전체\n  - `src/project/role-record.ts` 전체, `src/project/event-log.ts` 전체\n  - `src/project/team-input.ts` 320-359행, `src/project/team-metrics.ts` 100-124행\n  - grep 결과: `role?.hash|definition|name` 사용처, data 키 열거\n  - 구현 후보 경로가 있는지 glob으로 확인\n  - BR01, PROJECT.md, `docs/SECURITY.md`, decision-rights.md는 이번에 다시 열지 않았습니다. 바뀌지 않은 부분은 직전 관측을 그대로 적용합니다.\n- **자동 맥락**: CLAUDE.md→AGENTS.md, 호스트 git status, SessionStart 훅(\"자식 세션 — 부트 생략\")이 들어왔습니다. 메모리와 브레인은 열지 않았습니다.\n\n```pace-review\n{\"version\":2,\"findings\":[{\"id\":\"F1\",\"severity\":\"should_fix\",\"category\":\"design\",\"location\":\"projects/P014_261126_문제_해결_전문가_에이전트/tasks/T01_xhigh_등급과_호환_코드/TASK.md:46\",\"scenario\":\"새 47행은 디스크 행에 기존 경로 슬롯과 숫자 표지를 쓰고 판독기가 xhigh 경로를 복원한다고 정한다. 그런데 고치지 않은 46행과 53행은 여전히 'role-record 정확 일치 비교에 xhigh 경로를 추가'한다고 적는다. 46행을 문자 그대로 구현하면 신판 validStartRole이 표지 없이 definition에 agents-xhigh 경로를 직접 적은 디스크 행도 받아들인다. 그 행은 구판이 거부하므로(role-record.ts:28) 같은 로그를 신판은 받고 구판은 거부하는 차이가 생긴다. S-4의 '경로 위조'가 이 행을 포함하는지도 불명확하다. 복원 뒤의 메모리 내 기록과 디스크 행의 허용 경로를 구분해 적고, S-4에 '표지 없이 xhigh 경로를 직접 쓴 start 행 거부'를 명시해야 한다.\",\"reproduction\":\"TASK.md:46·47·53을 대조한다. 신판 구현에서 {type:start, role:{definition:'.pace/team/agents-xhigh/<name>.md',...}} 행을 표지 없이 log.jsonl에 넣고, 신판 readTeamEvents가 받아들이는지와 구판이 같은 행을 거부하는지(team-input.ts:344,350) 비교한다.\",\"confidence\":\"medium\",\"impact\":\"criterion\",\"criterion\":\"T-4\",\"safety_path\":null},{\"id\":\"F2\",\"severity\":\"note\",\"category\":\"observable\",\"location\":\"projects/P014_261126_문제_해결_전문가_에이전트/tasks/T01_xhigh_등급과_호환_코드/TASK.md:47\",\"scenario\":\"'같은 이름 기본 경로'가 teamSourcePath(name)와 teamSourcePath(name, true) 두 슬롯 중 어느 것인지, 혹은 둘 다인지 정하지 않았다. 슬롯이 달라도 복원 대상은 같지만, 위조 판정과 S-4 단언의 기준이 모호해진다.\",\"reproduction\":\"src/project/role-record.ts:28의 두 경로와 TASK.md:47 문구를 대조한다.\",\"confidence\":\"medium\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null},{\"id\":\"F3\",\"severity\":\"note\",\"category\":\"other\",\"location\":\"projects/P014_261126_문제_해결_전문가_에이전트/tasks/T01_xhigh_등급과_호환_코드/TASK.md:48\",\"scenario\":\"상위 목적은 '정확한 8개 경로'라고 하지만 TASK 접근 48행에는 9개(src 7개, test 2개)가 적혀 있고 모두 존재한다. 허가 경로는 TASK에 적힌 9개를 따랐다. 개수 차이는 요청 문구 쪽의 오류로 보인다.\",\"reproduction\":\"TASK.md:48의 경로 목록을 센다.\",\"confidence\":\"high\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null}],\"criteria\":[{\"id\":\"T-1\",\"state\":\"present\",\"observation\":\"TASK.md:28은 그대로다. 바뀐 S-1(37행)에 '기존 세 등급의 기본 effort가 등급 문자열과 일치'가 추가돼 직전 F4(xhigh effort 예외의 오적용)를 검출한다. 나머지 show, set/reset, 무효 등급 거부, 설정 바이트 유지 관측은 직전과 같다.\"},{\"id\":\"T-2\",\"state\":\"present\",\"observation\":\"TASK.md:29와 S-2(38행)는 바뀌지 않아 직전 관측을 그대로 적용한다. 바뀐 47행이 시작 기록의 지문·모델·effort가 실제 xhigh 원본과 일치해야 한다고 정해, 기존 슬롯을 써도 T-2의 '시작 기록 일치'를 지문과 복원 경로로 보장한다.\"},{\"id\":\"T-3\",\"state\":\"present\",\"observation\":\"바뀐 TASK.md:30에 '신판 xhigh 시작 행의 구판 집계'와 '신판의 정확한 경로 복원'이 추가됐다. 바뀐 S-3(39행)는 신판의 실제 start --role 기록 뒤 구판·신판에서 list와 check/sync를 2회 교대하고 stats를 실행하며, 구판 팀 측정 포함과 신판 복원을 관측한다. 구판 소스상 data 임의 정수 키 허용(event-log.ts:33), role 키·경로 정확 비교(role-record.ts:26,28), 이름만 쓰는 팀 측정(team-metrics.ts:344,351)을 확인했다. 그래서 설계는 구판과 호환되고, 신판 writer가 xhigh 경로를 직접 쓰는 결함은 S-3에서 종료 2 또는 측정 누락으로 실패한다. 직전 F1은 해소됐다.\"},{\"id\":\"T-4\",\"state\":\"present\",\"observation\":\"바뀐 TASK.md:31에 위조된 경로·이름의 시작 행과 잘못된 숫자 표지 거부가 추가됐고, S-4(40행)에 다른 이름·경로·숫자 표지 위조가 추가됐다. 47행은 표지를 유효한 start의 같은 이름 기본 경로에만 결합하고 경로 문자열이나 다른 환경 분기와는 결합하지 않는다고 정한다. 표지 없이 xhigh 경로를 직접 쓴 디스크 행의 처리는 46행과 엇갈린다(F1, should_fix). 직전에 확인한 docs/SECURITY.md 대조는 바뀐 줄의 영향을 받지 않는다.\"}],\"permission\":{\"mode\":\"implementation\",\"paths\":[\"src/core/worker-tiers.ts\",\"src/team/model.ts\",\"src/team/store.ts\",\"src/team/sync.ts\",\"src/project/role-record.ts\",\"src/project/event-log.ts\",\"src/project/team-input.ts\",\"test/team.test.ts\",\"test/project-role.test.ts\"],\"protected\":[{\"from\":18,\"to\":40},{\"from\":47,\"to\":49}]}}\n```\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 78744,
+    "usage": {
+      "input_tokens": 14,
+      "output_tokens": 8046
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "d2734d6abcef65f267b7ea12235865c86f5663d5fa73415a98afa880831a3313",
+    "kind": "task",
+    "verdict": "pass",
+    "rereview_of": "review-records/R1.json",
+    "snapshot": "# T01 xhigh 등급과 호환 코드\n\n- 프로젝트: [P014](../../PROJECT.md) · 백로그: [BL261125_01_문제_해결_전문가_에이전트](../../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BACKLOG.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\n문제 해결 전문가를 명시적으로 최상위 등급으로 배정한다. 구판 CLI에서도 기존 등급·구성원·공유 생성물을 그대로 사용할 수 있게 한다.\n\n## 재료\n\n- BR01 범위와 완료 기준, PROJECT P-1~P-3, `docs/TEAM.md`, `docs/SECURITY.md`, `docs/TESTING.md`.\n- 구판 기준 `5cddecd00c68ab61f7e31cd80984dc34517bdc46`. `src/team/store.ts`는 기존 두 위치의 모든 Markdown 역할을 읽고 `src/team/sync.ts`는 각 역할의 고정 native 경로와 관리 표지를 사용한다.\n- 선례는 브레인의 ‘저장소 팀 설계와 갱신 흐름’과 TEAM의 필수 역할 표지다. 구판이 읽지 않는 파일로 정보를 분리하고 생성물의 관리 표지도 함께 대조한다.\n\n## 증명 범위\n\n- 판정 주체: 선언된 검사, 구판·신판 CLI 교대 실행 증거, 작업자와 분리된 테스터와 독립 리뷰어다.\n- 포함: xhigh 설정·원본·native 생성물·start 인자와 시작 기록, 구판 동기화와 팀 측정, 민감 경로 거부를 증명한다.\n- 범위 밖: 실제 구성원 정의·필수 역할 등록·호스트 런타임 관측은 BR06에서 입증한다.\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | `worker show/set/reset`이 xhigh를 지원한다. Claude는 `claude-fable-5-2/high`, Codex는 `gpt-6.2-astra/medium`이고 xhigh override가 우선한다. 기존 등급의 해석과 자동 배정은 같다(P-2). |\n| T-2 | 명시적으로 승격한 역할을 새 팀 목록·동기화·`project start --role`에서 읽는다. 두 native 생성물과 start의 인자·시작 기록에 해당 설정이 일치한다(P-1, P-2). |\n| T-3 | 구판이 같은 저장소와 PACE_HOME의 기존 등급·설정·채택 프로젝트 팀 측정을 처리한다. 신판의 xhigh 시작 행도 구판에서 유효한 시작으로 집계되고, 신판 판독기는 실제 원본 경로를 정확히 복원한다. 구판·신판에서 check와 sync를 교대로 반복해도 기존 생성물은 기준 바이트와 같고 xhigh 생성물은 신판이 만든 바이트를 유지한다(P-3). |\n| T-4 | 등급·파일 종류·크기·UTF-8·경로를 검증한다. 중복 원본, 잘못된 값, 비관리 출력 충돌·고아 생성물은 거부하고 실패 시 기존 생성물을 보존한다. 위조된 경로·역할 이름의 시작 행과 잘못된 숫자 표지는 거부한다(P-1~P-3). |\n\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | unit | T-1 | 임시 PACE_HOME, 일반 worker 모델과 기존 등급 override | show와 xhigh 두 필드 set/reset, 무효 등급 set | 기본 매핑·override·초기화 일치, 잘못된 등급 거부, 기존 설정 파일 바이트 유지, 기존 세 등급의 기본 effort가 등급 문자열과 일치 | `test/team.test.ts` |\n| S-2 | e2e | T-2 | 명시 승격 reviewer와 일반 역할 픽스처 | list/sync, 두 호스트 project start, 원본 경로·지문 비교 | xhigh만 새 매핑 적용, 커밋 ref와 실행 worktree에서 같은 원본·인자·이벤트 | `test/team.test.ts`, `test/project-role.test.ts` |\n| S-3 | e2e | T-3 | 구판·신판이 같은 격리 저장소와 PACE_HOME 사용, 팀 측정 채택과 xhigh 구성원의 조건부 역할 표지 | 구판 기준 생성, 신판에서 xhigh 추가·실제 start --role로 시작 행 기록, 구판·신판에서 list 및 check/sync 교대 2회 후 stats | 종료 0, 일반 생성물 바이트 보존, xhigh 생성물 불변, 시작 행 구판 팀 측정에 포함, 신판은 실제 xhigh 원본 경로 복원 | 고정 구판 checkout 실측과 증거 |\n| S-4 | unit | T-4 | 잘못된 파일·값·관리 표지, 링크·과대 파일, 중복·고아, 다른 이름·경로·숫자 표지 위조 | show/set/list/check/sync/start 거부 경로 실행 | 실패 노출과 기존 바이트 보존, 링크 대상에 쓰지 않음 | `test/team.test.ts`, `test/project-role.test.ts` |\n\n## 접근\n\n- 기본안 (가). `PACE_HOME/worker-tiers-xhigh.json`을 기존 `worker-tiers.json`과 분리하고 같은 파일 검사를 적용한다. `pace worker set <host> tier.xhigh.<model|effort> <값>`과 `reset`으로 변경한다.\n- 승격 원본은 `.pace/team/agents-xhigh/<name>.md`에 `tier: xhigh`로 둔다. 신판이 세 위치의 중복을 검사한다. 신판은 xhigh 생성물 첫 줄에 구판이 읽지 않는 관리 표지를 쓴다. 신판이 기존·새 표지를 검증하고 허용된 원본을 가리킬 때만 출력 경로를 갱신한다. 승격 후 신판에서 두 생성물을 동기화한 상태가 구판 호환 대상이다.\n- `src/project/role-record.ts`의 정확 일치 비교에 같은 역할 이름의 xhigh 경로 한 가지를 추가한다. 독립 검토 및 S-4는 다른 이름·폴더·상위 경로·glob·링크 거부, 크기·UTF-8·파일 종류 검사와 실행 직전 지문 재확인을 포함한다.\n- 시작 기록은 기존 원본 경로 슬롯과 `data.xhighRoleDefinition=1`을 같은 JSON 행에 쓴다. 지문·모델·effort는 실제 xhigh 원본과 일치한다. 숫자 표지는 유효한 start의 같은 이름 기본 경로에서만 허용하며 신판의 일반·팀 측정 판독기가 정해진 정확한 xhigh 원본 경로를 복원한다. 경로 문자열·다른 이름·다른 환경 분기에서 표지를 결합하지 않는다. 구판은 기존 경로 슬롯을 읽으므로 시작 행을 집계할 수 있다.\n- 구현 후보 경로는 `src/core/worker-tiers.ts`, `src/team/model.ts`, `src/team/store.ts`, `src/team/sync.ts`, `src/project/role-record.ts`, `src/project/event-log.ts`, `src/project/team-input.ts`, `test/team.test.ts`, `test/project-role.test.ts`다.\n- SECURITY 검토에서 링크·일반 파일·크기·UTF-8 검사와 원자 쓰기, 외부 입력과 오류 노출을 확인한다. 민감 경로를 독립 검토에 포함하고 선언 검사와 비밀 검사를 실행한다.\n\n## 결정 메모\n\n- (가) 별도 xhigh 원본·생성물 표지를 채택한다 (main 판단). 기준선 구판에서 기존 원본의 `tier: xhigh`는 check 종료 2였다. 기존 등급을 유지하고 native 모델만 바꿨을 때 check 종료 1과 sync의 구판 모델 재기록을 확인했다. `src/project/role-record.ts`의 정확 경로 허용을 BR01 범위에 추가해 호환성과 시작 기록을 함께 증명한다.\n- 시작 행을 새 경로로 직접 적으면 구판 stats 종료 2와 로그 손상 오류를 재현했다. 기존 경로 슬롯과 숫자 표지의 조합은 종료 0과 역할 보존을 확인했다. R1의 지적을 반영해 같은 행의 두 판독 경로와 S-3 실제 start 검증을 승인 범위에 추가한다 (main 판단).\n",
+    "call_id": "5192be65-27b1-48d8-b926-2e2f6f09fb1a",
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3",
+      "T-4"
+    ],
+    "permission_basis": {
+      "base": "5cddecd00c68ab61f7e31cd80984dc34517bdc46",
+      "task_mode": "100644"
+    },
+    "permission": {
+      "mode": "implementation",
+      "paths": [
+        "src/core/worker-tiers.ts",
+        "src/team/model.ts",
+        "src/team/store.ts",
+        "src/team/sync.ts",
+        "src/project/role-record.ts",
+        "src/project/event-log.ts",
+        "src/project/team-input.ts",
+        "test/team.test.ts",
+        "test/project-role.test.ts"
+      ],
+      "protected": [
+        {
+          "from": 18,
+          "to": 40
+        },
+        {
+          "from": 47,
+          "to": 49
+        }
+      ],
+      "base": "5cddecd00c68ab61f7e31cd80984dc34517bdc46",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "pass",
+    "reported_verdict": "pass",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "should_fix",
+        "category": "design",
+        "confidence": "medium",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T01_xhigh_등급과_호환_코드/TASK.md:46",
+        "scenario": "새 47행은 디스크 행에 기존 경로 슬롯과 숫자 표지를 쓰고 판독기가 xhigh 경로를 복원한다고 정한다. 그런데 고치지 않은 46행과 53행은 여전히 'role-record 정확 일치 비교에 xhigh 경로를 추가'한다고 적는다. 46행을 문자 그대로 구현하면 신판 validStartRole이 표지 없이 definition에 agents-xhigh 경로를 직접 적은 디스크 행도 받아들인다. 그 행은 구판이 거부하므로(role-record.ts:28) 같은 로그를 신판은 받고 구판은 거부하는 차이가 생긴다. S-4의 '경로 위조'가 이 행을 포함하는지도 불명확하다. 복원 뒤의 메모리 내 기록과 디스크 행의 허용 경로를 구분해 적고, S-4에 '표지 없이 xhigh 경로를 직접 쓴 start 행 거부'를 명시해야 한다.",
+        "reproduction": "TASK.md:46·47·53을 대조한다. 신판 구현에서 {type:start, role:{definition:'.pace/team/agents-xhigh/<name>.md',...}} 행을 표지 없이 log.jsonl에 넣고, 신판 readTeamEvents가 받아들이는지와 구판이 같은 행을 거부하는지(team-input.ts:344,350) 비교한다.",
+        "impact": "criterion",
+        "criterion": "T-4",
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "note",
+        "category": "observable",
+        "confidence": "medium",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T01_xhigh_등급과_호환_코드/TASK.md:47",
+        "scenario": "'같은 이름 기본 경로'가 teamSourcePath(name)와 teamSourcePath(name, true) 두 슬롯 중 어느 것인지, 혹은 둘 다인지 정하지 않았다. 슬롯이 달라도 복원 대상은 같지만, 위조 판정과 S-4 단언의 기준이 모호해진다.",
+        "reproduction": "src/project/role-record.ts:28의 두 경로와 TASK.md:47 문구를 대조한다.",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "note",
+        "category": "other",
+        "confidence": "high",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T01_xhigh_등급과_호환_코드/TASK.md:48",
+        "scenario": "상위 목적은 '정확한 8개 경로'라고 하지만 TASK 접근 48행에는 9개(src 7개, test 2개)가 적혀 있고 모두 존재한다. 허가 경로는 TASK에 적힌 9개를 따랐다. 개수 차이는 요청 문구 쪽의 오류로 보인다.",
+        "reproduction": "TASK.md:48의 경로 목록을 센다.",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "TASK.md:28은 그대로다. 바뀐 S-1(37행)에 '기존 세 등급의 기본 effort가 등급 문자열과 일치'가 추가돼 직전 F4(xhigh effort 예외의 오적용)를 검출한다. 나머지 show, set/reset, 무효 등급 거부, 설정 바이트 유지 관측은 직전과 같다."
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "TASK.md:29와 S-2(38행)는 바뀌지 않아 직전 관측을 그대로 적용한다. 바뀐 47행이 시작 기록의 지문·모델·effort가 실제 xhigh 원본과 일치해야 한다고 정해, 기존 슬롯을 써도 T-2의 '시작 기록 일치'를 지문과 복원 경로로 보장한다."
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "바뀐 TASK.md:30에 '신판 xhigh 시작 행의 구판 집계'와 '신판의 정확한 경로 복원'이 추가됐다. 바뀐 S-3(39행)는 신판의 실제 start --role 기록 뒤 구판·신판에서 list와 check/sync를 2회 교대하고 stats를 실행하며, 구판 팀 측정 포함과 신판 복원을 관측한다. 구판 소스상 data 임의 정수 키 허용(event-log.ts:33), role 키·경로 정확 비교(role-record.ts:26,28), 이름만 쓰는 팀 측정(team-metrics.ts:344,351)을 확인했다. 그래서 설계는 구판과 호환되고, 신판 writer가 xhigh 경로를 직접 쓰는 결함은 S-3에서 종료 2 또는 측정 누락으로 실패한다. 직전 F1은 해소됐다."
+        },
+        {
+          "id": "T-4",
+          "state": "present",
+          "observation": "바뀐 TASK.md:31에 위조된 경로·이름의 시작 행과 잘못된 숫자 표지 거부가 추가됐고, S-4(40행)에 다른 이름·경로·숫자 표지 위조가 추가됐다. 47행은 표지를 유효한 start의 같은 이름 기본 경로에만 결합하고 경로 문자열이나 다른 환경 분기와는 결합하지 않는다고 정한다. 표지 없이 xhigh 경로를 직접 쓴 디스크 행의 처리는 46행과 엇갈린다(F1, should_fix). 직전에 확인한 docs/SECURITY.md 대조는 바뀐 줄의 영향을 받지 않는다."
+        }
+      ],
+      "issues": []
+    },
+    "permission": {
+      "mode": "implementation",
+      "paths": [
+        "src/core/worker-tiers.ts",
+        "src/team/model.ts",
+        "src/team/store.ts",
+        "src/team/sync.ts",
+        "src/project/role-record.ts",
+        "src/project/event-log.ts",
+        "src/project/team-input.ts",
+        "test/team.test.ts",
+        "test/project-role.test.ts"
+      ],
+      "protected": [
+        {
+          "from": 18,
+          "to": 40
+        },
+        {
+          "from": 47,
+          "to": 49
+        }
+      ]
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # BR01 xhigh 등급과 호환 코드
 
-- 상태: 대기
+- 상태: 완료
 - 백로그: [BL261125_01_문제_해결_전문가_에이전트](BACKLOG.md)
 
 <!-- 개발 업무의 예시. 형식·추적 정본: pace-project-dev의 references/document-shape.md. -->
@@ -18,7 +18,7 @@
   - **옛 설치본 호환**: 옛 판독기는 새 값을 전체 손상으로 처리한다 — `worker-tiers.json`의 `xhigh` 키는 파일 전체 거부(`src/core/worker-tiers.ts:48`), 원본 `tier: xhigh`는 팀 원본 파싱 오류(`src/team/model.ts:98`, 모르는 필드도 거부 `:87`)라서 `pace team sync`(`src/team/sync.ts:43` `loadTeam`)와 팀 측정(`src/project/team-metrics.ts:338-342` — 채택 저장소면 오류, 아니면 원본 관측 미확인)이 깨진다. 이는 `docs/TEAM.md:80`이 "옛 설치본이 새 키를 손상으로 읽지 않도록" 등급 파일을 분리한 것과 같은 위험이다(새 판독기가 옛 파일을 읽는 문제가 아니라 **옛 판독기가 새 값을 읽는 문제**). 호환 방식을 설계에서 고른다 — (가) 별도 파일·키 분리(옛 판독기가 보지 않는 위치에 `xhigh` 매핑·구성원 등급 승격을 둔다. 위치·형식은 BL261125_02 BR02가 정한 필수 역할 표지 형식을 따르거나 같은 원칙 — 옛 판독기가 보지 않는 별도 파일·키 — 으로 정한다. 그 표지는 BL261125_02 병합으로 `.pace/team/required-roles.json`에 있다 — `docs/TEAM.md:127`), (나) 병합 전 재설치 순서 강제(main 병합 직후 `bash scripts/install.sh`, 다른 worktree·기기의 옛 설치본 영향과 안내 포함). **(가)를 기본안으로 둔다**(PM 결정 2026-11-25). (나)를 고르면 프로젝트 게이트(`pace team list`·`team sync --check`·finish·merge)를 어느 실행본(worktree의 `./bin/pace.ts` 대 설치본 `~/.pace`)으로 돌리는지 설계에 명시해야 한다 — 설치본은 main에서만 설치하므로(AGENTS.md) 병합 전 worktree의 설치본은 옛 판독기이고, 옛 판독기는 `tier: xhigh`를 거부하며(`src/team/model.ts:98`), 팀 채택 프로젝트의 finish(`src/project/harness.ts:1868`)·merge(`:2042`)는 `refreshProjectMetrics` → `collectTeamMetrics`를 거쳐 `src/project/team-metrics.ts:338-342`(채택 저장소면 `loadTeam` 오류를 그대로 던짐)에 닿는다. (가)에서도 옛 설치본으로 `pace team sync`를 돌리면 서로 다른 매핑으로 공유 생성물이 번갈아 바뀌는 문제(`docs/TEAM.md:105`)가 생기는지 확인한다. 기존 high·medium·low의 해석·생성물 바이트는 바꾸지 않는다. 새 구성원 자동 배정(`src/team/store.ts:92`)도 바꾸지 않는다 — `xhigh`는 명시한 구성원만 쓴다.
 - **BR06 인계**: 고른 호환 방식과 구성원 등급 승격 위치·형식, 설정 명령을 설계 문서에 적어 BR06이 그대로 쓰게 한다.
 - **보안**: `src/team/`·`src/core/worker-tiers.ts`는 민감 경로(`docs/SECURITY.md:24` 민감 경로 표)이므로 설계에서 SECURITY 체크리스트를 적용한다.
-- **변경 범위**: `src/core/worker-tiers.ts`·`src/team/**` 코드와 `test/**` 시험, 설계 문서만 바꾼다. `docs/**`·`skills/**`·팀 원본·필수 역할 정본은 바꾸지 않는다(BR06).
+- **변경 범위**: `src/core/worker-tiers.ts`·`src/team/**` 코드와 `test/**` 시험, 설계 문서만 바꾼다. `src/project/role-record.ts`·`src/project/event-log.ts`·`src/project/team-input.ts`는 같은 역할 이름의 정확한 xhigh 경로 검증, 구판 호환 시작 행 저장과 두 판독 경로의 복원만 바꾼다 (main 판단). `docs/**`·`skills/**`·팀 원본·필수 역할 정본은 바꾸지 않는다(BR06).
 - **제외**: `pace-troubleshooter` 원본·생성물, 호출 수단, 지침·반환 계약, 모델 거부 처리, 실제 적용 관문, 능력 eval, `docs/TEAM.md`·`skills/pace-team`·브레인 문서, 필수 역할 요건 등록(모두 BR06), 호출 신호(BR02), 호출 기록(BR03), 호출 절차(BR04·BR05), 다른 구성원의 모델·effort 최적화(별도 주제), 조건부 역할 미사용 처리(`src/project/team-metrics.ts:358` — BL261125_02 BR02 소유).
 
 ## 완료 기준

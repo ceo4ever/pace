@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "8c2dc663052867124190d19b50ffa75f2de1fe6b3fc1f46c3d858e78a1a58984",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "d2734d6abcef65f267b7ea12235865c86f5663d5fa73415a98afa880831a3313",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R1.json에서 재검토",
+      "permission": {
+        "mode": "implementation",
+        "paths": [
+          "src/core/worker-tiers.ts",
+          "src/team/model.ts",
+          "src/team/store.ts",
+          "src/team/sync.ts",
+          "src/project/role-record.ts",
+          "src/project/event-log.ts",
+          "src/project/team-input.ts",
+          "test/team.test.ts",
+          "test/project-role.test.ts"
+        ],
+        "protected": [
+          {
+            "from": 18,
+            "to": 40
+          },
+          {
+            "from": 47,
+            "to": 49
+          }
+        ],
+        "base": "5cddecd00c68ab61f7e31cd80984dc34517bdc46",
+        "task_mode": "100644"
+      }
+    }
+  ]
+}

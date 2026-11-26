@@ -5,9 +5,13 @@ import { isWorkerTier, type WorkerTier } from "../core/worker-tiers.ts";
 export const TEAM_ROLES = ["lead", "maker", "reviewer", "coordinator"] as const;
 export type TeamRole = typeof TEAM_ROLES[number];
 export const TEAM_AGENTS_DIR = ".pace/team/agents";
+export const XHIGH_AGENTS_DIR = ".pace/team/agents-xhigh";
 export const LEGACY_TEAM_DIR = ".pace/team";
 export function teamSourcePath(name: string, legacy = false): string {
   return `${legacy ? LEGACY_TEAM_DIR : TEAM_AGENTS_DIR}/${name}.md`;
+}
+export function xhighTeamSourcePath(name: string): string {
+  return `${XHIGH_AGENTS_DIR}/${name}.md`;
 }
 export interface TeamMember {
   name: string; role: TeamRole; stage: string[]; tier: WorkerTier; resources: string[]; tools: string[];
@@ -96,6 +100,7 @@ export function parseTeamSource(input: string, expectedName: string, source = te
   const parsed = parseFrontmatter(text);
   const name = getString(parsed.data, "name"), role = getString(parsed.data, "role"), tier = getString(parsed.data, "tier");
   if (name !== expectedName || !isTeamRole(role) || !isWorkerTier(tier)) throw new Error("팀 이름·역할·등급 오류");
+  if ((tier === "xhigh") !== (source === xhighTeamSourcePath(name))) throw new Error("xhigh 등급과 별도 팀 원본 경로가 일치해야 한다");
   for (const key of ["stage", "resources", "tools"]) {
     const value = parsed.data[key];
     if (!Array.isArray(value) || value.some((item) => !item.trim() || item !== item.trim() || item.length > 256 || /[\x00-\x1f\x7f]/.test(item)) || new Set(value).size !== value.length) throw new Error(`팀 ${key}는 중복 없는 문자열 배열이어야 한다`);
