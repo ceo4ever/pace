@@ -106,7 +106,7 @@ export function uninstall(options: InstallOptions): Action[] {
   assertRegistrySeparation(ctx, options.dataHome ?? ctx.paceHome);
   const ours = (c: string) => isBootCommand(ctx, c);
   for (const dir of ctx.claudeDirs) editExistingJson(ctx, join(dir, "settings.json"), (s) =>
-    removeHookGroups(s, (command) => ours(command) || command === claudeCallHookCommand(ctx)));
+    removeHookGroups(s, (command) => ours(command) || isClaudeCallHookCommand(ctx, command)));
   for (const dir of ctx.codexDirs) editExistingJson(ctx, join(dir, "hooks.json"), (s) => removeHookGroups(s, ours));
   const geminiRootSafe = safeGeminiRoot(ctx);
   if (geminiRootSafe) editExistingJson(ctx, join(ctx.home, ".gemini", "settings.json"), (s) => removeHookGroups(s, ours));
@@ -617,7 +617,7 @@ function installClaudeHook(ctx: Ctx): void {
   const callCommand = claudeCallHookCommand(ctx);
   for (const dir of ctx.claudeDirs) {
     editJson(ctx, join(dir, "settings.json"), (settings) => {
-      removeHookGroups(settings, (c) => isBootCommand(ctx, c) || c === callCommand);
+      removeHookGroups(settings, (c) => isBootCommand(ctx, c) || isClaudeCallHookCommand(ctx, c));
       addHookGroup(settings, "SessionStart", { hooks: [{ type: "command", command, timeout: 10 }] });
       for (const event of ["SubagentStart", "SubagentStop", "PostToolUse"]) {
         addHookGroup(settings, event, { ...(event === "PostToolUse" ? { matcher: "Agent" } : {}), hooks: [{ type: "command", command: callCommand, timeout: 10 }] });
@@ -626,11 +626,17 @@ function installClaudeHook(ctx: Ctx): void {
   }
 }
 
-function claudeCallHookCommand(ctx: Ctx): string {
+function claudeCallHookCommand(ctx: Ctx, guardFailure = true): string {
   // Claude uses a POSIX shell for these hooks, including Git Bash on Windows.
   const path = ctx.windows ? slash(join(ctx.appDir, "bin", "pace.ts")) : ctx.paceBin;
   const quotedPath = "'" + path.replaceAll("'", "'\\''") + "'";
-  return `${ctx.windows ? "node " : ""}${quotedPath} agent call-hook --host claude # pace-managed-agent-call-v1`;
+  const command = `${ctx.windows ? "node " : ""}${quotedPath} agent call-hook --host claude`;
+  const guard = guardFailure ? " >/dev/null 2>&1 || true" : "";
+  return `${command}${guard} # pace-managed-agent-call-v1`;
+}
+
+function isClaudeCallHookCommand(ctx: Ctx, command: string): boolean {
+  return command === claudeCallHookCommand(ctx) || command === claudeCallHookCommand(ctx, false);
 }
 
 function installCodex(ctx: Ctx): void {

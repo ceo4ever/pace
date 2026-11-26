@@ -1,0 +1,12 @@
+검사 대상 패치 SHA-256 96f16c50da7d077d7d37cfb2e8d11d7ca15cdef7b8a4c93a26897ff00628c5a8
+npm run typecheck — 종료 0
+node --test --test-concurrency=3 test/install.test.ts test/agent-calls.test.ts — 종료 0
+
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26324.602042

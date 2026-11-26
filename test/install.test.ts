@@ -567,8 +567,34 @@ test("T07 Claude 호출 훅은 등록·재설치·제거에서 사용자 훅을 
     assert.ok(managed[0]?.hooks[0]?.command.includes("'\\''"), "작은따옴표가 섞인 경로도 리터럴");
     assert.equal(managed[0]?.matcher, event === "PostToolUse" ? "Agent" : undefined);
   }
+  const legacy = JSON.stringify(installed).replaceAll(
+    " >/dev/null 2>&1 || true # pace-managed-agent-call-v1", " # pace-managed-agent-call-v1",
+  );
+  write(file, legacy);
   install({ home, repo });
   assert.deepEqual(json(file), installed);
   uninstall({ home, repo });
   assert.deepEqual(json(file), original);
+  write(file, legacy);
+  uninstall({ home, repo });
+  assert.deepEqual(json(file), original);
+});
+
+
+test("T07 Claude 호출 훅은 명령이 없는 옛 실행기의 실패를 호스트에 전달하지 않는다", { skip: process.platform === "win32" }, () => {
+  const home = join(tempDir("pace-home-"), "team's fixture");
+  const file = join(home, ".claude", "settings.json");
+  write(file, "{}");
+  install({ home, repo });
+  const command = json(file).hooks.SubagentStop[0].hooks[0].command as string;
+  const legacy = command.replace(" >/dev/null 2>&1 || true", "");
+  const oldBin = join(home, ".pace", "bin", "pace");
+  assert.ok(lstatSync(oldBin).isFile(), "설치된 임시 실행기는 일반 파일이다");
+  writeFileSync(oldBin, "#!/bin/sh\nprintf 'unknown command: call-hook\\n' >&2\nexit 2\n");
+  const args = { env: sessionFreeEnv(), encoding: "utf8" as const };
+  const unguarded = spawnSync("/bin/sh", ["-c", legacy], args);
+  assert.equal(unguarded.status, 2, unguarded.stderr);
+  const guarded = spawnSync("/bin/sh", ["-c", command], args);
+  assert.equal(guarded.status, 0, guarded.stderr);
+  assert.equal(guarded.stderr, "");
 });

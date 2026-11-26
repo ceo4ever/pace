@@ -1,0 +1,94 @@
+diff --git a/docs/SECURITY.md b/docs/SECURITY.md
+index b74f0ad..7e72d1b 100644
+--- a/docs/SECURITY.md
++++ b/docs/SECURITY.md
+@@ -27,7 +27,7 @@
+ 
+ 체크리스트: `pace-project-dev` 스킬 `references/security.md`의 기본 체크리스트 + 위 민감 경로. 셸 실행은 인자 배열(`spawnSync`) — 예외는 정의서에 선언한 명령의 `sh -c` 실행과 Windows 온보딩의 LLM CLI 실행(`src/setup/onboard.ts`, `shell: win32`), 비밀 값은 환경 변수 이름만, 테스트는 실제 사용자 홈·Orca·도구 설정을 건드리지 않는다.
+ 
+-Claude 호출 훅은 POSIX 셸에서 실행 파일 경로를 리터럴로 전달한다. 설치·제거는 관리 표지가 붙은 정확한 명령만 바꾸고, 사용자 훅은 보존한다. 입력이 잘리거나 저장소 범위·출처·파일을 확인할 수 없으면 호스트에 원문이나 쓰기 오류 세부를 내지 않고 종료 0을 반환한다. 로컬에 신고한 호출 측정·참조는 계정 인증이나 도구 권한의 증거가 아니다.
++Claude 호출 훅은 POSIX 셸에서 실행 파일 경로를 리터럴로 전달한다. 설치·제거는 관리 표지가 붙은 정확한 명령만 바꾸고, 사용자 훅은 보존한다. 입력이 잘리거나 저장소 범위·출처·파일을 확인할 수 없으면 호스트에 원문이나 쓰기 오류 세부를 내지 않고 종료 0을 반환한다. 이전 PACE 실행기가 호출 기록 명령을 지원하지 않거나 실행 파일이 없을 때도 등록 훅은 출력을 억제하고 종료 0으로 끝난다. 로컬에 신고한 호출 측정·참조는 계정 인증이나 도구 권한의 증거가 아니다.
+ 
+ 프로젝트 역할 실행(`src/team/worker-role.ts`, `src/project/role-record.ts`)은 체크아웃될 Git blob 또는 실행 worktree의 일반 원본만 읽는다. Git 조회에 필터·훅을 사용하지 않고 크기·UTF-8·파일 종류와 실제 실행 직전 지문을 검사한다. model/effort와 원본 지침을 셸로 평가하지 않으며 start의 role 객체는 안전한 제한 필드만 기록한다. 역할 파일을 편집해 재시작할 수 있으므로 역할은 보안 경계가 아니고 prompt/tools 안내로 권한 차단을 주장하지 않는다. 실제 Orca 실측은 명시적으로 격리된 임시 저장소와 PACE_HOME에서 수행하며 초기 환경 상속을 별도로 관측한다.
+ 
+diff --git a/src/setup/install.ts b/src/setup/install.ts
+index 97d722a..0f31395 100644
+--- a/src/setup/install.ts
++++ b/src/setup/install.ts
+@@ -106,7 +106,7 @@ export function uninstall(options: InstallOptions): Action[] {
+   assertRegistrySeparation(ctx, options.dataHome ?? ctx.paceHome);
+   const ours = (c: string) => isBootCommand(ctx, c);
+   for (const dir of ctx.claudeDirs) editExistingJson(ctx, join(dir, "settings.json"), (s) =>
+-    removeHookGroups(s, (command) => ours(command) || command === claudeCallHookCommand(ctx)));
++    removeHookGroups(s, (command) => ours(command) || isClaudeCallHookCommand(ctx, command)));
+   for (const dir of ctx.codexDirs) editExistingJson(ctx, join(dir, "hooks.json"), (s) => removeHookGroups(s, ours));
+   const geminiRootSafe = safeGeminiRoot(ctx);
+   if (geminiRootSafe) editExistingJson(ctx, join(ctx.home, ".gemini", "settings.json"), (s) => removeHookGroups(s, ours));
+@@ -617,7 +617,7 @@ function installClaudeHook(ctx: Ctx): void {
+   const callCommand = claudeCallHookCommand(ctx);
+   for (const dir of ctx.claudeDirs) {
+     editJson(ctx, join(dir, "settings.json"), (settings) => {
+-      removeHookGroups(settings, (c) => isBootCommand(ctx, c) || c === callCommand);
++      removeHookGroups(settings, (c) => isBootCommand(ctx, c) || isClaudeCallHookCommand(ctx, c));
+       addHookGroup(settings, "SessionStart", { hooks: [{ type: "command", command, timeout: 10 }] });
+       for (const event of ["SubagentStart", "SubagentStop", "PostToolUse"]) {
+         addHookGroup(settings, event, { ...(event === "PostToolUse" ? { matcher: "Agent" } : {}), hooks: [{ type: "command", command: callCommand, timeout: 10 }] });
+@@ -626,11 +626,17 @@ function installClaudeHook(ctx: Ctx): void {
+   }
+ }
+ 
+-function claudeCallHookCommand(ctx: Ctx): string {
++function claudeCallHookCommand(ctx: Ctx, guardFailure = true): string {
+   // Claude uses a POSIX shell for these hooks, including Git Bash on Windows.
+   const path = ctx.windows ? slash(join(ctx.appDir, "bin", "pace.ts")) : ctx.paceBin;
+   const quotedPath = "'" + path.replaceAll("'", "'\\''") + "'";
+-  return `${ctx.windows ? "node " : ""}${quotedPath} agent call-hook --host claude # pace-managed-agent-call-v1`;
++  const command = `${ctx.windows ? "node " : ""}${quotedPath} agent call-hook --host claude`;
++  const guard = guardFailure ? " >/dev/null 2>&1 || true" : "";
++  return `${command}${guard} # pace-managed-agent-call-v1`;
++}
++
++function isClaudeCallHookCommand(ctx: Ctx, command: string): boolean {
++  return command === claudeCallHookCommand(ctx) || command === claudeCallHookCommand(ctx, false);
+ }
+ 
+ function installCodex(ctx: Ctx): void {
+diff --git a/test/install.test.ts b/test/install.test.ts
+index 76db404..8c51ad1 100644
+--- a/test/install.test.ts
++++ b/test/install.test.ts
+@@ -567,8 +567,34 @@ test("T07 Claude 호출 훅은 등록·재설치·제거에서 사용자 훅을
+     assert.ok(managed[0]?.hooks[0]?.command.includes("'\\''"), "작은따옴표가 섞인 경로도 리터럴");
+     assert.equal(managed[0]?.matcher, event === "PostToolUse" ? "Agent" : undefined);
+   }
++  const legacy = JSON.stringify(installed).replaceAll(
++    " >/dev/null 2>&1 || true # pace-managed-agent-call-v1", " # pace-managed-agent-call-v1",
++  );
++  write(file, legacy);
+   install({ home, repo });
+   assert.deepEqual(json(file), installed);
+   uninstall({ home, repo });
+   assert.deepEqual(json(file), original);
++  write(file, legacy);
++  uninstall({ home, repo });
++  assert.deepEqual(json(file), original);
++});
++
++
++test("T07 Claude 호출 훅은 명령이 없는 옛 실행기의 실패를 호스트에 전달하지 않는다", { skip: process.platform === "win32" }, () => {
++  const home = join(tempDir("pace-home-"), "team's fixture");
++  const file = join(home, ".claude", "settings.json");
++  write(file, "{}");
++  install({ home, repo });
++  const command = json(file).hooks.SubagentStop[0].hooks[0].command as string;
++  const legacy = command.replace(" >/dev/null 2>&1 || true", "");
++  const oldBin = join(home, ".pace", "bin", "pace");
++  assert.ok(lstatSync(oldBin).isFile(), "설치된 임시 실행기는 일반 파일이다");
++  writeFileSync(oldBin, "#!/bin/sh\nprintf 'unknown command: call-hook\\n' >&2\nexit 2\n");
++  const args = { env: sessionFreeEnv(), encoding: "utf8" as const };
++  const unguarded = spawnSync("/bin/sh", ["-c", legacy], args);
++  assert.equal(unguarded.status, 2, unguarded.stderr);
++  const guarded = spawnSync("/bin/sh", ["-c", command], args);
++  assert.equal(guarded.status, 0, guarded.stderr);
++  assert.equal(guarded.stderr, "");
+ });
