@@ -1,0 +1,20 @@
+✖ 검토 원장 stats의 소스·옛 호출·중단·무효·미완료와 단계별 합계 8/5 (1299.351417ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1488.4
+
+✖ failing tests:
+
+test at ../../../../../../private/tmp/pace-p013-t07.LXtHit/baseline/test/project-review-metrics.test.ts:68:1
+✖ 검토 원장 stats의 소스·옛 호출·중단·무효·미완료와 단계별 합계 8/5 (1299.351417ms)
+  TypeError [Error]: Cannot read properties of undefined (reading 'calls')
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t07.LXtHit/baseline/test/project-review-metrics.test.ts:100:30)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)

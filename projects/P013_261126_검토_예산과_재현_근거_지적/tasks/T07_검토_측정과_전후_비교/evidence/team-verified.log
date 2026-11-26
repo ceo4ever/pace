@@ -1,0 +1,13 @@
+✔ R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: new-role (5166.215167ms)
+✔ R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: new-input (3837.27625ms)
+✔ R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: new-task-close (3816.335875ms)
+✔ R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: new-review-ledger (5023.464667ms)
+✔ R7 팀 맥락 없는 기존 PROJECT 하드링크는 stats·회고 적용 판정을 바꾸지 않는다 (1589.475417ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19752.583042

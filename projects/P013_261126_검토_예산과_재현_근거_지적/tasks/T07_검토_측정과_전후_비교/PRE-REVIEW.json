@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "241cc121f3c78456029063da7913626ceed1e2c2300cb75365dea2f0bc726b42",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 2,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "a06059f35258c4dd50bf7f329a2a3b4087ff043ec3999dbacd123019e8cd418e",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "집계 경계·옛 키·수치 반례와 실제 비교 기준을 구체화했다"
+    }
+  ]
+}

@@ -182,6 +182,15 @@ export function parseVerdict(text: string): Verdict {
   return m ? (m[1] as Verdict) : "unknown";
 }
 
+export function legacyBlockingCount(text: string, verdict: Verdict): number | null {
+  if (parseVerdict(text) !== verdict || verdict === "unknown") return null;
+  if (verdict === "pass") return 0;
+  const labeled = text.split("\n").filter((line) =>
+    /^\s*(?:(?:[-#*]+|\d+[.)])\s+)?(?:\*\*)?(?:\[blocking\]|blocking(?=[ :—*]))/i.test(line)).length;
+  const reported = Number(/(?:^|[·\s])blocking[ \t]+(\d+)(?:건|\b)/i.exec(text)?.[1]);
+  return labeled || (Number.isSafeInteger(reported) && reported > 0 ? reported : null);
+}
+
 /** 원장 전체를 읽는다. 해석할 수 없는 줄이 있으면 위치를 알리고 멈춘다(손상된 원장으로 단계를 잘못 계산하지 않는다) */
 export function readLedger(target: string): LedgerEntry[] {
   const file = ledgerPath(target);

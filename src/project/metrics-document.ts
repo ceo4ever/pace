@@ -4,6 +4,7 @@ import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Repo, ProjectRef } from "./harness.ts";
 import { readEvents } from "./event-log.ts";
+import { formatReviewLedgerMetrics } from "./review-metrics.ts";
 import type { Dashboard } from "./metrics-report.ts";
 import type { TokenStats, TokenUsage } from "./tokens.ts";
 
@@ -53,6 +54,10 @@ function outputs(tokens: TokenStats[], total?: TokenStats[]): string {
   }).join(" · ") || "기록 없음";
 }
 export function formatMetricsDocument(repo: Repo, ref: ProjectRef, stats: Dashboard): string {
+  return formatExistingMetricsDocument(repo, ref, stats) + "\n" + formatReviewLedgerMetrics(stats.reviewLedger) + "\n";
+}
+
+function formatExistingMetricsDocument(repo: Repo, ref: ProjectRef, stats: Dashboard): string {
   const totalReview = (key: "blocking" | "shouldFix" | "testerFailures") => stats.reviews.reduce((sum, item) => sum + item[key], 0);
   const changes = commitChanges(repo, ref.id);
   const taskChanges = stats.tasks.map(t => commitChanges(repo, ref.id, t.id));

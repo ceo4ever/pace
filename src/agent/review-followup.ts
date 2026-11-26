@@ -91,6 +91,10 @@ function loadEvents(scope: ReviewBudgetScope): Event[] {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
     throw new LedgerError(`검토 후속 원장을 읽을 수 없다: ${file}`);
   }
+  return parseReviewFollowups(body, file);
+}
+
+export function parseReviewFollowups(body: string, file = FOLLOWUPS_FILE): Event[] {
   return body.split("\n").flatMap((line, index) => {
     if (!line.trim()) return [];
     try {

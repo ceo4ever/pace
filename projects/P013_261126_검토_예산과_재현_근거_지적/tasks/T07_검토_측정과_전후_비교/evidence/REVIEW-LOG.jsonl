@@ -1,0 +1,1 @@
+{"type":"review","at":"2026-11-26T05:54:59.731Z","kind":"goal","target":"impl-diff.patch","hash":"e70a569e49d370dc00b5530aac1e5f54f54fc3fea40820b43d44abe91be8be8b","verdict":"pass","verifier":"claude","provider":"anthropic","rereview_of":null,"record":"review-records/R1.json","result_hash":"7828f2e02ad46bad31512babfa50ec316e2578dea2cffdf6889795578bf2cebf"}

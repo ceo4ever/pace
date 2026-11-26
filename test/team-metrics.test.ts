@@ -735,13 +735,16 @@ test("R27 stats도 같은 영수증을 읽는 중 바뀌면 새 확인을 0 총�
   const stable = f.run("project", "stats", "P001", "--json"); assert.equal(stable.status, 0, stable.stderr); assert.equal(JSON.parse(stable.stdout).team.requests.reachedTotal, 0);
 });
 
-for (const change of ["new-role", "new-input", "new-task-close"] as const) test(`R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: ${change}`, () => {
+for (const change of ["new-role", "new-input", "new-task-close", "new-review-ledger"] as const) test(`R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: ${change}`, () => {
   const { f, worktree, dir } = mergeFixture(), rel = `projects/${dir.split("/").at(-1)}`;
   let path: string, body: string;
   if (change === "new-role") {
     createTeamMember(worktree, "late", "reviewer"); path = join(worktree, ".pace/team/agents/late.md"); body = readFileSync(path, "utf8"); unlinkSync(path);
   } else if (change === "new-input") {
     path = join(dir, "TEAM-MEASUREMENT.json"); unlinkSync(path); adoptTeamMetrics(worktree, rel); body = '{"version":999}';
+  } else if (change === "new-review-ledger") {
+    path = join(dir, "tasks/T99_late/evidence/REVIEW-LOG.jsonl");
+    body = JSON.stringify({ type: "call", at: "2026-11-26T00:00:00Z", target: "impl.diff", kind: "goal", call_id: "late" });
   } else {
     path = join(dir, "tasks/T99_late/TASK-CLOSE.md"); mkdirSync(join(dir, "tasks/T99_late"), { recursive: true }); body = "## 리뷰\n\nblocking 2\n";
   }

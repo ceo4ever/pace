@@ -11,6 +11,7 @@ import { writeFileAtomic } from "../core/fsutil.ts";
 import type { ProjectRef, Repo } from "./harness.ts";
 import { gateFailureReasons, metricDir, readMetrics } from "./metrics.ts";
 import { collectProjectStats, formatProjectStats } from "./tokens.ts";
+import { collectReviewLedgerMetrics, formatReviewLedgerMetrics, type ReviewLedgerMetrics } from "./review-metrics.ts";
 import type { FullStats, TokenOptions } from "./tokens.ts";
 
 export interface ReviewCounts { task: string; blocking: number; shouldFix: number; testerFailures: number;
@@ -18,7 +19,7 @@ export interface ReviewCounts { task: string; blocking: number; shouldFix: numbe
 }
 export interface Improvement { kind: "gate" | "review" | "handoff"; code: string; count: number; tasks: string[]; }
 export const reviewFindingMetrics = [["blocking", "blocking"], ["should_fix", "shouldFix"], ["tester fail", "testerFailures"]] as const;
-export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; handoffs?: HandoffReport; team?: TeamMetrics; }
+export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; reviewLedger: ReviewLedgerMetrics; handoffs?: HandoffReport; team?: TeamMetrics; }
 function section(text: string, heading: string): string {
   const match = new RegExp(`^## ${heading}\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, "m").exec(text);
   return (match?.[1] ?? "").replace(/<!--[\s\S]*?-->/g, "").trim();
@@ -81,10 +82,15 @@ export function collectDashboard(repo: Repo, ref: ProjectRef, options: TokenOpti
   const base = collectProjectStats(repo, ref, { ...options, inputTrace: trace }), collection = collectTeamMetrics(repo, ref, base, options, trace), team = collection?.metrics;
   const handoffs = collection?.adopted ? collection.handoffs : collectHandoffs(repo.root, ref.id, `projects/${ref.dir}`, { inputs: trace });
   const insights = collectInsights(repo, ref, trace, collection?.adopted);
+  const reviewLedger = collectReviewLedgerMetrics(repo.root, ref.dir, trace);
   if (trace instanceof InputSnapshot) void trace.files;
-  return { ...base, ...insights, ...(handoffs ? { handoffs } : {}), ...(team ? { team } : {}) };
+  return { ...base, ...insights, reviewLedger, ...(handoffs ? { handoffs } : {}), ...(team ? { team } : {}) };
 }
 export function formatDashboard(stats: Dashboard): string {
+  return formatExistingDashboard(stats) + "\n\n" + formatReviewLedgerMetrics(stats.reviewLedger);
+}
+
+function formatExistingDashboard(stats: Dashboard): string {
   const total = (key: "blocking" | "shouldFix" | "testerFailures") => stats.reviews.reduce((n, r) => n + r[key], 0);
   const candidates = stats.improvements.map((i) => `- ${i.kind}: ${i.code} ${i.count}회${i.tasks.length ? ` (${i.tasks.join(", ")} TASK-CLOSE)` : ""}`);
   const base = `${formatProjectStats(stats)}\n\n사건 수: 결정 ${stats.eventCounts.decisions} · 변경 ${stats.eventCounts.changes} · 리뷰 ${stats.eventCounts.reviews} · 질문 ${stats.eventCounts.questions} · 답변 ${stats.eventCounts.answers}\n\n리뷰 지적: blocking ${total("blocking")} · should_fix ${total("shouldFix")} · tester fail ${total("testerFailures")}\n\n개선 후보(사람이 선택):\n${candidates.length ? candidates.join("\n") : "없음"}`;

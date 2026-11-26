@@ -1,0 +1,24 @@
+{
+  "text": "# P013 T07 독립 검토 2단계 결과\n\n판정은 **pass**입니다. 1단계의 should_fix 2건과 note 4건이 실제 코드와 산출물에서 해소된 것을 확인했습니다. 새 차단 지적은 없습니다.\n\n**검증 한계:** 셸이 없어 patch 지문(`5576e9fc…`), `npm run check`, 83회 시험을 직접 실행하지 못했습니다. 아래 판단은 실제 코드·원장·산출물을 읽고 대조한 결과입니다.\n\n## 최신 계약과 대조한 결과\n\n1. **escalation 정의 (해소):** 이제 `src/project/review-metrics.ts:158`에서 `waiver_request`만 escalation으로 셉니다.\n   - 진단(`diagnosis`, `:263`)과 상위 검토(`root_review`, `:157`)는 각각 따로 셉니다.\n   - 열 이름은 \"owner 요청\"과 \"진단 / 상위 검토\"로 나뉘었고, 시험은 `[1, 1, 1, 1]`로 고정합니다(`test/project-review-metrics.test.ts:108`).\n   - 이는 BL261124_04의 Q3·Q5와 2026-11-26 owner 정정에 맞습니다. 정정은 실제 선택(A-3 생략·완화 등)에만 결정을 요청하라고 했습니다.\n   - 비교표의 P009 값도 \"진단 16 / 상위 0\"으로 바르게 바뀌었습니다.\n2. **옛 공동 시도의 미관측 (해소):** 예약도 구조화 단계도 후속 연결도 없는 유효 판정을 `unobservedFollowupRounds`로 셉니다(`:265`).\n   - 이 값이 있으면 공동·owner 요청 칸을 `미관측` 또는 `N · 일부 미관측`으로 표시합니다(`:324-326`).\n   - 그래서 P013 백로그의 옛 `decision` 행(\"공동 시도 1\")이 더는 0으로 보이지 않습니다. PROJECT-CLOSE에서 P007~P013 모두 `미관측 / 미관측`입니다.\n3. **같은 호출 결과의 중복 방지 (해소):** 결과 행을 `callKey`(단계와 `call_id`, 없으면 기록 경로)로 한 번만 셉니다(`:172-174`, `:214`).\n   - 시험은 같은 `call_id`로 결과 행 R1·R3을 넣은 뒤 사전 3/1, 시간 150, 입력 토큰 12를 확인합니다.\n   - 옛 코드였다면 유효 판정이 2가 되어 실패하므로, 시험이 차이를 실제로 가려냅니다.\n4. **기존 stats 출력이 그대로인지:** 새 시험(`:127-140`)이 검토 원장 추가 전후의 Dashboard 기존 필드와 `## 검토 원장 집계` 앞 텍스트가 같은지 비교합니다.\n   - 기존 출력 함수는 `formatExisting*`로 분리만 됐습니다.\n   - `projects/METRICS.md` 목차는 `| blocking |` 등이 처음 나오는 줄을 읽습니다. 새 절은 기존 부분 뒤에 붙고 첫 칸 이름이 겹치지 않아 목차 값이 바뀌지 않습니다.\n5. **P007~P013 비교 링크와 후속 todo (해소):**\n   - `tasks/T07_…/evidence/project-comparison.json`이 patch에 포함됐고 사본에도 있습니다. 파일 안의 P013 값 17 / 64 / 미보고 62회가 PROJECT-CLOSE 표와 일치합니다.\n   - todo 메모리에 책임자(허브 PM), 시점(병합 뒤 프로젝트 3개 또는 백로그 검토 3건 마감), 관측 항목(호출 수·시간, 강등·escalation 뒤 필수 결함)이 모두 있고, 기존 todo 형식과 같습니다.\n   - BR03 연결 문구도 남아 있습니다.\n6. **실제 P009 83회와 프로젝트 루트 S11:**\n   - 시험은 T06 원장의 review 행 83개, 기록 파일 유일성, `call_id` 없음을 먼저 확인한 뒤 집계 83/83/83을 대조합니다.\n   - P009의 `evidence/S11_선행_검사_수정/REVIEW-LOG.jsonl`에는 실제 `DIFF.patch` 검토가 2행 있습니다. P009 프로젝트 루트 원장은 없습니다. 따라서 JSON의 프로젝트 직속 2/2가 원본과 맞습니다.\n7. **finish 입력 경계:**\n   - 팀 마감 `validatedTeamInputs`는 다음 순서 뒤에 만들어집니다: `writeBacklogState`, `PROJECT.md` 쓰기(`harness.ts:1854-1856`). 이어서 `refreshProjectMetrics`(`:1860`)가 입력을 수집합니다.\n   - 새로 읽는 입력은 PROJECT.md, 검토 원장, 기록, 후속 원장, 백로그 원장입니다. finish가 직접 쓰는 파일은 PROJECT.md 하나뿐이고, `:1869`에서 stage된 뒤 `capturedTree`와 지문이 같아집니다.\n   - PROJECT.md는 기존 `metrics.ts:90`도 이미 같은 방식으로 기록합니다.\n   - 실제 원장의 `record`에는 `..`나 절대 경로가 없어 `safeTeamPath`에 걸리지 않습니다. 없는 원장은 `absent`로 기록되므로 마감 tree에 새로 생기면 감지됩니다.\n\n## 남은 note (차단 아님)\n\n- `readOutcome`은 기록 폴더가 없을 때 `absent`를 남기지 않습니다(`:180`). 팀 마감은 깨끗한 작업본을 요구하므로 실제 영향은 거의 없습니다.\n- 출력 동일성 시험은 일반 stats만 다룹니다. 팀 채택 fixture의 출력 비교는 없고, 팀 코드가 바뀌지 않았다는 사실과 기존 팀 시험에 기댑니다.\n- P009 S11 시험은 프로젝트 직속 호출을 `>= 2`로만 확인합니다. 정확한 값 2는 JSON 산출물로만 고정됩니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 123012,
+  "usage": {
+    "input_tokens": 38,
+    "output_tokens": 11940
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

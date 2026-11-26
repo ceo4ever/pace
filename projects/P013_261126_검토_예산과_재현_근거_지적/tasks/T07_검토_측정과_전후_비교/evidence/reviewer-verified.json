@@ -1,0 +1,24 @@
+{
+  "text": "정적 판독으로는 두 회귀가 모두 고쳐졌고, 새 R27 시험도 뒤늦게 생긴 검토 원장을 잡습니다. 판정은 **pass**입니다. 셸을 쓰지 않아 지문 `c9812550…`, `npm run check`, 시험 실행은 직접 확인하지 못했습니다. 아래 내용은 코드를 읽고 대조한 결과입니다.\n\n## 최종 목표와 실제 TASK\n- TASK.md의 T-1~T-5, S-1~S-4와 이전 독립 검토의 계약·의미 판정(escalation 정의, 미관측, `callKey` 중복 방지, 기존 출력 동일성)은 이번 수정으로 바뀌지 않았습니다.\n- 바뀐 곳은 입력 경계뿐입니다: `sources`, `namedDirs`, `readUnit`, `readOutcome`, `collectReviewLedgerMetrics`. 집계를 담당하는 `metricsOf`·`combine`과 출력 형식은 그대로입니다.\n- 집계 구조는 프로젝트 직속(루트, `evidence/`, `evidence/S…_/`), 태스크(루트, `evidence/`), 연결 백로그입니다. 단계는 pre/post/backlog/project이며 TASK의 증명 범위와 같습니다.\n\n## 회귀 1: 기존 하드링크 PROJECT.md 때문에 stats 실패\n- **원인:** 이전 사본은 `PROJECT.md`를 `observedFile`로 읽었습니다. 이 함수가 쓰는 `regularBytes`는 `nlink !== 1`이면 HandoffError를 냅니다(`handoff-files.ts:47`). 또 `sources`는 이 오류를 잡지 않습니다.\n- **수정:** `review-metrics.ts:108-112`에서 `readFileSync`와 `trace.record`로 바꿨습니다. 기존 stats 판독(`metrics.ts:89-90`)과 같은 방식이고, 같은 경로·해시를 기록합니다. `collectProjectStats`가 먼저 같은 방식으로 읽으므로 의미가 새로 생기지 않습니다. 해시가 다르면 기존 변경 감지가 잡습니다.\n- **시험:** 기존 시험 `R7 … PROJECT 하드링크는 stats…`(`team-metrics.test.ts:1019`)가 이 경로를 그대로 지나갑니다.\n\n## 회귀 2: Git 후보에 없는 빈 TASK 디렉터리로 조기 실패\n- **원인:** 이전 사본의 `namedDirs`는 `tasks/`와 `evidence/`를 `entries` 모드 목록(`review-task-dirs`, `project-review-scenarios`)으로 기록했습니다. Git은 빈 디렉터리를 담지 않으므로 `assertTeamFinishInputs`(`team-finish.ts:126-131`)에서 목록이 어긋났습니다.\n- **수정:** `namedDirs`(`:73-76`)는 이제 trace를 받지 않습니다. 대신 `regular-files` 목록 하나(`review-ledger-inputs`, `:334-335`)를 기록합니다. 이 목록에는 실제로 읽은 파일만 들어갑니다.\n  - 읽은 원장: `present`\n  - 읽은 후속 원장: `presentFollowup`, `:148`\n  - 백로그 단위는 프로젝트 디렉터리 밖이라 목록에서 빠지고, 개별 `record`/`absent`로만 고정됩니다.\n- **목록 정규식(`:308`)과 판독 경로가 맞는지 확인했습니다.** 정규식은 다음 경로와 일치합니다.\n  - 루트의 `REVIEW-LOG`/`REVIEW-FOLLOWUPS`\n  - `evidence/REVIEW-LOG`, `evidence/S-?\\d+_*/REVIEW-LOG`\n  - `tasks/T\\d{2}_*/`의 `REVIEW-LOG`/`REVIEW-FOLLOWUPS`\n  - `tasks/T\\d{2}_*/evidence/REVIEW-LOG`\n\n  상수 `LEDGER_FILE`·`FOLLOWUPS_FILE`의 값도 정규식과 같습니다. 시험용 하위 fixture는 정규식에 맞지 않아 범위 밖으로 남습니다. 따라서 빈 디렉터리는 양쪽 목록에 모두 0개로 잡힙니다.\n- **없는 자료의 고정:** 읽으려 했지만 없는 원장·후속 원장은 `observedFile`이 `absent`로 남깁니다. 기록 폴더가 없을 때도 이제 `readOutcome`이 `absent`를 남깁니다(`:183-189`). 이전 검토에서 note로 남긴 문제가 이것으로 해소됐습니다. 마감 tree에 이 파일이 새로 생기면 `:122-124`가 잡습니다.\n\n## 새 R27 시험(`new-review-ledger`, `:738-760`)\n- **시험 내용:** 검증이 끝난 뒤 METRICS.md를 `git add`하는 시점에 기존에 없던 `tasks/T99_late/evidence/REVIEW-LOG.jsonl`을 만들어 stage합니다. 그다음 finish가 `/검증 입력 목록/`으로 실패하는지 확인합니다. 또 HEAD·작업 파일·인덱스가 보존되는지 확인합니다.\n- **다른 검사로는 잡히지 않습니다.**\n  - T99는 읽는 시점에 없었으므로 `absent` 기록이 없습니다.\n  - `task-close-inputs` 정규식은 `TASK-CLOSE.md`만 받습니다.\n  - 따라서 새 `review-ledger-inputs` 목록만 이 파일을 잡습니다.\n- **목록이 빠지면 시험이 실패합니다.** 그 경우 다음 검사인 `assertTeamFinishScope`(`harness.ts:1875`, 입력 검사 1874 다음)가 \"마감 대상 밖의 staged 변경\"이라는 다른 메시지로 실패합니다. 그러면 메시지 단언이 깨지므로 시험이 회귀를 구별합니다.\n- **한계:** 이 시험은 이전 사본의 `entries` 목록에서도 통과했을 것입니다. 그래서 회귀 2 자체를 재현하지는 않습니다. 빈 TASK 디렉터리에 대한 전용 시험도 찾지 못했습니다. 이 수정은 기존 시험이 조기 실패하던 것을 되돌린 것이라는 설명에 기대고 있습니다.\n\n## 차단 아님(note)\n- 하드링크이거나 `LEDGER_LIMIT`를 넘는 검토 원장이 Git에 있는 경우를 보면, 판독은 실패해 `present`에서 빠지고 Git 목록에는 남습니다. 그래서 팀 finish는 \"검증 입력 목록\" 오류로 멈춥니다. 안전한 쪽으로 멈추는 것이고 새로 checkout한 파일은 `nlink`가 1이라 실제 영향은 작지만, 오류 메시지가 원인을 직접 알려 주지는 않습니다.\n- 정규식 `T\\d{2}_[^/]+`는 판독기의 `^T\\d{2}_`보다 이름 끝에 한 글자를 더 요구합니다. `T01_`처럼 끝나는 이름만 어긋나며, 실제로는 무시해도 됩니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 94287,
+  "usage": {
+    "input_tokens": 24,
+    "output_tokens": 9706
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

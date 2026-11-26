@@ -6,7 +6,7 @@ import { AgentError, errorPayload } from "./contract.ts";
 import { reviewBudgetScope } from "./review-budget.ts";
 import { matchingCriteria } from "./review-criteria.ts";
 import { assertManagedFile, lockReviewScope, reviewIdentity, reviewInput, reviewTarget } from "./review-hand.ts";
-import { LedgerError, parseVerdict, readLedger, textHash, type LedgerEntry, type ReviewEntry } from "./review-log.ts";
+import { LedgerError, legacyBlockingCount, readLedger, textHash, type LedgerEntry, type ReviewEntry } from "./review-log.ts";
 import { assessStructuredReview, effectiveBlocking } from "./structured-review.ts";
 import { recoverBudgetOrphans, writeOrLedgerError } from "./verify-cli.ts";
 
@@ -55,12 +55,8 @@ function sourceFor(root: string, row: ReviewEntry, ledger: LedgerEntry[]) {
     if (evaluated.verdict !== row.verdict) return reject(`검토 원문의 다시 계산한 판정이 다르다: ${row.record}`);
     return { archive, blocking: effectiveBlocking(evaluated).length };
   }
-  if (parseVerdict(raw) !== row.verdict) return reject(`옛 검토 기록의 판정이 다르다: ${row.record}`);
-  const labeled = raw.split("\n").filter((line) =>
-    /^\s*(?:(?:[-#*]+|\d+[.)])\s+)?(?:\*\*)?(?:\[blocking\]|blocking(?=[ :—*]))/i.test(line)).length;
-  const reported = /(?:^|[·\s])blocking[ \t]+(\d+)(?:건|\b)/i.exec(raw)?.[1];
-  const blocking = row.verdict === "pass" ? 0 : labeled || Number(reported);
-  if (!Number.isSafeInteger(blocking) || blocking <= 0 && row.verdict === "fail") {
+  const blocking = legacyBlockingCount(raw, row.verdict);
+  if (blocking === null) {
     return reject(`옛 실패의 차단 지적 수를 원문에서 확인할 수 없다: ${row.record}`);
   }
   return { archive, blocking };

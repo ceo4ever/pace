@@ -112,3 +112,13 @@
 {"ts":"2026-11-26T05:38:11.053Z","p":"P013","t":"T06","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T05:38:11.298Z","p":"P013","t":"T06","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T05:38:11.298Z","p":"P013","t":"T06","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T05:38:21.471Z","p":"P013","t":"T07","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T05:41:58.528Z","p":"P013","t":"T07","type":"review","by":"agent","msg":"reviewer fail blocking 2 should_fix 4 — 프로젝트의 실제 원장 경계와 옛 무예약 키, 팀 지표 단위와 실제 관측 기준을 계약에 명시한다.","ref":"review-records/R1.json","data":{"blocking":2,"should_fix":4,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-26T05:45:11.360Z","p":"P013","t":"T07","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 0 — 입증할 원장 경로와 옛 무예약 회차를 대조했고 P009 T06 83건을 직접 확인했다.","ref":"review-records/R2.json","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T05:46:37.005Z","p":"P013","t":"T07","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 0 — 계약이 브리프와 실제 83건 원장, 숫자·경계 반례와 후속 관측 조건을 덮는다.","ref":"evidence/pre-review-stage2.json","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T05:57:31.060Z","p":"P013","t":"T07","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2 — 구조 진단·상위 검토·실제 owner 요청을 구별하고, 옛 공동 시도의 미관측 표시를 보완했다.","ref":"evidence/review-records/R1.json","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T06:05:55.434Z","p":"P013","t":"T07","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 0 — 비교표의 관측 경계와 기존 팀 마감 입력 호환을 독립 대조했다.","ref":"evidence/reviewer-verified.json","data":{"blocking":0,"should_fix":0,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T06:05:55.654Z","p":"P013","t":"T07","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 — 실제 P009와 최신 CLI·팀 마감 25개 검사를 독립 실행했다.","ref":"evidence/tester-verified.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-26T07:11:15.089Z","p":"P013","t":"T07","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T07:11:15.337Z","p":"P013","t":"T07","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T07:11:15.337Z","p":"P013","t":"T07","type":"task_done","by":"cli","msg":"done","ok":true}

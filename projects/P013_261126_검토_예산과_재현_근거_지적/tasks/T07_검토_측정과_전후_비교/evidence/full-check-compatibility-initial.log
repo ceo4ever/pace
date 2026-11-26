@@ -1,0 +1,44 @@
+ℹ tests 1484
+ℹ pass 1465
+ℹ fail 2
+ℹ skipped 17
+✖ failing tests:
+
+test at test/team-metrics.test.ts:738:76
+✖ R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: new-task-close (1882.81375ms)
+  Error: ENOENT: no such file or directory, open '/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-s4vH1q/pace-team-metrics-ufPb1u.wt/P001/projects/P001_261126_팀_측정_합성/tasks/T99_late/TASK-CLOSE.md'
+      at readFileSync (node:fs:483:20)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P013/test/team-metrics.test.ts:754:87)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-s4vH1q/pace-team-metrics-ufPb1u.wt/P001/projects/P001_261126_팀_측정_합성/tasks/T99_late/TASK-CLOSE.md'
+  }
+
+test at test/team-metrics.test.ts:1016:1
+✖ R7 팀 맥락 없는 기존 PROJECT 하드링크는 stats·회고 적용 판정을 바꾸지 않는다 (559.410792ms)
+  AssertionError [ERR_ASSERTION]: pace: 소통 파일 종류/링크/크기 오류
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P013/test/team-metrics.test.ts:1018:65)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

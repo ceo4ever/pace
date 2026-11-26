@@ -1,0 +1,1253 @@
+diff --git a/backlogs/BL261125_01_문제_해결_전문가_에이전트/BR03_에이전트_호출_기록.md b/backlogs/BL261125_01_문제_해결_전문가_에이전트/BR03_에이전트_호출_기록.md
+index ee70af2..69c923d 100644
+--- a/backlogs/BL261125_01_문제_해결_전문가_에이전트/BR03_에이전트_호출_기록.md
++++ b/backlogs/BL261125_01_문제_해결_전문가_에이전트/BR03_에이전트_호출_기록.md
+@@ -25,7 +25,7 @@
+ - **기존 의미 보존**: 기존 stats·팀 측정의 사건 수·대기 계산·토큰 구간 집계 의미를 바꾸지 않는다. 새 기록은 별도 집계로 읽고, 기존 집계에 섞지 않는다. 옛 판독기(옛 설치본)가 새 종류의 행을 만났을 때 행 단위로 건너뛰는지, 전체를 손상으로 보는지 확인해 호환을 정한다.
+ - **팀 채택 판정과의 관계**: 호출 기록이 채택 판정·팀 집계를 잘못 시작시키지 않음 — 이 백로그보다 먼저 병합되는 BL261125_02 BR02가 그 규칙(`docs/TEAM-METRICS.md`)을 정했으므로 이 BR의 기록 형식은 그 규칙을 따른다. 지금 팀 집계는 채택(`hasTeamContract`, `src/project/team-contract.ts:29`, 호출 `src/project/team-metrics.ts:83`)이 아니어도 소통 원장이 있거나(`ledgerSnapshot.present`) 사건에 `role`·`to`·`requestId`가 하나라도 있으면 미채택 집계를 반환한다(`src/project/team-metrics.ts:84`). 팀 마감·회고는 `hasTeamContract`로 갈린다(`src/project/team-finish.ts:207`, `src/project/team-retrospective.ts:27`). 집계 관계: 팀 채택 프로젝트에서는 호출 기록을 역할별로 집계하고, 미채택 프로젝트에서는 팀 마감·회고 절차를 시작시키지 않고 호출 기록만 별도 집계한다.
+ - **BL261124_04와의 관계**(BL04 2026-11-25 재구성 번호): BL04 BR01은 검토 회차마다 시간·토큰을 원장에 남기고, BL04 BR07은 검토 측정을 stats에 낸다. 검토 호출이 원장과 `log.jsonl` 두 곳에 이중 기록·집계되지 않도록 한쪽을 원본으로 정한다. 값이 없을 때의 표기는 `미보고`·`미확인` 중 하나로 단일화한다. 이 백로그의 "값의 구분"이 쓰는 측정 출처 `미확인`과 같은 말이 되는지도 함께 정한다. 먼저 착수하는 쪽이 정하고 다른 쪽 BR에 연결 문구를 남긴다.
+-  - P013 T01이 정한 검토 호출 집계의 원본은 `REVIEW-LOG.jsonl`의 `duration_ms`·`usage`다. 미보고 토큰은 null과 표시 `미보고`를 쓴다. 이 BR의 공용 호출 기록은 이 검토 원장을 중복 집계하지 않는다.
++  - P013 T07의 `pace project stats` 검토 원장 집계는 `REVIEW-LOG.jsonl`의 예약·판정과 `duration_ms`·`usage`를 읽는다. 미보고 토큰은 null과 표시 `미보고`를 쓴다. 이 BR의 공용 호출 기록에서 검토 호출을 다시 더하지 않는다. [P013 BR07](../BL261124_04_검토_예산과_재현_근거_지적/BR07_검토_측정과_전후_비교.md)
+ - **필수 역할 요건 등록(BL261125_02 정본 형식)**: 문제 해결자의 **호출 기록** 요건 행(호출마다 에이전트·모델·effort·실행 시간·토큰, 요청값·실제값·측정 출처)을 `skills/pace-team/references/required-roles.md` 문제 해결자 자리에 요건 ID·근거·선행 장치·요건 버전(새 행은 정본 규칙의 초기 버전)으로 등록하고 이 태스크에서 판정한다. 기록 장치는 구성원 이름과 무관하게 모든 팀 구성원에 같게 적용되므로, 판정은 한 경로 — 이 태스크 실측과 **픽스처 구성원** `pace-troubleshooter` 호출 기록 — 로 한다(BR01과 병행할 수 있으므로 실제 원본 유무에 의존하지 않는다). 실제 원본의 호출 기록 확인은 [백로그 PROJECT-CLOSE 목표 달성 판정](BACKLOG.md#목표)이 맡는다.
+ - **제외**: 역할 자동 최적화(기록만 하고 모델·effort를 자동으로 바꾸지 않는다), 비용(금액) 환산, 호스트 밖 수동 세션의 사후 수집.
+ 
+diff --git a/src/agent/review-followup.ts b/src/agent/review-followup.ts
+index c3ecd92..dfaf24d 100644
+--- a/src/agent/review-followup.ts
++++ b/src/agent/review-followup.ts
+@@ -91,6 +91,10 @@ function loadEvents(scope: ReviewBudgetScope): Event[] {
+     if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+     throw new LedgerError(`검토 후속 원장을 읽을 수 없다: ${file}`);
+   }
++  return parseReviewFollowups(body, file);
++}
++
++export function parseReviewFollowups(body: string, file = FOLLOWUPS_FILE): Event[] {
+   return body.split("\n").flatMap((line, index) => {
+     if (!line.trim()) return [];
+     try {
+diff --git a/src/agent/review-log.ts b/src/agent/review-log.ts
+index 8e8dfb7..351c1cf 100644
+--- a/src/agent/review-log.ts
++++ b/src/agent/review-log.ts
+@@ -182,6 +182,15 @@ export function parseVerdict(text: string): Verdict {
+   return m ? (m[1] as Verdict) : "unknown";
+ }
+ 
++export function legacyBlockingCount(text: string, verdict: Verdict): number | null {
++  if (parseVerdict(text) !== verdict || verdict === "unknown") return null;
++  if (verdict === "pass") return 0;
++  const labeled = text.split("\n").filter((line) =>
++    /^\s*(?:(?:[-#*]+|\d+[.)])\s+)?(?:\*\*)?(?:\[blocking\]|blocking(?=[ :—*]))/i.test(line)).length;
++  const reported = Number(/(?:^|[·\s])blocking[ \t]+(\d+)(?:건|\b)/i.exec(text)?.[1]);
++  return labeled || (Number.isSafeInteger(reported) && reported > 0 ? reported : null);
++}
++
+ /** 원장 전체를 읽는다. 해석할 수 없는 줄이 있으면 위치를 알리고 멈춘다(손상된 원장으로 단계를 잘못 계산하지 않는다) */
+ export function readLedger(target: string): LedgerEntry[] {
+   const file = ledgerPath(target);
+diff --git a/src/agent/review-pre.ts b/src/agent/review-pre.ts
+index 3087265..c80320c 100644
+--- a/src/agent/review-pre.ts
++++ b/src/agent/review-pre.ts
+@@ -6,7 +6,7 @@ import { AgentError, errorPayload } from "./contract.ts";
+ import { reviewBudgetScope } from "./review-budget.ts";
+ import { matchingCriteria } from "./review-criteria.ts";
+ import { assertManagedFile, lockReviewScope, reviewIdentity, reviewInput, reviewTarget } from "./review-hand.ts";
+-import { LedgerError, parseVerdict, readLedger, textHash, type LedgerEntry, type ReviewEntry } from "./review-log.ts";
++import { LedgerError, legacyBlockingCount, readLedger, textHash, type LedgerEntry, type ReviewEntry } from "./review-log.ts";
+ import { assessStructuredReview, effectiveBlocking } from "./structured-review.ts";
+ import { recoverBudgetOrphans, writeOrLedgerError } from "./verify-cli.ts";
+ 
+@@ -55,12 +55,8 @@ function sourceFor(root: string, row: ReviewEntry, ledger: LedgerEntry[]) {
+     if (evaluated.verdict !== row.verdict) return reject(`검토 원문의 다시 계산한 판정이 다르다: ${row.record}`);
+     return { archive, blocking: effectiveBlocking(evaluated).length };
+   }
+-  if (parseVerdict(raw) !== row.verdict) return reject(`옛 검토 기록의 판정이 다르다: ${row.record}`);
+-  const labeled = raw.split("\n").filter((line) =>
+-    /^\s*(?:(?:[-#*]+|\d+[.)])\s+)?(?:\*\*)?(?:\[blocking\]|blocking(?=[ :—*]))/i.test(line)).length;
+-  const reported = /(?:^|[·\s])blocking[ \t]+(\d+)(?:건|\b)/i.exec(raw)?.[1];
+-  const blocking = row.verdict === "pass" ? 0 : labeled || Number(reported);
+-  if (!Number.isSafeInteger(blocking) || blocking <= 0 && row.verdict === "fail") {
++  const blocking = legacyBlockingCount(raw, row.verdict);
++  if (blocking === null) {
+     return reject(`옛 실패의 차단 지적 수를 원문에서 확인할 수 없다: ${row.record}`);
+   }
+   return { archive, blocking };
+diff --git a/src/project/metrics-document.ts b/src/project/metrics-document.ts
+index b09bee0..cd67781 100644
+--- a/src/project/metrics-document.ts
++++ b/src/project/metrics-document.ts
+@@ -4,6 +4,7 @@ import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
+ import { join } from "node:path";
+ import type { Repo, ProjectRef } from "./harness.ts";
+ import { readEvents } from "./event-log.ts";
++import { formatReviewLedgerMetrics } from "./review-metrics.ts";
+ import type { Dashboard } from "./metrics-report.ts";
+ import type { TokenStats, TokenUsage } from "./tokens.ts";
+ 
+@@ -53,6 +54,10 @@ function outputs(tokens: TokenStats[], total?: TokenStats[]): string {
+   }).join(" · ") || "기록 없음";
+ }
+ export function formatMetricsDocument(repo: Repo, ref: ProjectRef, stats: Dashboard): string {
++  return formatExistingMetricsDocument(repo, ref, stats) + "\n" + formatReviewLedgerMetrics(stats.reviewLedger) + "\n";
++}
++
++function formatExistingMetricsDocument(repo: Repo, ref: ProjectRef, stats: Dashboard): string {
+   const totalReview = (key: "blocking" | "shouldFix" | "testerFailures") => stats.reviews.reduce((sum, item) => sum + item[key], 0);
+   const changes = commitChanges(repo, ref.id);
+   const taskChanges = stats.tasks.map(t => commitChanges(repo, ref.id, t.id));
+diff --git a/src/project/metrics-report.ts b/src/project/metrics-report.ts
+index ff690cb..8398755 100644
+--- a/src/project/metrics-report.ts
++++ b/src/project/metrics-report.ts
+@@ -11,6 +11,7 @@ import { writeFileAtomic } from "../core/fsutil.ts";
+ import type { ProjectRef, Repo } from "./harness.ts";
+ import { gateFailureReasons, metricDir, readMetrics } from "./metrics.ts";
+ import { collectProjectStats, formatProjectStats } from "./tokens.ts";
++import { collectReviewLedgerMetrics, formatReviewLedgerMetrics, type ReviewLedgerMetrics } from "./review-metrics.ts";
+ import type { FullStats, TokenOptions } from "./tokens.ts";
+ 
+ export interface ReviewCounts { task: string; blocking: number; shouldFix: number; testerFailures: number;
+@@ -18,7 +19,7 @@ export interface ReviewCounts { task: string; blocking: number; shouldFix: numbe
+ }
+ export interface Improvement { kind: "gate" | "review" | "handoff"; code: string; count: number; tasks: string[]; }
+ export const reviewFindingMetrics = [["blocking", "blocking"], ["should_fix", "shouldFix"], ["tester fail", "testerFailures"]] as const;
+-export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; handoffs?: HandoffReport; team?: TeamMetrics; }
++export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; reviewLedger: ReviewLedgerMetrics; handoffs?: HandoffReport; team?: TeamMetrics; }
+ function section(text: string, heading: string): string {
+   const match = new RegExp(`^## ${heading}\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, "m").exec(text);
+   return (match?.[1] ?? "").replace(/<!--[\s\S]*?-->/g, "").trim();
+@@ -81,10 +82,15 @@ export function collectDashboard(repo: Repo, ref: ProjectRef, options: TokenOpti
+   const base = collectProjectStats(repo, ref, { ...options, inputTrace: trace }), collection = collectTeamMetrics(repo, ref, base, options, trace), team = collection?.metrics;
+   const handoffs = collection?.adopted ? collection.handoffs : collectHandoffs(repo.root, ref.id, `projects/${ref.dir}`, { inputs: trace });
+   const insights = collectInsights(repo, ref, trace, collection?.adopted);
++  const reviewLedger = collectReviewLedgerMetrics(repo.root, ref.dir, trace);
+   if (trace instanceof InputSnapshot) void trace.files;
+-  return { ...base, ...insights, ...(handoffs ? { handoffs } : {}), ...(team ? { team } : {}) };
++  return { ...base, ...insights, reviewLedger, ...(handoffs ? { handoffs } : {}), ...(team ? { team } : {}) };
+ }
+ export function formatDashboard(stats: Dashboard): string {
++  return formatExistingDashboard(stats) + "\n\n" + formatReviewLedgerMetrics(stats.reviewLedger);
++}
++
++function formatExistingDashboard(stats: Dashboard): string {
+   const total = (key: "blocking" | "shouldFix" | "testerFailures") => stats.reviews.reduce((n, r) => n + r[key], 0);
+   const candidates = stats.improvements.map((i) => `- ${i.kind}: ${i.code} ${i.count}회${i.tasks.length ? ` (${i.tasks.join(", ")} TASK-CLOSE)` : ""}`);
+   const base = `${formatProjectStats(stats)}\n\n사건 수: 결정 ${stats.eventCounts.decisions} · 변경 ${stats.eventCounts.changes} · 리뷰 ${stats.eventCounts.reviews} · 질문 ${stats.eventCounts.questions} · 답변 ${stats.eventCounts.answers}\n\n리뷰 지적: blocking ${total("blocking")} · should_fix ${total("shouldFix")} · tester fail ${total("testerFailures")}\n\n개선 후보(사람이 선택):\n${candidates.length ? candidates.join("\n") : "없음"}`;
+diff --git a/test/team-metrics.test.ts b/test/team-metrics.test.ts
+index 7571534..b03fc71 100644
+--- a/test/team-metrics.test.ts
++++ b/test/team-metrics.test.ts
+@@ -735,13 +735,16 @@ test("R27 stats도 같은 영수증을 읽는 중 바뀌면 새 확인을 0 총
+   const stable = f.run("project", "stats", "P001", "--json"); assert.equal(stable.status, 0, stable.stderr); assert.equal(JSON.parse(stable.stdout).team.requests.reachedTotal, 0);
+ });
+ 
+-for (const change of ["new-role", "new-input", "new-task-close"] as const) test(`R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: ${change}`, () => {
++for (const change of ["new-role", "new-input", "new-task-close", "new-review-ledger"] as const) test(`R27 없던 입력/목록이 검증 뒤 Git에 추가돼도 봉인하지 않고 보존한다: ${change}`, () => {
+   const { f, worktree, dir } = mergeFixture(), rel = `projects/${dir.split("/").at(-1)}`;
+   let path: string, body: string;
+   if (change === "new-role") {
+     createTeamMember(worktree, "late", "reviewer"); path = join(worktree, ".pace/team/agents/late.md"); body = readFileSync(path, "utf8"); unlinkSync(path);
+   } else if (change === "new-input") {
+     path = join(dir, "TEAM-MEASUREMENT.json"); unlinkSync(path); adoptTeamMetrics(worktree, rel); body = '{"version":999}';
++  } else if (change === "new-review-ledger") {
++    path = join(dir, "tasks/T99_late/evidence/REVIEW-LOG.jsonl");
++    body = JSON.stringify({ type: "call", at: "2026-11-26T00:00:00Z", target: "impl.diff", kind: "goal", call_id: "late" });
+   } else {
+     path = join(dir, "tasks/T99_late/TASK-CLOSE.md"); mkdirSync(join(dir, "tasks/T99_late"), { recursive: true }); body = "## 리뷰\n\nblocking 2\n";
+   }
+diff --git a/src/project/review-metrics.ts b/src/project/review-metrics.ts
+new file mode 100644
+index 0000000..64f26de
+--- /dev/null
++++ b/src/project/review-metrics.ts
+@@ -0,0 +1,375 @@
++import { lstatSync, readFileSync, readdirSync } from "node:fs";
++import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
++import { inputHash, InputSnapshotError, type InputTrace } from "../core/input-snapshot.ts";
++import { FOLLOWUPS_FILE, parseReviewFollowups } from "../agent/review-followup.ts";
++import { matchingCriteria } from "../agent/review-criteria.ts";
++import { LEDGER_FILE, legacyBlockingCount, parseLedger, textHash, type LedgerEntry, type ReviewEntry } from "../agent/review-log.ts";
++import { assessStructuredReview, type StructuredAssessment } from "../agent/structured-review.ts";
++import { LEDGER_LIMIT, regularBytes, utf8 } from "./handoff-files.ts";
++import { reviewHash } from "./pre-review.ts";
++import { matchesPermissionBasis } from "./review-permission.ts";
++
++type Phase = "pre" | "post" | "backlog" | "project";
++type UnitKind = "task" | "backlog" | "project";
++type Unit = { id: string; kind: UnitKind; root: string; ledgers: string[] };
++type Datum = { phase: Phase; path: string; row: LedgerEntry; voided: boolean };
++type ReviewDatum = Datum & { row: ReviewEntry };
++type Measure = { total: number | null; reported: number; missing: number };
++type ImpactStats = { rounds: number; durationMs: Measure };
++type Outcome = { snapshot: string; findings?: NonNullable<StructuredAssessment["findings"]>; blocking: number | null };
++
++export interface LedgerReviewTotals {
++  ledgers: number;
++  calls: number;
++  callSources: { reserved: number; unreserved: number; unfinished: number; interrupted: number; voided: number };
++  rounds: number;
++  durationMs: Measure;
++  inputTokens: Measure;
++  outputTokens: Measure;
++  blocking: number;
++  unobservedBlockingRounds: number;
++  resolutionProxy: { resolved: number; eligible: number; ratio: number | null; unobservedRounds: number };
++  downgraded: Record<string, number>;
++  rereviewsByImpact: Record<string, ImpactStats>;
++  jointAttempts: number;
++  escalations: number;
++  diagnoses: number;
++  upperReviews: number;
++  unobservedFollowupRounds: number;
++}
++
++interface ReviewUnitTotals extends LedgerReviewTotals {
++  id: string;
++  kind: UnitKind;
++  phases: Partial<Record<Phase, LedgerReviewTotals>>;
++}
++
++export interface ReviewLedgerMetrics extends LedgerReviewTotals {
++  units: ReviewUnitTotals[];
++  phases: Partial<Record<Phase, LedgerReviewTotals>>;
++  issues: string[];
++}
++
++function observedFile(path: string, trace?: InputTrace): string | undefined {
++  try {
++    const bytes = regularBytes(path, LEDGER_LIMIT);
++    trace?.record(path, inputHash(bytes));
++    return utf8(bytes);
++  } catch (error) {
++    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
++    trace?.absent?.(path);
++    return undefined;
++  }
++}
++
++function directory(path: string): boolean {
++  try { return lstatSync(path).isDirectory(); }
++  catch (error) {
++    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
++    return false;
++  }
++}
++
++function namedDirs(path: string, accept: (name: string) => boolean): string[] {
++  if (!directory(path)) return [];
++  return readdirSync(path).filter((name) => accept(name) && directory(join(path, name))).sort();
++}
++
++function linkedBacklog(root: string, project: string, body: string): string | null {
++  const link = /^- 출처: .*?\]\(([^)]+)\)/m.exec(body)?.[1];
++  if (!link) return null;
++  let location: string;
++  try { location = decodeURI(link.split("#", 1)[0]!); } catch { return null; }
++  const path = resolve(project, location);
++  const relativeBacklog = relative(join(root, "backlogs"), path);
++  const [folder, file, ...other] = relativeBacklog.split(sep);
++  if (!folder || !/^BL\d{6}_\d{2}_/.test(folder) || isAbsolute(relativeBacklog) || other.length || (file && file !== "BACKLOG.md")) return null;
++  const dir = join(root, "backlogs", folder);
++  return directory(join(root, "backlogs")) && directory(dir) ? dir : null;
++}
++
++function sources(root: string, project: string, trace?: InputTrace): Unit[] {
++  const dir = join(root, "projects", project);
++  if (!directory(join(root, "projects")) || !directory(dir)) return [];
++  const evidence = join(dir, "evidence");
++  const projectLedgers = [join(dir, LEDGER_FILE)];
++  if (directory(evidence)) projectLedgers.push(
++    join(evidence, LEDGER_FILE),
++    ...namedDirs(evidence, (name) => /^S-?\d+_/.test(name))
++      .map((name) => join(evidence, name, LEDGER_FILE)),
++  );
++  const units: Unit[] = [{ id: project.slice(0, 4), kind: "project", root: dir, ledgers: projectLedgers }];
++  const tasks = join(dir, "tasks");
++  for (const name of namedDirs(tasks, (item) => /^T\d{2}_/.test(item))) {
++    const task = join(tasks, name), ledgers = [join(task, LEDGER_FILE)];
++    if (directory(join(task, "evidence"))) ledgers.push(join(task, "evidence", LEDGER_FILE));
++    units.push({ id: name.slice(0, 3), kind: "task", root: task, ledgers });
++  }
++  const definitions = join(dir, "PROJECT.md");
++  // Project metadata has the same legacy file semantics as the existing stats reader.
++  const body = readFileSync(definitions);
++  trace?.record(definitions, inputHash(body));
++  const backlog = linkedBacklog(root, dir, body.toString("utf8"));
++  if (backlog) units.push({ id: basename(backlog).slice(0, 11), kind: "backlog", root: backlog, ledgers: [join(backlog, LEDGER_FILE)] });
++  return units;
++}
++
++function phaseOf(unit: Unit, path: string, target: string): Phase {
++  if (unit.kind !== "task") return unit.kind;
++  return dirname(path) === unit.root && target.toLowerCase() === "task.md" ? "pre" : "post";
++}
++
++function readUnit(root: string, unit: Unit, trace: InputTrace | undefined, issues: Set<string>) {
++  const data: Datum[] = [], present: { path: string; phases: Set<Phase> }[] = [];
++  for (const path of unit.ledgers) {
++    try {
++      const body = observedFile(path, trace);
++      if (body === undefined) continue;
++      const phases = new Set<Phase>();
++      present.push({ path, phases });
++      const rows = parseLedger(body, basename(path));
++      const invalidated = new Set(rows.flatMap((row) => row.type === "void" ? [`${row.target}\0${row.record}`] : []));
++      if (!rows.length) phases.add(phaseOf(unit, path, "TASK.md"));
++      for (const row of rows) {
++        const phase = phaseOf(unit, path, row.target);
++        phases.add(phase);
++        data.push({ phase, path, row, voided: row.type === "review" && invalidated.has(`${row.target}\0${row.record}`) });
++      }
++    } catch (error) {
++      if (error instanceof InputSnapshotError) throw error;
++      issues.add(`검토 원장 판독 미확인 — ${relative(root, path)}`);
++    }
++  }
++  const actions = { joint: new Map<Phase, number>(), escalations: new Map<Phase, number>(), upperReviews: new Map<Phase, number>() };
++  const followup = join(unit.root, FOLLOWUPS_FILE);
++  let presentFollowup: string | undefined;
++  try {
++    const body = observedFile(followup, trace);
++    if (body !== undefined) presentFollowup = followup;
++    const rows = body === undefined ? [] : parseReviewFollowups(body, basename(followup));
++    const grants = new Map(rows.flatMap((row) => row.type === "joint" ? [[row.id, row.stage]] : []));
++    const seen = new Set<string>();
++    const add = (counts: Map<Phase, number>, phase: Phase) => counts.set(phase, (counts.get(phase) ?? 0) + 1);
++    for (const row of rows) {
++      if (seen.has(row.id)) continue;
++      seen.add(row.id);
++      if (row.type === "started") {
++        const phase = grants.get(row.grant);
++        if (phase) add(actions.joint, phase);
++      }
++      if (row.type === "root_review") add(actions.upperReviews, row.stage);
++      if (row.type === "waiver_request") add(actions.escalations, row.stage);
++    }
++  } catch (error) {
++    if (error instanceof InputSnapshotError) throw error;
++    issues.add(`검토 후속 원장 판독 미확인 — ${relative(root, followup)}`);
++  }
++  return { data, present, actions, presentFollowup };
++}
++
++function isReview(item: Datum): item is ReviewDatum { return item.row.type === "review"; }
++function isRound({ row, voided }: ReviewDatum): boolean {
++  return !voided && !row.interrupted && row.verdict !== "unknown";
++}
++function resultPath(item: ReviewDatum): string { return join(dirname(item.path), item.row.record); }
++function callKey(item: ReviewDatum): string {
++  return item.row.call_id ? `${item.phase}\0${item.row.call_id}` : resultPath(item);
++}
++
++function readOutcome(item: ReviewDatum, stamp: LedgerEntry | undefined, trace?: InputTrace): Outcome | undefined {
++  const { row } = item;
++  const path = resultPath(item);
++  try {
++    try {
++      if (!lstatSync(dirname(path)).isDirectory()) return undefined;
++    } catch (error) {
++      if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
++      trace?.absent?.(path);
++      return undefined;
++    }
++    const body = observedFile(path, trace);
++    if (body === undefined) return undefined;
++    const record = JSON.parse(body);
++    const raw = record?.result?.text, snapshot = record?.review?.snapshot;
++    if (typeof raw !== "string" || typeof snapshot !== "string" || row.result_hash !== textHash(raw) || row.hash !== reviewHash(snapshot) ||
++        record.review.hash !== row.hash || record.review.verdict !== row.verdict || record.review.target !== row.target) return undefined;
++    if (row.structured_stage) {
++      if ((stamp || row.required_criteria !== undefined) &&
++          (stamp?.type !== "format" || stamp.hash !== row.hash || !matchingCriteria(stamp.required_criteria, row.required_criteria) ||
++            !matchingCriteria(stamp.required_criteria, record.review.required_criteria) ||
++            !matchesPermissionBasis(stamp.permission_basis, row.permission_basis) ||
++            !matchesPermissionBasis(stamp.permission_basis, record.review.permission_basis))) return undefined;
++      const assessment = assessStructuredReview(row.structured_stage, raw, row.required_criteria, row.permission_basis ? snapshot.split("\n").length : undefined);
++      if (assessment.verdict !== row.verdict || assessment.findings === null || record.review.structured_stage !== row.structured_stage) return undefined;
++      return { snapshot, findings: assessment.findings, blocking: assessment.findings.filter((item) => item.effective === "blocking").length };
++    }
++    return { snapshot, blocking: legacyBlockingCount(raw, row.verdict) };
++  } catch (error) {
++    if (error instanceof InputSnapshotError) throw error;
++    return undefined;
++  }
++}
++
++function measure(values: readonly (number | null | undefined)[]): Measure {
++  const reported = values.filter((value): value is number => typeof value === "number" && Number.isFinite(value));
++  const sum = reported.reduce((total, value) => total + value, 0);
++  return { total: reported.length && Number.isFinite(sum) ? sum : null, reported: reported.length, missing: values.length - reported.length };
++}
++
++function count(map: Record<string, number>, key: string, value = 1): void { map[key] = (map[key] ?? 0) + value; }
++
++function metricsOf(selected: ReturnType<typeof readUnit>, outcomes: Map<string, Outcome | undefined>, subset?: Phase): LedgerReviewTotals {
++  const watch = subset ? selected.data.filter((item) => item.phase === subset) : selected.data;
++  const reviews = [...new Map(watch.filter(isReview).map((item) => [callKey(item), item])).values()];
++  const rounds = reviews.filter(isRound);
++  const calls = new Map<string, ReviewEntry | undefined>();
++  for (const { phase, row } of watch) if (row.type === "call") calls.set(`${phase}\0${row.call_id}`, undefined);
++  const reserved = calls.size;
++  for (const item of reviews) calls.set(callKey(item), item.row);
++  const expenses = [...calls.values()];
++  const downgraded: Record<string, number> = {};
++  const impacts = new Map<string, ReviewEntry[]>();
++  const resolved = new Set<string>();
++  const byPath = new Map(rounds.map((item) => [resultPath(item), item]));
++  let blocking = 0, eligible = 0, unobservedBlockingRounds = 0, unobservedRounds = 0;
++  for (const item of rounds) {
++    const path = resultPath(item), outcome = outcomes.get(path), findings = outcome?.findings;
++    if (outcome?.blocking == null) unobservedBlockingRounds++;
++    else blocking += outcome.blocking;
++    if (!findings) unobservedRounds++;
++    for (const finding of findings ?? []) {
++      if (finding.effective === "blocking") eligible++;
++      if (finding.severity === "blocking" && finding.effective !== "blocking" && finding.effective !== "unverified" && finding.reason) count(downgraded, finding.reason);
++    }
++    if (!item.row.rereview_of) continue;
++    const previousPath = resolve(dirname(item.path), item.row.rereview_of);
++    const previous = byPath.get(previousPath), before = outcomes.get(previousPath);
++    const categories = [...new Set(before?.findings?.map(({ impact }) => impact ?? "미확인"))];
++    for (const impact of categories.length ? categories : ["미확인"]) {
++      const axis = impacts.get(impact) ?? [];
++      axis.push(item.row);
++      impacts.set(impact, axis);
++    }
++    if (item.row.verdict === "pass" && findings && previous && before?.findings && previous.phase === item.phase &&
++        resolve(dirname(item.path), item.row.target) === resolve(dirname(previous.path), previous.row.target) &&
++        item.row.hash !== previous.row.hash && outcome?.snapshot !== before.snapshot) {
++      for (const finding of before.findings.filter((item) => item.effective === "blocking")) resolved.add(`${previousPath}\0${finding.id}`);
++    }
++  }
++  const across = (map: Map<Phase, number>) => subset ? map.get(subset) ?? 0 : [...map.values()].reduce((a, b) => a + b, 0);
++  const jointlyReviewed = reviews.filter((item) => item.row.followup?.type === "joint").length;
++  return {
++    ledgers: selected.present.filter((source) => !subset || source.phases.has(subset)).length, calls: calls.size, rounds: rounds.length,
++    callSources: { reserved, unreserved: reviews.filter(({ row }) => !row.call_id).length,
++      unfinished: expenses.filter((entry) => !entry).length, interrupted: reviews.filter(({ row }) => row.interrupted).length,
++      voided: reviews.filter(({ voided }) => voided).length },
++    durationMs: measure(expenses.map((row) => row?.duration_ms)),
++    inputTokens: measure(expenses.map((row) => row?.usage?.input_tokens)), outputTokens: measure(expenses.map((row) => row?.usage?.output_tokens)),
++    blocking, unobservedBlockingRounds, resolutionProxy: { resolved: resolved.size, eligible, ratio: eligible ? resolved.size / eligible : null, unobservedRounds },
++    downgraded, rereviewsByImpact: Object.fromEntries([...impacts].map(([impact, rows]) => [impact, { rounds: rows.length, durationMs: measure(rows.map((row) => row.duration_ms)) }])),
++    jointAttempts: Math.max(jointlyReviewed, across(selected.actions.joint)),
++    escalations: across(selected.actions.escalations),
++    diagnoses: watch.filter(({ row }) => row.type === "diagnosis").length,
++    upperReviews: across(selected.actions.upperReviews),
++    unobservedFollowupRounds: rounds.filter(({ row }) => !row.call_id && !row.structured_stage && !row.followup).length,
++  };
++}
++
++function combine(parts: readonly LedgerReviewTotals[]): LedgerReviewTotals {
++  const sum = (field: "ledgers" | "calls" | "rounds" | "blocking" | "unobservedBlockingRounds" | "jointAttempts" | "escalations" |
++    "diagnoses" | "upperReviews" | "unobservedFollowupRounds") =>
++    parts.reduce((value, item) => value + item[field], 0);
++  const measures = (values: Measure[]): Measure => {
++    const total = measure(values.map((item) => item.total)).total;
++    return { total, reported: values.reduce((sum, item) => sum + item.reported, 0), missing: values.reduce((sum, item) => sum + item.missing, 0) };
++  };
++  const proxy = parts.map((item) => item.resolutionProxy);
++  const callSources = { reserved: 0, unreserved: 0, unfinished: 0, interrupted: 0, voided: 0 };
++  const eligible = proxy.reduce((sum, item) => sum + item.eligible, 0), resolved = proxy.reduce((sum, item) => sum + item.resolved, 0);
++  const downgraded: Record<string, number> = {}, axes = new Map<string, ImpactStats[]>();
++  for (const part of parts) {
++    for (const key of Object.keys(callSources) as (keyof typeof callSources)[]) callSources[key] += part.callSources[key];
++    for (const [reason, total] of Object.entries(part.downgraded)) count(downgraded, reason, total);
++    for (const [impact, stats] of Object.entries(part.rereviewsByImpact)) axes.set(impact, [...axes.get(impact) ?? [], stats]);
++  }
++  return {
++    ledgers: sum("ledgers"), calls: sum("calls"), rounds: sum("rounds"), callSources, blocking: sum("blocking"), unobservedBlockingRounds: sum("unobservedBlockingRounds"),
++    jointAttempts: sum("jointAttempts"), escalations: sum("escalations"), diagnoses: sum("diagnoses"), upperReviews: sum("upperReviews"),
++    unobservedFollowupRounds: sum("unobservedFollowupRounds"), downgraded,
++    durationMs: measures(parts.map((part) => part.durationMs)), inputTokens: measures(parts.map((part) => part.inputTokens)), outputTokens: measures(parts.map((part) => part.outputTokens)),
++    resolutionProxy: { eligible, resolved, ratio: eligible ? resolved / eligible : null, unobservedRounds: proxy.reduce((sum, item) => sum + item.unobservedRounds, 0) },
++    rereviewsByImpact: Object.fromEntries([...axes].map(([impact, values]) => [impact, {
++      rounds: values.reduce((sum, item) => sum + item.rounds, 0), durationMs: measures(values.map((item) => item.durationMs)),
++    }])),
++  };
++}
++
++const phasesList = ["pre", "post", "backlog", "project"] as const;
++const projectReviewSource = /^(?:(?:tasks\/T\d{2}_[^/]+\/)?(?:REVIEW-LOG\.jsonl|REVIEW-FOLLOWUPS\.jsonl)|(?:tasks\/T\d{2}_[^/]+\/evidence\/|evidence\/(?:S-?\d+_[^/]+\/)?)REVIEW-LOG\.jsonl)$/;
++export function collectReviewLedgerMetrics(root: string, project: string, trace?: InputTrace): ReviewLedgerMetrics {
++  const issues = new Set<string>();
++  const projectDir = join(root, "projects", project);
++  const activeFiles: string[] = [];
++  const units = sources(root, project, trace).map((unit): ReviewUnitTotals => {
++    const selected = readUnit(root, unit, trace, issues);
++    if (unit.kind !== "backlog") {
++      activeFiles.push(...selected.present.map(({ path }) => path));
++      if (selected.presentFollowup) activeFiles.push(selected.presentFollowup);
++    }
++    const stamps = new Map(selected.data.flatMap(({ row, path }) => row.type === "format" ?
++      [[`${join(dirname(path), row.record)}\0${row.target}`, row]] : []));
++    const outcomes = new Map(selected.data.filter(isReview).filter(isRound).map((item) => [
++      resultPath(item), readOutcome(item, stamps.get(`${resultPath(item)}\0${item.row.target}`), trace),
++    ]));
++    const phases = Object.fromEntries(phasesList.flatMap((phase) => {
++      const totals = metricsOf(selected, outcomes, phase);
++      return totals.ledgers || totals.calls || totals.escalations || totals.upperReviews || totals.jointAttempts ? [[phase, totals]] : [];
++    }));
++    return { id: unit.id, kind: unit.kind, ...metricsOf(selected, outcomes), phases };
++  });
++  const phases = Object.fromEntries(phasesList.flatMap((phase) => {
++    const parts = units.flatMap((unit) => unit.phases[phase] ?? []);
++    return parts.length ? [[phase, combine(parts)]] : [];
++  }));
++  trace?.listing?.(projectDir, activeFiles.map((path) => relative(projectDir, path).split(sep).join("/")),
++    "review-ledger-inputs", "regular-files", (name) => projectReviewSource.test(name));
++  return { ...combine(units), units, phases, issues: [...issues] };
++}
++
++const labels = { pre: "사전", post: "구현 후", backlog: "백로그", project: "프로젝트 직속" };
++const amount = (item: Measure, unit = "") => item.total === null ? `미보고${item.missing ? ` ${item.missing}회` : ""}` :
++  `${item.total}${unit}${item.missing ? ` · 미보고 ${item.missing}회` : ""}`;
++function observedFollowups(count: number, unobserved: number): string {
++  return unobserved ? count ? `${count} · 일부 미관측` : "미관측" : String(count);
++}
++function tableRow(label: string, item: LedgerReviewTotals): string {
++  const pct = item.resolutionProxy.ratio === null ? "미확인" : `${item.resolutionProxy.resolved}/${item.resolutionProxy.eligible} (${(100 * item.resolutionProxy.ratio).toFixed(1)}%)`;
++  return `| ${label} | ${item.ledgers || "원장 없음"} | ${item.calls} | ${item.rounds} | ${amount(item.durationMs, " ms")} | ${amount(item.inputTokens)} | ${amount(item.outputTokens)} | ${item.blocking}${item.unobservedBlockingRounds ? ` · 미확인 ${item.unobservedBlockingRounds}회` : ""} | ${pct}${item.resolutionProxy.unobservedRounds ? ` · 미관측 ${item.resolutionProxy.unobservedRounds}회` : ""} | ${observedFollowups(item.jointAttempts, item.unobservedFollowupRounds)} | ${observedFollowups(item.escalations, item.unobservedFollowupRounds)} | ${item.diagnoses} / ${item.upperReviews} |`;
++}
++
++export function formatReviewLedgerMetrics(stats: ReviewLedgerMetrics): string {
++  const rows = [tableRow("전체", stats), ...phasesList.flatMap((phase) => stats.phases[phase] ? [tableRow(labels[phase], stats.phases[phase])] : [])];
++  for (const item of stats.units) {
++    rows.push(tableRow(item.kind === "project" ? `${item.id} 직속` : item.id, item));
++    for (const phase of phasesList) {
++      const details = item.phases[phase];
++      if (details) rows.push(tableRow(`${item.id} · ${labels[phase]}`, details));
++    }
++  }
++  const details = [stats, ...stats.units].flatMap((item) => {
++    const down = Object.entries(item.downgraded).map(([reason, value]) => `${reason} ${value}건`).join(" · ");
++    const rechecks = Object.entries(item.rereviewsByImpact).map(([impact, value]) => `${impact} ${value.rounds}회 · ${amount(value.durationMs, " ms")}`).join(" / ");
++    return down || rechecks ? [`| ${"id" in item ? item.id : "전체"} | ${down || "관측 없음"} | ${rechecks || "관측 없음"} |`] : [];
++  });
++  return [
++    "## 검토 원장 집계", "",
++    "검토 호출·유효 판정의 원본은 REVIEW-LOG.jsonl이다. 기존 리뷰 사건·팀 수치와 합산하지 않는다.",
++    "입력·출력은 원장 필드 그대로다. 캐시·추론은 기존 도구별 지표에서 확인한다.",
++    "owner 요청은 구조화된 승인 요청 사건의 관측이다. 옛 원장의 공동 기록과 owner 요청은 미관측일 수 있다.",
++    "해소 비율은 변경된 같은 대상에서 기존 재현 지적을 잇는 독립 pass가 있는 비율이며 결함 확인의 대리 지표다.", "",
++    "| 대상 | 원장 | 호출 | 유효 판정 | 시간 | 입력 토큰 | 출력 토큰 | blocking | 기록상 해소 | 공동 | owner 요청 | 진단 / 상위 검토 |",
++    "|---|---|---|---|---|---|---|---|---|---|---|---|", ...rows, "",
++    ...(details.length ? ["한 재검토는 관련된 각 영향 범주에 한 번씩 들어간다.", "", "| 대상 | 강등 사유별 집계 | 직전 지적 영향별 재검토 |", "|---|---|---|", ...details, ""] : []),
++    ...stats.issues.map((issue) => `- ${issue}`),
++  ].join("\n");
++}
+diff --git a/test/project-review-metrics.test.ts b/test/project-review-metrics.test.ts
+new file mode 100644
+index 0000000..02e9768
+--- /dev/null
++++ b/test/project-review-metrics.test.ts
+@@ -0,0 +1,199 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import { spawnSync } from "node:child_process";
++import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
++import { dirname, join } from "node:path";
++import { packageRoot } from "../src/core/paths.ts";
++import { InputSnapshot } from "../src/core/input-snapshot.ts";
++import { textHash, type ReviewEntry } from "../src/agent/review-log.ts";
++import { collectReviewLedgerMetrics, formatReviewLedgerMetrics } from "../src/project/review-metrics.ts";
++import { collectDashboard, formatDashboard } from "../src/project/metrics-report.ts";
++import type { Repo, ProjectRef } from "../src/project/harness.ts";
++import { reviewHash } from "../src/project/pre-review.ts";
++import { runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
++
++const at = "2026-11-26T00:00:00Z";
++const ledger = "REVIEW-LOG.jsonl";
++const pass = "확인된 관측 결과\npass";
++
++function file(path: string, text: string) {
++  mkdirSync(dirname(path), { recursive: true });
++  writeFileSync(path, text);
++}
++
++function add(dir: string, row: Record<string, unknown>) {
++  mkdirSync(dir, { recursive: true });
++  writeFileSync(join(dir, ledger), JSON.stringify({ at, ...row }) + "\n", { flag: "a" });
++}
++
++function review(dir: string, number: number, data: {
++  target: string; verdict: "pass" | "fail"; raw?: string; snapshot?: string; extra?: Partial<ReviewEntry>;
++}) {
++  const record = `review-records/R${number}.json`;
++  const snapshot = data.snapshot ?? `합성 대상 ${data.target}\n`, hash = reviewHash(snapshot);
++  const raw = data.raw ?? pass;
++  const row = {
++    type: "review", kind: "goal", target: data.target, hash, verdict: data.verdict,
++    verifier: "claude", provider: "anthropic", rereview_of: null, record, result_hash: textHash(raw), ...data.extra,
++  };
++  if (row.required_criteria) add(dir, { type: "format", target: row.target, hash, record,
++    required_criteria: row.required_criteria, permission_basis: row.permission_basis });
++  add(dir, row);
++  file(join(dir, record), JSON.stringify({ review: { ...row, snapshot }, result: { text: raw } }));
++  return record;
++}
++
++function fixture() {
++  const root = tempDir("pace-review-stats-");
++  const home = tempDir("pace-review-stats-home-");
++  const name = "P001_261126_통계";
++  const project = join(root, "projects", name);
++  const task = join(project, "tasks/T01_작업");
++  const backlog = join(root, "backlogs/BL261126_01_검토");
++  const projectText = "# P001 통계\n\n- 상태: 진행\n- 출처: [검토](../../backlogs/BL261126_01_검토/BACKLOG.md)\n\n## 태스크\n\n| T | 이름 | 상태 | 커밋 |\n|---|---|---|---|\n| T01 | 작업 | 진행 | |\n";
++  file(join(project, "PROJECT.md"), projectText);
++  file(join(project, "PROJECT-CLOSE.md"), "# 마감\n\n## 지표\n\n[지표](METRICS.md)\n확인\n");
++  file(join(backlog, "BACKLOG.md"), "# 백로그\n");
++  file(join(task, "TASK.md"), "# 태스크\n- 상태: 진행\n");
++  const git = (...args: string[]) => {
++    const result = spawnSync("git", ["-C", root, "-c", "user.name=fixture", "-c", "user.email=test@example.com", ...args],
++      { encoding: "utf8", env: sessionFreeEnv() });
++    assert.equal(result.status, 0, result.stderr);
++  };
++  git("init", "-q", "-b", "main");
++  git("add", "-A");
++  git("commit", "-qm", "fixture");
++  return { root, home, name, project, task, backlog,
++    cli: (...args: string[]) => runPace(["project", "stats", "P001", ...args], { cwd: root, home }) };
++}
++
++test("검토 원장 stats의 소스·옛 호출·중단·무효·미완료와 단계별 합계 8/5", () => {
++  const f = fixture();
++  const after = join(f.task, "evidence");
++  for (const call_id of ["answered", "left-open", "stopped"]) add(f.task, { type: "call", target: "TASK.md", kind: "task", call_id });
++  review(f.task, 1, { target: "TASK.md", verdict: "pass", extra: { call_id: "answered", duration_ms: 100, usage: { input_tokens: 10, output_tokens: null } } });
++  review(f.task, 3, { target: "TASK.md", verdict: "pass", extra: { call_id: "answered", duration_ms: 100, usage: { input_tokens: 10, output_tokens: null } } });
++  review(f.task, 2, { target: "TASK.md", verdict: "fail", extra: { call_id: "stopped", interrupted: true }, raw: "fail" });
++  const invalid = review(after, 1, { target: "impl.diff", verdict: "fail", raw: "- [blocking] 무효 지적\nfail", extra: { duration_ms: 30 } });
++  add(after, { type: "void", target: "impl.diff", record: invalid, summary: "시험 도구 오류", file: "void.md" });
++  review(after, 2, { target: "impl.diff", verdict: "pass", extra: { followup: { type: "joint", id: "ran-joint" }, duration_ms: 20,
++    usage: { input_tokens: 2, output_tokens: 4 } } });
++  review(after, 3, { target: "impl.diff", verdict: "pass" });
++  add(after, { type: "diagnosis", target: "impl.diff", layer: "structure", summary: "적용한 진단 근거" });
++  add(after, { type: "decision", target: "impl.diff", choice: "보완", summary: "별도 결정 사건", file: "decision.md", by: "pm" });
++  file(join(f.task, "REVIEW-FOLLOWUPS.jsonl"), [
++    { type: "joint", id: "joint-permission", at, stage: "post", target: "evidence/impl.diff", hash: reviewHash("impl"), evidence: "joint.md",
++      evidence_hash: textHash("joint"), summary: "공동 검토를 연다", choice: "확인", rounds: 1 },
++    { type: "started", id: "joint-start", at, grant: "joint-permission" },
++    { type: "root_review", id: "upper-1", at, stage: "post", target: "evidence/impl.diff", hash: reviewHash("impl"), contract: reviewHash("task"),
++      evidence: "upper.md", evidence_hash: textHash("upper"), summary: "상위 원인 확인", trigger: "root", slot: 1, reviewer: "second",
++      provider: "anthropic", context: "new-context", cross: true },
++    { type: "waiver_request", id: "owner-request", at, stage: "post", target: "evidence/impl.diff", hash: reviewHash("impl"),
++      evidence: "owner.md", evidence_hash: textHash("owner"), summary: "필수 검사 생략 제안", choice: "보류", proposed: "skip",
++      choices: ["보류", "추가 검증"], assessments: [{ finding: "F1", decision: "A-3", reason: "기준 미충족" }] },
++  ].map((row) => JSON.stringify(row)).join("\n") + "\n");
++  review(f.backlog, 1, { target: "BACKLOG.md", verdict: "pass" });
++  review(f.project, 1, { target: "PROJECT.md", verdict: "pass" });
++  review(join(after, "cases", "nested"), 1, { target: "fixture.md", verdict: "pass" });
++  review(join(f.project, "evidence", "cases", "nested"), 1, { target: "fixture.md", verdict: "pass" });
++  file(join(f.project, "log.jsonl"), JSON.stringify({ p: "P001", t: "T01", ts: at, type: "review", by: "agent",
++    msg: "reviewer pass blocking 0 should_fix 0", data: { reviewer: 1, pass: 1, blocking: 0, should_fix: 0 } }) + "\n");
++  const result = f.cli("--json");
++  assert.equal(result.status, 0, result.stderr);
++  const all = JSON.parse(result.stdout);
++  assert.equal(all.eventCounts.reviews, 1);
++  const { reviewLedger: observed } = all;
++  assert.deepEqual([observed.calls, observed.rounds, observed.ledgers], [8, 5, 4]);
++  assert.deepEqual(observed.callSources, { reserved: 3, unreserved: 5, unfinished: 1, interrupted: 1, voided: 1 });
++  assert.deepEqual([observed.jointAttempts, observed.escalations, observed.diagnoses, observed.upperReviews], [1, 1, 1, 1]);
++  assert.ok(observed.unobservedFollowupRounds > 0);
++  assert.deepEqual(Object.fromEntries(Object.entries(observed.phases).map(([key, value]) => {
++    const v = value as { calls: number; rounds: number };
++    return [key, [v.calls, v.rounds]];
++  })), { pre: [3, 1], post: [3, 2], backlog: [1, 1], project: [1, 1] });
++  assert.deepEqual(observed.durationMs, { total: 150, reported: 3, missing: 5 });
++  assert.deepEqual(observed.inputTokens, { total: 12, reported: 2, missing: 6 });
++  assert.deepEqual(observed.outputTokens, { total: 4, reported: 1, missing: 7 });
++  assert.equal(observed.units.find((u: { id: string }) => u.id === "BL261126_01").calls, 1);
++  const printed = f.cli();
++  assert.match(printed.stdout, /검토 원장 집계[\s\S]*미보고 7회/);
++  assert.match(printed.stdout, /1 · 일부 미관측/);
++  assert.match(printed.stdout, /사건 수:[^\n]*리뷰 1/);
++  const generated = f.cli("--write");
++  assert.equal(generated.status, 0, generated.stderr);
++  assert.match(readFileSync(join(f.project, "METRICS.md"), "utf8"), /## 검토 원장 집계/);
++});
++
++test("기존 stats 값과 출력은 검토 원장이 추가돼도 그대로다", () => {
++  const f = fixture();
++  const repo: Repo = { root: f.root, mainRoot: f.root, base: "main", branch: "main", inWorktree: false };
++  const ref: ProjectRef = { id: "P001", dir: f.name, name: "통계", branch: "project/P001", worktree: "" };
++  const before = collectDashboard(repo, ref, { home: f.home, env: {}, now: at });
++  review(f.task, 1, { target: "TASK.md", verdict: "pass" });
++  const after = collectDashboard(repo, ref, { home: f.home, env: {}, now: at });
++  const { reviewLedger: beforeLedger, ...beforeExisting } = before;
++  const { reviewLedger: afterLedger, ...afterExisting } = after;
++  assert.deepEqual([beforeLedger.calls, afterLedger.calls], [0, 1]);
++  assert.deepEqual(afterExisting, beforeExisting);
++  const priorText = (stats: typeof before) => formatDashboard(stats).split("\n\n## 검토 원장 집계", 1)[0];
++  assert.equal(priorText(after), priorText(before));
++});
++
++test("검토 원장 품질은 원문 지문·같은 대상·변경된 수정의 해소 대리 지표와 영향 비용을 구별한다", () => {
++  const f = fixture();
++  const after = join(f.task, "evidence");
++  const section = { structured_stage: "post", required_criteria: ["T-1"] } as const;
++  const finding = { id: "F1", severity: "blocking", category: "defect", location: "src.ts:1", scenario: "정상 출력이 누락된다",
++    reproduction: "같은 입력으로 다시 실행한다", confidence: "high", impact: "goal", criterion: null };
++  const structured = (findings: unknown[], report: string) => ["```pace-review",
++    JSON.stringify({ version: 2, criteria: [{ id: "T-1", state: "present", observation: "시험에서 출력을 확인했다" }], findings }), "```", report].join("\n");
++  const stamp = { ...section, required_criteria: [...section.required_criteria] };
++  const first = review(after, 1, { target: "one.patch", verdict: "fail", raw: structured([finding,
++    { ...finding, id: "F2", impact: "minor" }, { ...finding, id: "F3", reproduction: null }], "pass"),
++    snapshot: "구현 원문 1\n", extra: stamp });
++  review(after, 2, { target: "one.patch", verdict: "pass", raw: structured([], "pass"),
++    snapshot: "구현 원문 2\n", extra: { ...stamp, rereview_of: first, duration_ms: 25 } });
++  const second = review(after, 3, { target: "two.patch", verdict: "fail", raw: structured([finding], "fail"), extra: stamp });
++  review(after, 4, { target: "different.patch", verdict: "pass", raw: structured([], "pass"), extra: { ...stamp, rereview_of: second } });
++  review(after, 5, { target: "two.patch", verdict: "pass", raw: structured([], "pass"), extra: { ...stamp, rereview_of: second } });
++  const tampered = review(after, 6, { target: "other.patch", verdict: "pass", raw: structured([], "pass"), extra: stamp });
++  const path = join(after, tampered);
++  file(path, readFileSync(path, "utf8").replace("pass", "tampered-pass"));
++  const trace = new InputSnapshot();
++  const observed = collectReviewLedgerMetrics(f.root, f.name, trace);
++  assert.deepEqual([observed.calls, observed.rounds, observed.blocking, observed.unobservedBlockingRounds], [6, 6, 2, 1]);
++  assert.deepEqual(observed.resolutionProxy, { eligible: 2, resolved: 1, ratio: 0.5, unobservedRounds: 1 });
++  assert.deepEqual(observed.downgraded, { minor_impact: 1, missing_evidence: 1 });
++  assert.deepEqual(observed.rereviewsByImpact.goal, { rounds: 3, durationMs: { total: 25, reported: 1, missing: 2 } });
++  assert.deepEqual(observed.rereviewsByImpact.minor, { rounds: 1, durationMs: { total: 25, reported: 1, missing: 0 } });
++  assert.ok(trace.files.has(join(after, ledger)) && trace.files.has(path));
++  assert.match(formatReviewLedgerMetrics(observed), /결함 확인의 대리 지표[\s\S]*1\/2 \(50\.0%\)/);
++});
++
++test("기존 P009 T06의 실제 구현 후 무예약 원장 83회를 대조한다", () => {
++  const base = join(packageRoot, "projects");
++  const name = readdirSync(base).find((entry) => entry.startsWith("P009_"))!;
++  const t06 = readdirSync(join(base, name, "tasks")).find((entry) => entry.startsWith("T06_"))!;
++  const original = readFileSync(join(base, name, "tasks", t06, "evidence", ledger), "utf8").split("\n")
++    .filter((line) => line.trim()).map((line) => JSON.parse(line))
++    .filter((row) => row.type === "review");
++  assert.equal(original.length, 83);
++  assert.equal(new Set(original.map((row) => row.record)).size, 83);
++  assert.equal(original.some((row) => row.call_id), false);
++  const stats = collectReviewLedgerMetrics(packageRoot, name);
++  const post = stats.units.find((unit) => unit.id === "T06")?.phases.post;
++  assert.deepEqual([post?.calls, post?.rounds, post?.callSources.unreserved], [83, 83, 83]);
++  assert.equal(post?.inputTokens.total, null);
++  assert.ok((stats.phases.project?.calls ?? 0) >= 2, "P009의 프로젝트 S11 원장도 포함한다");
++});
++
++test("원장 없음과 손상된 원장을 0회 확인으로 보고하지 않는다", () => {
++  const f = fixture();
++  const blank = collectReviewLedgerMetrics(f.root, f.name);
++  assert.equal(blank.ledgers, 0);
++  assert.match(formatReviewLedgerMetrics(blank), /원장 없음/);
++  file(join(f.task, ledger), "{broken\n");
++  const partial = collectReviewLedgerMetrics(f.root, f.name);
++  assert.equal(partial.ledgers, 1);
++  assert.match(formatReviewLedgerMetrics(partial), /원장 판독 미확인/);
++});
+diff --git a/projects/P013_261126_검토_예산과_재현_근거_지적/PROJECT-CLOSE.md b/projects/P013_261126_검토_예산과_재현_근거_지적/PROJECT-CLOSE.md
+new file mode 100644
+index 0000000..739b8b4
+--- /dev/null
++++ b/projects/P013_261126_검토_예산과_재현_근거_지적/PROJECT-CLOSE.md
+@@ -0,0 +1,23 @@
++# P013 검토 예산과 재현 근거 지적
++
++- 프로젝트: [PROJECT.md](PROJECT.md)
++
++## 검토 전후 비교
++
++동일한 원장 집계로 P007~P012와 이 프로젝트를 대조했다. 옛 무예약 행은 각 검토 기록을 1회로 셌다. 프로젝트마다 성격과 검토 범위가 다르고, 비용을 기록하지 않은 회차가 있어 인과 효과는 확인할 수 없다.
++
++| 프로젝트 | 원장 | 호출 / 유효 판정 | 소요 시간(ms) | 입력 / 출력 토큰 | blocking 관측 | 공동 / owner 요청 | 진단 / 상위 검토 |
++|---|---|---|---|---|---|---|---|
++| P007 | 2 | 8 / 8 | 미보고 | 미보고 / 미보고 | 21 | 미관측 / 미관측 | 2 / 0 |
++| P008 | 7 | 15 / 14 | 미보고 | 미보고 / 미보고 | 5 | 미관측 / 미관측 | 0 / 0 |
++| P009 | 18 | 152 / 152 | 미보고 | 미보고 / 미보고 | 168 (미확인 8회) | 미관측 / 미관측 | 16 / 0 |
++| P010 | 3 | 5 / 5 | 미보고 | 미보고 / 미보고 | 3 | 미관측 / 미관측 | 0 / 0 |
++| P011 | 3 | 8 / 8 | 미보고 | 미보고 / 미보고 | 3 | 미관측 / 미관측 | 0 / 0 |
++| P012 | 11 | 25 / 25 | 미보고 | 미보고 / 미보고 | 4 | 미관측 / 미관측 | 1 / 0 |
++| P013 | 17 | 64 / 64 | 160459 (미보고 62회) | 8 (미보고 62회) / 16239 (미보고 62회) | 17 (미확인 15회) | 미관측 / 미관측 | 1 / 0 |
++
++입력·출력은 원장 필드 그대로다. 공동과 owner 요청은 확인한 구조화 사건을 세며 옛 기록의 일부는 미관측이다. 진단과 상위 검토는 각각 별도 집계한다. P009 T06의 구현 후 무예약 기록 83개는 원장에서 별도로 세었다.
++
++기록상 해소율은 변경된 같은 대상의 직전 재현 지적과 독립 pass가 연결된 사례를 센 결함 확인의 대리 지표다. 단계별 값과 미관측 건수도 원본에 남겼다. [검토 집계](tasks/T07_검토_측정과_전후_비교/evidence/project-comparison.json)
++
++허브 PM이 병합 후 프로젝트 3개 또는 백로그 검토 3건 마감 때 호출 수·시간과 뒤늦게 관측한 필수 결함을 확인한다. [후속 todo](../../.pace/memory/검토-하네스-병합-뒤-품질-관측.md)
+diff --git a/.pace/memory/검토-하네스-병합-뒤-품질-관측.md b/.pace/memory/검토-하네스-병합-뒤-품질-관측.md
+new file mode 100644
+index 0000000..a93a769
+--- /dev/null
++++ b/.pace/memory/검토-하네스-병합-뒤-품질-관측.md
+@@ -0,0 +1,9 @@
++---
++name: 검토 하네스 병합 뒤 품질 관측
++description: 허브 PM이 병합 뒤 프로젝트 3개 또는 백로그 검토 3건 마감 시 검토 비용과 필수 결함을 대조한다.
++type: todo
++created: 2026-11-26
++updated: 2026-11-26
++---
++
++BR07. 비교 가능한 태스크·백로그의 검토 호출 수·시간과 강등·escalation 뒤 발견된 필수 결함 수를 같은 기간과 출처에서 기록한다. 미보고와 무관측을 구별한다.
+diff --git a/projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T07_검토_측정과_전후_비교/evidence/project-comparison.json b/projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T07_검토_측정과_전후_비교/evidence/project-comparison.json
+new file mode 100644
+index 0000000..7fac874
+--- /dev/null
++++ b/projects/P013_261126_검토_예산과_재현_근거_지적/tasks/T07_검토_측정과_전후_비교/evidence/project-comparison.json
+@@ -0,0 +1,458 @@
++[
++  {
++    "id": "P007",
++    "ledgers": 2,
++    "calls": 8,
++    "rounds": 8,
++    "durationMs": {
++      "total": null,
++      "reported": 0,
++      "missing": 8
++    },
++    "inputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 8
++    },
++    "outputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 8
++    },
++    "blocking": 21,
++    "unobservedBlockingRounds": 0,
++    "resolutionProxy": {
++      "eligible": 0,
++      "resolved": 0,
++      "ratio": null,
++      "unobservedRounds": 8
++    },
++    "downgraded": {},
++    "rereviewsByImpact": {
++      "미확인": {
++        "rounds": 4,
++        "durationMs": {
++          "total": null,
++          "reported": 0,
++          "missing": 4
++        }
++      }
++    },
++    "jointAttempts": 0,
++    "escalations": 0,
++    "diagnoses": 2,
++    "upperReviews": 0,
++    "unobservedFollowupRounds": 8,
++    "issues": [],
++    "callSources": {
++      "reserved": 0,
++      "unreserved": 8,
++      "unfinished": 0,
++      "interrupted": 0,
++      "voided": 0
++    },
++    "phases": {
++      "pre": {
++        "calls": 4,
++        "rounds": 4
++      },
++      "post": {
++        "calls": 4,
++        "rounds": 4
++      }
++    }
++  },
++  {
++    "id": "P008",
++    "ledgers": 7,
++    "calls": 15,
++    "rounds": 14,
++    "durationMs": {
++      "total": null,
++      "reported": 0,
++      "missing": 15
++    },
++    "inputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 15
++    },
++    "outputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 15
++    },
++    "blocking": 5,
++    "unobservedBlockingRounds": 0,
++    "resolutionProxy": {
++      "eligible": 0,
++      "resolved": 0,
++      "ratio": null,
++      "unobservedRounds": 14
++    },
++    "downgraded": {},
++    "rereviewsByImpact": {
++      "미확인": {
++        "rounds": 3,
++        "durationMs": {
++          "total": null,
++          "reported": 0,
++          "missing": 3
++        }
++      }
++    },
++    "jointAttempts": 0,
++    "escalations": 0,
++    "diagnoses": 0,
++    "upperReviews": 0,
++    "unobservedFollowupRounds": 14,
++    "issues": [],
++    "callSources": {
++      "reserved": 0,
++      "unreserved": 15,
++      "unfinished": 0,
++      "interrupted": 1,
++      "voided": 0
++    },
++    "phases": {
++      "pre": {
++        "calls": 4,
++        "rounds": 4
++      },
++      "post": {
++        "calls": 7,
++        "rounds": 6
++      },
++      "backlog": {
++        "calls": 4,
++        "rounds": 4
++      }
++    }
++  },
++  {
++    "id": "P009",
++    "ledgers": 18,
++    "calls": 152,
++    "rounds": 152,
++    "durationMs": {
++      "total": null,
++      "reported": 0,
++      "missing": 152
++    },
++    "inputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 152
++    },
++    "outputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 152
++    },
++    "blocking": 168,
++    "unobservedBlockingRounds": 8,
++    "resolutionProxy": {
++      "eligible": 0,
++      "resolved": 0,
++      "ratio": null,
++      "unobservedRounds": 152
++    },
++    "downgraded": {},
++    "rereviewsByImpact": {
++      "미확인": {
++        "rounds": 58,
++        "durationMs": {
++          "total": null,
++          "reported": 0,
++          "missing": 58
++        }
++      }
++    },
++    "jointAttempts": 0,
++    "escalations": 0,
++    "diagnoses": 16,
++    "upperReviews": 0,
++    "unobservedFollowupRounds": 152,
++    "issues": [],
++    "callSources": {
++      "reserved": 0,
++      "unreserved": 152,
++      "unfinished": 0,
++      "interrupted": 0,
++      "voided": 0
++    },
++    "phases": {
++      "pre": {
++        "calls": 33,
++        "rounds": 33
++      },
++      "post": {
++        "calls": 110,
++        "rounds": 110
++      },
++      "backlog": {
++        "calls": 7,
++        "rounds": 7
++      },
++      "project": {
++        "calls": 2,
++        "rounds": 2
++      }
++    }
++  },
++  {
++    "id": "P010",
++    "ledgers": 3,
++    "calls": 5,
++    "rounds": 5,
++    "durationMs": {
++      "total": null,
++      "reported": 0,
++      "missing": 5
++    },
++    "inputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 5
++    },
++    "outputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 5
++    },
++    "blocking": 3,
++    "unobservedBlockingRounds": 0,
++    "resolutionProxy": {
++      "eligible": 0,
++      "resolved": 0,
++      "ratio": null,
++      "unobservedRounds": 5
++    },
++    "downgraded": {},
++    "rereviewsByImpact": {},
++    "jointAttempts": 0,
++    "escalations": 0,
++    "diagnoses": 0,
++    "upperReviews": 0,
++    "unobservedFollowupRounds": 5,
++    "issues": [],
++    "callSources": {
++      "reserved": 0,
++      "unreserved": 5,
++      "unfinished": 0,
++      "interrupted": 0,
++      "voided": 0
++    },
++    "phases": {
++      "pre": {
++        "calls": 4,
++        "rounds": 4
++      },
++      "backlog": {
++        "calls": 1,
++        "rounds": 1
++      }
++    }
++  },
++  {
++    "id": "P011",
++    "ledgers": 3,
++    "calls": 8,
++    "rounds": 8,
++    "durationMs": {
++      "total": null,
++      "reported": 0,
++      "missing": 8
++    },
++    "inputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 8
++    },
++    "outputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 8
++    },
++    "blocking": 3,
++    "unobservedBlockingRounds": 0,
++    "resolutionProxy": {
++      "eligible": 0,
++      "resolved": 0,
++      "ratio": null,
++      "unobservedRounds": 8
++    },
++    "downgraded": {},
++    "rereviewsByImpact": {
++      "미확인": {
++        "rounds": 2,
++        "durationMs": {
++          "total": null,
++          "reported": 0,
++          "missing": 2
++        }
++      }
++    },
++    "jointAttempts": 0,
++    "escalations": 0,
++    "diagnoses": 0,
++    "upperReviews": 0,
++    "unobservedFollowupRounds": 8,
++    "issues": [],
++    "callSources": {
++      "reserved": 0,
++      "unreserved": 8,
++      "unfinished": 0,
++      "interrupted": 0,
++      "voided": 0
++    },
++    "phases": {
++      "pre": {
++        "calls": 3,
++        "rounds": 3
++      },
++      "post": {
++        "calls": 2,
++        "rounds": 2
++      },
++      "backlog": {
++        "calls": 3,
++        "rounds": 3
++      }
++    }
++  },
++  {
++    "id": "P012",
++    "ledgers": 11,
++    "calls": 25,
++    "rounds": 25,
++    "durationMs": {
++      "total": null,
++      "reported": 0,
++      "missing": 25
++    },
++    "inputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 25
++    },
++    "outputTokens": {
++      "total": null,
++      "reported": 0,
++      "missing": 25
++    },
++    "blocking": 4,
++    "unobservedBlockingRounds": 0,
++    "resolutionProxy": {
++      "eligible": 0,
++      "resolved": 0,
++      "ratio": null,
++      "unobservedRounds": 25
++    },
++    "downgraded": {},
++    "rereviewsByImpact": {
++      "미확인": {
++        "rounds": 2,
++        "durationMs": {
++          "total": null,
++          "reported": 0,
++          "missing": 2
++        }
++      }
++    },
++    "jointAttempts": 0,
++    "escalations": 0,
++    "diagnoses": 1,
++    "upperReviews": 0,
++    "unobservedFollowupRounds": 25,
++    "issues": [],
++    "callSources": {
++      "reserved": 0,
++      "unreserved": 25,
++      "unfinished": 0,
++      "interrupted": 0,
++      "voided": 0
++    },
++    "phases": {
++      "pre": {
++        "calls": 6,
++        "rounds": 6
++      },
++      "post": {
++        "calls": 15,
++        "rounds": 15
++      },
++      "backlog": {
++        "calls": 4,
++        "rounds": 4
++      }
++    }
++  },
++  {
++    "id": "P013",
++    "ledgers": 17,
++    "calls": 64,
++    "rounds": 64,
++    "durationMs": {
++      "total": 160459,
++      "reported": 2,
++      "missing": 62
++    },
++    "inputTokens": {
++      "total": 8,
++      "reported": 2,
++      "missing": 62
++    },
++    "outputTokens": {
++      "total": 16239,
++      "reported": 2,
++      "missing": 62
++    },
++    "blocking": 17,
++    "unobservedBlockingRounds": 15,
++    "resolutionProxy": {
++      "eligible": 0,
++      "resolved": 0,
++      "ratio": null,
++      "unobservedRounds": 64
++    },
++    "downgraded": {},
++    "rereviewsByImpact": {
++      "미확인": {
++        "rounds": 21,
++        "durationMs": {
++          "total": 68164,
++          "reported": 1,
++          "missing": 20
++        }
++      }
++    },
++    "jointAttempts": 0,
++    "escalations": 0,
++    "diagnoses": 1,
++    "upperReviews": 0,
++    "unobservedFollowupRounds": 62,
++    "issues": [],
++    "callSources": {
++      "reserved": 2,
++      "unreserved": 62,
++      "unfinished": 0,
++      "interrupted": 0,
++      "voided": 0
++    },
++    "phases": {
++      "pre": {
++        "calls": 22,
++        "rounds": 22
++      },
++      "post": {
++        "calls": 37,
++        "rounds": 37
++      },
++      "backlog": {
++        "calls": 5,
++        "rounds": 5
++      }
++    }
++  }
++]

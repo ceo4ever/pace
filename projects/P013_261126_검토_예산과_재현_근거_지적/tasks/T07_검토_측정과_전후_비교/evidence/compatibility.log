@@ -1,0 +1,31 @@
+✔ metrics report: section replacement preserves neighbors and removes duplicate generated sections (12.548625ms)
+✔ metrics report: repeated gate categories and review rounds, nonempty handoff links without raw text (362.158667ms)
+✔ metrics report: finishing snapshot extends previous finish cutoff (182.081917ms)
+✔ metrics report: linked close document is rejected without copying external text (0.759417ms)
+✔ metrics report: linked project directory components are rejected (1.247583ms)
+✔ metrics report: close summary requires local link and one to three lines (0.269083ms)
+✔ metrics report: outside task, proportions, empty tools, counts and total elapsed (262.297541ms)
+✔ metrics report: generated metrics symlink is rejected without replacing it (0.681458ms)
+pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+pace: 경고: 지표 로그 기록 실패 (명령은 계속)
+✔ metrics: exact intervals, retries, gate counts and malformed lines (5.795208ms)
+✔ metrics: fixed reasons, failed writes and symlinks never escape (1.499583ms)
+✔ metrics: old project uses git timestamps and unknown times remain null (296.287459ms)
+✔ metrics: CLI boundaries, fixed failure reason, blocked logging preserves gate result (7208.53175ms)
+✔ metrics: dangling symlink does not create outside target (1.993291ms)
+✔ metrics: FIFO recording returns instead of blocking (276.500458ms)
+✔ metrics: git fallback uses first task commit through last, project finish through merge (314.735208ms)
+✔ 검토 원장 stats의 소스·옛 호출·중단·무효·미완료와 단계별 합계 8/5 (3615.102166ms)
+✔ 기존 stats 값과 출력은 검토 원장이 추가돼도 그대로다 (174.940875ms)
+✔ 검토 원장 품질은 원문 지문·같은 대상·변경된 수정의 해소 대리 지표와 영향 비용을 구별한다 (89.102084ms)
+✔ 기존 P009 T06의 실제 구현 후 무예약 원장 83회를 대조한다 (530.015792ms)
+✔ 원장 없음과 손상된 원장을 0회 확인으로 보고하지 않는다 (101.554292ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8398.984917
