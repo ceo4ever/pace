@@ -134,3 +134,4 @@
 {"ts":"2026-11-26T07:42:03.229Z","p":"P013","type":"gate","by":"cli","msg":"finish: contract","ok":false,"data":{"finish":1}}
 {"ts":"2026-11-26T07:49:54.944Z","p":"P013","type":"finish","by":"cli","msg":"finish","ok":true}
 {"ts":"2026-11-26T07:49:54.944Z","p":"P013","type":"gate","by":"cli","msg":"finish","ok":true,"src":"finish:c2a04b470b902371879e5004","data":{"finish":1}}
+{"ts":"2026-11-26T07:59:29.182Z","p":"P013","type":"merge","by":"cli","msg":"merge: 사용자 승인","ok":true,"data":{"approved":1,"commits":14}}
