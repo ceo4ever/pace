@@ -1,0 +1,226 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "검토를 마쳤습니다. 직전 blocking F1은 해소됐고, 이번 수정이 새로 만든 blocking 결함은 찾지 못했습니다. 판정은 **pass**입니다.\n\n## 첫 판단\n\n- **목적과 대조한 결과**\n  - **F1의 원인이었던 자기 간섭:** 신호 2 관측을 Git 메타데이터 안의 같은 worktree 전용 경로(`pace/test-signals/log.jsonl`)에 쓰도록 바뀌었습니다(TASK.md:53). 이 경로는 `git status`의 추적·미추적 변경으로 잡히지 않습니다. 그래서 첫 기록이 둘째 `changed`를 전체 검사로 넘기는 문제가 구조적으로 사라집니다.\n  - **프로젝트 문서가 수정 중인 상황:** 프로젝트 문서가 바뀐 상태에서는 `changed`가 원래대로 전체 검사로 넘어갑니다. 대신 명시 `pace test file`도 관측하도록 했습니다(T-2, :46). `runner.ts:22-29`의 file 분기는 Git 상태와 무관하게 unit을 고르므로 실제로 도달할 수 있는 경로입니다.\n  - **S-2의 시험 검출력:** S-2는 이제 실제 worktree에서 다음을 시험합니다. 따라서 직전 결함이 다시 생기면 이 시험이 실패합니다.\n    - 첫 기록 뒤 둘째 `changed`도 선택 분기로 실행되는지\n    - TASK를 바꾼 뒤 명시 file 실행이 관측되는지\n    - 시간 초과 두 번이면 권고가 없는지\n    - 선택되지 않은 파일의 기존 연속 실패 수(streak)가 유지되는지\n  - **나머지 직전 지적 해소 상태:**\n    - F2: S-5에 고정 증거 경로와 7/27·3/8 수치가 들어갔습니다. 결합 조건 비교는 \"미확인\"으로 명시했습니다.\n    - F3: S-3에 기준 ID가 없는 goal 영향 재발 사례가 들어갔습니다.\n    - F4: 신호 4가 `loadRereview`의 스냅숏과 Git 패치 구획을 근거로 삼습니다. S-4에 실제 verify의 신호 4 양성 사례가 들어갔습니다.\n    - F5: 시간 초과·신호·0건·전부 skip이 불명으로 분류되고, 미선택이 streak를 유지하도록 정해졌습니다.\n- **목표 달성:** 계획 수준에서 **달성**. 구현 결과는 미확인입니다.\n- **근거와 한계**\n  - 확인한 코드: `loadRereview`(`verify-cli.ts:107`), `runner.ts:22-29`, `execute.ts:10-47`(vitest 어댑터 존재), `changed.ts:169`(`stopEarly=true`), `.pace/test-map.json`.\n  - 역사적 원장 수치(27구간, 7/27)는 이번에도 다시 계산하지 않았습니다. 이 수치는 구현 단계의 S-5 증거로 확인할 대상입니다.\n  - Git 메타데이터 경로가 status에 잡히지 않는다는 판단은 Git 동작 지식에 근거했고, 직접 실행해 보지는 않았습니다.\n- **올릴 단계:** 없음. `runner.ts`를 추가하고 저장 위치를 옮긴 것은 기존 기준을 달성하기 위한 구조 수정입니다. `decision-rights.md`의 A-1 기준으로 합의 변경이 아닙니다.\n\n## 노출 범위\n\n- **받은 입력:** 직전 검토 원문, 바뀐 줄, 이번 TASK.md 본문.\n- **읽은 파일:**\n  - `src/test-runner/runner.ts`\n  - `src/agent/verify-cli.ts` 100-159행\n  - `src/test-runner/execute.ts` grep 결과\n  - `src/test-runner/changed.ts` grep 결과\n  - `.pace/test-map.json`\n  - `skills/pace-project-dev/references/decision-rights.md`의 A-1 부근\n- **자동으로 들어온 맥락:** CLAUDE.md·AGENTS.md, git status, 사용자 메일 정보. 세션 시작 부트는 생략 표시가 있었습니다.\n- **읽지 않은 것:** 작성자 마감, 자체 판정, 지적 대응 문서.\n- **검토 주체:** 같은 제공자(Claude)의 새 세션입니다. 파일은 고치지 않았습니다.\n\n## 남은 지적 (판정에는 영향 없음)\n\n- **F1 (should_fix):** 실제 worktree에서는 프로젝트 문서가 수정 상태일 때가 많아 `changed`가 대개 전체 검사로 넘어갑니다. 그러면 신호 2는 사실상 명시 file 실행에 기대는데, 그 사용을 누가 안내하는지 정해져 있지 않습니다.\n- **F2 (should_fix):** 계수 대상이 \"Node·Python 어댑터\"로만 적혀 있어, 이미 지원 중인 vitest 결과의 처리가 정해져 있지 않습니다.\n- **F3 (should_fix):** 조기 중단(`stopEarly`)으로 실행되지 않은 뒷 파일을 \"불완전 결과\"(불명, 연속성 끊음)로 볼지 \"미관측\"(streak 유지)으로 볼지 모호합니다.\n- **F4 (should_fix):** `.git` 메타데이터 안에 쓰는 새 기록 위치가 `docs/SECURITY.md`·`docs/TESTING.md`에 반영되지 않습니다.\n- **F5 (note):** 신호 4 문장(:48)이 중복되고 꼬여 있어 판정 조건이 읽기 어렵습니다.\n\n```pace-review\n{\"version\":2,\"findings\":[{\"id\":\"F1\",\"severity\":\"should_fix\",\"category\":\"scope\",\"location\":\"projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:59\",\"scenario\":\"실제 project worktree에서는 TASK.md·PROJECT.md·log.jsonl이 수정 상태인 경우가 많다. test-map에 projects/**가 없으므로 이때 `pace test changed`는 대부분 전체 전환되고, 신호 2는 사실상 명시 `pace test file`에만 의존한다. 그런데 AGENTS.md의 개발 중 안내는 `pace test changed`다. 전체 전환 출력에서 명시 file을 안내하는지, 작업자가 file을 쓰도록 하는 절차를 누가 맡는지(T04·T05 인계 항목인지)가 적혀 있지 않다. 이대로면 권고가 '초기에' 나올 기회가 줄어든다\",\"reproduction\":\"정적 근거: .pace/test-map.json(projects/** 미매핑), changed.ts 미분류 전체 전환, runner.ts:22-29(file 분기는 Git 상태와 무관). TASK.md:59는 '명시 file을 사용한다'고만 하고 안내 주체·출력이 없다\",\"confidence\":\"medium\",\"impact\":\"goal\",\"criterion\":null,\"safety_path\":null},{\"id\":\"F2\",\"severity\":\"should_fix\",\"category\":\"observable\",\"location\":\"projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:46\",\"scenario\":\"신호 2의 계수 대상이 'Node·Python 어댑터'로 한정돼 있다. 하지만 fileResults는 vitest 어댑터도 지원한다(execute.ts:10-11). vitest 파일의 실패를 세는지, 불명으로 처리하는지, 관측하지 않는지가 정해져 있지 않아 구현마다 동작이 갈릴 수 있다\",\"reproduction\":\"execute.ts:10 지원 러너 목록 [node-test, python-unittest, vitest]과 TASK.md:46의 어댑터 열거를 대조한다\",\"confidence\":\"medium\",\"impact\":\"criterion\",\"criterion\":\"T-2\",\"safety_path\":null},{\"id\":\"F3\",\"severity\":\"should_fix\",\"category\":\"detection\",\"location\":\"projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:46\",\"scenario\":\"changed는 stopEarly=true로 실행한다(changed.ts:169). 첫 실패 뒤 실행되지 않은 같은 unit의 뒷 파일을 '불완전 결과'(불명, 연속성 끊음)로 볼지 '미관측'(streak 유지)으로 볼지 모호하다. 불명으로 처리하면 다른 파일의 실패 때문에 정상 streak가 끊긴다. S-2에 이 사례가 없다\",\"reproduction\":\"S-2에 같은 unit의 두 시험 파일 A·B가 있고 A가 먼저 실패해 B가 미실행되는 회차를 끼운 B의 fail→(미실행)→fail 사례를 추가해 기대값을 고정한다\",\"confidence\":\"low\",\"impact\":\"criterion\",\"criterion\":\"T-2\",\"safety_path\":null},{\"id\":\"F4\",\"severity\":\"should_fix\",\"category\":\"other\",\"location\":\"projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:60\",\"scenario\":\"이번 수정으로 `.git` common dir의 worktrees 아래에 쓰는 새 기록 위치가 생긴다. 그런데 docs/SECURITY.md·docs/TESTING.md는 '적용 기준으로 사용'만 하고 갱신 경로에 없다. 민감 경로(src/test-runner)에 생긴 새 쓰기 경계가 문서에 반영되지 않는다\",\"reproduction\":\"권한 paths 10개와 docs 문서 표의 src/test-runner·민감 경로 적용 범위를 대조한다\",\"confidence\":\"low\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null},{\"id\":\"F5\",\"severity\":\"note\",\"category\":\"observable\",\"location\":\"projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:48\",\"scenario\":\"신호 4 문장이 '확인한다… 경우만 확인할 때만 낸다'로 중복·비문이라 판정 조건(직접 본문 비교와 Git 패치 양쪽 구획 비교 중 무엇이 필요한지)을 읽기 어렵다. S-4가 양성·보류를 고정하므로 판정에는 넣지 않는다\",\"reproduction\":null,\"confidence\":\"low\",\"impact\":\"minor\",\"criterion\":null,\"safety_path\":null}],\"criteria\":[{\"id\":\"T-1\",\"state\":\"present\",\"observation\":\"직전 present 유지(TASK.md:28, :45, S-1 :37). 바뀐 줄의 영향: :45에 결합 조건 비교 '미확인'이 명시됐고, S-5(:41)에 evidence/convergence-driver.txt·convergence.json과 같은 표본 7/27·3/8이 고정돼 직전 F2(재현 수단 부재)가 해소됐다. 원장 수치 자체는 재계산하지 않았다\"},{\"id\":\"T-2\",\"state\":\"present\",\"observation\":\"직전 unverified(F1)에서 바뀌었다. :53에서 기록을 Git common dir/worktrees 아래의 worktree 전용 메타데이터 경로로 옮겨 추적·미추적 변경을 만들지 않으므로 자기 간섭이 제거된다. T-2(:29)는 '작업본 상태 불변'을 기준으로 삼는다. S-2(:38)는 실제 worktree에서 첫 기록 뒤 둘째 changed 선택, TASK 변경 시 전체 전환 유지와 명시 file 관측, 시간 초과 2회 무권고, 미선택 streak 유지를 고정해 결함이 생기면 실패한다. runner.ts:22-29의 file 분기는 Git 상태와 무관하게 도달 가능하다. :46의 불명 분류는 execute.ts의 시간 초과·신호·0건·skip 분기와 맞춰졌다(직전 F5 해소). 남은 모호점은 vitest와 stopEarly 미실행 파일(F2, F3)\"},{\"id\":\"T-3\",\"state\":\"present\",\"observation\":\"직전 present 유지. :47에 '양쪽 기준 ID 없음이면 같은 명시 영향' 규칙이 생기고 S-3(:39)에 기준 없는 목표 지적 재발이 추가돼 직전 F3이 해소됐다. :48이 신호 4 근거를 loadRereview(verify-cli.ts:107-155, 스냅숏·해시 검증)와 Git 패치 양쪽 구획으로 정했고, S-4(:40)에 실제 verify 두 회차의 superficial_fix 양성과 미실행·잘못된 근거 보류가 들어가 직전 F4가 해소됐다\"},{\"id\":\"T-4\",\"state\":\"present\",\"observation\":\"직전 present 유지(:31, :52-55). 바뀐 줄의 영향: 구현 경로에 runner.ts가 추가돼(:54) file 분기 관측을 구현할 수 있다. :53에 안전한 디렉터리·일반 파일 검증, 추적 파일 불변, 본문·stdout 미기록, 오류 비전파가 유지된다. S-4·S-5가 경계와 BR02 대조를 유지한다. 문서 갱신 누락은 F4(should_fix)\"}],\"permission\":{\"mode\":\"implementation\",\"paths\":[\"src/agent/verify-cli.ts\",\"src/agent/review-signals.ts\",\"src/test-runner/execute.ts\",\"src/test-runner/changed.ts\",\"src/test-runner/runner.ts\",\"src/test-runner/signals.ts\",\"test/agent-review-log.test.ts\",\"test/review-signals.test.ts\",\"test/test-runner.test.ts\",\"skills/pace-team/references/required-roles.md\"],\"protected\":[{\"from\":24,\"to\":31},{\"from\":37,\"to\":41},{\"from\":45,\"to\":48},{\"from\":52,\"to\":55}]}}\n```\n\npass",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 96789,
+    "usage": {
+      "input_tokens": 12,
+      "output_tokens": 10312
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "087df92da758556d840ff12999795823944822006667b51864f7c0f60c6b3f2b",
+    "kind": "task",
+    "verdict": "pass",
+    "rereview_of": "review-records/R1.json",
+    "snapshot": "# T02 조기 호출 도구 신호와 문턱\n\n- 프로젝트: [P014](../../PROJECT.md) · 백로그: [BL261125_01_문제_해결_전문가_에이전트](../../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BACKLOG.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\n반복 실패를 문제 해결 담당자에게 넘길 수 있도록 기록에서 확인 가능한 네 가지 신호를 낸다. 기존 검토 판정과 예산·상위 검토 경로는 유지한다.\n\n## 재료\n\n- BR02의 네 신호, PROJECT P-8~P-9, T01 마감의 구판 로그 호환.\n- `review-budget.ts`와 `verify-cli.ts`의 소진 출력, `review-log.ts`의 일반 진단, `structured-review.ts`의 위치·기준·판정 등급. 수정 확인의 `sameFinding`은 별도 계약이다.\n- `docs/SECURITY.md`의 검사 실행기·프로젝트 기록 경계와 `docs/TESTING.md`의 선택 검사. 바뀐 시험 파일의 기계 판정은 `fileResults`에서 취한다.\n\n## 증명 범위\n\n- 판정 주체: 명령 실행·고정한 역사적 원장 계산, 독립 테스터와 구현 검토.\n- 포함: 신호별 문턱과 실제 출력·근거, 한계가 있는 관측의 음성 대조, 입력 검증과 기존 예산·판정·로그 영향, BR02 소관 요건 등록과 대조.\n- 범위 밖: 전문가를 호출하거나 인계하는 절차는 T04·T05로 둔다. 호출 자체의 기록은 T03이며 반환 스키마는 T05다.\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | 예산 단위는 기존 `budget_exhausted`·종료 16을 신호 1로 쓴다. 일반 산출물의 `verify`는 과거 원장 수렴 근거로 정한 문턱에서 단위와 두 판정의 참조를 출력한다. 문턱 직전과 적용할 기록이 없는 시도에서는 나오지 않는다. |\n| T-2 | 프로젝트 worktree의 `pace test changed` 선택 분기와 명시 `pace test file`의 파일별 관측을 기록한다. 선별 이력 저장은 작업본 상태를 변경하지 않는다. 동일 시험 파일의 검증된 두 연속 실패가 권고를 내며 통과·결과 불명의 시도는 연속성을 끊고 직접 node 실행이나 전체 검사 전환은 기록·계산에서 빠진다. |\n| T-3 | 직전과 현재 구조화 검토에서 같은 파일 영역에 실제 재발이 있으면 신호 3을, 같은 영역을 포함한 파일이 수정되고 같은 적용 등급으로 다시 지적되면 신호 4를 낸다. ID·근접 줄이 바뀐 재발은 잡고, 같은 파일의 다른 위치·기준·구분인 무관 지적과 미실행·비교 근거 없는 경우를 거른다. |\n| T-4 | 각 신호의 유형·단위·근거 식별자를 출력한다. 기존 판정·원장·소진·upper_review 결과와 팀 채택은 같은 입력에서 보존하고, 기록과 경로·비밀 경계를 시험한다. BR02 요건을 ID·버전 1로 등록하고 시험 근거로 대조한다. |\n\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | e2e | T-1, T-4 | 일반 검토 1·2회, 중단/무효 행, 예산 단위 소진 | 고정 응답으로 verify 경로 실행 | 1회·미실행에는 권고 없음, 2회에 판정 2개 참조, 소진은 종료 16과 원래 후속 조치 | `test/agent-review-log.test.ts` 및 기존 예산 시험 |\n| S-2 | e2e | T-2, T-4 | 등록 시험과 실제 worktree, TASK 임의 변경, 실패·성공·시간 초과 | 선택 changed를 연속 실행하고 TASK를 바꾼 뒤 명시 file 실행, 직접 Node·전체 전환과 비교 | 첫 기록 뒤 둘째 changed도 선택되고 임계 회차에 한 번만 권고. TASK 변경 때 전체 전환은 그대로이며 명시 file은 계속 관측. 두 시간 초과는 권고 없음. 미선택 파일은 기존 streak 유지. 팀 마감과 원래 검사 판정 보존 | `test/test-runner.test.ts` |\n| S-3 | unit | T-3 | 두 구조화 판정, 원본 변경·파일과 위치 단서 | ID/줄 이동, 기준 없는 목표 지적의 재발, 같은 파일 다른 위치·기준·구분, 등급 변화, 파일 무변경 비교 | 필요한 재발만 식별, 같은 적용 등급과 변경 근거가 확인된 경우에만 추가 신호 4 | `test/review-signals.test.ts` |\n| S-4 | e2e | T-3, T-4 | 실제 verify 두 회차와 파일 변경이 들어간 바뀐 검토 패치 | 동일 영역·등급 재지적과 달라지지 않은 패치 구획 대조. 직전 원장의 전체 판정은 미확인이지만 개별 지적 근거가 유효한 첫 fail도 비교 | 재발·겉만 고침 두 양성 권고와 근거 확인, 미실행·잘못된 근거에서 보류, 판정·원장·상위 후속 계산 유지 | `test/agent-review-log.test.ts`, `test/test-runner.test.ts` |\n| S-5 | check | T-4 | BR02 원문과 신규 세부 요건 | 등록·증거와 ID/버전 대조 | 신호 1~4와 문턱 근거의 등록·충족 확인, 같은 표본 결과 7/27 및 3/8 | `evidence/convergence-driver.txt`, `evidence/convergence.json`, 요건 대조표 |\n\n## 문턱과 선택\n\n- 신호 1. 현재 예산 적용 전의 실제 검토 원장(배포 기준 `4c7621d`)에서 독립 검토의 유효한 전이만 셌다. 같은 원장의 같은 대상에서 pass·결정·진단 이후 연속 2회 fail에 처음 도달한 27개 구간 중 다음 판정이 pass인 곳은 7개(25.9%), fail은 20개였다. P009/T06을 빼면 3/8(37.5%)이다. 오늘의 일반 위치만 보면 P005 프로젝트 단위의 1회 fail→pass 한 건이므로 직접 추정할 분모가 없다. 과거 자료는 그 시점에 예산이 없던 실제 작업을 대리 자료로 썼다. 같은 영역 조건을 결합하면 다른 실패의 과잉 권고를 줄이지만 당시 원장은 구조화된 위치·기준이 없어 같은 모집단으로 그 조합을 입증할 수 없다. 결합 조건의 수렴률 비교 결과는 미확인(동일한 정규 구조화 항목 없음)으로 기록한다. 고정 코드와 원장별 다음 판정은 S-5 증거다. 따라서 일반 신호는 최초 유효 2회 fail로 정하고 조합은 신호 3에 적용한다.\n- 신호 2. Node·Python 어댑터가 파일별로 보고한 실제 실패·통과만 센다. 시간 초과·신호·시작 실패·0건·전부 skip·불완전 결과는 불명으로 기록해 그 파일의 연속성을 끊는다. `changed`의 전체 전환 실행과 명시하지 않은 시험은 관측하지 않는다. 명시 file은 Git 변경 선택과 무관해 업무 문서 초안이 있어도 등록 시험을 부를 수 있다. 미선택과 기록 밖 명령은 그 파일의 시도를 관측한 것이 아니므로 기존 streak를 유지한다. 2회를 택해 단발 실패를 제외하면서 세 번째 시도 전에 단서를 제공한다. 기록 밖 실행은 관측되지 않는다.\n- 신호 3. 직전과 현재의 같은 기록 단위에 속한 구조화 지적을 비교한다. 같은 정규 상대 경로, 같은 기준 ID 또는 양쪽에 기준 ID가 없을 때 같은 명시 영향(예: goal), 그리고 같은 판정 구분, 근접 행(최대 8줄)으로 영역을 보수적으로 좁힌다. 지적 ID는 사용하지 않는다. 두 판단의 유효한 지적과 달라진 검토 대상이 필요하다. 직전 원장의 증거가 충분한 개별 지적은 전체 판정이 미확인이더라도 첫 유효 fail과 비교할 수 있다. 기존 원장이 정한 유효 비교 기준점과 지적만 쓴다. 신호 2는 파일 관측만 제공하므로 행이나 기준이 입증되지 않은 결과에서 별도의 경계 재발을 추론하지 않는다.\n- 신호 4. 신호 3의 두 유효 지적의 적용 등급이 같고, 두 스냅숏에서 해당 파일 내용 변경을 `loadRereview`가 검증한 직전 검토 스냅숏과 현 대상에서 확인한다. 직접 검토 중인 같은 파일의 본문 또는 Git 패치 안 해당 경로의 양쪽 구획이 있어 실제 구획이 달라진 경우만 확인할 때만 낸다. 대리 지표의 출력은 수정 품질의 확정 판정이 아니다.\n\n## 접근\n\n- `verify`에 선택 필드 `troubleshooterSignals`를 붙인다. 유형은 `review_failures`, `test_failures`, `recurring_area`, `superficial_fix`다. 신호 1의 예산 단위는 기존 출력에 맡기고 그 우선순위를 유지한다. 신호 2는 `pace test changed` 선택 분기와 `pace test file`의 안내 줄로 같은 유형·단위·근거를 표시한다.\n- 시험 관측은 Git이 등록을 확인한 worktree의 실제 Git 메타데이터 폴더 안 `pace/test-signals/log.jsonl`에 기존 `note`와 숫자 표지로 쓴다. Git common dir의 worktrees 아래에 결속된 경로를 검증하고 안전한 디렉터리·일반 파일에서만 읽고 쓴다. 추적 파일·소통 로그를 변경하지 않아 다음 changed 선택에 영향을 주지 않는다. 경로는 유효한 저장소 상대 시험 파일뿐이다. 테스트 본문·stdout·프롬프트는 기록하지 않는다. 읽기/쓰기 오류는 계산이나 원래 검사 성공 여부를 바꾸지 않는다. 새 사건 종류·팀 채택 표지·외부 전송을 추가하지 않는다.\n- 구현 경로는 `src/agent/verify-cli.ts`, `src/agent/review-signals.ts`, `src/test-runner/execute.ts`, `src/test-runner/changed.ts`, `src/test-runner/runner.ts`, `src/test-runner/signals.ts`, `test/agent-review-log.test.ts`, `test/review-signals.test.ts`, `test/test-runner.test.ts`, `skills/pace-team/references/required-roles.md`다.\n- 민감 경로에 SECURITY를 적용한다. 기존 실행 인자·경로 검사와 파일 로그 검사를 재사용하며, 링크·다른 저장소·경로/비밀 후보와 시험 실패의 전파를 음성 대조한다. 선언 검사와 비밀 검사를 실행한다.\n\n## R1 반영 판단\n\n- 기록 때문에 다음 검사가 전체로 전환되는 결함을 피하도록 Git 로컬 이력으로 옮긴다. 원래 전체 전환 기준을 유지하면서 프로젝트 문서가 바뀐 상황에서는 등록된 명시 file을 사용한다. 적용 가능한 선택 시험 유형을 S-2에 고정했다.\n- `docs/TESTING.md`와 `docs/SECURITY.md`는 적용 기준으로 사용한다. BR02의 설계 문서는 이 TASK와 S-5 증거다. 범위상 절차와 외부 `review-record` 출력 연결은 후속 T04·T05에 인계한다.\n",
+    "call_id": "cf69a50b-825c-4ac4-a3f6-6a5c314cb70d",
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3",
+      "T-4"
+    ],
+    "permission_basis": {
+      "base": "53e88318464e92a1dc2d44321df5727894dbb4d0",
+      "task_mode": "100644"
+    },
+    "permission": {
+      "mode": "implementation",
+      "paths": [
+        "src/agent/verify-cli.ts",
+        "src/agent/review-signals.ts",
+        "src/test-runner/execute.ts",
+        "src/test-runner/changed.ts",
+        "src/test-runner/runner.ts",
+        "src/test-runner/signals.ts",
+        "test/agent-review-log.test.ts",
+        "test/review-signals.test.ts",
+        "test/test-runner.test.ts",
+        "skills/pace-team/references/required-roles.md"
+      ],
+      "protected": [
+        {
+          "from": 24,
+          "to": 31
+        },
+        {
+          "from": 37,
+          "to": 41
+        },
+        {
+          "from": 45,
+          "to": 48
+        },
+        {
+          "from": 52,
+          "to": 55
+        }
+      ],
+      "base": "53e88318464e92a1dc2d44321df5727894dbb4d0",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "pass",
+    "reported_verdict": "pass",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "should_fix",
+        "category": "scope",
+        "confidence": "medium",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:59",
+        "scenario": "실제 project worktree에서는 TASK.md·PROJECT.md·log.jsonl이 수정 상태인 경우가 많다. test-map에 projects/**가 없으므로 이때 `pace test changed`는 대부분 전체 전환되고, 신호 2는 사실상 명시 `pace test file`에만 의존한다. 그런데 AGENTS.md의 개발 중 안내는 `pace test changed`다. 전체 전환 출력에서 명시 file을 안내하는지, 작업자가 file을 쓰도록 하는 절차를 누가 맡는지(T04·T05 인계 항목인지)가 적혀 있지 않다. 이대로면 권고가 '초기에' 나올 기회가 줄어든다",
+        "reproduction": "정적 근거: .pace/test-map.json(projects/** 미매핑), changed.ts 미분류 전체 전환, runner.ts:22-29(file 분기는 Git 상태와 무관). TASK.md:59는 '명시 file을 사용한다'고만 하고 안내 주체·출력이 없다",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "should_fix",
+        "category": "observable",
+        "confidence": "medium",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:46",
+        "scenario": "신호 2의 계수 대상이 'Node·Python 어댑터'로 한정돼 있다. 하지만 fileResults는 vitest 어댑터도 지원한다(execute.ts:10-11). vitest 파일의 실패를 세는지, 불명으로 처리하는지, 관측하지 않는지가 정해져 있지 않아 구현마다 동작이 갈릴 수 있다",
+        "reproduction": "execute.ts:10 지원 러너 목록 [node-test, python-unittest, vitest]과 TASK.md:46의 어댑터 열거를 대조한다",
+        "impact": "criterion",
+        "criterion": "T-2",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "detection",
+        "confidence": "low",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:46",
+        "scenario": "changed는 stopEarly=true로 실행한다(changed.ts:169). 첫 실패 뒤 실행되지 않은 같은 unit의 뒷 파일을 '불완전 결과'(불명, 연속성 끊음)로 볼지 '미관측'(streak 유지)으로 볼지 모호하다. 불명으로 처리하면 다른 파일의 실패 때문에 정상 streak가 끊긴다. S-2에 이 사례가 없다",
+        "reproduction": "S-2에 같은 unit의 두 시험 파일 A·B가 있고 A가 먼저 실패해 B가 미실행되는 회차를 끼운 B의 fail→(미실행)→fail 사례를 추가해 기대값을 고정한다",
+        "impact": "criterion",
+        "criterion": "T-2",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "should_fix",
+        "category": "other",
+        "confidence": "low",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:60",
+        "scenario": "이번 수정으로 `.git` common dir의 worktrees 아래에 쓰는 새 기록 위치가 생긴다. 그런데 docs/SECURITY.md·docs/TESTING.md는 '적용 기준으로 사용'만 하고 갱신 경로에 없다. 민감 경로(src/test-runner)에 생긴 새 쓰기 경계가 문서에 반영되지 않는다",
+        "reproduction": "권한 paths 10개와 docs 문서 표의 src/test-runner·민감 경로 적용 범위를 대조한다",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "note",
+        "category": "observable",
+        "confidence": "low",
+        "location": "projects/P014_261126_문제_해결_전문가_에이전트/tasks/T02_조기_호출_도구_신호와_문턱/TASK.md:48",
+        "scenario": "신호 4 문장이 '확인한다… 경우만 확인할 때만 낸다'로 중복·비문이라 판정 조건(직접 본문 비교와 Git 패치 양쪽 구획 비교 중 무엇이 필요한지)을 읽기 어렵다. S-4가 양성·보류를 고정하므로 판정에는 넣지 않는다",
+        "reproduction": null,
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "직전 present 유지(TASK.md:28, :45, S-1 :37). 바뀐 줄의 영향: :45에 결합 조건 비교 '미확인'이 명시됐고, S-5(:41)에 evidence/convergence-driver.txt·convergence.json과 같은 표본 7/27·3/8이 고정돼 직전 F2(재현 수단 부재)가 해소됐다. 원장 수치 자체는 재계산하지 않았다"
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "직전 unverified(F1)에서 바뀌었다. :53에서 기록을 Git common dir/worktrees 아래의 worktree 전용 메타데이터 경로로 옮겨 추적·미추적 변경을 만들지 않으므로 자기 간섭이 제거된다. T-2(:29)는 '작업본 상태 불변'을 기준으로 삼는다. S-2(:38)는 실제 worktree에서 첫 기록 뒤 둘째 changed 선택, TASK 변경 시 전체 전환 유지와 명시 file 관측, 시간 초과 2회 무권고, 미선택 streak 유지를 고정해 결함이 생기면 실패한다. runner.ts:22-29의 file 분기는 Git 상태와 무관하게 도달 가능하다. :46의 불명 분류는 execute.ts의 시간 초과·신호·0건·skip 분기와 맞춰졌다(직전 F5 해소). 남은 모호점은 vitest와 stopEarly 미실행 파일(F2, F3)"
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "직전 present 유지. :47에 '양쪽 기준 ID 없음이면 같은 명시 영향' 규칙이 생기고 S-3(:39)에 기준 없는 목표 지적 재발이 추가돼 직전 F3이 해소됐다. :48이 신호 4 근거를 loadRereview(verify-cli.ts:107-155, 스냅숏·해시 검증)와 Git 패치 양쪽 구획으로 정했고, S-4(:40)에 실제 verify 두 회차의 superficial_fix 양성과 미실행·잘못된 근거 보류가 들어가 직전 F4가 해소됐다"
+        },
+        {
+          "id": "T-4",
+          "state": "present",
+          "observation": "직전 present 유지(:31, :52-55). 바뀐 줄의 영향: 구현 경로에 runner.ts가 추가돼(:54) file 분기 관측을 구현할 수 있다. :53에 안전한 디렉터리·일반 파일 검증, 추적 파일 불변, 본문·stdout 미기록, 오류 비전파가 유지된다. S-4·S-5가 경계와 BR02 대조를 유지한다. 문서 갱신 누락은 F4(should_fix)"
+        }
+      ],
+      "issues": []
+    },
+    "permission": {
+      "mode": "implementation",
+      "paths": [
+        "src/agent/verify-cli.ts",
+        "src/agent/review-signals.ts",
+        "src/test-runner/execute.ts",
+        "src/test-runner/changed.ts",
+        "src/test-runner/runner.ts",
+        "src/test-runner/signals.ts",
+        "test/agent-review-log.test.ts",
+        "test/review-signals.test.ts",
+        "test/test-runner.test.ts",
+        "skills/pace-team/references/required-roles.md"
+      ],
+      "protected": [
+        {
+          "from": 24,
+          "to": 31
+        },
+        {
+          "from": 37,
+          "to": 41
+        },
+        {
+          "from": 45,
+          "to": 48
+        },
+        {
+          "from": 52,
+          "to": 55
+        }
+      ]
+    }
+  }
+}

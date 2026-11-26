@@ -1,0 +1,41 @@
+✔ T09는 일반·공동 소진 뒤 지적과 수정 영향을 확인하고 미실행은 같은 확인에서 복구한다 (62.817667ms)
+✔ T09 수정 확인은 태스크의 사전·사후가 두 회를 나눠 쓴다 (29.74925ms)
+✔ T09는 양쪽 상한을 다 쓴 뒤 진단 재실패로 단위를 상위 검토까지 보류한다 (29.273416ms)
+✔ T09는 별도 2차 상위 근거와 한 번의 확인 뒤 A-1로 종료한다 (29.3995ms)
+✔ T09는 실제 계약 변경과 일치하는 A-1 근거가 있을 때 해당 단계의 일반 예산만 다시 센다 (46.836208ms)
+✔ T09는 필수 확인을 복구하고 실제 검증 완화나 잔여 blocking 수용은 A-3 요청으로 분리한다 (29.152541ms)
+✔ T09 한정 확인이 실패해도 판정 범위와 원래 유효 지적 목록을 유지한다 (15.576042ms)
+✔ T09는 기존 합의 안의 계약 문구 변경을 실행·보고하며 일반 예산을 다시 열지 않는다 (19.659959ms)
+✔ T09는 원래 지적을 모두 확인하면 한정 확인 결과를 단계 pass와 구별해 보고한다 (8.815209ms)
+✔ T09는 상위 검토 전에 확인된 문구 동등성과 진단 실패의 최신 원문을 잇는다 (19.787583ms)
+✔ T09 원장 진단 뒤 재실패는 공동 시도가 남아도 즉시 같은 단위를 상위 검토에 보류한다 (6.74575ms)
+✔ T09는 같은 단위의 다음 유효 검토를 진단과 연결하고 미확인에는 판정을 보류한다 (5.95025ms)
+✔ T09는 이른 진단의 원문을 요구하고 첫 독립 통과는 그 진단을 닫는다 (3.800125ms)
+✔ T09는 같은 단위의 다른 대상이 통과해도 원래 진단의 실패 발동을 유지한다 (4.633333ms)
+✔ general review recommends a troubleshooter only on the second valid failure (32.68125ms)
+✔ verify reports the repeated file area before spending the second valid review round (18.0305ms)
+✔ P013 T01: 같은 태스크의 두 원장이 구현 후 예산을 공유하고 사전 예산과 분리한다 (18.895333ms)
+✔ P013 T01: 백로그 파일과 종류를 바꾸어도 한 예산에서 끝난다 (3.509875ms)
+✔ P013 T01: 옛 원장의 판정 두 건은 pm 결정과 pass 뒤에도 소급해 센다 (2.073167ms)
+✔ P013 T01: 옛 evidence/TASK.md의 goal·task 판정과 복구는 사전 예산을 쓰지 않는다 (3.141ms)
+✔ P013 T01: 무효·중단·unknown은 판정 없이 공유 예약 수만 쓴다 (5.567167ms)
+✔ P013 T01: 마지막 판정 자리는 두 원장에서 동시에 실행되지 않는다 (3.754208ms)
+✔ P013 T01: 교차 검토 미실행과 실행된 B1 폴백은 각 호출·판정에 반영한다 (4.131583ms)
+✔ P013 T01: 사전 검토의 구조 누락이 첫 전체 판정을 소비하지 않는다 (2.136291ms)
+✔ P013 T01: 옛 구조 전용 판정은 근거가 확인되면 호출로만 보존한다 (4.531125ms)
+✔ review signals distinguish an area's recurrence from repeatedly touched code (11.979375ms)
+✔ review signals never infer a partial fix by comparing different artifacts (0.138ms)
+✔ review signals ignore voided, interrupted and unverified rows (0.137375ms)
+✔ review signals can match a goal impact without a criterion ID (0.155584ms)
+✔ test signals: changed stays selective after recording and a dirty project can use an explicit file (4426.432292ms)
+✔ test signals: a file skipped by stopEarly preserves its streak and timeout is unverified (3852.16675ms)
+✔ test signals: Python failures are observed and empty or skipped Node files remain unverified (1903.294ms)
+✔ test signals: unsafe local history never alters a linked destination or the test result (1359.887417ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11786.153041

@@ -1,0 +1,41 @@
+from collections import defaultdict
+import json
+import re
+import subprocess
+
+BASE = "4c7621d"
+NAME = re.compile(r"projects/P\d+_[^/]+/(?:(?:tasks/T\d+_[^/]+/)?(?:evidence/)?)REVIEW-LOG\.jsonl$")
+def git(*args):
+    return subprocess.check_output(["git", *args], text=True)
+paths = git("ls-tree", "-r", "--name-only", "-z", BASE, "projects").split("\0")
+observations = []
+for path in sorted(p for p in paths if NAME.fullmatch(p)):
+    rows = [json.loads(line) for line in git("show", f"{BASE}:{path}").splitlines() if line.strip()]
+    voided = {(row.get("target"), row.get("record")) for row in rows if row.get("type") == "void"}
+    by_target = defaultdict(list)
+    for row in rows:
+        target, record, kind = (row.get(key) for key in ("target", "record", "type"))
+        if not target or row.get("interrupted") or row.get("stale") or (target, record) in voided:
+            continue
+        if kind in {"decision", "diagnosis"}:
+            by_target[target].append((kind, None))
+        elif kind == "review" and row.get("verdict") in {"pass", "fail"} and row.get("rereview_of") != record:
+            by_target[target].append((row["verdict"], record))
+    for target, judgments in sorted(by_target.items()):
+        streak = 0
+        for i, (verdict, record) in enumerate(judgments):
+            streak = streak + 1 if verdict == "fail" else 0
+            if streak == 2:
+                next_verdict, next_record = judgments[i + 1] if i + 1 < len(judgments) else (None, None)
+                observations.append({
+                    "ledger": path, "target": target, "secondFailure": record,
+                    "nextVerdict": next_verdict, "nextRecord": next_record,
+                })
+known = [row for row in observations if row["nextVerdict"] in {"pass", "fail"}]
+outside_largest = [row for row in known if "/tasks/T06_팀_측정과_회고/" not in row["ledger"]]
+counts = lambda rows: {v: sum(row["nextVerdict"] == v for row in rows) for v in ("pass", "fail")}
+print(json.dumps({
+    "base": git("rev-parse", BASE).strip(), "outcomes": counts(known),
+    "unobserved": len(observations) - len(known), "excludingP009T06": counts(outside_largest),
+    "observations": observations,
+}, ensure_ascii=False, indent=2))

@@ -1,0 +1,203 @@
+{
+  "base": "4c7621d319aafe43e307cc5f010f1f2362fe3e01",
+  "outcomes": {
+    "pass": 7,
+    "fail": 20
+  },
+  "unobserved": 0,
+  "excludingP009T06": {
+    "pass": 3,
+    "fail": 5
+  },
+  "observations": [
+    {
+      "ledger": "projects/P005_261119_PACE_daemon_사용_준비/tasks/T04_실사용_요청_검증/REVIEW-LOG.jsonl",
+      "target": "TASK-CLOSE.md",
+      "secondFailure": "review-records/R8.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R9.json"
+    },
+    {
+      "ledger": "projects/P005_261119_PACE_daemon_사용_준비/tasks/T04_실사용_요청_검증/REVIEW-LOG.jsonl",
+      "target": "TASK-CLOSE.md",
+      "secondFailure": "review-records/R12.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R13.json"
+    },
+    {
+      "ledger": "projects/P005_261119_PACE_daemon_사용_준비/tasks/T04_실사용_요청_검증/REVIEW-LOG.jsonl",
+      "target": "TASK.md",
+      "secondFailure": "review-records/R2.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R3.json"
+    },
+    {
+      "ledger": "projects/P007_261123_검토_반복_실패_근본_진단_하네스/tasks/T02_스킬_진단·결정_절차/REVIEW-LOG.jsonl",
+      "target": "TASK.md",
+      "secondFailure": "review-records/R2.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R3.json"
+    },
+    {
+      "ledger": "projects/P007_261123_검토_반복_실패_근본_진단_하네스/tasks/T02_스킬_진단·결정_절차/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R2.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R3.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T01_역할_적재_실측과_도입_전_기준선/REVIEW-LOG.jsonl",
+      "target": "TASK.md",
+      "secondFailure": "review-records/R4.json",
+      "nextVerdict": "pass",
+      "nextRecord": "review-records/R5.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T05_공유_자원_잠금/REVIEW-LOG.jsonl",
+      "target": "TASK.md",
+      "secondFailure": "review-records/R2.json",
+      "nextVerdict": "pass",
+      "nextRecord": "review-records/R3.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R5.json",
+      "nextVerdict": "pass",
+      "nextRecord": "review-records/R6.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R8.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R9.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R12.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R13.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R16.json",
+      "nextVerdict": "pass",
+      "nextRecord": "review-records/R17.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R21.json",
+      "nextVerdict": "pass",
+      "nextRecord": "review-records/R22.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R24.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R25.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R28.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R29.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R32.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R33.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R38.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R39.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R42.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R43.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R46.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R47.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R50.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R51.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R54.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R55.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R58.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R59.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R62.json",
+      "nextVerdict": "pass",
+      "nextRecord": "review-records/R63.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R65.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R66.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R69.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R70.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R73.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R74.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T06_팀_측정과_회고/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R77.json",
+      "nextVerdict": "fail",
+      "nextRecord": "review-records/R78.json"
+    },
+    {
+      "ledger": "projects/P009_261123_프로젝트_맞춤_에이전트_팀/tasks/T07_pace-team_스킬(분석·인터뷰·설계)/evidence/REVIEW-LOG.jsonl",
+      "target": "impl-diff.patch",
+      "secondFailure": "review-records/R4.json",
+      "nextVerdict": "pass",
+      "nextRecord": "review-records/R5.json"
+    }
+  ]
+}

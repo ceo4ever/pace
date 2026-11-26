@@ -1,0 +1,14 @@
+**독립 tester 2단계 판정은 fail입니다.** 지정 Node 시험은 종료 0으로 7개 모두 통과했고, `python3 convergence-driver.txt`도 종료 0으로 제출된 `convergence.json`과 일치했습니다. 후보 시험의 단언만으로는 T-1~T-4 전체를 통과시킬 수 없습니다.
+
+| 기준 | 실행·선택 | 기준 충족·검출력 | 약화 없음 |
+|---|---|---|---|
+| **T-1 fail** | 일반 `verify` 시험 1개와 역사 원장 드라이버를 실행했습니다. | 첫 실패와 미실행에는 권고가 없었고, 두 번째 실패에서 단위와 정확한 판정 참조 2개를 확인했습니다. 세 번째는 기존 `diagnose`로 갔습니다. 첫 회 오탐과 두 번째 누락은 검출하지만, 중단·무효 행이 기존 실패 사이에 끼는 경우는 다루지 않습니다. `budget_exhausted`·종료 16을 검사하는 기존 시험도 이번 선택에서 빠졌습니다. [일반 검토 시험](/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-p014-t02-independent.MRfmWLMaAT/checkout/test/agent-review-log.test.ts:44) | 기존 예산 단언은 diff에서 유지됐습니다. |
+| **T-2 fail** | 실제 임시 프로젝트 worktree를 쓰는 시험 3개를 실행했습니다. | 두 번째 `changed`의 선택 유지와 실패 종료, 작업본 상태 보존, 명시 `file`, 성공·타임아웃 뒤 연속성 초기화, 조기 중단으로 미실행된 파일의 연속성 유지, 직접 Node 실행의 기록 제외를 확인했습니다. 전체 전환은 안내 문구와 이력 건수만 검사해, 선언 검사가 실제로 실행돼 실패해도 그 결과가 보존되고 기록에서 빠지는지는 검출하지 못합니다. Python과 0건·전부 skip·불완전 결과의 이력 처리도 이번 표본 밖입니다. [선택 시험](/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-p014-t02-independent.MRfmWLMaAT/checkout/test/test-runner.test.ts:53) | 기존 선택 검사 단언은 diff에서 유지됐습니다. |
+| **T-3 fail** | 구조화 검토 단위 시험 2개와 `verify` 시험 1개를 실행했습니다. | ID·근접 행이 바뀐 재발, 기준 없는 목표 지적, 등급 차이, 다른 위치·기준·구분, 파일 구획 무변경을 구별했습니다. 직전 전체 판정이 `unknown`이어도 유효한 개별 지적을 비교하는 경우도 확인했습니다. 미실행 또는 검증할 수 없는 직전 기록에서 권고를 보류하는 `verify` 음성 대조는 부족합니다. [단위 시험](/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-p014-t02-independent.MRfmWLMaAT/checkout/test/review-signals.test.ts:34) · [verify 시험](/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-p014-t02-independent.MRfmWLMaAT/checkout/test/agent-review-log.test.ts:94) | 기존 검토 단언을 제거하거나 완화한 변경은 없었습니다. |
+| **T-4 fail** | 선택 시험의 출력·원장·경계 단언과 `TS-01`~`TS-05` 등록을 대조했습니다. | 일반 검토와 시험 권고의 유형·단위·근거, 구조화 검토의 판정·원장과 예산 1회 상태, 링크 대상과 검사 실패 코드 보존을 확인했습니다. `verify` 출력의 두 구조화 신호 각각에 대한 단위·근거, 소진·`upper_review`·채택된 팀의 보존, 다른 저장소·비밀 경계는 선택 시험으로 충분히 검출되지 않습니다. 요건 ID와 버전 1 등록은 확인했으며, BR02가 요구한 점검 결과 대조표는 제공된 후보에서 확인하지 못했습니다. [요건 등록](/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-p014-t02-independent.MRfmWLMaAT/checkout/skills/pace-team/references/required-roles.md:46) | 기존 회귀 단언은 diff에서 유지됐습니다. |
+
+**1단계와 상위 목적 대조.** 두 번째 실패에서 근거와 함께 권고하는 동작은 반복 검토·검사의 낭비를 줄이려는 P014의 방향에 맞습니다. 고정 기준 `4c7621d`에서 두 번째 실패 직후 다음 판정은 통과 7/27, 실패 20/27, 미관측 0건이었고 P009 T06 제외 시 통과 3/8이었습니다. 이는 문턱을 정할 때 쓴 역사적 근거입니다. 같은 영역 조건의 수렴률은 비교 가능한 구조화 기록이 없어 판단을 보류합니다. 권고 도입 뒤 수렴 개선과 기존 품질 경로 보존까지 포함한 상위 목적 달성은 미확인입니다.
+
+**PM 재현 지점.** 1단계가 지목한 `superficial_fix`는 같은 지적이 12행에 남고 같은 파일의 100행 수정 내용만 바뀌어도 출력될 수 있습니다. 코드가 지적 영역과 수정 행의 겹침을 확인하지 않고 파일 구획 전체의 추가·삭제 행을 비교하기 때문입니다. TASK와 BR02는 파일 단위 대리 지표를 허용하므로, 이 사례는 신호의 정밀도 한계로 남깁니다. 별도 재현은 실행하지 않았습니다. [파일 구획 비교](/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-p014-t02-independent.MRfmWLMaAT/checkout/src/agent/review-signals.ts:55)
+
+지정한 두 명령만 실행했습니다. 후보 코드는 수정하지 않았고, PM이 진행 중인 전체 회귀는 이 세션에서 직접 관측하지 않았습니다.

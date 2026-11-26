@@ -10,3 +10,9 @@
 {"ts":"2026-11-26T11:50:50.458Z","p":"P014","t":"T01","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T11:50:57.420Z","p":"P014","t":"T01","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T11:50:57.420Z","p":"P014","t":"T01","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T11:51:33.829Z","p":"P014","t":"T02","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T12:20:06.389Z","p":"P014","t":"T02","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0, 신호와 팀 채택 회귀·요건 대조 보충 확인","ref":"tasks/T02_조기_호출_도구_신호와_문턱/evidence/tester-supplement.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-26T12:21:46.956Z","p":"P014","t":"T02","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1, 예산 소진 분기와 독립 목적·민감 경계 검토","ref":"tasks/T02_조기_호출_도구_신호와_문턱/evidence/review-records/R1.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T12:26:19.749Z","p":"P014","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T12:26:20.047Z","p":"P014","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T12:26:20.047Z","p":"P014","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}

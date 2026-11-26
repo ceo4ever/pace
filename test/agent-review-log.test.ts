@@ -41,6 +41,28 @@ function harness() {
 const FIRST = /이전 지적과 그 대응 문서는 받거나 읽지 않는다/;
 const REREVIEW = /판정 범위: 직전 검토의 blocking이 해소됐는지/;
 
+test("general review recommends a troubleshooter only on the second valid failure", async () => {
+  const h = harness();
+  h.set("initial");
+  const first = await h.verify("F1 [blocking] example\nfail");
+  assert.equal(first.json.troubleshooterSignals, undefined);
+  h.set("first change");
+  const second = await h.verify("F2 [blocking] example\nfail");
+  assert.deepEqual(second.json.troubleshooterSignals, [{
+    kind: "review_failures", unit: { kind: "artifact", ref: "TASK.md" },
+    evidence: [first.json.review.record, second.json.review.record],
+  }]);
+  assert.equal(h.ledger().filter((row) => row.type === "review").length, 2);
+  h.set("second change");
+  const third = await h.verify("F3 [blocking] example\nfail");
+  assert.equal(third.json.troubleshooterSignals, undefined);
+  assert.equal(third.json.escalation.stage, "diagnose");
+  const offline = harness();
+  offline.set("offline");
+  offline.offline();
+  assert.equal((await offline.verify("unavailable")).json.troubleshooterSignals, undefined);
+});
+
 function budgetHarness() {
   const dir = tempDir("pace-review-budget-");
   const task = join(dir, "projects/P013_budget/tasks/T01_budget");
@@ -68,6 +90,51 @@ function budgetHarness() {
   };
   return { task, backlog, prompts, review };
 }
+
+test("verify reports the repeated file area before spending the second valid review round", async () => {
+  const h = budgetHarness();
+  writeFileSync(join(h.task, "TASK.md"), "## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | 입력 검증 |\n| T-2 | 기록 보존 |\n");
+  const target = join(h.task, "evidence/implementation.patch");
+  const raw = (id: string, line: number, complete: boolean) => [
+    "```pace-review", JSON.stringify({
+      version: 2, findings: [{
+        id, severity: "should_fix", category: "criteria", location: `src/codec.ts:${line}`,
+        scenario: "유효하지 않은 값을 거부하지 않는다", reproduction: "검증 시험에 빈 값을 준다",
+        confidence: "high", impact: "criterion", criterion: "T-1", safety_path: null,
+      }, ...(complete ? [{
+        id: "F8", severity: "blocking", category: "criteria", location: "src/storage.ts:5",
+        scenario: "기존 기록을 지운다", reproduction: "두 기록을 보존하는 고정 시험 실행",
+        confidence: "high", impact: "criterion", criterion: "T-2", safety_path: null,
+      }] : [])],
+      criteria: [
+        { id: "T-1", state: "present", observation: "빈 입력을 호출했다" },
+        ...(complete ? [{ id: "T-2", state: "present", observation: "실패한 기록 바이트가 유지됐다" }] : []),
+      ],
+    }), "```", "fail",
+  ].join("\n");
+  const patch = (value: string) => `diff --git a/src/codec.ts b/src/codec.ts\n--- a/src/codec.ts\n+++ b/src/codec.ts\n@@ -12 +12 @@\n-original\n+${value}\n`;
+  writeFileSync(target, patch("first edit"));
+  const before = await h.review(target, raw("F1", 12, false));
+  assert.equal(before.json.review.verdict, "unknown");
+  assert.equal(before.json.troubleshooterSignals, undefined);
+  writeFileSync(target, patch("second edit"));
+  const after = await h.review(target, raw("F7", 16, true));
+  assert.equal(after.json.review.verdict, "fail");
+  assert.equal(after.json.budget.rounds, 1);
+  assert.equal(after.json.budget.exhausted, null);
+  assert.deepEqual(after.json.troubleshooterSignals, ["recurring_area", "superficial_fix"].map((kind) => ({
+    kind, unit: { kind: "task", ref: "T01_budget/post" }, file: "src/codec.ts",
+    evidence: [before.json.review.record, after.json.review.record],
+  })));
+  const records = readLedger(target).filter((entry) => entry.type === "review");
+  assert.deepEqual(records.map((item) => item.verdict), ["unknown", "fail"]);
+  assert.ok(records.every((item) => !Object.hasOwn(item, "troubleshooterSignals")));
+  writeFileSync(join(h.task, "evidence", after.json.review.record), "{}");
+  writeFileSync(target, patch("change following a damaged record"));
+  const damaged = await h.review(target, raw("F9", 16, true));
+  assert.equal(damaged.code, 2);
+  assert.equal(damaged.json.troubleshooterSignals, undefined);
+});
 
 test("P013 T01: 같은 태스크의 두 원장이 구현 후 예산을 공유하고 사전 예산과 분리한다", async () => {
   const h = budgetHarness();

@@ -5,7 +5,9 @@ import { fileURLToPath } from "node:url";
 import { inside } from "./map.ts";
 import type { Unit } from "./map.ts";
 export type Outcome = { code: number; text: string; interrupted?: boolean };
-export async function fileResults(root: string, unit: Unit, files: string[], timeout: number, stopEarly = false): Promise<Outcome> {
+export type TestObservation = { file: string; verdict: "passed" | "failed" | "unknown" };
+export async function fileResults(root: string, unit: Unit, files: string[], timeout: number, stopEarly = false,
+  observe?: (observation: TestObservation) => void): Promise<Outcome> {
   const kind = unit.runner.kind;
   if (unit.requires.length || !["node-test", "python-unittest", "vitest"].includes(kind) || (unit.runner.config && kind !== "vitest")) return { code: 3, text: `확인 불가: ${unit.id} — 미지원 러너·설정 또는 전제` };
   const driver = fileURLToPath(new URL(kind === "node-test" ? "./node-driver.mjs" : kind === "vitest" ? "./vitest-driver.mjs" : "./python-driver.py", import.meta.url));
@@ -31,18 +33,28 @@ export async function fileResults(root: string, unit: Unit, files: string[], tim
       child.on("close", (status, signal) => { if (ended) return; ended = true; clearTimeout(timer); for (const name of signals) process.off(name, interrupted); done({ status, signal, output, error, started: (child.pid ?? 0) > 0 }); });
     });
     log += `\n대상: ${file}\n명령: ${JSON.stringify([executable, ...argv])}\n시간: ${Date.now() - start}ms · 종료: ${result.status ?? result.signal ?? "오류"}\n${result.output[1] ?? ""}${result.output[2] ?? ""}`;
-    if (stopEarly && !result.started && result.error) { unknown++; log += "실행 시작 확인 불가\n"; break; }
-    if (result.error || result.signal || result.status !== 0) { failures++; if (result.error?.message.startsWith("중단:")) interrupted = true; if (interrupted || stopEarly) break; continue; }
-    let data: unknown; try { data = JSON.parse(String(result.output[3] ?? "")); } catch { unknown++; if (stopEarly) break; continue; }
-    if (data === null && kind === "node-test") { failures++; log += "0건 실패\n"; if (stopEarly) break; continue; }
-    if (!data || typeof data !== "object") { unknown++; if (stopEarly) break; continue; }
-    const record = data as Record<string, unknown>;
-    if (typeof record.unavailable === "string") { unknown++; log += `확인 불가: ${record.unavailable}\n`; if (stopEarly) break; continue; }
-    const counts = (kind === "python-unittest" ? record : record.counts) as Record<string, unknown> | undefined;
-    if (!counts || typeof counts.tests !== "number" || typeof counts.skipped !== "number" || typeof counts.failed !== "number" || typeof record.success !== "boolean") { unknown++; if (stopEarly) break; continue; }
-    const todo = typeof counts.todo === "number" ? counts.todo : 0;
-    log += `테스트 ${counts.tests} · skip ${counts.skipped} · 실패 ${counts.failed}\n`;
-    if (!record.success || counts.failed > 0 || counts.tests === 0 || counts.tests <= counts.skipped + todo) { failures++; if (stopEarly) break; }
+    let verdict: TestObservation["verdict"] = "unknown";
+    try {
+      if (stopEarly && !result.started && result.error) { unknown++; log += "실행 시작 확인 불가\n"; break; }
+      if (result.error || result.signal || result.status !== 0) { failures++; if (result.error?.message.startsWith("중단:")) interrupted = true; if (interrupted || stopEarly) break; continue; }
+      let data: unknown; try { data = JSON.parse(String(result.output[3] ?? "")); } catch { unknown++; if (stopEarly) break; continue; }
+      if (data === null && kind === "node-test") { failures++; log += "0건 실패\n"; if (stopEarly) break; continue; }
+      if (!data || typeof data !== "object") { unknown++; if (stopEarly) break; continue; }
+      const record = data as Record<string, unknown>;
+      if (typeof record.unavailable === "string") { unknown++; log += `확인 불가: ${record.unavailable}\n`; if (stopEarly) break; continue; }
+      const counts = (kind === "python-unittest" ? record : record.counts) as Record<string, unknown> | undefined;
+      if (!counts || typeof counts.tests !== "number" || typeof counts.skipped !== "number" || typeof counts.failed !== "number" || typeof record.success !== "boolean") { unknown++; if (stopEarly) break; continue; }
+      const todo = typeof counts.todo === "number" ? counts.todo : 0;
+      log += `테스트 ${counts.tests} · skip ${counts.skipped} · 실패 ${counts.failed}\n`;
+      const ran = counts.tests - counts.skipped - todo;
+      if ([counts.tests, counts.skipped, counts.failed, todo].every((count) => Number.isSafeInteger(count) && count >= 0) &&
+          ran > 0 && counts.failed <= ran && record.success === (counts.failed === 0)) {
+        verdict = record.success ? "passed" : "failed";
+      }
+      if (!record.success || counts.failed > 0 || counts.tests === 0 || counts.tests <= counts.skipped + todo) { failures++; if (stopEarly) break; }
+    } finally {
+      if (kind !== "vitest") observe?.({ file: batch[0]!, verdict });
+    }
   }
   return { code: failures ? 1 : unknown ? 3 : 0, text: log, interrupted };
 }

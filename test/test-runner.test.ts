@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, writeFileSync, symlinkSync, readFileSync, existsSync, chmodSync, rmSync } from "node:fs";
+import { mkdirSync, writeFileSync, symlinkSync, readFileSync, existsSync, chmodSync, renameSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { executeTest } from "../src/test-runner/runner.ts";
@@ -24,6 +24,134 @@ function fixture() {
   const save = () => write(".pace/test-map.json", JSON.stringify(map)); save(); git("add", "docs/README.md"); git("commit", "-qm", "init");
   return {root, write, git, map, save};
 }
+
+function signalWorktree() {
+  const f = fixture(), home = tempDir("pace-test-signal-home-");
+  const env = sessionFreeEnv();
+  const git = (root: string, ...args: string[]) => {
+    const result = spawnSync("git", ["-C", root, ...args], { env, encoding: "utf8" });
+    assert.equal(result.status, 0, result.stderr);
+    return result.stdout.trim();
+  };
+  f.map.units = [
+    { id: "selected", sources: ["src/a.ts"], tests: ["test/fail.test.mjs", "test/pass.test.mjs"],
+      runner: { kind: "node-test", cwd: "." }, requires: [] },
+    { id: "python", sources: ["pkg/__init__.py"], tests: ["test/test_pass.py"],
+      runner: { kind: "python-unittest", cwd: "." }, requires: [] },
+  ];
+  f.write("docs/README.md", "# app\n\n## 환경\n\n- 검사: `node -e \"console.log('full fallback executed'); process.exit(7)\"`\n");
+  f.write(".pace/test-map.json", JSON.stringify({ ...f.map, checks: [] }));
+  f.git("add", "-A"); f.git("commit", "-qm", "test mapping");
+  const run = (cwd: string, ...args: string[]) => runPace(args, { cwd, home, env });
+  assert.equal(run(f.root, "project", "new", "test signal").status, 0);
+  const start = run(f.root, "project", "start", "P001", "--no-launch", "--agent", "codex");
+  assert.equal(start.status, 0, start.stderr);
+  const worktree = `${f.root}.wt/P001`;
+  git(worktree, "add", "projects"); git(worktree, "commit", "-qm", "clean starting worktree");
+  const history = join(git(worktree, "rev-parse", "--absolute-git-dir"), "pace/test-signals/log.jsonl");
+  const rows = () => readFileSync(history, "utf8").trim().split("\n").map((line) => JSON.parse(line));
+  return { root: f.root, worktree, history, rows, git, run };
+}
+
+const signalNotice = /문제 해결 호출 권고: (.+)/;
+const fixtureFailure = "import { test } from 'node:test'; test('known failure', () => { throw Error('fixture'); });\n";
+const fixturePass = "import { test } from 'node:test'; test('known success', () => {});\n";
+
+test("test signals: changed stays selective after recording and a dirty project can use an explicit file", () => {
+  const f = signalWorktree();
+  writeFileSync(join(f.worktree, "src/a.ts"), "export const a = 2;\n");
+  const before = f.git(f.worktree, "status", "--porcelain");
+  const run = (...args: string[]) => f.run(f.worktree, "test", ...args);
+  const first = run("changed");
+  assert.equal(first.status, 1, first.stderr);
+  assert.doesNotMatch(first.stdout, signalNotice);
+  assert.equal(f.rows().length, 1);
+  assert.equal(f.git(f.worktree, "status", "--porcelain"), before);
+  const env = sessionFreeEnv();
+  delete env.NODE_TEST_CONTEXT;
+  const external = spawnSync(process.execPath, ["--test", "test/fail.test.mjs"], { cwd: f.worktree, env });
+  assert.equal(external.status, 1);
+  assert.equal(f.rows().length, 1);
+  const second = run("changed");
+  assert.equal(second.status, 1, second.stderr);
+  assert.doesNotMatch(second.stdout, /전체 검사 전환/);
+  const secondSignal = JSON.parse(signalNotice.exec(second.stdout)![1]!);
+  assert.deepEqual(secondSignal, {
+    kind: "test_failures", unit: { kind: "test_file", ref: "test/fail.test.mjs" },
+    evidence: f.rows().map((row) => row.data.testAttempt),
+  });
+  assert.doesNotMatch(run("changed").stdout, signalNotice);
+  assert.equal(f.rows().length, 3);
+  const task = runPace(["project", "task", "P001", "sample"], { cwd: f.worktree, home: tempDir(), env: sessionFreeEnv() });
+  assert.equal(task.status, 0, task.stderr);
+  const fallback = run("changed");
+  assert.equal(fallback.status, 1);
+  assert.match(fallback.stdout, /전체 검사 전환/);
+  assert.match(fallback.stdout, /full fallback executed[\s\S]*판정: 전체 검사 실패/);
+  assert.doesNotMatch(fallback.stdout, signalNotice);
+  assert.equal(f.rows().length, 3);
+  writeFileSync(join(f.worktree, "test/fail.test.mjs"), fixturePass);
+  assert.equal(run("file", "test/fail.test.mjs").status, 0);
+  writeFileSync(join(f.worktree, "test/fail.test.mjs"), fixtureFailure);
+  assert.doesNotMatch(run("file", "test/fail.test.mjs").stdout, signalNotice);
+  assert.match(run("file", "test/fail.test.mjs").stdout, signalNotice);
+  assert.doesNotMatch(f.run(f.root, "test", "file", "test/fail.test.mjs").stdout, signalNotice);
+  const stats = f.run(f.worktree, "project", "stats", "P001", "--json");
+  assert.equal(stats.status, 0, stats.stderr);
+  assert.equal(JSON.parse(stats.stdout).team, undefined);
+});
+
+test("test signals: a file skipped by stopEarly preserves its streak and timeout is unverified", async () => {
+  const f = signalWorktree(), selected = "test/pass.test.mjs";
+  writeFileSync(join(f.worktree, selected), fixtureFailure);
+  const run = (...args: string[]) => f.run(f.worktree, "test", ...args);
+  assert.doesNotMatch(run("file", selected).stdout, signalNotice);
+  const other = run("changed");
+  assert.equal(other.status, 1, other.stderr);
+  assert.deepEqual(f.rows().map((row) => row.ref), [selected, "test/fail.test.mjs"]);
+  assert.match(run("file", selected).stdout, signalNotice);
+  writeFileSync(join(f.worktree, selected), "import {test} from 'node:test'; test('timeout', () => new Promise(() => { setInterval(() => {}, 100); }));\n");
+  for (let i = 0; i < 2; i++) {
+    const timeout = await executeTest(f.worktree, ["file", selected], 550);
+    assert.equal(timeout.code, 1);
+    assert.doesNotMatch(timeout.text, signalNotice);
+  }
+  assert.deepEqual(f.rows().slice(-2).map((row) => row.data.testResult), [3, 3]);
+  writeFileSync(join(f.worktree, selected), fixtureFailure);
+  assert.doesNotMatch(run("file", selected).stdout, signalNotice);
+  assert.match(run("file", selected).stdout, signalNotice);
+});
+
+test("test signals: Python failures are observed and empty or skipped Node files remain unverified", () => {
+  const f = signalWorktree(), pythonFile = "test/test_pass.py", nodeFile = "test/pass.test.mjs";
+  const run = (file: string) => f.run(f.worktree, "test", "file", file);
+  writeFileSync(join(f.worktree, pythonFile), "import unittest\nclass Case(unittest.TestCase):\n def test_fails(self): self.fail('fixture')\n");
+  const first = run(pythonFile), second = run(pythonFile);
+  assert.equal(first.status, 1);
+  assert.equal(second.status, 1);
+  assert.doesNotMatch(first.stdout, signalNotice);
+  assert.match(second.stdout, signalNotice);
+  for (const content of ["", "import {test} from 'node:test'; test.skip('skip', () => {});\n"]) {
+    writeFileSync(join(f.worktree, nodeFile), content);
+    const unverified = run(nodeFile);
+    assert.equal(unverified.status, 1);
+    assert.doesNotMatch(unverified.stdout, signalNotice);
+  }
+  assert.deepEqual(f.rows().map((row) => [row.ref, row.data.testResult]), [[pythonFile, 2], [pythonFile, 2], [nodeFile, 3], [nodeFile, 3]]);
+});
+
+test("test signals: unsafe local history never alters a linked destination or the test result", { skip: process.platform === "win32" }, () => {
+  const f = signalWorktree(), file = "test/fail.test.mjs";
+  assert.equal(f.run(f.worktree, "test", "file", file).status, 1);
+  const outside = join(tempDir("pace-signal-outside-"), "destination");
+  writeFileSync(outside, "preserve raw test history\n");
+  renameSync(f.history, f.history + ".original");
+  symlinkSync(outside, f.history);
+  const denied = f.run(f.worktree, "test", "file", file);
+  assert.equal(denied.status, 1);
+  assert.doesNotMatch(denied.stdout, signalNotice);
+  assert.equal(readFileSync(outside, "utf8"), "preserve raw test history\n");
+});
 
 test("실제 Node·Python 테스트의 성공, 빈 파일, 전체 skip 및 실패를 구분한다", async () => {
   const {root} = fixture();

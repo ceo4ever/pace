@@ -1,0 +1,708 @@
+diff --git a/skills/pace-team/references/required-roles.md b/skills/pace-team/references/required-roles.md
+index 9201e37..e9752cc 100644
+--- a/skills/pace-team/references/required-roles.md
++++ b/skills/pace-team/references/required-roles.md
+@@ -43,6 +43,11 @@
+ 
+ | 요건 ID | 요건 문장 | 근거 | 선행 장치 | 요건 버전 | 구분 |
+ |---|---|---|---|---|---|
++| TS-01 | 예산 단위에서 기존 검토 소진을 신호 1로 사용한다. 일반 산출물에서 유효한 연속 실패가 역사 근거로 정한 문턱에 처음 도달하면 검토 권고를 낸다. | [BR02 검토 오류](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR02_조기_호출_도구_신호와_문턱.md#범위) | P013 검토 예산, P014 T02 일반 검토 문턱과 `verify` 출력 | 1 | 고정 요건 |
++| TS-02 | 기록 대상 선택 시험에서 같은 시험 파일의 기록된 연속 실패가 문턱에 도달하면 시험 권고를 낸다. 기록 밖 실행과 결과를 확인할 수 없는 실패를 실패 횟수에 더하지 않는다. | [BR02 테스트 오류](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR02_조기_호출_도구_신호와_문턱.md#범위) | P014 T02 선택 시험 관측과 worktree 로컬 이력 | 1 | 고정 요건 |
++| TS-03 | 같은 파일 영역의 유효 지적이 다시 나오면 경계 재발을 알린다. 지적 ID나 근접 행이 바뀌어도 잡고, 같은 파일의 무관한 지적은 걸러낸다. | [BR02 경계 재발](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR02_조기_호출_도구_신호와_문턱.md#범위) | P013 구조화 검토 위치·기준, P014 T02 영역 대조 | 1 | 고정 요건 |
++| TS-04 | 수정 파일의 같은 영역에서 같은 적용 등급이 재지적될 때 겉만 고침의 대리 신호를 낸다. | [BR02 겉만 고침](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR02_조기_호출_도구_신호와_문턱.md#범위) | P014 T02 검토 스냅숏 파일 변화와 적용 등급 대조 | 1 | 고정 요건 |
++| TS-05 | 신호의 종류·단위·근거 회차를 도구 출력 또는 기록에서 확인할 수 있다. 문턱 직전과 기록 밖 시험 및 무관한 지적은 음성 대조한다. | [BR02 출력과 완료 기준](../../../backlogs/BL261125_01_문제_해결_전문가_에이전트/BR02_조기_호출_도구_신호와_문턱.md#완료-기준) | P014 T02 신호 출력과 음성 시험 | 1 | 고정 요건 |
+ 
+ ## 등록 대조
+ 
+diff --git a/src/agent/verify-cli.ts b/src/agent/verify-cli.ts
+index 5bc8544..893d678 100644
+--- a/src/agent/verify-cli.ts
++++ b/src/agent/verify-cli.ts
+@@ -11,7 +11,8 @@ import {
+ import { recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
+ import { checkGrant, checkRecoveryProof, confirmationDiagnosis, diagnosisLink, followupReport, FOLLOWUPS_FILE, openFollowup, openRecovery, readReviewState, recordFollowupExecution, recoveryGrant } from "./review-followup.ts";
+ import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
+-import { assessStructuredReview, effectiveBlocking, evidenceGaps, hasStructuredReviewFence, isStructuredStage } from "./structured-review.ts";
++import { assessStructuredReview, effectiveBlocking, evidenceGaps, hasStructuredReviewFence, isStructuredStage, type StructuredAssessment } from "./structured-review.ts";
++import { recurringReviewSignals, reviewFailureSignal } from "./review-signals.ts";
+ import { matchingCriteria, reviewCriteria } from "./review-criteria.ts";
+ import { isReviewText, matchesPermissionBasis, parseGrantedPermission, permissionBasis, samePermission, type PermissionBasis } from "../project/review-permission.ts";
+ 
+@@ -104,7 +105,8 @@ export function evidenceRereviewBase(ledgerTarget: string, name: string, criteri
+ }
+ 
+ /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
+-export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, kind: VerifyKind, scope?: ReviewBudgetScope): Rereview | undefined {
++type RereviewWithEvidence = Rereview & { previousSnapshot: string; previousAssessment?: StructuredAssessment };
++export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, kind: VerifyKind, scope?: ReviewBudgetScope): RereviewWithEvidence | undefined {
+   const sameTarget = join(dirname(ledgerTarget), base.target) === target;
+   if (sameTarget && currentHash === base.hash && base.verdict === "fail") throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
+   const file = join(dirname(ledgerTarget), base.record);
+@@ -120,6 +122,7 @@ export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: st
+   // 구조 누락 단건 판정은 나머지 평가를 억제했다. 구조를 채운 다음에는 목적·안전까지 처음 평가한다.
+   if (!scope && kind === "task" && proofScopeIssues(snapshot).length) return undefined;
+   let previousText = text;
++  let previousAssessment: StructuredAssessment | undefined;
+   const stamp = readLedger(ledgerTarget).findLast((row) => row.type === "format" && row.record === base.record);
+   if (stamp || base.required_criteria !== undefined || record.review?.required_criteria !== undefined) {
+     if (stamp?.type !== "format" || stamp.target !== base.target || stamp.hash !== base.hash ||
+@@ -138,6 +141,7 @@ export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: st
+     }
+     const assessment = assessStructuredReview(base.structured_stage, text, base.required_criteria,
+       base.permission_basis ? snapshot.split("\n").length : undefined);
++    previousAssessment = assessment;
+     if (assessment.verdict !== base.verdict) throw new AgentError("invalid_request", "구조화된 검토 기준점의 판정이 원장과 맞지 않는다");
+     const blocking = effectiveBlocking(assessment);
+     if (base.permission_basis && base.verdict === "pass") {
+@@ -152,7 +156,7 @@ export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: st
+       previousText += `\n\n직전 기준별 증거 상태\n${JSON.stringify(assessment.evidence)}`;
+     }
+   }
+-  return { previousText, diff: lineDiff(snapshot, current), previousPassed: base.verdict === "pass" };
++  return { previousText, diff: lineDiff(snapshot, current), previousPassed: base.verdict === "pass", previousSnapshot: snapshot, previousAssessment };
+ }
+ 
+ /** 원장에 없는 기록(중단·기록 끊김의 흔적)을 원장에 자동 복구한다 — 사람이 원장을 손으로 고치지 않게.
+@@ -440,6 +444,16 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     if (scope) {
+       const current = readReviewState(scope, hash);
+       output.budget = current.budget.status;
++      if (verdict === "fail" && !call.followup && !current.budget.status.exhausted && !current.recovery.upper &&
++          assessment && rereview?.previousAssessment && previousRecord && base) {
++        const root = resolve(scope.root, scope.unit === "task" ? "../../../.." : "../..");
++        const unit = { kind: scope.unit, ref: `${basename(scope.root)}/${scope.stage}` };
++        const signals = recurringReviewSignals(unit, root,
++          { target: resolve(dirname(base.ledgerTarget), base.entry.target), snapshot: rereview.previousSnapshot,
++            assessment: rereview.previousAssessment, record: previousRecord },
++          { target, snapshot: artifact, assessment, record: recordName });
++        if (signals.length) output.troubleshooterSignals = signals;
++      }
+       if (recovery || (call.after_diagnosis && current.recovery.upper)) {
+         const report = exhaustedFollowup(scope, current);
+         output.followup = { ...output.followup as object, report: report.report, next: report.action };
+@@ -448,6 +462,10 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+         }
+       }
+     } else if (after.stage !== "normal") output.escalation = escalation(after, target);
++    else {
++      const signal = reviewFailureSignal([...entries, entry], entry);
++      if (signal) output.troubleshooterSignals = [signal];
++    }
+     // 원장과 수정 확인 보고가 끝난 뒤 보조 사본을 쓴다.
+     if (out !== undefined) writeOrLedgerError(out, JSON.stringify(record, null, 2) + "\n", "--out 사본");
+     deps.write(JSON.stringify(output, null, 2) + "\n");
+diff --git a/src/test-runner/changed.ts b/src/test-runner/changed.ts
+index 4defc02..e992550 100644
+--- a/src/test-runner/changed.ts
++++ b/src/test-runner/changed.ts
+@@ -6,7 +6,8 @@ import { DEFINITION_FILES, openRepo, runDeclaredCheck, runDeclaredShell } from "
+ import { config, inside, safePath } from "./map.ts";
+ import type { Unit } from "./map.ts";
+ import { fileResults } from "./execute.ts";
+-import type { Outcome } from "./execute.ts";
++import type { Outcome, TestObservation } from "./execute.ts";
++import { recordTestSignals } from "./signals.ts";
+ 
+ const scope = "변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외\n전체 회귀: 프로젝트 전체 명령 · pace test all/finish는 기존 main 기준\n";
+ const message = (error: unknown) => error instanceof Error ? error.message : String(error);
+@@ -165,15 +166,20 @@ export async function executeChanged(cwd: string, timeout: number): Promise<Outc
+       if (result.execution === "unavailable") return full("사전 검사 시작 불가");
+       if (result.execution !== "passed") return { code: 1, interrupted: result.execution === "interrupted", text: text + "판정: 사전 검사 실패/중단" };
+     }
++    const observations: TestObservation[] = [];
++    const withSignals = (outcome: Outcome): Outcome => {
++      const signal = recordTestSignals(ctx.root, observations);
++      return signal ? { ...outcome, text: outcome.text + signal } : outcome;
++    };
+     for (const entry of selected.entries) {
+-      const result = await fileResults(ctx.root, entry.unit, entry.files, timeout, true);
++      const result = await fileResults(ctx.root, entry.unit, entry.files, timeout, true, (value) => observations.push(value));
+       observed.failed ||= result.code === 1 || result.interrupted === true;
+       observed.interrupted ||= result.interrupted === true;
+       text += `단위 ${entry.unit.id}:${result.text}\n`;
+-      if (result.interrupted || result.code === 1) return { code: 1, interrupted: result.interrupted, text: text + "판정: 선택 시험 실패/중단" };
+-      if (result.code !== 0) return full("선택 시험 결과 확인 불가");
++      if (result.interrupted || result.code === 1) return withSignals({ code: 1, interrupted: result.interrupted, text: text + "판정: 선택 시험 실패/중단" });
++      if (result.code !== 0) return withSignals(full("선택 시험 결과 확인 불가"));
+     }
+-    return { code: observed.failed ? 1 : 0, text: text + (observed.failed ? "판정: 실패/중단 보존" : "판정: 부분 통과 · 전체 회귀 제외") };
++    return withSignals({ code: observed.failed ? 1 : 0, text: text + (observed.failed ? "판정: 실패/중단 보존" : "판정: 부분 통과 · 전체 회귀 제외") });
+ 
+   } catch (error) {
+     return { code: observed.failed ? 1 : 3, interrupted: observed.interrupted, text: text + `실행 경계 예외: ${message(error)}` };
+diff --git a/src/test-runner/execute.ts b/src/test-runner/execute.ts
+index a4dbc86..36b54d3 100644
+--- a/src/test-runner/execute.ts
++++ b/src/test-runner/execute.ts
+@@ -5,7 +5,9 @@ import { fileURLToPath } from "node:url";
+ import { inside } from "./map.ts";
+ import type { Unit } from "./map.ts";
+ export type Outcome = { code: number; text: string; interrupted?: boolean };
+-export async function fileResults(root: string, unit: Unit, files: string[], timeout: number, stopEarly = false): Promise<Outcome> {
++export type TestObservation = { file: string; verdict: "passed" | "failed" | "unknown" };
++export async function fileResults(root: string, unit: Unit, files: string[], timeout: number, stopEarly = false,
++  observe?: (observation: TestObservation) => void): Promise<Outcome> {
+   const kind = unit.runner.kind;
+   if (unit.requires.length || !["node-test", "python-unittest", "vitest"].includes(kind) || (unit.runner.config && kind !== "vitest")) return { code: 3, text: `확인 불가: ${unit.id} — 미지원 러너·설정 또는 전제` };
+   const driver = fileURLToPath(new URL(kind === "node-test" ? "./node-driver.mjs" : kind === "vitest" ? "./vitest-driver.mjs" : "./python-driver.py", import.meta.url));
+@@ -31,18 +33,28 @@ export async function fileResults(root: string, unit: Unit, files: string[], tim
+       child.on("close", (status, signal) => { if (ended) return; ended = true; clearTimeout(timer); for (const name of signals) process.off(name, interrupted); done({ status, signal, output, error, started: (child.pid ?? 0) > 0 }); });
+     });
+     log += `\n대상: ${file}\n명령: ${JSON.stringify([executable, ...argv])}\n시간: ${Date.now() - start}ms · 종료: ${result.status ?? result.signal ?? "오류"}\n${result.output[1] ?? ""}${result.output[2] ?? ""}`;
+-    if (stopEarly && !result.started && result.error) { unknown++; log += "실행 시작 확인 불가\n"; break; }
+-    if (result.error || result.signal || result.status !== 0) { failures++; if (result.error?.message.startsWith("중단:")) interrupted = true; if (interrupted || stopEarly) break; continue; }
+-    let data: unknown; try { data = JSON.parse(String(result.output[3] ?? "")); } catch { unknown++; if (stopEarly) break; continue; }
+-    if (data === null && kind === "node-test") { failures++; log += "0건 실패\n"; if (stopEarly) break; continue; }
+-    if (!data || typeof data !== "object") { unknown++; if (stopEarly) break; continue; }
+-    const record = data as Record<string, unknown>;
+-    if (typeof record.unavailable === "string") { unknown++; log += `확인 불가: ${record.unavailable}\n`; if (stopEarly) break; continue; }
+-    const counts = (kind === "python-unittest" ? record : record.counts) as Record<string, unknown> | undefined;
+-    if (!counts || typeof counts.tests !== "number" || typeof counts.skipped !== "number" || typeof counts.failed !== "number" || typeof record.success !== "boolean") { unknown++; if (stopEarly) break; continue; }
+-    const todo = typeof counts.todo === "number" ? counts.todo : 0;
+-    log += `테스트 ${counts.tests} · skip ${counts.skipped} · 실패 ${counts.failed}\n`;
+-    if (!record.success || counts.failed > 0 || counts.tests === 0 || counts.tests <= counts.skipped + todo) { failures++; if (stopEarly) break; }
++    let verdict: TestObservation["verdict"] = "unknown";
++    try {
++      if (stopEarly && !result.started && result.error) { unknown++; log += "실행 시작 확인 불가\n"; break; }
++      if (result.error || result.signal || result.status !== 0) { failures++; if (result.error?.message.startsWith("중단:")) interrupted = true; if (interrupted || stopEarly) break; continue; }
++      let data: unknown; try { data = JSON.parse(String(result.output[3] ?? "")); } catch { unknown++; if (stopEarly) break; continue; }
++      if (data === null && kind === "node-test") { failures++; log += "0건 실패\n"; if (stopEarly) break; continue; }
++      if (!data || typeof data !== "object") { unknown++; if (stopEarly) break; continue; }
++      const record = data as Record<string, unknown>;
++      if (typeof record.unavailable === "string") { unknown++; log += `확인 불가: ${record.unavailable}\n`; if (stopEarly) break; continue; }
++      const counts = (kind === "python-unittest" ? record : record.counts) as Record<string, unknown> | undefined;
++      if (!counts || typeof counts.tests !== "number" || typeof counts.skipped !== "number" || typeof counts.failed !== "number" || typeof record.success !== "boolean") { unknown++; if (stopEarly) break; continue; }
++      const todo = typeof counts.todo === "number" ? counts.todo : 0;
++      log += `테스트 ${counts.tests} · skip ${counts.skipped} · 실패 ${counts.failed}\n`;
++      const ran = counts.tests - counts.skipped - todo;
++      if ([counts.tests, counts.skipped, counts.failed, todo].every((count) => Number.isSafeInteger(count) && count >= 0) &&
++          ran > 0 && counts.failed <= ran && record.success === (counts.failed === 0)) {
++        verdict = record.success ? "passed" : "failed";
++      }
++      if (!record.success || counts.failed > 0 || counts.tests === 0 || counts.tests <= counts.skipped + todo) { failures++; if (stopEarly) break; }
++    } finally {
++      if (kind !== "vitest") observe?.({ file: batch[0]!, verdict });
++    }
+   }
+   return { code: failures ? 1 : unknown ? 3 : 0, text: log, interrupted };
+ }
+diff --git a/src/test-runner/runner.ts b/src/test-runner/runner.ts
+index d9c99c0..36a35f3 100644
+--- a/src/test-runner/runner.ts
++++ b/src/test-runner/runner.ts
+@@ -4,8 +4,9 @@ import { openRepo, runDeclaredCheck } from "../project/harness.ts";
+ import { config, safePath, inside } from "./map.ts";
+ import type { MapFile, Unit } from "./map.ts";
+ import { fileResults } from "./execute.ts";
+-import type { Outcome } from "./execute.ts";
++import type { Outcome, TestObservation } from "./execute.ts";
+ import { executeChanged } from "./changed.ts";
++import { recordTestSignals } from "./signals.ts";
+ const bad = (message: string): never => { throw new Error(message); };
+ 
+ export async function executeTest(cwd: string, args: string[], timeout = 30 * 60_000): Promise<Outcome> {
+@@ -29,12 +30,14 @@ export async function executeTest(cwd: string, args: string[], timeout = 30 * 60
+       if (!chosen.some((u) => u.sources.some((p) => matchesGlob(rel, p))) && chosen.some((u) => u.tests.some((p) => matchesGlob(rel, p)))) { direct = rel; chosen = chosen.filter((u) => u.tests.some((p) => matchesGlob(rel, p))); }
+     } else { chosen = map.units.filter((u) => u.id === arg); if (!chosen.length) return bad(`없는 단위: ${arg}`); }
+     let code = 0; let text = "부분 검사 · 타입·공통·전체 회귀 제외\n";
++    const observations: TestObservation[] = [];
++    const observe = mode === "file" ? (value: TestObservation) => observations.push(value) : undefined;
+     for (const unit of chosen) {
+       const allFiles = [...new Set(unit.tests.flatMap((p) => globSync(p, { cwd: root }).map((file) => file.split(sep).join("/"))))].sort();
+       const files = direct ? allFiles.filter((f) => f === direct) : allFiles;
+       if (!files.length) { code = 1; text += `\n${unit.id}: 선택 파일 없음`; continue; }
+-      const result = await fileResults(root, unit, files, timeout); code = code === 1 || result.code === 1 ? 1 : code === 3 || result.code === 3 ? 3 : 0; text += `\n단위 ${unit.id}: ${result.text}`; if (result.interrupted) break;
++      const result = await fileResults(root, unit, files, timeout, false, observe); code = code === 1 || result.code === 1 ? 1 : code === 3 || result.code === 3 ? 3 : 0; text += `\n단위 ${unit.id}: ${result.text}`; if (result.interrupted) break;
+     }
+-    return { code, text: `${text}\n판정: ${code === 0 ? "부분 통과" : code === 3 ? "확인 불가" : "실패"}` };
++    return { code, text: `${text}\n판정: ${code === 0 ? "부분 통과" : code === 3 ? "확인 불가" : "실패"}${recordTestSignals(root, observations)}` };
+   } catch (error) { return { code: 1, text: `실패: ${(error as Error).message}` }; }
+ }
+diff --git a/test/agent-review-log.test.ts b/test/agent-review-log.test.ts
+index 8c28644..f61f096 100644
+--- a/test/agent-review-log.test.ts
++++ b/test/agent-review-log.test.ts
+@@ -41,6 +41,28 @@ function harness() {
+ const FIRST = /이전 지적과 그 대응 문서는 받거나 읽지 않는다/;
+ const REREVIEW = /판정 범위: 직전 검토의 blocking이 해소됐는지/;
+ 
++test("general review recommends a troubleshooter only on the second valid failure", async () => {
++  const h = harness();
++  h.set("initial");
++  const first = await h.verify("F1 [blocking] example\nfail");
++  assert.equal(first.json.troubleshooterSignals, undefined);
++  h.set("first change");
++  const second = await h.verify("F2 [blocking] example\nfail");
++  assert.deepEqual(second.json.troubleshooterSignals, [{
++    kind: "review_failures", unit: { kind: "artifact", ref: "TASK.md" },
++    evidence: [first.json.review.record, second.json.review.record],
++  }]);
++  assert.equal(h.ledger().filter((row) => row.type === "review").length, 2);
++  h.set("second change");
++  const third = await h.verify("F3 [blocking] example\nfail");
++  assert.equal(third.json.troubleshooterSignals, undefined);
++  assert.equal(third.json.escalation.stage, "diagnose");
++  const offline = harness();
++  offline.set("offline");
++  offline.offline();
++  assert.equal((await offline.verify("unavailable")).json.troubleshooterSignals, undefined);
++});
++
+ function budgetHarness() {
+   const dir = tempDir("pace-review-budget-");
+   const task = join(dir, "projects/P013_budget/tasks/T01_budget");
+@@ -69,6 +91,51 @@ function budgetHarness() {
+   return { task, backlog, prompts, review };
+ }
+ 
++test("verify reports the repeated file area before spending the second valid review round", async () => {
++  const h = budgetHarness();
++  writeFileSync(join(h.task, "TASK.md"), "## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | 입력 검증 |\n| T-2 | 기록 보존 |\n");
++  const target = join(h.task, "evidence/implementation.patch");
++  const raw = (id: string, line: number, complete: boolean) => [
++    "```pace-review", JSON.stringify({
++      version: 2, findings: [{
++        id, severity: "should_fix", category: "criteria", location: `src/codec.ts:${line}`,
++        scenario: "유효하지 않은 값을 거부하지 않는다", reproduction: "검증 시험에 빈 값을 준다",
++        confidence: "high", impact: "criterion", criterion: "T-1", safety_path: null,
++      }, ...(complete ? [{
++        id: "F8", severity: "blocking", category: "criteria", location: "src/storage.ts:5",
++        scenario: "기존 기록을 지운다", reproduction: "두 기록을 보존하는 고정 시험 실행",
++        confidence: "high", impact: "criterion", criterion: "T-2", safety_path: null,
++      }] : [])],
++      criteria: [
++        { id: "T-1", state: "present", observation: "빈 입력을 호출했다" },
++        ...(complete ? [{ id: "T-2", state: "present", observation: "실패한 기록 바이트가 유지됐다" }] : []),
++      ],
++    }), "```", "fail",
++  ].join("\n");
++  const patch = (value: string) => `diff --git a/src/codec.ts b/src/codec.ts\n--- a/src/codec.ts\n+++ b/src/codec.ts\n@@ -12 +12 @@\n-original\n+${value}\n`;
++  writeFileSync(target, patch("first edit"));
++  const before = await h.review(target, raw("F1", 12, false));
++  assert.equal(before.json.review.verdict, "unknown");
++  assert.equal(before.json.troubleshooterSignals, undefined);
++  writeFileSync(target, patch("second edit"));
++  const after = await h.review(target, raw("F7", 16, true));
++  assert.equal(after.json.review.verdict, "fail");
++  assert.equal(after.json.budget.rounds, 1);
++  assert.equal(after.json.budget.exhausted, null);
++  assert.deepEqual(after.json.troubleshooterSignals, ["recurring_area", "superficial_fix"].map((kind) => ({
++    kind, unit: { kind: "task", ref: "T01_budget/post" }, file: "src/codec.ts",
++    evidence: [before.json.review.record, after.json.review.record],
++  })));
++  const records = readLedger(target).filter((entry) => entry.type === "review");
++  assert.deepEqual(records.map((item) => item.verdict), ["unknown", "fail"]);
++  assert.ok(records.every((item) => !Object.hasOwn(item, "troubleshooterSignals")));
++  writeFileSync(join(h.task, "evidence", after.json.review.record), "{}");
++  writeFileSync(target, patch("change following a damaged record"));
++  const damaged = await h.review(target, raw("F9", 16, true));
++  assert.equal(damaged.code, 2);
++  assert.equal(damaged.json.troubleshooterSignals, undefined);
++});
++
+ test("P013 T01: 같은 태스크의 두 원장이 구현 후 예산을 공유하고 사전 예산과 분리한다", async () => {
+   const h = budgetHarness();
+   const first = join(h.task, "change.patch");
+diff --git a/test/test-runner.test.ts b/test/test-runner.test.ts
+index 4b6ffef..9b3852a 100644
+--- a/test/test-runner.test.ts
++++ b/test/test-runner.test.ts
+@@ -1,6 +1,6 @@
+ import { test } from "node:test";
+ import assert from "node:assert/strict";
+-import { mkdirSync, writeFileSync, symlinkSync, readFileSync, existsSync, chmodSync, rmSync } from "node:fs";
++import { mkdirSync, writeFileSync, symlinkSync, readFileSync, existsSync, chmodSync, renameSync, rmSync } from "node:fs";
+ import { join } from "node:path";
+ import { spawnSync } from "node:child_process";
+ import { executeTest } from "../src/test-runner/runner.ts";
+@@ -25,6 +25,134 @@ function fixture() {
+   return {root, write, git, map, save};
+ }
+ 
++function signalWorktree() {
++  const f = fixture(), home = tempDir("pace-test-signal-home-");
++  const env = sessionFreeEnv();
++  const git = (root: string, ...args: string[]) => {
++    const result = spawnSync("git", ["-C", root, ...args], { env, encoding: "utf8" });
++    assert.equal(result.status, 0, result.stderr);
++    return result.stdout.trim();
++  };
++  f.map.units = [
++    { id: "selected", sources: ["src/a.ts"], tests: ["test/fail.test.mjs", "test/pass.test.mjs"],
++      runner: { kind: "node-test", cwd: "." }, requires: [] },
++    { id: "python", sources: ["pkg/__init__.py"], tests: ["test/test_pass.py"],
++      runner: { kind: "python-unittest", cwd: "." }, requires: [] },
++  ];
++  f.write("docs/README.md", "# app\n\n## 환경\n\n- 검사: `node -e \"console.log('full fallback executed'); process.exit(7)\"`\n");
++  f.write(".pace/test-map.json", JSON.stringify({ ...f.map, checks: [] }));
++  f.git("add", "-A"); f.git("commit", "-qm", "test mapping");
++  const run = (cwd: string, ...args: string[]) => runPace(args, { cwd, home, env });
++  assert.equal(run(f.root, "project", "new", "test signal").status, 0);
++  const start = run(f.root, "project", "start", "P001", "--no-launch", "--agent", "codex");
++  assert.equal(start.status, 0, start.stderr);
++  const worktree = `${f.root}.wt/P001`;
++  git(worktree, "add", "projects"); git(worktree, "commit", "-qm", "clean starting worktree");
++  const history = join(git(worktree, "rev-parse", "--absolute-git-dir"), "pace/test-signals/log.jsonl");
++  const rows = () => readFileSync(history, "utf8").trim().split("\n").map((line) => JSON.parse(line));
++  return { root: f.root, worktree, history, rows, git, run };
++}
++
++const signalNotice = /문제 해결 호출 권고: (.+)/;
++const fixtureFailure = "import { test } from 'node:test'; test('known failure', () => { throw Error('fixture'); });\n";
++const fixturePass = "import { test } from 'node:test'; test('known success', () => {});\n";
++
++test("test signals: changed stays selective after recording and a dirty project can use an explicit file", () => {
++  const f = signalWorktree();
++  writeFileSync(join(f.worktree, "src/a.ts"), "export const a = 2;\n");
++  const before = f.git(f.worktree, "status", "--porcelain");
++  const run = (...args: string[]) => f.run(f.worktree, "test", ...args);
++  const first = run("changed");
++  assert.equal(first.status, 1, first.stderr);
++  assert.doesNotMatch(first.stdout, signalNotice);
++  assert.equal(f.rows().length, 1);
++  assert.equal(f.git(f.worktree, "status", "--porcelain"), before);
++  const env = sessionFreeEnv();
++  delete env.NODE_TEST_CONTEXT;
++  const external = spawnSync(process.execPath, ["--test", "test/fail.test.mjs"], { cwd: f.worktree, env });
++  assert.equal(external.status, 1);
++  assert.equal(f.rows().length, 1);
++  const second = run("changed");
++  assert.equal(second.status, 1, second.stderr);
++  assert.doesNotMatch(second.stdout, /전체 검사 전환/);
++  const secondSignal = JSON.parse(signalNotice.exec(second.stdout)![1]!);
++  assert.deepEqual(secondSignal, {
++    kind: "test_failures", unit: { kind: "test_file", ref: "test/fail.test.mjs" },
++    evidence: f.rows().map((row) => row.data.testAttempt),
++  });
++  assert.doesNotMatch(run("changed").stdout, signalNotice);
++  assert.equal(f.rows().length, 3);
++  const task = runPace(["project", "task", "P001", "sample"], { cwd: f.worktree, home: tempDir(), env: sessionFreeEnv() });
++  assert.equal(task.status, 0, task.stderr);
++  const fallback = run("changed");
++  assert.equal(fallback.status, 1);
++  assert.match(fallback.stdout, /전체 검사 전환/);
++  assert.match(fallback.stdout, /full fallback executed[\s\S]*판정: 전체 검사 실패/);
++  assert.doesNotMatch(fallback.stdout, signalNotice);
++  assert.equal(f.rows().length, 3);
++  writeFileSync(join(f.worktree, "test/fail.test.mjs"), fixturePass);
++  assert.equal(run("file", "test/fail.test.mjs").status, 0);
++  writeFileSync(join(f.worktree, "test/fail.test.mjs"), fixtureFailure);
++  assert.doesNotMatch(run("file", "test/fail.test.mjs").stdout, signalNotice);
++  assert.match(run("file", "test/fail.test.mjs").stdout, signalNotice);
++  assert.doesNotMatch(f.run(f.root, "test", "file", "test/fail.test.mjs").stdout, signalNotice);
++  const stats = f.run(f.worktree, "project", "stats", "P001", "--json");
++  assert.equal(stats.status, 0, stats.stderr);
++  assert.equal(JSON.parse(stats.stdout).team, undefined);
++});
++
++test("test signals: a file skipped by stopEarly preserves its streak and timeout is unverified", async () => {
++  const f = signalWorktree(), selected = "test/pass.test.mjs";
++  writeFileSync(join(f.worktree, selected), fixtureFailure);
++  const run = (...args: string[]) => f.run(f.worktree, "test", ...args);
++  assert.doesNotMatch(run("file", selected).stdout, signalNotice);
++  const other = run("changed");
++  assert.equal(other.status, 1, other.stderr);
++  assert.deepEqual(f.rows().map((row) => row.ref), [selected, "test/fail.test.mjs"]);
++  assert.match(run("file", selected).stdout, signalNotice);
++  writeFileSync(join(f.worktree, selected), "import {test} from 'node:test'; test('timeout', () => new Promise(() => { setInterval(() => {}, 100); }));\n");
++  for (let i = 0; i < 2; i++) {
++    const timeout = await executeTest(f.worktree, ["file", selected], 550);
++    assert.equal(timeout.code, 1);
++    assert.doesNotMatch(timeout.text, signalNotice);
++  }
++  assert.deepEqual(f.rows().slice(-2).map((row) => row.data.testResult), [3, 3]);
++  writeFileSync(join(f.worktree, selected), fixtureFailure);
++  assert.doesNotMatch(run("file", selected).stdout, signalNotice);
++  assert.match(run("file", selected).stdout, signalNotice);
++});
++
++test("test signals: Python failures are observed and empty or skipped Node files remain unverified", () => {
++  const f = signalWorktree(), pythonFile = "test/test_pass.py", nodeFile = "test/pass.test.mjs";
++  const run = (file: string) => f.run(f.worktree, "test", "file", file);
++  writeFileSync(join(f.worktree, pythonFile), "import unittest\nclass Case(unittest.TestCase):\n def test_fails(self): self.fail('fixture')\n");
++  const first = run(pythonFile), second = run(pythonFile);
++  assert.equal(first.status, 1);
++  assert.equal(second.status, 1);
++  assert.doesNotMatch(first.stdout, signalNotice);
++  assert.match(second.stdout, signalNotice);
++  for (const content of ["", "import {test} from 'node:test'; test.skip('skip', () => {});\n"]) {
++    writeFileSync(join(f.worktree, nodeFile), content);
++    const unverified = run(nodeFile);
++    assert.equal(unverified.status, 1);
++    assert.doesNotMatch(unverified.stdout, signalNotice);
++  }
++  assert.deepEqual(f.rows().map((row) => [row.ref, row.data.testResult]), [[pythonFile, 2], [pythonFile, 2], [nodeFile, 3], [nodeFile, 3]]);
++});
++
++test("test signals: unsafe local history never alters a linked destination or the test result", { skip: process.platform === "win32" }, () => {
++  const f = signalWorktree(), file = "test/fail.test.mjs";
++  assert.equal(f.run(f.worktree, "test", "file", file).status, 1);
++  const outside = join(tempDir("pace-signal-outside-"), "destination");
++  writeFileSync(outside, "preserve raw test history\n");
++  renameSync(f.history, f.history + ".original");
++  symlinkSync(outside, f.history);
++  const denied = f.run(f.worktree, "test", "file", file);
++  assert.equal(denied.status, 1);
++  assert.doesNotMatch(denied.stdout, signalNotice);
++  assert.equal(readFileSync(outside, "utf8"), "preserve raw test history\n");
++});
++
+ test("실제 Node·Python 테스트의 성공, 빈 파일, 전체 skip 및 실패를 구분한다", async () => {
+   const {root} = fixture();
+   for (const name of ["good", "py"]) { const r = (await executeTest(root, ["unit", name])); assert.equal(r.code, 0, r.text); assert.match(r.text, /부분 통과/); }
+diff --git a/src/agent/review-signals.ts b/src/agent/review-signals.ts
+new file mode 100644
+index 0000000..1282f73
+--- /dev/null
++++ b/src/agent/review-signals.ts
+@@ -0,0 +1,95 @@
++import { isAbsolute, relative } from "node:path";
++import { permissionPath } from "../project/review-permission.ts";
++import { hasSecret } from "../project/secrets.ts";
++import type { LedgerEntry, ReviewEntry } from "./review-log.ts";
++import type { StructuredAssessment } from "./structured-review.ts";
++
++type Unit = { kind: "artifact" | "task" | "backlog"; ref: string };
++type Signal = { kind: "review_failures" | "recurring_area" | "superficial_fix"; unit: Unit; evidence: string[]; file?: string };
++type Snapshot = { target: string; snapshot: string; assessment: StructuredAssessment; record: string };
++type Finding = NonNullable<StructuredAssessment["findings"]>[number];
++type Area = { file: string; first: number; last: number; finding: Finding };
++
++const generalThreshold = 2;
++const lineWindow = 8;
++
++export function reviewFailureSignal(entries: readonly LedgerEntry[], current: ReviewEntry): Signal | undefined {
++  if (current.verdict !== "fail" || current.interrupted || current.stale) return;
++  const relevant = entries.filter((row) => row.target === current.target);
++  const voided = new Set(relevant.flatMap((row) => row.type === "void" ? [row.record] : []));
++  const streak: string[] = [];
++  for (const row of relevant) {
++    if (row.type === "decision" || row.type === "diagnosis") streak.length = 0;
++    if (row.type !== "review" || row.interrupted || row.stale || voided.has(row.record)) continue;
++    if (row.verdict === "pass") streak.length = 0;
++    if (row.verdict === "fail") streak.push(row.record);
++  }
++  if (streak.length === generalThreshold && streak.at(-1) === current.record) {
++    return { kind: "review_failures", unit: { kind: "artifact", ref: current.target }, evidence: streak };
++  }
++}
++
++function usableAreas(assessment: StructuredAssessment, root: string): Area[] {
++  return (assessment.findings ?? []).flatMap((finding) => {
++    if (!["blocking", "should_fix"].includes(finding.effective) || !finding.location ||
++        finding.reason === "missing_evidence" || finding.reason === "unknown_criterion" ||
++        (!finding.scenario || !finding.reproduction) && !finding.safety_path) return [];
++    return finding.location.split(/,[ \t]+/).flatMap((location) => {
++      const match = /^(.+?):([1-9]\d{0,7})(?::[1-9]\d{0,7})?(?:-([1-9]\d{0,7})(?::[1-9]\d{0,7})?)?$/.exec(location);
++      if (!match) return [];
++      const name = match[1]!;
++      const file = (isAbsolute(name) ? relative(root, name) : name).replaceAll("\\", "/");
++      const first = Number(match[2]), last = Number(match[3] ?? match[2]);
++      return permissionPath(file) && !hasSecret(file) && first <= last ? [{ file, first, last, finding }] : [];
++    });
++  });
++}
++
++function sameArea(before: Area, after: Area): boolean {
++  const a = before.finding, b = after.finding;
++  const sameCriterion = a.criterion ? a.criterion === b.criterion : !b.criterion && !!a.impact && a.impact === b.impact;
++  return before.file === after.file && a.category === b.category && sameCriterion &&
++    before.first <= after.last + lineWindow && after.first <= before.last + lineWindow;
++}
++
++function patchSection(text: string, file: string): string | undefined {
++  const sections = text.replaceAll("\r\n", "\n").split(/(?=^diff --git )/m).filter((section) => {
++    if (!section.startsWith("diff --git ")) return false;
++    const header = section.split(/^@@ /m, 1)[0] ?? "";
++    return /^\+\+\+ b\/([^\r\n\t]+)(?:\t.*)?\r?$/m.exec(header)?.[1] === file;
++  });
++  if (sections.length !== 1) return undefined;
++  const hunks = sections[0]!.split(/^@@ /m).slice(1);
++  const edits = hunks.flatMap((hunk) => hunk.split("\n").slice(1).filter((line) => line.startsWith("+") || line.startsWith("-")));
++  return edits.length ? edits.join("\n") : undefined;
++}
++
++function changedInReview(before: string, after: string, target: string, file: string): boolean {
++  if (target === file) return true;
++  if (!/\.(?:patch|diff)$/.test(target)) return false;
++  const previous = patchSection(before, file), current = patchSection(after, file);
++  return previous !== undefined && current !== undefined && previous !== current;
++}
++
++/** 기록에서 유효한 위치와 항목이 대조될 때만 권고한다. 계약의 판정·원장 데이터와는 독립이다. */
++export function recurringReviewSignals(unit: Unit, root: string, before: Snapshot, after: Snapshot): Signal[] {
++  if (before.snapshot === after.snapshot || before.record === after.record) return [];
++  const old = usableAreas(before.assessment, root), updated = usableAreas(after.assessment, root);
++  const targetFile = relative(root, after.target).replaceAll("\\", "/");
++  let recurring: string | undefined, superficial: string | undefined;
++  for (const current of updated) {
++    const candidates = old.filter((previous) => sameArea(previous, current));
++    if (!candidates.length) continue;
++    recurring ??= current.file;
++    if (before.target === after.target && candidates.some((previous) => previous.finding.effective === current.finding.effective) &&
++        changedInReview(before.snapshot, after.snapshot, targetFile, current.file)) {
++      superficial = current.file;
++      break;
++    }
++  }
++  const evidence = [before.record, after.record];
++  const signals: Signal[] = [];
++  if (recurring) signals.push({ kind: "recurring_area", unit, evidence, file: recurring });
++  if (superficial) signals.push({ kind: "superficial_fix", unit, evidence, file: superficial });
++  return signals;
++}
+diff --git a/src/test-runner/signals.ts b/src/test-runner/signals.ts
+new file mode 100644
+index 0000000..125f46c
+--- /dev/null
++++ b/src/test-runner/signals.ts
+@@ -0,0 +1,64 @@
++import { randomInt } from "node:crypto";
++import { basename, dirname, isAbsolute } from "node:path";
++import { realpathSync } from "node:fs";
++import { type ProjectEvent, recordEvents } from "../project/event-log.ts";
++import { createDir, gitRead } from "../project/handoff-files.ts";
++import { openRepo, projectWorktreeMainRoot } from "../project/harness.ts";
++import { readTeamEvents } from "../project/team-input.ts";
++import { commonGitDirectory } from "../team/resource-lock.ts";
++import { safeTeamPath } from "../team/store.ts";
++import { safePath } from "./map.ts";
++import type { TestObservation } from "./execute.ts";
++
++const threshold = 2;
++const resultCode = { passed: 1, failed: 2, unknown: 3 };
++const eventMessage = "선택 시험 파일 결과";
++
++function worktreeMeta(root: string): string {
++  const result = gitRead(root, ["rev-parse", "--absolute-git-dir"]);
++  const path = result.stdout.replace(/\r?\n$/, "");
++  const worktrees = safeTeamPath(commonGitDirectory(root), "worktrees", true);
++  if (result.status !== 0 || !isAbsolute(path) || realpathSync.native(dirname(path)) !== realpathSync.native(worktrees)) {
++    throw new Error("시험 이력 worktree 경로를 확인할 수 없다");
++  }
++  return safeTeamPath(worktrees, basename(path), true);
++}
++
++/** 선택 관측은 worktree의 Git 폴더에만 남긴다. 기록 실패는 검사 결과를 바꾸지 않는다. */
++export function recordTestSignals(root: string, observations: readonly TestObservation[]): string {
++  if (!observations.length) return "";
++  try {
++    const repo = openRepo(root);
++    const project = /^project\/(P\d{3})$/.exec(repo.branch)?.[1];
++    if (!project || !repo.inWorktree || !projectWorktreeMainRoot(repo.root)) return "";
++    const dir = createDir(worktreeMeta(repo.root), "pace/test-signals");
++    const byFile = new Map<string, TestObservation["verdict"]>();
++    for (const { file, verdict } of observations) {
++      const relative = safePath(file);
++      const prior = byFile.get(relative);
++      byFile.set(relative, prior !== undefined && prior !== verdict ? "unknown" : verdict);
++    }
++    const attempt = randomInt(1, 2 ** 47);
++    const ts = new Date().toISOString();
++    const events: ProjectEvent[] = [...byFile].map(([ref, verdict]) => ({
++      p: project, ts, type: "note", by: "cli", msg: eventMessage, ref,
++      data: { testResult: resultCode[verdict], testAttempt: attempt },
++    }));
++    readTeamEvents(dir, project); // refuse corrupt, linked or oversized history before appending
++    if (!recordEvents(dir, events)) return "";
++    const history = readTeamEvents(dir, project) ?? [];
++    return [...byFile].flatMap(([file, verdict]) => {
++      if (verdict !== "failed") return [];
++      const rows = history.filter((item) => item.ref === file && item.type === "note" && item.by === "cli" &&
++        item.msg === eventMessage && item.data?.testAttempt !== undefined);
++      const index = rows.findIndex((item) => item.data?.testAttempt === attempt);
++      if (index < threshold - 1) return [];
++      const prior = rows[index - threshold];
++      const streak = rows.slice(index - threshold + 1, index + 1);
++      if (prior?.data?.testResult === resultCode.failed || streak.some((item) => item.data?.testResult !== resultCode.failed)) return [];
++      return [`\n문제 해결 호출 권고: ${JSON.stringify({
++        kind: "test_failures", unit: { kind: "test_file", ref: file }, evidence: streak.map((item) => item.data!.testAttempt),
++      })}\n`];
++    }).join("");
++  } catch { return ""; }
++}
+diff --git a/test/review-signals.test.ts b/test/review-signals.test.ts
+new file mode 100644
+index 0000000..d8ded4a
+--- /dev/null
++++ b/test/review-signals.test.ts
+@@ -0,0 +1,79 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { join } from "node:path";
++import { recurringReviewSignals, reviewFailureSignal } from "../src/agent/review-signals.ts";
++import type { LedgerEntry, ReviewEntry } from "../src/agent/review-log.ts";
++import { assessStructuredReview } from "../src/agent/structured-review.ts";
++
++const files = {
++  original: "diff --git a/src/tracker.ts b/src/tracker.ts\n--- a/src/tracker.ts\n+++ b/src/tracker.ts\n@@ -10 +10 @@\n-old\n+first\n",
++  changed: "diff --git a/src/tracker.ts b/src/tracker.ts\n--- a/src/tracker.ts\n+++ b/src/tracker.ts\n@@ -10 +10 @@\n-old\n+second\n",
++  unrelated: "diff --git a/src/other.ts b/src/other.ts\n--- a/src/other.ts\n+++ b/src/other.ts\n@@ -1 +1 @@\n-old\n+other\n",
++};
++const raw = {
++  id: "F1", severity: "blocking", category: "criteria", location: "src/tracker.ts:11",
++  scenario: "A known invalid record is accepted.", reproduction: "Run test/tracker.test.ts with the fixture.", confidence: "high",
++  impact: "criterion", criterion: "T-1", safety_path: null,
++};
++function assessment(finding: Record<string, unknown>) {
++  return assessStructuredReview("post", 'pass\n```pace-review\n' + JSON.stringify({
++    version: 2, findings: [finding], criteria: [{ id: "T-1", state: "present", observation: "fixture exercised" }],
++  }) + '\n```', ["T-1", "T-2"]);
++}
++const root = join(process.cwd(), "fixture");
++const unit = { kind: "task", ref: "T01_sample/post" } as const;
++const target = join(root, "projects/P001/tasks/T01_sample/evidence/result.patch");
++function matched(changes: Record<string, unknown>, after = files.changed, options: Record<string, unknown> = {}, previousTarget = target) {
++  const prior = assessment({ ...raw, ...options });
++  const next = assessment({ ...raw, id: "F9", location: "src/tracker.ts:16", ...options, ...changes });
++  return recurringReviewSignals(
++    unit, root,
++    { target: previousTarget, snapshot: files.original, assessment: prior, record: "review-records/R1.json" },
++    { target, snapshot: after, assessment: next, record: "review-records/R2.json" },
++  );
++}
++
++test("review signals distinguish an area's recurrence from repeatedly touched code", () => {
++  assert.deepEqual(matched({}).map((item) => item.kind), ["recurring_area", "superficial_fix"]);
++  assert.deepEqual(matched({ severity: "should_fix" }).map((item) => item.kind), ["recurring_area"]);
++  assert.deepEqual(matched({}, files.original + files.unrelated).map((item) => item.kind), ["recurring_area"]);
++  assert.deepEqual(matched({}, files.original.replace("@@ -10 +10 @@", "@@ -11 +11 @@")).map((item) => item.kind), ["recurring_area"]);
++  assert.deepEqual(matched({}, files.original), []);
++  assert.deepEqual(matched({ location: "src/tracker.ts:90" }), []);
++  assert.deepEqual(matched({ location: "src/tracker.ts:14:3-17:2" }).map((item) => item.kind), ["recurring_area", "superficial_fix"]);
++  assert.deepEqual(matched({ criterion: "T-2" }), []);
++  assert.deepEqual(matched({ location: "src/other.ts:12" }), []);
++  assert.deepEqual(matched({ location: "../src/tracker.ts:12" }), []);
++  const secretPath = ["sk", "A".repeat(40)].join("-");
++  assert.deepEqual(matched({ location: `src/${secretPath}/tracker.ts:11` }, files.changed, { location: `src/${secretPath}/tracker.ts:11` }), []);
++  assert.deepEqual(matched({ category: "defect" }), []);
++  assert.deepEqual(matched({ severity: "note" }), []);
++  assert.equal(matched({})[1]?.unit.ref, unit.ref);
++  assert.deepEqual(matched({})[1]?.evidence, ["review-records/R1.json", "review-records/R2.json"]);
++});
++
++test("review signals never infer a partial fix by comparing different artifacts", () => {
++  const other = join(root, "projects/P001/tasks/T01_sample/evidence/other.patch");
++  assert.deepEqual(matched({}, files.changed, {}, other).map((signal) => signal.kind), ["recurring_area"]);
++});
++
++test("review signals ignore voided, interrupted and unverified rows", () => {
++  const row = (number: number, extra: Partial<ReviewEntry> = {}): ReviewEntry => ({
++    type: "review", at: "2026-11-26T00:00:00Z", kind: "goal", target: "plan.md", hash: "x",
++    verdict: "fail", verifier: "codex", provider: "openai", rereview_of: null, record: `review-records/R${number}.json`,
++    result_hash: "0".repeat(64), ...extra,
++  });
++  const ignored = row(2), last = row(5);
++  const entries: LedgerEntry[] = [
++    row(1), ignored, row(3, { interrupted: true }), row(4, { verdict: "unknown" }),
++    { type: "void", at: ignored.at, target: ignored.target, record: ignored.record, summary: "unreadable", file: "proof.md" },
++  ];
++  assert.equal(reviewFailureSignal(entries, ignored), undefined);
++  assert.deepEqual(reviewFailureSignal([...entries, last], last)?.evidence, [row(1).record, last.record]);
++});
++
++test("review signals can match a goal impact without a criterion ID", () => {
++  const result = matched({}, files.changed, { category: "defect", criterion: null, impact: "goal" });
++  assert.deepEqual(result.map((item) => item.kind), ["recurring_area", "superficial_fix"]);
++  assert.deepEqual(matched({ impact: "minor" }, files.changed, { category: "defect", criterion: null, impact: "goal" }), []);
++});

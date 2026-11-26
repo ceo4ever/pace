@@ -6,7 +6,8 @@ import { DEFINITION_FILES, openRepo, runDeclaredCheck, runDeclaredShell } from "
 import { config, inside, safePath } from "./map.ts";
 import type { Unit } from "./map.ts";
 import { fileResults } from "./execute.ts";
-import type { Outcome } from "./execute.ts";
+import type { Outcome, TestObservation } from "./execute.ts";
+import { recordTestSignals } from "./signals.ts";
 
 const scope = "변경 기준: staged/unstaged/untracked 작업본 · 커밋된 변경 비교 제외\n전체 회귀: 프로젝트 전체 명령 · pace test all/finish는 기존 main 기준\n";
 const message = (error: unknown) => error instanceof Error ? error.message : String(error);
@@ -165,15 +166,20 @@ export async function executeChanged(cwd: string, timeout: number): Promise<Outc
       if (result.execution === "unavailable") return full("사전 검사 시작 불가");
       if (result.execution !== "passed") return { code: 1, interrupted: result.execution === "interrupted", text: text + "판정: 사전 검사 실패/중단" };
     }
+    const observations: TestObservation[] = [];
+    const withSignals = (outcome: Outcome): Outcome => {
+      const signal = recordTestSignals(ctx.root, observations);
+      return signal ? { ...outcome, text: outcome.text + signal } : outcome;
+    };
     for (const entry of selected.entries) {
-      const result = await fileResults(ctx.root, entry.unit, entry.files, timeout, true);
+      const result = await fileResults(ctx.root, entry.unit, entry.files, timeout, true, (value) => observations.push(value));
       observed.failed ||= result.code === 1 || result.interrupted === true;
       observed.interrupted ||= result.interrupted === true;
       text += `단위 ${entry.unit.id}:${result.text}\n`;
-      if (result.interrupted || result.code === 1) return { code: 1, interrupted: result.interrupted, text: text + "판정: 선택 시험 실패/중단" };
-      if (result.code !== 0) return full("선택 시험 결과 확인 불가");
+      if (result.interrupted || result.code === 1) return withSignals({ code: 1, interrupted: result.interrupted, text: text + "판정: 선택 시험 실패/중단" });
+      if (result.code !== 0) return withSignals(full("선택 시험 결과 확인 불가"));
     }
-    return { code: observed.failed ? 1 : 0, text: text + (observed.failed ? "판정: 실패/중단 보존" : "판정: 부분 통과 · 전체 회귀 제외") };
+    return withSignals({ code: observed.failed ? 1 : 0, text: text + (observed.failed ? "판정: 실패/중단 보존" : "판정: 부분 통과 · 전체 회귀 제외") });
 
   } catch (error) {
     return { code: observed.failed ? 1 : 3, interrupted: observed.interrupted, text: text + `실행 경계 예외: ${message(error)}` };

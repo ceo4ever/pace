@@ -11,7 +11,8 @@ import {
 import { recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
 import { checkGrant, checkRecoveryProof, confirmationDiagnosis, diagnosisLink, followupReport, FOLLOWUPS_FILE, openFollowup, openRecovery, readReviewState, recordFollowupExecution, recoveryGrant } from "./review-followup.ts";
 import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
-import { assessStructuredReview, effectiveBlocking, evidenceGaps, hasStructuredReviewFence, isStructuredStage } from "./structured-review.ts";
+import { assessStructuredReview, effectiveBlocking, evidenceGaps, hasStructuredReviewFence, isStructuredStage, type StructuredAssessment } from "./structured-review.ts";
+import { recurringReviewSignals, reviewFailureSignal } from "./review-signals.ts";
 import { matchingCriteria, reviewCriteria } from "./review-criteria.ts";
 import { isReviewText, matchesPermissionBasis, parseGrantedPermission, permissionBasis, samePermission, type PermissionBasis } from "../project/review-permission.ts";
 
@@ -104,7 +105,8 @@ export function evidenceRereviewBase(ledgerTarget: string, name: string, criteri
 }
 
 /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
-export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, kind: VerifyKind, scope?: ReviewBudgetScope): Rereview | undefined {
+type RereviewWithEvidence = Rereview & { previousSnapshot: string; previousAssessment?: StructuredAssessment };
+export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, kind: VerifyKind, scope?: ReviewBudgetScope): RereviewWithEvidence | undefined {
   const sameTarget = join(dirname(ledgerTarget), base.target) === target;
   if (sameTarget && currentHash === base.hash && base.verdict === "fail") throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
   const file = join(dirname(ledgerTarget), base.record);
@@ -120,6 +122,7 @@ export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: st
   // 구조 누락 단건 판정은 나머지 평가를 억제했다. 구조를 채운 다음에는 목적·안전까지 처음 평가한다.
   if (!scope && kind === "task" && proofScopeIssues(snapshot).length) return undefined;
   let previousText = text;
+  let previousAssessment: StructuredAssessment | undefined;
   const stamp = readLedger(ledgerTarget).findLast((row) => row.type === "format" && row.record === base.record);
   if (stamp || base.required_criteria !== undefined || record.review?.required_criteria !== undefined) {
     if (stamp?.type !== "format" || stamp.target !== base.target || stamp.hash !== base.hash ||
@@ -138,6 +141,7 @@ export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: st
     }
     const assessment = assessStructuredReview(base.structured_stage, text, base.required_criteria,
       base.permission_basis ? snapshot.split("\n").length : undefined);
+    previousAssessment = assessment;
     if (assessment.verdict !== base.verdict) throw new AgentError("invalid_request", "구조화된 검토 기준점의 판정이 원장과 맞지 않는다");
     const blocking = effectiveBlocking(assessment);
     if (base.permission_basis && base.verdict === "pass") {
@@ -152,7 +156,7 @@ export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: st
       previousText += `\n\n직전 기준별 증거 상태\n${JSON.stringify(assessment.evidence)}`;
     }
   }
-  return { previousText, diff: lineDiff(snapshot, current), previousPassed: base.verdict === "pass" };
+  return { previousText, diff: lineDiff(snapshot, current), previousPassed: base.verdict === "pass", previousSnapshot: snapshot, previousAssessment };
 }
 
 /** 원장에 없는 기록(중단·기록 끊김의 흔적)을 원장에 자동 복구한다 — 사람이 원장을 손으로 고치지 않게.
@@ -440,6 +444,16 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     if (scope) {
       const current = readReviewState(scope, hash);
       output.budget = current.budget.status;
+      if (verdict === "fail" && !call.followup && !current.budget.status.exhausted && !current.recovery.upper &&
+          assessment && rereview?.previousAssessment && previousRecord && base) {
+        const root = resolve(scope.root, scope.unit === "task" ? "../../../.." : "../..");
+        const unit = { kind: scope.unit, ref: `${basename(scope.root)}/${scope.stage}` };
+        const signals = recurringReviewSignals(unit, root,
+          { target: resolve(dirname(base.ledgerTarget), base.entry.target), snapshot: rereview.previousSnapshot,
+            assessment: rereview.previousAssessment, record: previousRecord },
+          { target, snapshot: artifact, assessment, record: recordName });
+        if (signals.length) output.troubleshooterSignals = signals;
+      }
       if (recovery || (call.after_diagnosis && current.recovery.upper)) {
         const report = exhaustedFollowup(scope, current);
         output.followup = { ...output.followup as object, report: report.report, next: report.action };
@@ -448,6 +462,10 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
         }
       }
     } else if (after.stage !== "normal") output.escalation = escalation(after, target);
+    else {
+      const signal = reviewFailureSignal([...entries, entry], entry);
+      if (signal) output.troubleshooterSignals = [signal];
+    }
     // 원장과 수정 확인 보고가 끝난 뒤 보조 사본을 쓴다.
     if (out !== undefined) writeOrLedgerError(out, JSON.stringify(record, null, 2) + "\n", "--out 사본");
     deps.write(JSON.stringify(output, null, 2) + "\n");

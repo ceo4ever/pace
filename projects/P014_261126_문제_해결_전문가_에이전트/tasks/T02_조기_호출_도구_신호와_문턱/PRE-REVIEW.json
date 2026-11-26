@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "5042a62597271defcbe79b95ac6e200ea51fbaec69acf29c33a03b5312ebea82",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "087df92da758556d840ff12999795823944822006667b51864f7c0f60c6b3f2b",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R1.json에서 재검토",
+      "permission": {
+        "mode": "implementation",
+        "paths": [
+          "src/agent/verify-cli.ts",
+          "src/agent/review-signals.ts",
+          "src/test-runner/execute.ts",
+          "src/test-runner/changed.ts",
+          "src/test-runner/runner.ts",
+          "src/test-runner/signals.ts",
+          "test/agent-review-log.test.ts",
+          "test/review-signals.test.ts",
+          "test/test-runner.test.ts",
+          "skills/pace-team/references/required-roles.md"
+        ],
+        "protected": [
+          {
+            "from": 24,
+            "to": 31
+          },
+          {
+            "from": 37,
+            "to": 41
+          },
+          {
+            "from": 45,
+            "to": 48
+          },
+          {
+            "from": 52,
+            "to": 55
+          }
+        ],
+        "base": "53e88318464e92a1dc2d44321df5727894dbb4d0",
+        "task_mode": "100644"
+      }
+    }
+  ]
+}

@@ -4,8 +4,9 @@ import { openRepo, runDeclaredCheck } from "../project/harness.ts";
 import { config, safePath, inside } from "./map.ts";
 import type { MapFile, Unit } from "./map.ts";
 import { fileResults } from "./execute.ts";
-import type { Outcome } from "./execute.ts";
+import type { Outcome, TestObservation } from "./execute.ts";
 import { executeChanged } from "./changed.ts";
+import { recordTestSignals } from "./signals.ts";
 const bad = (message: string): never => { throw new Error(message); };
 
 export async function executeTest(cwd: string, args: string[], timeout = 30 * 60_000): Promise<Outcome> {
@@ -29,12 +30,14 @@ export async function executeTest(cwd: string, args: string[], timeout = 30 * 60
       if (!chosen.some((u) => u.sources.some((p) => matchesGlob(rel, p))) && chosen.some((u) => u.tests.some((p) => matchesGlob(rel, p)))) { direct = rel; chosen = chosen.filter((u) => u.tests.some((p) => matchesGlob(rel, p))); }
     } else { chosen = map.units.filter((u) => u.id === arg); if (!chosen.length) return bad(`없는 단위: ${arg}`); }
     let code = 0; let text = "부분 검사 · 타입·공통·전체 회귀 제외\n";
+    const observations: TestObservation[] = [];
+    const observe = mode === "file" ? (value: TestObservation) => observations.push(value) : undefined;
     for (const unit of chosen) {
       const allFiles = [...new Set(unit.tests.flatMap((p) => globSync(p, { cwd: root }).map((file) => file.split(sep).join("/"))))].sort();
       const files = direct ? allFiles.filter((f) => f === direct) : allFiles;
       if (!files.length) { code = 1; text += `\n${unit.id}: 선택 파일 없음`; continue; }
-      const result = await fileResults(root, unit, files, timeout); code = code === 1 || result.code === 1 ? 1 : code === 3 || result.code === 3 ? 3 : 0; text += `\n단위 ${unit.id}: ${result.text}`; if (result.interrupted) break;
+      const result = await fileResults(root, unit, files, timeout, false, observe); code = code === 1 || result.code === 1 ? 1 : code === 3 || result.code === 3 ? 3 : 0; text += `\n단위 ${unit.id}: ${result.text}`; if (result.interrupted) break;
     }
-    return { code, text: `${text}\n판정: ${code === 0 ? "부분 통과" : code === 3 ? "확인 불가" : "실패"}` };
+    return { code, text: `${text}\n판정: ${code === 0 ? "부분 통과" : code === 3 ? "확인 불가" : "실패"}${recordTestSignals(root, observations)}` };
   } catch (error) { return { code: 1, text: `실패: ${(error as Error).message}` }; }
 }
