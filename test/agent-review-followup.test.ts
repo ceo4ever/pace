@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { decideReviewAdmission, type AdmissionState } from "../src/agent/review-admission.ts";
 import { AgentError, normalizeResult, type Executor } from "../src/agent/contract.ts";
 import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
-import { tempDir } from "./helpers.ts";
+import { scopedReviewFixture, tempDir } from "./helpers.ts";
 
 function fixture(unit = "task") {
   const root = join(tempDir("pace-followup-"), unit === "task"
@@ -27,7 +27,7 @@ function fixture(unit = "task") {
       async run(request) {
         prompts.push(request.prompt);
         await wait?.();
-        return normalizeResult(request, { text: reply, provider: "openai" }, { durationMs: 1, enforcement: "fake" });
+        return normalizeResult(request, { text: scopedReviewFixture(request.prompt, reply), provider: "openai" }, { durationMs: 1, enforcement: "fake" });
       },
     };
     const deps = { executors: () => [...(available ? [executor] : []), ...(alternate ? [alternate] : [])],
@@ -38,7 +38,7 @@ function fixture(unit = "task") {
     return { code, json: JSON.parse(output.join("")) };
   };
   const verify = (args: string[] = [], reply = "F1 [blocking] 재현\nfail", selected = target, wait?: () => Promise<void>) => run(true, selected, args, reply, wait);
-  const note = (args: string[], selected = target, assessments = [{ finding: "F1 [blocking] 재현", decision: "A-3", reason: "필수 판정 생략을 제안했다" }]) => {
+  const note = (args: string[], selected = target, assessments = [{ finding: "F1 [blocking] fixture.ts:1 — 재현", decision: "A-3", reason: "필수 판정 생략을 제안했다" }]) => {
     let file = proof;
     if (args.includes("--request-waiver")) {
       const recommendation = args.includes("--choice") ? args[args.indexOf("--choice") + 1] : "";
@@ -230,7 +230,7 @@ test("공동 시도의 B1은 교차 시간 초과 사유를 시도와 원장에 
     agent: "claude", mode: "p",
     capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
     async run(request) {
-      return normalizeResult(request, { text: "pass", provider: "anthropic" }, { durationMs: 1, enforcement: "fake" });
+      return normalizeResult(request, { text: scopedReviewFixture(request.prompt, "pass"), provider: "anthropic" }, { durationMs: 1, enforcement: "fake" });
     },
   });
   h.setAvailable(false);

@@ -5,6 +5,7 @@ import { AgentError } from "./contract.ts";
 import { decideReviewAdmission } from "./review-admission.ts";
 import { readReviewBudget, recordedStage, type BudgetStage, type ReviewBudgetScope } from "./review-budget.ts";
 import { LedgerError, ledgerPath, textHash, type ReviewEntry } from "./review-log.ts";
+import { assessStructuredReview, effectiveBlocking } from "./structured-review.ts";
 
 export const FOLLOWUPS_FILE = "REVIEW-FOLLOWUPS.jsonl";
 const HASH = /^[a-f0-9]{64}$/;
@@ -181,6 +182,7 @@ function rawBlocking(ledger: string, row: ReviewEntry): string[] | null {
       JSON.parse(readFileSync(join(dirname(ledger), row.record), "utf8"));
     const text = result.result?.text;
     if (result.review?.hash === row.hash && typeof text === "string" && textHash(text) === row.result_hash) {
+      if (row.structured_stage) return effectiveBlocking(assessStructuredReview(row.structured_stage, text));
       const findings = text.split("\n").filter((line) => /\[blocking\]/i.test(line)).map((line) => line.trim());
       return findings.length ? findings : null;
     }

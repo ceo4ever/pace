@@ -1,0 +1,98 @@
+[
+  {
+    "path": "docs/AGENT-CALL.md",
+    "expected": "1e03f74",
+    "actual": "1e03f746d44fb325d8a241526118ec36bb38abfb",
+    "match": true
+  },
+  {
+    "path": "skills/pace-project-dev/references/cross-verify.md",
+    "expected": "e52df7e",
+    "actual": "e52df7e8b7b6685872621681be168c808df0a936",
+    "match": true
+  },
+  {
+    "path": "skills/pace-project-dev/references/goal-review.md",
+    "expected": "03bcf4e",
+    "actual": "03bcf4e67b22524a1887a318d1e568d9c93f1b07",
+    "match": true
+  },
+  {
+    "path": "skills/pace-project-dev/references/reviewer.md",
+    "expected": "6d597ec",
+    "actual": "6d597eca25cd81a00f0a55ec072a396d89bfbf34",
+    "match": true
+  },
+  {
+    "path": "skills/pace-project-dev/references/tester.md",
+    "expected": "f184e7c",
+    "actual": "f184e7c6446bb878b2e8ac4ba1ee2154499c7773",
+    "match": true
+  },
+  {
+    "path": "skills/pace-project-dev/references/tools.md",
+    "expected": "e169015",
+    "actual": "e1690151f89cd5a9211cf1dfac941b0d82e87339",
+    "match": true
+  },
+  {
+    "path": "src/agent/review-followup.ts",
+    "expected": "4d64a50",
+    "actual": "4d64a50643b94b68ce154356bdab4b853b0e414d",
+    "match": true
+  },
+  {
+    "path": "src/agent/review-log.ts",
+    "expected": "9b58a77",
+    "actual": "9b58a77bc85fb182436a879dad16e5ed25a25cea",
+    "match": true
+  },
+  {
+    "path": "src/agent/verify-cli.ts",
+    "expected": "342a285",
+    "actual": "342a2857c99d0539fb3f63069ee2a32bd6675b16",
+    "match": true
+  },
+  {
+    "path": "src/agent/verify.ts",
+    "expected": "57ce05b",
+    "actual": "57ce05bc9293b6dc90f003dc3b8ce0dfacddf96a",
+    "match": true
+  },
+  {
+    "path": "test/agent-review-followup.test.ts",
+    "expected": "aa62717",
+    "actual": "aa62717978e51796e6ed997edc948023c260da66",
+    "match": true
+  },
+  {
+    "path": "test/agent-review-log.test.ts",
+    "expected": "a1a7c66",
+    "actual": "a1a7c66ecaa992b7c50ac9b633a1077497c7db08",
+    "match": true
+  },
+  {
+    "path": "test/helpers.ts",
+    "expected": "837d25a",
+    "actual": "837d25a9b10fd1f0df9dd590b95907cc53a61825",
+    "match": true
+  },
+  {
+    "path": "test/project-dev-skill.test.ts",
+    "expected": "bdf11d0",
+    "actual": "bdf11d04af10e6108480da4e689a8bbbfacdc3bf",
+    "match": true
+  },
+  {
+    "path": "src/agent/structured-review.ts",
+    "expected": "8cffea0",
+    "actual": "8cffea0d16cbf3446010b390644f8284f1853d82",
+    "match": true
+  },
+  {
+    "path": "test/agent-structured-review.test.ts",
+    "expected": "04e2ed3",
+    "actual": "04e2ed340c2cd3ec4941fa2a98bda3a6d4ace08e",
+    "match": true
+  }
+]

@@ -1,0 +1,96 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "claude",
+  "result": {
+    "text": "# 1단계 독립 목표 대조: BL261126_99_fixture\n\n## 결론: 목표 미달\n\n이 백로그만으로 착수하면 owner에게 다시 묻지 않고는 합의한 목표까지 갈 수 없다. 완료 대상인 \"인계 문서\"가 무엇인지 정해져 있지 않다. 그 문서가 \"분명하다\"고 볼 합격선도 없다.\n\n## 하위 확인별 판단\n- **goal: 미확인.** \"다음 팀이 추가 설계 결정을 스스로 내릴 수 있게 한다\"는 방향은 상위 목적인 \"목표와 관측 가능한 완료 기준 검토\"와 맞는다. 그러나 이 목표가 owner 원문에서 왔다는 근거가 백로그에 없다. 그래서 owner 원문과 맞는지는 판정할 수 없다.\n- **completion: 미달.** 완료 기준은 목적·예상 입력·제출 기준·선행 작업 네 항목이 한 쪽에 있는지만 확인한다. 목표가 말하는 \"분명함\"이나 \"다음 팀이 스스로 결정할 수 있음\"은 확인하지 않는다. 확인할 문서가 무엇인지, 이미 있는 문서인지 새로 쓸 문서인지도 정해져 있지 않다. 그래서 검토자마다 판정이 달라질 수 있다.\n- **sequence: 미확인.** 태스크 순서, 이 백로그의 선행 작업, 다른 백로그와의 관계가 적혀 있지 않다. 그래서 충돌이 없다고 확인할 근거가 없다.\n- **owner: 미달.** \"남은 owner 결정은 없다\"는 선언에 근거나 결정 기록이 붙어 있지 않다. 또 \"구현 방식과 스토리지 형식은 바꿀 수 있다\"고 하면서 누가 어디까지 바꿀 수 있는지 정하지 않았다. 바뀐 형식이 예상 입력이나 제출 기준에 영향을 주면 합의한 완료 기준이 실질적으로 바뀐다. 이 경우 A-1에 따라 owner에게 물어야 하는데, 백로그는 그 경계를 정하지 않았다.\n\n## 근거와 한계\n- 산출물 전체가 한 단락(`BACKLOG.md:3`)이다. 그래서 모든 지적의 위치가 같은 줄이다.\n- PROJECT.md나 브리프를 읽지 않았다. 그래서 A-1의 \"합의 영향\" 대조는 백로그 본문만 근거로 했다.\n\n## 고칠 단계\n- 고칠 곳은 백로그의 목표와 완료 기준을 정의하는 단계다.\n- 대상 문서를 특정하고 합격선을 정하는 수정이 합의 범위를 바꾸는지는 백로그 본문만으로 가릴 수 없다. A-1은 대조 뒤에도 합의 영향을 가릴 수 없으면 owner에게 요청하라고 한다. 따라서 A-1로 요청하는 것을 추천한다.\n\n## 노출 범위\n- **읽은 파일:** 다음 두 파일만 읽었다. 파일은 고치지 않았다.\n  - `backlogs/BL261126_99_fixture/BACKLOG.md`\n  - `skills/pace-project-dev/references/decision-rights.md`\n- **보였지만 읽지 않은 파일:** 백로그 폴더를 Glob으로 확인할 때 `REVIEW-LOG.jsonl`, `REVIEW-LOG.lock`, `review-records/R1.json`의 파일 이름이 보였다. 작업 문서일 수 있어 읽지 않았다. 읽기 전용이라고 해서 이런 문서에 접근할 수 없었던 것은 아니다.\n- **자동으로 붙은 맥락:**\n  - SessionStart 훅이 \"[PACE-BOOT] 자식 세션 — 부트 생략\" 문구를 붙였다.\n  - 호스트가 사용자 계정 정보를 붙였다. 검토에는 쓰지 않았다.\n  - 메모리 색인(MEMORY.md)은 맥락에 들어오지 않았다.\n- **검토 주체:** Anthropic의 claude-opus-5-5다. 작성자와 제공자가 같은지(교차 여부)는 이 세션에서 알 수 없다. 이 호출은 1단계만 실행했다. 2단계는 호출자가 따로 전달해야 한다.\n\n```pace-review\n{\"version\":1,\"findings\":[{\"id\":\"F1\",\"severity\":\"blocking\",\"category\":\"completion\",\"location\":\"backlogs/BL261126_99_fixture/BACKLOG.md:3\",\"scenario\":\"완료 기준이 대상 '인계 문서'를 특정하지 않고 네 항목의 존재만 확인해, 목표인 '분명함·다음 팀의 자율 결정 가능'의 합격선이 없다. 착수자는 어느 문서를 만들거나 고칠지 owner에게 물어야 하고, 검토자마다 완료 판정이 달라진다.\",\"reproduction\":\"BACKLOG.md:3에서 대상 문서의 경로·식별자와 '분명함'의 판정 기준을 찾는다. 둘 다 없다. 같은 문서를 두 검토자에게 주면 서로 다르게 판정할 수 있다.\",\"confidence\":\"high\"},{\"id\":\"F2\",\"severity\":\"should_fix\",\"category\":\"goal\",\"location\":\"backlogs/BL261126_99_fixture/BACKLOG.md:3\",\"scenario\":\"'합의 목표'의 출처인 owner 원문이나 결정 기록이 연결되어 있지 않아, 목표가 owner 원문과 맞는지 판정할 수 없다.\",\"reproduction\":\"BACKLOG.md 전체에서 owner 원문 인용이나 결정 기록 링크를 찾는다. 하나도 없다.\",\"confidence\":\"high\"},{\"id\":\"F3\",\"severity\":\"should_fix\",\"category\":\"owner\",\"location\":\"backlogs/BL261126_99_fixture/BACKLOG.md:3\",\"scenario\":\"'구현 방식과 스토리지 형식은 바꿀 수 있다'에 결정 주체와 한계가 없다. 형식 변경이 예상 입력이나 제출 기준을 바꾸면 A-1의 합의 변경에 해당하는데, '남은 owner 결정은 없다'는 선언에도 근거가 없다.\",\"reproduction\":\"decision-rights.md:11의 A-1 판정 근거와 BACKLOG.md:3의 변경 허용 문장을 대조한다. 위임 범위나 경계 조건이 적혀 있지 않다.\",\"confidence\":\"medium\"},{\"id\":\"F4\",\"severity\":\"should_fix\",\"category\":\"sequence\",\"location\":\"backlogs/BL261126_99_fixture/BACKLOG.md:3\",\"scenario\":\"태스크 순서, 이 백로그 자체의 선행 작업, 다른 백로그와의 관계가 없어 순서나 충돌이 없는지 확인할 수 없다.\",\"reproduction\":\"BACKLOG.md에서 태스크 목록, 선행 조건, 다른 BL 참조를 찾는다. 하나도 없다.\",\"confidence\":\"high\"}]}\n```\n\nfail",
+    "agent": "claude",
+    "mode": "p",
+    "model": {
+      "value": "claude-opus-5-5",
+      "source": "reported"
+    },
+    "provider": {
+      "value": "anthropic",
+      "source": "model"
+    },
+    "access": "read-only",
+    "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+    "session_id": null,
+    "stop_reason": "end_turn",
+    "is_error": false,
+    "duration_ms": 46486,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 4692
+    },
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "BACKLOG.md",
+    "hash": "16f13ae3cdbd00b2fa2f9feffa3e531b0038243d87a7994079ca586316dc3ce6",
+    "kind": "goal",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# 독립 검증 형식 실측용 합성 백로그\n\n합의 목표는 인계 문서의 목표와 준비 조건이 분명해 다음 팀이 추가 설계 결정을 스스로 내릴 수 있게 하는 것이다. 완료는 한 쪽에 목적·예상 입력·제출 기준·선행 작업을 확인하면 된다. 다음 태스크에서 구현 방식과 스토리지 형식은 바꿀 수 있다. 남은 owner 결정은 없다.\n",
+    "call_id": "a33f3f14-caa3-4ebf-b6f3-df670256acac",
+    "structured_stage": "backlog"
+  },
+  "assessment": {
+    "stage": "backlog",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "completion",
+        "confidence": "high",
+        "location": "backlogs/BL261126_99_fixture/BACKLOG.md:3",
+        "scenario": "완료 기준이 대상 '인계 문서'를 특정하지 않고 네 항목의 존재만 확인해, 목표인 '분명함·다음 팀의 자율 결정 가능'의 합격선이 없다. 착수자는 어느 문서를 만들거나 고칠지 owner에게 물어야 하고, 검토자마다 완료 판정이 달라진다.",
+        "reproduction": "BACKLOG.md:3에서 대상 문서의 경로·식별자와 '분명함'의 판정 기준을 찾는다. 둘 다 없다. 같은 문서를 두 검토자에게 주면 서로 다르게 판정할 수 있다.",
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "should_fix",
+        "category": "goal",
+        "confidence": "high",
+        "location": "backlogs/BL261126_99_fixture/BACKLOG.md:3",
+        "scenario": "'합의 목표'의 출처인 owner 원문이나 결정 기록이 연결되어 있지 않아, 목표가 owner 원문과 맞는지 판정할 수 없다.",
+        "reproduction": "BACKLOG.md 전체에서 owner 원문 인용이나 결정 기록 링크를 찾는다. 하나도 없다.",
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "owner",
+        "confidence": "medium",
+        "location": "backlogs/BL261126_99_fixture/BACKLOG.md:3",
+        "scenario": "'구현 방식과 스토리지 형식은 바꿀 수 있다'에 결정 주체와 한계가 없다. 형식 변경이 예상 입력이나 제출 기준을 바꾸면 A-1의 합의 변경에 해당하는데, '남은 owner 결정은 없다'는 선언에도 근거가 없다.",
+        "reproduction": "decision-rights.md:11의 A-1 판정 근거와 BACKLOG.md:3의 변경 허용 문장을 대조한다. 위임 범위나 경계 조건이 적혀 있지 않다.",
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "should_fix",
+        "category": "sequence",
+        "confidence": "high",
+        "location": "backlogs/BL261126_99_fixture/BACKLOG.md:3",
+        "scenario": "태스크 순서, 이 백로그 자체의 선행 작업, 다른 백로그와의 관계가 없어 순서나 충돌이 없는지 확인할 수 없다.",
+        "reproduction": "BACKLOG.md에서 태스크 목록, 선행 조건, 다른 BL 참조를 찾는다. 하나도 없다.",
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      }
+    ]
+  }
+}

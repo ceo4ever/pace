@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { appendFileSync, closeSync, existsSync, openSync, readFileSync, readdirSync, rmSync, writeSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import type { AgentResult } from "./contract.ts";
+import type { BudgetStage } from "./review-budget.ts";
 
 // 검토 원장 (P007 T01): 같은 대상의 독립 검토가 거듭 fail할 때 땜질 반복을 끊는다.
 //  - verify가 실행될 때마다 대상 폴더의 REVIEW-LOG.jsonl에 판정을 자동으로 남긴다(작성자 수작업 없음).
@@ -41,6 +42,7 @@ export interface ReviewEntry {
   followup?: { type: "joint" | "confirmation" | "owner" | "recovery"; id: string };
   cross_unavailable?: string[];
   cross?: boolean;
+  structured_stage?: BudgetStage;
   /** 중단 복구. 옛 fail 표기는 기존 진단에서만 세고 예산 판정·재검토 기준점에서 제외한다. */
   interrupted?: true;
 }
@@ -96,6 +98,7 @@ function validEntry(v: Record<string, unknown>): boolean {
     && (v.usage === undefined || reviewUsage(v.usage))
     && (v.followup === undefined || validFollowup(v.followup))
     && (v.cross === undefined || typeof v.cross === "boolean")
+    && (v.structured_stage === undefined || v.structured_stage === "pre" || v.structured_stage === "post" || v.structured_stage === "backlog")
     && (v.cross_unavailable === undefined || validCrossUnavailable(v.cross_unavailable));
   if (v.type === "diagnosis") return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" && (v.file === undefined || isStr(v.file));
   if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "" && (v.by === undefined || v.by === 'pm' || v.by === 'user');

@@ -1,0 +1,406 @@
+[
+  {
+    "orphan": true,
+    "removal": "none",
+    "first_verdict": "fail",
+    "code": 0,
+    "recovered": [
+      "review-records/R1.json(impl.diff): 기록의 판정·원문·스냅숏이 서로 맞지 않는다 — 중단으로 원장에 복구했다(판정 회차·재검토 기준점에서는 제외한다)"
+    ],
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-B4KSlb/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 1,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": null
+    },
+    "rereview_of": null,
+    "prompt_count": 2,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.070Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "fail",
+      "verifier": "unknown",
+      "provider": null,
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "interrupted": true,
+      "call_id": "5f63190d-f576-4c8a-9cd0-80e2fecb8d5a"
+    }
+  },
+  {
+    "orphan": true,
+    "removal": "stage",
+    "first_verdict": "fail",
+    "code": 0,
+    "recovered": [
+      "review-records/R1.json(impl.diff): 기록의 판정·원문·스냅숏이 서로 맞지 않는다 — 중단으로 원장에 복구했다(판정 회차·재검토 기준점에서는 제외한다)"
+    ],
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-BRuxHX/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 1,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": null
+    },
+    "rereview_of": null,
+    "prompt_count": 2,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.073Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "fail",
+      "verifier": "unknown",
+      "provider": null,
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "interrupted": true,
+      "call_id": "17c29044-b020-4cf5-b2a5-13c882ec55a4"
+    }
+  },
+  {
+    "orphan": true,
+    "removal": "both",
+    "first_verdict": "fail",
+    "code": 0,
+    "recovered": [
+      "review-records/R1.json(impl.diff): 기록의 판정·원문·스냅숏이 서로 맞지 않는다 — 중단으로 원장에 복구했다(판정 회차·재검토 기준점에서는 제외한다)"
+    ],
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-kEGwBF/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 1,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": null
+    },
+    "rereview_of": null,
+    "prompt_count": 2,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.078Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "fail",
+      "verifier": "unknown",
+      "provider": null,
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "interrupted": true,
+      "call_id": "ac14e9cc-0e62-4612-aafa-78792b5ca228"
+    }
+  },
+  {
+    "orphan": true,
+    "removal": "legacy",
+    "first_verdict": "pass",
+    "code": 0,
+    "recovered": [
+      "review-records/R1.json(impl.diff): 기록의 판정(pass)으로 원장에 복구했다"
+    ],
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-mH8GgR/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 2,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": "rounds"
+    },
+    "rereview_of": "review-records/R1.json",
+    "prompt_count": 2,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.081Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "pass",
+      "verifier": "codex",
+      "provider": "openai",
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "a5e9f196f59fa42f34705b7a00d5fc8983cc002c7de63fe6e921edb7d30e2561",
+      "call_id": "1a77311d-c25f-44d1-ab97-080004be8512",
+      "duration_ms": 1,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "cross": true
+    }
+  },
+  {
+    "orphan": true,
+    "removal": "normal",
+    "first_verdict": "fail",
+    "code": 0,
+    "recovered": [
+      "review-records/R1.json(impl.diff): 기록의 판정(fail)으로 원장에 복구했다"
+    ],
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-DF4fjd/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 2,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": "rounds"
+    },
+    "rereview_of": "review-records/R1.json",
+    "prompt_count": 2,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.088Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "fail",
+      "verifier": "codex",
+      "provider": "openai",
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "09e72506d4ae70d50a12616e8aca470319a0e6d44031496ede74f8298750d8c8",
+      "call_id": "cf4ea97d-4bda-4301-bf4e-112c7790c788",
+      "duration_ms": 1,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "cross": true,
+      "structured_stage": "post"
+    }
+  },
+  {
+    "orphan": false,
+    "removal": "none",
+    "first_verdict": "fail",
+    "code": 2,
+    "error": {
+      "code": "invalid_request",
+      "message": "구조화된 검토 기준점의 판정이 원장과 맞지 않는다"
+    },
+    "prompt_count": 1,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.090Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "pass",
+      "verifier": "codex",
+      "provider": "openai",
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "09e72506d4ae70d50a12616e8aca470319a0e6d44031496ede74f8298750d8c8",
+      "duration_ms": 1,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "cross": true,
+      "call_id": "8e26be69-d13a-4975-acce-a6e5a050b3fb",
+      "structured_stage": "post"
+    }
+  },
+  {
+    "orphan": false,
+    "removal": "stage",
+    "first_verdict": "fail",
+    "code": 2,
+    "error": {
+      "code": "invalid_request",
+      "message": "구조화된 검토 기준점의 단계가 원장과 맞지 않는다"
+    },
+    "prompt_count": 1,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.092Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "pass",
+      "verifier": "codex",
+      "provider": "openai",
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "09e72506d4ae70d50a12616e8aca470319a0e6d44031496ede74f8298750d8c8",
+      "duration_ms": 1,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "cross": true,
+      "call_id": "6c6d11fe-f811-402f-bde6-6e03546a93b9"
+    }
+  },
+  {
+    "orphan": false,
+    "removal": "both",
+    "first_verdict": "fail",
+    "code": 2,
+    "error": {
+      "code": "invalid_request",
+      "message": "구조화된 검토 기준점의 단계가 원장과 맞지 않는다"
+    },
+    "prompt_count": 1,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.094Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "pass",
+      "verifier": "codex",
+      "provider": "openai",
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "09e72506d4ae70d50a12616e8aca470319a0e6d44031496ede74f8298750d8c8",
+      "duration_ms": 1,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "cross": true,
+      "call_id": "f9a768a5-f125-4ab1-92c0-a139303450bf"
+    }
+  },
+  {
+    "orphan": false,
+    "removal": "legacy",
+    "first_verdict": "pass",
+    "code": 0,
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-xpvub6/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 2,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": "rounds"
+    },
+    "rereview_of": "review-records/R1.json",
+    "prompt_count": 2,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.096Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "pass",
+      "verifier": "codex",
+      "provider": "openai",
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "a5e9f196f59fa42f34705b7a00d5fc8983cc002c7de63fe6e921edb7d30e2561",
+      "duration_ms": 1,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "cross": true,
+      "call_id": "e9e04d63-d5b8-484a-b05a-3e09756f6a9d"
+    }
+  },
+  {
+    "orphan": false,
+    "removal": "normal",
+    "first_verdict": "fail",
+    "code": 0,
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-YGSUYB/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 2,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": "rounds"
+    },
+    "rereview_of": "review-records/R1.json",
+    "prompt_count": 2,
+    "recovered_row": {
+      "type": "review",
+      "at": "2026-11-26T03:00:34.098Z",
+      "kind": "goal",
+      "target": "impl.diff",
+      "hash": "4f777732e041d4fe3b07b3f81cb15e12b113e8d985e3835675198185be13755e",
+      "verdict": "fail",
+      "verifier": "codex",
+      "provider": "openai",
+      "rereview_of": null,
+      "record": "review-records/R1.json",
+      "result_hash": "09e72506d4ae70d50a12616e8aca470319a0e6d44031496ede74f8298750d8c8",
+      "duration_ms": 1,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      "cross": true,
+      "call_id": "c1959f56-2be8-49a8-984b-7d4210f1fc72",
+      "structured_stage": "post"
+    }
+  },
+  {
+    "orphan": true,
+    "removal": "stage",
+    "initial_structure": "duplicate keys",
+    "first_verdict": "unknown",
+    "code": 0,
+    "recovered": [
+      "review-records/R1.json(impl.diff): 기록의 판정·원문·스냅숏이 서로 맞지 않는다 — 중단으로 원장에 복구했다(판정 회차·재검토 기준점에서는 제외한다)"
+    ],
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-AjrptW/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 1,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": null
+    },
+    "rereview_of": null
+  },
+  {
+    "orphan": true,
+    "removal": "both",
+    "initial_structure": "duplicate keys",
+    "first_verdict": "unknown",
+    "code": 0,
+    "recovered": [
+      "review-records/R1.json(impl.diff): 기록의 판정·원문·스냅숏이 서로 맞지 않는다 — 중단으로 원장에 복구했다(판정 회차·재검토 기준점에서는 제외한다)"
+    ],
+    "budget": {
+      "unit": "task",
+      "root": "/private/var/folders/0k/n9rvmztx6xs3xvjsvf0qqzdw0000gn/T/pace-test-run-dHcnbw/pace-r3-probe-S381zj/projects/P013_case/tasks/T03_case",
+      "stage": "post",
+      "rounds": 1,
+      "calls": 2,
+      "round_limit": 2,
+      "call_limit": 4,
+      "exhausted": null
+    },
+    "rereview_of": null
+  }
+]

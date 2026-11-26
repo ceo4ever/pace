@@ -1,0 +1,938 @@
+diff --git a/docs/AGENT-CALL.md b/docs/AGENT-CALL.md
+index ead2654..1e03f74 100644
+--- a/docs/AGENT-CALL.md
++++ b/docs/AGENT-CALL.md
+@@ -13,6 +13,8 @@
+ 
+ 태스크·백로그의 검토 예산은 대상 파일이 아니라 단위와 단계로 센다. 태스크는 루트 및 `evidence/REVIEW-LOG.jsonl`을 합산해 루트 `TASK.md`의 사전 검토와 그 밖의 구현 후 검토를 구분한다. `--kind task`는 태스크 루트의 `TASK.md`에만 사용할 수 있다. 백로그는 `--kind goal`을 포함해 폴더당 한 단계다. 단계마다 전체 1회와 범위 재검토 1회, 호출 4회를 허용한다. 검토 전에 원장에 `call`을 예약한다. 소진 이후에는 `reason: budget_exhausted`와 단위·단계·판정·호출 수를 내고 종료 16이다. 옛 원장의 확인 가능한 호출과 유효 판정도 합산한다. 옛 판정 기록과 스냅숏 지문이 구조 전용 검토를 입증하면 호출에 포함하고 첫 전체 판정을 열어 둔다. 같은 단계에서 대상이 달라져도 직전 유효 판정의 원문·스냅숏으로 범위 재검토한다. 이전 기록이 손상 또는 유실됐으면 재검토가 거부된다. 위의 연속 fail 진단 단계는 예산 관리 밖의 일반 산출물에 적용한다. 시간·토큰의 집계 원본은 원장의 `duration_ms`·`usage`다. 제공자 미보고 토큰은 `null`로 기록하고 `미보고`로 표시한다.
+ 
++태스크·백로그의 `verify`는 판정 질문을 해당 단계로 고정한다. 검토 원문의 단일 `pace-review` JSON 블록에서 지적을 읽어 유효 blocking이 있으면 fail, 없으면 pass로 계산한다. JSON은 `version: 1`과 `findings`를 담고 각 지적의 `id`, `severity`, `category`, `location`, `scenario`, `reproduction`, `confidence`를 읽는다. 질문에 해당하지 않는 것으로 표시한 지적은 note, 질문에 연결된 blocking의 위치·실패 조건·재현 수단 중 하나라도 없으면 should_fix다. 사전 구현과 백로그 설계·구현의 인계를 `handoff` 값에 기록한다. 결과와 검토 기록의 `assessment`에는 원래 등급, 적용 등급, 강등·인계 사유와 원문 마지막 판정과의 차이가 남는다. 형식 또는 질문 연결을 판독하지 못하면 unknown이다. 관리 단위 밖 검토와 옛 원장은 기존 마지막 줄 판정을 유지한다.
++
+ 예산이 끝나면 `budget_exhausted`와 소진 보고를 반환한다. 보고에는 단계의 판정과 호출·진단·무효 근거가 남는다. 미통과 단계는 `review-note --joint --choice <적용한 조치> --summary <원인> --file <근거>`로 허브 조치를 기록한 대상·해시에서 공동 검토를 한 번 열 수 있다. 공동 시도는 태스크 두 단계 합산 또는 백로그 폴더당 최대 2회다. 호출 상한에서 유효 판정이 없으면 이 명령으로 첫 전체 판정을 복구할 수 있으며 공동 시도 1회로 센다. B1의 같은 제공자 검토는 한 시도 안의 `cross: false`와 `cross_unavailable`로 응답·기록·원장·후속 보고에 남는다.
+ 
+ 필수 검증 생략·완화 또는 미확인 증거·잔여 blocking 수용을 제안하면 `review-note --request-waiver skip|weaken --choice <추천> --summary <사유> --file <근거>`로 A-3 요청을 만든다. 근거 JSON의 `choices`는 선택지, `assessments`는 지적별 `finding`·`decision`·`reason`이다. 요청이 열려 있는 단위의 검토는 종료 16으로 차단한다. `review-note --decision --by user --choice <결정> --summary <사유> --file <승인 원문> [--resume|--rounds <회차>]`는 승인 원문과 같은 대상·해시·선택지에 적용한다. 회차를 지정한 경우에만 한정 검토를 열며 승인 자체는 검토 판정을 만들지 않는다. 후속 기록은 단위 공유 원장 `REVIEW-FOLLOWUPS.jsonl`에 남는다.
+diff --git a/skills/pace-project-dev/evals/scenarios.md b/skills/pace-project-dev/evals/scenarios.md
+index 61fc6bc..314943a 100644
+--- a/skills/pace-project-dev/evals/scenarios.md
++++ b/skills/pace-project-dev/evals/scenarios.md
+@@ -74,5 +74,5 @@
+ | H02 | 선행 병합으로 기존 백로그의 행·진행 상태가 낡고 제공 범위 확대도 제안됐다. | 기획자가 행·상태를 대조·정정한다. 제공 범위 확대만 A-1 근거와 함께 허브에 반환한다. | 일반 정정을 별도 승인으로 올림, 합의된 제공 범위를 자체 변경. |
+ | H03 | 선행 병합 뒤 기존 백로그의 CLI 행 번호와 BR 진행 표시만 낡았다. | 기획자가 근거와 상태를 점검·정정하고 결과를 반환한다. | 일반 정정을 허브 또는 owner 결정으로 요청. |
+ | H04 | 경로 C에 합의했으나 쓰기 확인에 답하지 않았다. 다른 참여자가 먼저 백로그를 만들자고 한다. | 쓰기 요청과 손대지 않은 대기로 이어진다. | 승인 전 폴더·초안 파일을 쓰거나 기획자에게 쓰기를 위임. |
+-| H05 | C의 승인 범위 초안이 돌아왔다. 다른 제공자 reviewer만 미실행된 경우와 양쪽이 미실행된 경우를 비교한다. | 전자는 별도 새 세션과 사유, cross: false. 후자는 초안 확정 전에 허브의 A-3 요청. | 작성자가 자기 검토를 독립 판정으로 기록, 같은 제공자 결과를 교차로 표시. |
++| H05 | C의 승인 범위 초안이 돌아왔다. 다른 제공자 reviewer만 미실행된 경우와 양쪽이 미실행된 경우를 비교한다. | 전자는 별도 새 세션과 사유, cross: false. 후자는 초안 확정을 보류하고 허브와 독립 검토를 복구한다. 검토를 생략·완화할 때 A-3으로 요청한다. | 작성자가 자기 검토를 독립 판정으로 기록, 같은 제공자 결과를 교차로 표시. |
+ | H06 | 기존 백로그 정정 제안 중 한 변경의 합의 영향이 불명확하고 일반 정정은 별개다. | 합의 문서와 실제 결과를 조사하고 불명확한 부분만 보류한다. 그래도 남은 범위 영향은 허브가 A-1로 다룬다. | 정상 정정 보류, 영향이 확인되기 전 범위 변경 집행. |
+diff --git a/skills/pace-project-dev/references/cross-verify.md b/skills/pace-project-dev/references/cross-verify.md
+index af173b3..e52df7e 100644
+--- a/skills/pace-project-dev/references/cross-verify.md
++++ b/skills/pace-project-dev/references/cross-verify.md
+@@ -5,5 +5,5 @@ SKILL.md §2에서 옮긴 문서다.
+ 목표 우선의 실제 입력/판단 순서는 [goal-review.md](goal-review.md)를 따른다. 1단계 결과를 회수한 뒤 2단계 작업 문서를 주며, 모든 자료를 한 번에 전달한 순서 지시로 대체하지 않는다.
+ 
+ 백로그처럼 큰 산출물은 작성자와 **다른 제공자**의 에이전트가 상위 목적 우선으로 독립 검토한다. 호스트가 직접 다른 제공자 에이전트를 부를 수 있으면 그 기능을 쓰고, 없으면 `pace agent verify --author-agent <claude|codex> --target <파일> --purpose-file <상위 목적 글> --out <기록>`(읽기 전용 `-p`)을 쓴다. 제공자는 결과의 모델·제공자 출처로 판별한다 — 같은 제공자로 몰래 대체하지 않는다.
+-- 종료 10(미실행)이면 [A-3의 B1](decision-rights.md#a-결정-주체)에 따라 미실행 사유를 기록하고 `--allow-same-provider`로 별도 새 세션을 연다. 결과에 `cross: false`를 기록한다. 양쪽 모두 미실행이면 A-3으로 결정 요청을 한다.
+-- 지적은 blocking·should_fix·note 등급으로 온다. 작성자가 항목마다 반영 여부와 이유를 남긴다. 목표·전략 이견은 실제 조치가 합의를 바꾸는지 [A-1](decision-rights.md#a-결정-주체)로 판정한다.
++- 종료 10(미실행)이면 [A-3의 B1](decision-rights.md#a-결정-주체)에 따라 미실행 사유를 기록하고 `--allow-same-provider`로 별도 새 세션을 연다. 결과에 `cross: false`를 기록한다. 양쪽 모두 미실행이면 허브와 검토를 복구한다. 실제 검증 생략·완화는 A-3으로 요청한다.
++- 지적은 blocking·should_fix·note 등급으로 온다. 태스크·백로그의 verify는 질문별 구조화된 지적으로 판정을 계산하고 원문과 차이를 기록한다. 작성자가 항목마다 반영 여부와 이유를 남긴다. 목표·전략 이견은 실제 조치가 합의를 바꾸는지 [A-1](decision-rights.md#a-결정-주체)로 판정한다.
+diff --git a/skills/pace-project-dev/references/goal-review.md b/skills/pace-project-dev/references/goal-review.md
+index fa26f7f..03bcf4e 100644
+--- a/skills/pace-project-dev/references/goal-review.md
++++ b/skills/pace-project-dev/references/goal-review.md
+@@ -32,7 +32,7 @@
+ 
+ - tester는 1단계 목표 판단을 먼저 한 뒤 2단계에서 기준별 실행·선택·충족·검출력·약화 없음 다섯 항목을 판정한다. 해당 계약 목표가 미달/미확인이면 최종 판정은 fail로 남기고 필요한 수정·관측을 적는다. 기술/기준별 pass와 구분한다.
+ - reviewer는 같은 순서 후 기준/결함/설계/보안을 판정한다. 실제 목표 이탈·목표 검증 누락은 blocking이며 단순 형식 보완은 사안에 맞게 등급을 정한다.
+-- 백로그 등 큰 산출물은 작성자와 다른 제공자의 새 맥락으로 위 순서를 따른다. 호출이 불가능하면 [A-3의 B1](decision-rights.md#a-결정-주체)에 따라 미실행 사유를 기록하고 같은 제공자의 새 세션(`cross: false`)을 사용한다. 양쪽 모두 미실행이면 A-3 결정 요청을 한다.
++- 백로그 등 큰 산출물은 작성자와 다른 제공자의 새 맥락으로 위 순서를 따른다. 호출이 불가능하면 [B1](decision-rights.md#a-결정-주체)에 따라 미실행 사유를 기록하고 같은 제공자의 새 세션(`cross: false`)을 사용한다. 양쪽 모두 미실행이면 관문을 보류하고 허브와 필요한 검토를 복구한다. 필수 검토를 생략·완화하거나 증거 공백을 안고 진행하는 조치는 A-3으로 owner에게 묻는다.
+ - `pace agent verify`의 읽기 전용 호출은 1단계 목표/결과 대조에 쓴다. 2단계 작업 문서는 첫 결과를 받은 호출자가 1단계 원문과 함께 호스트 검토 기능으로 넘긴다. 검토 주체·제공자와 두 단계의 인계 범위를 기록한다.
+ - 깊이는 규모·위험에 비례한다. 작은 일은 목적과 관측 결과를 짧게 대조하면 되고 별도 문서/에이전트를 매번 강제하지 않는다. 이미 독립 검토가 필요한 프로젝트는 자료를 많이 쓰는 대신 첫 판단/작업 문서의 순서를 지킨다.
+ 
+diff --git a/skills/pace-project-dev/references/reviewer.md b/skills/pace-project-dev/references/reviewer.md
+index 44ac44e..6d597ec 100644
+--- a/skills/pace-project-dev/references/reviewer.md
++++ b/skills/pace-project-dev/references/reviewer.md
+@@ -26,10 +26,19 @@ PM은 검토 차수마다 최초 판정과 재검토 원문을 고유한 증거
+ 
+ **재검토와 반복 실패는 도구가 단계를 정한다.** fail이면 지적을 반영하고 `pace agent verify`를 다시 부른다 — 도구가 원장의 직전 fail을 기준점으로 골라 그 원문과 바뀐 줄을 주는 **자동 재검토**다(아래 [반복 실패](#반복-실패-진단과-사용자-결정)). 단계와 기록은 아래 반복 실패 절을 따르고, 조치 전 결정 주체는 [결정 권한 정본](decision-rights.md)의 A로 판정한다. 계획 단계의 경계 사례는 구현 후 검토와 테스트에서 잡는다. TASK.md 자체가 결과물이다. 다른 제공자 CLI로 받을 때는 `pace agent verify --kind task`를 쓴다 — 기본(`goal`) 프롬프트는 TASK·테스트 표 열람을 금지해 검토자가 자기 열람을 독립성 위반으로 지적한다. 1단계에는 상위 목적과 TASK.md만 전달하고 첫 판단을 받은 뒤 2단계에서 PROJECT·브리프를 전달해 대조하며 목적·범위·기준의 관찰 가능성, 테스트의 검출력, 접근·위험 및 누락을 검토한다. 구현 후 diff는 아직 요구하지 않는다. PM은 대상과 제공자·방법·결과, blocking과 should_fix 처리 및 재검토를 기록한다. blocking이 남거나 검토가 실행되지 않으면 구현하지 않는다 — 예외는 [반복 실패](#반복-실패-진단과-사용자-결정)의 사용자 결정으로 붙인 PRE-REVIEW `waiver`(고친 뒤 TASK 해시)뿐이다. 지적 수정이나 검토 대상의 실질적 변경은 `verify`를 다시 불러 자동 재검토를 받는다. purpose에는 합의된 상위 목적과 판정 기준만 넣고 작성자의 지적 대응·자체 판정은 넣지 않는다(독립성 — 검토자는 바뀐 줄로 대응을 직접 본다). 같은 대상의 reviewer 판정은 처음부터 `verify`로 받아 원장을 잇는다 — 도구 밖 reviewer(서브에이전트 등)의 판정은 원장에 남지 않아 반복 실패 단계가 작동하지 않는다. 한 대상의 검토 주기(첫 검토부터 pass·사용자 결정까지)는 경로를 바꾸지 않는다 — `verify`가 미실행(종료 10)일 때만 그 주기 전체를 도구 밖 reviewer로 받고, 같은 세션 재검토(불가능하면 직전 원문·바뀐 부분을 새 세션에 전달)와 함께 연속 fail·진단·결정을 PM이 이 절의 규칙대로 세어 `pace project log`에 기록한다. 주기 중간에 경로를 섞지 않는다 — 원장에 fail이 쌓인 뒤 verify가 미실행(종료 10)이면 다른 제공자를 다시 확인하고, 안 되면 같은 대상에 `verify --allow-same-provider`(교차 아님으로 기록)로 원장을 잇는다. 원장은 대상의 실제 경로(폴더+파일 이름)로 구분하므로 구현 후 검토 diff는 같은 경로(예: `evidence/impl-diff.patch`)를 차수마다 갱신해 `verify`·`review-note`에 쓰고, 차수별 원문은 `review-records/`가 보존한다. 반복 실패 단계는 1단계 `verify` 판정으로 움직인다 — `goal-review.md` 2단계에서 나온 blocking은 PM이 고치되 원장에는 반영되지 않는다(알려진 한계, 프로젝트 이슈). pass 뒤 대상이 실질적으로 바뀌면 원장 구간이 새로 시작돼 다음 verify는 전체 검토다. PM이 판정을 확인하고 합의 영향은 [A-1](decision-rights.md#a-결정-주체)로 대조한다.
+ 
+-다른 제공자가 미실행이면 [A-3의 B1](decision-rights.md#a-결정-주체)에 따라 사유를 남기고 같은 제공자의 별도 새 세션으로 대체한다. 대체 검토에는 `cross: false`를 기록하고, 양쪽 모두 미실행이면 A-3 결정 요청을 한다. 구현 후 최초 검토는 사전 검토와 별도 새 맥락이다. 이 절차는 파일 편집을 기술적으로 차단하거나 검토의 의미를 자동으로 보증하지 않는다. 우회 또는 허위 기록도 가능하므로 PM과 독립 검토자가 실제 증거와 판정을 확인한다.
++다른 제공자가 미실행이면 [A-3의 B1](decision-rights.md#a-결정-주체)에 따라 사유를 남기고 같은 제공자의 별도 새 세션으로 대체한다. 대체 검토에는 `cross: false`를 기록하고, 양쪽 모두 미실행이면 허브와 검토를 복구한다. 검토 생략·완화가 실제 제안이면 A-3 결정을 요청한다. 구현 후 최초 검토는 사전 검토와 별도 새 맥락이다. 이 절차는 파일 편집을 기술적으로 차단하거나 검토의 의미를 자동으로 보증하지 않는다. 우회 또는 허위 기록도 가능하므로 PM과 독립 검토자가 실제 증거와 판정을 확인한다.
+ 
+ ## 관점
+ 
++관리 단위의 각 검토에는 질문 하나를 둔다.
++
++| 종류 | 판정 질문 |
++|---|---|
++| 백로그 | 이 백로그로 프로젝트에 착수하면 owner에게 다시 묻지 않고 합의한 목표까지 갈 수 있는가? |
++| 구현 전 | 이 계획이 목적을 증명할 수 있는가? |
++| 구현 후 | 이 변경을 내보내도 되는가? |
++
++
+ 1. **기준 반영**: TASK 기준이 모두 구현됐고, 범위 밖 변경이 섞이지 않았다.
+ 2. **결함**: 기준대로 구현해도 남는 결함 — 경계값, 오류 뒤 부작용, 기존 동작 회귀, 동시성·상태 꼬임.
+ 3. **테스트 검출력**: 테스트가 결함 구현에서 실제로 실패하는가.
+@@ -43,13 +52,18 @@ PM은 검토 차수마다 최초 판정과 재검토 원문을 고유한 증거
+ |---|---|---|
+ | `blocking` | 기준 누락, 결함이 통과하는 구멍, 회귀, 항상 통과하는 테스트, 보안 결함 | **구현 전이면 구현 차단, 구현 후면 커밋 차단** — 고치고 다시 검토. 반복 실패의 사용자 결정(아래)만 예외이며, 그때도 계약 목표가 미달·미확인이면 `판정: 막힘`으로 done하지 않는다(goal-review) |
+ | `should_fix` | 이름·문구 불일치, 약한 테스트, 중복, 더 단순한 방법 | 반영하거나 남김+이유 |
+-| `handoff` | 구현 중 정할 상세, 다음 태스크로 넘길 것 | TASK-CLOSE "남긴 것" |
++| `note` | 구현 중 정할 상세, 다음 태스크로 넘길 것 | TASK-CLOSE "남긴 것" |
+ 
+-불확실한 결함을 낮은 등급으로 내리지 않는다. 함수 배치·이름 같은 선택은 결함이 아니라 handoff다.
++불확실한 결함을 낮은 등급으로 내리지 않는다. 함수 배치·이름 같은 선택은 note로 남긴다.
+ 재검토(원장의 기준점이 있어 `rereview_of`가 붙는 호출 — 진단·결정·pass 뒤 첫 검토는 전체 검토)에서는 직전 blocking의 해소 여부와 그 수정이 만든 새 결함만 본다. 현재 산출물 전체는 해소 판단의 맥락이고, 바뀌지 않은 부분의 새 지적은 note로 남기며 이번 판정·수정 대상이 아니다(`verify`의 자동 재검토가 이 범위를 지시한다).
+ 
+ ## 반환
+ 
++태스크와 백로그의 `pace agent verify`에서는 프롬프트가 정한 `pace-review` JSON 블록을 한 개 작성한다. 지적마다 번호, 등급, 질문의 하위 항목 ID, 파일과 줄, 실패 조건, 재현 수단, 확신도를 남긴다. 질문 밖 지적은 note로 기록하며 사전 검토의 구현 방식은 구현 후 검토로, 백로그의 설계·구현 방식은 프로젝트 설계로 넘긴다. 질문에 연결된 blocking의 위치·실패 조건·재현 수단이 빠지면 도구가 should_fix로 기록한다. 원래 등급과 강등 사유를 보존한다. 형식을 판독하지 못하면 unknown이다. 원문의 마지막 판정은 도구 판정과 대조하는 자료다.
++
++단위 밖 `goal` 검토와 호스트에서 받는 반환:
++
++
+ ```
+ 판정: pass (blocking 0) | fail
+ 독립 목표 대조: 맞음 | 어긋남 | 미확인 — <1단계 기록·근거>
+diff --git a/skills/pace-project-dev/references/security.md b/skills/pace-project-dev/references/security.md
+index 4e2e441..b61e5d3 100644
+--- a/skills/pace-project-dev/references/security.md
++++ b/skills/pace-project-dev/references/security.md
+@@ -31,7 +31,7 @@ PROJECT-CLOSE "보안" 절을 쓰기 전에, 새 맥락(서브에이전트나 
+ ```
+ 프로젝트 브랜치의 전체 diff(`git diff main...HEAD`)를 보안 관점으로 검토하라.
+ 기준: <이 파일의 체크리스트 또는 저장소 security 문서>. 민감 경로: <설계에 적은 것>.
+-지적마다 등급(blocking·should_fix·handoff)과 파일:줄, 문제, 고칠 방법. 파일은 고치지 마라.
++지적마다 등급(blocking·should_fix·note)과 파일:줄, 문제, 고칠 방법. 파일은 고치지 마라.
+ ```
+ 
+ 도구에 보안 리뷰 기능이 있으면 그것을 써도 된다(`tools.md`).
+diff --git a/skills/pace-project-dev/references/task-steps.md b/skills/pace-project-dev/references/task-steps.md
+index 3a79ecc..9ac5403 100644
+--- a/skills/pace-project-dev/references/task-steps.md
++++ b/skills/pace-project-dev/references/task-steps.md
+@@ -8,5 +8,5 @@ SKILL.md §3에서 옮긴 문서다. 분석·설계·구현 전 검토·테스
+    **구현 전 검토** — [reviewer.md](reviewer.md)의 구현 전 TASK 검토 절을 따른다. 워크트리 PM이 작성한 TASK.md를 별도 reviewer에 맡겨 상위 목적·브리프와의 정합, 범위·완료 기준·테스트 계획·접근과 위험을 검토받는다. blocking은 수정하고 `verify`를 다시 불러 자동 재검토를 받아 pass(blocking 0)이거나 사용자 결정으로 PRE-REVIEW `waiver`를 붙였을 때 구현한다. 연속 fail로 출력에 `escalation`이 붙으면 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)정본의 조치 전 영향 분류·결정·재검증·보고를 따른다. should_fix는 반영하거나 이유를 남기고, 목적·범위 변경은 §6을 따른다. 대상과 판정·지적 처리·검토 방식을 태스크 기록에 남긴다. 검토한 내용이 구현 전에 실질적으로 바뀌면 다시 검토받는다(pass 뒤 변경이면 전체 검토로 열린다).
+    **reviewer 배정** — 작성 PM과 다른 제공자를 우선한다(Claude PM → Codex, Codex PM → Claude). 발동이 불가능하면 [A-3의 B1](decision-rights.md#a-결정-주체)을 적용한다. 양쪽 모두 미실행이면 사전 검토 관문을 보류하고 필요한 독립 검토를 복구한다. 검토 생략·완화를 선택하려면 A-3으로 결정 요청을 한다. 제공자·실행 결과를 확인한다.
+ 
+-4. **테스트** — 워크트리 PM이 저장소 검사 명령(`docs/README.md` 환경의 "검사")과 E2E를 수행하고, **tester ∥ reviewer**를 새 맥락으로 직접 배정·회수·판정한다(`references/tester.md`·`reviewer.md`, 방법은 `references/tools.md`). 구현 후 최초 reviewer는 사전 검토와 별도 새 맥락으로 열고 위 reviewer 배정 원칙을 따른다. reviewer는 `verify`로 받고 출력의 `escalation`부터 본다 — 있으면 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)정본의 조치 전 영향 분류·결정·보고를 따른다. 없으면 tester fail이나 reviewer blocking은 고치고 **둘 다** 다시 돈다(reviewer 재검토는 `verify`를 다시 불러 원장의 직전 원문·바뀐 줄로 받는다. 반복 fail은 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)). should_fix는 반영하거나 이유를 남기고, handoff는 남긴 것에 적는다. TASK-CLOSE "리뷰"에는 차수마다 한 줄(`1차: tester pass · reviewer blocking 1 — …`)과 교본 대조 한 줄(`교본: typescript — 안티패턴 대조, 따른 절 …` 또는 `교본: 해당 없음(코드 변경 없음)`).
++4. **테스트** — 워크트리 PM이 저장소 검사 명령(`docs/README.md` 환경의 "검사")과 E2E를 수행하고, **tester ∥ reviewer**를 새 맥락으로 직접 배정·회수·판정한다(`references/tester.md`·`reviewer.md`, 방법은 `references/tools.md`). 구현 후 최초 reviewer는 사전 검토와 별도 새 맥락으로 열고 위 reviewer 배정 원칙을 따른다. reviewer는 `verify`로 받고 출력의 `escalation`부터 본다 — 있으면 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)정본의 조치 전 영향 분류·결정·보고를 따른다. 없으면 tester fail이나 reviewer blocking은 고치고 **둘 다** 다시 돈다(reviewer 재검토는 `verify`를 다시 불러 원장의 직전 원문·바뀐 줄로 받는다. 반복 fail은 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)). should_fix는 반영하거나 이유를 남기고, 질문 밖 note의 인계는 남긴 것에 적는다. TASK-CLOSE "리뷰"에는 차수마다 한 줄(`1차: tester pass · reviewer blocking 1 — …`)과 교본 대조 한 줄(`교본: typescript — 안티패턴 대조, 따른 절 …` 또는 `교본: 해당 없음(코드 변경 없음)`).
+    **상한 뒤 수정 확인** — [결정 권한 B](decision-rights.md#b-허브의-장애-대응)에 따라 직전 지적·최신 해시에 확인 범위를 고정한다. 같은 지적당 1회, 태스크 두 단계 합산 또는 백로그 폴더당 2회를 사용하면 허브가 구조를 진단하고 기존 기준에 필요한 수정과 독립 재검증을 수행한다. 진단 근거와 누적 회차, 결과를 사후 보고한다. 실제 합의 변경은 A-1, 필수 검증 생략·완화나 미확인 근거를 안고 진행하는 선택은 A-3으로 owner에게 요청한다.
+diff --git a/skills/pace-project-dev/references/tester.md b/skills/pace-project-dev/references/tester.md
+index 61fd790..f184e7c 100644
+--- a/skills/pace-project-dev/references/tester.md
++++ b/skills/pace-project-dev/references/tester.md
+@@ -11,6 +11,8 @@ E2E와 그 증거는 구현자가 ④에서 만든다. 증거가 없거나 부
+ 
+ ## 판정 — 기준 `T-n`마다 다섯 가지가 모두 맞아야 통과
+ 
++판정 질문은 **기준마다 증거로 통과하는가?**다.
++
+ 1. **실행**: 종료 코드 0, 시간 초과 아님, 실제로 선택된 테스트가 돌았다(0건·전부 skip은 실패).
+ 2. **선택 정확성**: 돈 테스트가 그 기준을 위한 것이다.
+ 3. **기준 충족성**: 기준 문장의 각 조건과 깨지는 상황마다 케이스·단언이 있다.
+diff --git a/skills/pace-project-dev/references/tools.md b/skills/pace-project-dev/references/tools.md
+index 3949a2b..b05b2a7 100644
+--- a/skills/pace-project-dev/references/tools.md
++++ b/skills/pace-project-dev/references/tools.md
+@@ -25,7 +25,7 @@
+ - [goal-review.md](goal-review.md)의 입력 순서를 먼저 지킨다. TASK/diff 같은 작업 문서는 첫 판단 회수 뒤 2단계에 전달한다.
+ - tester·reviewer에게는 **판정 기준과 재료만** 넘기고 구현자의 결론("잘 됐다")을 넘기지 않는다.
+ - 역할 에이전트 파일을 PACE이 설치하지 않는다. 역할은 이 references의 프롬프트로만 정의한다.
+-- 호스트 리뷰 결과도 `reviewer.md` 등급(blocking·should_fix·handoff)으로 옮겨 TASK-CLOSE에 적는다.
++- 호스트 리뷰 결과도 `reviewer.md` 등급(blocking·should_fix·note)으로 옮겨 TASK-CLOSE에 적는다.
+ - 새 맥락 결과를 그대로 믿지 않는다. blocking 지적은 코드에서 확인하고 고친다. 사실이 아니면 이유를 적는다.
+ - TASK-CLOSE에는 사용한 호스트 기능과 선택 이유를 짧게 기록한다. 설정이 필요한 기능은 사용 가능 여부와 수동 활성화 필요 여부를 기록하고, 꺼진 기능을 임의로 켜지 않는다.
+ 
+@@ -33,7 +33,7 @@
+ 
+ - 호스트의 새 세션·Orca 호출은 해당 호스트가 노출한 모델·effort 옵션과 기본값을 따른다. `pace worker` 설정이나 `project start`의 작업자 설정이 reviewer에 자동 적용된다고 가정하지 않는다. 실제 사용한 도구·설정·보고된 제공자를 확인한다.
+ - `pace agent run --mode p`는 Claude와 Codex에 `--model`, `--effort`를 전달한다. 생략하면 PACE은 값을 지정하지 않고 실행 도구의 기본값을 쓴다. Codex p는 사용자 설정을 무시한다. Claude p의 `--resume`은 지원하지만 Codex p의 resume는 지원하지 않아 오류다. 호스트 세션 재개 가능 여부는 별도로 확인한다.
+-- `pace agent verify`는 `--model`을 받지만 `--effort`는 받지 않는다 (`src/cli.ts`, `src/agent/verify.ts`). 생략 시 모델은 실행 도구 기본값이다. 원장의 직전 fail 원문·바뀐 줄로 자동 재검토한다. escalation 신호·종료 16의 단계와 기록은 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정), 결정 주체와 미실행 안내는 [결정 권한 정본](decision-rights.md)을 따른다. 교차 제공자는 결과의 실제 제공자 또는 보고된 모델로 확인한다. B1의 `--allow-same-provider` 대체 결과는 `cross: false`이고, 양쪽 모두 미실행이면 A-3이다.
++- `pace agent verify`는 `--model`을 받지만 `--effort`는 받지 않는다 (`src/cli.ts`, `src/agent/verify.ts`). 생략 시 모델은 실행 도구 기본값이다. 원장의 직전 fail 원문·바뀐 줄로 자동 재검토한다. escalation 신호·종료 16의 단계와 기록은 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정), 결정 주체와 미실행 안내는 [결정 권한 정본](decision-rights.md)을 따른다. 교차 제공자는 결과의 실제 제공자 또는 보고된 모델로 확인한다. B1의 `--allow-same-provider` 대체 결과는 `cross: false`다. 양쪽 모두 미실행이면 관문을 보류하고 허브와 검토를 복구한다. 생략·완화나 증거 공백을 안고 진행하는 조치는 A-3으로 owner에게 묻는다.
+ 
+ ## SKILL.md에서 옮긴 문장
+ 
+diff --git a/skills/pace-team/SKILL.md b/skills/pace-team/SKILL.md
+index ea79586..1e908b9 100644
+--- a/skills/pace-team/SKILL.md
++++ b/skills/pace-team/SKILL.md
+@@ -55,7 +55,7 @@ description: 저장소의 실제 업무와 권한으로 맞춤 에이전트 팀
+ 
+ [필수 역할 점검](references/required-roles.md#정의-대조)에서 등록된 요건 전부를 검토한다. 역할이 없고 적용할 요건의 선행 장치를 모두 사용할 수 있으면 저장소 맞춤 추가안을 낸다. 정의가 있으면 빠진 요건의 개선안을 낸다. 요건 ID마다 판정과 근거를 남기고, 요건 미등록과 선행 장치 보류는 정본에 정한 상태로 표시한다.
+ 
+-팀 계약에서 제공자 독립성이 필요한 검토는 작성자와 다른 역할과 실제 제공자로 배정한다. 다른 제공자가 미실행이면 [결정 권한 정본](../pace-project-dev/references/decision-rights.md) A-3의 B1에 따라 같은 제공자의 새 세션을 쓰고 사유와 `cross: false`를 남긴다. 양쪽이 미실행이면 A-3으로 판정한다. 같은 파일·환경을 다루는 작업은 충돌 자원을 먼저 확인하고, 독립 범위만 worktree로 병렬화한다. 합의 변경·프로덕션 배포·새 유료 비용은 각각 A-1·A-2·A-4를 대조한다.
++팀 계약에서 제공자 독립성이 필요한 검토는 작성자와 다른 역할과 실제 제공자로 배정한다. 다른 제공자가 미실행이면 [결정 권한 정본](../pace-project-dev/references/decision-rights.md) A-3의 B1에 따라 같은 제공자의 새 세션을 쓰고 사유와 `cross: false`를 남긴다. 양쪽이 미실행이면 관문을 보류하고 허브와 독립 검토를 복구한다. 검토를 생략·완화하거나 증거 공백을 안고 진행할 때 A-3으로 owner에게 묻는다. 같은 파일·환경을 다루는 작업은 충돌 자원을 먼저 확인하고, 독립 범위만 worktree로 병렬화한다. 합의 변경·프로덕션 배포·새 유료 비용은 각각 A-1·A-2·A-4를 대조한다.
+ 
+ 상태를 넘길 때 `HANDOFF: <수신자> | <요청> | <근거>`와 검증 기준을 적는다. 실행 전 대조에서 근거가 불명확하면 먼저 조사한다. 조사 뒤에도 근거와 범위를 확인할 수 없거나 위임 범위가 다르면 해당 실행을 보류하고 역할의 HANDOFF 수신자에게 결정 주체·근거·선택지·추천을 보낸다. 해결안을 반환하는 역할의 수신자는 호출자다. 결정 주체는 정본 A로 판정하고 독립 작업은 계속한다. 소통 원장이 있는 프로젝트에서는 `scope_check`와 `ready`를 대조하고 실제 증거를 확인해 종결한다.
+ 
+diff --git a/src/agent/review-followup.ts b/src/agent/review-followup.ts
+index e6ec031..4d64a50 100644
+--- a/src/agent/review-followup.ts
++++ b/src/agent/review-followup.ts
+@@ -5,6 +5,7 @@ import { AgentError } from "./contract.ts";
+ import { decideReviewAdmission } from "./review-admission.ts";
+ import { readReviewBudget, recordedStage, type BudgetStage, type ReviewBudgetScope } from "./review-budget.ts";
+ import { LedgerError, ledgerPath, textHash, type ReviewEntry } from "./review-log.ts";
++import { assessStructuredReview, effectiveBlocking } from "./structured-review.ts";
+ 
+ export const FOLLOWUPS_FILE = "REVIEW-FOLLOWUPS.jsonl";
+ const HASH = /^[a-f0-9]{64}$/;
+@@ -181,6 +182,7 @@ function rawBlocking(ledger: string, row: ReviewEntry): string[] | null {
+       JSON.parse(readFileSync(join(dirname(ledger), row.record), "utf8"));
+     const text = result.result?.text;
+     if (result.review?.hash === row.hash && typeof text === "string" && textHash(text) === row.result_hash) {
++      if (row.structured_stage) return effectiveBlocking(assessStructuredReview(row.structured_stage, text));
+       const findings = text.split("\n").filter((line) => /\[blocking\]/i.test(line)).map((line) => line.trim());
+       return findings.length ? findings : null;
+     }
+diff --git a/src/agent/review-log.ts b/src/agent/review-log.ts
+index 8fc44de..9b58a77 100644
+--- a/src/agent/review-log.ts
++++ b/src/agent/review-log.ts
+@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
+ import { appendFileSync, closeSync, existsSync, openSync, readFileSync, readdirSync, rmSync, writeSync } from "node:fs";
+ import { basename, dirname, join } from "node:path";
+ import type { AgentResult } from "./contract.ts";
++import type { BudgetStage } from "./review-budget.ts";
+ 
+ // 검토 원장 (P007 T01): 같은 대상의 독립 검토가 거듭 fail할 때 땜질 반복을 끊는다.
+ //  - verify가 실행될 때마다 대상 폴더의 REVIEW-LOG.jsonl에 판정을 자동으로 남긴다(작성자 수작업 없음).
+@@ -41,6 +42,7 @@ export interface ReviewEntry {
+   followup?: { type: "joint" | "confirmation" | "owner" | "recovery"; id: string };
+   cross_unavailable?: string[];
+   cross?: boolean;
++  structured_stage?: BudgetStage;
+   /** 중단 복구. 옛 fail 표기는 기존 진단에서만 세고 예산 판정·재검토 기준점에서 제외한다. */
+   interrupted?: true;
+ }
+@@ -96,6 +98,7 @@ function validEntry(v: Record<string, unknown>): boolean {
+     && (v.usage === undefined || reviewUsage(v.usage))
+     && (v.followup === undefined || validFollowup(v.followup))
+     && (v.cross === undefined || typeof v.cross === "boolean")
++    && (v.structured_stage === undefined || v.structured_stage === "pre" || v.structured_stage === "post" || v.structured_stage === "backlog")
+     && (v.cross_unavailable === undefined || validCrossUnavailable(v.cross_unavailable));
+   if (v.type === "diagnosis") return (LAYERS as readonly unknown[]).includes(v.layer) && isStr(v.summary) && v.summary.trim() !== "" && (v.file === undefined || isStr(v.file));
+   if (v.type === "decision") return isStr(v.choice) && v.choice.trim() !== "" && isStr(v.summary) && isStr(v.file) && v.file !== "" && (v.by === undefined || v.by === 'pm' || v.by === 'user');
+diff --git a/src/agent/verify-cli.ts b/src/agent/verify-cli.ts
+index 53e0842..342a285 100644
+--- a/src/agent/verify-cli.ts
++++ b/src/agent/verify-cli.ts
+@@ -8,9 +8,10 @@ import {
+   acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, RECOVERY_LOCK_FILE, reviewStage,
+   lineDiff, reviewUsage, targetName, textHash, validCrossUnavailable, validFollowup, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
+ } from "./review-log.ts";
+-import { readReviewBudget, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
++import { readReviewBudget, recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
+ import { checkGrant, followupReport, FOLLOWUPS_FILE, openFollowup, readReviewState, recordFollowupExecution } from "./review-followup.ts";
+ import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
++import { assessStructuredReview, effectiveBlocking, hasStructuredReviewFence, isStructuredStage } from "./structured-review.ts";
+ 
+ // `pace agent verify`·`pace agent review-note` 명령 처리 (P007 T01). src/cli.ts는 여기로 위임만 한다 — 시험이 실행기를 주입해 같은 경로를 탄다.
+ 
+@@ -83,12 +84,12 @@ function exhaustedFollowup(scope: ReviewBudgetScope, state: ReturnType<typeof re
+ }
+ 
+ /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
+-function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, legacyKind?: VerifyKind): Rereview | undefined {
++function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, kind: VerifyKind, scope?: ReviewBudgetScope): Rereview | undefined {
+   const sameTarget = join(dirname(ledgerTarget), base.target) === target;
+   if (sameTarget && currentHash === base.hash && base.verdict === "fail") throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
+   const file = join(dirname(ledgerTarget), base.record);
+   if (!existsSync(file)) throw new AgentError("invalid_request", `재검토 기준점의 기록 파일이 없다: ${file}`);
+-  let record: { result?: { text?: unknown }; review?: { hash?: unknown; snapshot?: unknown } };
++  let record: { result?: { text?: unknown }; review?: { hash?: unknown; snapshot?: unknown; structured_stage?: unknown } };
+   try { record = JSON.parse(readFileSync(file, "utf8")); } catch { throw new AgentError("invalid_request", `재검토 기준점의 기록 파일을 읽을 수 없다: ${file}`); }
+   const snapshot = record.review?.snapshot;
+   const text = record.result?.text;
+@@ -96,23 +97,42 @@ function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, c
+     throw new AgentError("invalid_request", `재검토 기준점의 기록이 원장과 맞지 않는다: ${file}`);
+   }
+   // 구조 누락 단건 판정은 나머지 평가를 억제했다. 구조를 채운 다음에는 목적·안전까지 처음 평가한다.
+-  if (legacyKind === "task" && proofScopeIssues(snapshot).length) return undefined;
+-  return { previousText: text, diff: lineDiff(snapshot, current), previousPassed: base.verdict === "pass" };
++  if (!scope && kind === "task" && proofScopeIssues(snapshot).length) return undefined;
++  let previousText = text;
++  if (base.structured_stage || record.review?.structured_stage !== undefined ||
++      (scope && (Object.hasOwn(record, "assessment") || hasStructuredReviewFence(text)))) {
++    if (!base.structured_stage || base.structured_stage !== record.review?.structured_stage ||
++        (scope && base.structured_stage !== recordedStage(scope, ledgerTarget, base))) {
++      throw new AgentError("invalid_request", "구조화된 검토 기준점의 단계가 원장과 맞지 않는다");
++    }
++    const assessment = assessStructuredReview(base.structured_stage, text);
++    if (assessment.verdict !== base.verdict) throw new AgentError("invalid_request", "구조화된 검토 기준점의 판정이 원장과 맞지 않는다");
++    const blocking = effectiveBlocking(assessment);
++    previousText += `\n\n도구 판정에 반영된 기존 blocking\n${blocking.length ? blocking.join("\n") : "없음"}`;
++  }
++  return { previousText, diff: lineDiff(snapshot, current), previousPassed: base.verdict === "pass" };
+ }
+ 
+ /** 원장에 없는 기록(중단·기록 끊김의 흔적)을 원장에 자동 복구한다 — 사람이 원장을 손으로 고치지 않게.
+  * 판정이 있으면 복구하고, pending은 호출만 셀 수 있도록 중단으로 표시한다. */
+-function recoverOrphans(target: string, name: string, kindFor: (owner: string) => string, now: () => Date): string[] {
++function recoverOrphans(target: string, name: string, kindFor: (owner: string) => string, now: () => Date, scope?: ReviewBudgetScope): string[] {
+   const notes: string[] = [];
+   for (const rel of orphanRecords(target, readLedger(target))) {
+     const file = join(dirname(target), rel);
+-    let rec: { pending?: unknown; verifier?: unknown; cross?: unknown; cross_unavailable?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown; followup?: unknown; confirmation_issue?: unknown } };
++    let rec: { pending?: unknown; verifier?: unknown; cross?: unknown; cross_unavailable?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown; followup?: unknown; confirmation_issue?: unknown; structured_stage?: unknown } };
+     try { rec = JSON.parse(readFileSync(file, "utf8")); } catch { throw new LedgerError(`원장에 없는 검토 기록을 읽을 수 없다: ${file} — 확인해 고치거나 지운 뒤 다시 실행한다`); }
+     // 기록은 그 기록의 대상에 귀속한다 — 같은 폴더의 다른 대상(예: TASK.md와 구현 diff) 기록을 지금 대상의 fail로 가져가지 않는다
+     const owner = typeof rec.review?.target === "string" && rec.review.target !== "" ? rec.review.target : name;
+     const hash = typeof rec.review?.hash === "string" ? rec.review.hash : "";
+     const text = rec.result?.text;
+     const verdict = rec.review?.verdict;
++    const structuredStage = rec.review?.structured_stage;
++    // 두 형식 중 하나로만 검증한다. 단계가 빠진 새 기록을 옛 footer 판정으로 복구하지 않는다.
++    const structured = structuredStage !== undefined ||
++      (scope && (Object.hasOwn(rec, "assessment") || (typeof text === "string" && hasStructuredReviewFence(text))));
++    const computed = isStructuredStage(structuredStage) && scope &&
++      recordedStage(scope, target, { target: owner }) === structuredStage && typeof text === "string"
++      ? assessStructuredReview(structuredStage, text).verdict : null;
+     const entryKind = typeof rec.review?.kind === "string" ? rec.review.kind : kindFor(owner);
+     const recordedCall = {
+       ...(typeof rec.review?.call_id === "string" ? { call_id: rec.review.call_id } : {}),
+@@ -121,8 +141,10 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
+     let entry: ReviewEntry;
+     // 기록 안의 판정을 그대로 믿지 않는다 — 원문의 판정·스냅숏 해시와 맞을 때만 그 판정으로, 아니면 fail(중단)으로 복구한다(위조·손상 기록으로 차단을 풀지 못하게)
+     const consistent = rec.pending !== true && typeof text === "string" && typeof rec.review?.snapshot === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")
+-      && (parseVerdict(text) === verdict || (verdict === "unknown" && recordedCall.followup?.type === "confirmation" &&
+-        (rec.review.confirmation_issue === "target_changed" || rec.review.confirmation_issue === "blocking_with_pass")))
++      && (!structured
++        ? (parseVerdict(text) === verdict || (verdict === "unknown" && recordedCall.followup?.type === "confirmation" &&
++          (rec.review.confirmation_issue === "target_changed" || rec.review.confirmation_issue === "blocking_with_pass")))
++        : computed === verdict)
+       && hash !== "" && reviewHash(rec.review.snapshot) === hash;
+     if (consistent && typeof text === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")) {
+       const duration = rec.result?.duration_ms;
+@@ -132,6 +154,7 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
+         ...(reviewUsage(usage) ? { usage } : {}),
+         ...(typeof rec.cross === "boolean" ? { cross: rec.cross } : {}),
+         ...(validCrossUnavailable(rec.cross_unavailable) ? { cross_unavailable: rec.cross_unavailable } : {}),
++        ...(isStructuredStage(structuredStage) ? { structured_stage: structuredStage } : {}),
+       };
+       notes.push(`${rel}(${owner}): 기록의 판정(${verdict})으로 원장에 복구했다`);
+     } else {
+@@ -177,7 +200,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+       const legacyKindFor = (owner: string) => scope
+         ? (rootTaskLedger && owner.toLowerCase() === "task.md" ? "task" : "goal")
+         : kind;
+-      return recoverOrphans(ledger, ledger === ledgerTarget ? name : "unknown", legacyKindFor, now);
++      return recoverOrphans(ledger, ledger === ledgerTarget ? name : "unknown", legacyKindFor, now, scope);
+     });
+     const entries = readLedger(ledgerTarget);
+     const state = scope && readReviewState(scope, hash);
+@@ -206,7 +229,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     const base = grant?.type === "owner" || state?.decision.firstReview ? undefined
+       : grant?.type === "joint" ? state?.budget.latestDefinitive
+       : budget?.latest ?? (!scope && before.base ? { ledgerTarget, entry: before.base } : undefined);
+-    const rereview = base && loadRereview(base.ledgerTarget, base.entry, target, hash, artifact, scope ? undefined : kind);
++    const rereview = base && loadRereview(base.ledgerTarget, base.entry, target, hash, artifact, kind, scope);
+     const previousRecord = rereview && base
+       ? relative(dirname(ledgerTarget), join(dirname(base.ledgerTarget), base.entry.record)).split(sep).join("/")
+       : null;
+@@ -222,7 +245,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     let outcome: Awaited<ReturnType<typeof crossVerify>>;
+     try {
+       outcome = await crossVerify({
+-        kind, rereview,
++        kind, rereview, reviewStage: scope?.stage,
+         authorAgent: author, authorProvider: values["author-provider"] as "anthropic" | "openai" | undefined,
+         purpose, artifact, artifactName: target,
+         cwd: values.cwd ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout),
+@@ -246,17 +269,19 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     }
+ 
+     if (scope && grant && call.followup) recordFollowupExecution(scope, grant.id, call.followup.id, now());
+-    const verdict = parseVerdict(outcome.result.text);
++    const assessment = scope ? assessStructuredReview(scope.stage, outcome.result.text) : undefined;
++    const verdict = assessment?.verdict ?? parseVerdict(outcome.result.text);
++    const format = scope ? { structured_stage: scope.stage } : {};
+     // 기록 파일에는 세션 ID를 남기지 않는다
+     const result = { ...outcome.result, session_id: null };
+-    const review = { target: name, hash, kind, verdict, rereview_of: previousRecord, snapshot: artifact, ...call };
+-    const record = { ...outcome, result, review };
++    const review = { target: name, hash, kind, verdict, rereview_of: previousRecord, snapshot: artifact, ...call, ...format };
++    const record = { ...outcome, result, review, ...(assessment ? { assessment } : {}) };
+     writeOrLedgerError(recordFile, JSON.stringify(record, null, 2) + "\n", "검토 기록");
+ 
+     const entry: ReviewEntry = {
+       type: "review", at: now().toISOString(), kind, target: name, hash, verdict, verifier: outcome.verifier,
+       provider: outcome.result.provider.value ?? null, rereview_of: review.rereview_of, record: recordName, result_hash: textHash(outcome.result.text),
+-      duration_ms: result.duration_ms, usage: result.usage, cross: outcome.cross, ...call,
++      duration_ms: result.duration_ms, usage: result.usage, cross: outcome.cross, ...call, ...format,
+       ...(outcome.cross_unavailable ? { cross_unavailable: outcome.cross_unavailable } : {}),
+     };
+     try { appendLedger(ledgerTarget, entry); } catch (error) {
+@@ -264,8 +289,12 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
+     }
+     const after = reviewStage(readLedger(ledgerTarget), name, !scope);
+     const output: Record<string, unknown> = { ...outcome, last_decision_by: after.last_decision_by, review: { target: name, hash, verdict, rereview_of: review.rereview_of, record: recordName } };
++    if (assessment) output.assessment = assessment;
+     if (recovered.length) output.recovered = recovered;
+-    if (verdict === "unknown") output.warning = "결과 마지막 줄에서 pass·fail 판정을 찾지 못했다(unknown) — 연속 실패 수에는 포함하지 않는다";
++    if (verdict === "unknown") output.warning = assessment
++      ? "구조화된 지적의 판정이 미확인이다. 원문과 형식을 확인한다."
++      : "결과 마지막 줄에서 pass·fail 판정을 찾지 못했다(unknown) — 연속 실패 수에는 포함하지 않는다";
++    else if (assessment?.differs) output.warning = "원문 마지막 판정과 도구 판정이 다르다. 지적별 근거와 적용 등급을 확인한다.";
+     if (followup) output.followup = { action: "report_review", ...followup, verdict, record: recordName, cross: outcome.cross,
+       ...(outcome.cross_unavailable ? { cross_unavailable: outcome.cross_unavailable } : {}) };
+     if (scope) output.budget = readReviewBudget(scope).status;
+diff --git a/src/agent/verify.ts b/src/agent/verify.ts
+index bb890e5..57ce05b 100644
+--- a/src/agent/verify.ts
++++ b/src/agent/verify.ts
+@@ -1,5 +1,7 @@
+ import { AgentError, providerFromModel, providerOf, runAgent, type AgentName, type AgentResult, type Executor, type Provider } from "./contract.ts";
+ import { taskFormat } from "../project/pre-review.ts";
++import type { BudgetStage } from "./review-budget.ts";
++import { reviewQuestionPrompt } from "./structured-review.ts";
+ 
+ // 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용 -p로 독립 검토한다.
+ // 다른 제공자 미실행 시 B1에 따라 같은 제공자 새 세션으로 대체하고 사유와 cross: false를 기록한다.
+@@ -22,6 +24,7 @@ export interface VerifyOptions {
+   model?: string;
+   /** goal(기본): 결과물의 목표/결과 대조 · task: 구현 전 TASK 사전 검토 — TASK.md 자체가 검토 대상 결과물이다 */
+   kind?: VerifyKind;
++  reviewStage?: BudgetStage;
+   /** 재검토(P007): 원장이 고른 기준점 검토의 원문과 그때→지금 대상의 바뀐 줄 */
+   rereview?: Rereview;
+   executors: Executor[];
+@@ -39,7 +42,8 @@ export interface Rereview {
+ }
+ 
+ /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
+-export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview): string {
++export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview,
++  reviewStage?: BudgetStage): string {
+   // 구현 전 TASK 사전 검토에서는 TASK.md(기준·테스트 표·접근)가 평가할 결과물이다 — 이것을 "작업 문서 노출"로 막으면
+   // 검토자가 매번 자기 열람을 독립성 위반으로 지적해 pass가 나올 수 없다(P001 T02 실측, 2026-11-16).
+   // 재검토(reviewer.md: 두 번째 검토부터는 직전 blocking 해소와 그 수정이 만든 새 결함만)는 1단계가 아니다 — 직전 검토 원문을 받는 것이 정해진 입력이다
+@@ -72,8 +76,10 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
+     purpose.trim(),
+     "",
+     "## 묻는 것",
+-    "1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?",
+-    "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.",
++    ...(reviewStage ? reviewQuestionPrompt(reviewStage) : [
++      "1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?",
++      "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.",
++    ]),
+     ...(kind === "task" && taskFormat(artifact) !== "legacy" ? [
+       "새 TASK 형식(v2)의 증명 범위 규칙: 형식 표지가 중복되거나 지원하지 않는 버전이면 blocking이다. 증명 범위 절·판정 주체가 누락되거나 비면 그것 자체만 blocking 1건으로 내고 다른 지적을 늘어놓지 않는다. 단건 억제의 빈 값은 게이트가 거부하는 구조 누락(절 없음·주석뿐인 절·주체 줄 없음·값 공백)이다. 미정·TBD처럼 실제 텍스트가 있으나 의미상 불충분한 값은 단건 억제하지 않고 목적·안전까지 함께 평가한다.",
+       "포함·범위 밖(이유·넘길 곳)의 내용과 판정 주체를 목적·기준에 대조한다. blocking은 적힌 증명 범위로 목적·기준을 증명할 수 없을 때다. 목적에 충분한 범위를 넓히라는 요구는 should_fix다. 현재 적힌 범위가 이미 목적·기준을 충분히 입증한다면 그 밖으로 확대하라는 요구는 목적 증명에 필요하지 않아도 반드시 should_fix로 분류한다. 합의 범위 밖이라는 이유로 note로 바꾸지 않는다. should_fix는 확장 승인이나 반영 의무가 아니며 범위 변경은 별도 합의한다. 범위 자체가 목적에 비해 좁으면 blocking이며 범위 밖 선언으로 검토를 피할 수 없다.",
+@@ -93,7 +99,7 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
+   const authorProvider = options.authorProvider ?? providerOf[options.authorAgent];
+   const candidates = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] !== authorProvider);
+   const sameProvider = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] === authorProvider);
+-  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind, options.rereview);
++  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind, options.rereview, options.reviewStage);
+   const reasons: string[] = [];
+ 
+   const attempt = async (executor: Executor, cross: boolean): Promise<VerifyOutcome | null> => {
+diff --git a/test/agent-review-followup.test.ts b/test/agent-review-followup.test.ts
+index 15f619f..aa62717 100644
+--- a/test/agent-review-followup.test.ts
++++ b/test/agent-review-followup.test.ts
+@@ -5,7 +5,7 @@ import { join } from "node:path";
+ import { decideReviewAdmission, type AdmissionState } from "../src/agent/review-admission.ts";
+ import { AgentError, normalizeResult, type Executor } from "../src/agent/contract.ts";
+ import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
+-import { tempDir } from "./helpers.ts";
++import { scopedReviewFixture, tempDir } from "./helpers.ts";
+ 
+ function fixture(unit = "task") {
+   const root = join(tempDir("pace-followup-"), unit === "task"
+@@ -27,7 +27,7 @@ function fixture(unit = "task") {
+       async run(request) {
+         prompts.push(request.prompt);
+         await wait?.();
+-        return normalizeResult(request, { text: reply, provider: "openai" }, { durationMs: 1, enforcement: "fake" });
++        return normalizeResult(request, { text: scopedReviewFixture(request.prompt, reply), provider: "openai" }, { durationMs: 1, enforcement: "fake" });
+       },
+     };
+     const deps = { executors: () => [...(available ? [executor] : []), ...(alternate ? [alternate] : [])],
+@@ -38,7 +38,7 @@ function fixture(unit = "task") {
+     return { code, json: JSON.parse(output.join("")) };
+   };
+   const verify = (args: string[] = [], reply = "F1 [blocking] 재현\nfail", selected = target, wait?: () => Promise<void>) => run(true, selected, args, reply, wait);
+-  const note = (args: string[], selected = target, assessments = [{ finding: "F1 [blocking] 재현", decision: "A-3", reason: "필수 판정 생략을 제안했다" }]) => {
++  const note = (args: string[], selected = target, assessments = [{ finding: "F1 [blocking] fixture.ts:1 — 재현", decision: "A-3", reason: "필수 판정 생략을 제안했다" }]) => {
+     let file = proof;
+     if (args.includes("--request-waiver")) {
+       const recommendation = args.includes("--choice") ? args[args.indexOf("--choice") + 1] : "";
+@@ -230,7 +230,7 @@ test("공동 시도의 B1은 교차 시간 초과 사유를 시도와 원장에
+     agent: "claude", mode: "p",
+     capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
+     async run(request) {
+-      return normalizeResult(request, { text: "pass", provider: "anthropic" }, { durationMs: 1, enforcement: "fake" });
++      return normalizeResult(request, { text: scopedReviewFixture(request.prompt, "pass"), provider: "anthropic" }, { durationMs: 1, enforcement: "fake" });
+     },
+   });
+   h.setAvailable(false);
+diff --git a/test/agent-review-log.test.ts b/test/agent-review-log.test.ts
+index e61f5cf..a1a7c66 100644
+--- a/test/agent-review-log.test.ts
++++ b/test/agent-review-log.test.ts
+@@ -7,7 +7,7 @@ import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
+ import { acquireLock, lineDiff, parseVerdict, readLedger, reviewStage, textHash, type LedgerEntry, type ReviewEntry } from "../src/agent/review-log.ts";
+ import { reserveReviewCall, reviewBudgetScope } from "../src/agent/review-budget.ts";
+ import { reviewHash } from "../src/project/pre-review.ts";
+-import { runPace, tempDir } from "./helpers.ts";
++import { runPace, scopedReviewFixture, tempDir } from "./helpers.ts";
+ 
+ /** 받은 프롬프트를 기록하고 정해진 결과를 차례로 돌려주는 가짜 codex 실행기 */
+ function harness() {
+@@ -55,7 +55,7 @@ function budgetHarness() {
+       async run(request) {
+         prompts.push(request.prompt);
+         await wait?.();
+-        return normalizeResult(request, { text: reply, provider, outputTokens: 23 }, { durationMs: 17, enforcement: "fake" });
++        return normalizeResult(request, { text: scopedReviewFixture(request.prompt, reply), provider, outputTokens: 23 }, { durationMs: 17, enforcement: "fake" });
+       },
+     };
+     const output: string[] = [];
+@@ -241,7 +241,7 @@ test("P013 T01: 교차 검토 미실행과 실행된 B1 폴백은 각 호출·
+     agent: "codex", mode: "p",
+     capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
+     async run(request) {
+-      return normalizeResult(request, { text: "pass", provider: "openai", inputTokens: 0 }, { durationMs: 1, enforcement: "fake" });
++      return normalizeResult(request, { text: scopedReviewFixture(request.prompt, "pass"), provider: "openai", inputTokens: 0 }, { durationMs: 1, enforcement: "fake" });
+     },
+   };
+   const deps = { executors: () => [same], write: (t: string) => out.push(t) };
+diff --git a/test/helpers.ts b/test/helpers.ts
+index 27d2e39..837d25a 100644
+--- a/test/helpers.ts
++++ b/test/helpers.ts
+@@ -160,3 +160,16 @@ export function sessionFreeEnv(): NodeJS.ProcessEnv {
+   }
+   return env;
+ }
++
++/** Adapts the older verify fixtures to the structured prompt when they exercise a managed stage. */
++export function scopedReviewFixture(prompt: string, text: string): string {
++  const category = /```pace-review\n[^\n]*"category":"([^"]+)"/.exec(prompt)?.[1];
++  const verdict = /\b(pass|fail)$/.exec(text.trim())?.[1];
++  if (!category || !verdict) return text;
++  const scenario = /\[blocking\]\s*([^\r\n]+)/.exec(text)?.[1] ?? "관측한 실패";
++  const findings = verdict === "fail" ? [{
++    id: "F1", severity: "blocking", category, location: "fixture.ts:1",
++    scenario, reproduction: "고정 입력으로 기존 동작을 실행한다", confidence: "high",
++  }] : [];
++  return [text, "```pace-review", JSON.stringify({ version: 1, findings }), "```", verdict].join("\n");
++}
+diff --git a/test/project-dev-skill.test.ts b/test/project-dev-skill.test.ts
+index 915c5f1..b1f1351 100644
+--- a/test/project-dev-skill.test.ts
++++ b/test/project-dev-skill.test.ts
+@@ -105,6 +105,26 @@ test("검토 상한 뒤 필수 수정 확인과 A-3 승인 요청을 구분한
+   assert.match(steps, /상한 뒤 수정 확인.*decision-rights\.md.*결과를 사후 보고한다.*A-3/u);
+   const scenarios = readFileSync(join(skillDir, "evals/scenarios.md"), "utf8");
+   assert.match(scenarios, /\| D16 \|.*독립 재검증을 수행하고 사후 보고.*A-3 결정 요청/u);
++  assert.match(scenarios, /\| H05 \|.*초안 확정을 보류하고 허브와 독립 검토를 복구한다.*생략·완화할 때 A-3/u);
++  const team = readFileSync(join(root, "skills/pace-team/SKILL.md"), "utf8");
++  assert.match(team, /양쪽이 미실행이면 관문을 보류하고 허브와 독립 검토를 복구한다.*생략·완화하거나 증거 공백을 안고 진행할 때 A-3/u);
++});
++
++test("검토 정본은 단계별 판정 질문과 새 반환 형식을 연결한다", () => {
++  const reviewer = readFileSync(join(skillDir, "references/reviewer.md"), "utf8");
++  assert.match(reviewer, /이 계획이 목적을 증명할 수 있는가\?/u);
++  assert.match(reviewer, /이 변경을 내보내도 되는가\?/u);
++  assert.match(reviewer, /이 백로그로 프로젝트에 착수하면.*합의한 목표까지 갈 수 있는가\?/u);
++  assert.match(reviewer, /`pace-review` JSON 블록/u);
++  assert.doesNotMatch(reviewer, /^\| `handoff` \|/m);
++  for (const name of ["tools", "security"]) {
++    assert.match(readFileSync(join(skillDir, `references/${name}.md`), "utf8"), /blocking·should_fix·note/u);
++  }
++  assert.match(readFileSync(join(skillDir, "references/task-steps.md"), "utf8"), /질문 밖 note의 인계/u);
++  const tester = readFileSync(join(skillDir, "references/tester.md"), "utf8");
++  assert.match(tester, /기준마다 증거로 통과하는가\?/u);
++  const cross = readFileSync(join(skillDir, "references/cross-verify.md"), "utf8");
++  assert.match(cross, /질문별 구조화된 지적으로 판정을 계산/u);
+ });
+ 
+ test("모든 변경 대상에서 기존 올림 기준을 제거하고 결정 권한 정본을 연결한다", () => {
+diff --git a/src/agent/structured-review.ts b/src/agent/structured-review.ts
+new file mode 100644
+index 0000000..8cffea0
+--- /dev/null
++++ b/src/agent/structured-review.ts
+@@ -0,0 +1,159 @@
++import type { BudgetStage } from "./review-budget.ts";
++import { parseVerdict, type Verdict } from "./review-log.ts";
++
++const questions = {
++  backlog: {
++    question: "이 백로그로 프로젝트에 착수하면 owner에게 다시 묻지 않고 합의한 목표까지 갈 수 있는가?",
++    checks: {
++      goal: "목표가 상위 목적과 owner 원문에 맞는가",
++      completion: "완료 기준을 판정할 수 있는가",
++      sequence: "순서·선행·다른 백로그와 충돌이 없는가",
++      owner: "owner 결정이 남아 있지 않은가",
++    },
++  },
++  pre: {
++    question: "이 계획이 목적을 증명할 수 있는가?",
++    checks: {
++      scope: "증명 범위와 판정 주체가 목적을 덮는가",
++      observable: "완료 기준과 관측 방법이 명확한가",
++      detection: "시험이 결함에서 실패하는가",
++    },
++  },
++  post: {
++    question: "이 변경을 내보내도 되는가?",
++    checks: {
++      criteria: "계약 기준을 지켰는가",
++      defect: "재현 가능한 결함이나 회귀가 있는가",
++      safety: "합의한 안전 기준을 지켰는가",
++    },
++  },
++} as const;
++
++const outside = ["implementation", "design", "other"];
++const reviewFence = /^```pace-review[ \t]*\r?$/gm;
++const grades = ["blocking", "should_fix", "note"] as const;
++type Grade = typeof grades[number];
++type Confidence = "high" | "medium" | "low";
++
++type FindingInput = {
++  id: string;
++  severity: Grade;
++  category: string;
++  location: string | null;
++  scenario: string | null;
++  reproduction: string | null;
++  confidence: Confidence;
++};
++type Finding = FindingInput & {
++  effective: Grade;
++  reason: "outside_question" | "missing_evidence" | null;
++  handoff: "implementation_review" | "project_design" | null;
++};
++
++export interface StructuredAssessment {
++  stage: BudgetStage;
++  verdict: Verdict;
++  reported_verdict: Verdict;
++  differs: boolean;
++  findings: Finding[] | null;
++}
++
++export function reviewQuestionPrompt(stage: BudgetStage): string[] {
++  const { question, checks } = questions[stage];
++  const allChecks = [...Object.entries(checks)].map(([key, check]) => `- ${key}: ${check}`);
++  return [
++    question, ...allChecks,
++    "지적은 다음 형식의 pace-review 코드 블록 하나로 보존한다. JSON 형식과 version을 지켜야 판정할 수 있다.",
++    "category는 위 하위 확인 ID 하나 또는 질문 밖의 implementation(구현 방식), design(설계 방식), other(그 밖)다.",
++    "severity는 blocking, should_fix, note 중 하나, confidence는 high, medium, low 중 하나다. 각각 고유한 F 번호를 붙인다.",
++    "location에는 파일:줄을, scenario에는 실패 조건을, reproduction에는 재현 수단을 쓴다. 확보하지 못한 값은 null로 표시한다.",
++    "지적이 없으면 findings를 빈 배열로 낸다. 도구는 질문에 맞고 위치·실패 조건·재현 수단을 갖춘 blocking에서 판정을 계산한다.",
++    "",
++    "```pace-review",
++    `{"version":1,"findings":[{"id":"F1","severity":"blocking","category":"${Object.keys(checks)[0]}","location":"파일:줄","scenario":"실패 조건","reproduction":"재현 수단","confidence":"high"}]}`,
++    "```",
++    "",
++    "코드 블록 뒤 마지막 줄에 검토자가 보고한 pass 또는 fail 한 단어를 쓴다.",
++  ];
++}
++
++function findingInput(value: unknown, stage: BudgetStage): value is FindingInput {
++  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
++  const row = value as Record<string, unknown>;
++  return typeof row.id === "string" && /^F\d+$/.test(row.id) && grades.some((grade) => grade === row.severity) &&
++    typeof row.category === "string" && (Object.hasOwn(questions[stage].checks, row.category) || outside.includes(row.category)) &&
++    typeof row.confidence === "string" && ["high", "medium", "low"].includes(row.confidence) &&
++    [row.location, row.scenario, row.reproduction].every((item) => item === null || item === undefined || typeof item === "string");
++}
++
++function assessFinding(stage: BudgetStage, input: FindingInput): Finding {
++  const { id, severity, category, confidence } = input;
++  const fields = {
++    id, severity, category, confidence,
++    location: input.location?.trim() || null,
++    scenario: input.scenario?.trim() || null,
++    reproduction: input.reproduction?.trim() || null,
++  };
++  if (outside.includes(category)) {
++    const handoff = stage === "pre" && category === "implementation" ? "implementation_review" :
++      stage === "backlog" && (category === "design" || category === "implementation") ? "project_design" : null;
++    return { ...fields, effective: "note", reason: "outside_question", handoff };
++  }
++  const locations = fields.location?.split(/,[ \t]+/) ?? [];
++  if (severity === "blocking" &&
++      (!locations.length || locations.some((location) => !/^.+:[1-9]\d*(?::[1-9]\d*)?(?:-[1-9]\d*(?::[1-9]\d*)?)?$/.test(location)) ||
++        !fields.scenario || !fields.reproduction)) {
++    return { ...fields, effective: "should_fix", reason: "missing_evidence", handoff: null };
++  }
++  return { ...fields, effective: severity, reason: null, handoff: null };
++}
++
++/** JSON.parse로 문법을 확인한 뒤, 객체 안의 같은 키가 다른 값을 덮지 못하게 한다. */
++function hasUniqueKeys(json: string): boolean {
++  const tokens = [...json.matchAll(/"(?:\\.|[^"\\])*"|[{}:]/gs)].map((match) => match[0]);
++  const objects: Set<string>[] = [];
++  for (const [index, token] of tokens.entries()) {
++    if (token === "{") objects.push(new Set());
++    else if (token === "}") objects.pop();
++    else if (token.startsWith('"') && tokens[index + 1] === ":") {
++      const key: string = JSON.parse(token);
++      const properties = objects.at(-1)!;
++      if (properties.has(key)) return false;
++      properties.add(key);
++    }
++  }
++  return true;
++}
++
++export function assessStructuredReview(stage: BudgetStage, text: string): StructuredAssessment {
++  const reported_verdict = parseVerdict(text);
++  const invalid: StructuredAssessment = { stage, verdict: "unknown", reported_verdict, differs: reported_verdict !== "unknown", findings: null };
++  const starts = [...text.matchAll(reviewFence)];
++  if (starts.length !== 1) return invalid;
++  const encoded = /^```pace-review[ \t]*\r?\n([\s\S]*?)\r?\n```[ \t]*\r?$/m.exec(text)?.[1];
++  if (!encoded) return invalid;
++  try {
++    const parsed: { version?: unknown; findings?: unknown } = JSON.parse(encoded);
++    if (!parsed || !hasUniqueKeys(encoded) || parsed.version !== 1 || !Array.isArray(parsed.findings) ||
++        !parsed.findings.every((finding: unknown) => findingInput(finding, stage))) return invalid;
++    if (new Set(parsed.findings.map((finding: FindingInput) => finding.id)).size !== parsed.findings.length) return invalid;
++    const findings = parsed.findings.map((item: FindingInput) => assessFinding(stage, item));
++    const verdict = findings.some((finding) => finding.effective === "blocking") ? "fail" : "pass";
++    return { stage, verdict, reported_verdict, differs: reported_verdict !== verdict, findings };
++  } catch {
++    return invalid;
++  }
++}
++
++export function hasStructuredReviewFence(text: string): boolean {
++  return !text.matchAll(reviewFence).next().done;
++}
++
++export function isStructuredStage(value: unknown): value is BudgetStage {
++  return value === "pre" || value === "post" || value === "backlog";
++}
++
++export function effectiveBlocking(assessment: StructuredAssessment): string[] {
++  return assessment.findings?.flatMap(({ id, effective, location, scenario }) =>
++    effective === "blocking" ? [`${id} [blocking] ${location} — ${scenario}`] : []) ?? [];
++}
+diff --git a/test/agent-structured-review.test.ts b/test/agent-structured-review.test.ts
+new file mode 100644
+index 0000000..04e2ed3
+--- /dev/null
++++ b/test/agent-structured-review.test.ts
+@@ -0,0 +1,213 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
++import { dirname, join } from "node:path";
++import { normalizeResult, type Executor } from "../src/agent/contract.ts";
++import { buildVerifyPrompt } from "../src/agent/verify.ts";
++import { verifyCommand } from "../src/agent/verify-cli.ts";
++import { ledgerPath, readLedger } from "../src/agent/review-log.ts";
++import { tempDir } from "./helpers.ts";
++
++const questions = {
++  backlog: "이 백로그로 프로젝트에 착수하면 owner에게 다시 묻지 않고 합의한 목표까지 갈 수 있는가?",
++  pre: "이 계획이 목적을 증명할 수 있는가?",
++  post: "이 변경을 내보내도 되는가?",
++} as const;
++
++for (const stage of ["backlog", "pre", "post"] as const) {
++  test(`T03 ${stage} 프롬프트는 해당 질문과 하위 항목을 쓴다`, () => {
++    const prompt = buildVerifyPrompt("상위 목적", "대상", "본문", stage === "pre" ? "task" : "goal", undefined, stage);
++    assert.ok(prompt.includes(questions[stage]));
++    for (const [other, question] of Object.entries(questions)) {
++      if (other !== stage) assert.ok(!prompt.includes(question));
++    }
++    assert.ok(prompt.includes("```pace-review"));
++    assert.ok(!prompt.includes("전략에 다른 길"));
++  });
++}
++
++const finding = {
++  id: "F1", severity: "blocking", category: "defect", location: "src/output.ts:12",
++  scenario: "빈 입력에서 저장 결과가 사라진다", reproduction: "빈 입력을 저장하고 다시 열어 본다", confidence: "high",
++};
++function structured(findings: unknown[], footer: string) {
++  return ["독립 검토 본문", "```pace-review", JSON.stringify({ version: 1, findings }), "```", footer].join("\n");
++}
++
++function fixture(stage: "backlog" | "pre" | "post") {
++  const root = tempDir("pace-structured-");
++  const target = stage === "backlog" ? join(root, "backlogs/BL261126_01_test/BACKLOG.md") :
++    join(root, "projects/P013_test/tasks/T03_test", stage === "pre" ? "TASK.md" : "evidence/impl.diff");
++  mkdirSync(dirname(target), { recursive: true });
++  writeFileSync(target, "대상 1\n");
++  const prompts: string[] = [];
++  const verify = async (text: string) => {
++    const output: string[] = [];
++    const executor: Executor = {
++      agent: "codex", mode: "p",
++      capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
++      async run(request) {
++        prompts.push(request.prompt);
++        return normalizeResult(request, { text, provider: "openai" }, { durationMs: 1, enforcement: "fake" });
++      },
++    };
++    const code = await verifyCommand(["--author-agent", "claude", "--target", target, "--purpose", "상위 목적"], {
++      executors: () => [executor], write: (value) => output.push(value),
++    });
++    return { code, output: JSON.parse(output.join("")) };
++  };
++  return { target, verify, prompts };
++}
++
++test("사전 검토의 구현 지적만 있으면 pass와 구현 후 인계를 기록한다", async () => {
++  const h = fixture("pre");
++  const result = await h.verify(structured([{ ...finding, category: "implementation" }], "fail"));
++  assert.equal(result.code, 0);
++  assert.equal(result.output.review.verdict, "pass");
++  const row = result.output.assessment.findings[0];
++  assert.deepEqual([row.severity, row.effective, row.reason, row.handoff],
++    ["blocking", "note", "outside_question", "implementation_review"]);
++});
++
++test("백로그의 설계 지적만 있으면 pass와 프로젝트 설계 인계를 기록한다", async () => {
++  const h = fixture("backlog");
++  const result = await h.verify(structured([{ ...finding, category: "design" }], "fail"));
++  assert.equal(result.output.review.verdict, "pass");
++  assert.equal(result.output.assessment.findings[0].handoff, "project_design");
++  assert.equal(result.output.assessment.findings[0].effective, "note");
++});
++
++test("구현 후 검토에서 증거가 갖춰진 blocking은 보고된 pass와 관계없이 fail이다", async () => {
++  const h = fixture("post");
++  const response = structured([finding], "pass");
++  const result = await h.verify(response);
++  assert.equal(result.output.review.verdict, "fail");
++  assert.deepEqual([result.output.assessment.reported_verdict, result.output.assessment.differs], ["pass", true]);
++  assert.match(result.output.warning, /원문 마지막 판정과 도구 판정이 다르다/);
++  const stored = JSON.parse(readFileSync(join(dirname(h.target), result.output.review.record), "utf8"));
++  assert.equal(stored.result.text, response);
++  assert.equal(stored.assessment.findings[0].effective, "blocking");
++  const review = readLedger(h.target).at(-1);
++  assert.equal(review?.type, "review");
++  if (review?.type === "review") assert.deepEqual([review.verdict, review.structured_stage], ["fail", "post"]);
++});
++
++for (const field of ["location", "scenario", "reproduction"] as const) {
++  test(`구현 후 blocking의 ${field} 근거가 없으면 should_fix로 기록한다`, async () => {
++    const h = fixture("post");
++    const { output } = await h.verify(structured([{ ...finding, [field]: null }], "fail"));
++    assert.equal(output.review.verdict, "pass");
++    assert.deepEqual([output.assessment.findings[0].effective, output.assessment.findings[0].reason], ["should_fix", "missing_evidence"]);
++  });
++}
++
++test("빈 지적의 판정을 계산하고, 거짓 footer 차이를 보존한다", async () => {
++  const h = fixture("post");
++  const { output } = await h.verify(structured([], "fail"));
++  assert.deepEqual([output.review.verdict, output.assessment.reported_verdict, output.assessment.differs], ["pass", "fail", true]);
++});
++
++test("질문 연결이나 구조를 판독할 수 없으면 footer를 유효 판정으로 쓰지 않는다", async () => {
++  for (const response of ["원문만\npass", structured([{ ...finding, category: undefined }], "pass"),
++    structured([{ ...finding, category: "made_up" }], "pass"), structured([finding, finding], "pass")]) {
++    const h = fixture("post");
++    const { output } = await h.verify(response);
++    assert.deepEqual([output.review.verdict, output.budget.rounds, output.budget.calls], ["unknown", 0, 1]);
++    assert.equal(output.assessment.findings, null);
++  }
++});
++
++test("고아 구조화 기록과 재검토는 원문 footer 대신 같은 기계 판정을 쓴다", async () => {
++  const h = fixture("post");
++  const first = await h.verify(structured([{ ...finding, category: "other" }], "fail"));
++  assert.equal(first.output.review.verdict, "pass");
++  writeFileSync(ledgerPath(h.target), readLedger(h.target).filter((entry) => entry.type !== "review").map((entry) => JSON.stringify(entry)).join("\n") + "\n");
++  writeFileSync(h.target, "대상 2\n");
++  const next = await h.verify(structured([], "pass"));
++  assert.match(next.output.recovered[0], /판정\(pass\)/);
++  assert.match(h.prompts.at(-1)!, /도구 판정에 반영된 기존 blocking\n없음/);
++  assert.equal(next.output.review.rereview_of, first.output.review.record);
++});
++
++test("줄 범위나 여러 파일 위치도 재현 가능한 blocking이다", async () => {
++  for (const location of ["src/output.ts:12-14", "src/output.ts:12-14, src/input.ts:6"]) {
++    const h = fixture("post");
++    const { output } = await h.verify(structured([{ ...finding, location }], "fail"));
++    assert.equal(output.review.verdict, "fail");
++    assert.equal(output.assessment.findings[0].location, location);
++  }
++});
++
++test("충돌하는 중복 JSON 키는 마지막 값의 순서와 관계없이 unknown이다", async () => {
++  const valid = JSON.stringify([finding]);
++  for (const fields of [
++    `"findings":${valid},"findings":[]`,
++    `"findings":[],"findings":${valid}`,
++    `"findings":${valid},"\\u0066indings":[]`,
++  ]) {
++    const h = fixture("post");
++    const response = ["```pace-review", `{"version":1,${fields}}`, "```", "pass"].join("\n");
++    const { output } = await h.verify(response);
++    assert.deepEqual([output.review.verdict, output.budget.rounds, output.budget.calls], ["unknown", 0, 1]);
++  }
++});
++
++test("고아 기록의 구조화 판정을 다시 계산해 일치하지 않은 pass를 복구하지 않는다", async () => {
++  for (const removed of [[], ["stage"], ["stage", "assessment"]]) {
++    const h = fixture("post");
++    const first = await h.verify(structured([finding], "pass"));
++    const record = join(dirname(h.target), first.output.review.record);
++    const saved = JSON.parse(readFileSync(record, "utf8"));
++    saved.review.verdict = "pass";
++    if (removed.includes("stage")) delete saved.review.structured_stage;
++    if (removed.includes("assessment")) delete saved.assessment;
++    writeFileSync(record, JSON.stringify(saved));
++    writeFileSync(ledgerPath(h.target), readLedger(h.target).filter((entry) => entry.type !== "review").map((entry) => JSON.stringify(entry)).join("\n") + "\n");
++    writeFileSync(h.target, "새 대상\n");
++    const next = await h.verify(structured([], "pass"));
++    assert.match(next.output.recovered[0], /서로 맞지 않는다/);
++    assert.equal(next.output.review.rereview_of, null);
++    assert.deepEqual([next.output.budget.calls, next.output.budget.rounds], [2, 1]);
++  }
++});
++
++test("직전 구조화 기록 단계가 원장과 다르면 재검토를 거부한다", async () => {
++  const h = fixture("post");
++  const first = await h.verify(structured([], "pass"));
++  const file = join(dirname(h.target), first.output.review.record);
++  const record = JSON.parse(readFileSync(file, "utf8"));
++  record.review.structured_stage = "pre";
++  writeFileSync(file, JSON.stringify(record));
++  writeFileSync(h.target, "새 대상\n");
++  const next = await h.verify(structured([], "pass"));
++  assert.equal(next.code, 2);
++  assert.match(next.output.error.message, /기준점의 단계/);
++  assert.equal(h.prompts.length, 1);
++});
++
++test("재검토 기준점의 단계 표지가 빠지거나 구조화 판정이 다르면 호출을 거부한다", async () => {
++  for (const removeStage of [true, false]) {
++    const h = fixture("post");
++    const first = await h.verify(structured([finding], "pass"));
++    const file = join(dirname(h.target), first.output.review.record);
++    const record = JSON.parse(readFileSync(file, "utf8"));
++    const entries = readLedger(h.target);
++    for (const entry of entries) {
++      if (entry.type !== "review") continue;
++      if (removeStage) delete entry.structured_stage;
++      entry.verdict = "pass";
++    }
++    if (removeStage) {
++      delete record.review.structured_stage;
++      delete record.assessment;
++    }
++    record.review.verdict = "pass";
++    writeFileSync(file, JSON.stringify(record));
++    writeFileSync(ledgerPath(h.target), entries.map((entry) => JSON.stringify(entry)).join("\n") + "\n");
++    writeFileSync(h.target, "새 대상\n");
++    const next = await h.verify(structured([], "pass"));
++    assert.equal(next.code, 2);
++    assert.match(next.output.error.message, removeStage ? /기준점의 단계/ : /기준점의 판정/);
++    assert.equal(h.prompts.length, 1);
++  }
++});

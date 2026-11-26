@@ -31,7 +31,7 @@ PROJECT-CLOSE "보안" 절을 쓰기 전에, 새 맥락(서브에이전트나 �
 ```
 프로젝트 브랜치의 전체 diff(`git diff main...HEAD`)를 보안 관점으로 검토하라.
 기준: <이 파일의 체크리스트 또는 저장소 security 문서>. 민감 경로: <설계에 적은 것>.
-지적마다 등급(blocking·should_fix·handoff)과 파일:줄, 문제, 고칠 방법. 파일은 고치지 마라.
+지적마다 등급(blocking·should_fix·note)과 파일:줄, 문제, 고칠 방법. 파일은 고치지 마라.
 ```
 
 도구에 보안 리뷰 기능이 있으면 그것을 써도 된다(`tools.md`).

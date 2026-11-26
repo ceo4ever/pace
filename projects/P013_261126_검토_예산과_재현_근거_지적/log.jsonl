@@ -48,3 +48,14 @@
 {"ts":"2026-11-26T02:40:35.819Z","p":"P013","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T02:40:44.319Z","p":"P013","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T02:40:44.319Z","p":"P013","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T02:41:21.535Z","p":"P013","t":"T03","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T02:52:42.951Z","p":"P013","t":"T03","type":"review","by":"agent","msg":"tester fail blocking 1 should_fix 0 — 중복 JSON 키가 결함 지적을 덮는 재현을 확인했다. 서로 다른 표기까지 중복으로 거부하도록 보완했다.","ref":"evidence/tester-first.md","data":{"blocking":1,"should_fix":0,"tester":1,"reviewer":0,"pass":0,"fail":1}}
+{"ts":"2026-11-26T02:52:43.217Z","p":"P013","t":"T03","type":"review","by":"agent","msg":"reviewer fail blocking 1 should_fix 3 — 줄 범위 위치가 근거를 잃는 경로와 차이 알림을 보완했다.","ref":"evidence/review-records/R1.json","data":{"blocking":1,"should_fix":3,"tester":0,"reviewer":1,"pass":0,"fail":1}}
+{"ts":"2026-11-26T02:57:31.343Z","p":"P013","t":"T03","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 2 — 원장 판정 불일치 시험과 B1 안내를 보완한다.","ref":"evidence/review-records/R2.json","data":{"blocking":0,"should_fix":2,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T02:57:31.575Z","p":"P013","t":"T03","type":"review","by":"agent","msg":"tester fail blocking 1 should_fix 0 — 단계 표지를 잃은 고아 기록이 원문 footer로 판정을 되살리는 사례를 재현했다.","ref":"evidence/tester-r2.md","data":{"blocking":1,"should_fix":0,"tester":1,"reviewer":0,"pass":0,"fail":1}}
+{"ts":"2026-11-26T03:02:48.477Z","p":"P013","t":"T03","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 — 고아 복구와 기준점 어긋남, 옛 기록 호환과 회귀 시험 검출력을 확인했다.","ref":"evidence/tester-final.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-26T03:02:48.980Z","p":"P013","t":"T03","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — 구현과 계약이 맞고 시험 근거를 확인했다. 운영 문서의 검토 등급 및 미실행 절을 정렬한다.","ref":"evidence/reviewer-final-stage2.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T03:04:01.515Z","p":"P013","t":"T03","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — 등급과 팀·시나리오 운영 문구를 대조했다. 인접 의도 파악 스킬의 미실행 절은 T09에서 정렬한다.","ref":"evidence/review-records/R4.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T03:10:11.380Z","p":"P013","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T03:10:11.579Z","p":"P013","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T03:10:11.579Z","p":"P013","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}

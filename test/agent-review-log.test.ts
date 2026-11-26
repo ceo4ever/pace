@@ -7,7 +7,7 @@ import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
 import { acquireLock, lineDiff, parseVerdict, readLedger, reviewStage, textHash, type LedgerEntry, type ReviewEntry } from "../src/agent/review-log.ts";
 import { reserveReviewCall, reviewBudgetScope } from "../src/agent/review-budget.ts";
 import { reviewHash } from "../src/project/pre-review.ts";
-import { runPace, tempDir } from "./helpers.ts";
+import { runPace, scopedReviewFixture, tempDir } from "./helpers.ts";
 
 /** 받은 프롬프트를 기록하고 정해진 결과를 차례로 돌려주는 가짜 codex 실행기 */
 function harness() {
@@ -55,7 +55,7 @@ function budgetHarness() {
       async run(request) {
         prompts.push(request.prompt);
         await wait?.();
-        return normalizeResult(request, { text: reply, provider, outputTokens: 23 }, { durationMs: 17, enforcement: "fake" });
+        return normalizeResult(request, { text: scopedReviewFixture(request.prompt, reply), provider, outputTokens: 23 }, { durationMs: 17, enforcement: "fake" });
       },
     };
     const output: string[] = [];
@@ -241,7 +241,7 @@ test("P013 T01: 교차 검토 미실행과 실행된 B1 폴백은 각 호출·�
     agent: "codex", mode: "p",
     capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
     async run(request) {
-      return normalizeResult(request, { text: "pass", provider: "openai", inputTokens: 0 }, { durationMs: 1, enforcement: "fake" });
+      return normalizeResult(request, { text: scopedReviewFixture(request.prompt, "pass"), provider: "openai", inputTokens: 0 }, { durationMs: 1, enforcement: "fake" });
     },
   };
   const deps = { executors: () => [same], write: (t: string) => out.push(t) };

@@ -1,0 +1,22 @@
+[
+  {
+    "mutation": "orphan",
+    "replacement": "const structured = structuredStage !== undefined;",
+    "test": "고아 기록의 구조화 판정을 다시 계산해 일치하지 않은 pass를 복구하지 않는다",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "mutation": "rereview",
+    "replacement": "if (base.structured_stage || record.review?.structured_stage !== undefined) {",
+    "test": "재검토 기준점의 단계 표지가 빠지거나 구조화 판정이 다르면 호출을 거부한다",
+    "exit_code": 1,
+    "detected": true
+  },
+  {
+    "mutation": "combined",
+    "test": "both new regression tests",
+    "exit_code": 1,
+    "detected": true
+  }
+]

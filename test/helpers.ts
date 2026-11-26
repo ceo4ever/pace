@@ -160,3 +160,16 @@ export function sessionFreeEnv(): NodeJS.ProcessEnv {
   }
   return env;
 }
+
+/** Adapts the older verify fixtures to the structured prompt when they exercise a managed stage. */
+export function scopedReviewFixture(prompt: string, text: string): string {
+  const category = /```pace-review\n[^\n]*"category":"([^"]+)"/.exec(prompt)?.[1];
+  const verdict = /\b(pass|fail)$/.exec(text.trim())?.[1];
+  if (!category || !verdict) return text;
+  const scenario = /\[blocking\]\s*([^\r\n]+)/.exec(text)?.[1] ?? "관측한 실패";
+  const findings = verdict === "fail" ? [{
+    id: "F1", severity: "blocking", category, location: "fixture.ts:1",
+    scenario, reproduction: "고정 입력으로 기존 동작을 실행한다", confidence: "high",
+  }] : [];
+  return [text, "```pace-review", JSON.stringify({ version: 1, findings }), "```", verdict].join("\n");
+}

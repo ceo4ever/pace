@@ -105,6 +105,26 @@ test("검토 상한 뒤 필수 수정 확인과 A-3 승인 요청을 구분한�
   assert.match(steps, /상한 뒤 수정 확인.*decision-rights\.md.*결과를 사후 보고한다.*A-3/u);
   const scenarios = readFileSync(join(skillDir, "evals/scenarios.md"), "utf8");
   assert.match(scenarios, /\| D16 \|.*독립 재검증을 수행하고 사후 보고.*A-3 결정 요청/u);
+  assert.match(scenarios, /\| H05 \|.*초안 확정을 보류하고 허브와 독립 검토를 복구한다.*생략·완화할 때 A-3/u);
+  const team = readFileSync(join(root, "skills/pace-team/SKILL.md"), "utf8");
+  assert.match(team, /양쪽이 미실행이면 관문을 보류하고 허브와 독립 검토를 복구한다.*생략·완화하거나 증거 공백을 안고 진행할 때 A-3/u);
+});
+
+test("검토 정본은 단계별 판정 질문과 새 반환 형식을 연결한다", () => {
+  const reviewer = readFileSync(join(skillDir, "references/reviewer.md"), "utf8");
+  assert.match(reviewer, /이 계획이 목적을 증명할 수 있는가\?/u);
+  assert.match(reviewer, /이 변경을 내보내도 되는가\?/u);
+  assert.match(reviewer, /이 백로그로 프로젝트에 착수하면.*합의한 목표까지 갈 수 있는가\?/u);
+  assert.match(reviewer, /`pace-review` JSON 블록/u);
+  assert.doesNotMatch(reviewer, /^\| `handoff` \|/m);
+  for (const name of ["tools", "security"]) {
+    assert.match(readFileSync(join(skillDir, `references/${name}.md`), "utf8"), /blocking·should_fix·note/u);
+  }
+  assert.match(readFileSync(join(skillDir, "references/task-steps.md"), "utf8"), /질문 밖 note의 인계/u);
+  const tester = readFileSync(join(skillDir, "references/tester.md"), "utf8");
+  assert.match(tester, /기준마다 증거로 통과하는가\?/u);
+  const cross = readFileSync(join(skillDir, "references/cross-verify.md"), "utf8");
+  assert.match(cross, /질문별 구조화된 지적으로 판정을 계산/u);
 });
 
 test("모든 변경 대상에서 기존 올림 기준을 제거하고 결정 권한 정본을 연결한다", () => {

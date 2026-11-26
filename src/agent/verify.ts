@@ -1,5 +1,7 @@
 import { AgentError, providerFromModel, providerOf, runAgent, type AgentName, type AgentResult, type Executor, type Provider } from "./contract.ts";
 import { taskFormat } from "../project/pre-review.ts";
+import type { BudgetStage } from "./review-budget.ts";
+import { reviewQuestionPrompt } from "./structured-review.ts";
 
 // 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용 -p로 독립 검토한다.
 // 다른 제공자 미실행 시 B1에 따라 같은 제공자 새 세션으로 대체하고 사유와 cross: false를 기록한다.
@@ -22,6 +24,7 @@ export interface VerifyOptions {
   model?: string;
   /** goal(기본): 결과물의 목표/결과 대조 · task: 구현 전 TASK 사전 검토 — TASK.md 자체가 검토 대상 결과물이다 */
   kind?: VerifyKind;
+  reviewStage?: BudgetStage;
   /** 재검토(P007): 원장이 고른 기준점 검토의 원문과 그때→지금 대상의 바뀐 줄 */
   rereview?: Rereview;
   executors: Executor[];
@@ -39,7 +42,8 @@ export interface Rereview {
 }
 
 /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
-export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview): string {
+export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview,
+  reviewStage?: BudgetStage): string {
   // 구현 전 TASK 사전 검토에서는 TASK.md(기준·테스트 표·접근)가 평가할 결과물이다 — 이것을 "작업 문서 노출"로 막으면
   // 검토자가 매번 자기 열람을 독립성 위반으로 지적해 pass가 나올 수 없다(P001 T02 실측, 2026-11-16).
   // 재검토(reviewer.md: 두 번째 검토부터는 직전 blocking 해소와 그 수정이 만든 새 결함만)는 1단계가 아니다 — 직전 검토 원문을 받는 것이 정해진 입력이다
@@ -72,8 +76,10 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
     purpose.trim(),
     "",
     "## 묻는 것",
-    "1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?",
-    "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.",
+    ...(reviewStage ? reviewQuestionPrompt(reviewStage) : [
+      "1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?",
+      "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.",
+    ]),
     ...(kind === "task" && taskFormat(artifact) !== "legacy" ? [
       "새 TASK 형식(v2)의 증명 범위 규칙: 형식 표지가 중복되거나 지원하지 않는 버전이면 blocking이다. 증명 범위 절·판정 주체가 누락되거나 비면 그것 자체만 blocking 1건으로 내고 다른 지적을 늘어놓지 않는다. 단건 억제의 빈 값은 게이트가 거부하는 구조 누락(절 없음·주석뿐인 절·주체 줄 없음·값 공백)이다. 미정·TBD처럼 실제 텍스트가 있으나 의미상 불충분한 값은 단건 억제하지 않고 목적·안전까지 함께 평가한다.",
       "포함·범위 밖(이유·넘길 곳)의 내용과 판정 주체를 목적·기준에 대조한다. blocking은 적힌 증명 범위로 목적·기준을 증명할 수 없을 때다. 목적에 충분한 범위를 넓히라는 요구는 should_fix다. 현재 적힌 범위가 이미 목적·기준을 충분히 입증한다면 그 밖으로 확대하라는 요구는 목적 증명에 필요하지 않아도 반드시 should_fix로 분류한다. 합의 범위 밖이라는 이유로 note로 바꾸지 않는다. should_fix는 확장 승인이나 반영 의무가 아니며 범위 변경은 별도 합의한다. 범위 자체가 목적에 비해 좁으면 blocking이며 범위 밖 선언으로 검토를 피할 수 없다.",
@@ -93,7 +99,7 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
   const authorProvider = options.authorProvider ?? providerOf[options.authorAgent];
   const candidates = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] !== authorProvider);
   const sameProvider = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] === authorProvider);
-  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind, options.rereview);
+  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind, options.rereview, options.reviewStage);
   const reasons: string[] = [];
 
   const attempt = async (executor: Executor, cross: boolean): Promise<VerifyOutcome | null> => {
