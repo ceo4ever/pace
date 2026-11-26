@@ -132,3 +132,5 @@
 {"ts":"2026-11-26T07:36:49.544Z","p":"P013","t":"T08","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T07:36:49.544Z","p":"P013","t":"T08","type":"task_done","by":"cli","msg":"done","ok":true}
 {"ts":"2026-11-26T07:42:03.229Z","p":"P013","type":"gate","by":"cli","msg":"finish: contract","ok":false,"data":{"finish":1}}
+{"ts":"2026-11-26T07:49:54.944Z","p":"P013","type":"finish","by":"cli","msg":"finish","ok":true}
+{"ts":"2026-11-26T07:49:54.944Z","p":"P013","type":"gate","by":"cli","msg":"finish","ok":true,"src":"finish:c2a04b470b902371879e5004","data":{"finish":1}}
