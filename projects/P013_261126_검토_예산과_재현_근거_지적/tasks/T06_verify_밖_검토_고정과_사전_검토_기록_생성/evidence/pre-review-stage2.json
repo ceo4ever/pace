@@ -1,0 +1,24 @@
+{
+  "text": "**판정: pass.** 지난 2단계 fail의 원인이던 공동/사용자/상위 경계와 S-5 시험이 이제 TASK.md 계약에 들어 있습니다. 새 blocking 지적은 없습니다. 파일은 고치지 않았고 외부 행동도 하지 않았습니다.\n\n## 검토 대상과 근거\n- **대상:** T06 `TASK.md`. 현재 본문은 R3 스냅숏과 같고, 해시 `e64cc559…`가 `REVIEW-LOG.jsonl` 3행, `PRE-REVIEW.json` 3번째 시도, `pre-review-inputs.jsonl`에서 모두 일치합니다.\n- **읽은 파일:**\n  - T06의 `TASK.md`, `review-records/R3.json`, `evidence/pre-review-design.md`, `evidence/pre-review-stage2-r2.json`(지난 2단계 fail), `REVIEW-LOG.jsonl`, `PRE-REVIEW.json`, `evidence/pre-review-inputs.jsonl`\n  - BR06, BR02, BR09(T09)\n  - `src/agent/verify-cli.ts:240-439`, `review-budget.ts:100-167`, `review-admission.ts`, 상수 정의(`contract.ts:31`)\n\n## 1. 지난 2단계 요청이 계약에 들어갔는지\n\n| 지난 해소 조건 | 최신 계약 | 판단 |\n|---|---|---|\n| 소진·열린 상위 조치를 verify와 같은 상태로 읽고, 새 고정 없이 종료 16과 BR02·T09 후속 경로를 반환 | T-1: \"소진·공동/사용자 승인으로 열린 복구·상위 조치는 … 종료 16 및 `ran: false`와 BR02·T09 후속 경로\" | 반영 |\n| 허가된 복구는 기존 verify로만 실행 | T-1 마지막 문장 | 반영 |\n| 반례: 복구 허가가 있으면 외부 고정은 거부되고 verify는 실행됨 / 상위 조치가 열려 있으면 외부 고정 거부 | S-5 | 반영 |\n| unknown은 판정 회차에서 제외 | T-2에 명시. S-1 기대값에는 없음 | 부분 반영(아래 b) |\n\n**코드와 대조한 결과:**\n- verify는 `verify-cli.ts:277-285`에서 상위 조치·`exhausted`·`owner_pending`일 때 `ran: false`, `followup`(`exhaustedFollowup`), 종료 16(`ESCALATION_EXIT`)을 냅니다. T-1이 말하는 \"verify와 같은 상태\"는 이 분기와 일치합니다.\n- 공동(`joint`)·사용자(`owner`) 허가는 verify에서 `grant`로 실행됩니다(`review-admission.ts:16-25`, `verify-cli.ts:316`). 외부 고정은 이 허가를 받아도 거부해야 합니다. T-1과 설계 문서가 그 차이를 명시하고 있습니다.\n- S-1의 \"호출 4회·판정 2회 뒤 종료 16\"은 `CALL_LIMIT = 4`, `ROUND_LIMIT = 2`와 맞습니다.\n- \"이미 발급한 고정본은 호출을 다시 세지 않는다\"는 `reserveReviewCall`의 `call_id` 예약 구조(`review-budget.ts:142,158-167`)로 구현할 수 있습니다.\n\n## 2. 1단계 R3 지적을 구현 시험에 넣을 구체 반례\n지시대로 blocking으로 보지 않고, 구현 시험에 넣을 반례로 정리했습니다.\n\n- **T-2 무고정:** 고정이 없는 판정을 제출하면 원장 변화 0\n- **T-2 잘못된 단계:** post 단계 고정으로 pre 판정을 제출하면 거부\n- **T-2 판정 상한:** 고정한 뒤 다른 경로로 `rounds`가 2가 되면 제출을 거부하고 원장 변화 0\n- **T-4 PRE 밖 쓰기:** `PRE-REVIEW.json`이나 상위 폴더가 링크이거나 태스크 폴더 밖을 가리키면 쓰기 0, 원본 보존\n- **T-4 수기 PRE 대조:** 기존 `pre-review` fixture의 원장으로 생성한 결과가 같은 판정을 내고, fail→pass 회차의 `continuity`가 `new`가 아님\n\n## 3. 이번에 더 찾은 점\na. **should_fix (T-2 반례에 추가):** 외부 고정은 verify와 달리 고정과 판정 등록 사이에 잠금을 풀어 둡니다. 그 사이에 같은 단위에서 `upper_review`가 열리거나 사용자 결정이 대기 상태가 될 수 있습니다. BR09는 그 상태에서 단위의 수정·재검증을 막습니다. 따라서 `review-record`도 등록 시점의 결정 상태를 다시 읽고 거부해야 합니다.\n   - 설계 문서의 \"판정 상한과 후속 결정 경계를 확인하고\"가 이를 포괄하고 TASK가 그 문서를 재료로 걸었으므로 blocking은 아닙니다.\n   - 시험에 \"고정 → 상위 조치 열림 → 판정 제출 거부, 원장 변화 0\" 반례를 넣어야 합니다.\n\nb. **note:** S-5는 공동 허가와 상위 조치만 다룹니다. T-1에 있는 사용자(`owner`) 결정 회차도 \"외부 고정은 종료 16, verify는 실행\"으로 같은 시험에 넣으면 경계를 모두 덮습니다. S-1 기대값에 \"unknown 제출 뒤에도 판정 수 불변\"을 적는 것도 권합니다.\n\nc. **note (게이트 상태):** 이 T06 원장에는 `call`·`format` 항목이 없습니다. 이 검토들은 아직 설치되지 않은 worktree의 예산 코드가 아니라 설치본으로 실행된 것으로 보입니다.\n   - worktree 코드 기준으로는 R1·R2 뒤 판정 2회로 예산이 소진됩니다. 그러면 R3은 일반 회차로 열릴 수 없었습니다.\n   - 계약을 고친 뒤 다시 검토한 흐름 자체는 BR09의 \"계약 변경 시 일반 예산 재시작\"과 같은 방향입니다. 다만 그 재시작을 원장에 남기는 근거 항목은 없습니다.\n   - 이 단계의 계약 판정에는 영향이 없지만, PRE를 승인할 때 사람이 확인할 사항입니다.\n\nd. **범위:** 자동 실행·세션 인증, 측정(BR07), 스킬 정본 축소(BR08)는 BR06의 제외 항목과 맞습니다. 필수 안전 기준을 범위 밖으로 뺀 것은 없습니다. T-4는 새 승인을 만들지 않아서 사람의 결정을 대신하지 않습니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 82793,
+  "usage": {
+    "input_tokens": 20,
+    "output_tokens": 8894
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

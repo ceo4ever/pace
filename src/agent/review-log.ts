@@ -16,6 +16,7 @@ export const LEDGER_FILE = "REVIEW-LOG.jsonl";
 export const LOCK_FILE = "REVIEW-LOG.lock";
 export const RECOVERY_LOCK_FILE = "REVIEW-LOG.lock.recovery";
 export const RECORDS_DIR = "review-records";
+export const REVIEW_HAND_ID = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
 export const DIAGNOSE_AFTER = 3;
 
 export type Verdict = "pass" | "fail" | "unknown";
@@ -48,6 +49,8 @@ export interface ReviewEntry {
   required_criteria?: string[];
   permission_basis?: PermissionBasis;
   permission?: ReviewPermission;
+  /** Fixed external input changed before the submitted result could grant approval. */
+  stale?: true;
   after_diagnosis?: { id: string; contract: string };
   /** 중단 복구. 옛 fail 표기는 기존 진단에서만 세고 예산 판정·재검토 기준점에서 제외한다. */
   interrupted?: true;
@@ -58,6 +61,7 @@ export interface ReviewCallEntry {
   target: string;
   kind: string;
   call_id: string;
+  frozen_digest?: string;
 }
 export interface ReviewFormatEntry {
   type: "format";
@@ -116,7 +120,8 @@ export function validCrossUnavailable(value: unknown): value is string[] {
 /** 항목 종류별 필수 필드를 확인한다 — 필드가 빠진 decision이 연속 실패를 초기화하지 못하게 */
 function validEntry(v: Record<string, unknown>): boolean {
   if (!isStr(v.target) || !isStr(v.at)) return false;
-  if (v.type === "call") return isStr(v.kind) && isStr(v.call_id) && v.call_id !== "";
+  if (v.type === "call") return isStr(v.kind) && isStr(v.call_id) && v.call_id !== "" &&
+    (v.frozen_digest === undefined || (isStr(v.frozen_digest) && HEX64.test(v.frozen_digest)));
   if (v.type === "format") return isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) &&
     isStr(v.hash) && HEX64.test(v.hash) && validCriterionIds(v.required_criteria) &&
     (v.permission_basis === undefined || !!parsePermissionBasis(v.permission_basis));
@@ -130,6 +135,7 @@ function validEntry(v: Record<string, unknown>): boolean {
     && (v.required_criteria === undefined || (v.structured_stage !== undefined && validCriterionIds(v.required_criteria)))
     && (v.permission_basis === undefined || (v.structured_stage === "pre" && !!parsePermissionBasis(v.permission_basis)))
     && (v.permission === undefined || (v.verdict === "pass" && !!parseGrantedPermission(v.permission)))
+    && (v.stale === undefined || (v.stale === true && v.verdict === "unknown" && isStr(v.call_id)))
     && (v.after_diagnosis === undefined || validDiagnosisLink(v.after_diagnosis))
     && (v.cross_unavailable === undefined || validCrossUnavailable(v.cross_unavailable));
   if (v.type === "diagnosis") {
@@ -162,6 +168,11 @@ export function validDiagnosisLink(value: unknown): value is NonNullable<ReviewE
 
 export function ledgerPath(target: string): string { return join(dirname(target), LEDGER_FILE); }
 export function lockPath(target: string): string { return join(dirname(target), LOCK_FILE); }
+
+export function fixedReviewPath(target: string, id: string): string {
+  if (!REVIEW_HAND_ID.test(id)) throw new LedgerError("외부 검토 고정 ID가 올바르지 않다");
+  return join(dirname(target), RECORDS_DIR, `H-${id}.json`);
+}
 
 /** 결과 텍스트의 마지막 비어 있지 않은 줄이 pass·fail이면 그 값, 아니면 unknown */
 export function parseVerdict(text: string): Verdict {

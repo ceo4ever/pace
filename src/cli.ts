@@ -28,6 +28,8 @@ import { AgentError, errorPayload, runAgent, validateRequest } from "./agent/con
 import { allExecutors, findExecutor } from "./agent/registry.ts";
 import { ChainConfigError, checkChain, defaultChainFile, fileCooldownStore, loadChainConfig, outcomeExitCode, resolveChain, runChain } from "./agent/chain.ts";
 import { reviewNoteCommand, verifyCommand } from "./agent/verify-cli.ts";
+import { REVIEW_HAND_USAGE, REVIEW_RECORD_USAGE, reviewArtifactCommand } from "./agent/review-hand.ts";
+import { REVIEW_PRE_USAGE, reviewPreCommand } from "./agent/review-pre.ts";
 import { daemonCommand, DaemonUsageError } from "./daemon/cli.ts";
 import { defaultDataHome, refreshAutostart, type AutostartEnv } from "./daemon/autostart.ts";
 import { runAgentSetup, SetupUsageError } from "./agent/setup.ts";
@@ -161,6 +163,9 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace mcp --workspace <경로> --access read-only|write   PACE 도구 서버(stdio MCP) — ACP 세션에 주입된다. 워크스페이스·접근 권한은 기동 때 고정, 읽기 전용이면 변경 도구를 서버가 거부
   pace agent verify --author-agent claude|codex --target <파일> (--purpose <글>|--purpose-file <파일>) [--kind goal|task] [--allow-same-provider] [--out <기록>]   읽기 전용 독립 검토. 소진은 종료 16 및 허브 판정 자료
   pace agent review-note --target <파일> (--diagnosis | --decision --by pm|user | --void | --joint | --request-waiver skip|weaken) --summary <글> [--file <근거>]   반복 실패와 검토 소진 후속 조치 기록
+  ${REVIEW_HAND_USAGE}
+  ${REVIEW_RECORD_USAGE}
+  ${REVIEW_PRE_USAGE}
   pace project new "<이름>" [--from <BL 폴더 또는 앞부분>]   프로젝트 폴더·PROJECT.md (main)
   pace worker show | set <도구> <model|effort|tier.<등급>.<model|effort>> <값> | reset <도구> <항목>
   pace team new <이름> --role lead|maker|reviewer|coordinator | list | sync [--check [--json]]
@@ -965,8 +970,10 @@ async function agentCommand(args: string[]): Promise<number> {
   const [sub, ...rest] = args;
   if (sub === "verify") return agentVerify(rest);
   if (sub === "review-note") return agentReviewNote(rest);
+  if (sub === "review-hand" || sub === "review-record") return reviewArtifactCommand(sub, rest, { write: (t) => process.stdout.write(t) });
+  if (sub === "review-pre") return reviewPreCommand(rest, { write: (t) => process.stdout.write(t) });
   if (sub === "setup") return agentSetup(rest);
-  if (sub !== "run") throw new UsageError("pace agent run|setup|verify|review-note …");
+  if (sub !== "run") throw new UsageError("pace agent run|setup|verify|review-note|review-hand|review-record|review-pre …");
   const { values } = parseArgs({
     args: rest,
     options: {

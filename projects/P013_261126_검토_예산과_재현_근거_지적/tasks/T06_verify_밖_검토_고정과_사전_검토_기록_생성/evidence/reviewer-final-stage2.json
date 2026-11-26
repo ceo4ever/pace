@@ -1,0 +1,24 @@
+{
+  "text": "확인 결과 **blocking과 should_fix는 없습니다.** 계약에 영향 없는 note 3건이 있고 판정은 pass입니다. 다만 셸 도구가 없어 시험·`npm run check`를 돌리지 못했고, `implementation.patch`의 sha256(`4a0de9c9…`)도 계산하지 못했습니다. 아래는 모두 현재 작업 트리의 코드와 시험을 정적으로 읽고 대조한 결과입니다.\n\n## 1단계 지적의 반영\n\n| 1단계 지적 | 확인 위치 | 결과 |\n|---|---|---|\n| ① 계약 기준이 바뀌어도 오래된 기록으로 처리하지 않음 | `src/agent/review-hand.ts:165`에서 `criteria_digest`를 고정하고 `:206-209`에서 기준을 다시 계산해 대조 | **해소.** 비교 대상인 `reviewCriteria`가 사후 단계에서는 `TASK.md`, 백로그 하위 문서에서는 `BACKLOG.md`를 읽고, 지문에는 기준 문구가 포함됩니다. 시험 `test/agent-review-hand.test.ts:382`는 사후 단계에서 TASK 기준을 바꾸면 `unknown`·`stale`·판정 0회가 되는 것을 확인합니다. 정상 경로도 함께 다루므로 1단계 지적 ③의 \"사후 단계\" 공백도 메웠습니다. |\n| ② 맞지 않는 사용자 예외를 PRE에서 지움 | `src/agent/review-pre.ts:134-147` | **해소.** 맞지 않는 예외는 `inactive_waiver`에 보존되고, 조건이 다시 맞으면 `waiver`로 돌아옵니다(`test:302-309`). 게이트 `reviewIssues`는 알 수 없는 키를 거부하지 않으므로 `inactive_waiver`가 게이트를 막거나 통과시키지 않습니다. 보존 판정은 `waiverIssues`의 `by: user`·TASK 해시·근거 파일 조건과 최신 실패 원문 대조(`pre-review.ts:215-240`)를 그대로 거칩니다. 새 승인은 만들지 않습니다. 게다가 `exists` 확인이 잠금 안으로 옮겨져(`:127-128`) 1단계 note 7도 해소됐습니다. |\n| ③ 중단·미확인 복구 시험 없음 | `src/agent/verify-cli.ts:187-208`, `:234-256`(`fixedRecordMatches`), 시험 `test:199-224` | **해소.** 외부 기록은 고정본 지문과 대상·스냅숏·기준·허가 표지·진단 링크를 다시 묶을 수 있을 때만 판정으로 복구됩니다. 시험은 네 경우를 다룹니다. 원문은 다 썼지만 원장에 없을 때는 pass로, `stale`은 unknown(`stale`)으로 복구됩니다. 고정본 변조와 `format` 행만 남은 `pending`은 fail(`interrupted`)로 복구됩니다. 고아 복구의 `stale` 분기(`computed !== null`)도 이 시험이 실행합니다. |\n| note 4: 증거 미확인 뒤 재검토 기준점 | `review-hand.ts:100-104`의 `ordinaryBase`(기존 `evidenceRereviewBase` 재사용, `stale` 기록은 제외) | **해소.** 시험 `test:182`는 프롬프트에 \"직전 기준별 증거 상태\"가 들어가는 것을 확인합니다. |\n| 사후 단계 프롬프트 | `pre-review.ts:107-114`의 `approvedTaskEdit`와 그 호출 `verify-cli.ts` | **이전과 동작이 같습니다.** `gate.edit`는 `return []` 직전(`pre-review.ts:264`)에서만 정해지므로 기존 verify의 동작은 그대로입니다. 외부 고정 프롬프트에도 같은 값이 들어갑니다(`project-harness` 시험 추가분). |\n\n## 복구 경계: 기존 제공자 실행기만 승인된 복구를 엽니다\n\n- **고정(`review-hand`)** `:144-147`: 상위 조치, 공동·사용자 허가, `ordinary`가 아닌 결정 상태에서는 모두 종료 16을 냅니다. 응답에는 `ran: false`와 `next_command: \"pace agent verify\"`가 담기고, 예약과 파일 생성은 없습니다.\n- **판정 제출(`review-record`)** `:189-191`: 이미 고정된 건이라도 복구가 열렸거나, 승인 대기 중이거나, 판정 상한에 닿았으면 원장을 바꾸지 않고 종료 16을 냅니다.\n- **시험:** 공동 복구는 `test:342`, 상위 조치는 `:361`, A-3에서 owner 결정 뒤 verify만 실행되는 경로는 `:397`이 다룹니다. 각 시험에서 원장 바이트가 그대로이고, 기존 verify의 `followup.type`이 `joint`·`owner`로 남는 것까지 확인합니다.\n- **미완료 고정:** 고정만 하고 판정을 내지 않아도 호출 1회로 셉니다. 4회 고정하면 다섯 번째는 종료 16(`exhausted: \"calls\"`)이고 파일은 4개입니다(`test:105`).\n\n## 자동 판정과 세션 진위 확인의 경계\n\n**도구가 자동으로 판정하는 것**\n- 고정본 지문과 원장의 `frozen_digest` 대조\n- 대상·기준·직전 검토·진단 링크가 바뀌었는지(stale)\n- 구조화 원문을 다시 계산한 판정과 예산\n- 교차 실패를 같은 제공자 검토로 대체하는 것의 거부, 같은 제공자 대체에 필요한 `ran: false` 근거\n- T05 허가 범위의 재계산\n\n**호출자가 확인하는 것**\n- 실제로 독립 세션이 실행됐는지, 원문이 그 세션의 것인지, 제공자·검토자가 누구인지\n\n이것은 TASK의 \"범위 밖: 독립 세션 인증\"과 BR06의 결정과 일치합니다. 기존 수기 PRE 절차도 같은 신뢰 수준이었으므로 독립 검토를 약하게 만들지 않았고, A-3에 해당하지 않습니다. 외부 기록에는 `source: \"external\"`과 `provider.source: \"submitted\"`가 남고, 새로 PRE 시도 항목에도 `source: \"external\"`이 표시됩니다(`review-pre.ts:111`, 시험 `:254`).\n\n## 지적\n\n1. **note — PRE의 출처 표기는 정보용이고 게이트가 확인하지 않습니다.**\n   - 위치: `review-pre.ts:106-111`, `pre-review.ts:207`\n   - 조건: 외부 대체 검토에서 파생된 `unavailable` 시도에는 `source`가 붙지 않습니다. 또 PRE에서 `source`를 지워도 `reviewIssues`가 원본 기록과 대조하지 않습니다.\n   - 결과: 게이트 결과는 같습니다. 출처의 정본은 기록 파일이고, 세션 진위는 위 경계대로 호출자가 맡습니다. 이 한계를 문서에 밝혀 두면 충분합니다.\n2. **note — 이전 예외 기록은 한 칸만 보존됩니다.**\n   - 위치: `review-pre.ts:136`, `:147`\n   - 조건: PRE에 `waiver`와 `inactive_waiver`가 함께 있으면 `waiver`를 우선합니다. 예를 들어 사용자가 비활성 예외가 남은 PRE에 새 예외를 직접 써 넣는 경우입니다.\n   - 결과: 다음 생성 때 옛 `inactive_waiver`가 사라집니다. 1단계 지적 ②의 주 경로는 해소됐고, 이 경우는 사용자가 직접 고친 드문 상황에 한정됩니다.\n3. **note — 사후 고정 프롬프트 속 TASK 변경 정보는 고정 시점의 것입니다.**\n   - 위치: `review-hand.ts:160`, `:207`\n   - 조건: 고정한 뒤 기준 절 밖의 TASK 내용이 허용 위치 안에서 다시 바뀝니다.\n   - 결과: `stale`로 처리되지 않습니다. 하지만 사후 단계는 허가를 발급하지 않고, 커밋 때 게이트가 TASK 차이를 다시 검사하므로 잘못된 허가는 생기지 않습니다.\n\n## 한계\n\n- 시험·`npm run check`는 실행하지 않았고 패치 해시도 대조하지 못했습니다.\n- `decideReviewAdmission`의 전체 분기와 `structured-review.ts`는 읽지 않았습니다.\n- 제품 파일 수정과 외부 행동은 하지 않았습니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 111865,
+  "usage": {
+    "input_tokens": 24,
+    "output_tokens": 10777
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

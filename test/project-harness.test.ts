@@ -847,6 +847,37 @@ test("허가 범위: 사용자의 A-3 예외는 유지하고 이전 탐침 허�
   }
 });
 
+test("T06 외부 검토와 생성한 PRE-REVIEW가 실제 프로젝트 check를 통과한다", () => {
+  const h = permissionFixture();
+  const file = join(h.home, "purpose.md");
+  write(file, "합성 탐침 범위 허가를 검증한다.\n");
+  const runAt = (target: string, ...args: string[]) => {
+    const result = runPace(["agent", ...args, "--target", target], { cwd: h.wt, home: h.home });
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return JSON.parse(result.stdout);
+  };
+  const run = (...args: string[]) => runAt(h.target, ...args);
+  const handed = run("review-hand", "--author-provider", "anthropic", "--purpose-file", file);
+  const fixed = JSON.parse(readFileSync(handed.snapshot, "utf8"));
+  const resultFile = join(h.home, "result.md");
+  write(resultFile, evidenceReviewFixture(fixed.prompt, h.raw(h.permission)));
+  const result = run("review-record", "--hand", handed.hand, "--provider", "openai", "--reviewer", "codex", "--result-file", resultFile);
+  assert.deepEqual(result.review.permission, h.grant);
+  const pre = run("review-pre", "--author-provider", "anthropic");
+  assert.equal(pre.pre_review_ok, true);
+  const done = h.gate("check");
+  assert.equal(done.status, 0, done.stdout + done.stderr);
+  const changed = h.snapshot.replace("먼저 문구 A", "허용 위치에 반영한 문구 A");
+  write(h.target, changed);
+  const artifact = join(h.dir, "evidence/implementation.patch");
+  write(artifact, "독립 구현 후 검토 입력\n");
+  const post = runAt(artifact, "review-hand", "--author-provider", "anthropic", "--purpose-file", file);
+  const postFixed = JSON.parse(readFileSync(post.snapshot, "utf8"));
+  assert.match(postFixed.prompt, /사전 검토 허용 위치에서 반영한 TASK 변경/);
+  assert.ok(postFixed.prompt.includes(reviewHash(changed)));
+  assert.ok(postFixed.prompt.includes("허용 위치에 반영한 문구 A"));
+});
+
 test("done: check 통과 때만 상태·백로그·커밋 칸을 한 번에 맞추고, 실패하면 아무것도 바꾸지 않는다", async (ctx) => {
   const direct = createProjectCalls();
   ctx.after(() => direct.close());

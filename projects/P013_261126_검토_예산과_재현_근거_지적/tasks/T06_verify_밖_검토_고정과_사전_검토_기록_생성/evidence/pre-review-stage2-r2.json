@@ -1,0 +1,24 @@
+{
+  "text": "작업 폴더 밖 파일은 읽기 권한이 없었습니다. 그래서 받은 자료만으로 판정을 정리했습니다.\n\n# 판정: **fail** (blocking 1건)\n\n## 확인 범위와 한계\n- **읽은 것:** 작업 폴더 안의 `TASK.md`, `review-records/R2.json`, `evidence/pre-review-design.md`, `REVIEW-LOG.jsonl`, `PRE-REVIEW.json`, `evidence/pre-review-inputs.jsonl`.\n- **읽지 못한 것:** BR06 원문, BR02·T09 정본, `src/agent/verify-cli.ts`, `review-budget.ts`. 작업 폴더 밖이라 읽기 권한 요청이 승인되지 않았습니다.\n- 그래서 BR06 원문과 게이트 코드는 직접 대조하지 못했습니다. 이 둘과의 일치는 **미확인**이며, 아래 내용은 R2가 인용한 코드 위치를 그대로 믿은 것입니다.\n\n## 원장 관문 상태\n- `TASK.md`의 현재 본문은 R2 스냅숏(`8b6ba0b8…`)과 한 글자도 다르지 않습니다. `REVIEW-LOG`의 2번 항목, `PRE-REVIEW.json`의 R2 시도(`pass`, `blocking: 0`, `continuity: changed`), `pre-review-inputs`의 해시가 모두 서로 맞습니다.\n- 판정 회차는 R1 fail, R2 pass로 2회가 쓰였습니다. R2에 따르면 판정 상한이 `ROUND_LIMIT = 2`라서 일반 판정 회차가 이미 소진된 상태입니다.\n\n## Blocking — 소진 뒤 처리 규칙이 검토된 계약 밖에만 있음\n- R2는 should_fix 1로 \"T-1에 소진 판단과 BR02 복구 허가의 관계가 정해지지 않았다\"고 지적했습니다.\n- 이 보완은 `evidence/pre-review-design.md`에만 있고 `TASK.md`에는 반영되지 않았습니다. 관문은 `TASK.md`의 해시로 묶이므로, 지금 설계는 게이트가 지키는 계약 밖에 있습니다.\n- 설계 문서는 T-1보다 범위가 넓습니다.\n  1. **새 거부 조건:** 소진뿐 아니라 \"열린 상위 조치\"가 있을 때도 새 외부 고정을 만들지 않습니다. T-1과 S-1은 소진만 다룹니다.\n  2. **복구 경로 연결:** 별도 허가로 열린 공동·상위·사용자 결정 회차는 기존 verify 명령에서 조치 증거와 연결한다고 적었습니다. 하지만 이를 검증하는 기준과 시험이 없습니다. 복구 허가가 있을 때 외부 고정은 거부되고 verify만 열린다는 반례가 S-1·S-3 어디에도 없습니다.\n- 결과적으로 R2가 경고한 \"허가 확인 없이 열어 두는 구현\"과 \"복구 허가까지 막는 구현\"을 여전히 시험으로 가를 수 없습니다.\n- `TASK.md`와 `PRE-REVIEW.json` 어느 쪽도 이 설계 문서를 참조하지 않아, 연결 근거가 원장에 남지 않습니다.\n\n## 항목별 확인\n| 항목 | 판정 | 근거 |\n|---|---|---|\n| 소진 뒤 일반 외부 고정 거부와 기존 verify 복구 경로 안내 | **fail** | 방향은 설계 문서에 맞게 적혀 있습니다. 그러나 TASK 기준·시험에 없고, \"열린 상위 조치\" 조건과 허가 회차를 verify로 보내는 규칙은 검증할 수 없습니다. |\n| 호출 1회와 유효 판정 1회 | pass (계약 수준) | 이미 발급한 고정본은 호출을 다시 세지 않고 유효한 pass·fail만 판정 회차에 더한다는 설계는 T-2, S-1(호출 4회·판정 2회)과 맞습니다. R2 note 3(unknown 제외)도 해소됩니다. 다만 TASK·S-1 기대값에는 아직 적혀 있지 않습니다. |\n| 파일 경계 | pass (계약 수준) | T-1은 `review-records/` 고정과 링크·경로 이탈 거부를, T-4는 태스크 폴더 안 일반 파일만 갱신을, S-1은 \"링크 경로에 쓰기 0\"을 정합니다. 설계 문서는 이 경계를 바꾸지 않습니다. |\n| 권한·사용자 예외 | 부분 | T-4·S-3의 사용자 예외 보존 조건(`by: user`, 현재 해시, 승인 근거, 최신 실패)과 \"새 승인 없음\"은 기존 합의와 이어집니다. 설계 문서의 \"사용자 결정 회차\"가 T05 `review.permission`과 어떻게 이어지는지는 정해지지 않았습니다. 코드 대조도 하지 못해 미확인입니다. |\n\n## 해소 조건\n1. T-1에 두 가지를 넣습니다.\n   - 소진이나 열린 상위 조치를 verify와 같은 결정 상태 판정으로 읽고, 새 외부 고정 없이 종료 16과 BR02·T09 후속 경로를 반환한다.\n   - 허가된 복구 회차는 기존 verify 명령만 사용한다.\n2. S-1(또는 새 시험)에 반례 두 가지를 넣습니다.\n   - 복구 허가가 있을 때: 외부 고정은 거부되고 verify는 실행된다.\n   - 상위 조치가 열려 있을 때: 외부 고정이 거부된다.\n3. S-1 기대값에 \"unknown은 판정 회차에 넣지 않는다\"를 적습니다.\n\n`TASK.md`를 고치면 해시가 바뀌어 재검토가 필요합니다. 일반 판정 회차가 이미 2회 소진되었으므로, 다음 회차는 BR02의 복구·상위 경로로 열어야 할 것으로 보입니다. BR02를 읽지 못해 이 부분은 확인하지 못했습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 57209,
+  "usage": {
+    "input_tokens": 12,
+    "output_tokens": 5897
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

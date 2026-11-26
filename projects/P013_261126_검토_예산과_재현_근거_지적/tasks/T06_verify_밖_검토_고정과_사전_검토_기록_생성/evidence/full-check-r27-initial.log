@@ -1,0 +1,28 @@
+ℹ tests 1476
+ℹ pass 1458
+ℹ fail 1
+ℹ skipped 17
+✖ failing tests:
+
+test at test/team-metrics.test.ts:566:1
+✖ R27 커밋 뒤 tree 불일치도 로그와 생성 커밋을 보존하고 성공 완료만 취소한다 (206.872208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at fixture (file:///Volumes/Data/AiStudio/workspace/pace.wt/P013/test/team-metrics.test.ts:21:81)
+      at mergeFixture (file:///Volumes/Data/AiStudio/workspace/pace.wt/P013/test/team-metrics.test.ts:218:13)
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace.wt/P013/test/team-metrics.test.ts:567:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,9 @@
+✔ R27 커밋 뒤 tree 불일치도 로그와 생성 커밋을 보존하고 성공 완료만 취소한다 (4424.676542ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4579.192584

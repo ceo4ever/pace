@@ -155,11 +155,13 @@ export function readReviewBudget(scope: ReviewBudgetScope, offsets: Readonly<Rec
 }
 
 /** verify와 외부 검토 넘김이 실행 전에 부르는 공통 예약 지점. 호출자는 범위 잠금을 먼저 잡는다. */
-export function reserveReviewCall(scope: ReviewBudgetScope, at: Date, budget = readReviewBudget(scope)) {
+export function reserveReviewCall(scope: ReviewBudgetScope, at: Date, budget = readReviewBudget(scope),
+  fixed?: { callId: string; digest: string }) {
   if (budget.status.exhausted) return { ...budget, callId: null };
-  const callId = randomUUID();
+  const callId = fixed?.callId ?? randomUUID();
   try {
-    appendLedger(scope.ledgerTarget, { type: "call", at: at.toISOString(), target: scope.name, kind: scope.kind, call_id: callId });
+    appendLedger(scope.ledgerTarget, { type: "call", at: at.toISOString(), target: scope.name, kind: scope.kind, call_id: callId,
+      ...(fixed ? { frozen_digest: fixed.digest } : {}) });
   } catch (error) {
     throw new LedgerError(`검토 호출을 원장에 예약하지 못했다: ${(error as Error).message}`);
   }

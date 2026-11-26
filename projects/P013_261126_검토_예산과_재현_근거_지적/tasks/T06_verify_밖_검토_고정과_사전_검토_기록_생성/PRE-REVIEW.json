@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "5f988e2b7ea62a3c6867ef912d82c5e921c059c7896dd38b1950aa1ef2e62fc7",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "8b6ba0b80bbeed09e83d548e34b72357ab0750dd5669bc8c8d5ba474598943c6",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "직전 계약의 판정 재계산·예산·경계 검사 지적을 보완했다"
+    },
+    {
+      "hash": "e64cc559b3e57198e7c798957d1cd0a562e591e0c6337004a1a684a43a7f8450",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "2단계에서 지적한 복구·상위 경계와 시험을 계약에 명시했다"
+    }
+  ]
+}

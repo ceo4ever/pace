@@ -21,6 +21,12 @@
 
 필수 검증 생략·완화 또는 미확인 증거·잔여 blocking 수용을 제안하면 `review-note --request-waiver skip|weaken --choice <추천> --summary <사유> --file <근거>`로 A-3 요청을 만든다. 근거 JSON의 `choices`는 선택지, `assessments`는 지적별 `finding`·`decision`·`reason`이다. 요청이 열려 있는 단위의 검토는 종료 16으로 차단한다. `review-note --decision --by user --choice <결정> --summary <사유> --file <승인 원문> [--resume|--rounds <회차>]`는 승인 원문과 같은 대상·해시·선택지에 적용한다. 회차를 지정한 경우에만 한정 검토를 열며 승인 자체는 검토 판정을 만들지 않는다. 후속 기록은 단위 공유 원장 `REVIEW-FOLLOWUPS.jsonl`에 남는다.
 
+### 외부 검토의 고정 및 사전 검토 기록
+
+- `pace agent review-hand --target <파일> --author-provider <제공자> --purpose-file <파일>`은 일반 검토 호출을 예약하고 원문·해시·검토 프롬프트를 해당 단위의 `review-records/H-<ID>.json`에 고정한다. 응답의 `hand`, `snapshot`, `hash`를 사용한다. 소진·별도 승인·상위 조치 시 종료 16과 후속 경로를 반환한다. 승인된 복구는 기존 `verify`에서 실행한다.
+- `pace agent review-record --target <파일> --hand <ID> --provider <제공자> --reviewer <도구> --result-file <파일>`은 고정 이후 받은 구조화 원문을 같은 판정기로 계산해 원장에 기록한다. 외부 제공자·검토자 정보는 제출자가 확인한다. 같은 제공자 대체는 `--unavailable-file`의 `ran: false`, 교차 검토의 `provider` 및 `reason`이 필요하다. 기록은 예약한 호출을 사용한다. 대상·필수 기준·직전 검토가 바뀌면 원래 응답을 보존하고 허가를 보류한다.
+- `pace agent review-pre --target <TASK.md> --author-provider <제공자>`는 원문과 원장을 대조해 `PRE-REVIEW.json`을 생성한다. 외부 검토에는 제출 출처를 표시한다. `pre_review_ok`는 사전 검토 기록의 판정이며, 실제 Git 후보의 허가 범위는 프로젝트 게이트에서 확인한다. 조건에 맞지 않는 기존 사용자 예외는 `inactive_waiver`에 보존한다.
+
 ## PACE 도구 서버
 
 - 경로: `src/mcp/`

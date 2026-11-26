@@ -1,0 +1,192 @@
+✖ T06 혼합 예산: verify 1회와 고정 3회, 판정 2회, 소진 뒤 고정·원장 변경 없음 (2087.358709ms)
+✖ T06 고정: 미예약·다른 단계·변조 입력과 링크를 거부하고 변경 전 원문을 보존한다 (602.88075ms)
+✖ T06 외부 판정은 말미 대신 구조화 blocking·필수 증거 및 구현 지적을 계산한다 (304.430333ms)
+✖ T06 PRE 생성: 실패 뒤 대체 검토의 연속성·허가, 수기 결과, 무효·중단, 쓰기 경계 (391.890583ms)
+✖ T06 PRE 생성: 유효한 사용자 예외만 그대로 보존한다 (406.378458ms)
+✖ T06 PRE 생성: 옛 원장의 검토에서 수기 기록과 같은 판정을 낸다 (435.754958ms)
+✖ T06 공동 복구 허가는 기존 verify에만 적용하고 외부 일반 고정은 거부한다 (784.312833ms)
+✖ T06 기존 고정 뒤 상위 조치가 열리면 일반 고정과 판정 제출을 함께 멈춘다 (541.648708ms)
+✖ T06 기존 고정 뒤 A-3 회신이 열리면 제출을 멈추고 승인 회차는 기존 verify에서 실행한다 (363.097417ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 0
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6126.914458
+
+✖ failing tests:
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:80:1
+✖ T06 혼합 예산: verify 1회와 고정 3회, 판정 2회, 소진 뒤 고정·원장 변경 없음 (2087.358709ms)
+  AssertionError [ERR_ASSERTION]: pace: pace agent run|setup|verify|review-note …
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:86:12)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:105:1
+✖ T06 고정: 미예약·다른 단계·변조 입력과 링크를 거부하고 변경 전 원문을 보존한다 (602.88075ms)
+  AssertionError [ERR_ASSERTION]: pace: pace agent run|setup|verify|review-note …
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:112:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:144:1
+✖ T06 외부 판정은 말미 대신 구조화 blocking·필수 증거 및 구현 지적을 계산한다 (304.430333ms)
+  AssertionError [ERR_ASSERTION]: pace: pace agent run|setup|verify|review-note …
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:152:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:169:1
+✖ T06 PRE 생성: 실패 뒤 대체 검토의 연속성·허가, 수기 결과, 무효·중단, 쓰기 경계 (391.890583ms)
+  AssertionError [ERR_ASSERTION]: pace: pace agent run|setup|verify|review-note …
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:175:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:228:1
+✖ T06 PRE 생성: 유효한 사용자 예외만 그대로 보존한다 (406.378458ms)
+  AssertionError [ERR_ASSERTION]: pace: pace agent run|setup|verify|review-note …
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:233:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:251:1
+✖ T06 PRE 생성: 옛 원장의 검토에서 수기 기록과 같은 판정을 낸다 (435.754958ms)
+  AssertionError [ERR_ASSERTION]: pace: pace agent run|setup|verify|review-note …
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:275:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:281:1
+✖ T06 공동 복구 허가는 기존 verify에만 적용하고 외부 일반 고정은 거부한다 (784.312833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 16
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:292:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 16,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:300:1
+✖ T06 기존 고정 뒤 상위 조치가 열리면 일반 고정과 판정 제출을 함께 멈춘다 (541.648708ms)
+  AssertionError [ERR_ASSERTION]: pace: pace agent run|setup|verify|review-note …
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:309:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../../../private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:320:1
+✖ T06 기존 고정 뒤 A-3 회신이 열리면 제출을 멈추고 승인 회차는 기존 verify에서 실행한다 (363.097417ms)
+  AssertionError [ERR_ASSERTION]: pace: pace agent run|setup|verify|review-note …
+  
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///private/tmp/pace-p013-t06.5cddwa/baseline/test/agent-review-hand.test.ts:326:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

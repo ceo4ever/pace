@@ -104,6 +104,15 @@ export function workingReview(dir: string): ReviewCandidate {
   };
 }
 
+/** The post-review prompt presents only edits validated against the recorded pre-review. */
+export function approvedTaskEdit(dir: string): ApprovedTaskEdit | undefined {
+  const source = workingReview(dir);
+  const task = source.readText('TASK.md');
+  if (task === null) return undefined;
+  const gate: PermissionCheck = {};
+  return reviewIssues(dir, task, source, gate).length === 0 ? gate.edit : undefined;
+}
+
 function archivedPermissionMarker(candidate: ReviewCandidate, path: string): boolean {
   const raw = candidate.readText(path);
   if (raw === null) return false;

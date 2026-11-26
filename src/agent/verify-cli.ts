@@ -2,10 +2,10 @@ import { randomUUID } from "node:crypto";
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, renameSync, rmdirSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
-import { proofScopeIssues, reviewHash, reviewIssues, workingReview, type PermissionCheck } from "../project/pre-review.ts";
+import { approvedTaskEdit, proofScopeIssues, reviewHash } from "../project/pre-review.ts";
 import { AgentError, errorCodes, errorPayload, type Executor } from "./contract.ts";
 import {
-  acquireLock, appendLedger, escalationNext, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, RECOVERY_LOCK_FILE, reviewStage,
+  acquireLock, appendLedger, escalationNext, fixedReviewPath, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, RECOVERY_LOCK_FILE, reviewStage,
   lineDiff, reviewUsage, targetName, textHash, validCrossUnavailable, validDiagnosisLink, validFollowup, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
 } from "./review-log.ts";
 import { recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
@@ -56,7 +56,7 @@ function checkOut(out: string, target: string, ledgers: readonly string[], scope
 }
 
 /** 같은 폴더 임시 파일에 쓴 뒤 rename으로 이름을 바꿔 끼운다 — 기존 파일(링크·하드링크로 이어진 다른 파일 포함)의 내용을 고치지 않는다 */
-function writeOrLedgerError(file: string, text: string, what: string): void {
+export function writeOrLedgerError(file: string, text: string, what: string): void {
   const tmp = join(dirname(file), `.${basename(file)}.${process.pid}.${Date.now()}.tmp`);
   try {
     mkdirSync(dirname(file), { recursive: true });
@@ -85,9 +85,9 @@ function exhaustedFollowup(scope: ReviewBudgetScope, state: ReturnType<typeof re
   return { ...followup, report };
 }
 
-function evidenceRereviewBase(ledgerTarget: string, name: string, criteria: readonly string[], entries: readonly LedgerEntry[]): ReviewEntry | undefined {
+export function evidenceRereviewBase(ledgerTarget: string, name: string, criteria: readonly string[], entries: readonly LedgerEntry[]): ReviewEntry | undefined {
   const row = entries.findLast((entry): entry is ReviewEntry => entry.type === "review" && entry.target === name &&
-    entry.verdict === "unknown" && !!entry.required_criteria?.length && entry.structured_stage !== undefined);
+    entry.verdict === "unknown" && !entry.stale && !!entry.required_criteria?.length && entry.structured_stage !== undefined);
   if (!row?.structured_stage || !matchingCriteria(criteria, row.required_criteria)) return undefined;
   try {
     const record = JSON.parse(readFileSync(join(dirname(ledgerTarget), row.record), "utf8"));
@@ -104,7 +104,7 @@ function evidenceRereviewBase(ledgerTarget: string, name: string, criteria: read
 }
 
 /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
-function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, kind: VerifyKind, scope?: ReviewBudgetScope): Rereview | undefined {
+export function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, kind: VerifyKind, scope?: ReviewBudgetScope): Rereview | undefined {
   const sameTarget = join(dirname(ledgerTarget), base.target) === target;
   if (sameTarget && currentHash === base.hash && base.verdict === "fail") throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
   const file = join(dirname(ledgerTarget), base.record);
@@ -162,7 +162,7 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
   const ledger = readLedger(target);
   for (const rel of orphanRecords(target, ledger)) {
     const file = join(dirname(target), rel);
-    let rec: { pending?: unknown; verifier?: unknown; cross?: unknown; cross_unavailable?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown; followup?: unknown; confirmation_issue?: unknown; structured_stage?: unknown; after_diagnosis?: unknown; required_criteria?: unknown; permission_basis?: unknown; permission?: unknown } };
+    let rec: { pending?: unknown; verifier?: unknown; cross?: unknown; cross_unavailable?: unknown; source?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown; followup?: unknown; confirmation_issue?: unknown; structured_stage?: unknown; after_diagnosis?: unknown; required_criteria?: unknown; permission_basis?: unknown; permission?: unknown; stale?: unknown } };
     try { rec = JSON.parse(readFileSync(file, "utf8")); } catch { throw new LedgerError(`원장에 없는 검토 기록을 읽을 수 없다: ${file} — 확인해 고치거나 지운 뒤 다시 실행한다`); }
     // 기록은 그 기록의 대상에 귀속한다 — 같은 폴더의 다른 대상(예: TASK.md와 구현 diff) 기록을 지금 대상의 fail로 가져가지 않는다
     const owner = typeof rec.review?.target === "string" && rec.review.target !== "" ? rec.review.target : name;
@@ -184,7 +184,11 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
       recordedStage(scope, target, { target: owner }) === structuredStage && typeof text === "string"
       ? assessStructuredReview(structuredStage, text, evidenceFormat?.required_criteria,
         evidenceFormat?.permission_basis && typeof rec.review?.snapshot === "string" ? rec.review.snapshot.split("\n").length : undefined) : null;
-    const permission = assessment?.verdict === "pass" && assessment.permission && evidenceFormat?.permission_basis
+    const external = rec.source === "external" || rec.review?.stale === true ||
+      ledger.some((row) => row.type === "call" && row.call_id === rec.review?.call_id && row.frozen_digest);
+    const rebind = !external || fixedRecordMatches(target, ledger, owner, rec.review);
+    const stale = external && rebind && rec.review?.stale === true;
+    const permission = !stale && assessment?.verdict === "pass" && assessment.permission && evidenceFormat?.permission_basis
       ? { ...assessment.permission, ...evidenceFormat.permission_basis } : undefined;
     const storedPermission = parseGrantedPermission(rec.review?.permission);
     const computed = (permission ? !!storedPermission && samePermission(permission, storedPermission) : rec.review?.permission === undefined)
@@ -197,11 +201,11 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
     };
     let entry: ReviewEntry;
     // 기록 안의 판정을 그대로 믿지 않는다 — 원문의 판정·스냅숏 해시와 맞을 때만 그 판정으로, 아니면 fail(중단)으로 복구한다(위조·손상 기록으로 차단을 풀지 못하게)
-    const consistent = rec.pending !== true && typeof text === "string" && typeof rec.review?.snapshot === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")
+    const consistent = rebind && rec.pending !== true && typeof text === "string" && typeof rec.review?.snapshot === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")
       && (!structured
         ? (parseVerdict(text) === verdict || (verdict === "unknown" && recordedCall.followup?.type === "confirmation" &&
           (rec.review.confirmation_issue === "target_changed" || rec.review.confirmation_issue === "blocking_with_pass")))
-        : computed === verdict)
+        : computed === verdict || (stale && verdict === "unknown" && computed !== null && computed !== undefined))
       && hash !== "" && reviewHash(rec.review.snapshot) === hash;
     if (consistent && typeof text === "string" && (verdict === "pass" || verdict === "fail" || verdict === "unknown")) {
       const duration = rec.result?.duration_ms;
@@ -215,6 +219,7 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
         ...(evidenceFormat ? { required_criteria: evidenceFormat.required_criteria } : {}),
         ...(evidenceFormat?.permission_basis ? { permission_basis: evidenceFormat.permission_basis } : {}),
         ...(permission ? { permission } : {}),
+        ...(stale ? { stale: true } : {}),
       };
       notes.push(`${rel}(${owner}): 기록의 판정(${verdict})으로 원장에 복구했다`);
     } else {
@@ -224,6 +229,38 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
     try { appendLedger(target, entry); } catch (error) { throw new LedgerError(`원장 복구에 실패했다: ${(error as Error).message}`); }
   }
   return notes;
+}
+
+function fixedRecordMatches(target: string, ledger: LedgerEntry[], owner: string, review?: {
+  call_id?: unknown; hash?: unknown; snapshot?: unknown; kind?: unknown; structured_stage?: unknown; rereview_of?: unknown;
+  required_criteria?: unknown; permission_basis?: unknown; after_diagnosis?: unknown;
+}) {
+  if (!review || typeof review.call_id !== "string") return false;
+  const id = review.call_id;
+  const call = ledger.find((row) => row.type === "call" && row.call_id === id && row.target === owner);
+  if (call?.type !== "call" || !call.frozen_digest) return false;
+  try {
+    const path = fixedReviewPath(target, id);
+    if (!lstatSync(dirname(path)).isDirectory() || !lstatSync(path).isFile()) return false;
+    const stored = readFileSync(path, "utf8");
+    if (textHash(stored) !== call.frozen_digest) return false;
+    const fixed = JSON.parse(stored);
+    return fixed.version === 1 && fixed.target === owner && fixed.hash === review.hash && fixed.snapshot === review.snapshot &&
+      fixed.kind === review.kind && fixed.stage === review.structured_stage && fixed.rereview_of === review.rereview_of &&
+      matchingCriteria(fixed.required_criteria, review.required_criteria) &&
+      matchesPermissionBasis(fixed.permission_basis, review.permission_basis) &&
+      JSON.stringify(fixed.after_diagnosis) === JSON.stringify(review.after_diagnosis);
+  } catch {
+    return false;
+  }
+}
+
+export function recoverBudgetOrphans(scope: ReviewBudgetScope, now: () => Date): string[] {
+  return scope.ledgerTargets.flatMap((ledger) => {
+    const taskRoot = scope.unit === "task" && ledger === scope.lockTarget;
+    return recoverOrphans(ledger, ledger === scope.ledgerTarget ? scope.name : "unknown",
+      (owner) => taskRoot && owner.toLowerCase() === "task.md" ? "task" : "goal", now, scope);
+  });
 }
 
 export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promise<number> {
@@ -263,13 +300,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
       catch (error) { throw new AgentError("invalid_request", (error as Error).message); }
       if (permission_base && !isReviewText(artifact)) throw new AgentError("invalid_request", "검토 대상이 UTF-8 텍스트로 확인되지 않는다");
     }
-    const recovered = ledgerTargets.flatMap((ledger) => {
-      const rootTaskLedger = scope?.unit === "task" && ledger === scope.lockTarget;
-      const legacyKindFor = (owner: string) => scope
-        ? (rootTaskLedger && owner.toLowerCase() === "task.md" ? "task" : "goal")
-        : kind;
-      return recoverOrphans(ledger, ledger === ledgerTarget ? name : "unknown", legacyKindFor, now, scope);
-    });
+    const recovered = scope ? recoverBudgetOrphans(scope, now) : recoverOrphans(ledgerTarget, name, () => kind, now);
     const entries = readLedger(ledgerTarget);
     const state = scope && readReviewState(scope, hash);
     const grant = state?.grant;
@@ -329,15 +360,10 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     const timeout = values["timeout-ms"];
     let outcome: Awaited<ReturnType<typeof crossVerify>>;
     try {
-      const taskEdit: PermissionCheck = {};
-      if (scope?.stage === "post") {
-        const source = workingReview(scope.root);
-        const task = source.readText("TASK.md");
-        if (task !== null) reviewIssues(scope.root, task, source, taskEdit);
-      }
+      const taskEdit = scope?.stage === "post" ? approvedTaskEdit(scope.root) : undefined;
       outcome = await crossVerify({
         kind, rereview, reviewStage: scope?.stage, focus, criteria, requirePermission: !!permission_base,
-        approvedTaskEdit: taskEdit.edit ? JSON.stringify(taskEdit.edit, null, 2) : undefined,
+        approvedTaskEdit: taskEdit ? JSON.stringify(taskEdit, null, 2) : undefined,
         authorAgent: author, authorProvider: values["author-provider"] as "anthropic" | "openai" | undefined,
         purpose, artifact, artifactName: target,
         cwd: values.cwd ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout),
