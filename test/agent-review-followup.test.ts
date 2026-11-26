@@ -12,6 +12,7 @@ function fixture(unit = "task", artifact?: string) {
   const root = join(tempDir("pace-followup-"), unit === "task"
     ? "projects/P013_review/tasks/T02_followup" : "backlogs/BL261126_01_review");
   mkdirSync(join(root, "evidence"), { recursive: true });
+  if (unit === "task") writeFileSync(join(root, "TASK.md"), "합성 검토 조건과 관측 기준\n");
   const target = join(root, artifact ?? (unit === "task" ? "change.patch" : "BACKLOG.md"));
   const proof = join(root, "evidence/finding.md");
   const waiver = join(root, "evidence/waiver.json");
@@ -28,7 +29,7 @@ function fixture(unit = "task", artifact?: string) {
       async run(request) {
         prompts.push(request.prompt);
         await wait?.();
-        const text = reply.includes("```pace-review") ? reply : scopedReviewFixture(request.prompt, reply);
+        const text = scopedReviewFixture(request.prompt, reply);
         return normalizeResult(request, { text, provider: "openai" }, { durationMs: 1, enforcement: "fake" });
       },
     };

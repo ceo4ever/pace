@@ -3,6 +3,7 @@ import { appendFileSync, closeSync, existsSync, openSync, readFileSync, readdirS
 import { basename, dirname, join } from "node:path";
 import type { AgentResult } from "./contract.ts";
 import type { BudgetStage } from "./review-budget.ts";
+import { validCriterionIds } from "./review-criteria.ts";
 
 // 검토 원장 (P007 T01): 같은 대상의 독립 검토가 거듭 fail할 때 땜질 반복을 끊는다.
 //  - verify가 실행될 때마다 대상 폴더의 REVIEW-LOG.jsonl에 판정을 자동으로 남긴다(작성자 수작업 없음).
@@ -43,6 +44,7 @@ export interface ReviewEntry {
   cross_unavailable?: string[];
   cross?: boolean;
   structured_stage?: BudgetStage;
+  required_criteria?: string[];
   after_diagnosis?: { id: string; contract: string };
   /** 중단 복구. 옛 fail 표기는 기존 진단에서만 세고 예산 판정·재검토 기준점에서 제외한다. */
   interrupted?: true;
@@ -53,6 +55,14 @@ export interface ReviewCallEntry {
   target: string;
   kind: string;
   call_id: string;
+}
+export interface ReviewFormatEntry {
+  type: "format";
+  at: string;
+  target: string;
+  record: string;
+  hash: string;
+  required_criteria: string[];
 }
 export interface DiagnosisEntry {
   type: "diagnosis";
@@ -69,7 +79,7 @@ export type DecisionBy = 'pm' | 'user';
 export interface DecisionEntry { type: "decision"; at: string; target: string; choice: string; summary: string; file: string; /** 옛 항목의 생략은 unknown이며 user로 추정하지 않는다. */ by?: DecisionBy }
 /** 검토 도구 결함(프롬프트·옵션·열람 불가 등)으로 무효인 검토 — 횟수·기준점에서 뺀다. 대상은 그대로여도 다시 검토할 수 있게 한다 */
 export interface VoidEntry { type: "void"; at: string; target: string; record: string; summary: string; file: string }
-export type LedgerEntry = ReviewEntry | ReviewCallEntry | DiagnosisEntry | DecisionEntry | VoidEntry;
+export type LedgerEntry = ReviewEntry | ReviewCallEntry | ReviewFormatEntry | DiagnosisEntry | DecisionEntry | VoidEntry;
 
 export type Stage = "normal" | "diagnose" | "ask_user";
 export interface StageInfo {
@@ -103,6 +113,8 @@ export function validCrossUnavailable(value: unknown): value is string[] {
 function validEntry(v: Record<string, unknown>): boolean {
   if (!isStr(v.target) || !isStr(v.at)) return false;
   if (v.type === "call") return isStr(v.kind) && isStr(v.call_id) && v.call_id !== "";
+  if (v.type === "format") return isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) &&
+    isStr(v.hash) && HEX64.test(v.hash) && validCriterionIds(v.required_criteria);
   if (v.type === "review") return isStr(v.kind) && isStr(v.hash) && ["pass", "fail", "unknown"].includes(v.verdict as string) && isStr(v.verifier) && (v.provider === null || isStr(v.provider)) && (v.rereview_of === null || isStr(v.rereview_of)) && isStr(v.record) && /^review-records\/R\d+\.json$/.test(v.record) && isStr(v.result_hash) && HEX64.test(v.result_hash) && (v.interrupted === undefined || (v.interrupted === true && v.verdict === "fail"))
     && (v.call_id === undefined || (isStr(v.call_id) && v.call_id !== ""))
     && (v.duration_ms === undefined || isMeasure(v.duration_ms))
@@ -110,6 +122,7 @@ function validEntry(v: Record<string, unknown>): boolean {
     && (v.followup === undefined || validFollowup(v.followup))
     && (v.cross === undefined || typeof v.cross === "boolean")
     && (v.structured_stage === undefined || v.structured_stage === "pre" || v.structured_stage === "post" || v.structured_stage === "backlog")
+    && (v.required_criteria === undefined || (v.structured_stage !== undefined && validCriterionIds(v.required_criteria)))
     && (v.after_diagnosis === undefined || validDiagnosisLink(v.after_diagnosis))
     && (v.cross_unavailable === undefined || validCrossUnavailable(v.cross_unavailable));
   if (v.type === "diagnosis") {

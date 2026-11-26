@@ -2,6 +2,7 @@ import { AgentError, providerFromModel, providerOf, runAgent, type AgentName, ty
 import { taskFormat } from "../project/pre-review.ts";
 import type { BudgetStage } from "./review-budget.ts";
 import { reviewQuestionPrompt } from "./structured-review.ts";
+import type { ReviewCriterion } from "./review-criteria.ts";
 
 // 교차 검증: 작성자와 다른 제공자의 에이전트가 산출물을 읽기 전용 -p로 독립 검토한다.
 // 다른 제공자 미실행 시 B1에 따라 같은 제공자 새 세션으로 대체하고 사유와 cross: false를 기록한다.
@@ -26,6 +27,7 @@ export interface VerifyOptions {
   kind?: VerifyKind;
   reviewStage?: BudgetStage;
   focus?: string;
+  criteria?: readonly ReviewCriterion[];
   /** 재검토(P007): 원장이 고른 기준점 검토의 원문과 그때→지금 대상의 바뀐 줄 */
   rereview?: Rereview;
   executors: Executor[];
@@ -44,7 +46,7 @@ export interface Rereview {
 
 /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
 export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview,
-  reviewStage?: BudgetStage, focus?: string): string {
+  reviewStage?: BudgetStage, focus?: string, criteria?: readonly ReviewCriterion[]): string {
   // 구현 전 TASK 사전 검토에서는 TASK.md(기준·테스트 표·접근)가 평가할 결과물이다 — 이것을 "작업 문서 노출"로 막으면
   // 검토자가 매번 자기 열람을 독립성 위반으로 지적해 pass가 나올 수 없다(P001 T02 실측, 2026-11-16).
   // 재검토(reviewer.md: 두 번째 검토부터는 직전 blocking 해소와 그 수정이 만든 새 결함만)는 1단계가 아니다 — 직전 검토 원문을 받는 것이 정해진 입력이다
@@ -78,7 +80,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
     purpose.trim(),
     "",
     "## 묻는 것",
-    ...(reviewStage ? reviewQuestionPrompt(reviewStage) : [
+    ...(reviewStage ? reviewQuestionPrompt(reviewStage, criteria) : [
       "1. 목표가 상위 목적과 맞는가? 결과가 그 목표를 실제 이루는가? 2. 전략에 다른 길이 있었는가? 3. 빠진 것은? 4. 산출물 안에 드러난 결정이 목표까지 추적되는가?",
       "각 지적에 blocking | should_fix | note 등급을 붙이고, 마지막 줄에 판정 한 단어를 쓴다. 판정은 등급으로 정한다 — blocking이 하나라도 있으면 fail, 없으면 pass(should_fix·note만 있어도 pass). revise 같은 다른 단어는 쓰지 않는다.",
     ]),
@@ -103,7 +105,8 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
   const authorProvider = options.authorProvider ?? providerOf[options.authorAgent];
   const candidates = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] !== authorProvider);
   const sameProvider = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] === authorProvider);
-  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind, options.rereview, options.reviewStage, options.focus);
+  const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind,
+    options.rereview, options.reviewStage, options.focus, options.criteria);
   const reasons: string[] = [];
 
   const attempt = async (executor: Executor, cross: boolean): Promise<VerifyOutcome | null> => {

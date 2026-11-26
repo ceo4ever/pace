@@ -47,6 +47,8 @@ function budgetHarness() {
   const backlog = join(dir, "backlogs/BL261126_01_budget");
   mkdirSync(join(task, "evidence"), { recursive: true });
   mkdirSync(backlog, { recursive: true });
+  writeFileSync(join(task, "TASK.md"), "합성 검토 조건과 관측 기준\n");
+  writeFileSync(join(backlog, "BACKLOG.md"), "합성 백로그의 수용 기준\n");
   const prompts: string[] = [];
   const review = async (target: string, reply: string, kind = "goal", provider = "openai", wait?: () => Promise<void>) => {
     const executor: Executor = {
@@ -262,7 +264,7 @@ test("P013 T01: 사전 검토의 구조 누락이 첫 전체 판정을 소비하
   assert.equal(structural.code, 2);
   assert.match(structural.json.error.message, /증명 범위/);
   assert.equal(h.prompts.length, 0);
-  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n");
+  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n## 기준\n| T-1 | 안전 출력 확인 |\n");
   const first = await h.review(plan, "pass");
   assert.equal(first.code, 0);
   assert.equal(first.json.review.rereview_of, null);
@@ -283,7 +285,7 @@ test("P013 T01: 옛 구조 전용 판정은 근거가 확인되면 호출로만 
   mkdirSync(join(h.task, "review-records"));
   writeFileSync(join(h.task, record), JSON.stringify({ review: { snapshot }, result: { text } }));
   writeFileSync(join(h.task, "REVIEW-LOG.jsonl"), JSON.stringify(entry) + "\n");
-  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n");
+  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n## 기준\n| T-1 | 안전 출력 확인 |\n");
   const full = await h.review(plan, "F1 [blocking] 안전 누락\nfail", "task");
   assert.equal(full.code, 0);
   assert.equal(full.json.review.rereview_of, null);

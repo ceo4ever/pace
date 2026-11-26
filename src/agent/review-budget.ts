@@ -3,6 +3,7 @@ import { lstatSync, readFileSync } from "node:fs";
 import { basename, dirname, join, relative, sep } from "node:path";
 import { proofScopeIssues, reviewHash } from "../project/pre-review.ts";
 import { appendLedger, LedgerError, readLedger, textHash, type ReviewCallEntry, type ReviewEntry } from "./review-log.ts";
+import { matchingCriteria } from "./review-criteria.ts";
 
 const ROUND_LIMIT = 2;
 // 독립 판정 2회와 중단·무효 등 판정이 없는 시도 2회를 허용한다.
@@ -103,16 +104,27 @@ export function readReviewBudget(scope: ReviewBudgetScope, offsets: Readonly<Rec
   const rounds: BudgetReview[] = [];
   const ledgers = scope.ledgerTargets.map((target) => ({ target, entries: readLedger(target) }));
   let latestDefinitive: BudgetReview | undefined;
+  let currentEntries: ReturnType<typeof readLedger> = [];
   for (const { target: ledgerTarget, entries } of ledgers) {
     const voided = new Map(entries.flatMap((entry) => entry.type === "void" ? [[entry.record, entry.target]] : []));
     const followupCalls = new Set(entries.flatMap((entry) =>
       entry.type === "review" && entry.followup && entry.call_id ? [entry.call_id] : []));
+    const formats = new Map(entries.flatMap((entry) => entry.type === "format" ? [[entry.record, entry]] : []));
     const key = relative(scope.root, ledgerTarget).split(sep).join("/");
     const offset = Object.hasOwn(offsets, key) ? offsets[key] ?? 0 : 0;
     if (offset > entries.length) throw new LedgerError("계약 변경의 원장 기준점을 확인할 수 없다");
-    for (const entry of entries.slice(offset)) {
+    const window = entries.slice(offset);
+    if (ledgerTarget === scope.ledgerTarget) currentEntries = window;
+    for (const entry of window) {
       if ((entry.type !== "call" && entry.type !== "review") ||
           recordedStage(scope, ledgerTarget, entry) !== scope.stage) continue;
+      if (entry.type === "review" && !entry.interrupted) {
+        const format = formats.get(entry.record);
+        if ((format || entry.required_criteria !== undefined) && (!format || format.target !== entry.target ||
+            format.hash !== entry.hash || !matchingCriteria(format.required_criteria, entry.required_criteria))) {
+          throw new LedgerError(`필수 기준 기록과 검토 원장이 맞지 않는다: ${entry.record}`);
+        }
+      }
       const separate = entry.type === "review" ? !!entry.followup : followupCalls.has(entry.call_id);
       if (entry.type === "review" && entry.interrupted !== true && entry.verdict !== "unknown" &&
           voided.get(entry.record) !== entry.target && !legacyStructureOnly(ledgerTarget, entry)) {
@@ -133,6 +145,7 @@ export function readReviewBudget(scope: ReviewBudgetScope, offsets: Readonly<Rec
     status: { unit: scope.unit, root: scope.root, stage: scope.stage, rounds: rounds.length, calls, round_limit: ROUND_LIMIT, call_limit: CALL_LIMIT, exhausted },
     latest: rounds.sort((a, b) => a.entry.at.localeCompare(b.entry.at)).at(-1),
     latestDefinitive,
+    currentEntries,
     ledgers,
   };
 }

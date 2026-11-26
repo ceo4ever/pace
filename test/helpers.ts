@@ -163,6 +163,7 @@ export function sessionFreeEnv(): NodeJS.ProcessEnv {
 
 /** Adapts the older verify fixtures to the structured prompt when they exercise a managed stage. */
 export function scopedReviewFixture(prompt: string, text: string): string {
+  if (text.includes("```pace-review")) return evidenceReviewFixture(prompt, text);
   const category = /```pace-review\n[^\n]*"category":"([^"]+)"/.exec(prompt)?.[1];
   const verdict = /\b(pass|fail)$/.exec(text.trim())?.[1];
   if (!category || !verdict) return text;
@@ -171,5 +172,18 @@ export function scopedReviewFixture(prompt: string, text: string): string {
     id: "F1", severity: "blocking", category, location: "fixture.ts:1",
     scenario, reproduction: "고정 입력으로 기존 동작을 실행한다", confidence: "high",
   }] : [];
-  return [text, "```pace-review", JSON.stringify({ version: 1, findings }), "```", verdict].join("\n");
+  return evidenceReviewFixture(prompt, [text, "```pace-review", JSON.stringify({ version: 1, findings }), "```", verdict].join("\n"));
+}
+
+/** 기존 회귀 fixture에는 합성 관측을 연결하되, 구조가 깨진 응답은 원래대로 검사한다. */
+export function evidenceReviewFixture(prompt: string, text: string): string {
+  if (!/```pace-review\n\{"version":2,/.test(prompt)) return text;
+  const criteria = [...prompt.matchAll(/^\- \[필수 기준 ([A-Z0-9-]+)\]/gm)].map((match) =>
+    ({ id: match[1], state: "present", observation: "시험의 고정 입력에서 결과를 확인했다" }));
+  return text.replace(/^(```pace-review[ \t]*\r?\n)([^\r\n]+)(\r?\n```)/m, (block, start: string, json: string, end: string) => {
+    if (!/"version"\s*:\s*1\b/.test(json)) return block;
+    const updated = json.replace(/"version"\s*:\s*1\b/, `"version":2,"criteria":${JSON.stringify(criteria)}`)
+      .replace(/"severity"\s*:/g, '"impact":"goal","severity":');
+    return start + updated + end;
+  });
 }

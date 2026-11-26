@@ -7,7 +7,7 @@ import { AgentError } from "./contract.ts";
 import { decideReviewAdmission } from "./review-admission.ts";
 import { readReviewBudget, recordedStage, type BudgetStage, type ReviewBudgetScope } from "./review-budget.ts";
 import { LedgerError, ledgerPath, textHash, type DiagnosisEntry, type ReviewEntry } from "./review-log.ts";
-import { assessStructuredReview, effectiveBlocking } from "./structured-review.ts";
+import { assessStructuredReview, effectiveBlocking, evidenceGaps } from "./structured-review.ts";
 import { endpointChoices, readRecovery, sameFinding, type EndpointChoice, type FindingKey, type FocusedCheck, type RecoveryEvent, type RootCheck } from "./review-recovery.ts";
 
 export const FOLLOWUPS_FILE = "REVIEW-FOLLOWUPS.jsonl";
@@ -210,6 +210,10 @@ export function openFollowup(scope: ReviewBudgetScope, target: string, hash: str
       if (latest?.blocking?.some((finding) => !data.assessments.some((assessment) => assessment.finding === finding))) {
         reject("최신 지적 중 빠진 A 판정이 있다");
       }
+      const gaps = latestEvidenceGaps(scope, state);
+      if (gaps.some((finding) => !data.assessments.some((assessment) => assessment.finding === finding))) {
+        reject("최신 기준별 증거 공백 중 빠진 A 판정이 있다");
+      }
       entry = { ...facts, type: "waiver_request", choice, proposed: selection.proposed, choices: data.choices, assessments: data.assessments };
       break;
     }
@@ -237,6 +241,15 @@ function recordText(ledger: string, row: ReviewEntry): string | null {
   } catch {
     return null;
   }
+}
+
+function latestEvidenceGaps(scope: ReviewBudgetScope, state: ReviewState): string[] {
+  const entries = state.budget.ledgers.find(({ target }) => target === scope.ledgerTarget)?.entries;
+  const latest = entries?.findLast((row): row is ReviewEntry => row.type === "review" && row.target === scope.name &&
+    !row.interrupted && !entries.some((entry) => entry.type === "void" && entry.target === row.target && entry.record === row.record));
+  if (!latest?.structured_stage || latest.required_criteria === undefined) return [];
+  const text = recordText(scope.ledgerTarget, latest);
+  return text === null ? [] : evidenceGaps(assessStructuredReview(latest.structured_stage, text, latest.required_criteria));
 }
 
 function proofObject(text: string): Record<string, unknown> {
@@ -313,7 +326,7 @@ function confirmationSource(scope: ReviewBudgetScope, state: ReviewState) {
   const source = relativeName(scope, join(dirname(base.ledgerTarget), base.entry.record));
   const resolved = state.recovery.completed.filter((attempt) => attempt.grant.source === source && attempt.result.verdict === "pass");
   const text = recordText(base.ledgerTarget, base.entry);
-  const known = text === null ? [] : assessStructuredReview(scope.stage, text).findings?.flatMap((finding) =>
+  const known = text === null ? [] : assessStructuredReview(scope.stage, text, base.entry.required_criteria).findings?.flatMap((finding) =>
     finding.effective === "blocking" && finding.location ? [{ id: finding.id, location: finding.location }] : []) ?? [];
   if (!known.length) return undefined;
   const findings = known.filter((finding) => !resolved.some(({ grant }) => grant.diagnosed || sameFinding(grant.finding, finding)));
@@ -500,7 +513,7 @@ function rawBlocking(ledger: string, row: ReviewEntry): string[] | null {
   if (row.verdict !== "fail" || row.interrupted) return null;
   const text = recordText(ledger, row);
   if (text === null) return null;
-  if (row.structured_stage) return effectiveBlocking(assessStructuredReview(row.structured_stage, text));
+  if (row.structured_stage) return effectiveBlocking(assessStructuredReview(row.structured_stage, text, row.required_criteria));
   const findings = text.split("\n").filter((line) => /\[blocking\]/i.test(line)).map((line) => line.trim());
   return findings.length ? findings : null;
 }
@@ -534,7 +547,7 @@ function endpointReport(scope: ReviewBudgetScope, state: ReviewState,
   const ledger = state.budget.ledgers.find(({ entries }) => entries.includes(upper.failed))?.target;
   const text = ledger ? recordText(ledger, upper.failed) : null;
   const assessment = text !== null && upper.failed.structured_stage
-    ? assessStructuredReview(upper.failed.structured_stage, text) : undefined;
+    ? assessStructuredReview(upper.failed.structured_stage, text, upper.failed.required_criteria) : undefined;
   const recommendation = last?.grant.recommendation ?? {
     choice: "보류" as const,
     reason: "두 차례의 상위 해결안 확인 뒤에도 유효 판정이 실패했다. 실패를 재현하고 현재 기준을 유지할 수 있는지 결정할 때까지 단위를 보류한다.",
@@ -568,8 +581,8 @@ function endpointReport(scope: ReviewBudgetScope, state: ReviewState,
     remaining_failure: {
       verdict: upper.failed.verdict,
       record: ledger ? relativeName(scope, join(dirname(ledger), upper.failed.record)) : null,
-      findings: assessment?.findings?.flatMap(({ id, location, scenario, reproduction, confidence, effective }) =>
-        effective === "blocking" ? [{ id, location, scenario, reproduction, confidence }] : []) ?? null,
+      findings: assessment?.findings?.flatMap(({ id, location, scenario, reproduction, confidence, effective, safety_path }) =>
+        effective === "blocking" ? [{ id, location, scenario, reproduction, confidence, ...(safety_path ? { safety_path } : {}) }] : []) ?? null,
     },
     choices: endpointChoices,
     recommendation: { ...recommendation, source: last?.grant.recommendation ? "hub" : "default" },
@@ -589,6 +602,7 @@ export function followupReport(scope: ReviewBudgetScope, state: ReviewState) {
   const rounds = state.budget.status.rounds;
   const upper = state.recovery.upper;
   const endpoint = upper?.action === "agreement_required" ? endpointReport(scope, state, upper) : undefined;
+  const gaps = latestEvidenceGaps(scope, state);
   const source = canConfirm(state) && confirmationSource(scope, state);
   const diagnosisRequired = source && source.findings.length && !source.diagnosis && (state.recovery.ordinary.length >= 2 ||
     source.findings.every((finding) => state.recovery.ordinary.some(({ grant }) => sameFinding(finding, grant.finding))));
@@ -601,6 +615,7 @@ export function followupReport(scope: ReviewBudgetScope, state: ReviewState) {
     recommendation: request?.choice ?? endpoint?.recommendation.choice ?? null,
     choices: request?.choices ?? endpoint?.choices ?? [],
     ...(endpoint ? { endpoint } : {}),
+    ...(gaps.length ? { evidence_action: { action: "collect_evidence", gaps, if_proceed_without_evidence: "A-3" } } : {}),
     ...(request ? { request } : {}),
     joint_attempts: state.jointAttempts,
     joint_decisions: state.jointDecisions,

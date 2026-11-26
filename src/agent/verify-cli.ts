@@ -11,7 +11,8 @@ import {
 import { recordedStage, reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope } from "./review-budget.ts";
 import { checkGrant, checkRecoveryProof, confirmationDiagnosis, diagnosisLink, followupReport, FOLLOWUPS_FILE, openFollowup, openRecovery, readReviewState, recordFollowupExecution, recoveryGrant } from "./review-followup.ts";
 import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
-import { assessStructuredReview, effectiveBlocking, hasStructuredReviewFence, isStructuredStage } from "./structured-review.ts";
+import { assessStructuredReview, effectiveBlocking, evidenceGaps, hasStructuredReviewFence, isStructuredStage } from "./structured-review.ts";
+import { matchingCriteria, reviewCriteria } from "./review-criteria.ts";
 
 // `pace agent verify`·`pace agent review-note` 명령 처리 (P007 T01). src/cli.ts는 여기로 위임만 한다 — 시험이 실행기를 주입해 같은 경로를 탄다.
 
@@ -83,13 +84,30 @@ function exhaustedFollowup(scope: ReviewBudgetScope, state: ReturnType<typeof re
   return { ...followup, report };
 }
 
+function evidenceRereviewBase(ledgerTarget: string, name: string, criteria: readonly string[], entries: readonly LedgerEntry[]): ReviewEntry | undefined {
+  const row = entries.findLast((entry): entry is ReviewEntry => entry.type === "review" && entry.target === name &&
+    entry.verdict === "unknown" && !!entry.required_criteria?.length && entry.structured_stage !== undefined);
+  if (!row?.structured_stage || !matchingCriteria(criteria, row.required_criteria)) return undefined;
+  try {
+    const record = JSON.parse(readFileSync(join(dirname(ledgerTarget), row.record), "utf8"));
+    const text = record.result?.text;
+    if (typeof text !== "string" || textHash(text) !== row.result_hash) return undefined;
+    const assessment = assessStructuredReview(row.structured_stage, text, row.required_criteria);
+    if (assessment.findings === null || assessment.evidence?.issues.some((issue) =>
+      issue === "safety_unverified" || issue === "unknown_criterion")) return undefined;
+    return row;
+  } catch {
+    return undefined;
+  }
+}
+
 /** 기준점 검토의 기록이 원장과 맞는지 확인하고 재검토 입력을 만든다 */
 function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, currentHash: string, current: string, kind: VerifyKind, scope?: ReviewBudgetScope): Rereview | undefined {
   const sameTarget = join(dirname(ledgerTarget), base.target) === target;
   if (sameTarget && currentHash === base.hash && base.verdict === "fail") throw new AgentError("invalid_request", `직전 fail 검토(${base.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
   const file = join(dirname(ledgerTarget), base.record);
   if (!existsSync(file)) throw new AgentError("invalid_request", `재검토 기준점의 기록 파일이 없다: ${file}`);
-  let record: { result?: { text?: unknown }; review?: { hash?: unknown; snapshot?: unknown; structured_stage?: unknown } };
+  let record: { result?: { text?: unknown }; review?: { hash?: unknown; snapshot?: unknown; structured_stage?: unknown; required_criteria?: unknown } };
   try { record = JSON.parse(readFileSync(file, "utf8")); } catch { throw new AgentError("invalid_request", `재검토 기준점의 기록 파일을 읽을 수 없다: ${file}`); }
   const snapshot = record.review?.snapshot;
   const text = record.result?.text;
@@ -99,16 +117,27 @@ function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, c
   // 구조 누락 단건 판정은 나머지 평가를 억제했다. 구조를 채운 다음에는 목적·안전까지 처음 평가한다.
   if (!scope && kind === "task" && proofScopeIssues(snapshot).length) return undefined;
   let previousText = text;
-  if (base.structured_stage || record.review?.structured_stage !== undefined ||
+  const stamp = readLedger(ledgerTarget).findLast((row) => row.type === "format" && row.record === base.record);
+  if (stamp || base.required_criteria !== undefined || record.review?.required_criteria !== undefined) {
+    if (stamp?.type !== "format" || stamp.target !== base.target || stamp.hash !== base.hash ||
+        !matchingCriteria(stamp.required_criteria, base.required_criteria) ||
+        !matchingCriteria(stamp.required_criteria, record.review?.required_criteria)) {
+      throw new AgentError("invalid_request", "재검토 기준점의 필수 기준 기록이 원장과 맞지 않는다");
+    }
+  }
+  if (stamp || base.structured_stage || record.review?.structured_stage !== undefined ||
       (scope && (Object.hasOwn(record, "assessment") || hasStructuredReviewFence(text)))) {
     if (!base.structured_stage || base.structured_stage !== record.review?.structured_stage ||
         (scope && base.structured_stage !== recordedStage(scope, ledgerTarget, base))) {
       throw new AgentError("invalid_request", "구조화된 검토 기준점의 단계가 원장과 맞지 않는다");
     }
-    const assessment = assessStructuredReview(base.structured_stage, text);
+    const assessment = assessStructuredReview(base.structured_stage, text, base.required_criteria);
     if (assessment.verdict !== base.verdict) throw new AgentError("invalid_request", "구조화된 검토 기준점의 판정이 원장과 맞지 않는다");
     const blocking = effectiveBlocking(assessment);
     previousText += `\n\n도구 판정에 반영된 기존 blocking\n${blocking.length ? blocking.join("\n") : "없음"}`;
+    if (assessment.evidence) {
+      previousText += `\n\n직전 기준별 증거 상태\n${JSON.stringify(assessment.evidence)}`;
+    }
   }
   return { previousText, diff: lineDiff(snapshot, current), previousPassed: base.verdict === "pass" };
 }
@@ -117,9 +146,10 @@ function loadRereview(ledgerTarget: string, base: ReviewEntry, target: string, c
  * 판정이 있으면 복구하고, pending은 호출만 셀 수 있도록 중단으로 표시한다. */
 function recoverOrphans(target: string, name: string, kindFor: (owner: string) => string, now: () => Date, scope?: ReviewBudgetScope): string[] {
   const notes: string[] = [];
-  for (const rel of orphanRecords(target, readLedger(target))) {
+  const ledger = readLedger(target);
+  for (const rel of orphanRecords(target, ledger)) {
     const file = join(dirname(target), rel);
-    let rec: { pending?: unknown; verifier?: unknown; cross?: unknown; cross_unavailable?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown; followup?: unknown; confirmation_issue?: unknown; structured_stage?: unknown; after_diagnosis?: unknown } };
+    let rec: { pending?: unknown; verifier?: unknown; cross?: unknown; cross_unavailable?: unknown; result?: { text?: unknown; provider?: { value?: unknown }; duration_ms?: unknown; usage?: unknown }; review?: { target?: unknown; hash?: unknown; verdict?: unknown; kind?: unknown; call_id?: unknown; rereview_of?: unknown; snapshot?: unknown; followup?: unknown; confirmation_issue?: unknown; structured_stage?: unknown; after_diagnosis?: unknown; required_criteria?: unknown } };
     try { rec = JSON.parse(readFileSync(file, "utf8")); } catch { throw new LedgerError(`원장에 없는 검토 기록을 읽을 수 없다: ${file} — 확인해 고치거나 지운 뒤 다시 실행한다`); }
     // 기록은 그 기록의 대상에 귀속한다 — 같은 폴더의 다른 대상(예: TASK.md와 구현 diff) 기록을 지금 대상의 fail로 가져가지 않는다
     const owner = typeof rec.review?.target === "string" && rec.review.target !== "" ? rec.review.target : name;
@@ -128,11 +158,17 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
     const verdict = rec.review?.verdict;
     const structuredStage = rec.review?.structured_stage;
     // 두 형식 중 하나로만 검증한다. 단계가 빠진 새 기록을 옛 footer 판정으로 복구하지 않는다.
-    const structured = structuredStage !== undefined ||
+    const stamp = ledger.findLast((row) => row.type === "format" && row.record === rel);
+    const evidenceFormat = stamp?.type === "format" ? stamp : undefined;
+    const criteria = rec.review?.required_criteria;
+    const matchingFormat = evidenceFormat
+      ? evidenceFormat.target === owner && evidenceFormat.hash === hash && matchingCriteria(evidenceFormat.required_criteria, criteria)
+      : criteria === undefined;
+    const structured = !!evidenceFormat || structuredStage !== undefined ||
       (scope && (Object.hasOwn(rec, "assessment") || (typeof text === "string" && hasStructuredReviewFence(text))));
-    const computed = isStructuredStage(structuredStage) && scope &&
+    const computed = matchingFormat && isStructuredStage(structuredStage) && scope &&
       recordedStage(scope, target, { target: owner }) === structuredStage && typeof text === "string"
-      ? assessStructuredReview(structuredStage, text).verdict : null;
+      ? assessStructuredReview(structuredStage, text, evidenceFormat?.required_criteria).verdict : null;
     const entryKind = typeof rec.review?.kind === "string" ? rec.review.kind : kindFor(owner);
     const recordedCall = {
       ...(typeof rec.review?.call_id === "string" ? { call_id: rec.review.call_id } : {}),
@@ -156,6 +192,7 @@ function recoverOrphans(target: string, name: string, kindFor: (owner: string) =
         ...(typeof rec.cross === "boolean" ? { cross: rec.cross } : {}),
         ...(validCrossUnavailable(rec.cross_unavailable) ? { cross_unavailable: rec.cross_unavailable } : {}),
         ...(isStructuredStage(structuredStage) ? { structured_stage: structuredStage } : {}),
+        ...(evidenceFormat ? { required_criteria: evidenceFormat.required_criteria } : {}),
       };
       notes.push(`${rel}(${owner}): 기록의 판정(${verdict})으로 원장에 복구했다`);
     } else {
@@ -196,6 +233,8 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     release = acquireLock(scope?.lockTarget ?? target);
     const artifact = readFileSync(target, "utf8");
     const hash = reviewHash(artifact);
+    const criteria = scope ? reviewCriteria(scope, artifact) : undefined;
+    const criterionIds = criteria?.map(({ id }) => id);
     const recovered = ledgerTargets.flatMap((ledger) => {
       const rootTaskLedger = scope?.unit === "task" && ledger === scope.lockTarget;
       const legacyKindFor = (owner: string) => scope
@@ -230,11 +269,14 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
       deps.write(JSON.stringify({ ran: false, reason: "검토 반복 실패 단계", escalation: escalation(before, target), ...(recovered.length ? { recovered } : {}) }, null, 2) + "\n");
       return ESCALATION_EXIT;
     }
+    const evidenceBase = budget && !budget.latestDefinitive && criterionIds
+      ? evidenceRereviewBase(ledgerTarget, name, criterionIds, budget.currentEntries) : undefined;
     const upper = state?.recovery.upper;
     const base = recovery?.type === "root_check" && upper?.action === "upper_recheck" ? { ledgerTarget, entry: upper.failed }
       : recovery ? state?.budget.latestDefinitive : grant?.type === "owner" || state?.decision.firstReview ? undefined
       : grant?.type === "joint" ? state?.budget.latestDefinitive
-      : budget?.latest ?? (!scope && before.base ? { ledgerTarget, entry: before.base } : undefined);
+      : budget?.latest ?? (evidenceBase ? { ledgerTarget, entry: evidenceBase } :
+        !scope && before.base ? { ledgerTarget, entry: before.base } : undefined);
     const rereview = base && loadRereview(base.ledgerTarget, base.entry, target, hash, artifact, kind, scope);
     if (recovery && !rereview) throw new AgentError("invalid_request", "한정 확인의 실패 기준점 원문을 확인할 수 없다");
     const previousRecord = rereview && base
@@ -260,7 +302,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     let outcome: Awaited<ReturnType<typeof crossVerify>>;
     try {
       outcome = await crossVerify({
-        kind, rereview, reviewStage: scope?.stage, focus,
+        kind, rereview, reviewStage: scope?.stage, focus, criteria,
         authorAgent: author, authorProvider: values["author-provider"] as "anthropic" | "openai" | undefined,
         purpose, artifact, artifactName: target,
         cwd: values.cwd ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout),
@@ -293,13 +335,18 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
       }
     }
     if (scope && grant && !recovery && call.followup) recordFollowupExecution(scope, grant.id, call.followup.id, now());
-    const assessment = scope ? assessStructuredReview(scope.stage, outcome.result.text) : undefined;
+    const assessment = scope ? assessStructuredReview(scope.stage, outcome.result.text, criterionIds) : undefined;
     const verdict = assessment?.verdict ?? parseVerdict(outcome.result.text);
-    const format = scope ? { structured_stage: scope.stage } : {};
+    const format = scope ? { structured_stage: scope.stage, required_criteria: criterionIds } : {};
     // 기록 파일에는 세션 ID를 남기지 않는다
     const result = { ...outcome.result, session_id: null };
     const review = { target: name, hash, kind, verdict, rereview_of: previousRecord, snapshot: artifact, ...call, ...format };
     const record = { ...outcome, result, review, ...(assessment ? { assessment } : {}) };
+    if (criterionIds) {
+      try { appendLedger(ledgerTarget, { type: "format", at: now().toISOString(), target: name, hash,
+        record: recordName, required_criteria: criterionIds }); }
+      catch (error) { throw new LedgerError(`검토 기록의 필수 기준을 원장에 쓰지 못했다: ${(error as Error).message}`); }
+    }
     writeOrLedgerError(recordFile, JSON.stringify(record, null, 2) + "\n", "검토 기록");
 
     const entry: ReviewEntry = {
@@ -313,7 +360,11 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     }
     const after = reviewStage(readLedger(ledgerTarget), name, !scope);
     const output: Record<string, unknown> = { ...outcome, last_decision_by: after.last_decision_by, review: { target: name, hash, verdict, rereview_of: review.rereview_of, record: recordName } };
-    if (assessment) output.assessment = assessment;
+    if (assessment) {
+      output.assessment = assessment;
+      const gaps = evidenceGaps(assessment);
+      if (gaps.length) output.evidence_action = { action: "collect_evidence", gaps, if_proceed_without_evidence: "A-3" };
+    }
     if (recovered.length) output.recovered = recovered;
     if (verdict === "unknown") output.warning = assessment
       ? "구조화된 지적의 판정이 미확인이다. 원문과 형식을 확인한다."

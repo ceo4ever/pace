@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "f6e2ad33835bc4742c77c75feaa7680bf1a104e23d6461fc55f729b11675082f",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "b49eeb6d433e17681177974dd114c32b001d0c443cbb0a8e9d77ee9284d001c6",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "안전 경로 누락·기준 연결·증거 보존 반례를 보완해 같은 대상 재검토"
+    }
+  ]
+}
