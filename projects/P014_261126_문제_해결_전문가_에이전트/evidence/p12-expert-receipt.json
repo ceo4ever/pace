@@ -1,0 +1,70 @@
+{
+  "purpose": "P014 공동 목표 종결의 실제 호출",
+  "caller": "worktree_pm",
+  "opportunity": {
+    "unit": "P014",
+    "stage": "project-close",
+    "round": "p12-1"
+  },
+  "callId": "15c851d6e48bb517805af1c10933576b",
+  "call": {
+    "version": 1,
+    "id": "15c851d6e48bb517805af1c10933576b",
+    "at": "2026-11-26T15:39:24.675Z",
+    "task": null,
+    "agent": "pace-troubleshooter",
+    "engine": "codex",
+    "route": "p",
+    "status": "completed",
+    "reason": null,
+    "replacement_reason": null,
+    "ref": "evidence/p12-expert-receipt.json",
+    "model": {
+      "requested": {
+        "value": "gpt-6.2-astra",
+        "source": "requested"
+      },
+      "actual": {
+        "value": "gpt-6.2-astra",
+        "source": "host"
+      }
+    },
+    "effort": {
+      "requested": {
+        "value": "medium",
+        "source": "requested"
+      },
+      "actual": {
+        "value": "medium",
+        "source": "host"
+      }
+    },
+    "duration_ms": {
+      "value": 69066,
+      "source": "tool"
+    },
+    "tokens": {
+      "input": {
+        "value": null,
+        "source": "unknown"
+      },
+      "output": {
+        "value": null,
+        "source": "unknown"
+      },
+      "total": {
+        "value": 14757,
+        "source": "tool"
+      }
+    }
+  },
+  "return": "evidence/p12-expert-response.md",
+  "input": "evidence/p12-expert-input.md",
+  "returnSha256": "8353a7d64a2b8035ee95a547e7b8be39bf8001d827afb62a719370a9f907e2ab",
+  "inputSha256": "17cc12c737e57dfbc37ca4f375ca2829053f1aaa4ec9da3b82acfa7b98f4e5b1",
+  "roleAndInputSha256": "b38a34f21b61ac8f60acd295818eecb6873d7b07d000b6ed5052285c9a9d291d",
+  "readOnly": true,
+  "hostObservation": "Codex 실행 머리글 model과 reasoning effort",
+  "roleBodySha256": "e691282db6787571b7e038ee3a06abcc41dde99f9824baa2962c60eddd9bb181",
+  "roleSource": ".pace/team/agents-xhigh/pace-troubleshooter.md"
+}

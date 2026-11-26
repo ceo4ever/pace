@@ -1,0 +1,4 @@
+스캔 2026-11-26T15:52:20Z
+6e4e750b54b83c294d9e918274ab1e7ce605f1ca
+96f16c50da7d077d7d37cfb2e8d11d7ca15cdef7b8a4c93a26897ff00628c5a8  projects/P014_261126_문제_해결_전문가_에이전트/evidence/security-rollback.patch
+비밀 검사 통과: 8822개 파일 (제외: skills/pace-tech-handbook/references/common/api-design/GUIDE.md, skills/pace-tech-handbook/references/kotlin/rules-kotlin/security.md, skills/pace-tech-handbook/references/python/fastapi-patterns/GUIDE.md, skills/pace-tech-handbook/references/python/python-testing/GUIDE.md, skills/pace-tech-handbook/references/typescript/backend-patterns/GUIDE.md, test/project-harness.test.ts, test/secret-scan.test.ts, test/agent-setup.test.ts, test/daemon-install-wizard.test.ts, test/daemon-runner.test.ts, test/daemon-wizard-follow.test.ts, test/telegram-format.test.ts, test/telegram-helpers.ts; Canvas 묶음 JS 5개는 경로·SHA-256 일치 시 제외)

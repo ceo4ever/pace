@@ -6,7 +6,7 @@ tags: [pace-intent, intent, planning, pitfalls]
 sources: [code:src/intent/, doc:skills/pace-intent/SKILL.md, doc:skills/pace-intent/references/handoff.md, doc:skills/pace-canvas-skills/canvas-wireframe/SKILL.md, doc:skills/pace-project-dev/references/document-shape.md, doc:skills/pace-intent/references/preview.md, code:src/intent/preview.ts, doc:skills/pace-project-dev/references/decision-rights.md, doc:skills/pace-team/references/required-roles.md]
 related: [pace-scout-기회-탐색-구조와-함정, 작업-하네스-실측-함정]
 created: 2026-10-29
-updated: 2026-11-26
+updated: 2026-11-27
 status: active
 ---
 

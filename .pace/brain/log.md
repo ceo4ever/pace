@@ -149,3 +149,15 @@
 ## [2026-11-26] update | 변경 기반 검사와 실행 선언 신뢰 경계 (.pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md)
 ## [2026-11-26] update | 정의서 크기·분리 기준과 다운사이즈 검증 (.pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md)
 ## [2026-11-26] update | 작업 하네스 흐름의 문제 해결자 호출 수단, 실제 관측, 모델 거부에서 보류하는 이유를 기록
+## [2026-11-27] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
+## [2026-11-27] update | Canvas 스킬 묶음 설치 경계 (.pace/brain/pages/concept/canvas-추출-도구-봉인과-설치-경계.md)
+## [2026-11-27] update | 설치·실행 함정 모음 (.pace/brain/pages/concept/install-and-launch-pitfalls.md)
+## [2026-11-27] update | 세션 부트는 시작 훅 + 대체 규칙 (.pace/brain/pages/concept/session-boot-via-hooks.md)
+## [2026-11-27] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
+## [2026-11-27] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-27] update | ACP 어댑터 실측 (스파이크) (.pace/brain/pages/synthesis/pace-agent-acp-실측.md)
+## [2026-11-27] update | pace agent 호출 함정 (실측) (.pace/brain/pages/synthesis/pace-agent-호출-함정-실측.md)
+## [2026-11-27] update | pace-intent 의도 파악 기획 구조와 함정 (.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md)
+## [2026-11-27] update | 도구별 세션 시작 훅 동작 (실측) (.pace/brain/pages/synthesis/platform-hook-behavior.md)
+## [2026-11-27] update | 프로젝트 지표 해석과 세션 기록 함정 (.pace/brain/pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md)
+## [2026-11-27] lint | P014와 교차하는 검토·호스트·기획·지표 문서의 근거를 확인했다. Opal README 경고는 이 프로젝트 밖 근거다.

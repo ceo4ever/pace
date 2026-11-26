@@ -6,7 +6,7 @@ tags: []
 sources: [code:src/setup/install.ts, code:scripts/secret-scan.ts, doc:docs/SETUP.md, test:test/canvas-skills.test.ts]
 related: [pace-intent-의도-파악-기획-구조와-함정]
 created: 2026-11-09
-updated: 2026-11-21
+updated: 2026-11-27
 status: active
 ---
 

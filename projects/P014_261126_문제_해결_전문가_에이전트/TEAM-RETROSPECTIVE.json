@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "metricRef": "METRICS.md",
+  "unusedRoles": [
+    {
+      "role": "pace-implementer",
+      "coverage": "unconfirmed",
+      "refs": []
+    },
+    {
+      "role": "pace-reviewer",
+      "coverage": "unconfirmed",
+      "refs": []
+    },
+    {
+      "role": "pace-tester",
+      "coverage": "unconfirmed",
+      "refs": []
+    }
+  ],
+  "recurringFindings": [
+    {
+      "code": "gate-contract",
+      "count": 2,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-events.json"
+      ]
+    },
+    {
+      "code": "review-should-fix",
+      "count": 2,
+      "coverage": "reported",
+      "refs": [
+        "evidence/retrospective-events.json"
+      ]
+    }
+  ],
+  "definitionChanges": [
+    {
+      "role": "pace-troubleshooter",
+      "changeRef": "evidence/retrospective-definition.json",
+      "reasonRef": "evidence/retrospective-definition-reason.json"
+    }
+  ]
+}

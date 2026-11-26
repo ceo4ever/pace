@@ -6,7 +6,7 @@ tags: [agent, codex, claude, acp, security]
 sources: [실측:2026-11-06, code:src/agent/p-executor.ts, code:src/agent/acp-executor.ts, code:src/agent/windows-job.ts, code:src/agent/windows-job.cs, code:src/agent/win-command.ts, code:src/agent/windows-supervisor.ts]
 related: []
 created: 2026-11-06
-updated: 2026-11-25
+updated: 2026-11-27
 status: active
 ---
 

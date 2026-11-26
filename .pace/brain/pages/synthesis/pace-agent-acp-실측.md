@@ -6,7 +6,7 @@ tags: [agent, acp, claude, codex, security, daemon]
 sources: [실측:2026-11-12, code:src/agent/acp-executor.ts]
 related: [pace-agent-호출-함정-실측]
 created: 2026-11-12
-updated: 2026-11-24
+updated: 2026-11-27
 status: active
 ---
 

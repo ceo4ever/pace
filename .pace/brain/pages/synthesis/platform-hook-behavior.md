@@ -6,7 +6,7 @@ tags: [hooks, platform, claude, codex, cursor, antigravity, gemini]
 sources: [실측:2026-10-22, url:https://learn.chatgpt.com/docs/hooks, url:https://geminicli.com/docs/hooks/reference/, url:https://forum.cursor.com/t/how-do-i-configure-a-global-rules-file-that-gets-picked-up-by-agent-mode/157335, code:src/setup/install.ts, url:https://cursor.com/docs/hooks, url:https://antigravity.google/docs/hooks, url:https://antigravity.google/docs/rules/]
 related: [session-boot-via-hooks, llm-cannot-speak-first]
 created: 2026-10-22
-updated: 2026-11-16
+updated: 2026-11-27
 status: active
 ---
 
