@@ -1,0 +1,49 @@
+{
+  "text": "# ask_user에서 A-4(사용자 데이터) 결정을 받은 뒤 진행 순서\n\n## 세 경로에 공통으로 먼저 할 일\n\n1. **분류부터 다시 확인합니다.** 사용자 데이터를 다루는 일은 A-4(사용자 자산)입니다. 다만 같은 조치가 남은 blocking을 안고 가거나 검증을 줄인다면 A-3(안전 기준)에도 걸립니다. 이 경우 A-4에 대한 답만으로는 A-3이 승인된 것으로 보지 않습니다(decision-rights.md:13–14).\n2. **승인 원문과 실행 대상을 대조합니다.** 허브가 받은 owner 회신의 원문·출처·대상·범위가 지금 하려는 조치와 맞는지 확인합니다.\n   - 참여 소통 원장을 쓰면 `decision_request`와 `decision_reply`를 같은 지문으로 묶습니다.\n   - 원장을 쓰지 않으면 프로젝트 내부 근거 파일에 원문을 연결합니다. 태스크 게이트에 필요하면 그 태스크의 `evidence/`에 둡니다.\n   - 조건이나 대상이 다르면 입력을 보류하고 다시 요청합니다(decision-rights.md:25–30).\n3. **워크트리 PM이 결정을 기록합니다.** 현재 대상과 해시를 대조한 뒤 승인 원문을 `--decision --by user`로 연결합니다(reviewer.md:55).\n4. **게이트 요건은 결정 뒤에도 그대로 적용됩니다.** owner 결정이 게이트를 면제하지는 않습니다. 필수 결과가 아직 미확인이면 관측을 보완하거나, 적법하게 바뀐 계약에 따라 다시 판정합니다(decision-rights.md:21).\n\n## ① 고치고 다시 검토\n\n1. 승인된 범위 안에서만 고칩니다. 수정 때문에 새 위험이 생기면(예: 데이터를 새로 노출하거나 권한이 늘어남) A를 다시 적용합니다(reviewer.md:55).\n2. **범위만 보는 재검토가 아니라 전체 검토를 받습니다**(reviewer.md:57).\n   - 사전 검토 단계라면 고친 TASK.md를 `pace agent verify`로 다시 검토받습니다.\n   - 구현 후 단계라면 저장소 검사와 E2E를 거쳐 tester와 reviewer **둘 다** 다시 돌립니다.\n3. 승인에 따라 계약을 실제로 바꿨다면 그 단계의 일반 검토 예산만 새로 시작합니다. 바꾸지 않았다면 기존 예산 계산을 이어 갑니다(decision-rights.md:39).\n4. pass(blocking 0)이면 다음 단계로 넘어가고, fail이면 도구의 `followup`·`escalation`을 따릅니다.\n\n## ② 고치고 구현 진행(사전 검토 waiver)\n\n1. **waiver가 성립하는지 먼저 확인합니다.**\n   - 사전 검토가 한 번도 실행되지 않았다면 waiver 근거가 성립하지 않습니다(decision-rights.md:21).\n   - 남은 blocking을 안고 구현하는 것은 A-3입니다. owner 답에 이 부분이 없으면 A-3 결정을 따로 요청하고, 그동안 해당 조치만 보류합니다.\n2. 결정대로 TASK.md를 고치고, 고친 TASK의 해시를 확정합니다.\n3. `pace agent review-pre`로 PRE-REVIEW.json을 만듭니다. `waiver`에는 `by: user`, 실제 사용자 근거(승인 원문), 고친 TASK 해시를 남깁니다(reviewer.md:58, 67).\n4. 워크트리 PM이 현재 TASK의 해시가 waiver 기록과 같은지 대조한 뒤에만 구현합니다.\n5. 기록된 허가 범위 안에서만 진행합니다. 범위를 벗어나는 변경이 생기면 새 검토를 받습니다(reviewer.md:67).\n6. 구현 뒤 테스트 단계의 tester와 reviewer 검토는 정상대로 수행합니다. waiver는 사전 검토에만 적용됩니다.\n\n## ③ 이슈로 남기고 마감(구현 후)\n\n1. **수용 가능한지 먼저 확인합니다.**\n   - 남은 blocking을 안고 마감하는 것은 A-3 승인이 있어야 합니다.\n   - 필수 기준(`P-n`/`T-n`)이 미달이거나 미확인이면 이 결정만으로는 마감할 수 없습니다. A-1으로 별도 합의를 받아야 합니다(reviewer.md:59, decision-rights.md:11).\n2. 승인 원문을 TASK-CLOSE의 리뷰 절에 연결합니다.\n3. 남은 blocking은 **이슈와 TASK-CLOSE의 \"남긴 것\"** 두 곳에 모두 기록합니다.\n   - 이슈 본문에 실제 사용자 데이터를 넣지 않습니다(A-4).\n   - 이슈 트래커가 외부 서비스라면 등록 자체가 외부 전송(A-2)입니다. 워크트리는 외부 전송을 하지 않으므로 허브에 넘깁니다.\n4. 반복된 것, 고친 층, 채우거나 덜어낸 것, 재검증 결과를 TASK-CLOSE 리뷰 절과 C의 사후 요약에 남깁니다(reviewer.md:63).\n5. 다음 순서로 마감합니다(SKILL.md:60, 88).\n   1. `pace project check P### T0n`\n   2. `pace project done P### T0n`\n   3. `pace memory status --project`\n   4. `feat(P###/T0n): …` 커밋\n6. 나중에 finish를 통과한 뒤의 자체 판단 대조에서 이 수용 결정이 합의를 바꾸지 않았는지 다시 확인합니다(SKILL.md:67).\n\n---\n\n## 직접 읽은 파일\n\n| 파일 | 읽은 범위 | 전체 바이트 |\n|---|---|---|\n| `skills/pace-project-dev/SKILL.md` | 1–92줄(전체) | 확인 못 함(명령 실행 안 함) |\n| `skills/pace-project-dev/references/reviewer.md` | 1–67줄(전체) | 확인 못 함 |\n| `skills/pace-project-dev/references/decision-rights.md` | 1–47줄(전체) | 확인 못 함 |\n\n`references/task-steps.md`는 `waiver|ask_user|review-note|이슈` 패턴으로 검색만 했고, 맞는 줄이 없었습니다. 본문은 읽지 않았습니다.\n\n## 질문·승인 집계\n\n- **이 세션에서 사용자에게 한 질문:** 0건\n- **이 세션의 승인 대기:** 0건\n- **시나리오 안의 owner 결정 요청:** 1건이며, 이미 답을 받았습니다.\n- **조건부로 생길 수 있는 요청:**\n  - ②나 ③에서 A-3 승인이 owner 답에 없으면 A-3 결정 요청 1건이 더 생깁니다.\n  - ③에서 필수 기준이 미달이면 A-1 결정 요청 1건이 생깁니다.\n  - 이슈 트래커가 외부 서비스라면 허브를 거쳐 처리할 A-2 1건이 생깁니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 41765,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 4456
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "a0153cc558f7d5c26cd0f2881fd0922442f64f8f0967fef58d5c3a572069271f",
+  "prompt_sha256": "a76131b6a63a2055a0b3a260ea088b0a60207ce284c4dc3b168b08ea6dbb609b",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": [
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/SKILL.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/reviewer.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/decision-rights.md"
+    },
+    {
+      "tool": "Grep",
+      "pattern": "waiver|ask_user|review-note|이슈",
+      "path": "skills/pace-project-dev/references/task-steps.md"
+    }
+  ]
+}

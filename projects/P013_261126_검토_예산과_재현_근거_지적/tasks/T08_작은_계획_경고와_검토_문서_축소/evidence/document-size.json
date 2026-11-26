@@ -1,0 +1,79 @@
+{
+  "base": "41270bfb08311e75167a4c8ca79419c48c9464a6",
+  "lines": "trim trailing whitespace, LF",
+  "characters": "Unicode codepoints, original UTF-8 decoded",
+  "files": {
+    "docs/AGENT-CALL.md": {
+      "before": {
+        "lines": 39,
+        "characters": 8356,
+        "bytes": 15799
+      },
+      "after": {
+        "lines": 46,
+        "characters": 4669,
+        "bytes": 7990
+      }
+    },
+    "skills/pace-project-dev/SKILL.md": {
+      "before": {
+        "lines": 91,
+        "characters": 6108,
+        "bytes": 10605
+      },
+      "after": {
+        "lines": 91,
+        "characters": 6083,
+        "bytes": 10548
+      }
+    },
+    "skills/pace-project-dev/references/coordinator.md": {
+      "before": {
+        "lines": 71,
+        "characters": 7996,
+        "bytes": 14750
+      },
+      "after": {
+        "lines": 71,
+        "characters": 7849,
+        "bytes": 14467
+      }
+    },
+    "skills/pace-project-dev/references/cross-verify.md": {
+      "before": {
+        "lines": 9,
+        "characters": 803,
+        "bytes": 1543
+      },
+      "after": {
+        "lines": 6,
+        "characters": 501,
+        "bytes": 940
+      }
+    },
+    "skills/pace-project-dev/references/reviewer.md": {
+      "before": {
+        "lines": 160,
+        "characters": 16218,
+        "bytes": 31156
+      },
+      "after": {
+        "lines": 87,
+        "characters": 4534,
+        "bytes": 9003
+      }
+    },
+    "skills/pace-project-dev/references/task-steps.md": {
+      "before": {
+        "lines": 12,
+        "characters": 2381,
+        "bytes": 4501
+      },
+      "after": {
+        "lines": 12,
+        "characters": 1156,
+        "bytes": 2278
+      }
+    }
+  }
+}

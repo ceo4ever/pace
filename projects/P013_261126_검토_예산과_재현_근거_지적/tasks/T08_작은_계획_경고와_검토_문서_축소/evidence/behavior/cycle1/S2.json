@@ -1,0 +1,40 @@
+{
+  "text": "# BL261109_03 착수 시 할 일 (Orca 밖, 백로그 확정 상태)\n\n백로그가 이미 확정돼 있으므로 그 내용이 곧 착수 결정입니다(SKILL.md §2-4). 승인 답을 기다리지 않고 `start`까지 진행합니다. 실제 수정과 명령 실행은 하지 않았고, 아래는 순서대로 할 일입니다.\n\n1. **출처 확인 (읽기만)**\n   - `BL261109_03`이 백로그 하나에만 맞는 앞부분인지 확인합니다. 여러 백로그에 맞으면 `--from`이 거부합니다.\n   - BACKLOG.md 상태와 BR 목록(BR01부터)을 확인합니다. 백로그는 프로젝트가 되고, BRnn은 같은 번호의 Tnn 태스크가 됩니다.\n   - 이미 완료된 백로그면 멈춥니다.\n2. **규모 판단**\n   - BR이 여럿이면 L 프로젝트로 보고 태스크로 나눕니다.\n   - BR이 하나뿐이고 한 번에 끝낼 수 있으면 태스크 없는 프로젝트로 할 수 있습니다(§1).\n3. **프로젝트 생성**\n   - `pace project new \"<이름>\" --from BL261109_03`을 main에서 실행합니다.\n   - 프로젝트 번호, 폴더, PROJECT.md가 만들어집니다.\n4. **분석**\n   - 백로그와 BR, 바꿀 코드 위치, 지금 동작, 브레인에서 재료를 모읍니다.\n   - `new`가 넣은 \"- 브레인:\" 후보 중 관련 없는 줄은 지웁니다.\n5. **설계**\n   - 목표를 한 단계 위 목적에 대조합니다.\n   - 목적, 기준 `P-n`, 설계·보안 영향, 바꿀 정본 목록, 태스크 표를 씁니다.\n   - 태스크 표는 BR 번호와 T 번호를 맞추고 태스크·이름·상태·커밋 4칸으로 씁니다.\n   - 세부는 `references/project-define.md`를 따릅니다. 이 파일은 이번에 읽지 않았습니다.\n6. **착수 결정 기록**\n   - PROJECT.md 결정 메모에 목적·기준·태스크와 출처(\"BL261109_03 백로그 확정\")를 적습니다.\n   - 복잡한 설계면 html-plan으로 보여 줄 수 있지만 선택입니다.\n7. **작업자 설정 확인**\n   - 작업자 도구는 `--agent` > PROJECT.md `- 작업자:` > 정의서 `작업자 도구:` > 지금 세션 도구 순서로 정해집니다.\n   - 모델과 effort는 `pace worker show`로 확인하고, 이번 실행에만 바꿀 때는 `--model`/`--effort`로 넘깁니다.\n8. **시작**\n   - `pace project start P###`을 실행하면 다음이 진행됩니다:\n     - 정의 커밋\n     - worktree `../<저장소>.wt/P###` 생성(브랜치 `project/P###`)\n     - 준비 명령 실행\n     - BACKLOG.md 상태를 `진행`으로 변경\n   - 백로그나 프로젝트 원본을 직접 편집했다면 커밋 전에 `pace backlog refresh`를 실행합니다.\n9. **새 세션으로 넘기기**\n   - Orca 밖이므로 `start` 출력에 나온 명령으로 worktree에서 새 세션을 엽니다. 이 세션은 코디네이터가 되지 않습니다.\n   - main 세션에서는 worktree 파일을 절대 경로로 고치지 않습니다.\n10. **이후 진행 (worktree 세션)**\n    - 대기 중인 태스크를 맨 앞부터 처리합니다: 분석 → 설계 → 구현 전 검토(`pace agent verify`) → 구현 → 테스트 → `check`/`done` → 커밋.\n    - 모든 태스크가 끝나면 `finish`를 실행합니다.\n    - ✋ merge와 배포는 그때 owner 승인을 받은 뒤에 합니다. 지금 단계에서 기다릴 승인은 없습니다.\n\n---\n\n**직접 읽은 파일**\n\n| 파일 | 읽은 줄 범위 | 전체 바이트 |\n|---|---|---|\n| `skills/pace-project-dev/SKILL.md` | 1–92 (전체) | 확인 불가(명령을 실행하지 않음) |\n| `skills/pace-project-dev/references/backlog.md` | 1–28 (전체) | 확인 불가(명령을 실행하지 않음) |\n\n- 사용자에게 물을 질문: **0개**\n- 승인 대기: **0개** (merge와 배포 승인은 finish 뒤에 받습니다)",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 24560,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 2518
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "2f819640753ed306d1b6892a739e922b18deb71cde6fe338b33a8c966a05f474",
+  "prompt_sha256": "de5907c1c55b4d823b5276173d2eefbd0a82d103c2364a04407645335cff52c7",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": [
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/SKILL.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/backlog.md"
+    }
+  ]
+}

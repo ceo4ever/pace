@@ -20,7 +20,7 @@ Orca 명령의 세부(버전에 맞는 안내)는 `orca skills get orchestration
 
 ## 메시지별 처리
 
-- **검토·검사 절차 문제가 반복되면 도구부터 확인한다.** 같은 지적(독립성·열람 불가·형식 등)이 두 번 이어지면 노출 범위·오류 원문을 읽고 도구(`pace agent verify` 프롬프트·실행 옵션 등)를 직접 재현한 뒤 [B](decision-rights.md#b-허브의-장애-대응)를 따른다. P001에서는 Windows sandbox 열람 불가와 verify 프롬프트 충돌을 우회하며 사전 검토가 14회 돌았다. 검토 원장의 단계와 기록은 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)를 따른다.
+- **검토·검사 장애는 도구로 재현한다.** 원문·노출 범위·실행 조건을 대조하고 [B](decision-rights.md#b-허브의-장애-대응)를 따른다. 다음 검토 조치는 [반복 실패](reviewer.md#반복-실패-진단과-사용자-결정)의 도구 상태에서 확인한다.
 
 - `question`: 작업자가 ask 직전 `pace project log P### [T##] --type question --by agent --to coordinator --msg "질문 요약"`, 답 수신 직후 같은 범위의 `--type answer --by agent`를 기록한다. 코디네이터는 답변 전에 질문 기록을 확인하고 누락된 것만 `--by coordinator --to coordinator`로 보완한다. 답 사건은 작업자가 수신 시각에 한 번만 기록한다. [A](decision-rights.md#a-결정-주체)에 따라 답하고 조사나 재현이 필요하면 B로 이어간다.
 - `escalation`: 작업자의 `--type escalation --to coordinator` 기록을 확인한다. [B](decision-rights.md#b-허브의-장애-대응)로 원인을 조사·재현하고 작업자에게 결정·근거·재검증 기준을 회신한다. 조치가 A에 걸려 owner에게 실제로 전달할 때 같은 범위의 `--type escalation --by coordinator --to owner --ref tasks/T01_이름/evidence/question-links.md`를 기록한다. owner 답을 받으면 코디네이터가 전달 사건의 answer를 기록한 뒤 reply하고, 작업자는 원래 escalation의 answer를 기록한다. 질문 전달과 같은 수명·연결 규칙을 적용한다.

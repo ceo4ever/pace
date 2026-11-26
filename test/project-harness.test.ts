@@ -605,6 +605,86 @@ function passTask(taskDir: string): void {
   );
 }
 
+test("T08 계획 경고는 크기와 실제 기준·테스트의 다른 태스크만 알리며 판정을 유지한다", () => {
+  const { main, home } = repoFixture();
+  assert.equal(runCli(home, main, "new", "계획").status, 0);
+  assert.equal(runCli(home, main, "start", "P001", "--no-launch").status, 0);
+  const wt = join(dirname(main), "app.wt", "P001");
+  assert.equal(runCli(home, wt, "task", "P001", "체크").status, 0);
+  const dir = join(projectDir(wt), "tasks", "T01_체크");
+  passTask(dir);
+  const content = [
+    "# T01",
+    "- 상태: 진행",
+    "## 재료",
+    "- [선례 BR03](../T02_이름/TASK.md)",
+    "## 기준",
+    "| # | 완료 기준 |",
+    "|---|---|",
+    "| T-1 | T01의 BR01 조건을 확인한다 (P-1, T-1, T02a) |",
+    "<!-- T07 및 BR08은 실제 기준이 아니다 -->",
+    "```md",
+    "## 테스트",
+    "| T-3 | T66과 BR77은 예시다 |",
+    "```",
+    "## 테스트",
+    "| S-1 | T-1을 검증 |",
+    "## 접근",
+  ];
+  const task = join(dir, "TASK.md");
+  const short = [...content, ...Array.from({ length: 80 - content.length }, () => "- 범위")];
+  writeFileSync(task, short.join("\r\n") + "\r\n");
+  const pass = runCli(home, wt, "check", "P001", "T01");
+  assert.equal(pass.status, 0, pass.stdout + pass.stderr);
+  assert.doesNotMatch(pass.stdout, /계획 경고/);
+  const expanded = short.map(line => line
+    .replace("조건을 확인한다", "조건과 T04의 기준을 확인한다")
+    .replace("T-1을 검증", "T-1과 BR05·T04를 검증"));
+  writeFileSync(task, [...expanded, "- 한 줄 추가"].join("\n") + "\n");
+  const warned = runCli(home, wt, "check", "P001", "T01");
+  assert.equal(warned.status, 0, warned.stdout + warned.stderr);
+  assert.match(warned.stdout, /계획 경고.*81줄.*80줄/);
+  assert.match(warned.stdout, /계획 경고.*다른 태스크.*T04, BR05/);
+  assert.doesNotMatch(warned.stdout, /T02|BR03|T07|BR08|T66|BR77/);
+  assert.match(warned.stdout, /확인: 판정 통과/);
+  const close = join(dir, "TASK-CLOSE.md");
+  const passedClose = readFileSync(close, "utf8");
+  renameSync(close, join(dir, "draft-close.md"));
+  const missing = runCli(home, wt, "check", "P001", "T01");
+  assert.equal(missing.status, 1, missing.stdout + missing.stderr);
+  assert.match(missing.stdout, /TASK-CLOSE.md가 없다/);
+  assert.match(missing.stdout, /계획 경고.*81줄/);
+  writeFileSync(close, passedClose.replace("판정: 통과", "판정: 실패"));
+  const failed = runCli(home, wt, "check", "P001", "T01");
+  assert.equal(failed.status, 1, failed.stdout + failed.stderr);
+  assert.match(failed.stdout, /다른 태스크.*T04, BR05/);
+  assert.doesNotMatch(failed.stdout, /확인: 판정 통과/);
+  writeFileSync(close, passedClose);
+  const done = runCli(home, wt, "done", "P001", "T01");
+  assert.equal(done.status, 0, done.stdout + done.stderr);
+  assert.match(done.stdout, /계획 경고.*81줄/);
+  assert.match(readFileSync(task, "utf8"), /^- 상태: 완료$/m);
+});
+
+test("T08 계획 경고는 검토 허가를 확인한 실제 Git 후보의 TASK 본문을 사용한다", () => {
+  const h = permissionFixture();
+  h.seed();
+  git(h.wt, "add", "-A");
+  write(h.target, h.snapshot + "- 작업본 메모\n".repeat(76));
+
+  const local = h.gate("check");
+  assert.equal(local.status, 1, local.stdout + local.stderr);
+  assert.match(local.stdout, /계획 경고.*80줄/);
+  assert.match(local.stdout, /범위 재검토/);
+
+  const candidate = runPace(["project", "check", "P001", "T01"], {
+    home: h.home, cwd: h.wt, timeout: 60_000, env: { PACE_COMMIT_CHECK: "1" },
+  });
+  assert.equal(candidate.status, 0, candidate.stdout + candidate.stderr);
+  assert.match(candidate.stdout, /확인: 판정 통과/);
+  assert.doesNotMatch(candidate.stdout, /계획 경고/);
+});
+
 function permissionFixture() {
   const { main, home } = repoFixture();
   write(join(main, "src/probe.ts"), "export const probe = 1;\n");

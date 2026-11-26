@@ -1,0 +1,49 @@
+{
+  "text": "## 상황 판단과 행동 순서\n\n### 상황 1 — normal 단계에서 이 구간의 fail이 중단 복구(`interrupted`) 1건뿐일 때\n\n1. **원장 기록을 먼저 대조합니다.** 이 구간의 기록이 중단 1건뿐이라면 실제 blocking 판정은 아직 없습니다. 원장에는 실패·중단·unknown이 구별되어 있으므로 이 중단을 blocking으로 세지 않습니다(reviewer.md:75).\n2. **같은 `pace agent verify`를 다시 호출합니다.** 정상 단계의 기록이 중단 복구뿐이면 범위 한정 재검토가 아니라 **전체 검토**로 열립니다(reviewer.md:39). 따라서 직전 fail 원문과 바뀐 줄로 범위를 좁혀 주지 않습니다.\n3. **도구가 돌려준 `followup`·`escalation`을 먼저 따릅니다**(reviewer.md:41, SKILL.md §3-4). 이것이 없으면 결과 판정에 따라 진행합니다.\n   - pass(blocking 0)이면 구현이나 마감으로 갑니다.\n   - fail이면 blocking을 고치고 tester와 reviewer를 **둘 다** 다시 돌립니다.\n4. **이 단계에서는 A가 열리지 않습니다.** 필요한 검토를 그대로 다시 수행하는 일이라 A-3(검토 생략·완화)에 해당하지 않습니다. 사용자 질문은 만들지 않고 normal 단계를 유지합니다(decision-rights.md:13, :32).\n\n### 상황 2 — 같은 상황에서 복구가 3회가 되어 종료 16, 단계가 `diagnose`로 바뀌었을 때\n\n1. **지적별 수정과 단순 재호출을 멈춥니다**(reviewer.md:59). 같은 `verify`를 다시 돌려 복구 횟수를 늘리지 않습니다.\n2. **중단과 실제 blocking을 나눠 진단합니다**(reviewer.md:39). 원장에서 3회의 중단 원인(시간 초과, 호출 실패, 판독 실패 등)과 실제 지적이 있는지를 분리합니다. 반복되는 것이 중단뿐이라면 원인 층은 코드가 아니라 도구·환경 쪽일 가능성이 큽니다.\n3. **재현 근거를 B로 허브에 보냅니다**(decision-rights.md:36–38). 계약, 재현 조건, 원장 원문을 함께 보냅니다. 이후 처리는 다음과 같습니다.\n   - 허브가 같은 방법으로 재현하고 원인 층을 가립니다. 환경 문제면 허브가 조사합니다.\n   - 작은 도구·하네스 결함이면 S1 위임에 따라 허브가 main에서 고치고, 필요하면 재설치합니다. 병합 대기 중이면 main 커밋은 병합 뒤로 미룹니다.\n   - 해당 조치만 보류하고 독립 작업은 계속합니다.\n4. **조치 전에 A를 적용합니다**(reviewer.md:53, :61).\n   - 도구 복구로 기존 검토를 그대로 받는 조치는 A 밖입니다. PM이나 허브가 결정합니다.\n   - 반대로 검토를 생략·완화하거나 증거 공백을 안고 진행하려 한다면 A-3에 해당합니다. 이때만 허브를 거쳐 owner에게 C 결정 요청을 보내고 그 조치를 보류합니다.\n5. **허브 회신을 적용합니다.** 회신은 `(main 판단)`으로 기록하고 근본 조치를 워크트리에 반영합니다.\n6. **`pace agent review-note --diagnosis`로 진단을 기록합니다.** 적용 내용, 근거, 필요한 승인 원문 참조를 연결합니다. `--decision`은 쓰지 않습니다. 이 옵션은 `ask_user`가 열렸을 때만 씁니다.\n7. **진단 기록이 성공하면 바로 `verify`로 전체 검토를 받습니다**(reviewer.md:61).\n8. **보고합니다.** TASK-CLOSE 리뷰 절과 C의 사후 요약에 다음을 남깁니다(reviewer.md:75).\n   - 무엇이 반복됐는지(중단 3회)\n   - 고친 층\n   - 재검증 결과\n   - 실패·중단·unknown의 구별\n\n## 직접 읽은 파일\n\n| 파일 | 읽은 줄 범위 | 전체 바이트 |\n|---|---|---|\n| `skills/pace-project-dev/SKILL.md` | 1–93 (전체) | 확인 못 함 |\n| `skills/pace-project-dev/references/reviewer.md` | 1–88 (전체) | 확인 못 함 |\n| `skills/pace-project-dev/references/decision-rights.md` | 1–52 (전체) | 확인 못 함 |\n\n`references/` 전체 검색으로 아래 줄은 검색 결과로만 봤고, 파일을 열어 읽지는 않았습니다.\n- `coordinator.md:23`\n- `task-steps.md:11`\n- `tools.md:7, :36`\n\n바이트 수는 명령을 실행하지 않기로 해서 확인하지 못했습니다.\n\n## 집계\n\n- **사용자 질문 수: 0** — 두 상황 모두 A 밖의 검토 복구와 도구 진단이라 PM과 허브가 처리합니다.\n- **승인 대기 수: 0** — 검토 생략·완화(A-3)를 선택할 때만 1건이 생깁니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 31019,
+  "usage": {
+    "input_tokens": 10,
+    "output_tokens": 3135
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "2829345f78ceff7e0c81842aaee4a7859d661c8650cd7ddca2d254776c121c28",
+  "prompt_sha256": "28d12f85299a0fff9786c7e273e0586ee6b86bea4a9bd3a0f6bca19116ccd9cc",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": [
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/SKILL.md"
+    },
+    {
+      "tool": "Grep",
+      "pattern": "반복 실패|interrupted|diagnose|16",
+      "path": "skills/pace-project-dev/references"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/reviewer.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/decision-rights.md"
+    }
+  ]
+}

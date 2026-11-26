@@ -1,0 +1,49 @@
+{
+  "text": "# A 결정 회신 뒤 경로: 재검토, 사전 검토 예외 구현, 이슈로 남기고 마감\n\n## 세 경로 모두 처음에 할 일\n\n1. **회신이 어떤 요청에 대한 답인지 확인합니다.** 실제 사용자 데이터를 다루는 조치라면 A-4(사용자 데이터 외부 공개 등)에 걸립니다. 남은 blocking을 안고 가거나 검증을 줄이는 선택이면 A-3도 함께 걸립니다. owner의 답이 그 A 번호, 대상, 범위를 모두 덮는지 봅니다(`decision-rights.md:7-15`).\n2. **승인 원문과 지금 대상을 대조합니다.** `review-note --by user`와 `waiver by: user`는 워크트리 PM이 입력합니다. 원문, 출처, 대상, 해시가 지금 대상과 맞을 때만 입력합니다. 원문이 없거나 조건·대상이 다르면 입력을 멈추고 허브를 거쳐 다시 요청합니다(`decision-rights.md:27`).\n3. **승인 근거를 남깁니다.**\n   - 원장을 쓰면 `decision_request`와 `decision_reply`를 묶고, 짧은 영수증을 `pace project log --ref`에 연결합니다.\n   - 원장을 쓰지 않으면 태스크 `evidence/`에 원문, 출처, 대상, 범위를 둡니다(`decision-rights.md:29-30`).\n4. **`review-note --decision --by user`로 결정을 기록한 뒤, 승인된 조치만 합니다.** 원장은 normal 단계 그대로 둡니다. 새 위험이 생기면 A를 다시 적용하고 그 근거를 `pace project log`에 남깁니다(`reviewer.md:65`).\n   - 승인된 조치에 외부 전송, 푸시, 데이터 삭제가 들어 있으면 워크트리는 직접 하지 않습니다. 허브에 넘겨 main에서 실행합니다(A-2, `decision-rights.md:27`).\n\n## ① 고치고 다시 검토\n1. 승인 범위 안에서 근본 원인 층을 고칩니다.\n2. `pace agent verify`로 **최신 대상 전체**를 독립 검토합니다. 바뀐 줄만 보는 한정 재검토가 아니라 모든 필수 기준을 다시 봅니다(`reviewer.md:63,67`).\n3. pass(blocking 0)이면 다음 단계로 갑니다. 다시 fail이면 도구가 돌려준 `followup`·`escalation`을 따릅니다.\n4. 무엇을 고쳤고 재검증 결과가 어땠는지 TASK-CLOSE 리뷰 절과 C의 사후 요약에 남깁니다(`reviewer.md:73`).\n\n## ② 고치고 구현 진행 (사전 검토를 예외로 통과)\n1. 이 예외가 성립하려면 검토가 한 번 이상 실제로 실행됐어야 합니다. 이번에는 fail 판정이 있었으므로 근거가 성립합니다(`decision-rights.md:21`).\n2. 승인 범위 안에서 TASK.md를 고칩니다. 그다음 **고친 TASK의 해시**와 사용자 근거를 PRE-REVIEW의 `waiver`에 `by: user`로 남깁니다(`reviewer.md:68`).\n   - 해시는 반드시 수정이 끝난 뒤에 계산합니다.\n3. `pace agent review-pre`로 PRE-REVIEW.json을 만들고, 지금 TASK와 맞는지 확인합니다(`reviewer.md:77`).\n4. 기록된 허가 범위 안에서만 구현합니다. 그 경계를 벗어나는 변경이 생기면 새 검토를 받습니다.\n5. 구현 뒤 테스트 단계(tester ∥ reviewer)는 생략하지 않습니다.\n\n## ③ 이슈로 남기고 마감 (구현 후)\n1. 승인 원문을 TASK-CLOSE 리뷰 절에 연결합니다.\n2. 남은 blocking은 **이슈**와 TASK-CLOSE의 \"남긴 것\"에 기록합니다(`reviewer.md:69`).\n3. **필수 기준이 미달이거나 미확인이면, 받은 A 답만으로는 마감할 수 없습니다.** 기준을 못 채운 채 마감하는 것은 A-1이라 별도 합의가 필요합니다. 그 마감만 보류하고, 허브를 거쳐 A-1 결정을 요청합니다(`decision-rights.md:11`).\n4. 위 조건이 해결되면 `pace project check` → `done` → 진행 상황 갱신 → 커밋 순서로 진행합니다. C의 사후 요약도 남깁니다.\n5. finish 때 쓰는 PROJECT-CLOSE의 목표 달성 판정에서는 이 남은 항목을 게이트 통과로 덮지 않습니다.\n\n## 직접 읽은 파일\n\n| 파일 | 줄 범위 | 전체 바이트 |\n|---|---|---|\n| `skills/pace-project-dev/SKILL.md` | 1–92 (전체) | 확인 못 함(명령을 실행하지 않음) |\n| `skills/pace-project-dev/references/reviewer.md` | 1–86 (전체) | 확인 못 함 |\n| `skills/pace-project-dev/references/decision-rights.md` | 1–50 (전체) | 확인 못 함 |\n\n- 이 밖에 `references/` 전체에 Grep을 한 번 했습니다. 일치한 줄만 봤고, 파일을 읽은 것으로 세지 않았습니다.\n- `security.md`, `task-steps.md`, `docs/AGENT-CALL.md`는 읽지 않았습니다.\n\n## 질문과 승인 대기\n- **사용자 질문 수: 0.** 이번 답변에서 새로 묻는 것은 없고, owner는 이미 A 결정에 답했습니다.\n- **승인 대기 수: 0.**\n  - 단, ③에서 필수 기준이 미달·미확인이면 A-1 요청이 1건 생깁니다.\n  - 어느 경로에서든 외부 전송이 들어 있으면 허브 실행 승인을 확인해야 합니다. 이 두 가지는 조건부로 늘어날 수 있습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 36421,
+  "usage": {
+    "input_tokens": 8,
+    "output_tokens": 3646
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "1c185ef96a59bcb8e8d48660bc696f513f80206af38da87dd1b62d0beb8d33f9",
+  "prompt_sha256": "a76131b6a63a2055a0b3a260ea088b0a60207ce284c4dc3b168b08ea6dbb609b",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": [
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/SKILL.md"
+    },
+    {
+      "tool": "Grep",
+      "pattern": "반복 실패|ask_user|이슈로|waiver",
+      "path": "skills/pace-project-dev/references"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/reviewer.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/decision-rights.md"
+    }
+  ]
+}

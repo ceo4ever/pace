@@ -1,0 +1,23 @@
+{
+  "text": "# P013 T08 최종 수정 독립 확인 (reviewer, Claude Opus 5.5)\n\n**결론:** 이전 두 지적 중 F2(시나리오 표)는 해결됐습니다. F1(무효 처리 안내)은 부분적으로 해결됐습니다. 코드 경고는 직전 판정 그대로 판정·권한·후보 경계를 바꾸지 않습니다. 새로 should_fix 1건을 찾았습니다. 문서가 `--decision`의 쓰임을 실제 도구보다 좁게 적어, 예산 관리 단위에서 A-3 승인을 기록하는 방법을 찾을 수 없습니다. 다만 도구가 먼저 막는 방향이라 owner 승인 경계는 약해지지 않으므로 blocking은 아닙니다.\n\n## 읽은 범위\n- **관측 자료:** `observed/artifact.patch` 전체(543줄), `observed/TASK.md`. PROJECT.md와 분포 JSON은 읽지 않았습니다.\n- **현재 작업본:**\n  - `evals/scenarios.md` 10–29\n  - `src/project/harness.ts` 1344–1375 (patch와 일치)\n  - `src/agent/verify-cli.ts` 484–578과 grep 결과\n  - `src/agent/review-followup.ts` 600–653과 grep 결과\n  - `review-log.ts:301` (grep)\n- **검색:** `docs/`·`skills/` 전체에서 `--void`·`--decision`·`--request-waiver`.\n- **미확인:** 시험과 해시는 직접 실행하지 않았습니다(셸 없음). 행동 eval 채점은 tester 몫입니다.\n\n## 확인한 항목\n- **코드 경고의 후보와 게이트:** 직전 판정에서 바뀐 것이 없습니다.\n  - 허가가 필요한 훅에서는 `harness.ts:1351`이 `candidate = index`를 정한 뒤 `:1362`에서 같은 후보의 TASK를 읽습니다.\n  - 경고는 `notes`에만 들어가고, `ok`는 `issues`만으로 정해집니다.\n  - 안전하지 않은 경로에서 빠져나오는 조기 반환(`:1352-1357`)은 경고보다 앞에 있습니다.\n  - TASK를 읽다 난 예외는 `close === null`일 때만 삼킵니다(`:1365`).\n- **시나리오 표:** 해결됐습니다. S7–S9가 빈 줄 없이 이어지고(`scenarios.md:22-24`), 실행 프롬프트도 `S1~S5·S7~S9`로 넓혔습니다.\n- **AGENT-CALL의 실제 위치:** 표에 적힌 파일 12개가 `src/agent/`·`src/project/`에 모두 있습니다. 마지막 행은 `src/project/` 접두를 첫 파일에만 붙였지만 혼동될 정도는 아닙니다.\n- **AGENT-CALL의 무효 명령:** 부분 해결입니다. `review-note --void`가 다시 들어갔습니다(`AGENT-CALL.md:27`). 생략된 부분은 이렇습니다.\n  - `--record`·`--file` 같은 필수 인자와 normal 단계 제한이 적혀 있지 않습니다. 대신 도구가 사용법 오류로 `--void --record <검토 기록>`을 알려 주고, normal 단계 제한과 fail 기록 여부도 강제합니다(`verify-cli.ts:545-550`).\n  - \"같은 절차 지적이 2회 이어지면 structure 층으로 본다\"는 조기 판단 기준은 빠진 채입니다. `coordinator.md`의 \"검토·검사 장애는 도구로 재현한다\"가 일부를 대신합니다.\n- **normal 단계 승인 기록:** `reviewer.md:55`와 `decision-rights.md:32`가 일치합니다. 승인 근거는 `pace project log`에 남기고 단계는 normal로 유지합니다. 도구도 일반 산출물의 `--decision`을 `ask_user` 단계에서만 받습니다(`verify-cli.ts:564`).\n- **옛 `ask_user` 경로:** 일반 산출물에서는 맞습니다. 순서는 다음과 같습니다.\n  - A 밖 조치: `--by pm` → 수정 → 전체 재검증\n  - A에 해당하는 조치: 6요소 C 요청 → 원문 대조 → `--by user`\n\n  도구 안내(`review-log.ts:301`)와도 같습니다. 태스크·백로그에서는 `upper_review`가 먼저라는 연결(`decision-rights.md:116`)도 맞습니다.\n\n## 지적\n- **N1 [should_fix]** `reviewer.md:55`는 \"`--decision`의 PM/user 경로는 `ask_user`가 열린 대상에만 쓴다\"고 적고, `:61`과 `decision-rights.md:32`도 같은 뜻입니다. 실제 도구는 이와 다릅니다.\n  - 태스크·백로그 단위에서 `--decision`은 `ask_user`와 상관없이 열린 A-3 요청의 owner 결정을 기록하는 입력입니다. 이 경로에서는 `--by user`만 받습니다(`verify-cli.ts:522-523`, `review-followup.ts:224-228`).\n  - 요청이 열려 있으면 출력은 `action: owner_decision_required`만 보여 주고 명령은 알려 주지 않습니다(`review-followup.ts:613`).\n  - `--request-waiver`와 `--decision --by user`의 A-3 사용법은 이번 축소로 `docs/`·`skills/`에서 모두 사라졌습니다. `decision-rights.md:32`의 \"해당 요청의 기록으로 처리\"는 명령을 가리키지 않습니다.\n  - **영향:** owner가 승인해도 PM이 기록할 방법을 찾지 못하고, verify는 계속 종료 16으로 막힙니다. 도구가 먼저 막는 방향이라 권한 경계는 그대로입니다.\n  - **권장:** AGENT-CALL에 한 줄을 추가합니다. 예: \"A-3 요청은 `review-note --request-waiver`, owner 승인은 `--decision --by user`, 명령 출력의 `followup`을 확인\".\n- **N2 [note]** 직전 F3(G③ 문구에 `[A-1]` 링크 없음)과 F4(허가가 필요 없는 훅 경로에서는 경고가 작업본 TASK 기준)는 그대로이고, 둘 다 판정과는 무관합니다.\n\n**올릴 단계:** 없음. N1은 PM이 처리할 수 있습니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 72420,
+  "usage": {
+    "input_tokens": 22,
+    "output_tokens": 7266
+  },
+  "process_cleanup": "verified"
+}

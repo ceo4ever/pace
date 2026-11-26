@@ -42,6 +42,25 @@ function visibleMarkdown(task: string): string {
   }).join('\n');
 }
 
+/** Warn about the reviewed plan without changing its gate result. */
+export function taskPlanWarnings(task: string, taskId: string): string[] {
+  const limit = 80;
+  const lineCount = task.replace(/\r\n/g, '\n').trimEnd().split('\n').length;
+  const warnings: string[] = [];
+  if (lineCount > limit) warnings.push(`TASK가 ${lineCount}줄이다 (권장 ${limit}줄 이하)`);
+  const own = taskId.toUpperCase();
+  const ownBrief = own.replace(/^T/, 'BR');
+  const other = new Set<string>();
+  const sections = visibleMarkdown(task).matchAll(/^## (?:기준|테스트)[ \t]*\n([\s\S]*?)(?=^## |$(?![\s\S]))/gm);
+  for (const [, body] of sections) {
+    for (const [id] of body!.matchAll(/(?<![A-Za-z0-9_-])(?:T|BR)\d{2}(?![A-Za-z0-9_-])/g)) {
+      if (id !== own && id !== ownBrief) other.add(id);
+    }
+  }
+  if (other.size) warnings.push(`기준·테스트에 다른 태스크 번호가 있다 (${[...other].join(', ')})`);
+  return warnings;
+}
+
 export function proofScopeIssues(task: string): string[] {
   const format = taskFormat(task);
   if (format === 'legacy') return [];

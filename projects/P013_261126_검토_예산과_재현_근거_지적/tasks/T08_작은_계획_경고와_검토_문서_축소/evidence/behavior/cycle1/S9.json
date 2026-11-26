@@ -1,0 +1,67 @@
+{
+  "text": "## 결론\n\n이 blocking은 TASK 사전 검토의 판정 대상이 아닙니다. `reviewer.md:21`에 따르면 사전 검토가 묻는 것은 \"이 계획이 목적을 증명할 수 있는가?\"이고, 구현 방법만 지적한 경우는 질문 밖 note로 넘깁니다. 그래서 TASK 본문을 지적에 맞춰 바꾸지 않고, waiver도 쓰지 않습니다. 다만 원문에 적힌 \"blocking\"이라는 표시만 보고 PM이 직접 등급을 낮추지도 않습니다. 기준은 **도구가 계산한 판정**입니다(`reviewer.md:35`).\n\n## 순서대로 할 행동\n\n1. **도구가 계산한 판정과 기준별 결과 확인** — `verify` 출력에서 적용 등급, 필수 기준별 결과, `followup`·`escalation`을 원문과 따로 봅니다(`reviewer.md:31,35`, `AGENT-CALL.md:20,25`). `escalation`이 있으면 그것부터 따릅니다(`SKILL.md:59`).\n2. **분기 ① 도구 판정이 pass(blocking 0)인 경우**, 즉 구현 방법 지적이 note로 계산된 경우:\n   - `pace agent review-pre --target <TASK.md> --author-provider <제공자>`로 PRE-REVIEW.json을 만들고, 현재 TASK와 맞는지와 `pre_review_ok`를 확인합니다(`reviewer.md:67`, `AGENT-CALL.md:31`).\n   - 기록된 허가 범위 안에서만 구현합니다(`task-steps.md:7,9`).\n   - 그 note는 관련 다음 단계로 넘기고, 반영하지 않은 경우 TASK-CLOSE의 \"남긴 것\"에 적습니다(`reviewer.md:31`, `task-steps.md:11`).\n3. **분기 ② 도구가 여전히 blocking으로 계산한 경우**:\n   - blocking을 안은 채 구현하면 A-3(\"남은 blocking을 안고 진행\"은 '예')에 해당하므로 PM이 혼자 넘어가지 않습니다(`decision-rights.md:13`).\n   - 통과만을 위해 취향대로 TASK를 고치지 않습니다. 합의를 바꾸는 조치가 아니고 근거도 없습니다.\n   - 다른 리뷰어나 새 맥락으로 다시 돌려 다른 판정을 받으려 하지도 않습니다. 실행된 교차 검토의 fail은 대체할 근거가 되지 않습니다(`decision-rights.md:17`).\n   - 대신 \"질문 밖 지적이 blocking으로 계산됐다\"는 재현 근거(원문, 기준별 관측, 도구 판정)를 허브에 보내 B 절차로 처리합니다. 허브는 재현하고 원인 층을 가린 뒤 A를 적용합니다. 등급 계산을 고치는 작은 도구 수정은 S1 위임 범위입니다(`decision-rights.md:12,34-36`).\n   - 허브 회신을 `(main 판단)`으로 기록하고, 같은 판정기로 다시 계산하거나 재검토해서 blocking 0을 확인한 뒤 ①로 갑니다(`decision-rights.md:36`, `AGENT-CALL.md:30`).\n   - 기다리는 동안에는 해당 구현만 보류하고 독립 작업은 계속합니다(`SKILL.md:82`).\n4. **사후 요약** — 지적을 어떻게 분류했는지와 그 근거를 TASK-CLOSE 리뷰 절과 C의 사후 요약에 남깁니다(`decision-rights.md:47`).\n\n## 직접 읽은 파일\n\n| 파일 | 읽은 줄 범위 | 전체 바이트 |\n|---|---|---|\n| `skills/pace-project-dev/SKILL.md` | 1–92 (전체) | 미확인 |\n| `skills/pace-project-dev/references/task-steps.md` | 1–12 (전체) | 미확인 |\n| `skills/pace-project-dev/references/reviewer.md` | 1–67 (전체) | 미확인 |\n| `skills/pace-project-dev/references/decision-rights.md` | 1–47 (전체) | 미확인 |\n| `docs/AGENT-CALL.md` | 1–40 (일부). Grep으로 16·20·21·23·27·30·31행도 확인했는데 모두 이 범위 안입니다 | 미확인 |\n\n명령을 실행하지 않았기 때문에 바이트 수는 확인하지 못했습니다. Read 도구는 바이트 수를 보여 주지 않습니다.\n\n- **사용자 질문 수: 0**\n- **승인 대기 수: 0** — 분기 ①에서는 승인이 필요 없습니다. 분기 ②는 사람 승인이 아니라 허브에 B로 넘기는 일입니다. 다만 허브가 도구를 고치지 않고 blocking을 안은 채 진행하기로 한다면, 그때 A-3에 따라 owner 승인이 1건 필요합니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 36499,
+  "usage": {
+    "input_tokens": 14,
+    "output_tokens": 3801
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "4de8a5e39e2d3ef154cf64a118fee5299a0e365719f05f09d56497dee282c8b7",
+  "prompt_sha256": "9043d2b034b0f42e275b7f1c355303ffb90fc90435b450e8625b0a1056d47355",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": [
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/SKILL.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/task-steps.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/reviewer.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/decision-rights.md"
+    },
+    {
+      "tool": "Grep",
+      "pattern": "note|blocking|질문 밖|out_of_scope|scope",
+      "path": "docs/AGENT-CALL.md"
+    },
+    {
+      "tool": "Glob",
+      "pattern": "docs/AGENT-CALL.md"
+    },
+    {
+      "tool": "Grep",
+      "pattern": "사전 검토|판정|note",
+      "path": "docs/AGENT-CALL.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "docs/AGENT-CALL.md",
+      "limit": 40
+    }
+  ]
+}

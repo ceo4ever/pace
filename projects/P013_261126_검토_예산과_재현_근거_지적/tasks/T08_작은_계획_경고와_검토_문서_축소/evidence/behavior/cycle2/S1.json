@@ -1,0 +1,41 @@
+{
+  "text": "## 판단: 작은 일이므로 프로젝트를 만들지 않습니다\n\n도움말 오타 한 글자는 SKILL.md §1의 \"작은 일\"(diff를 한 문장으로 말할 수 있는 문구 수정)에 해당합니다. 그래서 `pace project new`·`start`·태스크·finish 절차 없이 main에서 바로 고칩니다. 로컬 커밋은 Git으로 되돌릴 수 있으므로 decision-rights A-2의 승인 대상이 아닙니다. 푸시는 A-2에 해당하므로 하지 않습니다.\n\n## 할 일 (순서대로)\n\n1. **고칠 곳 찾기**: `memory list`의 도움말 문자열을 검색해 정의 위치를 찾습니다. 예를 들어 `list` 서브커맨드의 help/description을 찾습니다.\n2. **오타 확인**: 사용자가 어느 글자인지 말하지 않았습니다. 그 문자열에서 오타가 하나로 분명하면 그대로 진행합니다. 후보가 여러 개거나 애매할 때만 사용자에게 하나를 묻습니다.\n3. **같은 문자열이 다른 곳에도 있는지 확인**: 도움말 출력을 고정한 테스트 기대값이나 문서에 같은 문자열이 있으면 같은 diff에서 함께 고칩니다.\n4. **한 글자 수정**: 그 줄만 고치고 다른 문구는 건드리지 않습니다.\n5. **저장소 검사 명령 실행**: AGENTS.md 등 저장소 규칙에 정해진 검사 명령을 실행하고, `pace memory list --help` 출력에서 수정이 반영됐는지 확인합니다.\n6. **커밋**: 예) `fix(memory): list 도움말 오타 수정`. 백로그·프로젝트 원본 문서는 건드리지 않으므로 `pace backlog refresh`는 필요 없습니다. 병합 대기 중인 프로젝트가 있으면 §4 ✋ 규칙에 따라 main 커밋을 병합 뒤로 미룹니다.\n7. **보고**: 바꾼 파일·줄, 검사 결과, 커밋 해시를 알립니다. 푸시는 별도 승인이 있을 때만 합니다.\n\n## 직접 읽은 파일\n\n| 파일 | 줄 범위 | 전체 바이트 |\n|---|---|---|\n| `skills/pace-project-dev/SKILL.md` | 1–92 (전체) | 확인 못 함 (명령 실행 금지) |\n| `skills/pace-project-dev/references/decision-rights.md` | Grep으로 일치한 줄만 봄: 1, 5, 12, 25, 27, 32, 36, 41, 46 | 확인 못 함 |\n\n- 사용자 질문 수: **0** (오타 후보가 애매할 때만 1)\n- 승인 대기 수: **0**",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 16549,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 1531
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "2330e63659e30bb85c9395401fcc9024d2a74e6932a4c5c5b02681bd365d47bd",
+  "prompt_sha256": "ba4612d64f72b34a92b5b3063b0673f77cd5f411bcf4e71bd52eb442cbe3438e",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": [
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/SKILL.md"
+    },
+    {
+      "tool": "Grep",
+      "pattern": "^#|작은 일|커밋",
+      "path": "skills/pace-project-dev/references/decision-rights.md"
+    }
+  ]
+}

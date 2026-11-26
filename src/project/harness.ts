@@ -3,7 +3,7 @@ import { InputSnapshot } from "../core/input-snapshot.ts";
 import { assertTeamFinishDestination, assertTeamFinishInputs, assertTeamFinishScope, checkedTeamTarget, commitTeamFinish, hasTeamFinishHistory, teamFinishFile, writeTeamFinish } from "./team-finish.ts";
 import { resolveWorkerRole, roleInstruction, startRoleRecord, type WorkerRole } from "../team/worker-role.ts";
 import { safeTeamPath } from "../team/store.ts";
-import { hasPermissionReview, reviewIssues, workingReview, type PermissionCheck, type ReviewCandidate } from "./pre-review.ts";
+import { hasPermissionReview, reviewIssues, taskPlanWarnings, workingReview, type PermissionCheck, type ReviewCandidate } from "./pre-review.ts";
 import { APPLIED_REVIEW, isGitObject, permissionPath, type ApprovedTaskEdit, type ReviewPermission } from "./review-permission.ts";
 import { shellState } from "./shell-result.ts";
 import { generateDashboard, refreshDashboard } from "./dashboard.ts";
@@ -1357,9 +1357,17 @@ function checkTaskRaw(repo: Repo, id: string, taskId: string, candidate?: TaskCa
     }
   }
   const close = candidate ? candidate.readText(closePath) : existsSync(closePath) ? readFileSync(closePath, "utf8") : null;
-  if (close === null) return { ok: false, issues: [`${label}: TASK-CLOSE.md가 없다`], notes: [] };
+  let contract: string | null;
+  try {
+    contract = candidate ? candidate.readText(contractPath)
+      : required || close === null ? working.readText("TASK.md") : readFileSync(contractPath, "utf8");
+  } catch (error) {
+    if (close !== null) throw error;
+    contract = null;
+  }
+  const notes = contract === null ? [] : taskPlanWarnings(contract, taskId).map(warning => `${label}: 계획 경고 · ${warning}`);
+  if (close === null) return { ok: false, issues: [`${label}: TASK-CLOSE.md가 없다`], notes };
   if (!/^- 태스크: .*판정: 통과/m.test(close)) issues.push(`${label}: 판정이 "통과"가 아니다`);
-  const contract = candidate ? candidate.readText(contractPath) : required ? working.readText("TASK.md") : readFileSync(contractPath, "utf8");
   if (contract === null) return { ok: false, issues: [`${label}: 검사 후보의 TASK.md가 없다`], notes: [] };
   const reader = candidate ? candidateReviewAt(dir, candidate) : working;
   const gate: PermissionCheck = { required, checkScope: (permission) => {
@@ -1399,7 +1407,7 @@ function checkTaskRaw(repo: Repo, id: string, taskId: string, candidate?: TaskCa
   }
   const evidence = checkEvidencePaths(dir, close, label, issues, candidate);
   const criteria = tableRows(contract, "## 기준").map((r) => r[0]!).filter((c) => /^T-\d+$/.test(c));
-  const notes = issues.length === 0 ? [`확인: 판정 통과 · 기준 ${criteria.length}개(${criteria.join(", ")}) 모두 통과 · 절 ${headings.length}개 · 증거 파일 ${evidence}개`] : [];
+  if (issues.length === 0) notes.unshift(`확인: 판정 통과 · 기준 ${criteria.length}개(${criteria.join(", ")}) 모두 통과 · 절 ${headings.length}개 · 증거 파일 ${evidence}개`);
   return { ok: issues.length === 0, issues, notes, ...(gate.edit ? { reviewEdit: gate.edit } : {}) };
 }
 

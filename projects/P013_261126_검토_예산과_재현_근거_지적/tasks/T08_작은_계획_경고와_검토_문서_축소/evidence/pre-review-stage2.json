@@ -1,0 +1,23 @@
+{
+  "text": "# T08 사전 검토 2단계: 1단계 결과와 계획 대조\n\n**결론:** 진행을 막을 필수 문제는 없습니다. 1단계의 should_fix 5건은 근거가 맞고, 계획에는 아직 반영되지 않았습니다. 1단계가 인용한 T-1의 약 400자, 접근 절 6문장, S-1 문구가 지금 TASK와 그대로 같습니다. 5건 모두 계획 문구만 보강하면 되는 수준이라 pass를 유지합니다.\n\n## 목표·BR08·기준 대조\n- **목표:** BR08 목적 \"검토 표면 축소, 도구가 강제하는 규칙을 문서에서 제거\"가 TASK 목적(`TASK.md:10`)과 일치합니다. 경고는 판정을 바꾸지 않는다는 범위 밖 문구(`:22`)도 BR08 `:14`의 위임 범위 안입니다.\n- **BR08 완료 기준 4개**는 모두 대응됩니다.\n  - 경고와 시험 → T-1, S-1\n  - reviewer 전후 비교와 대조표 → T-3, S-2\n  - S1~S7과 새 시나리오 2건 → T-4, S-3\n  - `npm run check` → T-5\n- **빠진 부분 하나(note):** BR08 `:23`의 \"지금 check에서는 경고가 없다\"라는 변경 전 상태를 확인하는 시험이 S-1에 명시되어 있지 않습니다.\n\n## 이전 should_fix 5건 재확인\n- **SF-1 (줄 수만으로는 상한을 피할 수 있음):** 맞습니다. 다만 BR08은 \"크기 상한\"만 요구하고 비차단 경고이므로 필수는 아닙니다.\n- **SF-2 (분포 근거의 모집단):** 맞습니다. `evidence/task-size-distribution.json`의 범위가 `projects/**/TASK.md`라서 P008·P009의 `evidence/**/TASK.md` 사례 복사본이 섞여 있습니다. 그래도 80줄 값은 유지됩니다. 사례 복사본에는 `- 상태: 완료` 줄이 0건이어서, 실제 근거인 완료 표본 P80=78은 오염되지 않았습니다. 근거 문장에서 \"전체 P90\"만 고치면 됩니다.\n- **SF-3 (민감 경로 기록):** 맞습니다. 이 TASK가 check/done 경로를 건드리면 `docs/SECURITY.md:11` 규칙상 PROJECT.md 보안 영향에 적어야 합니다. 지금 보안 영향에는 BR05만 있습니다(`PROJECT.md:50`).\n  - 접근 절(`:45`)이 SECURITY 경계와 실패 반례를 이미 다루므로 계획 결함은 아닙니다.\n  - 다만 구현을 시작하기 전에 기록해야 하는 규칙 의무입니다. 5건 중 가장 먼저 처리할 항목입니다.\n- **SF-4 (유지 항목 고정):** 맞습니다. T-5의 \"기존 링크·문구\"는 P011 시험 범위만 지킵니다. T-3이 나열한 유지 항목 중 다음 두 가지는 지워도 검출되지 않습니다.\n  - cross-verify·coordinator·AGENT-CALL의 A-1/A-3 정본 링크\n  - 작성자와 독립 검토를 분리하는 문장\n\n  T-4의 행동 eval이 일부를 덮기 때문에 필수로 올리지는 않았습니다.\n- **SF-5 (채점 주체):** 맞습니다. `scenarios.md:26`도 채점자를 정하지 않습니다. T-5의 \"독립 tester 확보\"를 S-3 채점과 연결하면 해소됩니다.\n\n## 따로 확인을 요청한 두 지점\n- **경고만 연결한 후보의 경계:** 필수 문제는 없습니다. S-1이 \"경고의 TASK 본문은 판정과 같은 후보\"와 \"기존 성공·거절 유지\"를 함께 요구합니다. 그래서 경고를 `reviewIssues()`에 넣어 판정이 바뀌는 구현은 \"81줄이지만 다른 조건은 모두 통과하는 TASK\" 사례로 잡힙니다.\n  - 남은 모호함 하나: T-1은 \"check가 경고\"라고만 하는데 S-1의 행동에는 done·index 훅이 들어 있습니다. done에서도 경고를 내는지, done에서는 판정이 유지되는지만 확인하는지 한 줄로 정해 두기를 권합니다(should_fix).\n- **문서 채점의 사전 고정:** 필수 문제는 없습니다.\n  - S1~S7의 필수·금지 행동은 이미 Git에 고정돼 있습니다(`scenarios.md:14`, `:28`, `:48`).\n  - 새 2건은 T-4가 \"축소 전에 고정\"을 요구합니다. 하지만 태스크는 done 뒤 한 번만 커밋하므로, 고정 시점을 Git 이력으로 증명할 수 없습니다.\n  - 그래서 SF-5와 함께 하나를 정하기를 권합니다(should_fix): 새 행동표를 문서 축소 전에 별도 증거 파일로 남기고 해시를 기록하거나, 독립 tester가 행동표를 먼저 받아 채점하게 합니다.\n\n## 실제 범위\n- **읽은 파일:**\n  - 대상 TASK.md 전문\n  - BR08 전문\n  - 같은 태스크 폴더의 `REVIEW-LOG.jsonl`, `evidence/task-size-distribution.json`\n- **grep으로만 확인한 파일:** `PROJECT.md`(보안·BR 줄), `docs/SECURITY.md`(`:11`, `:19`), `scenarios.md`(제목·채점 줄)\n- **Glob·count로 확인:** 사례 복사본 TASK 목록과 그 안의 완료 상태 줄 수\n- **읽지 않은 것:** `review-records/R1·R2.json` 원문, `reviewer.md`, `decision-rights.md`, `pre-review.ts` 본문\n- 명령은 실행하지 않았습니다.\n\npass",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 72312,
+  "usage": {
+    "input_tokens": 14,
+    "output_tokens": 7359
+  },
+  "process_cleanup": "verified"
+}

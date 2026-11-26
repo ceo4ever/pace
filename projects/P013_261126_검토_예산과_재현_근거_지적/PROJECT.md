@@ -47,7 +47,7 @@
 
 ## 설계
 
-태스크별 설계는 각 BR 범위를 따른다(BR01 `src/agent/review-log.ts`·`verify-cli.ts` 예산·호출 상한, BR02 공동 시도·escalation과 `decision-rights.md` A-3·B, BR03 `src/agent/verify.ts` 판정 질문·구조화된 지적, BR04 증거 상태, BR05 `src/project/harness.ts`·`pre-review.ts` 허가 범위 게이트, BR06 verify 밖 고정·PRE-REVIEW 생성, BR07 측정, BR08 문서 축소). 보안 영향: BR05가 민감 경로 `harness.ts`(check·done·commit-msg 게이트)를 바꾼다 — `docs/SECURITY.md` 체크리스트. 호환: 기존 `REVIEW-LOG.jsonl`·옛 태스크는 지금 동작 그대로, P011 문구 고정 시험(`test/project-dev-skill.test.ts`)을 깨지 않는다.
+태스크별 설계는 각 BR 범위를 따른다(BR01 `src/agent/review-log.ts`·`verify-cli.ts` 예산·호출 상한, BR02 공동 시도·escalation과 `decision-rights.md` A-3·B, BR03 `src/agent/verify.ts` 판정 질문·구조화된 지적, BR04 증거 상태, BR05 `src/project/harness.ts`·`pre-review.ts` 허가 범위 게이트, BR06 verify 밖 고정·PRE-REVIEW 생성, BR07 측정, BR08 문서 축소). 보안 영향: BR05가 민감 경로 `harness.ts`의 check·done·commit-msg 게이트를 바꾼다. BR08은 같은 후보의 TASK에서 경고를 내며 통과 요건은 유지한다. `docs/SECURITY.md`의 후보·거절 경계를 먼저 검토한다. 호환: 기존 `REVIEW-LOG.jsonl`·옛 태스크는 지금 동작 그대로, P011 문구 고정 시험(`test/project-dev-skill.test.ts`)을 깨지 않는다.
 
 **바꿀 정본 목록**
 
@@ -70,8 +70,8 @@
 | T04 | 영향 문턱과 기준별 증거 상태 | 완료 | 139b0b5 |
 | T05 | 허가 범위 게이트와 고치고 진행 | 완료 | 4db6bd7 |
 | T06 | verify 밖 검토 고정과 사전 검토 기록 생성 | 완료 | 58badc8 |
-| T07 | 검토 측정과 전후 비교 | 완료 | |
-| T08 | 작은 계획 경고와 검토 문서 축소 | 대기 | |
+| T07 | 검토 측정과 전후 비교 | 완료 | 41270bf |
+| T08 | 작은 계획 경고와 검토 문서 축소 | 완료 | |
 
 T02a → T03 → T02b(T09) → T04 순서다. 두 자리 식별자를 요구하는 하네스에는 T02b를 T09로 배정한다. [분할 근거](tasks/T02_예산_소진_뒤_공동_시도와_owner_결정_요청/evidence/upper-review.md)
 

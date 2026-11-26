@@ -1,0 +1,31 @@
+{
+  "text": "1. **\"이걸로 서비스 기획해 줘\"** → **pace-intent**: 설명에 트리거 문구로 그대로 들어 있습니다. 정해 둔 아이디어를 기획으로 구체화하는 요청이라 pace-scout은 맞지 않습니다.\n2. **\"프로젝트 문서 최신화해 줘\"** → **pace-project-init**: 설명에 \"프로젝트 문서 … 최신화\"가 명시돼 있습니다.\n3. **\"BL261109_03 착수해 줘\"** → **pace-project-dev**: 백로그 단계를 시작하는 일이고, 설명에 \"백로그 단계 착수\"가 있습니다.\n4. **\"확정된 목차대로 제안서 작성·검증을 프로젝트로 진행해 줘\"** → **pace-project-dev**: \"프로젝트로 진행해 줘\"라는 트리거가 있고, 기획도 끝나 작성과 검증만 남았습니다.\n5. **\"PRD 써 줘\"(내용·독자 미정)** → **pace-intent**: 독자와 목적을 아직 정하지 않은 문서라 인터뷰로 빈 곳을 먼저 채워야 합니다.\n6. **\"확정된 목차대로 제안서 작성하고 검증해 줘\"** → **pace-project-dev**: \"프로젝트로\"라는 말은 없지만 목차가 확정돼 작성과 검증만 남았습니다. 설명에 이런 경우는 문서여도 처음부터 이 스킬을 쓴다고 돼 있습니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 7069,
+  "usage": {
+    "input_tokens": 2,
+    "output_tokens": 663
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "9e385ae6d1a9dc1b2ef455106a1a4765de24f32eb18a5fd622476d6ded96cb8f",
+  "prompt_sha256": "33f98a2367f60676a05113a2592021d98413e1f506d560dd91eec5bcbc3c2c43",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": []
+}

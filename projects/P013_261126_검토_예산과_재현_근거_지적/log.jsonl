@@ -122,3 +122,12 @@
 {"ts":"2026-11-26T07:11:15.089Z","p":"P013","t":"T07","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T07:11:15.337Z","p":"P013","t":"T07","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T07:11:15.337Z","p":"P013","t":"T07","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T07:11:21.113Z","p":"P013","t":"T08","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T07:13:46.229Z","p":"P013","t":"T08","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 5 — 고정 후보 경고·마감 전후·줄 셈 증거와 행동 시험의 사전 고정을 계약에 명시한다.","ref":"review-records/R1.json","data":{"blocking":0,"should_fix":5,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T07:15:30.842Z","p":"P013","t":"T08","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 5 — 분포 근거·사전 채점표·후보 경계와 실패 시 출력 계약을 확인했다.","ref":"review-records/R2.json","data":{"blocking":0,"should_fix":5,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T07:17:19.416Z","p":"P013","t":"T08","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 5 — 사전 2단계에서 후보 경계와 소스 고정의 계약을 확인하고 지적 대응을 보안 기록·독립 채점에 연결했다.","ref":"evidence/pre-review-stage2.json","data":{"blocking":0,"should_fix":5,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T07:36:48.906Z","p":"P013","t":"T08","type":"review","by":"agent","msg":"reviewer pass blocking 0 should_fix 1 — 경고·후보·승인 경계를 확인하고 A-3 재개 옵션 안내를 실제 명령과 대조해 보완했다.","ref":"evidence/reviewer-sealed.json","data":{"blocking":0,"should_fix":1,"tester":0,"reviewer":1,"pass":1,"fail":0}}
+{"ts":"2026-11-26T07:36:49.089Z","p":"P013","t":"T08","type":"review","by":"agent","msg":"tester pass blocking 0 should_fix 0 — 19개 행동과 후보 시험, 전체 결과·재개 옵션의 최종 근거를 독립 확인했다.","ref":"evidence/tester-sealed.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
+{"ts":"2026-11-26T07:36:49.296Z","p":"P013","t":"T08","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T07:36:49.544Z","p":"P013","t":"T08","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T07:36:49.544Z","p":"P013","t":"T08","type":"task_done","by":"cli","msg":"done","ok":true}

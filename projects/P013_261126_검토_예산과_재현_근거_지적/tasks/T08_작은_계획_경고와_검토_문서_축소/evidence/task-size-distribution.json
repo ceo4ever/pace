@@ -1,0 +1,23 @@
+{
+  "start_commit": "41270bfb08311e75167a4c8ca79419c48c9464a6",
+  "scope": "projects/**/TASK.md tracked in the starting commit",
+  "count": 98,
+  "unit": "raw UTF-8 lines after CRLF->LF and trimming trailing whitespace, nearest rank",
+  "p50": 37,
+  "p80": 59,
+  "p90": 78,
+  "p95": 92,
+  "max": 145,
+  "warning_above": 80,
+  "states": {
+    "완료": 48,
+    "진행": 25,
+    "legacy": 25
+  },
+  "completed_only": {
+    "p50": 56,
+    "p80": 78,
+    "p90": 92,
+    "p95": 105
+  }
+}

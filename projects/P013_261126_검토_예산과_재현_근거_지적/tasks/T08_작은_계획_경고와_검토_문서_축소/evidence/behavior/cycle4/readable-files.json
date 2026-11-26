@@ -1,0 +1,102 @@
+{
+  "docs/AGENT-CALL.md": {
+    "bytes": 7338,
+    "lines": 42
+  },
+  "docs/SECURITY.md": {
+    "bytes": 8055,
+    "lines": 33
+  },
+  "docs/TEAM-METRICS.md": {
+    "bytes": 59410,
+    "lines": 202
+  },
+  "docs/WORK-PROCESS.md": {
+    "bytes": 11342,
+    "lines": 47
+  },
+  "skills/pace-project-dev/SKILL.md": {
+    "bytes": 10548,
+    "lines": 92
+  },
+  "skills/pace-project-dev/references/backlog.md": {
+    "bytes": 4222,
+    "lines": 27
+  },
+  "skills/pace-project-dev/references/commands.md": {
+    "bytes": 2432,
+    "lines": 15
+  },
+  "skills/pace-project-dev/references/coordinator.md": {
+    "bytes": 14467,
+    "lines": 71
+  },
+  "skills/pace-project-dev/references/cross-verify.md": {
+    "bytes": 940,
+    "lines": 6
+  },
+  "skills/pace-project-dev/references/decision-rights.md": {
+    "bytes": 12177,
+    "lines": 51
+  },
+  "skills/pace-project-dev/references/document-shape.md": {
+    "bytes": 6178,
+    "lines": 45
+  },
+  "skills/pace-project-dev/references/e2e.md": {
+    "bytes": 3229,
+    "lines": 57
+  },
+  "skills/pace-project-dev/references/finish.md": {
+    "bytes": 2509,
+    "lines": 25
+  },
+  "skills/pace-project-dev/references/goal-review.md": {
+    "bytes": 7024,
+    "lines": 45
+  },
+  "skills/pace-project-dev/references/html-plan.md": {
+    "bytes": 1970,
+    "lines": 35
+  },
+  "skills/pace-project-dev/references/project-define.md": {
+    "bytes": 666,
+    "lines": 6
+  },
+  "skills/pace-project-dev/references/recovery.md": {
+    "bytes": 598,
+    "lines": 7
+  },
+  "skills/pace-project-dev/references/reviewer.md": {
+    "bytes": 8850,
+    "lines": 87
+  },
+  "skills/pace-project-dev/references/security.md": {
+    "bytes": 2943,
+    "lines": 43
+  },
+  "skills/pace-project-dev/references/standards.md": {
+    "bytes": 1202,
+    "lines": 8
+  },
+  "skills/pace-project-dev/references/task-steps.md": {
+    "bytes": 2278,
+    "lines": 12
+  },
+  "skills/pace-project-dev/references/tester.md": {
+    "bytes": 2789,
+    "lines": 39
+  },
+  "skills/pace-project-dev/references/testing.md": {
+    "bytes": 5107,
+    "lines": 50
+  },
+  "skills/pace-project-dev/references/tools.md": {
+    "bytes": 5798,
+    "lines": 40
+  },
+  "skills/pace-project-dev/references/verification.md": {
+    "bytes": 2194,
+    "lines": 18
+  }
+}

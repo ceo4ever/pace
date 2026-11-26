@@ -1,0 +1,40 @@
+{
+  "text": "T01을 바로 시작하면 됩니다. worktree 작업자는 태스크 표의 `대기` 중 맨 앞부터 수행하고, 이 단계에서는 사용자 질문이나 승인 대기가 필요 없습니다.\n\n## 할 일 (순서대로)\n\n1. **T01 열기 (분석)**: `pace project task P### \"<T01 이름>\"`을 실행합니다. TASK.md가 생기고 표의 T01 상태가 `진행`으로 바뀝니다. 목적과 재료를 쓰고, 앞 태스크가 넘긴 일이 있는지 확인합니다. T01은 첫 태스크라서 앞 TASK-CLOSE는 없을 것으로 보입니다. (SKILL.md §3-1, task-steps.md 1)\n2. **설계**: TASK.md에 기준 `T-n`, 테스트 표(기준마다 시나리오 한 줄 이상), 증명 범위·판정 주체, 핵심 한두 줄의 접근을 씁니다. 기준 문서는 §5(standards.md의 우선순위)로 고릅니다. Telegram·OS 서비스·다른 CLI 같은 외부 시스템을 다루면, 브레인에서 선례를 검색한 결과를 `선례` 한 줄에 적습니다.\n3. **구현 전 검토**: `pace agent verify`로 작성자와 다른 제공자(Claude PM이면 Codex)의 새 맥락에 TASK.md 검토를 맡깁니다. pass(blocking 0)이거나 사용자가 결정한 waiver일 때만 구현합니다. 검토가 실행되지 않으면 B1으로 복구합니다.\n4. **구현**: 기존 코드 스타일을 따르되 안티패턴과 대조합니다. 보안·성능 문제가 있거나, 따를 주변 코드가 없거나, 주변이 안티패턴이면 교본을 따릅니다. 버그 수정이면 실패하는 테스트(RED)부터 씁니다. 변경이 허가 경계를 넘으면 검토를 다시 받습니다.\n5. **테스트**: 저장소 검사 명령과 E2E를 수행합니다. 새 맥락에서 tester와 reviewer를 병렬로 배정하고 결과를 회수합니다. 출력에 `escalation`이 있으면 그것을 먼저 따르고, 없으면 fail·blocking을 고친 뒤 **둘 다** 다시 돌립니다.\n6. **마감**:\n   - TASK-CLOSE.md를 씁니다(리뷰 절에 시도별 판정과 교본 대조 포함).\n   - `pace project check P### T01`을 통과시킵니다.\n   - `pace project done P### T01`을 실행합니다.\n   - `pace memory status --project --body \"…\"`로 진행 상황을 기록합니다.\n   - 커밋 `feat(P###/T01): …`에 TASK-CLOSE·상태·메모리를 함께 넣습니다.\n7. **다음**: 다음 `대기` 태스크로 넘어갑니다. 모든 태스크가 끝나면 §4로 갑니다: PROJECT-CLOSE.md 작성 → `finish` → 자체 판단 대조 → `worker_done`. merge는 허브가 owner 승인을 받은 뒤 실행합니다.\n\n**멈출 때**: 결정 권한 A에 해당하는 일만 `ask`로 허브에 넘기고, 그 조치만 보류한 채 독립 작업은 이어갑니다(§6).\n\n## 직접 읽은 파일\n\n| 파일 | 줄 범위 | 전체 바이트 |\n|---|---|---|\n| `skills/pace-project-dev/SKILL.md` | 1–92 (전체) | 확인 못 함 (명령을 실행하지 않음) |\n| `skills/pace-project-dev/references/task-steps.md` | 1–12 (전체) | 확인 못 함 (명령을 실행하지 않음) |\n\ndecision-rights.md, reviewer.md, standards.md 같은 다른 references는 읽지 않았습니다.\n\n## 집계\n- **사용자 질문 수**: 0\n- **승인 대기 수**: 0. 구현 전 검토는 reviewer가 판정하므로 사람 승인 대기가 아닙니다. 사람 승인은 merge·배포 단계에서만 필요합니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 18555,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 1881
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "67893b7143805c24792f623dbf836345f2178195509cc818fc601035a3960ffc",
+  "prompt_sha256": "d9e2d0072fe08da3c864f10f9b20fd24c83cc39284b4139ce4e26060cfce8e87",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": [
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/SKILL.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/task-steps.md"
+    }
+  ]
+}

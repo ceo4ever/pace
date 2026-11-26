@@ -52,15 +52,28 @@ test("사용자 교정 규칙이 작업자가 읽는 §4 본문에 있다 (병�
   assert.match(selfCheck, /합의를 바꾼 것이 있으면 보고 전에 §6으로 올리고/, "합의 변경 시 보고 전 §6 상신");
 });
 
-test("시나리오 문서에 필수 시나리오 S1~S7이 있다", () => {
+test("시나리오 문서에 필수 시나리오 S1~S9가 있다", () => {
   const scenarios = readFileSync(join(skillDir, "evals/scenarios.md"), "utf8");
-  for (let n = 1; n <= 7; n++) {
+  for (let n = 1; n <= 9; n++) {
     const row = scenarios.split("\n").find((line) => line.startsWith(`| S${n} |`));
     assert.ok(row, `S${n} 없음`);
     const cells = row.split("|").slice(1, -1).map((c) => c.trim());
     assert.equal(cells.length, 4, `S${n}: 번호·상황·필수·금지`);
     assert.ok(cells.every((c) => c.length > 0), `S${n}: 빈 칸`);
   }
+});
+
+test("축소한 검토 안내는 독립 맥락과 실제 승인 정본을 연결한다", () => {
+  const refs = join(skillDir, "references");
+  const cross = readFileSync(join(refs, "cross-verify.md"), "utf8");
+  assert.match(cross, /작성자와 다른 제공자의 새 맥락/);
+  assert.match(cross, /A-3을 적용.*\n.*\[A-1\]\(decision-rights\.md#a-결정-주체\)/s);
+  const coordinator = readFileSync(join(refs, "coordinator.md"), "utf8");
+  assert.match(coordinator, /\[A\]\(decision-rights\.md#a-결정-주체\)/);
+  assert.match(coordinator, /\[B\]\(decision-rights\.md#b-허브의-장애-대응\)/);
+  const calls = readFileSync(join(root, "docs", "AGENT-CALL.md"), "utf8");
+  assert.match(calls, /다른 제공자의 새 읽기 전용 맥락/);
+  assert.match(calls, /합의 변경\(A-1\).*검증 생략·완화\(A-3\).*decision-rights\.md#a-결정-주체/);
 });
 
 test("SKILL.md와 references 문서의 상대 링크가 모두 실제 파일을 가리킨다", () => {

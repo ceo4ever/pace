@@ -1,0 +1,44 @@
+{
+  "text": "## BL261109_03 착수 순서 (Orca 밖, 백로그 확정)\n\n1. **출처 확인**: `BL261109_03`의 백로그 폴더와 BACKLOG.md, BR 파일들을 읽고 목적·범위·완료 기준을 파악합니다. 이 workspace에서 Glob으로 찾아보니 해당 폴더가 없었습니다. 그래서 실제로는 저장소 main의 `backlogs/`에서 찾아야 하고, `--from`에 넣은 앞부분이 모호하면 명령이 거부합니다.\n2. **규모 판단 (§1)**: 브리프(BR)가 여러 개라면 **L 프로젝트**로 진행합니다. BR01이 T01이 되는 식으로 BR 번호와 태스크 번호가 같습니다. BR이 하나뿐이고 짧은 작업이면 태스크 없는 프로젝트로 할 수도 있습니다.\n3. **프로젝트 생성 (main)**: `pace project new \"<이름>\" --from BL261109_03`를 실행합니다. 프로젝트 번호, 폴더, PROJECT.md가 만들어집니다.\n4. **분석**: 백로그, 코드 위치, 현재 동작, 브레인에서 재료를 모읍니다. `new`가 넣은 \"- 브레인:\" 후보 중 관련 없는 줄은 지웁니다.\n5. **설계**: 목표를 한 단계 위 목적과 맞춰 봅니다. 그다음 목적, 기준 `P-n`, 설계·보안 영향, 바꿀 정본 목록, 태스크 표를 씁니다. 태스크 표는 태스크·이름·상태·커밋 4칸이고, 세부는 `references/project-define.md`를 따릅니다. 작업자 도구와 모델이 필요하면 `pace worker show`로 확인합니다.\n6. **착수 결정 기록**: 백로그가 확정됐으므로 그 자체가 착수 결정입니다. 목적·기준·태스크와 출처(BL261109_03)를 PROJECT.md 결정 메모에 적습니다. **사용자 승인을 기다리지 않습니다.** 원본 문서를 직접 편집했다면 커밋 전에 `pace backlog refresh`를 실행합니다.\n7. **시작**: `pace project start P###`를 실행합니다. 정의 커밋, worktree(`../<저장소>.wt/P###`, 브랜치 `project/P###`), 준비 명령이 처리되고 BACKLOG.md 상태가 `진행`으로 바뀝니다.\n8. **Orca 밖 처리**: 이 세션은 코디네이터가 되지 않습니다. start 출력에 나온 명령으로 worktree에서 **새 세션**을 엽니다. main 세션에서는 worktree 파일을 절대 경로로 고치지 않습니다.\n9. **이후 단계 (worktree 세션)**: 태스크마다 다음 순서로 진행합니다.\n   - 분석 → 설계 → `pace agent verify`로 구현 전 검토 → 구현 → 테스트(tester와 reviewer를 병렬로) → TASK-CLOSE\n   - `check`와 `done`을 실행하면 BR과 현황 행도 `완료`로 바뀝니다.\n   - 커밋합니다.\n   - 모든 태스크가 끝나면 PROJECT-CLOSE를 쓰고 `finish`를 실행한 뒤 자체 판단 결과를 대조합니다.\n   - **merge와 배포만 사람 승인 뒤**에 합니다.\n\n---\n\n### 직접 읽은 파일\n\n| 파일 | 읽은 줄 범위 | 전체 바이트 |\n|---|---|---|\n| `skills/pace-project-dev/SKILL.md` | 1–92 (전체) | 확인 불가 (명령 실행 금지로 stat 미실행) |\n| `skills/pace-project-dev/references/backlog.md` | 1–28 (전체) | 확인 불가 (같은 이유) |\n\n- Glob `**/BL261109_03*` 검색 결과: 일치하는 파일 없음 (파일을 읽은 것은 아님)\n\n### 집계\n- **사용자 질문 수: 0** — 백로그가 확정돼 있어서 착수 결정에 질문이 필요 없습니다.\n- **승인 대기 수: 0** — 지금 착수 단계에서는 없습니다. merge와 배포 승인은 나중 단계에서 필요합니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 20172,
+  "usage": {
+    "input_tokens": 6,
+    "output_tokens": 2095
+  },
+  "process_cleanup": "verified",
+  "trace_sha256": "a1591b29a467a6b421fbc1bec3f5f6b38b2ca0cdcde20550b1edd1c3b59cfc96",
+  "prompt_sha256": "de5907c1c55b4d823b5276173d2eefbd0a82d103c2364a04407645335cff52c7",
+  "observed_tools": [
+    "Glob",
+    "Grep",
+    "Read"
+  ],
+  "observed_reads": [
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/SKILL.md"
+    },
+    {
+      "tool": "Read",
+      "file_path": "skills/pace-project-dev/references/backlog.md"
+    },
+    {
+      "tool": "Glob",
+      "pattern": "**/BL261109_03*"
+    }
+  ]
+}

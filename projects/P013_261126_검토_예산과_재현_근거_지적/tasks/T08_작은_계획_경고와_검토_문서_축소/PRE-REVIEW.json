@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "24a33ccba9e902156cd2b3385f0b7b5b17c5f5e93a50497422ca802612ab4a56",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "2f8c106f4ccd698028e850f4af9966edeef155eac04522791bce90a7bd44b482",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "경고를 실제 판정 후보에 묶고 실패 출력·대상 범위·채점 사전 고정을 명시했다"
+    }
+  ]
+}

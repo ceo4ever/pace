@@ -1,0 +1,10 @@
+✔ T08 계획 경고는 크기와 실제 기준·테스트의 다른 태스크만 알리며 판정을 유지한다 (1997.547583ms)
+✔ T08 계획 경고는 검토 허가를 확인한 실제 Git 후보의 TASK 본문을 사용한다 (1404.956875ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3553.639958
