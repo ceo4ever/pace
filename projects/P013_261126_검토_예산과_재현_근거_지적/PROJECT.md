@@ -53,10 +53,10 @@
 
 | 정본 | 바뀌는 것 |
 |---|---|
-| `src/agent/review-log.ts`·`verify.ts`·`verify-cli.ts` | 예산·호출 상한·판정 질문·구조화된 지적·escalation |
-| `src/project/harness.ts`·`pre-review.ts` | 허가 범위 게이트·PRE-REVIEW 생성 |
+| `src/agent/review-log.ts`·`src/agent/verify.ts`·`src/agent/verify-cli.ts` | 예산·호출 상한·판정 질문·구조화된 지적·escalation |
+| `src/project/harness.ts`·`src/project/pre-review.ts` | 허가 범위 게이트·PRE-REVIEW 생성 |
 | `src/project/metrics*.ts` | 검토 지표 |
-| `skills/pace-project-dev/references/decision-rights.md`·`reviewer.md`·`tester.md`·`cross-verify.md`·`task-steps.md` | 판정 질문·예산·escalation·문서 축소 |
+| `skills/pace-project-dev/references/decision-rights.md`·`skills/pace-project-dev/references/reviewer.md`·`skills/pace-project-dev/references/tester.md`·`skills/pace-project-dev/references/cross-verify.md`·`skills/pace-project-dev/references/task-steps.md` | 판정 질문·예산·escalation·문서 축소 |
 | `docs/AGENT-CALL.md`·`docs/WORK-PROCESS.md` | 도구 계약·사건 |
 
 ## 태스크

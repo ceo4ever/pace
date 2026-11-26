@@ -41,7 +41,8 @@
 | `src/project/harness.ts`·`src/project/pre-review.ts` | 반영 | 실제 후보의 사전 허가, 기록 대조와 작은 계획 경고. |
 | `src/project/metrics*.ts` | 반영 | 원장 집계를 기존 지표와 구분해 생성. |
 | `skills/pace-project-dev/references/decision-rights.md`·`skills/pace-project-dev/references/reviewer.md`·`skills/pace-project-dev/references/tester.md`·`skills/pace-project-dev/references/cross-verify.md`·`skills/pace-project-dev/references/task-steps.md` | 반영 | 조치 판단과 승인, 검증 목표, 선례와 범위 인계. |
-| `docs/AGENT-CALL.md`·`docs/WORK-PROCESS.md` | 반영 | 호출과 구현 계약, 실제 owner 승인 경계. |
+| `docs/AGENT-CALL.md` | 반영 | 검토 호출, 외부 고정과 사전 검토, 실제 승인 입력. |
+| `docs/WORK-PROCESS.md` | 해당 없음 | 이 문서가 가리키는 결정 권한과 검토 정본에 사용자 승인 경계를 반영했다. |
 
 ## 남은 일
 
