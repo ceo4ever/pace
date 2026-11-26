@@ -6,12 +6,13 @@ import { collectTeamMetrics, type TeamMetrics } from "./team-metrics.ts";
 import { formatTeamMetrics } from "./team-metrics-document.ts";
 import { collectHandoffs, type HandoffReport } from "./handoff-report.ts";
 import { constants, openSync, closeSync, fstatSync, existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { writeFileAtomic } from "../core/fsutil.ts";
 import type { ProjectRef, Repo } from "./harness.ts";
 import { gateFailureReasons, metricDir, readMetrics } from "./metrics.ts";
 import { collectProjectStats, formatProjectStats } from "./tokens.ts";
 import { collectReviewLedgerMetrics, formatReviewLedgerMetrics, type ReviewLedgerMetrics } from "./review-metrics.ts";
+import { collectAgentCallMetrics, formatAgentCallMetrics, type AgentCallMetrics } from "./agent-calls.ts";
 import type { FullStats, TokenOptions } from "./tokens.ts";
 
 export interface ReviewCounts { task: string; blocking: number; shouldFix: number; testerFailures: number;
@@ -19,7 +20,7 @@ export interface ReviewCounts { task: string; blocking: number; shouldFix: numbe
 }
 export interface Improvement { kind: "gate" | "review" | "handoff"; code: string; count: number; tasks: string[]; }
 export const reviewFindingMetrics = [["blocking", "blocking"], ["should_fix", "shouldFix"], ["tester fail", "testerFailures"]] as const;
-export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; reviewLedger: ReviewLedgerMetrics; handoffs?: HandoffReport; team?: TeamMetrics; }
+export interface Dashboard extends FullStats { reviews: ReviewCounts[]; improvements: Improvement[]; reviewLedger: ReviewLedgerMetrics; handoffs?: HandoffReport; team?: TeamMetrics; agentCalls?: AgentCallMetrics; }
 function section(text: string, heading: string): string {
   const match = new RegExp(`^## ${heading}\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, "m").exec(text);
   return (match?.[1] ?? "").replace(/<!--[\s\S]*?-->/g, "").trim();
@@ -77,17 +78,20 @@ export function collectInsights(repo: Repo, ref: ProjectRef, inputs?: InputTrace
   }
   return { reviews, improvements };
 }
-export function collectDashboard(repo: Repo, ref: ProjectRef, options: TokenOptions = {}, inputs?: InputTrace): Dashboard {
+export function collectDashboard(repo: Repo, ref: ProjectRef, options: TokenOptions & { includeMainCalls?: boolean } = {}, inputs?: InputTrace): Dashboard {
   const trace = inputs ?? options.inputTrace ?? new InputSnapshot();
   const base = collectProjectStats(repo, ref, { ...options, inputTrace: trace }), collection = collectTeamMetrics(repo, ref, base, options, trace), team = collection?.metrics;
   const handoffs = collection?.adopted ? collection.handoffs : collectHandoffs(repo.root, ref.id, `projects/${ref.dir}`, { inputs: trace });
   const insights = collectInsights(repo, ref, trace, collection?.adopted);
   const reviewLedger = collectReviewLedgerMetrics(repo.root, ref.dir, trace);
+  const directory = `projects/${ref.dir}`;
+  const roots = options.includeMainCalls && resolve(repo.root) !== resolve(repo.mainRoot) ? [repo.root, repo.mainRoot] : [repo.root];
+  const agentCalls = collectAgentCallMetrics(roots.map((root) => ({ root, directory })), trace);
   if (trace instanceof InputSnapshot) void trace.files;
-  return { ...base, ...insights, reviewLedger, ...(handoffs ? { handoffs } : {}), ...(team ? { team } : {}) };
+  return { ...base, ...insights, reviewLedger, ...(handoffs ? { handoffs } : {}), ...(team ? { team } : {}), ...(agentCalls ? { agentCalls } : {}) };
 }
 export function formatDashboard(stats: Dashboard): string {
-  return formatExistingDashboard(stats) + "\n\n" + formatReviewLedgerMetrics(stats.reviewLedger);
+  return formatExistingDashboard(stats) + "\n\n" + formatReviewLedgerMetrics(stats.reviewLedger) + formatAgentCallMetrics(stats.agentCalls);
 }
 
 function formatExistingDashboard(stats: Dashboard): string {

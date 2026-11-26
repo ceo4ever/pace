@@ -61,7 +61,7 @@ Team finish는 기존 src 필드의 `finish:<24자리 hex>`로 시도를 구별�
 
 증거는 프로젝트 폴더 안의 기존 v1 `team-evidence` 영수증을 사용한다. `purposes`는 `role-observation`을 포함하고 `period.start/end/unit`은 조회 구간과 일치해야 한다. 출처의 `sourceRef`는 `role-observation:<role>:condition-not-triggered:<locator>` 또는 `role-observation:<role>:none:<locator>`다. 영수증은 같은 구간의 프로젝트 `note`에서 `src: "team-role-nonparticipation"`과 프로젝트 기준 상대 `ref`로 연결한다. 파일 경로는 슬래시로 구분한다. JSON의 각 분류 행은 `{role,status,refs}`로 관측에 쓴 영수증을 남긴다. 신고는 실제 사용 여부의 인증 수단이 아니며 관측 범위가 바뀌면 다시 대조한다.
 
-호출 로그는 프로젝트 사건 로그의 `role`, `to`, `requestId` 및 소통 원장을 채우지 않는 별도 자료로 수집한다. 이 필드는 역할 시작·질문·답과 실제 인계가 있을 때 그 사건에 사용한다. 팀 채택은 기존 `hasTeamContract`로 판정한다. 팀 채택 프로젝트의 호출 집계는 역할 이름으로 기존 관측에 연결하고, 미채택 프로젝트의 호출 데이터는 별도 호출 집계로 낸다. 호출 기록만 있을 때는 팀 `METRICS.md` 절과 팀 회고·마감 요구를 만들지 않는다. 실제 역할·질문·요청 사건이나 소통 원장이 있는 미채택 프로젝트의 기존 팀 요약은 계속 제공한다. 호출 형식과 수집기는 BL261125_01 BR03에서 이 경계를 적용한다.
+호출 로그(`calls/log.jsonl`)는 프로젝트 사건 로그의 `role`, `to`, `requestId` 및 소통 원장을 채우지 않는 별도 자료로 수집한다. 이 필드는 역할 시작·질문·답과 실제 인계가 있을 때 그 사건에 사용한다. 팀 채택은 기존 `hasTeamContract`로 판정한다. `pace project stats`는 팀 채택 여부와 관계없이 호출을 이름·실행기별 별도 절(`--json`의 `agentCalls`)로 보여 준다. 이 절은 기록된 시도 수, 시간과 토큰의 알려진 합 및 미확인 건수를 보고한다. 입력·출력·호스트 총 토큰을 서로 더하지 않는다. Codex p의 `tokens used`는 호출 원장의 총량이다. 검토 원장에는 동일 값이 기존 `usage.output_tokens` 호환 슬롯에 남으며 호출 집계의 출력 토큰은 미확인으로 둔다. 호출 수치와 검토 원장 및 기존 구간 토큰은 합산하지 않는다. 호출 기록만 있을 때는 팀 `METRICS.md` 절과 팀 회고·마감 요구를 만들지 않는다. 실제 역할·질문·요청 사건이나 소통 원장이 있는 미채택 프로젝트의 기존 팀 요약은 계속 제공한다. 호출 형식과 수집기는 BL261125_01 BR03에서 이 경계를 적용한다.
 
 ## 측정 입력
 

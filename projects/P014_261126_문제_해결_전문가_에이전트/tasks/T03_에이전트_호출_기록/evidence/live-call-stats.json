@@ -1,0 +1,31 @@
+{
+  "agentCalls": {
+    "state": "recorded",
+    "attempts": 2,
+    "groups": [
+      {
+        "agent": "pace-reviewer",
+        "engine": "claude",
+        "attempts": 2,
+        "durationMs": {
+          "known": 130420,
+          "unknown": 0
+        },
+        "inputTokens": {
+          "known": 12,
+          "unknown": 0
+        },
+        "outputTokens": {
+          "known": 12971,
+          "unknown": 0
+        },
+        "totalTokens": {
+          "known": null,
+          "unknown": 2
+        }
+      }
+    ]
+  },
+  "existingTeamShown": true,
+  "existingReviewLedgerShown": true
+}

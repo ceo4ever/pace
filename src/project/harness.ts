@@ -1263,7 +1263,7 @@ function permissionScopeIssues(repo: Repo, ref: ProjectRef, dir: string, permiss
   const project = relativeGitPath(repo.root, projectFile(repo, ref));
   const projectDir = project.slice(0, project.lastIndexOf("/"));
   const task = relativeGitPath(repo.root, dir);
-  const administrative = new Set([project, `${projectDir}/log.jsonl`, ".pace/memory/status.md", "backlogs/dashboard/data.js"]);
+  const administrative = new Set([project, `${projectDir}/log.jsonl`, `${projectDir}/calls/log.jsonl`, ".pace/memory/status.md", "backlogs/dashboard/data.js"]);
   const taskFiles = /^(?:TASK(?:-CLOSE)?\.md|PRE-REVIEW\.json|REVIEW-(?:LOG\.jsonl|FOLLOWUPS\.json|ESCALATION-(?:pre|post)\.json)|(?:evidence|review-records)\/.+\.(?:md|json|jsonl|txt|log|patch|diff|csv|tsv|png|jpg|svg|html|pdf))$/;
   const insideTask = (path: string) => path.startsWith(task + "/") && taskFiles.test(path.slice(task.length + 1));
   const overview = read(["show", `${base}:${project}`]);
@@ -1271,6 +1271,7 @@ function permissionScopeIssues(repo: Repo, ref: ProjectRef, dir: string, permiss
   if (source && basename(source).startsWith("BL")) {
     const backlink = relativeGitPath(repo.root, source);
     administrative.add(`${backlink}/BACKLOG.md`);
+    administrative.add(`${backlink}/calls/log.jsonl`);
     const brief = listBriefs(repo.root, source).find((entry) => entry.id === basename(dir).slice(1, 3));
     if (brief) administrative.add(relativeGitPath(repo.root, brief.path));
   }

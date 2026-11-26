@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "author": "openai",
+  "attempts": [
+    {
+      "hash": "4b82ec52c1846ea22f9078640c1e570a62b3288f94f1d030d2f4fc59e4ff1899",
+      "provider": "anthropic",
+      "cross": true,
+      "status": "pass",
+      "blocking": 0,
+      "evidence": "review-records/R1.json",
+      "continuity": "new",
+      "permission": {
+        "mode": "implementation",
+        "paths": [],
+        "protected": [
+          {
+            "from": 8,
+            "to": 10
+          },
+          {
+            "from": 19,
+            "to": 23
+          },
+          {
+            "from": 27,
+            "to": 32
+          }
+        ],
+        "base": "2719c36dbcf506d888279b8e408bafd6b3f9250f",
+        "task_mode": "100644"
+      }
+    }
+  ]
+}

@@ -77,6 +77,8 @@ export interface AgentResult {
   agent: AgentName;
   mode: Mode;
   model: Sourced<string | null>;
+  /** 실행 출력에서 호스트가 보고한 effort. 요청값만 알 때는 생략한다. */
+  reported_effort?: string;
   /** reported: 에이전트가 보고 · model: 보고된 모델 이름에서 판별 · table: 에이전트 종류 고정표(확인 아님) */
   provider: Sourced<Provider>;
   access: Access;
@@ -87,6 +89,8 @@ export interface AgentResult {
   is_error: boolean;
   duration_ms: number;
   usage: { input_tokens: number | null; output_tokens: number | null };
+  /** 호스트가 방향 분리 없이 보고한 총량. 기존 usage 슬롯의 의미는 유지한다. */
+  usage_total_tokens?: number;
   /** raw 보관 시 파일 경로, 아니면 null */
   raw_path: string | null;
   /** 이벤트 전달 집계 — onEvent 훅이 있을 때만(ACP) */
@@ -172,7 +176,7 @@ export interface Executor {
   readonly capabilities: Capabilities;
   /** 읽기 전용 요청에서 쓰기 차단을 실측 증거로 확인한 실행기만 true — 체인이 읽기 전용 단계 적격을 이 값으로 판단한다 */
   readonly readOnlyEnforced?: boolean;
-  run(request: AgentRequest, hooks?: RunHooks): Promise<AgentResult>;
+  run(request: AgentRequest, hooks?: RunHooks, beforeLocalOutput?: (result: AgentResult) => void): Promise<AgentResult>;
 }
 
 export type RequestInput = { [K in keyof AgentRequest]?: unknown };
@@ -243,6 +247,8 @@ export interface RawFacts {
   provider?: unknown;
   inputTokens?: unknown;
   outputTokens?: unknown;
+  effort?: unknown;
+  totalTokens?: unknown;
 }
 
 const str = (v: unknown): string | null => (typeof v === "string" && v !== "" ? v : null);
@@ -276,11 +282,13 @@ export function normalizeResult(request: AgentRequest, facts: RawFacts, meta: { 
     : request.model
       ? { value: request.model, source: "requested" }
       : { value: null, source: "unknown" };
+  const total = num(facts.totalTokens);
   return {
     text: typeof facts.text === "string" ? facts.text : "",
     agent: request.agent,
     mode: request.mode,
     model,
+    ...(typeof facts.effort === "string" && /^[a-z][a-z0-9_-]{0,31}$/.test(facts.effort) ? { reported_effort: facts.effort } : {}),
     // 제공자는 에이전트 종류의 고정표에서 정한다 — 에이전트가 보고한 값이 아니므로 출처는 table
     provider: resolveProvider(request.agent, facts.provider, reported),
     access: request.access,
@@ -290,19 +298,54 @@ export function normalizeResult(request: AgentRequest, facts: RawFacts, meta: { 
     is_error: facts.isError === true,
     duration_ms: Math.max(0, Math.round(meta.durationMs)),
     usage: { input_tokens: num(facts.inputTokens), output_tokens: num(facts.outputTokens) },
+    ...(total === null ? {} : { usage_total_tokens: total }),
     raw_path: meta.rawPath ?? null,
     process_cleanup: meta.cleanup ?? "verified",
   };
 }
 
+export interface AgentAttempt {
+  at: string;
+  agent: AgentName;
+  mode: Mode;
+  requestedModel: string | undefined;
+  requestedEffort: string | undefined;
+  durationMs: number;
+  reportedModel: string | null;
+  reportedEffort: string | null;
+  usage: AgentResult["usage"] | null;
+  totalTokens: number | null;
+  error: ErrorCode | null;
+}
+export type ObserveAttempt = (attempt: AgentAttempt) => void;
+
 /** 요청 검사 → 능력 검사 → 실행. 읽기 전용을 강제할 수 없는 실행기는 거부한다. */
-export async function runAgent(executor: Executor, input: RequestInput, hooks?: RunHooks): Promise<AgentResult> {
+export async function runAgent(executor: Executor, input: RequestInput, hooks?: RunHooks, observe?: ObserveAttempt): Promise<AgentResult> {
   const request = validateRequest(input);
   if (request.agent !== executor.agent || request.mode !== executor.mode) {
     throw new AgentError("executor_unavailable", `${request.agent}/${request.mode} 실행기가 아니다`);
   }
   checkCapabilities(request, executor.capabilities);
-  return executor.run(request, hooks);
+  if (!observe) return executor.run(request, hooks);
+  const at = new Date().toISOString(), started = performance.now();
+  const { agent, mode, model: requestedModel, effort: requestedEffort } = request;
+  const basis = { at, agent, mode, requestedModel, requestedEffort };
+  const observedResult = (result: AgentResult) => observe({ ...basis, durationMs: result.duration_ms,
+    reportedModel: result.model.source === "reported" ? result.model.value : null,
+    reportedEffort: result.reported_effort ?? null, usage: result.usage, totalTokens: result.usage_total_tokens ?? null,
+    error: result.is_error ? "agent_failed" : null });
+  let result: AgentResult;
+  let verified: AgentResult | undefined;
+  try { result = await executor.run(request, hooks, (completed) => { verified = completed; }); }
+  catch (error) {
+    if (verified) observedResult(verified);
+    else if (error instanceof AgentError && error.started) {
+      observe({ ...basis, durationMs: Math.round(performance.now() - started), reportedModel: null, reportedEffort: null, usage: null, totalTokens: null, error: error.code });
+    }
+    throw error;
+  }
+  observedResult(result);
+  return result;
 }
 
 /** 오류를 stdout JSON으로 낼 때의 형태 */

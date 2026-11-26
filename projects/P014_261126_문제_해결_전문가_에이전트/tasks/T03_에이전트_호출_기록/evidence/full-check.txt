@@ -1,0 +1,13 @@
+최종 후보 dd4306006b101ac867987fe127068a31dac13f3262319e09fd2072098dba3848
+명령 npm run check -- -- --test-concurrency=6
+임시 TMPDIR, PACE_HOME, PACE_SKIP_BROWSER_E2E=1, Git maintenance.auto=false (검사 프로세스 설정)
+종료 0
+
+ℹ tests 1516
+ℹ suites 0
+ℹ pass 1499
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 17
+ℹ todo 0
+ℹ duration_ms 492301.282958

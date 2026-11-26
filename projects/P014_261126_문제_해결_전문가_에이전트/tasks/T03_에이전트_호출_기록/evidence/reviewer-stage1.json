@@ -1,0 +1,25 @@
+{
+  "text": "검토를 마쳤습니다. 이 환경에는 Bash가 없어 `git status`와 `git diff`를 실행하지 못했습니다. 그래서 수정된 파일의 이전 판과 비교하지 못했습니다. 대신 새로 추가된(미추적) 파일 3개는 전체를 읽었고, 수정된 파일은 새 기능이 닿는 부분만 읽었습니다. 테스트는 실행하지 않았습니다. 아래 결과는 코드를 읽고 추론한 것입니다.\n\n## 확인한 사실\n\n- **원장 위치와 형식:** 호출 기록은 `projects/P###_…/calls/log.jsonl` 또는 `backlogs/BL…/calls/log.jsonl`에 JSONL로 쌓입니다. 행에 들어갈 키가 정확히 정해져 있고(`agent-calls.ts:78`), 경로·종류·상태·이유는 정해진 값 목록으로만 받습니다. 프롬프트나 응답 원문이 들어갈 필드는 없습니다. 모델·effort 값(`callIdentifier`)과 `ref`에는 `hasSecret` 검사를 적용합니다(`:58`, `:72-75`). 테스트에서도 원문이 들어가지 않음을 확인합니다(`test/agent-calls.test.ts:146`).\n- **파일 안전:**\n  - 읽기는 `regularBytes`를 씁니다. 심볼릭 링크와 `nlink≠1`을 거부하고, 읽는 동안 inode가 바뀌는지 확인하며, 크기를 32MiB로 제한합니다.\n  - 쓰기는 `safeTeamPath`로 경로를 검사한 뒤 `writeFileAtomic`으로 합니다. rename이 대상 링크를 따라가지 않으므로 바깥 파일을 덮어쓰지 않습니다(테스트 `:106-111`).\n  - 잠금은 `O_EXCL`로 만들고, 같은 dev/ino일 때만 지웁니다(`:144-164`). 잠금 파일은 `.gitignore`의 `*.local.json`에 걸립니다.\n- **같은 ID의 재기록:** 처음 값과 나중 값을 합칩니다. 두 값이 다르면 거부하고, 값이 같으면 출처 순위(`pm` 다음 `requested` 다음 `tool` 다음 `host`)가 높은 쪽을 남깁니다(`:93-118`). 병렬로 기록하는 테스트가 있습니다(`:77-84`).\n- **기록하는 곳:**\n  - `agent run`(p/acp)은 실행이 시작된 오류일 때만 기록합니다(`contract.ts:325`).\n  - `chain`은 끝난 뒤 `finally`에서 한꺼번에 기록합니다. fallback일 때만 대체 사유를 남기고, 그 사유는 모두 `errorCodes` 안의 값입니다.\n  - `verify`는 시도마다 한 행을 쓰고, 마지막 행에는 `ref`(검토 기록 파일)를 붙여 다시 씁니다. 이 ID가 출력의 `agent_call_id`입니다.\n  - 기록이 실패해도 경고만 내고 원래 결과는 그대로 반환합니다(`call-context.ts:98-101`).\n- **통계:** 호출 집계는 별도 절로 붙고 검토 원장과 합산하지 않습니다(`metrics-report.ts:87-92`). 원장이 없으면 `agentCalls` 항목이 빠지고, 깨져 있으면 `unreadable`로 표시합니다.\n\n## 결과에 영향을 줄 수 있는 결함\n\n1. **새 원장 때문에 사전 검토 허가 범위 검사가 실패합니다 (호환성, 가장 중요).**\n   - `harness.ts:1266-1268`, `:1304`의 허가 범위 검사는 관리 파일 목록(`administrative`)과 태스크 내부 파일만 범위 안으로 봅니다.\n   - 이 목록에는 프로젝트 `log.jsonl`은 있지만 새 `projects/P###_…/calls/log.jsonl`은 없습니다.\n   - 시나리오: 허가 경로가 있는 태스크(implementation 모드에 경로 지정, 또는 probe 모드)를 진행하는 중에 `project/P###` 브랜치에서 `pace agent run`(범위 자동 추정)이나 프로젝트 산출물에 대한 `pace agent verify`를 실행합니다. 그러면 `calls/log.jsonl`이 생기고, 미추적 파일 목록(`ls-files --others`, view 3) 또는 diff에 잡혀 \"허가 범위 밖\" 오류가 납니다. 그 결과 `check`/`done`이 막힙니다.\n   - 이 경우를 다루는 테스트는 없습니다.\n\n2. **남은 잠금 파일을 회수하지 않아 이후 기록이 계속 사라집니다.**\n   - `agent-calls.ts:144-156`의 잠금에는 오래된 잠금을 회수하는 로직이 없습니다.\n   - 잠금을 쥔 동안 SIGKILL, OOM, 전원 차단이 일어나면 `calls/.write.local.json`이 남습니다.\n   - 그 뒤의 모든 기록은 3초씩 기다렸다가 실패합니다. 사용자에게 보이는 것은 원인과 경로가 없는 일반 경고(`call-context.ts:100`)뿐이어서, 사람이 파일을 지울 때까지 호출 기록이 조용히 빠집니다.\n\n3. **같은 프로젝트의 기록이 실행 위치에 따라 서로 다른 체크아웃에 쌓일 수 있습니다.**\n   - P번호를 직접 지정하는 경로(`namedCallTarget`, `call-context.ts:33`)는 `statsRepo`를 써서 프로젝트 worktree에 씁니다.\n   - 반면 위치로 추정하는 경로는 `openRepo(cwd 또는 dirname(artifact))`를 그대로 씁니다(`:46-52`). main 체크아웃 안의 `projects/P###_…` 아래에서 실행하거나 그곳의 파일을 verify하면 main 쪽 원장에 기록됩니다.\n   - 통계(`project stats`)는 worktree 쪽을 읽으므로, main 쪽에 쌓인 기록은 집계에서 빠질 수 있습니다.\n\n4. **`verify`의 `ref` 계산이 경로 표기 차이에 영향을 받을 수 있습니다.**\n   - `verify-cli.ts:449`는 `callTarget.root`와 실제 경로로 바꾼(`realTarget`) 기록 파일 사이의 상대 경로를 구합니다.\n   - 저장소 루트가 실제 경로가 아니면(macOS의 `/tmp`와 `/private/tmp` 차이 등) 결과가 `..`로 시작합니다. 그러면 `parseAgentCall`이 거부해 `agent_call_id`가 빠집니다.\n   - `openRepo`가 항상 실제 경로를 돌려주는지 확인해야 합니다.\n\n5. **chain은 기록을 마지막에 몰아서 합니다.** 모든 단계를 `finally`에서 한 번에 기록하므로(`cli.ts:1126-1129`), 실행 도중 강제 종료되면 이미 실행된 단계의 기록이 모두 사라집니다. 의도한 설계인지 확인이 필요합니다.\n\n## 아직 확인하지 못한 것\n\n- `calls/log.jsonl`을 누가, 언제 커밋하는지와, finish·merge·dirty 검사가 이 파일을 어떻게 다루는지.\n- 브랜치 이름만으로 프로젝트 범위를 자동 추정해서 기록하는 것이 의도된 범위인지. 현재는 `project/P###` 브랜치에서 실행하는 모든 `agent run`이 플래그 없이 기록됩니다.\n- 기록 대상 범위가 있을 때 SIGINT/SIGTERM 기본 동작이 abort로 바뀌는데(`callCancellation`), 기존 종료 동작과의 호환성.\n- `calls/` 디렉터리를 검사한 시점과 실제로 쓰는 시점 사이에 그 디렉터리가 링크로 바뀌는 경우의 위험. 로컬에서만 가능한 상황이라 위험은 낮다고 봅니다.",
+  "agent": "claude",
+  "mode": "p",
+  "model": {
+    "value": "claude-opus-5-5",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "anthropic",
+    "source": "model"
+  },
+  "access": "read-only",
+  "enforcement": "claude --tools Read,Grep,Glob (내장 도구 목록 제한)",
+  "session_id": null,
+  "stop_reason": "end_turn",
+  "is_error": false,
+  "duration_ms": 136604,
+  "usage": {
+    "input_tokens": 26,
+    "output_tokens": 13115
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}

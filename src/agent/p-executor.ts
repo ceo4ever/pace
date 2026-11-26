@@ -123,7 +123,9 @@ export const codexP: PAdapter = {
     const body = tail ? stderr.slice(0, tail.index).trimEnd() : "";
     if (final === "" || !tail || !body.endsWith(`\ncodex\n${final}`)) throw new AgentError("protocol_error", "codex 출력이 끝 완료 표지(최종 메시지 뒤 tokens used) 없이 끝났거나 최종 메시지와 일치하지 않는다");
     const tokens = tail[1];
-    return { text: stdout.trim(), model: h.model, provider: h.provider, sessionId: h["session id"], stopReason: "completed", isError: false, outputTokens: tokens ? Number(tokens.replaceAll(",", "")) : undefined, sandbox: h.sandbox };
+    const totalTokens = tokens ? Number(tokens.replaceAll(",", "")) : undefined;
+    return { text: stdout.trim(), model: h.model, effort: h["reasoning effort"], provider: h.provider, sessionId: h["session id"],
+      stopReason: "completed", isError: false, outputTokens: totalTokens, totalTokens, sandbox: h.sandbox };
   },
 };
 
@@ -176,10 +178,16 @@ export function createPExecutor(adapter: PAdapter, options: { command?: string; 
     mode: "p",
     capabilities: adapter.capabilities,
     readOnlyEnforced: READ_ONLY_PROVEN[adapter.agent] === true,
-    async run(request, hooks) {
+    async run(request, hooks, beforeLocalOutput) {
       if (hasHooks(hooks)) throw new AgentError("unsupported_option", `${adapter.agent}/p는 실행 훅(이벤트·권한·MCP·맥락)을 지원하지 않는다 — ACP를 쓴다`, { started: false });
       if (hooks?.signal?.aborted) throw new AgentError("cancelled", "시작 전에 취소됐다", { started: false });
-      if (request.resume) checkSavedResume(sessionDir, request);
+      if (request.resume) {
+        try { checkSavedResume(sessionDir, request); }
+        catch (error) {
+          if (error instanceof AgentError) throw new AgentError(error.code, error.message, { started: false });
+          throw error;
+        }
+      }
       const invocation = adapter.build(request);
       try {
         // 읽기 전용을 강제할 수 없으면 실행하지 않고 거부한다.
@@ -208,6 +216,8 @@ export function createPExecutor(adapter: PAdapter, options: { command?: string; 
         if (request.access === "read-only" && facts.sandbox !== undefined && facts.sandbox !== "read-only") {
           throw new AgentError("read_only_unenforceable", `에이전트가 보고한 sandbox가 read-only가 아니다: ${facts.sandbox}`);
         }
+        const meta = { durationMs: outcome.durationMs, enforcement: invocation.enforcement ?? "n/a", cleanup: outcome.cleanup };
+        beforeLocalOutput?.(normalizeResult(request, facts, meta));
         let rawPath: string | null = null;
         if (request.rawDir) {
           mkdirSync(request.rawDir, { recursive: true, mode: 0o700 });
@@ -218,7 +228,7 @@ export function createPExecutor(adapter: PAdapter, options: { command?: string; 
         if (adapter.capabilities.resume && typeof facts.sessionId === "string" && facts.sessionId) {
           saveSession(sessionDir, facts.sessionId, { agent: request.agent, cwd: request.cwd, access: request.access });
         }
-        return normalizeResult(request, facts, { durationMs: outcome.durationMs, enforcement: invocation.enforcement ?? "n/a", rawPath, cleanup: outcome.cleanup });
+        return normalizeResult(request, facts, { ...meta, rawPath });
       } finally {
         invocation.cleanup?.();
       }

@@ -4,6 +4,8 @@ import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 import { approvedTaskEdit, proofScopeIssues, reviewHash } from "../project/pre-review.ts";
 import { AgentError, errorCodes, errorPayload, type Executor } from "./contract.ts";
+import { automaticCallTarget, callCancellation, observedAgentCall, requireCallAgent, tryRecordCall } from "./call-context.ts";
+import type { AgentCall } from "../project/agent-calls.ts";
 import {
   acquireLock, appendLedger, escalationNext, fixedReviewPath, LAYERS, LedgerError, ledgerPath, lockPath, nextRecordName, orphanRecords, parseVerdict, readLedger, RECORDS_DIR, RECOVERY_LOCK_FILE, reviewStage,
   lineDiff, reviewUsage, targetName, textHash, validCrossUnavailable, validDiagnosisLink, validFollowup, type Layer, type LedgerEntry, type ReviewEntry, type StageInfo,
@@ -51,6 +53,13 @@ function checkOut(out: string, target: string, ledgers: readonly string[], scope
   });
   const followups = scope && dirname(low) === scope.root.toLowerCase()
     && (basename(low) === FOLLOWUPS_FILE.toLowerCase() || /^review-(confirmation-[a-f0-9-]+|escalation-(pre|post|backlog))\.json$/.test(basename(low)));
+  const parts = low.split(sep);
+  const calls = parts.some((part, index) => {
+    if (part !== "calls") return false;
+    const owner = parts[index - 1] ?? "", group = parts[index - 2];
+    return group === "projects" && /^p\d{3}_/.test(owner) || group === "backlogs" && /^bl\d{6}_\d{2}_/.test(owner);
+  });
+  if (calls) throw new AgentError("invalid_request", "--out이 에이전트 호출 원장 폴더를 가리킨다");
   if (target.toLowerCase() === low || managed || followups) {
     throw new AgentError("invalid_request", "--out이 대상·검토 원장·잠금 파일·기록 폴더를 가리킨다");
   }
@@ -270,7 +279,7 @@ export function recoverBudgetOrphans(scope: ReviewBudgetScope, now: () => Date):
 export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promise<number> {
   const { values } = parseArgs({
     args,
-    options: { "author-agent": { type: "string" }, "author-provider": { type: "string" }, purpose: { type: "string" }, "purpose-file": { type: "string" }, target: { type: "string" }, cwd: { type: "string" }, "timeout-ms": { type: "string" }, "allow-same-provider": { type: "boolean" }, model: { type: "string" }, out: { type: "string" }, kind: { type: "string" } },
+    options: { "author-agent": { type: "string" }, "author-provider": { type: "string" }, purpose: { type: "string" }, "purpose-file": { type: "string" }, target: { type: "string" }, cwd: { type: "string" }, "timeout-ms": { type: "string" }, "allow-same-provider": { type: "boolean" }, model: { type: "string" }, out: { type: "string" }, kind: { type: "string" }, "call-agent": { type: "string" } },
     strict: true,
   });
   const now = deps.now ?? (() => new Date());
@@ -279,6 +288,8 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     const author = req(values["author-agent"], VERIFY_USAGE);
     if (author !== "claude" && author !== "codex") throw new AgentError("invalid_request", "--author-agent는 claude|codex");
     const target = realTarget(req(values.target, VERIFY_USAGE));
+    const callTarget = automaticCallTarget(values.cwd ?? process.cwd(), undefined, undefined, target);
+    requireCallAgent(values["call-agent"], callTarget);
     const purpose = values["purpose-file"] ? readFileSync(values["purpose-file"], "utf8") : req(values.purpose, VERIFY_USAGE);
     const requestedKind = values.kind ?? "goal";
     if (requestedKind !== "goal" && requestedKind !== "task") throw new AgentError("invalid_request", "--kind는 goal|task");
@@ -363,6 +374,8 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     writeOrLedgerError(recordFile, JSON.stringify({ pending: true, review: { target: name, hash, kind, ...call } }, null, 2) + "\n", "검토 기록 자리");
     const timeout = values["timeout-ms"];
     let outcome: Awaited<ReturnType<typeof crossVerify>>;
+    const observations: AgentCall[] = [];
+    const cancellation = callTarget && callCancellation();
     try {
       const taskEdit = scope?.stage === "post" ? approvedTaskEdit(scope.root) : undefined;
       outcome = await crossVerify({
@@ -372,10 +385,18 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
         purpose, artifact, artifactName: target,
         cwd: values.cwd ?? process.cwd(), timeoutMs: timeout === undefined ? undefined : Number(timeout),
         allowSameProvider: values["allow-same-provider"], model: values.model, executors: deps.executors(),
+        signal: cancellation?.signal,
+        observeAttempt: callTarget && ((attempt, replacement) => {
+          const observation = observedAgentCall(callTarget, attempt, "verify", values["call-agent"], replacement);
+          observations.push(observation);
+          tryRecordCall(callTarget, observation);
+        }),
       });
     } catch (error) {
       clearPending(recordFile);
       throw error;
+    } finally {
+      cancellation?.release();
     }
     if (!outcome.ran) {
       clearPending(recordFile);
@@ -428,6 +449,11 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     }
     const after = reviewStage(readLedger(ledgerTarget), name, !scope);
     const output: Record<string, unknown> = { ...outcome, last_decision_by: after.last_decision_by, review: { target: name, hash, verdict, rereview_of: review.rereview_of, record: recordName } };
+    const lastCall = observations.at(-1);
+    if (callTarget && lastCall) {
+      const ref = relative(join(callTarget.root, callTarget.directory), recordFile).split(sep).join("/");
+      if (tryRecordCall(callTarget, { ...lastCall, ref })) output.agent_call_id = lastCall.id;
+    }
     if (permission) (output.review as Record<string, unknown>).permission = permission;
     if (assessment) {
       output.assessment = assessment;

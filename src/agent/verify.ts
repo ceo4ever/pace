@@ -1,4 +1,4 @@
-import { AgentError, providerFromModel, providerOf, runAgent, type AgentName, type AgentResult, type Executor, type Provider } from "./contract.ts";
+import { AgentError, providerFromModel, providerOf, runAgent, type AgentAttempt, type AgentName, type AgentResult, type Executor, type Provider } from "./contract.ts";
 import { taskFormat } from "../project/pre-review.ts";
 import type { BudgetStage } from "./review-budget.ts";
 import { reviewQuestionPrompt } from "./structured-review.ts";
@@ -33,6 +33,8 @@ export interface VerifyOptions {
   /** 재검토(P007): 원장이 고른 기준점 검토의 원문과 그때→지금 대상의 바뀐 줄 */
   rereview?: Rereview;
   executors: Executor[];
+  signal?: AbortSignal;
+  observeAttempt?: (attempt: AgentAttempt, replacement: string | null) => void;
 }
 
 export type VerifyKind = "goal" | "task";
@@ -113,18 +115,23 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
   const reasons: string[] = [];
 
   const attempt = async (executor: Executor, cross: boolean): Promise<VerifyOutcome | null> => {
+    let observed: AgentAttempt | undefined;
+    let replacement: string | null = null;
     try {
-      const result = await runAgent(executor, { agent: executor.agent, mode: "p", prompt, cwd: options.cwd, access: "read-only", timeoutMs: options.timeoutMs, model: options.model });
+      const result = await runAgent(executor, { agent: executor.agent, mode: "p", prompt, cwd: options.cwd, access: "read-only", timeoutMs: options.timeoutMs, model: options.model },
+        options.signal && { signal: options.signal }, options.observeAttempt && ((observation) => { observed = observation; }));
       // 제공자는 결과의 확인 출처로 판별한다 — 보고된 모델이 작성자 제공자면 교차로 인정하지 않는다
       if (cross) {
         // 고정표(table)는 확인이 아니다 — 에이전트 보고 또는 보고된 모델 이름으로 확인된 제공자만 교차로 인정한다
         const reportedModel = providerFromModel(result.model.source === "reported" ? result.model.value : null);
         const confirmed = result.provider.source === "table" ? reportedModel : result.provider.value;
         if (!confirmed) {
+          replacement = "provider_unconfirmed";
           reasons.push(`${executor.agent}: 결과에서 실제 모델·제공자를 확인하지 못해 교차로 인정하지 않음`);
           return null;
         }
         if (confirmed === authorProvider) {
+          replacement = "provider_mismatch";
           reasons.push(`${executor.agent}: 결과의 제공자(${confirmed})가 작성자 제공자와 같아 교차로 인정하지 않음`);
           return null;
         }
@@ -133,10 +140,13 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
     } catch (error) {
       if (error instanceof AgentError && (notRunCodes.has(error.code) ||
           (cross && options.allowSameProvider && error.code === "timeout"))) {
+        replacement = error.code;
         reasons.push(`${executor.agent}: ${error.code} — ${error.message}`);
         return null;
       }
       throw error;
+    } finally {
+      if (observed) options.observeAttempt?.(observed, replacement);
     }
   };
 

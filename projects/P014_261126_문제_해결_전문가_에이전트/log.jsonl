@@ -16,3 +16,14 @@
 {"ts":"2026-11-26T12:26:19.749Z","p":"P014","t":"T02","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-26T12:26:20.047Z","p":"P014","t":"T02","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-26T12:26:20.047Z","p":"P014","t":"T02","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-26T12:26:54.772Z","p":"P014","t":"T03","type":"task_start","by":"cli","msg":"task","ok":true,"data":{}}
+{"ts":"2026-11-26T12:34:43.131Z","p":"P014","t":"T03","type":"question","by":"agent","msg":"S4 실측 근거에 따라 T03 공통 기록과 후속 호스트 연동의 BR 분할 여부 결정 요청","to":"coordinator","ref":"tasks/T03_에이전트_호출_기록/evidence/pre-design-host-and-size.md"}
+{"ts":"2026-11-26T12:35:03.875Z","p":"P014","t":"T03","type":"answer","by":"agent","msg":"P-7과 완료 기준을 유지해 T03 공통 장치와 T07 호스트·외부 검토 연동을 분할하고, BR07은 임시 main 사본에서 생성해 P014 worktree에 반영하기로 함"}
+{"ts":"2026-11-26T12:38:37.372Z","p":"P014","t":"T03","type":"question","by":"agent","msg":"구판 팀 집계를 보존하는 calls/log.jsonl 위치와 P-7 해석의 허브 결정 요청","to":"coordinator","ref":"tasks/T03_에이전트_호출_기록/evidence/pre-design-host-and-size.md"}
+{"ts":"2026-11-26T12:48:36.117Z","p":"P014","t":"T03","type":"answer","by":"agent","msg":"코디네이터 미응답으로 자체 판단 지시를 받았다. 구판 팀 집계와 호출당 다섯 항목을 모두 보존하는 별도 호출 원장으로 진행한다."}
+{"ts":"2026-11-26T12:48:36.319Z","p":"P014","t":"T03","type":"decision","by":"agent","msg":"호출 원장은 프로젝트 또는 백로그의 calls/log.jsonl에 두고 기존 루트 사건 로그와 구판 팀 집계를 보존한다. owner가 명시한 파일명·다섯 항목·시도당 한 행은 유지한다.","src":"자체 판단","ref":"tasks/T03_에이전트_호출_기록/evidence/pre-design-host-and-size.md"}
+{"ts":"2026-11-26T13:15:36.406Z","p":"P014","t":"T03","type":"answer","by":"agent","msg":"owner가 calls/log.jsonl을 선택했다. 기존 루트 log.jsonl과 팀 집계를 유지하고 신판 stats에 에이전트별 호출 수·시간·토큰 집계를 표시한다."}
+{"ts":"2026-11-26T13:16:02.107Z","p":"P014","t":"T03","type":"decision","by":"agent","msg":"owner 원문 a를 적용. P-7은 별도 calls/log.jsonl을 가리킨다. 신판 stats에 에이전트별 수·시간·토큰을 표시하며 기존 루트 log.jsonl과 팀 집계는 유지한다.","src":"사용자 결정","ref":"tasks/T03_에이전트_호출_기록/evidence/owner-call-ledger-location.md"}
+{"ts":"2026-11-26T13:26:38.412Z","p":"P014","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
+{"ts":"2026-11-26T13:26:43.842Z","p":"P014","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
+{"ts":"2026-11-26T13:26:43.842Z","p":"P014","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}

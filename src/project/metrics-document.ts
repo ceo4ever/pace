@@ -5,6 +5,7 @@ import { join } from "node:path";
 import type { Repo, ProjectRef } from "./harness.ts";
 import { readEvents } from "./event-log.ts";
 import { formatReviewLedgerMetrics } from "./review-metrics.ts";
+import { formatAgentCallMetrics } from "./agent-calls.ts";
 import type { Dashboard } from "./metrics-report.ts";
 import type { TokenStats, TokenUsage } from "./tokens.ts";
 
@@ -54,7 +55,7 @@ function outputs(tokens: TokenStats[], total?: TokenStats[]): string {
   }).join(" · ") || "기록 없음";
 }
 export function formatMetricsDocument(repo: Repo, ref: ProjectRef, stats: Dashboard): string {
-  return formatExistingMetricsDocument(repo, ref, stats) + "\n" + formatReviewLedgerMetrics(stats.reviewLedger) + "\n";
+  return formatExistingMetricsDocument(repo, ref, stats) + "\n" + formatReviewLedgerMetrics(stats.reviewLedger) + formatAgentCallMetrics(stats.agentCalls) + "\n";
 }
 
 function formatExistingMetricsDocument(repo: Repo, ref: ProjectRef, stats: Dashboard): string {

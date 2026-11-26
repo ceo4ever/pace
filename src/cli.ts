@@ -1,5 +1,5 @@
 import { compareTeam, formatTeamComparison } from "./project/team-comparison.ts";
-import { HandoffError } from "./project/handoff-files.ts";
+import { HandoffError, regularBytes, strictJson, utf8 } from "./project/handoff-files.ts";
 import { executeTest } from "./test-runner/runner.ts";
 import { dashboardState as dashboardPresence } from './project/dashboard-layout.ts';
 import { generateDashboard, refreshDashboard } from "./project/dashboard.ts";
@@ -25,6 +25,7 @@ import { checkHandoffFile } from "./intent/handoff.ts";
 import { renderDocs, verifyDocs, writeExamples, type Check } from "./intent/plan.ts";
 import { createPreview, verifyPreview } from "./intent/preview.ts";
 import { AgentError, errorPayload, runAgent, validateRequest } from "./agent/contract.ts";
+import { automaticCallTarget, callCancellation, namedCallTarget, observedAgentCall, requireCallAgent, tryRecordCall } from "./agent/call-context.ts";
 import { allExecutors, findExecutor } from "./agent/registry.ts";
 import { ChainConfigError, checkChain, defaultChainFile, fileCooldownStore, loadChainConfig, outcomeExitCode, resolveChain, runChain } from "./agent/chain.ts";
 import { reviewNoteCommand, verifyCommand } from "./agent/verify-cli.ts";
@@ -43,6 +44,7 @@ import { applyAdoptOpal, formatPlan, planAdoptOpal } from "./project/adopt-opal.
 import { inspectWorkspaces, registerWorkspace, relocateWorkspace } from "./project/workspace-registry.ts";
 import { AGENT_BUDGET } from "./project/agent-definition.ts";
 import { agentEvent, ProjectLogError } from "./project/event-log.ts";
+import { AgentCallError, recordAgentCall } from "./project/agent-calls.ts";
 import { findProject, statsRepo } from "./project/harness.ts";
 import { collectDashboard, formatDashboard, refreshProjectMetrics } from "./project/metrics-report.ts";
 import { existsSync, lstatSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
@@ -179,6 +181,7 @@ const HELP = `pace — LLM CLI 세션에 올라오는 개인 비서 에이전트
   pace project finish <P###>                     마감 하네스 → 병합 대기 (worktree에서만)
   pace project merge <P###> [--yes --commit SHA] ff 병합·정리 (팀은 승인 SHA 필수, 기본 요약)
   pace project log <P###> [T##] --type <decision|change|review|question|answer|escalation|note> --msg <한 줄> [--to owner|coordinator] [--src 출처] [--ref 파일] [--request-id 식별자]
+  pace project log <P###|BL번호> [T##] --type agent_call --call-file <JSON> [--json]
   pace project list                              프로젝트 상태·진행 태스크·worktree
   pace project compare-team --before <JSON> --after <JSON> --kind <목적> [--json]  같은 조건의 팀 비교
   pace project stats <P###> [--json|--write]     러닝 시간·대기·게이트 실패·도구별 토큰 (--write: METRICS.md·비교 표 다시 만들기)
@@ -696,6 +699,7 @@ function projectCommand(args: string[]): number {
       by: { type: "string" },
       to: { type: "string" },
       "request-id": { type: "string" },
+      "call-file": { type: "string" },
       before: { type: "string" }, after: { type: "string" }, kind: { type: "string" },
       "before-context": { type: "string" }, "after-context": { type: "string" },
       "no-launch": { type: "boolean" },
@@ -786,6 +790,17 @@ function projectCommand(args: string[]): number {
       }
       case "log": {
         need(1, "pace project log <P###> [T##] --type <종류> --msg <한 줄> [--to owner|coordinator] [--src 출처] [--ref 파일]");
+        if (values.type === "agent_call") {
+          if (!values["call-file"] || positionals.length > 2 || [values.msg, values.src, values.ref, values.by, values.to, values["request-id"]].some((value) => value !== undefined)) {
+            throw new UsageError("pace project log <P###|BL번호> [T##] --type agent_call --call-file <JSON>");
+          }
+          const target = namedCallTarget(repo(), positionals[0]!, positionals[1]?.toUpperCase() ?? null);
+          const input = strictJson(utf8(regularBytes(resolve(cwd, values["call-file"]), 8192)));
+          const row = recordAgentCall(target, input);
+          out(values.json ? JSON.stringify({ id: row.id }) : `호출 기록: ${row.id}`);
+          return 0;
+        }
+        if (values["call-file"] !== undefined) throw new UsageError("--call-file은 --type agent_call과 함께 쓴다");
         if (!values.type || !values.msg) throw new UsageError("log는 --type과 --msg가 필요하다");
         const r = repo(); const ref = findProject(r, positionals[0]!); const owner = statsRepo(r, ref);
         const result = agentEvent(join(owner.root, "projects", ref.dir), { p: ref.id, t: positionals[1]?.toUpperCase(), type: values.type, msg: values.msg, src: values.src, ref: values.ref, by: values.by, to: values.to, requestId: values["request-id"] });
@@ -806,7 +821,7 @@ function projectCommand(args: string[]): number {
           out(`지표 갱신: projects/${ref.dir}/METRICS.md · projects/METRICS.md (커밋은 하지 않는다)`);
           return 0;
         }
-        const stats = collectDashboard(statsRepo(r, ref), ref);
+        const stats = collectDashboard(statsRepo(r, ref), ref, { includeMainCalls: true });
         out(values.json ? JSON.stringify(stats, null, 2) : formatDashboard(stats));
         return 0;
       }
@@ -818,7 +833,8 @@ function projectCommand(args: string[]): number {
     }
   } catch (error) {
     if (error instanceof HandoffError) { process.stderr.write(`pace: ${error.message}\n`); return 2; }
-    if (!(error instanceof HarnessError) && !(error instanceof BacklogError) && !(error instanceof ProjectLogError)) throw error;
+    if (!(error instanceof HarnessError) && !(error instanceof BacklogError) && !(error instanceof ProjectLogError) &&
+        !(error instanceof AgentCallError) && !(error instanceof AgentError)) throw error;
     process.stderr.write(`pace: ${error.message}\n`);
     return 1;
   }
@@ -980,6 +996,7 @@ async function agentCommand(args: string[]): Promise<number> {
       agent: { type: "string" }, mode: { type: "string" }, "prompt-file": { type: "string" }, cwd: { type: "string" },
       "system-prompt-file": { type: "string" }, model: { type: "string" }, effort: { type: "string" }, write: { type: "boolean" },
       "timeout-ms": { type: "string" }, resume: { type: "string" }, "raw-dir": { type: "string" }, chain: { type: "string" }, "chain-file": { type: "string" },
+      "call-scope": { type: "string" }, "call-task": { type: "string" }, "call-agent": { type: "string" },
     },
     strict: true,
   });
@@ -1001,7 +1018,15 @@ async function agentCommand(args: string[]): Promise<number> {
     });
     const executor = findExecutor(request.agent, request.mode);
     if (!executor) throw new AgentError("executor_unavailable", `${request.agent}/${request.mode} 실행기가 아직 없다`);
-    process.stdout.write(JSON.stringify(await runAgent(executor, request), null, 2) + "\n");
+    const target = automaticCallTarget(request.cwd, values["call-scope"], values["call-task"]);
+    requireCallAgent(values["call-agent"], target);
+    const cancellation = target && callCancellation();
+    try {
+      const result = await runAgent(executor, request, cancellation && { signal: cancellation.signal }, target && ((attempt) => {
+        tryRecordCall(target, observedAgentCall(target, attempt, request.mode, values["call-agent"]));
+      }));
+      process.stdout.write(JSON.stringify(result, null, 2) + "\n");
+    } finally { cancellation?.release(); }
     return 0;
   } catch (error) {
     if (!(error instanceof AgentError)) throw error;
@@ -1068,7 +1093,8 @@ async function agentSetup(args: string[]): Promise<number> {
   }
 }
 
-async function agentChainRun(values: { chain?: string; "chain-file"?: string; "prompt-file"?: string; cwd?: string; write?: boolean; "timeout-ms"?: string; "raw-dir"?: string }): Promise<number> {
+async function agentChainRun(values: { chain?: string; "chain-file"?: string; "prompt-file"?: string; cwd?: string; write?: boolean; "timeout-ms"?: string; "raw-dir"?: string;
+  "call-scope"?: string; "call-task"?: string; "call-agent"?: string }): Promise<number> {
   try {
     const home = paceHome();
     let file = str(values["chain-file"]);
@@ -1083,10 +1109,23 @@ async function agentChainRun(values: { chain?: string; "chain-file"?: string; "p
     const promptFile = str(values["prompt-file"]);
     const prompt = promptFile ? readFileSync(promptFile, "utf8") : await readStdin(0);
     const timeout = str(values["timeout-ms"]);
-    const outcome = await runChain(chain, {
-      prompt, cwd: str(values.cwd) ?? process.cwd(), access: values.write ? "write" : "read-only",
-      timeoutMs: timeout === undefined ? undefined : Number(timeout), rawDir: str(values["raw-dir"]),
-    }, { find: findExecutor, cooldowns: fileCooldownStore(join(home, "agent-cooldowns.json")), limitPatterns: config.limitPatterns });
+    const cwd = str(values.cwd) ?? process.cwd();
+    const target = automaticCallTarget(cwd, values["call-scope"], values["call-task"]);
+    requireCallAgent(values["call-agent"], target);
+    const cancellation = target && callCancellation();
+    let outcome: Awaited<ReturnType<typeof runChain>>;
+    try {
+      outcome = await runChain(chain, {
+        prompt, cwd, access: values.write ? "write" : "read-only",
+        timeoutMs: timeout === undefined ? undefined : Number(timeout), rawDir: str(values["raw-dir"]),
+      }, { find: findExecutor, cooldowns: fileCooldownStore(join(home, "agent-cooldowns.json")), limitPatterns: config.limitPatterns,
+        signal: cancellation?.signal, observeAttempt: target && ((attempt, step) => {
+          const reason = step.outcome === "fallback" ? step.reason : null;
+          tryRecordCall(target, observedAgentCall(target, attempt, "chain", values["call-agent"], reason));
+        }) });
+    } finally {
+      cancellation?.release();
+    }
     process.stdout.write(JSON.stringify({ ...outcome, definition_warnings: warnings }, null, 2) + "\n");
     return outcomeExitCode(outcome);
   } catch (error) {

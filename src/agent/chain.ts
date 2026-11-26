@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { writeFileAtomic } from "../core/fsutil.ts";
-import { agentNames, AgentError, modes, runAgent, validateRequest, errorCodes, type AgentName, type AgentResult, type Executor, type Mode, type RequestInput, type RunHooks } from "./contract.ts";
+import { agentNames, AgentError, modes, runAgent, validateRequest, errorCodes, type AgentAttempt, type AgentName, type AgentResult, type Executor, type Mode, type RequestInput, type RunHooks } from "./contract.ts";
 import { classifyFailure, classifyText, excerpt, parseResetAt, type FailureKind } from "./limits.ts";
 import { changedParts, OBSERVATION_SCOPE, SnapshotError, summarizeChange, takeSnapshot, type ChangeSummary, type Snapshot } from "./snapshot.ts";
 
@@ -197,6 +197,7 @@ export interface ChainDeps {
   limitPatterns?: RegExp[];
   /** 취소 신호 — 단계 실행기에 전달하고 단계 사이에도 확인한다. abort되면 폴백하지 않고 cancelled로 끝난다 */
   signal?: AbortSignal;
+  observeAttempt?: (attempt: AgentAttempt, step: Attempt) => void;
 }
 
 const FALLBACK_KINDS: FailureKind[] = ["rate_limited", "auth_failed", "executor_unavailable", "read_only_unenforceable"];
@@ -244,73 +245,81 @@ export async function runChain(chain: ChainDef, input: RequestInput, deps: Chain
     const cooling = deps.cooldowns.get(cooldownKey(step));
     if (cooling !== null && cooling > now()) { attempt.reason = "cooldown"; attempt.cooldown_until = new Date(cooling).toISOString(); attempt.detail = "한도 쿨다운 중이라 건너뜀"; continue; }
 
-    const before = takeBefore();
-    const started = now();
-    let failure: { kind: FailureKind; error: AgentError } | null = null;
+    let observed: AgentAttempt | undefined;
     try {
-      const result = await runAgent(executor, { ...base, agent: step.agent, mode: step.mode, model: step.model, effort: effort?.applied }, step.mode === "acp" ? (deps.signal ? { ...deps.hooks, signal: deps.signal } : deps.hooks) : (deps.signal ? { signal: deps.signal } : undefined));
-      attempt.duration_ms = result.duration_ms;
-      attempt.raw_path = result.raw_path;
-      if (result.is_error) {
-        const kind = classifyText(result.text, extra);
-        failure = { kind, error: new AgentError(kind === "rate_limited" ? "rate_limited" : kind === "auth_failed" ? "auth_failed" : "agent_failed", `에이전트가 오류 결과를 반환했다: ${excerpt(result.text)}`) };
-      } else {
-        attempt.outcome = "success";
-        if (before.snapshot) {
-          try {
-            const after = snap(base.cwd);
-            const changed = changedParts(before.snapshot, after);
-            if (base.access === "read-only" && changed.length > 0) {
-              warnings.push(`read_only_violation: 읽기 전용 요청에서 변경이 관찰됐다(${changed.join(", ")}) — 단계 ${i + 1}(${step.agent}/${step.mode})`);
-              attempt.reason = "read_only_violation";
-            }
-          } catch { warnings.push(`스냅샷 비교를 못 해 읽기 전용 위반 여부를 확인하지 못했다(단계 ${i + 1})`); }
-        } else if (base.access === "read-only") warnings.push(`스냅샷을 만들지 못해 읽기 전용 위반을 탐지하지 못했다: ${excerpt(before.error ?? "")}`);
-        return { status: "ok", chain: chain.name, result, attempts, warnings };
+      const before = takeBefore();
+      const started = now();
+      let failure: { kind: FailureKind; error: AgentError } | null = null;
+      try {
+        const observe = deps.observeAttempt;
+        const result = await runAgent(executor, { ...base, agent: step.agent, mode: step.mode, model: step.model, effort: effort?.applied },
+          step.mode === "acp" ? (deps.signal ? { ...deps.hooks, signal: deps.signal } : deps.hooks) : (deps.signal ? { signal: deps.signal } : undefined),
+          observe && ((observation) => { observed = { ...observation, requestedEffort: effort?.requested }; }));
+        attempt.duration_ms = result.duration_ms;
+        attempt.raw_path = result.raw_path;
+        if (result.is_error) {
+          const kind = classifyText(result.text, extra);
+          failure = { kind, error: new AgentError(kind === "rate_limited" ? "rate_limited" : kind === "auth_failed" ? "auth_failed" : "agent_failed", `에이전트가 오류 결과를 반환했다: ${excerpt(result.text)}`) };
+        } else {
+          attempt.outcome = "success";
+          if (before.snapshot) {
+            try {
+              const after = snap(base.cwd);
+              const changed = changedParts(before.snapshot, after);
+              if (base.access === "read-only" && changed.length > 0) {
+                warnings.push(`read_only_violation: 읽기 전용 요청에서 변경이 관찰됐다(${changed.join(", ")}) — 단계 ${i + 1}(${step.agent}/${step.mode})`);
+                attempt.reason = "read_only_violation";
+              }
+            } catch { warnings.push(`스냅샷 비교를 못 해 읽기 전용 위반 여부를 확인하지 못했다(단계 ${i + 1})`); }
+          } else if (base.access === "read-only") warnings.push(`스냅샷을 만들지 못해 읽기 전용 위반을 탐지하지 못했다: ${excerpt(before.error ?? "")}`);
+          return { status: "ok", chain: chain.name, result, attempts, warnings };
+        }
+      } catch (error) {
+        if (!(error instanceof AgentError)) throw error;
+        attempt.duration_ms = now() - started;
+        failure = { kind: classifyFailure(error, extra), error };
       }
-    } catch (error) {
-      if (!(error instanceof AgentError)) throw error;
-      attempt.duration_ms = now() - started;
-      failure = { kind: classifyFailure(error, extra), error };
-    }
 
-    const { kind, error } = failure;
-    attempt.reason = kind;
-    attempt.detail = excerpt(error.message);
-    const errorInfo = { code: error.code, message: excerpt(error.message, 500) };
-    if (kind === "rate_limited" || kind === "auth_failed") {
-      const until = parseResetAt(error.message, now()) ?? now() + chain.defaultCooldownMinutes * 60_000;
-      deps.cooldowns.set(cooldownKey(step), until);
-      attempt.cooldown_until = new Date(until).toISOString();
-    }
-    const fallbackable = FALLBACK_KINDS.includes(kind) || (kind === "timeout" && chain.fallbackOnTimeout);
-    // 시작 전 실패(구조화된 표지): 에이전트에게 일을 맡기기 전이라 쓰기가 일어났을 수 없다. 표지가 없으면 시작된 것으로 본다
-    const notStarted = !error.started && !error.cleanupUnconfirmed;
-
-    // 공통 안전 판정 — 폴백 사유와 무관하게 단계가 시작됐다면 폴백 전에 먼저 적용한다
-    if (!notStarted) {
-      if (error.cleanupUnconfirmed) { attempt.outcome = "handoff"; return handoff("cleanup_unconfirmed", before.snapshot, errorInfo); }
-      let afterSnap: Snapshot | null = null;
-      let afterError: string | null = null;
-      try { afterSnap = snap(base.cwd); } catch (e) { afterError = e instanceof Error ? e.message : String(e); }
-      const changed = before.snapshot && afterSnap ? changedParts(before.snapshot, afterSnap) : null;
-      if (base.access === "read-only") {
-        // 변경이 관찰되거나, 관찰 자체가 불확실하면(비 git·git 오류·시간 초과) 폴백하지 않는다
-        if (!before.snapshot || !afterSnap) { attempt.outcome = "handoff"; return handoff(`snapshot_failed: ${excerpt(before.error ?? afterError ?? "", 200)}`, before.snapshot, errorInfo); }
-        if (changed && changed.length > 0) { attempt.outcome = "handoff"; return handoff("read_only_violation", before.snapshot, errorInfo); }
-      } else if (fallbackable) {
-        if (chain.writeFallback === "never") { attempt.outcome = "handoff"; return handoff("write_fallback_never", before.snapshot, errorInfo); }
-        if (!before.snapshot || !afterSnap) { attempt.outcome = "handoff"; return handoff(`snapshot_failed: ${excerpt(before.error ?? afterError ?? "", 200)}`, before.snapshot, errorInfo); }
-        if (changed && changed.length > 0) { attempt.outcome = "handoff"; return handoff(`changes_detected: ${changed.join(", ")}`, before.snapshot, errorInfo); }
+      const { kind, error } = failure;
+      attempt.reason = kind;
+      attempt.detail = excerpt(error.message);
+      const errorInfo = { code: error.code, message: excerpt(error.message, 500) };
+      if (kind === "rate_limited" || kind === "auth_failed") {
+        const until = parseResetAt(error.message, now()) ?? now() + chain.defaultCooldownMinutes * 60_000;
+        deps.cooldowns.set(cooldownKey(step), until);
+        attempt.cooldown_until = new Date(until).toISOString();
       }
+      const fallbackable = FALLBACK_KINDS.includes(kind) || (kind === "timeout" && chain.fallbackOnTimeout);
+      // 시작 전 실패(구조화된 표지): 에이전트에게 일을 맡기기 전이라 쓰기가 일어났을 수 없다. 표지가 없으면 시작된 것으로 본다
+      const notStarted = !error.started && !error.cleanupUnconfirmed;
+
+      // 공통 안전 판정 — 폴백 사유와 무관하게 단계가 시작됐다면 폴백 전에 먼저 적용한다
+      if (!notStarted) {
+        if (error.cleanupUnconfirmed) { attempt.outcome = "handoff"; return handoff("cleanup_unconfirmed", before.snapshot, errorInfo); }
+        let afterSnap: Snapshot | null = null;
+        let afterError: string | null = null;
+        try { afterSnap = snap(base.cwd); } catch (e) { afterError = e instanceof Error ? e.message : String(e); }
+        const changed = before.snapshot && afterSnap ? changedParts(before.snapshot, afterSnap) : null;
+        if (base.access === "read-only") {
+          // 변경이 관찰되거나, 관찰 자체가 불확실하면(비 git·git 오류·시간 초과) 폴백하지 않는다
+          if (!before.snapshot || !afterSnap) { attempt.outcome = "handoff"; return handoff(`snapshot_failed: ${excerpt(before.error ?? afterError ?? "", 200)}`, before.snapshot, errorInfo); }
+          if (changed && changed.length > 0) { attempt.outcome = "handoff"; return handoff("read_only_violation", before.snapshot, errorInfo); }
+        } else if (fallbackable) {
+          if (chain.writeFallback === "never") { attempt.outcome = "handoff"; return handoff("write_fallback_never", before.snapshot, errorInfo); }
+          if (!before.snapshot || !afterSnap) { attempt.outcome = "handoff"; return handoff(`snapshot_failed: ${excerpt(before.error ?? afterError ?? "", 200)}`, before.snapshot, errorInfo); }
+          if (changed && changed.length > 0) { attempt.outcome = "handoff"; return handoff(`changes_detected: ${changed.join(", ")}`, before.snapshot, errorInfo); }
+        }
+      }
+      if (!fallbackable) {
+        attempt.outcome = "stopped";
+        let changes: ChangeSummary | null = null;
+        if (base.access === "write" && before.snapshot) { try { changes = summarizeChange(base.cwd, before.snapshot, snap(base.cwd)); } catch { changes = null; } }
+        return { status: "failed", chain: chain.name, error: errorInfo, attempts, changes };
+      }
+      attempt.outcome = "fallback";
+    } finally {
+      if (observed) deps.observeAttempt?.(observed, attempt);
     }
-    if (!fallbackable) {
-      attempt.outcome = "stopped";
-      let changes: ChangeSummary | null = null;
-      if (base.access === "write" && before.snapshot) { try { changes = summarizeChange(base.cwd, before.snapshot, snap(base.cwd)); } catch { changes = null; } }
-      return { status: "failed", chain: chain.name, error: errorInfo, attempts, changes };
-    }
-    attempt.outcome = "fallback";
   }
 
   const untils = chain.steps.map((s) => deps.cooldowns.get(cooldownKey(s))).filter((t): t is number => t !== null && t > now());

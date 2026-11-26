@@ -27,6 +27,44 @@
 - 대기 구분: 질문·에스컬레이션→같은 태스크(또는 프로젝트)의 답변까지 구간을 겹침 없이 합쳐 질의 대기로 보고 러닝 시간에서 빼 작업 경과를 계산한다. finish→merge(미병합이면 조회 시각)는 병합 승인 대기다. 결정/변경/리뷰 사건 수는 log 도입 후 기준이고 미도입 태스크의 리뷰 등급은 TASK-CLOSE로 보완한다. 착수는 출처(백로그 지시·확정된 대화)를 결정으로 기록하고 승인 대기 없이 바로 수행한다. 과거 계약 승인 사건은 기존 지표에서 계속 읽는다
 - 측정 범위: 사건 시간 우선, 과거 기록은 git author 시각 근사(rebase가 바꾸는 committer 시각은 쓰지 않음). 태스크 토큰 구간은 Codex [착수, done], Claude/Gemini (착수, done], 진행 중은 조회 시각까지. Claude 주/서브 세션, Codex rollout별 첫 메타로 세션을 고정한 마지막 누적값−착수 전 마지막 누적값(없으면 0), Gemini 메시지별 수치를 읽기만 한다. 계정별 홈·설정 경로·Orca Codex 홈을 찾고, 기록 없는 도구는 상세 METRICS.md에서 행을 생략한다. 작업자는 PROJECT 헤더 worktree 경로(삭제 후에도 문자열 귀속), 코디네이터는 main 경로의 start→merge 구간으로 따로 집계하며 같은 시간의 다른 대화 혼입 가능성이 있다. 캐시·추론은 도구마다 의미가 달라 필드를 더해 공통 총량을 만들지 않는다. 파일 삭제·형식 변경에 따라 일부 사용량은 빠질 수 있다
 
+### 에이전트 호출 원장
+
+프로젝트의 호출 시도는 `projects/P###_…/calls/log.jsonl`에, 백로그 단계 호출은 `backlogs/BL…/calls/log.jsonl`에 남긴다. 다섯 측정 항목을 시도당 한 JSON 행에 직접 쓴다. 기존 루트 `log.jsonl`은 사건 기록이다. 새 행이 루트에 들어가면 구판 판독 단계에서 팀 측정이 거부되거나 대표 태스크 범위가 달라질 수 있으므로 호출 원장은 별도 경로를 사용한다. 일반 stats 조회는 동일 프로젝트의 활성 worktree와 main 원장을 함께 읽고 같은 시도 ID를 한 번만 센다. 마감·파일로 쓰는 지표는 해당 결산 체크아웃에 보존된 원장을 기준으로 한다.
+
+`pace project log P### [T##] --type agent_call --call-file <JSON> [--json]`은 입력 JSON 한 개를 쓴다. 백로그는 P번호 대신 BL번호를 쓰고 태스크 인자는 생략한다. 백로그 호출은 그 검토 대상이 있는 체크아웃에서 조회하고 기록한다. 입력은 단일 링크 일반 파일이어야 한다. 예시의 두 null 표시처럼 없는 값도 키를 남긴다.
+
+```json
+{
+  "version": 1,
+  "id": "3176f41b0a834eae94461f514137b813",
+  "at": "2026-11-26T12:00:00.000Z",
+  "task": "T03",
+  "agent": "pace-reviewer",
+  "engine": "claude",
+  "route": "native",
+  "status": "completed",
+  "reason": null,
+  "replacement_reason": null,
+  "model": {
+    "requested": { "value": "claude-opus-5-5", "source": "requested" },
+    "actual": { "value": "claude-opus-5-5", "source": "host" }
+  },
+  "effort": {
+    "requested": { "value": "high", "source": "requested" },
+    "actual": { "value": null, "source": "unknown" }
+  },
+  "duration_ms": { "value": 809, "source": "host" },
+  "tokens": {
+    "input": { "value": null, "source": "unknown" },
+    "output": { "value": null, "source": "unknown" },
+    "total": { "value": 2235, "source": "host" }
+  },
+  "ref": null
+}
+```
+
+실제 시도별로 서로 다른 32~64자리 소문자 16진 ID를 쓰고 같은 시도 재기록·보강에는 동일한 ID와 처음의 시작 시각을 쓴다. `route`는 p, acp, chain, verify, native, manual 중 하나다. `status`는 unknown, completed, failed, interrupted 중 하나이고 `reason`과 `replacement_reason`에는 정해진 오류 코드만 받을 수 있다. 측정 출처는 unknown(미확인), requested(요청), pm(PM 기록), tool(도구 측정), host(호스트 보고)다. 출처가 달라도 알려진 값이 상충하거나 귀속·상태·참조가 다르면 거부한다. 같은 값에 대해서는 실제 요청·호스트 보고·도구 측정을 PM 기록보다 우선한다. `ref`는 범위 안에 있는 기존 일반 파일의 상대 경로다. 비밀·세션 식별자·프롬프트·응답 원문은 입력에서 빼고 필요한 결과만 `ref`로 연결한다. 쓰기 잠금은 수행 프로세스의 종료가 확인된 경우에만 회수한다. 확인할 수 없는 잠금은 남기고 `calls/.write.local.json`의 진단과 재시도 안내를 표시한다.
+
 ## 선언 명령과 커밋 게이트
 
 - 선언 명령: `검사`·`보안 검사`·`worktree 준비`·`의존성 감사`는 실행 전에 명령을 출력한다. `의존성 감사`(선택)는 finish가 보안 검사 뒤, 잠금 파일(`package-lock.json`·`pnpm-lock.yaml`·`yarn.lock`·`poetry.lock`·`uv.lock`·`Cargo.lock`·`go.sum` 등)이 base 대비 바뀐 브랜치에서만 실행하고 실패하면 멈춘다 — 같은 잠금을 다시 조회하지 않는다. 기존 패키지의 새 취약점은 main 주기 점검이 맡는다(하네스 밖). worktree 선언이 main과 다르면 main 선언을 쓰며 차이를 알린다. main에 선언이 없으면 worktree 선언을 사용한다. 명령이 부르는 작업본 스크립트까지 격리하는 기능은 아니다.

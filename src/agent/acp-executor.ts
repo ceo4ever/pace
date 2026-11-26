@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { AgentError, checkResume, normalizeResult, type AgentName, type AgentRequest, type Capabilities, type EventStats, type Executor, type PermissionDecision, type RunHooks } from "./contract.ts";
+import { AgentError, checkResume, normalizeResult, type AgentName, type AgentRequest, type AgentResult, type Capabilities, type EventStats, type Executor, type PermissionDecision, type RunHooks } from "./contract.ts";
 import { MCP_READ_TOOLS, MCP_SERVER_NAME, MCP_WRITE_TOOLS, mcpToolName } from "../mcp/names.ts";
 import { paceHome, packageRoot } from "../core/paths.ts";
 import { buildChildEnv, startReaper } from "./process.ts";
@@ -48,7 +48,7 @@ export function createAcpExecutor(adapter: AcpAdapter, options: { command?: stri
     mode: "acp",
     capabilities: { ...ACP_CAPS, effort: adapter.effortConfig === true, resume: adapter.resumeMethod !== undefined },
     readOnlyEnforced: adapter.readOnlyVersions.length > 0,
-    async run(request: AgentRequest, hooks?: RunHooks) {
+    async run(request: AgentRequest, hooks?: RunHooks, beforeLocalOutput?: (result: AgentResult) => void) {
       if (hooks?.signal?.aborted) throw new AgentError("cancelled", "시작 전에 취소됐다", { started: false });
       if (request.resume) {
         // 이어가기 진입점 검증 — 호출자가 보관한 세션 기록과 직접 대조한다(도우미를 거치지 않아도 우회 불가)
@@ -399,13 +399,12 @@ export function createAcpExecutor(adapter: AcpAdapter, options: { command?: stri
             if (!option || !values.includes(request.effort)) throw new AgentError("unsupported_option", `${adapter.agent}/acp가 광고하지 않은 effort다: ${request.effort} (가능: ${values.join(", ") || "광고 없음"})`);
             await call("session/set_config_option", { sessionId, configId: "effort", value: request.effort });
           }
-          let model = session.models?.currentModelId;
+          const model = request.model === undefined ? session.models?.currentModelId : undefined;
           if (request.model) {
             // 어댑터가 광고한 모델만 고를 수 있다 — 모르는 모델은 조용히 무시하지 않고 오류
             const ids: string[] = (session.models?.availableModels ?? []).map((m: Json) => String(m.modelId));
             if (!ids.includes(request.model)) throw new AgentError("unsupported_option", `${adapter.agent}/acp가 모르는 모델이다: ${request.model} (가능: ${ids.slice(0, 8).join(", ") || "광고 없음"})`);
             await call("session/set_model", { sessionId, modelId: request.model });
-            model = request.model;
           }
           // 새 세션에만 정체성 맥락·이전 대화 요약을 앞에 붙인다(이어간 세션은 이미 알고 있다)
           let promptText = request.prompt;
@@ -424,6 +423,10 @@ export function createAcpExecutor(adapter: AcpAdapter, options: { command?: stri
         await finishEvents();
         // 정상 종료인데 본문이 비면 계약 위반 — 대개 모델이 거절된 도구 호출(권한 기본 거절)로 턴을 끝낸 경우다
         if (text.trim() === "") throw new AgentError("agent_failed", `ACP 응답 본문이 비어 있다(stopReason ${done.stopReason}, 거절한 권한 요청 ${denied}건[${deniedWhat.join(", ")}], 받은 이벤트 ${JSON.stringify(seen)})`);
+        const facts = { text, model, sessionId, stopReason: done.stopReason, isError: done.stopReason === "refusal",
+          inputTokens: done.usage?.inputTokens, outputTokens: done.usage?.outputTokens };
+        const meta = { enforcement, cleanup: group?.cleanup };
+        if (reaped) beforeLocalOutput?.(normalizeResult(request, facts, { ...meta, durationMs: Date.now() - started }));
         let rawPath: string | null = null;
         if (request.rawDir) {
           mkdirSync(request.rawDir, { recursive: true, mode: 0o700 });
@@ -431,11 +434,7 @@ export function createAcpExecutor(adapter: AcpAdapter, options: { command?: stri
           writeFileSync(rawPath, rawLines.join("\n"), { mode: 0o600 });
         }
         if (!reaped) throw new AgentError("agent_failed", "어댑터 프로세스 그룹 종료를 확인하지 못했다", { cleanupUnconfirmed: true });
-        const normalized = normalizeResult(
-          request,
-          { text, model, sessionId, stopReason: done.stopReason, isError: done.stopReason === "refusal", inputTokens: done.usage?.inputTokens, outputTokens: done.usage?.outputTokens },
-          { durationMs: Date.now() - started, enforcement, rawPath, cleanup: group?.cleanup },
-        );
+        const normalized = normalizeResult(request, facts, { ...meta, durationMs: Date.now() - started, rawPath });
         return hooks?.onEvent ? { ...normalized, events: { ...stats } } : normalized;
       } catch (error) {
         const reaped = await shutdown(timedOut ? sessionId : undefined);

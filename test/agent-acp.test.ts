@@ -97,7 +97,7 @@ test("준비 완료 뒤 취소: cancel → EOF → 그룹 종료, 말 안 듣는
 
 test("미지원 옵션과 없는 어댑터는 오류", async () => {
   await assert.rejects(runAgent(exec("ok"), req({ model: "x" })), (e: AgentError) => e.code === "unsupported_option");
-  assert.deepEqual((await runAgent(exec("ok"), req({ model: "other-model" }))).model, { value: "other-model", source: "reported" });
+  assert.deepEqual((await runAgent(exec("ok"), req({ model: "other-model" }))).model, { value: "other-model", source: "requested" });
   await assert.rejects(runAgent(exec("ok"), req({ effort: "high" })), (e: AgentError) => e.code === "unsupported_option");
   await assert.rejects(runAgent(createAcpExecutor(claudeAcp, { command: "/no/such/acp-adapter" }), req()), (e: AgentError) => e.code === "executor_unavailable");
 });

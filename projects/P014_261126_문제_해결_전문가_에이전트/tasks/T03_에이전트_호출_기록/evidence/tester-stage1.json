@@ -1,0 +1,25 @@
+{
+  "text": "The bounded suite passed **57 of 57 tests** with exit **0**. The recorder still missed a confirmed agent attempt when local post-processing failed.\n\nI ran the requested command from the isolated candidate directory. Node reported **57 passed, 0 failed, 0 cancelled, 0 skipped, 0 todo** in **24,640.966542 ms**. The passing fixtures covered two rows for a verification fallback, enrichment under the same call ID, and unchanged event, review-ledger, and team metrics when the call ledger was removed. [Verification and stats assertions](</tmp/pace-p014-t03-review.nUNI06/tester/test/agent-calls.test.ts:170>)\n\n### Findings\n\n1. **A completed agent process can leave zero call records.** Run `agent run --agent claude --mode p --call-scope P001 --raw-dir <existing-regular-file>` with a local stub that marks its launch and returns valid result JSON. I observed **1 launch, 0 rows, exit 1**. Removing `--raw-dir` yielded **1 additional launch, 1 row, exit 0**. The raw-output `mkdirSync` throws `EEXIST` after the agent returns, and the attempt observer only records thrown `AgentError` instances. [Post-processing](</tmp/pace-p014-t03-review.nUNI06/tester/src/agent/p-executor.ts:218>), [attempt observer](</tmp/pace-p014-t03-review.nUNI06/tester/src/agent/contract.ts:324>)\n2. **The Codex `tokens used` footer is attributed to output tokens.** A local Codex stub emitting a valid footer with `123` yielded **exit 0 and 1 Codex row**. `project stats P001 --json` also exited **0** and reported **123 known output tokens**, with input and total each unknown for that attempt. The footer supplied a single unlabeled token count. The parser assigns it to `outputTokens`, and the recorder always leaves total unknown for automatic calls. [Codex parser](</tmp/pace-p014-t03-review.nUNI06/tester/src/agent/p-executor.ts:122>), [call mapping](</tmp/pace-p014-t03-review.nUNI06/tester/src/agent/call-context.ts:93>)\n3. **An orphaned write lock suppresses later records until it is removed.** I placed an empty `calls/.write.local.json` in the synthetic project. The next stub invocation launched and exited **0** with a recorder warning, the ledger stayed at **2 rows**, and the lock remained. After I removed it, the next invocation exited **0** and raised the count to **3**. The lock acquisition times out after three seconds and has no stale-lock recovery. [Lock acquisition](</tmp/pace-p014-t03-review.nUNI06/tester/src/project/agent-calls.ts:144>)\n\n### Regression detection\n\nI temporarily replaced observed input tokens with `unknown`. The targeted test exited **1** with **0 passed, 1 failed**, at the assertion that a reported zero must retain its `tool` source. I restored the candidate file byte-for-byte and reran the test. It exited **0** with **1 passed, 0 failed**. [Zero-token assertion](</tmp/pace-p014-t03-review.nUNI06/tester/test/agent-calls.test.ts:142>)\n\nRuntime verification was limited to local fixtures on macOS. Live provider reporting and Windows behavior remain unverified. The full suite was outside the requested scope.",
+  "agent": "codex",
+  "mode": "p",
+  "model": {
+    "value": "gpt-6.2-sol",
+    "source": "reported"
+  },
+  "provider": {
+    "value": "openai",
+    "source": "reported"
+  },
+  "access": "write",
+  "enforcement": "write 요청",
+  "session_id": null,
+  "stop_reason": "completed",
+  "is_error": false,
+  "duration_ms": 137133,
+  "usage": {
+    "input_tokens": null,
+    "output_tokens": 60255
+  },
+  "raw_path": null,
+  "process_cleanup": "verified"
+}
