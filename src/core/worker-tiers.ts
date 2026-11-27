@@ -9,7 +9,7 @@ export type WorkerTier = typeof WORKER_TIERS[number];
 export interface TeamExecutionSettings { model: string; effort: string }
 type Overrides = Record<string, Partial<Record<WorkerTier, Partial<TeamExecutionSettings>>>>;
 export function isWorkerTier(value: string): value is WorkerTier { return WORKER_TIERS.some((tier) => tier === value); }
-const pathFor = (env: NodeJS.ProcessEnv, xhigh: boolean) => join(paceHome(env), xhigh ? "worker-tiers-xhigh.json" : "worker-tiers.json");
+const pathFor = (env: NodeJS.ProcessEnv) => join(paceHome(env), "worker-tiers.json");
 const XHIGH_DEFAULTS = new Map<string, TeamExecutionSettings>([
   ["claude", { model: "claude-fable-5-2", effort: "high" }],
   ["codex", { model: "gpt-6.2-astra", effort: "medium" }],
@@ -27,9 +27,9 @@ function ordinaryFile(path: string): void {
   if (!stat.isFile() || stat.nlink !== 1 || stat.size > 65536) throw new Error("등급 설정은 64KiB 이하의 일반 단일 링크 파일이어야 한다");
 }
 export function readWorkerTiers(env: NodeJS.ProcessEnv = process.env): Overrides {
-  return readTierOverrides(pathFor(env, false), false);
+  return readTierOverrides(pathFor(env));
 }
-function readTierOverrides(path: string, xhigh: boolean): Overrides {
+function readTierOverrides(path: string): Overrides {
   let text: string;
   try {
     ordinaryFile(path);
@@ -51,7 +51,7 @@ function readTierOverrides(path: string, xhigh: boolean): Overrides {
     for (const [agent, tiers] of Object.entries(data)) {
       if (!agentValid(agent) || !tiers || typeof tiers !== "object" || Array.isArray(tiers)) throw new Error();
       for (const [tier, settings] of Object.entries(tiers)) {
-        if (!isWorkerTier(tier) || (tier === "xhigh") !== xhigh || !settings || typeof settings !== "object" || Array.isArray(settings)) throw new Error();
+        if (!isWorkerTier(tier) || !settings || typeof settings !== "object" || Array.isArray(settings)) throw new Error();
         for (const [key, value] of Object.entries(settings)) {
           if (!["model", "effort"].includes(key) || !valueValid(value) || (key === "effort" && value === "default")) throw new Error();
         }
@@ -62,10 +62,9 @@ function readTierOverrides(path: string, xhigh: boolean): Overrides {
 }
 export function resolveTeamSettings(agent: string, tier: WorkerTier, env: NodeJS.ProcessEnv = process.env): TeamExecutionSettings {
   if (!agentValid(agent) || !isWorkerTier(tier)) throw new Error("작업자 또는 등급이 올바르지 않다");
-  const xhigh = tier === "xhigh";
-  const data = readTierOverrides(pathFor(env, xhigh), xhigh);
+  const data = readTierOverrides(pathFor(env));
   const override = Object.hasOwn(data, agent) ? data[agent]?.[tier] : undefined;
-  const base = xhigh ? XHIGH_DEFAULTS.get(agent) : { model: resolveWorkerSettings(agent, undefined, undefined, env).model, effort: tier };
+  const base = tier === "xhigh" ? XHIGH_DEFAULTS.get(agent) : { model: resolveWorkerSettings(agent, undefined, undefined, env).model, effort: tier };
   const result = { model: override?.model ?? base?.model, effort: override?.effort ?? base?.effort };
   validateTeamSettings(result);
   return result;
@@ -76,8 +75,8 @@ export function setWorkerTier(agent: string, field: string, value: string | unde
   if (!agentValid(agent) || !match || tier === undefined || !isWorkerTier(tier)) throw new Error(`등급 설정 항목: tier.<${WORKER_TIERS.join("|")}>.<model|effort>`);
   const key = match[2] as keyof TeamExecutionSettings;
   if (value !== undefined && (!valueValid(value) || (key === "effort" && value === "default"))) throw new Error("등급 설정값이 올바르지 않다");
-  const xhigh = tier === "xhigh", path = pathFor(env, xhigh);
-  const data = readTierOverrides(path, xhigh);
+  const path = pathFor(env);
+  const data = readTierOverrides(path);
   const tiers = Object.hasOwn(data, agent) ? data[agent]! : {};
   const entry = Object.hasOwn(tiers, tier) ? tiers[tier]! : {};
   if (value === undefined) delete entry[key]; else entry[key] = value;

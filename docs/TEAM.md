@@ -1,6 +1,6 @@
 # 저장소 팀 원본과 호스트 정의
 
-일반 팀 원본은 `.pace/team/agents/<name>.md`에, 전용 `xhigh` 원본은 `.pace/team/agents-xhigh/<name>.md`에 둔다. 개인 비서 프로필·워크스페이스 `.pace/AGENT.md`와는 별개다. Claude·Codex native 정의는 생성물이므로 직접 편집한 내용은 `sync`로 덮어쓴다. 원본을 먼저 고친다.
+팀 원본은 등급과 관계없이 `.pace/team/agents/<name>.md`에 둔다. 개인 비서 프로필·워크스페이스 `.pace/AGENT.md`와는 별개다. Claude·Codex native 정의는 생성물이므로 직접 편집한 내용은 `sync`로 덮어쓴다. 원본을 먼저 고친다.
 
 ```sh
 pace team new athena --role lead
@@ -19,7 +19,7 @@ Git 저장소의 어느 하위 폴더에서 실행해도 최상위 `.pace/team/a
 
 ## 팀 설계 모드
 
-`pace team list`는 일반·`xhigh`·옛 경로의 PACE 원본을 함께 판독한다. 원본이 있으면 최근 프로젝트·백로그 기록과 현재 정의를 대조하는 갱신 모드를 선택한다. 원본과 native 정의가 모두 없으면 신규 팀을 설계한다. native 정의만 있으면 기존 업무·권한을 보존해야 할 대상을 확인하여 PACE 원본 초안을 만들고 갱신 대조를 거친다. 세 모드는 필수 역할을 함께 점검한다. 원본 검증 오류가 있으면 그 원인을 먼저 확인한다. [시작 모드](../skills/pace-team/SKILL.md#시작-모드)
+`pace team list`는 새 경로와 옛 경로의 PACE 원본을 함께 판독한다. 원본이 있으면 최근 프로젝트·백로그 기록과 현재 정의를 대조하는 갱신 모드를 선택한다. 원본과 native 정의가 모두 없으면 신규 팀을 설계한다. native 정의만 있으면 기존 업무·권한을 보존해야 할 대상을 확인하여 PACE 원본 초안을 만들고 갱신 대조를 거친다. 세 모드는 필수 역할을 함께 점검한다. 원본 검증 오류가 있으면 그 원인을 먼저 확인한다. [시작 모드](../skills/pace-team/SKILL.md#시작-모드)
 
 갱신 결과는 에이전트별 실제 업무·담당 공백·반복 지적·비참여·호출 관측과 파일의 행으로 남긴다. 팀 미채택 프로젝트와 백로그 기록도 역할 사각지대의 근거가 된다. 승인 전에 원본과 생성물을 유지하며, 반영 뒤 공통 실행 전 대조 문단과 점검 표지를 확인하고 생성물 검사와 역할 적재를 검증한다. [갱신 절차](../skills/pace-team/SKILL.md#기존-팀-갱신)
 
@@ -63,7 +63,7 @@ tools의 스킬·도구 지침을 읽고 실행 환경의 권한 설정을 따�
 | name | 파일명과 같은 1~64자 소문자 ASCII kebab 이름. 숫자는 첫 글자 뒤 허용하며 Windows 예약명은 거부한다. 호스트가 이 이름을 실제 수용하는지는 해당 호스트 실측에서 확인한다 |
 | role | lead·maker·reviewer·coordinator |
 | stage | 저장소에서 맡는 업무 단계의 중복 없는 문자열 배열 |
-| tier | 일반 원본은 high·medium·low, 전용 원본은 xhigh. 새 lead/reviewer는 high, maker/coordinator는 medium |
+| tier | high·medium·low·xhigh. 새 lead/reviewer는 high, maker/coordinator는 medium. xhigh는 명시 배정할 때만 |
 | resources | 공유 자원 이름의 중복 없는 문자열 배열. 자원 사용 허가는 실행 측에서 별도 확인한다 |
 | tools | 스킬·도구 안내 이름의 중복 없는 문자열 배열. 권한 목록으로 자동 변환하지 않는다 |
 
@@ -77,7 +77,7 @@ frontmatter는 PACE YAML-lite의 제한된 문법이다. 인라인 목록은 따
 
 ## 모델과 effort 대응표
 
-일반 작업자 설정은 `PACE_HOME/worker-settings.json`, 일반 등급 override는 `worker-tiers.json`, `xhigh` override는 `worker-tiers-xhigh.json`에 둔다. `xhigh`는 `.pace/team/agents-xhigh/` 원본과 `pace-team-xhigh-generated` 생성물 표지를 사용한다. 구판 팀 명령은 별도 파일과 표지를 건너뛰어 기존 등급 설정·원본·생성물을 계속 읽는다. 구판 시동 도구가 볼 수 있는 역할은 `pace team list`로 확인한다. `xhigh` 생성물의 갱신은 해당 등급 지원 버전에서 한다.
+일반 작업자 설정은 `PACE_HOME/worker-settings.json`, 등급 override는 `xhigh`를 포함해 모두 `worker-tiers.json`에 둔다. 생성물 표지도 등급과 관계없이 `pace-team-generated` 하나다. 0.1.5의 `.pace/team/agents-xhigh/` 원본이 있는 저장소는 원본을 `.pace/team/agents/`로 옮기고, `pace-team-xhigh-generated` 표지의 `.claude/agents/`·`.codex/agents/` 생성물을 지운 뒤 `pace team sync`한다. `worker-tiers-xhigh.json`의 값은 `pace worker set <host> tier.xhigh.<model|effort>`로 다시 넣는다.
 
 ```sh
 pace worker show
@@ -96,7 +96,7 @@ pace worker set claude tier.xhigh.effort high
 | low | 일반 배포 기본 모델 / `low` | 일반 배포 기본 모델 / `low` |
 | xhigh | `claude-fable-5-2` / `high` | `gpt-6.2-astra` / `medium` |
 
-일반 등급 model은 `(host,tier)` override → 일반 worker model → 배포 기본값 순이다. 현재 해석 결과는 `pace worker show`에서 확인한다. 일반 등급 effort는 해당 등급 override → tier 문자열 순이다. `xhigh`의 두 필드는 각각 `(host,xhigh)` override → 표의 도구별 배포값으로 해석한다. 일반 worker model과 effort는 xhigh에 상속되지 않는다. `worker set/reset`은 대상 키의 파일을 고르고 `worker show`는 일반 `settings`·`effective` 외에 `teamTiers`를 표시한다. 문제 해결자 관문은 사용자 설정과 별개로 TS-09의 고정값을 명시해서 확인한다.
+일반 등급 model은 `(host,tier)` override → 일반 worker model → 배포 기본값 순이다. 현재 해석 결과는 `pace worker show`에서 확인한다. 일반 등급 effort는 해당 등급 override → tier 문자열 순이다. `xhigh`의 두 필드는 각각 `(host,xhigh)` override → 표의 도구별 배포값으로 해석한다. 일반 worker model과 effort는 xhigh에 상속되지 않는다. `worker set/reset`은 키에 따라 `worker-settings.json`(model·effort) 또는 `worker-tiers.json`(`tier.*`)을 고치고 `worker show`는 일반 `settings`·`effective` 외에 `teamTiers`를 표시한다. 문제 해결자 관문은 사용자 설정과 별개로 TS-09의 고정값을 명시해서 확인한다.
 
 등급 파일은 `{ "codex": { "high": { "model": "모델 이름", "effort": "high" } } }` 형태다. 일반 단일 링크 파일·64KiB 상한을 검사하며 잘못된 키·빈 값·제어문자·개행·1024자 초과 값과 effort `default`를 거부한다. 원자 교체로 저장한다. 호스트별 실제 model/effort 허용 목록까지는 검증하지 않으므로 잘못된 제공자 값은 실제 호스트에서 거부될 수 있다.
 
@@ -158,7 +158,7 @@ native model/effort를 생략해 부모 설정을 상속하는 방법은 환경 
 
 새 branch의 역할은 체크아웃될 HEAD의 커밋된 원본에서 읽는다. main의 커밋되지 않은 역할 편집은 자동 반영하지 않는다. 기존 branch 복구는 그 ref의 원본·PROJECT를 미리 검사하고, 기존 worktree 재실행은 실제 실행 checkout의 원본·PROJECT를 쓴다. 도구 선택은 기존 main PROJECT/저장소/세션 규칙을 유지하므로 도구와 역할의 출처가 다를 수 있다. 준비·병합이 끝난 실행 직전에 원본/선택/설정을 다시 확인한다. 달라지면 실행을 보류하고 worktree를 보존하므로 원본/커밋을 확인한 뒤 `start --launch`로 재시도한다. 역할 원본과 역할 필드를 실제로 선택한 PROJECT는 64KiB 이하 UTF-8 일반 파일이어야 한다. 역할 필드가 없으면 PROJECT 탐색은 기존 읽기 방식을 유지해 큰 파일·하드링크에 이 제한을 새로 적용하지 않는다. 명시 role은 PROJECT 역할 필드보다 우선한다.
 
-두 호스트 모두 시작 지시 첫 줄에서 실제 원본 경로를 읽는다. 일반 원본은 `.pace/team/agents/<이름>.md`, `xhigh` 원본은 `.pace/team/agents-xhigh/<이름>.md`다. 시작 지문은 CRLF를 LF로 정규화한 UTF-8 텍스트의 SHA256이며 지시문에도 계산 기준을 넣는다. native subagent는 최상위 Orca 작업자 선택과 다르고, 공유 settings 교체는 동시 실행에 간섭하므로 쓰지 않는다(T01 실측). 각 model/effort 필드는 명시 start 옵션 → [해당 등급 매핑](#모델과-effort-대응표) 순이다. `xhigh`는 일반 worker 설정을 거치지 않고 전용 override와 도구별 배포값을 사용한다. 명시 `--effort default`는 기존 의미대로 effort 인자를 생략한다. 값은 비밀·선행 대시·Unicode 제어/서식 문자 없는 well-formed 문자열(1024자 이하)이며, 공백·셸 메타문자는 한 argv 값으로 전달하고 직접 안내에서는 인용한다. 시작 구성원 이름도 비밀 후보를 거부해 진단·기록에 넣지 않는다. 모델별 실제 지원은 호스트 결과로 확인한다.
+두 호스트 모두 시작 지시 첫 줄에서 실제 원본 경로를 읽는다. 원본은 `.pace/team/agents/<이름>.md`다. 시작 지문은 CRLF를 LF로 정규화한 UTF-8 텍스트의 SHA256이며 지시문에도 계산 기준을 넣는다. native subagent는 최상위 Orca 작업자 선택과 다르고, 공유 settings 교체는 동시 실행에 간섭하므로 쓰지 않는다(T01 실측). 각 model/effort 필드는 명시 start 옵션 → [해당 등급 매핑](#모델과-effort-대응표) 순이다. `xhigh`는 일반 worker 설정을 거치지 않고 `(host,xhigh)` override와 도구별 배포값을 사용한다. 명시 `--effort default`는 기존 의미대로 effort 인자를 생략한다. 값은 비밀·선행 대시·Unicode 제어/서식 문자 없는 well-formed 문자열(1024자 이하)이며, 공백·셸 메타문자는 한 argv 값으로 전달하고 직접 안내에서는 인용한다. 시작 구성원 이름도 비밀 후보를 거부해 진단·기록에 넣지 않는다. 모델별 실제 지원은 호스트 결과로 확인한다.
 
 start 사건의 선택 `role` 객체에는 name/source(option 또는 project), definition(상대 경로), hash(시작 검증 지문), method(prompt), model/effort, settingsStatus, toolsPermissionApplied(false), runtimeObserved(false)를 기록한다. settingsStatus는 planned(직접 안내/미실행), arguments(Orca 인자 전달), unconfirmed(실행 응답 불명), rejected(실행 실패)다. **전달은 실제 적용이 아니다.** 런타임 model/effort·적재 행동은 별도 세션 관측으로 확인하고 불일치·미확인은 이슈와 후속 검증으로 남긴다. 시작 지문은 이후의 동시 편집까지 고정하지 않는다. 도구 권한은 적용하지 않으며 역할 정의 자체도 보안 경계가 아니다.
 
@@ -179,7 +179,7 @@ start 사건의 선택 `role` 객체에는 name/source(option 또는 project), d
 
 소진 상위 검토에서는 원래 작성자·작업자와 해당 판정을 대조하여 교차 제공자를 우선한다. 실행 불가로 같은 제공자의 새 맥락을 쓰면 실제 제공자와 `cross: false`, `cross_unavailable` 근거를 남긴다. 호출한 PM이 새 맥락의 안전한 식별, 역할, 제공자, 응답의 분석, 호출 기록을 연결한다. 두 번째 근본 검토는 현재 계약과 백로그 근거도 제공한다.
 
-호출 직전 저장소의 `.pace/team/agents-xhigh/pace-troubleshooter.md`를 읽고 frontmatter 다음 본문과 해당 업무의 목표·실패 원문을 준비한다. 같은 역할 본문을 Claude는 `--system-prompt-file "$role_body"`로, Codex는 업무 요청 앞에 붙인 프롬프트 파일로 넘긴다. 새 맥락과 기본 읽기 전용을 사용한다. `--call-scope`에 프로젝트 또는 백로그를, 태스크가 있으면 `--call-task`를 추가한다.
+호출 직전 저장소의 `.pace/team/agents/pace-troubleshooter.md`를 읽고 frontmatter 다음 본문과 해당 업무의 목표·실패 원문을 준비한다. 같은 역할 본문을 Claude는 `--system-prompt-file "$role_body"`로, Codex는 업무 요청 앞에 붙인 프롬프트 파일로 넘긴다. 새 맥락과 기본 읽기 전용을 사용한다. `--call-scope`에 프로젝트 또는 백로그를, 태스크가 있으면 `--call-task`를 추가한다.
 
 ```sh
 pace agent run --agent claude --mode p --model claude-fable-5-2 --effort high \

@@ -1,4 +1,4 @@
-import { teamSourcePath, validTeamName, xhighTeamSourcePath } from "../team/model.ts";
+import { teamSourcePath, validTeamName } from "../team/model.ts";
 import { hasSecret } from "./secrets.ts";
 export interface StartRoleRecord {
   name: string;
@@ -25,7 +25,7 @@ export function validStartRole(value: unknown): value is StartRoleRecord {
   const required = ["name", "source", "definition", "hash", "method", "model", "settingsStatus", "toolsPermissionApplied", "runtimeObserved"];
   return required.every((key) => Object.hasOwn(r, key)) && Object.keys(r).every((key) => required.includes(key) || key === "effort") &&
     safeRoleName(r.name) && (r.source === "option" || r.source === "project") &&
-    (r.definition === teamSourcePath(r.name) || r.definition === teamSourcePath(r.name, true) || r.definition === xhighTeamSourcePath(r.name)) &&
+    (r.definition === teamSourcePath(r.name) || r.definition === teamSourcePath(r.name, true)) &&
     typeof r.hash === "string" && /^[a-f0-9]{64}$/.test(r.hash) &&
     r.method === "prompt" && safeRoleSetting(r.model) && (r.effort === undefined || safeRoleSetting(r.effort)) &&
     ["planned", "arguments", "unconfirmed", "rejected"].includes(r.settingsStatus as string) &&

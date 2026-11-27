@@ -5,7 +5,6 @@ import { dirname, isAbsolute, join } from "node:path";
 import { writeFileAtomic } from "../core/fsutil.ts";
 import { hasSecret } from "./secrets.ts";
 import { hasTeamContract } from "./team-contract.ts";
-import { teamSourcePath, xhighTeamSourcePath } from "../team/model.ts";
 export const LOG_TYPES = ["start", "approval", "task_start", "gate", "task_done", "finish", "merge", "decision", "change", "review", "question", "answer", "escalation", "note"] as const;
 export type LogType = typeof LOG_TYPES[number];
 export type LogActor = "cli" | "agent" | "coordinator" | "user";
@@ -33,24 +32,9 @@ export function validateEvent(event: ProjectEvent): void {
   if (event.ref !== undefined && (!validText(event.ref, 240) || isAbsolute(event.ref) || /^[a-z]+:/i.test(event.ref) || event.ref.split(/[/\\]/).includes(".."))) throw new ProjectLogError("사건 ref는 프로젝트의 상대 파일이어야 한다");
   if (event.data !== undefined && (!event.data || typeof event.data !== "object" || Array.isArray(event.data) || Object.entries(event.data).some(([key, n]) => !/^[a-zA-Z][a-zA-Z0-9_]*$/.test(key) || !Number.isSafeInteger(n) || n < 0))) throw new ProjectLogError("사건 data는 음이 아닌 정수만 허용한다");
 }
-/** 구판은 정규 경로 슬롯을 읽고, 신판은 표지에서 같은 역할의 실제 원본 경로를 복원한다. */
-function encodeEvent(event: ProjectEvent): ProjectEvent {
-  if (event.data?.xhighRoleDefinition !== undefined) throw new ProjectLogError("xhigh 원본 표지는 시작 기록기가 만든다");
-  const role = event.role;
-  if (!role || role.definition !== xhighTeamSourcePath(role.name)) return event;
-  return { ...event, role: { ...role, definition: teamSourcePath(role.name) }, data: { ...event.data, xhighRoleDefinition: 1 } };
-}
-
 export function decodeEvent(event: ProjectEvent): ProjectEvent {
   validateEvent(event);
-  const role = event.role;
-  const { xhighRoleDefinition, ...data } = event.data ?? {};
-  if (xhighRoleDefinition === undefined) {
-    if (role && role.definition === xhighTeamSourcePath(role.name)) throw new ProjectLogError("xhigh 시작 행의 원본 표지가 없다");
-    return event;
-  }
-  if (xhighRoleDefinition !== 1 || !role || role.definition !== teamSourcePath(role.name)) throw new ProjectLogError("xhigh 시작 행의 원본 표지가 올바르지 않다");
-  return { ...event, role: { ...role, definition: xhighTeamSourcePath(role.name) }, ...(Object.keys(data).length ? { data } : { data: undefined }) };
+  return event;
 }
 function assertDir(dir: string): void {
   if (!lstatSync(dir).isDirectory() || !lstatSync(dirname(dir)).isDirectory()) throw new ProjectLogError("로그 폴더는 일반 디렉터리여야 한다");
@@ -88,7 +72,7 @@ export function recordEvents(dir: string, events: readonly ProjectEvent[]): bool
     const lines = events.map((event) => {
       validateEvent(event);
       const safe: ProjectEvent = { ts: event.ts, p: event.p, ...(event.t ? { t: event.t } : {}), type: event.type, by: event.by, msg: event.msg, ...(event.to !== undefined ? { to: event.to } : {}), ...(event.requestId !== undefined ? { requestId: event.requestId } : {}), ...(event.role ? { role: { ...event.role } } : {}), ...(event.ok !== undefined ? { ok: event.ok } : {}), ...(event.src ? { src: event.src } : {}), ...(event.ref ? { ref: event.ref } : {}), ...(event.data ? { data: event.data } : {}) };
-      return `${JSON.stringify(encodeEvent(safe))}\n`;
+      return `${JSON.stringify(safe)}\n`;
     });
     const fd = openLog(join(dir, "log.jsonl"), true);
     try {

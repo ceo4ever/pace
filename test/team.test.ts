@@ -297,12 +297,11 @@ test("worker tiers: 두 호스트×세 등급·잘못된 값·손상·링크를 
   assert.equal(readFileSync(outside, "utf8"), "{}");
 });
 
-test("worker xhigh: CLI defaults, isolated overrides and rejection", () => {
+test("worker xhigh: CLI defaults, shared tier file overrides and rejection", () => {
   const { home, run } = fixture();
-  const legacy = join(home, "worker-tiers.json"), xhigh = join(home, "worker-tiers-xhigh.json");
+  const tiers = join(home, "worker-tiers.json");
   assert.equal(run("worker", "set", "codex", "model", "general-model").status, 0);
   assert.equal(run("worker", "set", "codex", "tier.high.model", "legacy-model").status, 0);
-  const legacyBytes = readFileSync(legacy);
   const shown = () => {
     const result = run("worker", "show");
     assert.equal(result.status, 0, result.stderr);
@@ -325,74 +324,57 @@ test("worker xhigh: CLI defaults, isolated overrides and rejection", () => {
     assert.equal(run("worker", "reset", host, "tier.xhigh.effort").status, 0);
     assert.deepEqual(shown()[host].xhigh, settings);
   }
-  assert.deepEqual(readFileSync(legacy), legacyBytes);
-  assert.deepEqual(JSON.parse(readFileSync(xhigh, "utf8")), {});
+  assert.deepEqual(JSON.parse(readFileSync(tiers, "utf8")), { codex: { high: { model: "legacy-model" } } });
+  assert.equal(existsSync(join(home, "worker-tiers-xhigh.json")), false);
   const invalidTier = run("worker", "set", "codex", "tier.ultra.effort", "high");
   assert.equal(invalidTier.status, 1);
   assert.match(invalidTier.stderr, /xhigh/);
-  for (const content of ['{"codex":{"high":{}}}', '{"codex":{"xhigh":{"effort":"default"}}}', " ".repeat(65537), Buffer.from([0xff])]) {
-    writeFileSync(xhigh, content);
+  for (const content of ['{"codex":{"xhigh":{"effort":"default"}}}', " ".repeat(65537), Buffer.from([0xff])]) {
+    writeFileSync(tiers, content);
     assert.equal(run("worker", "show").status, 2);
     assert.equal(run("worker", "set", "codex", "tier.xhigh.model", "override-model").status, 1);
-    assert.deepEqual(readFileSync(xhigh), Buffer.from(content));
-    assert.equal(resolveTeamSettings("codex", "high", { PACE_HOME: home }).model, "legacy-model");
+    assert.deepEqual(readFileSync(tiers), Buffer.from(content));
+    assert.throws(() => resolveTeamSettings("codex", "xhigh", { PACE_HOME: home }));
   }
 });
 
-test("team xhigh: explicit promotion and protected generation ownership", () => {
+test("team xhigh: same source folder and shared generation marker", () => {
   const { root, run } = fixture();
   for (const [name, role] of [["lead", "lead"], ["builder", "maker"], ["specialist", "reviewer"]]) {
     assert.equal(run("team", "new", name!, "--role", role!).status, 0);
   }
-  assert.equal(loadTeamMember(root, "specialist").tier, "high");
   assert.equal(run("team", "sync").status, 0);
   const ordinary = [join(root, ".claude/agents/lead.md"), join(root, ".codex/agents/builder.toml")];
   const originalBytes = ordinary.map((path) => readFileSync(path));
-  const path = join(root, ".pace/team/agents/specialist.md"), promoted = join(root, ".pace/team/agents-xhigh/specialist.md");
-  const original = readFileSync(path, "utf8");
-  const xhigh = original.replace("tier: high", "tier: xhigh");
-  writeFileSync(path, xhigh);
-  assert.equal(run("team", "list").status, 2, "the original location does not accept xhigh");
-  mkdirSync(join(root, ".pace/team/agents-xhigh"));
-  renameSync(path, promoted);
+  const path = join(root, ".pace/team/agents/specialist.md");
+  writeFileSync(path, readFileSync(path, "utf8").replace("tier: high", "tier: xhigh"));
   assert.match(run("team", "list").stdout, /specialist.*xhigh/);
+  assert.equal(loadTeamMember(root, "specialist").source, ".pace/team/agents/specialist.md");
   assert.equal(run("team", "sync").status, 0);
   assert.equal(run("team", "sync", "--check", "--json").status, 0);
   assert.deepEqual(ordinary.map((file) => readFileSync(file)), originalBytes);
   const claude = join(root, ".claude/agents/specialist.md"), codex = join(root, ".codex/agents/specialist.toml");
   const claudeBefore = readFileSync(claude), codexBefore = readFileSync(codex);
-  assert.match(claudeBefore.toString(), /^---\n# pace-team-xhigh-generated: \.pace\/team\/agents-xhigh\/specialist\.md\n/);
+  assert.match(claudeBefore.toString(), /^---\n# pace-team-generated: \.pace\/team\/agents\/specialist\.md\n/);
   assert.match(claudeBefore.toString(), /model: "claude-fable-5-2"\neffort: "high"/);
   assert.match(codexBefore.toString(), /model = "gpt-6.2-astra"\nmodel_reasoning_effort = "medium"/);
   assert.equal(run("worker", "set", "codex", "tier.xhigh.model", "specialist-override").status, 0);
   assert.equal(run("team", "sync").status, 0);
   assert.match(readFileSync(codex, "utf8"), /model = "specialist-override"/);
   assert.deepEqual(readFileSync(claude), claudeBefore);
-  const foreign = readFileSync(codex, "utf8").replace("/specialist.md", "/somebody-else.md");
-  writeFileSync(codex, foreign);
-  assert.equal(run("team", "sync").status, 2);
-  assert.equal(readFileSync(codex, "utf8"), foreign);
-  assert.deepEqual(readFileSync(claude), claudeBefore);
-  writeFileSync(codex, codexBefore);
-  writeFileSync(path, original);
-  assert.equal(run("team", "sync").status, 2, "duplicate sources are rejected before writes");
-  assert.deepEqual(readFileSync(codex), codexBefore);
-  unlinkSync(path);
-  writeFileSync(promoted, original);
-  assert.equal(run("team", "list").status, 2, "the separate location requires xhigh");
-  renameSync(promoted, promoted + ".bak");
+  assert.equal(existsSync(join(root, ".pace/team/agents-xhigh")), false);
+  mkdirSync(join(root, ".pace/team/agents-xhigh"));
+  renameSync(path, join(root, ".pace/team/agents-xhigh/specialist.md"));
   const orphan = run("team", "sync", "--check", "--json");
-  assert.equal(orphan.status, 1);
+  assert.equal(orphan.status, 1, "the removed separate folder is not read");
   assert.deepEqual(JSON.parse(orphan.stdout).differences.map((d: { kind: string }) => d.kind), ["orphan", "orphan"]);
-  assert.equal(run("team", "sync").status, 2);
-  assert.deepEqual(readFileSync(codex), codexBefore);
 });
 
 test("worker xhigh: rejecting a linked configuration preserves the target", { skip: process.platform === "win32" }, () => {
   const { home, run } = fixture();
   const outside = join(tempDir(), "tiers.json");
   writeFileSync(outside, "{}");
-  symlinkSync(outside, join(home, "worker-tiers-xhigh.json"));
+  symlinkSync(outside, join(home, "worker-tiers.json"));
   assert.equal(run("worker", "show").status, 2);
   assert.equal(run("worker", "set", "codex", "tier.xhigh.model", "new").status, 1);
   assert.equal(readFileSync(outside, "utf8"), "{}");
