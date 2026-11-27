@@ -10,3 +10,7 @@
 | 형식 | `bash -n scripts/install.sh` 종료 0. `install.ps1` 선두 바이트 `efbbbf`와 `get.ps1` ASCII를 확인했다. |
 
 Windows PowerShell 5.1의 실제 레지스트리, Windows Git Bash, Windows 파일시스템에서의 래퍼 실행은 이 호스트에서 관측하지 못했다. Windows 전용 검사는 해당 환경에서 실행되도록 남겼다.
+
+## 마감 회귀 검사 이력
+
+첫 전체 검사에서 1,508건이 통과했고 18건이 건너뛰었다. P015에서 변경하지 않은 `test/team-lock.test.ts:240`의 다른 worktree 잠금 거부 반환값만 실패했다(기대 1, 실제 2). 같은 테스트를 `node --test --test-name-pattern='실제 래퍼는 명령을 START 기록 후 실행하고 자동 갱신하며 다른 worktree 요청을 거부한다' test/team-lock.test.ts`로 단독 실행해 종료 0을 확인했다. 원인은 미확인이다. 전체 관문은 다시 실행하며 최종 상태는 프로젝트 마감 영수증에 남긴다.
