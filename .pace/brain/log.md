@@ -168,3 +168,4 @@
 ## [2026-11-27] lint | P015 릴리즈 설치 결정과 README·정의서의 0.1.5 변경 근거를 대조했다.
 ## [2026-11-27] update | Canvas 스킬 묶음 설치 경계 (.pace/brain/pages/concept/canvas-추출-도구-봉인과-설치-경계.md)
 ## [2026-11-27] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
+## [2026-11-27] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
