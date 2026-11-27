@@ -9,3 +9,5 @@
 {"ts":"2026-11-27T06:52:51.773Z","p":"P015","type":"review","by":"agent","msg":"tester pass · blocking 0 · should_fix 0 · 압축 회귀 시험 변이 11개 검출","ref":"evidence/tester-recheck.md","data":{"blocking":0,"should_fix":0,"tester":1,"reviewer":0,"pass":1,"fail":0}}
 {"ts":"2026-11-27T06:53:15.705Z","p":"P015","type":"gate","by":"cli","msg":"finish: contract","ok":false,"data":{"finish":1}}
 {"ts":"2026-11-27T07:01:33.154Z","p":"P015","type":"gate","by":"cli","msg":"finish: security","ok":false,"data":{"finish":1}}
+{"ts":"2026-11-27T07:09:41.683Z","p":"P015","type":"finish","by":"cli","msg":"finish","ok":true}
+{"ts":"2026-11-27T07:09:41.683Z","p":"P015","type":"gate","by":"cli","msg":"finish","ok":true,"src":"finish:7111e393e496d77440736a6a","data":{"finish":1}}
