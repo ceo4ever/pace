@@ -38,7 +38,7 @@
 
 ## 설치
 
-필요: Node.js 24 이상, git. 신규 설치와 업데이트는 같은 스크립트를 쓴다.
+Node.js 24 이상이 필요하다. macOS·Linux 원격 설치에는 `curl`도 필요하다. 신규 설치와 업데이트는 같은 스크립트를 쓴다.
 
 ```bash
 # macOS · Linux
@@ -52,14 +52,17 @@ scripts\install.cmd               # 저장소 안에서 (PowerShell은 .\scripts
 irm https://raw.githubusercontent.com/ceo4ever/pace/main/scripts/get.ps1 | iex   # 원격 설치
 ```
 
-원격 설치는 저장소를 `~/.local/share/pace`(Windows `%LOCALAPPDATA%\pace`)에 받는다. 설치 스크립트는 설치까지만 하고, 성공하면 결과 한 줄(`✓ PACE 0.1.5 설치 완료` 또는 `업데이트 완료`)만 보인다. 온보딩은 `pace onboard` 또는 새 세션 첫 메시지로 시작한다.
+원격 설치는 GitHub의 최신 공개 정식 릴리즈 소스 아카이브를 임시 폴더에 받아 검사하고 설치한다. Git 없이 실행할 수 있으며, 예전 설치 캐시인 `~/.local/share/pace`와 Windows의 `%LOCALAPPDATA%\pace`는 그대로 둔다. 설치 뒤 임시 폴더를 정리한다. 성공하면 결과 한 줄(`✓ PACE 0.1.5 설치 완료` 또는 `업데이트 완료`)이 표시된다. 온보딩은 `pace onboard` 또는 새 세션 첫 메시지로 시작한다.
 
 | 상황 | 스크립트 동작 |
 |---|---|
 | 신규 | 설치본 복사, 부트 훅·대체 규칙·스킬 등록, PATH에 `~/.pace/bin` 등록 |
-| PACE 있음 (`~/.pace/install.json`) | 코드 업데이트 후 다시 설치 (결과가 같으면 바꾸지 않음) |
+| PACE 있음 (`~/.pace/install.json`) | 선택한 버전으로 프로그램을 교체하고 사용자 프로필·메모리·별도 설정 보존 |
 
-옵션: `--yes`, `--dry-run`(바꿀 내용만 보기), `--repo <dir>`, `--ref <브랜치>` (PowerShell은 `-Yes` 등). `--no-profile`은 예전 호환용으로 받기만 한다. 저장소·브랜치는 `PACE_REPO_URL`·`PACE_REPO`·`PACE_REF`로도 바꿀 수 있다.
+- `--repo <dir>`로 이미 준비한 소스를 지정한다. 옵션이 없으면 설치 스크립트가 속한 체크아웃을 사용한다. 로컬 경로로 설치할 때는 그 소스의 현재 파일을 사용한다. PowerShell 옵션 이름은 `-Repo`다. 옛 설치에서 캐시 위치를 지정하던 `PACE_REPO`는 이제 사용하지 않는다.
+- `--ref <ref>` 또는 `PACE_REF`로 원격 소스의 태그·브랜치·커밋을 선택한다. `irm …/get.ps1 | iex`에는 `PACE_REF`를 사용한다. `PACE_REPO_URL`에는 공개 GitHub 저장소의 HTTPS 주소를 지정할 수 있다. 다른 원격 소스는 먼저 로컬에 준비한 뒤 `--repo`를 사용한다.
+- `--dry-run`은 로컬 소스에서 바꿀 내용을 표시한다. `--yes`와 `--no-profile`은 기존 호출과의 호환을 위해 받는다.
+
 Antigravity IDE의 시작 훅은 공식 공유 설정 `~/.gemini/config/hooks.json`에 등록한다. 같은 경로를 사용하는 Antigravity CLI에서도 훅이 로드될 수 있으며, CLI의 설치나 동작 검증은 포함하지 않는다. 같은 이름의 사용자 훅은 덮어쓰지 않는다.
 Cursor 시작 훅은 비차단이며 대체 규칙의 전역 적용 여부도 확인이 필요하다. 도구 실행이 거절되거나 불가능하면 프로젝트 역할의 수신을 성공으로 가정하지 않는다.
 

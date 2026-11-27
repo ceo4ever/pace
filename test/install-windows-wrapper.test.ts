@@ -1,12 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, symlinkSync, lstatSync, realpathSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, symlinkSync, lstatSync, realpathSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { install, uninstall } from '../src/setup/install.ts';
 import { packageRoot } from '../src/core/paths.ts';
 import { sessionFreeEnv, tempDir } from './helpers.ts';
+import { fakeReleaseIo, releaseArchive } from './fixtures/install-release.ts';
 
 test('Windows 설치는 Git Bash 래퍼를 만들고 재설치와 제거에서 관리한다', () => {
   const home = join(tempDir(), "한글 space '$&()"); mkdirSync(home);
@@ -201,17 +202,63 @@ test('get.ps1을 iex로 실행하면 BOM 있는 install.ps1을 받아 설치하�
   const original = readFileSync(join(packageRoot, 'scripts', 'install.ps1'), 'utf8').replace(/^\uFEFF/, '');
   const sandboxed = original
     .replace('[Environment]::GetEnvironmentVariable("Path", "User")', '$PaceBinDir')
-    .replace('[Environment]::SetEnvironmentVariable(', '[void]("sandbox")#')
-    // PACE_REPO가 이 저장소라 업데이트 분기(fetch·checkout·pull)가 개발 저장소를 건드린다 — 입구 경로만 시험한다
-    .replace('(Test-Path ([IO.Path]::Combine($Repo, ".git")))', '$false');
+    .replace('$Stage = $null', '$Repo = $env:PACE_TEST_CHECKOUT\r\n$Stage = $null');
   assert.notEqual(sandboxed, original);
-  assert.ok(original.includes('(Test-Path ([IO.Path]::Combine($Repo, ".git")))') && !sandboxed.includes('(Test-Path ([IO.Path]::Combine($Repo, ".git")))'), '업데이트 분기를 막아야 한다');
   const script = join(home, 'install-sandbox.ps1');
   writeFileSync(script, '\uFEFF' + sandboxed, 'utf8');
-  const env = { ...sessionFreeEnv(), USERPROFILE: home, HOME: home, PACE_HOME: join(home, '.pace'), PACE_REPO: packageRoot, PACE_INSTALL_URL: pathToFileURL(script).href, PSModuleAnalysisCachePath: join(home, 'module-analysis-cache') };
-  const command = `Get-Content -Raw '${join(packageRoot, 'scripts', 'get.ps1').replaceAll("'", "''")}' | iex; 'shell-alive'`;
+  const env = { ...sessionFreeEnv(), USERPROFILE: home, HOME: home, TEMP: home, TMP: home, PACE_HOME: join(home, '.pace'), PACE_TEST_CHECKOUT: packageRoot, PACE_INSTALL_URL: pathToFileURL(script).href, PSModuleAnalysisCachePath: join(home, 'module-analysis-cache') };
+  const command = `function Invoke-WebRequest { [CmdletBinding()] param([uri]$Uri, $OutFile, [switch]$UseBasicParsing, $MaximumRedirection, $TimeoutSec); Copy-Item -LiteralPath $Uri.LocalPath -Destination $OutFile }; Get-Content -Raw '${join(packageRoot, 'scripts', 'get.ps1').replaceAll("'", "''")}' | iex; 'shell-alive'`;
   const run = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command], { env, cwd: home, encoding: 'utf8', timeout: 180000 });
   assert.equal(run.status, 0, run.stdout + run.stderr);
   assert.match(run.stdout, /shell-alive/);
   assert.ok(existsSync(join(home, '.pace', 'install.json')), run.stdout + run.stderr);
+  assert.equal(readdirSync(home).some((name) => /^pace-install-[a-f0-9]+$/u.test(name)), false);
+});
+
+test('PowerShell 5.1 원격 설치는 릴리즈 버전을 바꾸고 실패 때 설치본과 기존 캐시를 보존한다', { skip: process.platform !== 'win32' ? 'Windows PowerShell 실측' : false }, () => {
+  const home = tempDir();
+  const stage = join(home, 'temporary');
+  mkdirSync(stage);
+  const localAppData = join(home, 'AppData');
+  const oldRepo = join(localAppData, 'pace');
+  mkdirSync(join(oldRepo, '.git'), { recursive: true });
+  mkdirSync(join(oldRepo, 'bin'));
+  writeFileSync(join(oldRepo, '.git', 'HEAD'), 'ref: refs/heads/local\n');
+  writeFileSync(join(oldRepo, 'bin', 'pace.ts'), "throw new Error('old cache executed')");
+  const original = readFileSync(join(packageRoot, 'scripts', 'install.ps1'), 'utf8');
+  const sandboxed = original
+    .replace('[Environment]::GetEnvironmentVariable("Path", "User")', '$PaceBinDir')
+    .replace(/^    Invoke-WebRequest .*$/m, '    Copy-Item -LiteralPath $env:PACE_TEST_HELPER -Destination $Helper -ErrorAction Stop');
+  assert.doesNotMatch(sandboxed, /Invoke-WebRequest|GetEnvironmentVariable\("Path", "User"\)/);
+  const script = join(home, 'install.ps1');
+  writeFileSync(script, sandboxed);
+  const io = fakeReleaseIo(home);
+  const bundle = join(home, 'archive.tar.gz');
+  const env = { ...sessionFreeEnv(), ...io, USERPROFILE: home, HOME: home, TEMP: stage, TMP: stage, LOCALAPPDATA: localAppData,
+    PACE_HOME: join(home, 'data'), PACE_REPO: oldRepo, PACE_REF: '', PACE_REPO_URL: '', PACE_TEST_ARCHIVE: bundle,
+    PSModuleAnalysisCachePath: join(home, 'module-analysis-cache') };
+  const invoke = (version: string, ...args: string[]) => spawnSync('powershell.exe', [
+    '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', script, ...args,
+  ], { env: { ...env, PACE_TEST_VERSION: version }, cwd: home, encoding: 'utf8', timeout: 120_000 });
+  writeFileSync(bundle, releaseArchive('1.2.3'));
+  const first = invoke('1.2.3');
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  assert.match(first.stdout.trim(), /1\.2\.3[^\r\n]*$/);
+  assert.equal(first.stdout.trim().split(/\r?\n/).length, 1);
+  writeFileSync(bundle, releaseArchive('2.3.4'));
+  const second = invoke('2.3.4', '-Ref', 'v2.3.4');
+  assert.equal(second.status, 0, second.stdout + second.stderr);
+  assert.match(second.stdout.trim(), /2\.3\.4[^\r\n]*$/);
+  assert.equal(second.stdout.trim().split(/\r?\n/).length, 1);
+  const manifest = join(home, '.pace', 'app', 'package.json');
+  const installed = readFileSync(manifest, 'utf8');
+  assert.equal(JSON.parse(installed).version, '2.3.4');
+  writeFileSync(bundle, 'bad archive');
+  const failed = invoke('2.3.4');
+  assert.equal(failed.status, 1, failed.stdout + failed.stderr);
+  assert.ok(failed.stderr.trim(), '실패 원인 출력');
+  assert.equal(readFileSync(manifest, 'utf8'), installed);
+  assert.equal(readFileSync(join(oldRepo, '.git', 'HEAD'), 'utf8'), 'ref: refs/heads/local\n');
+  assert.doesNotMatch(readFileSync(io.PACE_TEST_NETWORK!, 'utf8'), /^Git/m);
+  assert.equal(readdirSync(stage).some((name) => /^pace-release-[a-f0-9]+$/u.test(name)), false);
 });

@@ -3,12 +3,13 @@ type: concept
 title: 설치·실행 함정 모음
 summary: "< /dev/tty로 넘기면 Claude Code(Bun)가 kqueue EINVAL로 죽음, 처음 폴더는 신뢰 창 기본값이 종료, ps1은 BOM 필수, 자동 모드는 자기 설정 수정과 rm -rf를 막음"
 tags: [install, pitfalls, macos, windows]
-sources: [code:scripts/install.sh, code:scripts/install.ps1, code:src/setup/onboard.ts, 실측:2026-10-22, code:src/project/harness.ts, test:test/project-harness.test.ts, code:src/project/brain.ts, test:test/brain.test.ts, code:src/setup/install.ts, test:test/install-windows-wrapper.test.ts, test/intent-preview.test.ts, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/TASK-CLOSE.md, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/existing-test-body-audit.json]
+sources: [code:scripts/install.sh, code:scripts/install.ps1, code:src/setup/onboard.ts, 실측:2026-10-22, code:src/project/harness.ts, test:test/project-harness.test.ts, code:src/project/brain.ts, test:test/brain.test.ts, code:src/setup/install.ts, test:test/install-windows-wrapper.test.ts, test/intent-preview.test.ts, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/TASK-CLOSE.md, doc:projects/P004_261118_Windows_테스트_시간_단축/tasks/T02_git_준비_재사용/evidence/existing-test-body-audit.json, code:scripts/install-release.mjs, code:scripts/get.ps1, test:test/install-script.test.ts, doc:docs/SETUP.md]
 related: [llm-cannot-speak-first]
 created: 2026-10-22
 updated: 2026-11-27
 status: active
 ---
+
 
 
 | 함정 | 증상 | 대응 |
@@ -67,3 +68,7 @@ P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움�
 ## P013 근거 대조 (2026-11-26)
 
 P013에서 새 태스크 경고의 CRLF 정규화와 사전 검토 해시의 호환성을 확인했다. CRLF fixture는 태스크 번호·기준과 기존 상태 판정도 대조한다. 실제 Windows 설치는 이 검사의 범위 밖이다.
+
+## 분기된 설치 캐시에서 벗어나는 원격 설치 (2026-11-27)
+
+기존 원격 설치는 장치에 남은 Git 캐시의 fetch·checkout·ff-only에 의존했다. 사용자 브랜치가 원격과 분기되면 프로그램 자체에 문제가 없어도 업데이트가 멈췄다. 캐시를 강제로 맞추면 로컬 커밋을 건드릴 수 있어 공개 정식 릴리즈 아카이브 하나를 임시로 받는 방식으로 바꿨다. 소스 확인이 끝나야 기존 설치 엔진을 실행한다. 캐시를 사용하거나 정리할 필요가 없다. 설치 진입 스크립트의 main은 배포 진입점이며 소스 패키지의 버전은 최신 정식 릴리즈 태그 또는 사용자가 지정한 ref가 정한다. [근거: scripts/install-release.mjs, test/install-script.test.ts, docs/SETUP.md]

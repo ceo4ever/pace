@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "metricRef": "METRICS.md",
+  "unusedRoles": [
+    {
+      "role": "pace-implementer",
+      "coverage": "unconfirmed",
+      "refs": []
+    },
+    {
+      "role": "pace-reviewer",
+      "coverage": "unconfirmed",
+      "refs": []
+    },
+    {
+      "role": "pace-tester",
+      "coverage": "unconfirmed",
+      "refs": []
+    }
+  ],
+  "recurringFindings": [
+    {
+      "code": "review-blocking",
+      "count": 3,
+      "coverage": "reported",
+      "refs": [
+        "evidence/review-initial-receipt.json",
+        "evidence/tester-initial-receipt.json"
+      ]
+    },
+    {
+      "code": "review-should-fix",
+      "count": 2,
+      "coverage": "reported",
+      "refs": [
+        "evidence/review-initial-receipt.json",
+        "evidence/review-followup-receipt.json"
+      ]
+    }
+  ],
+  "definitionChanges": [],
+  "noChangesReasonRef": "evidence/team-definitions-receipt.json"
+}

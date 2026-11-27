@@ -6,9 +6,10 @@ tags: []
 sources: [code:src/project/adopt-opal.ts, test:test/adopt-opal.test.ts, test:test/adopt-opal-e2e.test.ts, test:test/adopt-opal-recover.test.ts, doc:README.md]
 related: [작업-하네스-흐름]
 created: 2026-11-16
-updated: 2026-11-25
+updated: 2026-11-27
 status: active
 ---
+
 
 ## 결정
 
@@ -47,3 +48,7 @@ P004 T04의 근거 변경을 대조했다. cli.ts 변경은 test changed 도움�
 ## 근거 변경 대조 (2026-11-24)
 
 README의 OPAL 미리보기/--apply, 알려진 훅만 교체, TOCTOU 비지원 설명이 그대로임을 대조했다. P009는 이 가져오기 제품 경로를 바꾸지 않았고 실제 가져오기를 재실행하지 않았다. 기존 실데이터 표본·회수 한계는 역사적 관측으로 유지한다.
+
+## 0.1.5 근거 대조 (2026-11-27)
+
+README의 릴리즈 버전 표기와 설치 안내 변경을 대조했다. OPAL 가져오기의 미리보기, 적용, 훅 교체, 복구 안내에는 변화가 없다.
