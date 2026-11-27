@@ -1,0 +1,6 @@
+{
+ "agreement": "confirmed",
+ "verification": "required",
+ "upper": "109b85f1-0c77-4329-88b0-6becde5001c2",
+ "change": "상위 검토(경과 시간 선) 안 (a') 적용: 측정 구간 PM 요청→판정 결과 회수 단일 정의(TASK-CLOSE, 원장 call·review 행 제외), 기준선 착수 때 수집·D5 고정·설치 지연 없음, 전체 태스크 중앙값 판정, 상대 선 계산 불가 시 '판정 불가 보고'로 owner, 가용성 대입표(판정 불가→올리지 않음 칸 0). BACKLOG:80·84-134·139·192, BR01:20, BR03:19·47. 목표 절 불변."
+}

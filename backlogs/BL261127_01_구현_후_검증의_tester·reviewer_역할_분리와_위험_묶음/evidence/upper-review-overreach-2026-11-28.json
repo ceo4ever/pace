@@ -1,0 +1,18 @@
+{
+ "trigger": "cab8b3ad-fbd5-4840-82e5-282bdbc0ce60",
+ "slot": 2,
+ "target": "BACKLOG.md",
+ "hash": "a905cec15742863764ed6c39cd501dcbd841b9d30a90f58f09c016d92f0a0348",
+ "reviewer": "pace-troubleshooter",
+ "author": "pace-backlog-planner",
+ "worker": "hub-pm",
+ "provider": "anthropic",
+ "context": "hub-subagent-upper-review-overreach-2026-11-28",
+ "cross": false,
+ "cross_unavailable": "허브 Claude 세션의 새 맥락 서브에이전트 — 작성자·작업자와 분리, 교차 제공자 실행 미구성",
+ "analysis": "R1~R13 유효 blocking 26건 중 실제 결함 12·문서 정합성 2·가상 시나리오 12. R11~R13 blocking 3건(F33·F37)은 모두 측정 절 판정 규칙에 가상 수치를 대입한 것이고, 측정 절은 R8 810자에서 R13 5,635자로 늘었다. 판정 선·라벨·대입표는 owner 결정이 아니라 허브 main 판단으로 덧붙였고, 덧붙인 규칙이 다음 회차의 기득 검출력이 되어(F37) 반례가 끝없이 나오는 구조다. 운영 설계(BR01~BR03)는 상위 목적에 맞다.",
+ "root_cause": "기획 층: 설치 뒤 관측을 조건부 자동 판정 장치로 계약화해, 조건 밖 상태가 '보고 없음'으로 끝나는 종결 상태를 계속 만들어 냈다.",
+ "recommendation": "측정 절의 자동 판정 장치(15·60분 상한, 50% 선, 관측률·N 문턱, 라벨, 대입표, 전향 기준선·N 고정)를 삭제하고 '3개 프로젝트 마감 뒤 허브가 지표 전부를 관측값·분모·미관측 수와 함께 조건 없이 owner에게 보고, 되돌림은 owner 결정(A-1)'으로 바꾼다.",
+ "contract": "목표 절 불변(계약 지문 3ed88ffb… 유지). 설치 뒤 되돌림 판단을 허브의 조건부 선별에서 owner 직접 판단으로 바꾸는 것은 owner A-1(evidence/owner-decision-2026-11-28-always-report.md)로 기록한다.",
+ "backlog": "BACKLOG.md 측정 절만 수정: :80 기준선 N 고정 문장 삭제, :84-86·:91 전향 기준선 삭제, :92-97 측정 구간 정의 유지, :99-100 판정·진단값 구분 제거, :103-110 무조건 보고 한 문장으로 대체, :111-113 '참고 비교값(P045)'으로 축소, :114-133 대입표 삭제, :139 경로별 값 함께 보고로 축소, 결정·기록에 owner 결정 행 추가. BR01~BR03 불변."
+}

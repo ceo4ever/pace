@@ -1,0 +1,17 @@
+{
+ "trigger": "599ce2f9-3bb5-418c-96a9-3319def683d9",
+ "slot": 2,
+ "target": "BACKLOG.md",
+ "hash": "4fdd04debbf660d5b895d31d24607a3a90706f3513858405580ab0077737fd5a",
+ "reviewer": "pace-troubleshooter",
+ "author": "pace-backlog-planner",
+ "worker": "hub-pm",
+ "provider": "anthropic",
+ "context": "hub-subagent-upper-review-2-bottleneck-2026-11-28",
+ "cross": false,
+ "cross_unavailable": "허브 Claude 세션의 새 맥락 서브에이전트로 호출 — 작성자·작업자와 분리, 교차 제공자 실행은 구성하지 않음",
+ "analysis": "R1~R7 이력과 fin-link P035·P044·P045, PACE P013·P014 원장을 대조했다. 운영 병목은 중간(묶음 태스크 순차화로 reviewer 회차당 3~7분 추정, owner 에스컬레이션 증가 없음 추정), 현 설계로 마감·구현까지의 위험은 높음이다. R2 이후 blocking 9종은 모두 묶음 집합·추가·재확인 범위 한 부류이고 F19 경로(이전 diff 복귀)는 사후 원장 231건 중 0건이다. P045 다섯 태스크는 어차피 묶음 2~3개에 걸려 선택적 묶음 지정의 절감이 작다. 묶음을 '고르고 추가하는 집합'이 아니라 '부르면 항상 세 묶음 12항목을 묻는 질문'으로 바꾸면 호출 간 상태가 사라져 이 부류가 통째로 없어진다.",
+ "root_cause": "선택적 묶음 집합과 실측 추가를 호출 간 상태로 유지하는 계약이 기존 검토 하네스의 해시·예산 상태와 교차해 수정마다 새 칸을 만든다.",
+ "contract": "수정안 2·3의 묶음 지정·실측 추가·tester 먼저를 단순화해야 한다: reviewer를 부르면 항상 A·B·C 전 항목, TASK 줄은 필요/생략, 도구는 TASK 값으로 호출을 막거나 열지 않음 — owner A-1 필요.",
+ "backlog": "BR02의 유효 집합·추가 입력·같은 해시 추가 거부·외부 고정 집합·묻지 못한 묶음 절차 삭제, BR03 배정은 PM 판단과 'tester 통과 diff에만 reviewer', 설치 전 과거 diff 재생 측정 관문 추가, D5 설치 동결 일정."
+}

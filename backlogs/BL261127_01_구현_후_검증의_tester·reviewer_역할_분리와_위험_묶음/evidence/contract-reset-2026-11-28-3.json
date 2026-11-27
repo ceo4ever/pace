@@ -1,0 +1,8 @@
+{
+ "by": "user",
+ "decision": "A-1",
+ "previous": "39db63119f860709b198481b3b9e816de08ef9e0c6eb035ed56f3cfffaaed2a7",
+ "contract": "3ed88ffb16e11f288ca16827ee7f3ca52287017c0271562d5b56cec4c5a63cb9",
+ "receipt": "owner 원문 '1' (2026-11-28 허브 대화, R10 뒤 선택지 '새 주기 허용') — evidence/owner-decision-2026-11-28-new-cycle.md",
+ "change": "사후 검토 주기를 owner A-1 결정으로 확정했다: 사후 단계에서만 reviewer pass가 주기를 닫고, pass 뒤 tester를 통과한 예외 아닌 새 diff는 일반 예산(유효 판정 2회·호출 4회)을 새로 받는다. BL261124_04 BR01:14-17·P013 P-2의 태스크 단계별 합산·pass 뒤 초기화 금지는 이 경우만 예외이고, 사전·백로그 단계와 fail·unknown 뒤 수정 diff는 기존 합산 그대로다. 새 주기 시험을 verify와 review-hand→review-record 두 경로에 적용했다. 설치 뒤 TASK-CLOSE에 tester·reviewer 요청·회신 시각을 필수로 적고(BR01 템플릿 칸, BR03 절차·check), 기준선은 P045 관측분과 대체 시각 근거로 계산하며, reviewer 경로 경과 시간 중앙값이 tester만 경로의 2배를 넘으면 owner에게 되돌림 판단을 올리는 내부 비교 선을 더했다. 재생 기준선 표기를 패치 바이트만 동일로 정정했다(기존 프롬프트는 TASK를 받지 않음)."
+}

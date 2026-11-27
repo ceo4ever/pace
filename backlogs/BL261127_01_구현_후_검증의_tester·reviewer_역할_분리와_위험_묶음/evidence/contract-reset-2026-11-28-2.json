@@ -1,0 +1,8 @@
+{
+ "by": "user",
+ "decision": "A-1",
+ "previous": "893ffbec94b982f47f6685ff9397a846b3329c12817d8cb9c5230c3a77e80bfc",
+ "contract": "39db63119f860709b198481b3b9e816de08ef9e0c6eb035ed56f3cfffaaed2a7",
+ "receipt": "owner 원문 '1' (2026-11-28 허브 대화, R8 뒤 선택지 'F20~F25 고치고 재검토')",
+ "change": "계약 축(항상 12항목, 필요·생략, 도구는 TASK 값으로 막지 않음, tester 통과 diff에만 reviewer, 매 호출 전체, Q1, P047)은 그대로 두고 R8 지적을 반영했다. BR02 설치 전 관문: 재생 표본을 각 태스크 R1 입력 파일·커밋으로 고정(fin-link P045 T01 post-candidate.patch@7ac1424b, T04 post-goal-candidate.patch@219d59ed, T05 post-candidate.patch@584002dc, T06 post-candidate.patch@236af351, PACE P014 T04 implementation-final.patch@2a9c002), 패치당 2회·분모 10, unknown 1회 이하, T06 교착·소급 변경이 유효 blocking·도구 fail, 음성 대조(기존 R1 판정 기준선, T05 post-02-docs.patch 2회 blocking 없음), 모의 시험과 실제 재생의 역할 구분. 실패 시 12항목·답 근거 유지, 문구만 보완해 재측정, 축소는 owner A-1. 설치 뒤 되돌림은 owner에게 올리고 강등하지 않는다. 측정: 태스크당 단위(분모 = 마감 태스크 전부), 기준선 P035·P044·P045·P014 원장, 증거 출처, 허브 기록 책임, 구현 후 회차 경과 시간 정의·관측. 화면·문서 재호출 예외에 수정 diff 사실 질문 모두 아니오 조건과 skills/**·docs/** 흐름 문서 제외, BR03 사례 (5)(6). BL261118_02 BR04 예정 문장에 화면 예외 마감과 인수 사례. BACKLOG 근거 문장 정정(범주 부재 단정 삭제)."
+}

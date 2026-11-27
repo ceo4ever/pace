@@ -1,0 +1,8 @@
+{
+ "by": "user",
+ "decision": "A-1",
+ "previous": "7619daf8284607c4f3451b3956260a5bbb1ae0121f784f229f9ceef16597f0b9",
+ "contract": "893ffbec94b982f47f6685ff9397a846b3329c12817d8cb9c5230c3a77e80bfc",
+ "receipt": "owner 원문 '1번' (2026-11-28 허브 대화, 선택지 1 단순화) — evidence/owner-decision-2026-11-28-simplify.md",
+ "change": "목표 수정안 2를 '사후 reviewer를 부르면 항상 세 묶음 12항목'으로, 수정안 3을 TASK 줄 '필요 — 이유 | 생략 — 이유'(사실 질문은 판단 근거, 사전 reviewer가 생략 불일치를 blocking)와 PM 배정(도구는 TASK 값으로 호출을 막거나 열지 않음, tester 통과 diff에만 reviewer, 재호출 조건)으로 바꿨다. 수정안 1의 사전 reviewer 일을 필요·생략 판정으로 맞췄다. 선택적 묶음 지정·실측 추가·유효 집합·같은 해시 추가 거부·외부 고정 집합·묻지 못한 묶음 절차·tester 필수 선행을 삭제하고 버린 길 (7)(8)에 기록했다. 설치 전 과거 diff 재생 관문(BR02)과 설치 뒤 측정·되돌림 선, D5 설치 동결 일정을 더했다. BL261118_02 BR04 예정 문장을 'TASK 필요 또는 PM이 부른 경우'로 바꿨다. 유지: 매번 전체 묶음, Q1, tester 전담 실행 증거, BR01 P047 규칙과 형식 검사 예약 전 위치."
+}

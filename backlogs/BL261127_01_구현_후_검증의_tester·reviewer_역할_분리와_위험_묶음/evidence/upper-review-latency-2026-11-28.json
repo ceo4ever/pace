@@ -1,0 +1,16 @@
+{
+ "trigger": "cab8b3ad-fbd5-4840-82e5-282bdbc0ce60",
+ "slot": 1,
+ "target": "BACKLOG.md",
+ "hash": "f2a2e50194db491fac04ff8338bd3c73a94f9dc5d552d85d125c060efc903dac",
+ "reviewer": "pace-troubleshooter",
+ "author": "pace-backlog-planner",
+ "worker": "hub-pm",
+ "provider": "anthropic",
+ "context": "hub-subagent-upper-review-latency-2026-11-28",
+ "cross": false,
+ "cross_unavailable": "허브 Claude 세션의 새 맥락 서브에이전트 — 작성자·작업자와 분리, 교차 제공자 실행 미구성",
+ "analysis": "R10·R11·R12는 모두 자료 가용성의 한 칸을 대입해 '판정 불가 → 올리지 않음'에 닿은 같은 부류이며 수정마다 조건부 선이 늘어 새 계산 불가 칸이 생겼다. 허브 초안의 경로별 5태스크 설치 관문은 현행 규칙이 모든 태스크에 tester ∥ reviewer를 배정해(task-steps.md:11) tester만 기준선을 채울 수 없고, D5 진행 0건 요구와 유일한 진행 프로젝트 P046이 태스크 없음이라 설치가 무기한 지연될 수 있다. 측정 구간은 PM 요청→판정 결과 회수 하나로 정의해야 상한 숫자 근거와 일치한다. 기준선은 착수 때 열어 D5에 닫고, 상대 선이 계산 불가이면 '판정 불가 보고'로 owner에게 올리는 종결 규칙이 필요하다.",
+ "root_cause": "기획(측정 설계) 층에서 경과 시간 되돌림 선이 아직 없는 수기 기준선과 경로 조건부 값에 의존하면서, 계산 불가 분기를 '올리지 않음'으로 끝내도록 설계됐다.",
+ "recommendation": "(a'): 측정 구간을 PM 요청→판정 결과 회수(TASK-CLOSE 시각, 검토 원장 call·review 행 제외)로 정의, 기준선은 착수 때 수집 시작·D5에 고정·설치는 기준선 때문에 미루지 않음, 판정은 전체 태스크 구현 후 경과 시간 중앙값 50% 선, 경로별 값·절대 상한 15·60분 유지, 상대 선 계산 불가면 '판정 불가 보고'로 owner에게 올림."
+}

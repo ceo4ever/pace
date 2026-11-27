@@ -1,0 +1,6 @@
+{
+ "agreement": "confirmed",
+ "verification": "required",
+ "upper": "d44edd37-2d06-4a4f-89a8-5be636aeb073",
+ "change": "상위 검토 2 적용(owner A-1 무조건 보고): BACKLOG 측정 절의 자동 판정 장치(15·60분 상한, 50% 상대 선, 관측률·N 문턱, 판정 라벨·대입표, 전향 경과 시간 기준선, D5 N 고정) 삭제, '3개 프로젝트 마감 뒤 지표 전부를 조건 없이 owner에게 보고, 되돌림은 owner A-1'로 대체, P045 값은 참고 비교값으로. 경과 시간 정의·TASK-CLOSE 시각 기록 유지. 목표 절(계약 지문 3ed88ffb…)·BR01~BR03 불변. 결정·기록 행 추가."
+}

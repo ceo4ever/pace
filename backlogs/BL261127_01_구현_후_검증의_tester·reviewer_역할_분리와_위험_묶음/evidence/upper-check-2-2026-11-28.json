@@ -1,0 +1,6 @@
+{
+ "agreement": "confirmed",
+ "verification": "required",
+ "upper": "e635454d-4911-4ed2-b06e-255fb921345c",
+ "change": "상위 검토 2 해결안(owner A-1 단순화) 적용: BACKLOG 수정안 2·3·고른 길·버린 길·D1·D3·D5·측정, BR01 필요/생략 TASK 줄·사전 판정, BR02 항상 12항목·좁히는 4문장 미적용·설치 전 재생 측정 관문, BR03 배정 절차(tester 통과 diff에만 reviewer)·문서 정렬. 계약은 contract_reset(evidence/contract-reset-2026-11-28.json)으로 owner가 확정한 지문과 같다."
+}

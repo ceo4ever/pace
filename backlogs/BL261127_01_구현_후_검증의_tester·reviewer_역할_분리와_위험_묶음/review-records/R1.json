@@ -1,0 +1,186 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**독립 목표 대조 1단계 · 목표 달성 미달.** tester가 실행 증거를 맡고 사후 reviewer는 TASK와 diff로 위험 묶음만 점검한다는 방향은 owner 합의와 맞습니다. 그러나 이 백로그대로 구현하면 사전에 지정한 묶음을 PM이 뺄 수 있고, 부분 재확인에서 다른 묶음의 미해결 결함이 최종 판정에 남는지 확인할 수 없습니다. 사후 검토의 입력 범위와 진행 중 태스크의 전환 절차에도 빈틈이 있습니다. 현 상태로는 합의한 목표까지 갈 수 있다고 판정할 수 없습니다.\n\n**올릴 단계는 백로그·브리프 보완입니다.** 추가만 허용하도록 되돌리고 기존 결함을 유지하는 재확인 기준을 명시하는 일은 A-1의 합의 변경에 해당하지 않으므로 허브가 정리할 수 있습니다. 이유를 붙인 제외를 허용하려면 A-1로 owner 결정을 받아야 합니다. Q1은 이미 확정됐습니다. BL261118_02 BR04를 뒤에 두는 순서는 타당하며, 후속 관문은 착수 전에 묶음 조건에 맞게 갱신해야 합니다.\n\n**근거와 열람 범위.** 호출자가 제공한 상위 목적·owner 합의와 BACKLOG 본문, 저장소의 해당 BACKLOG·BR01~BR03, 관련 선행 백로그, main `1c80783`의 `src/agent/`·`src/project/` 관련 코드, 프로젝트 스킬·참조 문서와 고정 시험 코드를 읽었습니다. 기존 unknown의 원인, 루트 TASK 경로, 두 프롬프트 조립 지점, finish의 완료 태스크 재검사는 인용 위치와 일치합니다. 사전 구조 검사 인용 위치는 호출 예약 **뒤**라는 점이 다릅니다. 프로젝트 TASK·테스트 표·마감·자체 판정·지적 대응 및 과거 검토 원문은 열지 않았습니다. fin-link 사례와 기준선 마감은 독립 확인하지 않았습니다. 보이는 호스트 맥락은 이 호출에 제공된 저장소 지침·환경·검토 입력이며, 자동 부트·메모리 원문과 호스트의 추가 주입 범위는 확인하지 않았습니다. 읽기 전용 세션에서 파일을 수정하거나 시험을 실행하지 않았으며, 이번 기록은 1단계 판정입니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"goal\",\n      \"location\": \"backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md:28\",\n      \"scenario\": \"owner는 실측에서 추가만 승인했다. BACKLOG 28·80행, BR02 17·37행, BR03 16·39행은 이유를 적으면 제외할 수 있게 한다. 사전에 지정된 묶음이 배정과 판정에서 사라질 수 있다.\",\n      \"reproduction\": \"경계(A)만 지정한 TASK에 PM이 제외 사유를 넣는 사례를 세 문서에 대입한다. BR02의 완료 기준은 이유 없는 제외만 거부하므로, 이유 있는 제외를 허용하는 구현도 통과한다. 합의대로라면 사유 유무와 관계없이 지정 묶음이 유효 집합에 남아야 한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"completion\",\n      \"location\": \"backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR02_사후_reviewer_묶음_점검_판정.md:38\",\n      \"scenario\": \"부분 재확인이 선택 밖의 직전 답을 표시하더라도 그 묶음의 미해결 blocking이나 미확인이 태스크 사후 판정에서 빠질 수 있다. 실측 추가가 다음 호출에도 유지되는지, 뒤늦은 tester 신호나 수정 diff로 처음 해당하게 된 묶음은 어떻게 확인하는지도 정해져 있지 않다.\",\n      \"reproduction\": \"첫 검토에 상태(B)의 미해결 blocking과 흐름(C)의 결함을 둔다. C만 수정해 C만 재확인하고 B 때문에 최종 fail이 유지되는지 본다. B가 미확인이면 pass가 되지 않아야 한다. 첫 검토에서 실측으로 추가한 묶음을 다음 호출에 생략하는 경우와 수정에서 새 묶음이 필요한 경우도 대조한다. 현 판정기는 현재 응답의 지적과 넘겨받은 필수 ID로 판정을 계산한다(src/agent/structured-review.ts:221-232).\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"B-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"completion\",\n      \"location\": \"backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR01_TASK_묶음_지정과_사전_판정.md:29\",\n      \"scenario\": \"P047 인수 사례는 잘못 넓힌 기준에 대한 지적이 질문 안 범주에 기록되는지만 확인한다. 기준을 그대로 둔 채 기존 경로 반례로 사전 검토를 반복하는 경우에도 완료 기준을 통과할 수 있다. 묶음 지정 시험 또한 이미 올바르게 분류한 합성 응답의 처리까지만 확인한다.\",\n      \"reproduction\": \"값 하나를 추가하는 TASK에 변경과 무관한 기존 권한·이력 기준을 남긴다. 넓힘 지적을 질문 안 should_fix로 기록하고 TASK가 그대로 사전 관문을 통과할 때 BR01 29행이 실패하는지 확인한다. 이어 영속 쓰기가 적힌 TASK에서 상태(B)를 누락한 사례와 올바른 지정을 대조해, 실제 사전 검토 지시에서 두 결과가 갈리는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"B-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"blocking\",\n      \"category\": \"goal\",\n      \"location\": \"backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR02_사후_reviewer_묶음_점검_판정.md:28\",\n      \"scenario\": \"태스크 안의 모든 비루트-TASK 대상을 사후 묶음 검토로 전환하면, diff가 아닌 산출물도 TASK+diff 검토로 취급하거나 생략 지정으로 거부한다. 또한 상위 검토 뒤 한정 확인에는 합의 기준을 다시 대조하라는 기존 지시가 남을 수 있다.\",\n      \"reproduction\": \"생략으로 지정된 태스크에서 구현 diff와 별도의 결과 문서를 각각 검토 대상으로 분류한다. src/agent/review-budget.ts:67과 verify-cli.ts:308에 따르면 둘 다 post이고 대상 본문만 읽는다. 또 verify-cli.ts:365-369의 복구 프롬프트를 대조해, 사후 reviewer가 일반·재확인·복구 경로 모두에서 기준을 재판정하지 않는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"blocking\",\n      \"category\": \"sequence\",\n      \"location\": \"backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md:84\",\n      \"scenario\": \"D5의 일회 이전 대안은 TASK에 줄을 넣고 범위 재검토를 거치도록 하지만, 이전 사후 기록으로 예산이 이미 소진된 태스크가 신판 첫 검토나 마감에 도달하는 조건을 정하지 않는다. BR02 26행의 전체 검토 또는 거부 중 거부만 구현하면 이전 대안을 실행한 프로젝트가 막힐 수 있다.\",\n      \"reproduction\": \"사후 원장에 구판 유효 판정 두 회가 있고 TASK에 새 줄이 없는 진행 중 프로젝트를 가정한다. 줄을 이전해 사전 범위 재검토만 마친 뒤 첫 신판 사후 검토를 요청한다. 기존 예산은 단계별 원장을 세고 verify는 기준점 선택 전에 소진을 검사한다(src/agent/review-budget.ts:119-147, src/agent/verify-cli.ts:320-354). 기본 전환 순서를 강제하거나, 일회 이전 경로가 호환 분기 없이 마감까지 이어지는 인수 사례가 필요하다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"B-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"should_fix\",\n      \"category\": \"completion\",\n      \"location\": \"backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR01_TASK_묶음_지정과_사전_판정.md:17\",\n      \"scenario\": \"인용한 구조 검사 위치에 새 검사만 추가하면 에이전트를 실행하지 않아도 호출 예산을 쓴다. BR01 26행의 완료 시험은 이를 잡을 수 있으나 현재 구현 위치 지시는 그 기준과 충돌한다.\",\n      \"reproduction\": \"src/agent/verify-cli.ts:333의 예약과 337-340행의 구조 검사 순서를 대조한다. 예약은 src/agent/review-budget.ts:163에서 call 행을 쓴다. 형식 오류나 사후 생략 입력을 거부할 때 실행기 미호출과 함께 원장 call 행 및 예산 수치가 그대로인지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"B-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F7\",\n      \"severity\": \"should_fix\",\n      \"category\": \"completion\",\n      \"location\": \"backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md:88\",\n      \"scenario\": \"사후 검토 기록의 묶음 필드로 전후를 구분하면 reviewer 호출을 생략한 신판 태스크에는 분류에 필요한 기록 자체가 없다. 예상 절감의 주요 원천이 측정에서 빠질 수 있다.\",\n      \"reproduction\": \"신판 적용 뒤 reviewer를 생략한 문서 태스크와 묶음을 점검한 코드 태스크 각 하나를 측정 규칙에 넣는다. 두 태스크가 모두 신판 분모에 들어가고, 생략 태스크는 reviewer 호출 0으로 집계되는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"B-2\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"B-1\",\n      \"state\": \"absent\",\n      \"observation\": \"호출자 제공 owner 합의와 BACKLOG·BR01~BR03을 대조했다. tester 전담, 사전 지정 검토, Q1, 변경 영향 경로 원칙은 확인됐다. 이유 있는 묶음 제외와 비-diff 산출물까지 사후 묶음 검토로 처리하는 범위 때문에 전체 목표 일치 기준은 충족하지 못한다.\"\n    },\n    {\n      \"id\": \"B-2\",\n      \"state\": \"absent\",\n      \"observation\": \"BR01 23-33행, BR02 31-45행, BR03 37-48행을 판정 코드 및 절차와 대조했다. 기본 형식, TASK 첨부, 기준별 실행 증거 요구 제거는 시험할 수 있다. 부분 재확인의 최종 판정, P047 범위 축소의 검출력과 생략 태스크의 집계는 현재 완료 기준으로 충분히 판정할 수 없다.\"\n    },\n    {\n      \"id\": \"B-3\",\n      \"state\": \"absent\",\n      \"observation\": \"BR01→BR02→BR03 의존 순서와 BL261118_02 BR04 13·25·29행의 충돌을 확인했다. 이 백로그 우선 및 후속 BR04 갱신 순서는 타당하다. 다만 D5의 진행 중 태스크 일회 이전 경로는 기존 사후 예산과 마감까지 이어지는 절차가 빠져 있다. 착수 전 측정 기준선 마감 여부는 제공 범위에서 미확인이다.\"\n    },\n    {\n      \"id\": \"B-4\",\n      \"state\": \"absent\",\n      \"observation\": \"호출자 제공 합의에서 Q1과 추가만 허용한다는 결정은 끝났다. 그러나 현 BR은 이유 있는 제외까지 구현하도록 요구하며, 그 변경을 승인한 owner 결정은 확인되지 않았다. decision-rights.md:11의 A-1에 따라 제외를 유지하려면 owner 결정이 필요하다. 추가만 허용하도록 정정하고 나머지 설계·완료 기준을 보완하는 데에는 새 owner 결정이 필요하지 않다.\"\n    }\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 133732,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 94629
+    },
+    "usage_total_tokens": 94629,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "BACKLOG.md",
+    "hash": "b21c790233380c8dd80df08aabd2e398bd45bd8016bfef1b8e1b4babd8e8924f",
+    "kind": "goal",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# BL261127_01 구현 후 검증의 tester·reviewer 역할 분리와 위험 묶음\n\n- 상태: 대기\n- 작성: 2026-11-27\n- 프로젝트 기준 경로: projects/\n\n<!-- 개발 업무의 예시 형식. 형식·추적 정본: pace-project-dev의 references/document-shape.md. -->\n\n## 목표\n\n태스크 구현 뒤 검증에서 **tester와 reviewer가 맡는 질문을 시점·목적별로 나눈다**. 지금은 사후 reviewer가 TASK 기준 충족을 다시 판정하다가 실행 증거가 없어 `unknown`이 나오고, 재검토를 반복하며 호출 예산을 쓴다. 이 반복을 줄이면서, 읽기 검토로만 잡히는 설계 결함(교착, 감사 이력 누락, 확정 데이터의 소급 변경, 아무것도 검증하지 않는 시험)은 계속 잡는다.\n\n- **상위 목적**: PACE는 owner가 자리를 비워도 프로젝트가 자율로 끝까지 가고, 품질을 지키면서 검토·검사 반복에 시간과 토큰을 낭비하지 않는다([BL261125_01 목표](../BL261125_01_문제_해결_전문가_에이전트/BACKLOG.md#목표)와 같은 축).\n- **owner 원 제안(fin-link P045 경험, 허브 전달)**: 구현 전 계획 검토는 reviewer가 계속 맡는다. 구현 뒤에는 tester가 중심이 되고, reviewer는 보안·권한·DB처럼 위험한 변경에만 붙인다. 화면 문구·배치 재확인에서는 reviewer를 뺀다. 대가로 읽어야만 보이는 결함을 놓칠 수 있다.\n- **owner와 확정한 수정안(2026-11-27 — 허브 정리, owner 대화에서 단계별 확인. 확정 순서는 [결정·기록](#결정기록))**:\n  1. **시점별 질문**\n     - 사전 reviewer: 기존 질문(\"이 계획이 목적을 증명할 수 있는가?\")을 유지하고, TASK의 묶음 지정이 TASK 내용과 맞는지 판정하는 일을 더한다.\n     - 사후 tester: 기준마다 실행 증거로 통과하는지 판정한다. 기준 충족의 판정 주체이며 tester.md를 그대로 쓴다.\n     - 사후 reviewer: 목적은 **실행 검증의 사각지대를 줄이는 것**이다. 하기로 하지 않은 일을 하는지, 시험이 묻지 않은 곳에 결함이 있는지 본다. TASK 기준 충족은 다시 판정하지 않는다(tester 몫). 계획의 타당성도 판정하지 않는다(사전 검토 몫). 따라서 사후 reviewer에게 TASK 기준별 실행 증거를 요구하지 않는다.\n  2. **위험 묶음 3개** — 묶음마다 질문 하나와 점검 항목을 둔다:\n     - **묶음 경계(A)** — 누가 할 수 있나: 권한·인가, 개인정보, 보안에 민감한 동작(비밀, 외부 전송, 셸, 삭제). 질문: 허용되지 않은 주체나 입력이 닿을 수 있는 경로가 생겼는가? 점검: 새 진입점마다 인가를 확인하는 위치 / 거부 기본값 / 원문·비밀이 응답·로그·이력에 새는가 / 외부 입력이 셸·경로·쿼리로 그대로 가는가.\n     - **묶음 상태(B)** — 무엇이 남나: 데이터 저장·삭제, 스키마·마이그레이션, 감사 이력, 확정 데이터 정정. 질문: 기준에 적히지 않은 데이터를 바꾸거나, 남겨야 할 기록을 빠뜨리는가? 점검: 쓰기마다 감사 이력 / 과거·확정 데이터의 소급 변경 / 마이그레이션 왕복과 기존 행 / 시험이 저장 뒤 다시 조회해서 단언하는가.\n     - **묶음 흐름(C)** — 어떤 순서로 가나: 동시성·잠금·트랜잭션, 실패·복구·재시도, 상태 전이·게이트 판정. 질문: 순서가 어긋나거나 중간에 실패할 때 결과가 깨지는가? 점검: 잠금 순서와 교착 / 트랜잭션 밖 부작용 / 부분 실패의 잔여물과 롤백 / 시험이 덮지 않은 분기 조합.\n     - 사후 reviewer는 점검 항목마다 셋 중 하나로 답한다. **결함**(파일:줄과 재현 시나리오), **없음**(따라가 본 경로 목록 — 근거 없는 \"없음\"을 막는다), **해당 없음**(이유).\n  3. **묶음 지정은 두 번 한다**\n     - 설계 때(예측): TASK에 `구현 후 reviewer: <묶음> — 이유` 또는 `생략 — 이유` 한 줄을 쓴다. 판단이 아니라 TASK에 적힌 사실로 답하는 예/아니오 질문으로 정한다. 경계(A): 새로 생기거나 바뀐 진입점이 있나? 인가 판정이 바뀌나? 개인정보·비밀을 읽거나 내보내나? 외부 전송·셸·삭제가 있나? / 상태(B): 영속 데이터를 쓰거나 지우나? 스키마·마이그레이션이 있나? 감사·변경 이력이 있나? / 흐름(C): 같은 대상에 대한 동시 쓰기 경로가 기준·시험에 있나? 잠금·트랜잭션 범위가 바뀌나? 여러 단계 중간에 실패할 수 있나? 상태 전이나 허가 분기가 바뀌나?\n     - 사전 reviewer가 지정이 TASK와 맞는지 판정한다. TASK 내용에 비추어 빠진 묶음은 blocking이다. 구현 중에 생기는 위험은 사전에 판정할 수 없다는 한계를 인정한다.\n     - 구현 뒤, 검토를 배정하기 전(실측): PM이 같은 질문을 실제 diff에 적용해 묶음을 **추가만** 한다. 빼려면 이유를 기록한다. tester의 signals도 추가 근거가 된다.\n     - 재확인: 수정 diff가 지정 묶음에 닿을 때만 그 묶음만 다시 본다. 화면·문서만 고쳤으면 tester만 다시 본다.\n  4. **묶음 밖 보완**: (a) owner나 캡틴의 결정이 바뀌면 PM이 TASK 기준을 바로 고친다(결정 권한 A-1 기록). 기준 문구와 결정이 어긋나지 않게 하려는 것이다. (b) 바이너리처럼 읽을 수 없는 자료는 tester가 실행해 대조하거나 텍스트로 변환한 자료로 대조한다.\n\n- **근거(2026-11-27 현재 main `9a2ba23`에서 대조. 표기: 확인 = 직접 열어 봄, 허브 = 허브 확인을 인용하고 다시 확인하지 않음)**:\n  - 확인 — 현재 절차: 구현 뒤에는 늘 **tester ∥ reviewer**를 배정하고, 고친 뒤 **둘 다** 다시 돈다(`skills/pace-project-dev/SKILL.md:59`, `skills/pace-project-dev/references/task-steps.md:11`). done 게이트는 TASK-CLOSE의 `## 리뷰` 절이 비어 있지 않은지만 본다(`src/project/harness.ts:1407-1412`). 사후 검토 기록은 확인하지 않는다.\n  - 확인 — unknown의 원인: 사후 검토 대상(`evidence/…`)의 필수 기준은 TASK.md의 기준 전부다(`src/agent/review-criteria.ts:50`의 `scope.lockTarget`, `src/agent/verify-cli.ts:310`). 기준 하나라도 증거가 present가 아니면 판정은 unknown이다(`src/agent/structured-review.ts:231-232`). 사후 관측 지시는 \"구현과 시험이 기준을 실제 충족했다는 결과를 확인한다\"이다(`structured-review.ts:40`). 그런데 사후 검토는 `kind: goal`로 돈다(`src/agent/review-budget.ts:68`). 그래서 프롬프트가 \"작업 문서(TASK·테스트 표…)는 받거나 읽지 않는다\"고 지시한다(`src/agent/verify.ts:70`, `:76`). 실행 결과도 TASK도 보지 않고 기준 충족을 증명하라는 셈이다.\n  - 확인 — unknown은 판정 회차로 세지 않지만 호출은 쓴다(`src/agent/review-budget.ts:133-147`, `ROUND_LIMIT = 2` `:9`, `CALL_LIMIT = 4` `:11`). 반복하면 예산이 바닥난다.\n  - 확인 — 사후 질문 구조: 질문은 \"이 변경을 내보내도 되는가?\"이고 하위 확인은 `criteria·defect·safety`다(`structured-review.ts:24-31`). 질문 밖 범주(`implementation·design·other`)는 사후에도 note로 낮아진다(`:154-158`).\n  - 확인 — fin-link(`/Volumes/Data/StoreLinkStudio/fin-link`, HEAD `81c17481`)의 구조화 사후 검토 기록은 13건이다. P045 T01·T02·T04·T05·T06과 P035 T02·T03이며, pass 5, unknown 8, fail 0, 유효 blocking 0이다. P044에는 구조화 사후 기록이 없다. unknown 8건은 모두 TASK 기준 증거가 present가 아니어서 생겼다(예: P045/T04 R1 T-2·3·5·6, T05 R1·R2 T-3·4, T06 R2 T-1·5).\n  - 허브 — unknown의 기준 원인은 거의 전부 실행 증거(회귀, 생성물 일치, E2E, 캡처)다. 1건은 기준 문구와 캡틴 결정의 어긋남(P045/T04 T-3 주소 표시), 1건은 바이너리 `ia.xlsx`(P045/T05 T-4)다.\n  - 확인 — **reviewer가 찾은 묶음 안 결함은 지금 질문 구조에서 판정에 닿지 않았다**. P045/T06 R1에서 관리자 간 잠금 교착(F2, \"처리자 행 잠금을 추가한 T06에서 새로 생긴 경로\")과 과거 시작일 이력 소급 변경(F1)은 검토자가 처음부터 `severity: note`, `category: implementation·design`으로 냈다. 도구는 이를 질문 밖(`outside_question`)으로 분류했다. 사후 하위 확인(`criteria·defect·safety`)에 교착·소급 변경을 담을 범주가 없었다는 뜻이다. P045/T02 R1의 이관 검사가 시드 없이 바로 통과함(F1), 사업장 조직 삭제로 CASCADE 삭제되는 역할·메뉴가 감사 이력에 남지 않음(F2), 마스킹된 이메일을 다시 보내면 원문을 덮음(F3)은 모두 검토자가 `should_fix`로 냈다. 결함은 찾았지만 판정은 막지 않았다. 묶음 점검을 질문 안 범주로 만들어야 하는 직접 근거다.\n  - 허브 — tester만 찾은 결함: P045/T04 화면 배치·문구, T06 빈 소속 범위 단언. reviewer 기여가 낮았던 곳: P045/T04(화면 연결 — 예산 2/2를 쓴 뒤 허브가 대신 확인), T05(문서·모델 정리 — unknown 2회, 문서 지적만), P044/T05(구조화 기록이 없어 미확인). pace 쪽: P013/T05 A-3 예외 회귀(묶음 흐름 C의 게이트 판정), P005/T03 측정 근거 blocking(묶음 밖 — 사전 검토가 잡아야 할 부류라는 한계로 기록).\n  - 허브(owner가 공유한 fin-link 허브 세션 보고 1번, 원문 미확인 — fin-link main `81c17481`에 P047 폴더가 아직 없다) — P047: 위하고 값 하나 추가에 사전 검토 3회와 공동 대응까지 갔다. 원인은 작업자가 TASK 기준을 기존 권한·이력 경로까지 넓혀, 그 경로의 반례가 정당한 blocking이 된 것이다. TASK v2 `## 증명 범위`(포함·범위 밖 이유·넘길 곳, `templates/project/TASK.md`)와 verify 지시(\"범위 밖으로 확대하라는 요구는 should_fix\", `src/agent/verify.ts:93`)는 이미 있다. 막지 못한 것은 **작성자가 스스로 기준을 넓히는 경우**다. BR01이 다룬다.\n  - 확인 — 보안 3겹의 둘째 겹은 \"태스크 reviewer의 보안 관점\"이다(`skills/pace-project-dev/references/security.md:3`, `:18`, `docs/SECURITY.md:11`). 이 백로그에서는 이를 묶음 경계(A)로 잇는다. PACE 민감 경로의 적용 범위(`docs/README.md:108` — `src/project/**` 전체 등)는 넓어서, 경로만으로 묶음을 정하지 않는다.\n  - 확인 — TASK.md는 사전 pass 뒤 해시로 잠긴다. 해시는 상태 줄만 뺀 전체를 덮는다(`src/project/pre-review.ts:78-80`). 그 뒤 바꿀 수 있는 것은 허가된 줄의 수정뿐이고, 나머지는 \"범위 재검토 필요\"로 막힌다(`pre-review.ts:280-283`). 따라서 구현 뒤 실측한 묶음 추가는 TASK.md에 쓸 수 없다. 반대로 4(a)의 기준 갱신은 계약 변경이므로 지금처럼 범위 재검토를 거친다.\n  - 확인 — pace 저장소에는 진행 중인 프로젝트가 없다(`pace project list` 전체 완료, worktree는 main 하나). **fin-link에는 진행 중 프로젝트가 있다**(P046 세금계산서 발급 완료 이메일 알림 · 진행, 2026-11-27 확인). finish는 완료된 태스크마다 `checkTaskRaw`를 다시 돌린다(`src/project/harness.ts:1690-1699`). 새 줄 요구가 설치된 뒤 줄이 없는 완료 태스크를 가진 진행 중 프로젝트는 finish에서 막힌다. [D5](#설계-세부-결정) 참조.\n\n- **고른 길**: (1) 사후 reviewer의 필수 판정 항목을 TASK 기준에서 **지정 묶음의 점검 항목**으로 바꾼다. 필수 항목이 실행 증거를 요구하지 않으므로 unknown의 주원인이 사라진다. 사후 reviewer는 목표 대조 1단계 없이 TASK와 diff를 입력으로 받는다(Q1 owner 결정, BR02). (2) 묶음 지정은 TASK의 사실 질문으로 정하고, 사전 reviewer가 TASK와 맞는지 판정한다(BR01). (3) 구현 뒤 실측으로 묶음을 추가하고, 재확인은 닿은 묶음으로만 한정하는 절차를 문서와 팀 정의에 정렬한다(BR03). 규칙 문장을 늘리기보다 도구가 묶음 입력·판정을 강제하게 한다.\n- **버린 길**: (1) 사후 reviewer 폐지 — 교착·소급 변경처럼 tester가 1차 통과시킨 뒤 읽기로만 보인 결함(T06)을 잃는다. (2) 민감 경로 목록으로 reviewer 배정 — 목록이 넓어(`docs/README.md:108`) 대부분의 태스크가 걸리고, fin-link처럼 다른 저장소에는 맞지 않는다. (3) 사후 검토에서 unknown을 pass로 취급 — 증거 공백을 덮을 뿐 질문이 맞지 않는 문제는 그대로다. (4) 구판 판정과 신판 판정을 함께 두기 — 프로젝트 메모리 규칙 `구판-호환-설계-금지`에 어긋난다. (5) 사후 reviewer가 목표 대조 1단계를 유지하고 2단계로 TASK를 넘겨 묶음 점검 — 줄이려는 호출·인계가 다시 는다(Q1 owner 결정으로 버림).\n- **관련·순서**:\n  - **BL261118_02 BR04(독립 검증 세션 기록 관문, 대기)와 규칙이 충돌한다**. 그 BR은 \"reviewer 또는 tester 기록이 없는 프로젝트의 마감이 실패한다\"를 완료 기준으로 둔다([BR04 완료 기준](../BL261118_02_허브_PM_main_직접_프로젝트_하네스_정비/BR04_독립_검증_세션_기록_관문.md#완료-기준)). 이 백로그는 reviewer `생략`을 허용한다. 순서는 **이 백로그가 먼저**다(허브 결정 2026-11-27, main 판단). 그 뒤 BL261118_02 BR04를 다음 문장으로 최신화한다: \"구현 후 기록은 tester를 항상 요구하고, reviewer는 TASK `구현 후 reviewer` 지정 또는 실측 추가 묶음이 있을 때만 요구한다(BL261127_01). `생략` 태스크는 reviewer 기록 없이 마감된다(시험).\" 그 BR의 \"옛 마커 없는 태스크 호환\" 문구도 같은 메모리 규칙으로 다시 본다. 고치는 일은 그 백로그의 최신화(BP-02·BP-06)로 하고, 이 백로그는 손대지 않는다.\n  - BL261124_04(완료, P013): 판정 질문, 기준별 증거 상태, 예산을 만든 백로그다. 이 백로그는 그 판정기의 사후 단계 입력과 질문만 바꾼다. 예산 값·공동 시도·escalation은 그대로 둔다.\n  - BL261125_01(완료, P014): 조기 호출 신호 3·4는 구조화 지적의 `location`·`recurrence`를 읽는다(`src/agent/structured-review.ts:55`, 필수 역할 TS-21). 사후 묶음 지적도 같은 필드를 유지해야 신호가 끊기지 않는다(BR02 완료 기준).\n  - BL261124_02(읽기 전용 실행 경계, 대기): 사후 reviewer의 \"없음 — 따라가 본 경로\"는 읽기로 답한다. 직접 실행 탐침은 그 백로그의 경계를 따른다. 충돌은 없다.\n  - BL261124_01(검사 동시 실행, 대기): `src/agent/` 변경의 선택 검사 지도만 겹친다. 순서는 상관없다.\n  - 열린 할 일 `검토-하네스-병합-뒤-품질-관측`(todo, 2026-11-26): 조건이 \"병합 뒤 프로젝트 3개 마감\"이다. P013 병합 뒤 P014·P015·P016이 완료되어 조건이 이미 찬 것으로 보인다. [측정 경계](#측정-경계와-위험) 참조.\n- **공통 규칙(모든 BR)**:\n  - **용어 충돌 방지**: 문서에서는 묶음을 \"묶음 경계(A)·상태(B)·흐름(C)\"처럼 이름과 함께 쓴다. 맨 글자 `A-1`·`B-…`·`C-…`는 이미 쓰고 있다. 결정 권한 A-1·A-3·B·C(`decision-rights.md`), 백로그 준비 기준 `B-1~B-4`(`src/agent/review-criteria.ts:41-46`), 고정 ID 이전 문서의 `C-1`·목록 기준 `C-n`(`review-criteria.ts:36`, `:66`)이다. 도구가 쓰는 점검 항목 ID는 이들과 겹치지 않아야 한다(예: `RA-1`처럼 접두를 다르게 — 실제 형식은 설계).\n  - **구판 호환 설계 금지**(프로젝트 메모리 rule): 구판 판정 경로, 별도 표지, 이중 판독을 만들지 않는다. TASK 형식 표지(`- TASK 형식: v2`)는 올리지 않고 v2의 요구에 새 줄을 더한다. 진행 중 프로젝트의 전환은 D5를 따른다. 이미 커밋된 사후 검토 기록(`review-records/R*.json`, 원장 `format` 행)은 한 번 이전하거나 판독만 허용한다. 판독 지점은 `src/project/review-metrics.ts:202`, `src/agent/review-followup.ts:256`·`:333`·`:520`·`:554`, `src/agent/verify-cli.ts:106`·`:151`이다.\n  - **문구 고정 시험**: 사후 질문을 바꾸면 고정된 시험을 같은 태스크에서 의도적으로 갱신하고 TASK-CLOSE에 적는다. `test/project-dev-skill.test.ts:129`(reviewer.md의 \"이 변경을 내보내도 되는가?\"), `test/agent-structured-review.test.ts:16`이 해당한다. 사후 프롬프트의 1단계 문구는 `test/agent-structured-review.test.ts:447`·`:486`이 단언한다(BR02에서 갱신). `test/agent-verify.test.ts:37-48`의 1단계 단언은 scope 없는 일반 goal 검토의 것이라 바꾸지 않는다(2026-11-27 main `1c80783` grep).\n  - **민감 경로**: `docs/SECURITY.md`의 민감 경로 표(`:13-26`)에서 `src/agent/**`, `src/project/pre-review.ts`, `src/project/review-metrics.ts`, `templates/**`는 민감 경로가 아니다. 다만 BR01이 바꾸는 TASK 형식 검사는 `harness.ts`의 check·done 게이트가 부른다(`pre-review.ts:207`). 민감 경로 동작에 영향이 있으므로 BR01은 코드·시험만 두고 문서는 BR03으로 넘긴다. `harness.ts` 자체는 바꾸지 않는다.\n  - **단계 경계**(Q1 반영의 범위): 사후 reviewer의 1단계 제거와 TASK+diff 입력은 태스크 사후 단계에만 적용한다. 백로그 검토, 사전(pre) 검토, scope 없는 일반 goal 검토의 프롬프트와 tester 경로(`tester.md`의 1단계·판정·반환)는 바뀌지 않는다. 사전 단계의 변경은 BR01이 의도한 하위 확인 추가뿐이다. 코드 경계는 BR02의 회귀 시험, 문서 경계는 BR03의 check로 확인한다.\n  - 병합 뒤 실사용 확인(실제 태스크에서 생략·묶음 한정이 비용을 줄였는지)은 마감 기준 밖이다. 프로젝트 메모리 todo로 남긴다.\n\n## 남은 결정\n\n착수 전에 owner 결정이 필요한 것만 둔다. owner 결정은 지금 없다. Q3(기획자가 Q1 반영 중 더한 설계 제약)은 허브가 셋 다 확정했다(2026-11-27, main 판단 — 합의 범위 안의 되돌릴 수 있는 설계 선택). (3)의 \"전체 묶음 검토로 시작 또는 거부\" 택일은 BR02 설계에서 정한다.\n\n- Q1(사후 reviewer의 목표 대조 1단계)은 닫혔다. owner가 (1)로 결정했다(2026-11-27 허브 대화). (1)은 기획 초안의 첫 선택지(추천안)다 — 사후 reviewer는 1단계를 하지 않고 TASK(묶음 지정 줄·증명 범위 포함)와 diff를 입력으로 받으며, 기준을 다시 판정하지 않고 지정 묶음 점검에만 답한다. 기록은 [결정·기록](#결정기록), 반영은 BR02 `프롬프트 입력`·`옛 기록`과 BR03 `역할 문서`다.\n\n| # | 질문 | 제안 | 이유 | 영향 BR |\n|---|---|---|---|---|\n| Q3 | Q1 반영에 기획자가 더한 설계 제약 세 가지를 확정하는가? (1) 사후 원장 행의 `kind` 값(`goal`)을 바꾸지 않고 단계로 분기한다. (2) TASK는 호출자가 넘기지 않고 도구가 루트 TASK.md(`scope.lockTarget`)에서 붙인다. (3) 옛 형식 사후 기록은 신판 재검토의 기준점으로 쓰지 않는다(D5 둘째 길의 태스크는 이전 뒤 전체 묶음 검토로 시작 — 또는 거부, 설계에서 택일). | 확정(허브) | (1) 새 값은 옛·새 행의 이중 판독, `task`는 `legacyStructureOnly`(`review-budget.ts:89`)·증명 범위 지시(`verify.ts:91`)·고정 kind 대조의 의미 변경이 된다(D4와 같은 축). (2) 묶음 질문의 입력을 빠뜨릴 수 없게 한다. (3) 구판 변환 경로 없이 신판 하나로 간다(메모리 `구판-호환-설계-금지`). | BR02 |\n\n## 설계 세부 결정\n\n허브 PM이 2026-11-27에 아래를 모두 기획자 추천대로 확정했다(main 판단). 합의 범위 안의 해석이고 되돌릴 수 있는 문서·코드 선택이라 결정 권한 A-1은 아니오다. 각 BR의 문장은 확정 문장이다.\n\n| # | 질문 | 확정 | 이유 |\n|---|---|---|---|\n| Q2 | 지정 묶음이 있는 태스크의 사후 검토 기록을 done 게이트가 확인하는가? | **(a) 이 백로그는 done 게이트를 더하지 않는다.** 지정·실측 묶음은 verify 기록에 남고 TASK-CLOSE 리뷰 절에 연결한다. 기록 관문은 BL261118_02 BR04가 묶음 조건으로 맡는다. | 지금 게이트도 사후 기록을 보지 않는다(`src/project/harness.ts:1407-1412`). 현재 게이트 동작을 바꾸지 않으므로 합의 범위 변경이 아니다. 같은 관문을 두 백로그에서 따로 만들면 형식이 갈린다. |\n| D1 | 실측 묶음 추가는 어디에 기록하나? | TASK.md가 아닌 곳. 사후 verify의 입력으로 받고 검토 기록·원장에 남긴다. 추가·제외 이유도 함께 남긴다. | TASK.md는 사전 pass 뒤 해시로 잠긴다(`pre-review.ts:280-283`). TASK에 쓰면 범위 재검토와 예산 소모가 생긴다. |\n| D2 | 저장소별 diff 패턴 선언으로 묶음을 힌트할까? | **범위 밖**. 프로젝트 메모리 `idea`로 둔다(허브가 생성). | PACE 민감 경로 적용 범위가 넓어 경로 힌트가 거의 모든 태스크를 표시한다(`docs/README.md:108`). 사실 질문만으로 지정이 맞는지는 아직 실측이 없다. 병합 뒤 실사용 기록에서 놓친 묶음이 나오면 그때 패턴을 정한다. |\n| D3 | `구현 후 reviewer` 줄의 기계 검사 범위는? | 형식(줄 하나, 값은 묶음 이름 목록 + 이유, 또는 `생략` + 이유)만 기계가 본다. 사전 verify 호출 전에 거부해 호출을 쓰지 않게 한다(`verify-cli.ts:337-340`와 같은 위치). 내용이 TASK와 맞는지는 사전 reviewer가 판정한다. | 의미 판정은 기계가 보증하지 않는다는 기존 경계(`docs/WORK-PROCESS.md:22`)와 같다. 형식 누락으로 검토 호출을 쓰지 않는다. |\n| D4 | 새 줄 검사를 기존 증명 범위 검사에 합치나? | 합치지 않거나, 합치더라도 `review-budget.ts:96`(`legacyStructureOnly`)이 옛 기록을 다시 판정할 때 의미가 바뀌지 않게 한다. | `legacyStructureOnly`는 과거 fail 기록의 스냅숏에 `proofScopeIssues`를 다시 적용한다. 검사를 넓히면 옛 회차 집계가 바뀐다. |\n| D5 | 설치 시점에 진행 중인 프로젝트(다른 등록 워크스페이스 포함)는 어떻게 전환하나? | **병합 뒤 설치(`scripts/install.*`, main) 전에 등록 워크스페이스의 진행 중 프로젝트를 확인한다. 있으면 그 프로젝트를 마감·병합한 뒤 설치한다.** 기다릴 수 없으면 그 프로젝트의 TASK에 줄을 한 번 이전한다(범위 재검토를 거친다). | 표지를 올리거나 구판 경로를 두는 것은 메모리 규칙에 어긋난다. finish가 완료 태스크를 다시 검사하므로(`harness.ts:1690-1699`) 줄이 없는 진행 중 프로젝트는 막힌다. TASK는 사전 pass 뒤 해시로 잠겨(`pre-review.ts:280-283`) 이전하면 재검토 비용이 든다. 2026-11-27 현재 fin-link P046이 진행 중이다. |\n\n## 측정 경계와 위험\n\n- **측정 경계**: todo `검토-하네스-병합-뒤-품질-관측`은 같은 지표(검토 호출 수·시간, 강등·escalation 뒤 발견된 필수 결함)를 본다. 이 백로그가 그 기간에 섞이면 전후를 비교할 수 없다. 그래서 (1) **착수 전 허브가 기준선을 닫아 기록한다.** (2) 이 프로젝트의 병합 커밋을 이 표의 결정·기록에 남긴다. (3) 이후 측정은 사후 검토 기록에 지정 묶음 필드가 있는지(신판)로 전후를 가른다. (4) 이 백로그 자신의 태스크는 전후 어느 쪽에도 넣지 않는다.\n- **위험**:\n  - 결함이 없는 태스크에도 묶음이 지정된다(예: P045/T05는 상태(B)에 해당하지만 기여가 적었다). fin-link의 API·DB 태스크는 대개 A·B·C가 모두 지정된다. 절감은 화면·문서 태스크의 생략과 묶음을 한정한 재확인에서 나온다는 것은 **추정**이다(허브). 병합 뒤 실사용 todo로 확인한다.\n  - 설계 때 예측할 수 없는 위험이 있다. P045/T06의 교착은 \"T06에서 새로 생긴 경로\"였다(허브). 구현 뒤 실측 추가가 이를 덮는다. 그래도 PM이 실측을 빠뜨리면 놓친다. BR03의 절차와 tester signals로 줄인다.\n  - 사전 검토가 잡아야 할 부류(P005/T03 측정 근거 blocking)는 묶음 밖이다. 사후 reviewer가 이를 더 이상 잡지 않는다는 한계를 문서에 남긴다(BR03).\n  - 사후 reviewer가 없는 태스크가 이어지면 팀 회고의 미사용 역할 후보에 reviewer가 나올 수 있다(`docs/TEAM-METRICS.md:116`). 의도한 결과로 회고에 적는다.\n\n## 진행 현황\n\n| 브리프 | 상태 | 선행 | 프로젝트 | 비고 |\n|---|---|---|---|---|\n| [BR01 TASK 묶음 지정과 사전 판정](BR01_TASK_묶음_지정과_사전_판정.md) | 대기 | — | — | 코드 `templates/project/`·`src/project/pre-review.ts`·`src/agent/` + 시험. check·done 게이트 동작에 영향(민감 경로 동작). 기준 범위 한정 규칙(P047) — 문서는 BR03 |\n| [BR02 사후 reviewer 묶음 점검 판정](BR02_사후_reviewer_묶음_점검_판정.md) | 대기 | BR01 | — | 코드 `src/agent/` + 시험. Q1 확정 — 사후 입력 TASK+diff, 1단계 제거(사후 단계만). 옛 사후 기록은 판독만(원장 `kind` 불변 — Q3 확정) |\n| [BR03 구현 후 배정·재확인 절차와 문서·팀 정렬](BR03_구현_후_배정·재확인_절차와_문서·팀_정렬.md) | 대기 | BR01, BR02 | — | 문서·팀 원본만. `security.md` 둘째 겹, 묶음 밖 보완 4(a)·(b). `goal-review.md`·`reviewer.md` 등 구현 후 reviewer 1단계 예외(Q1) |\n\n## 결정·기록\n\n<!-- 작성일시는 로컬 시각 YYYY-MM-DD HH:mm(프로젝트 결정·진행 메모와 같은 형식), 아래에 한 줄씩 덧붙인다. 끝난 백로그에는 브리프를 덧붙이지 않는다. 새 묶음은 새 백로그로 만든다. -->\n\n| 작성일시 | 내용 |\n|---|---|\n| 2026-11-27 18:35 | 백로그 초안(기획자). 확정 목적과 수정안 1~4는 허브가 owner와의 대화를 정리해 전달했다 |\n| 2026-11-27 18:35 | BR 순서를 허브 제안(사후 판정 → TASK 지정)과 반대로 정했다. 사후 판정기가 TASK 지정을 입력으로 쓴다. 지정을 먼저 만들어야 임시 입력 경로 없이 하나로 만들 수 있다(메모리 `구판-호환-설계-금지`) |\n| 2026-11-27 18:35 | fin-link P046이 진행 중이고 finish가 완료 태스크를 다시 검사한다. 설치 전환 절차를 D5로 올렸다 |\n| 2026-11-27 18:35 | diff 패턴 힌트는 범위 밖으로 제안했다(D2). BL261118_02 BR04와의 충돌은 이 백로그가 먼저 가고 그쪽을 최신화하도록 제안했다(Q2) |\n| 2026-11-27 19:10 | owner 원문 처리: 허브 정리, owner 대화에서 단계별 확인(2026-11-27). 확정 순서 — owner 원안(구현 후 tester 중심, reviewer는 위험 변경에만) → 허브 검토(시점별 질문 분리) → owner \"사전 검증과 구현 검증은 시점이 달라 판정 기준과 질문이 달라야 한다\" → 사후 reviewer 목적 확정 → owner \"위험 기준도 넓다, 그룹핑해 질문·기준을 구체적으로\" → 묶음 경계(A)·상태(B)·흐름(C) → owner \"설계 때 판단 가능한가, 사전 리뷰어가 판정 가능한가\" → 묶음 지정 두 번 → owner \"이해했어. 수정안 정리해서 백로그 작성해줘\" |\n| 2026-11-27 19:10 | 허브 결정(main 판단): D1~D5를 추천대로, Q2를 (a)로 확정했다. done 게이트는 더하지 않는다(현재 동작 유지 — 합의 범위 변경 아님). D2의 diff 패턴 힌트 `idea`는 허브가 만든다 |\n| 2026-11-27 19:10 | 순서 확정(허브): 이 백로그가 먼저 가고, 그 뒤 BL261118_02 BR04를 [관련·순서](#목표)의 제안 문장으로 최신화한다. 그 파일은 지금 고치지 않는다 |\n| 2026-11-27 19:10 | Q1은 owner 결정 대기로 열어 둔다. 결과를 받으면 BR02 프롬프트 입력과 BR03 `goal-review.md` 범위를 확정한다 |\n| 2026-11-27 19:10 | BR01 범위 추가(허브 전달, fin-link P047 사례): TASK 기준은 변경 영향 경로로 한정하고 기존 동작은 '범위 밖 → 기존 회귀 시험'으로 적는다. 사전 reviewer는 기준이 변경 경로를 넘어 넓어졌는지 본다. 새 칸 없이 `## 증명 범위`의 포함을 변경 영향 경로로 쓰고, 묶음 지정 사실 질문도 같은 자리에서 답한다 |\n| 2026-11-27 19:10 | 측정 기준선: todo `검토-하네스-병합-뒤-품질-관측`의 기준선은 착수 전 허브가 닫아 기록한다 |\n| 2026-11-27 20:28 | Q1 사후 reviewer 1단계 제거·TASK+diff 입력 (owner 결정 2026-11-27, 허브 대화 — owner 답 \"(1)\"은 초안의 첫 선택지, 1단계를 하지 않고 TASK와 diff를 받는 안). 사후 reviewer 입력은 TASK(묶음 지정 줄·증명 범위 포함)와 diff다. 기준은 다시 판정하지 않고 지정 묶음 점검만 답한다(결함 파일:줄+재현 / 없음(따라가 본 경로) / 해당 없음(이유)). 열린 질문에서 Q1을 닫았다 |\n| 2026-11-27 20:28 | Q1 반영(기획자): BR02 `프롬프트 입력`에 뺄 문장(`src/agent/verify.ts:70`·`:76`·`:81`, 라벨 `:59`)과 TASK 출처(`scope.lockTarget`), 조립 지점 두 곳(`verify-cli.ts:380-383`, `review-hand.ts:191-194`)을 확정했다. 분기는 단계로 하고 백로그·사전·일반 goal 검토와 tester 경로는 바꾸지 않는다(회귀 시험 — 공통 규칙 `단계 경계`). BR03 `goal-review.md` 범위를 `:34`·`:36`과 `tools.md:7`·`:25`, `cross-verify.md:3`, `docs/WORK-PROCESS.md:9`로 확정했다. 근거 위치는 main `1c80783`에서 다시 확인했다(`9a2ba23` 이후 바뀐 파일은 `required-roles.md` 한 줄뿐) |\n| 2026-11-27 20:28 | 과거 원장 재평가와의 관계(D4와 같은 방식): `legacyStructureOnly`(`src/agent/review-budget.ts:88-100`)는 `kind: task` fail 행만 다루므로(`:89`) 사후 행(`kind: goal`, `:68`)은 지금도 대상이 아니다. BR02는 사후 원장 `kind` 값을 바꾸거나 새 값을 만들지 않는다 — 새 값은 옛·새 행의 이중 판독, `task`는 `:89`·`verify.ts:91`·고정 kind 대조의 의미 변경이 된다. 옛 사후 기록은 판독만, 옛 형식 기록을 신판 재검토 기준점으로 바꾸는 경로는 만들지 않는다(D5로 진행 중 태스크 없음) |\n| 2026-11-27 20:40 | Q3 추가(기획자): Q1 반영 중 더한 설계 제약(사후 원장 `kind` 불변, TASK는 도구가 `lockTarget`에서 첨부, 옛 형식 사후 기록은 신판 재검토 기준점으로 쓰지 않음)을 허브 확인 대기로 올렸다. D5의 둘째 길(줄 이전)을 쓰면 옛 형식 사후 기록을 가진 태스크가 설치 뒤에도 남을 수 있어 (3)이 필요하다 |\n| 2026-11-27 20:55 | Q3 확정(main 판단): 사후 원장 `kind` 불변·단계 분기, TASK는 도구가 `lockTarget`에서 첨부, 옛 형식 사후 기록은 신판 재검토 기준점으로 쓰지 않음 — 셋 다 기획자 제안대로. (3)의 시작/거부 택일은 BR02 설계 몫 |\n",
+    "call_id": "b248c0a9-554c-443c-a894-c53c148a1e03",
+    "structured_stage": "backlog",
+    "required_criteria": [
+      "B-1",
+      "B-2",
+      "B-3",
+      "B-4"
+    ]
+  },
+  "assessment": {
+    "stage": "backlog",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "goal",
+        "confidence": "high",
+        "location": "backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md:28",
+        "scenario": "owner는 실측에서 추가만 승인했다. BACKLOG 28·80행, BR02 17·37행, BR03 16·39행은 이유를 적으면 제외할 수 있게 한다. 사전에 지정된 묶음이 배정과 판정에서 사라질 수 있다.",
+        "reproduction": "경계(A)만 지정한 TASK에 PM이 제외 사유를 넣는 사례를 세 문서에 대입한다. BR02의 완료 기준은 이유 없는 제외만 거부하므로, 이유 있는 제외를 허용하는 구현도 통과한다. 합의대로라면 사유 유무와 관계없이 지정 묶음이 유효 집합에 남아야 한다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "completion",
+        "confidence": "high",
+        "location": "backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR02_사후_reviewer_묶음_점검_판정.md:38",
+        "scenario": "부분 재확인이 선택 밖의 직전 답을 표시하더라도 그 묶음의 미해결 blocking이나 미확인이 태스크 사후 판정에서 빠질 수 있다. 실측 추가가 다음 호출에도 유지되는지, 뒤늦은 tester 신호나 수정 diff로 처음 해당하게 된 묶음은 어떻게 확인하는지도 정해져 있지 않다.",
+        "reproduction": "첫 검토에 상태(B)의 미해결 blocking과 흐름(C)의 결함을 둔다. C만 수정해 C만 재확인하고 B 때문에 최종 fail이 유지되는지 본다. B가 미확인이면 pass가 되지 않아야 한다. 첫 검토에서 실측으로 추가한 묶음을 다음 호출에 생략하는 경우와 수정에서 새 묶음이 필요한 경우도 대조한다. 현 판정기는 현재 응답의 지적과 넘겨받은 필수 ID로 판정을 계산한다(src/agent/structured-review.ts:221-232).",
+        "impact": "criterion",
+        "criterion": "B-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "blocking",
+        "category": "completion",
+        "confidence": "high",
+        "location": "backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR01_TASK_묶음_지정과_사전_판정.md:29",
+        "scenario": "P047 인수 사례는 잘못 넓힌 기준에 대한 지적이 질문 안 범주에 기록되는지만 확인한다. 기준을 그대로 둔 채 기존 경로 반례로 사전 검토를 반복하는 경우에도 완료 기준을 통과할 수 있다. 묶음 지정 시험 또한 이미 올바르게 분류한 합성 응답의 처리까지만 확인한다.",
+        "reproduction": "값 하나를 추가하는 TASK에 변경과 무관한 기존 권한·이력 기준을 남긴다. 넓힘 지적을 질문 안 should_fix로 기록하고 TASK가 그대로 사전 관문을 통과할 때 BR01 29행이 실패하는지 확인한다. 이어 영속 쓰기가 적힌 TASK에서 상태(B)를 누락한 사례와 올바른 지정을 대조해, 실제 사전 검토 지시에서 두 결과가 갈리는지 확인한다.",
+        "impact": "criterion",
+        "criterion": "B-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "blocking",
+        "category": "goal",
+        "confidence": "high",
+        "location": "backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR02_사후_reviewer_묶음_점검_판정.md:28",
+        "scenario": "태스크 안의 모든 비루트-TASK 대상을 사후 묶음 검토로 전환하면, diff가 아닌 산출물도 TASK+diff 검토로 취급하거나 생략 지정으로 거부한다. 또한 상위 검토 뒤 한정 확인에는 합의 기준을 다시 대조하라는 기존 지시가 남을 수 있다.",
+        "reproduction": "생략으로 지정된 태스크에서 구현 diff와 별도의 결과 문서를 각각 검토 대상으로 분류한다. src/agent/review-budget.ts:67과 verify-cli.ts:308에 따르면 둘 다 post이고 대상 본문만 읽는다. 또 verify-cli.ts:365-369의 복구 프롬프트를 대조해, 사후 reviewer가 일반·재확인·복구 경로 모두에서 기준을 재판정하지 않는지 확인한다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "blocking",
+        "category": "sequence",
+        "confidence": "high",
+        "location": "backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md:84",
+        "scenario": "D5의 일회 이전 대안은 TASK에 줄을 넣고 범위 재검토를 거치도록 하지만, 이전 사후 기록으로 예산이 이미 소진된 태스크가 신판 첫 검토나 마감에 도달하는 조건을 정하지 않는다. BR02 26행의 전체 검토 또는 거부 중 거부만 구현하면 이전 대안을 실행한 프로젝트가 막힐 수 있다.",
+        "reproduction": "사후 원장에 구판 유효 판정 두 회가 있고 TASK에 새 줄이 없는 진행 중 프로젝트를 가정한다. 줄을 이전해 사전 범위 재검토만 마친 뒤 첫 신판 사후 검토를 요청한다. 기존 예산은 단계별 원장을 세고 verify는 기준점 선택 전에 소진을 검사한다(src/agent/review-budget.ts:119-147, src/agent/verify-cli.ts:320-354). 기본 전환 순서를 강제하거나, 일회 이전 경로가 호환 분기 없이 마감까지 이어지는 인수 사례가 필요하다.",
+        "impact": "criterion",
+        "criterion": "B-3",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F6",
+        "severity": "should_fix",
+        "category": "completion",
+        "confidence": "high",
+        "location": "backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR01_TASK_묶음_지정과_사전_판정.md:17",
+        "scenario": "인용한 구조 검사 위치에 새 검사만 추가하면 에이전트를 실행하지 않아도 호출 예산을 쓴다. BR01 26행의 완료 시험은 이를 잡을 수 있으나 현재 구현 위치 지시는 그 기준과 충돌한다.",
+        "reproduction": "src/agent/verify-cli.ts:333의 예약과 337-340행의 구조 검사 순서를 대조한다. 예약은 src/agent/review-budget.ts:163에서 call 행을 쓴다. 형식 오류나 사후 생략 입력을 거부할 때 실행기 미호출과 함께 원장 call 행 및 예산 수치가 그대로인지 확인한다.",
+        "impact": "criterion",
+        "criterion": "B-2",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F7",
+        "severity": "should_fix",
+        "category": "completion",
+        "confidence": "high",
+        "location": "backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md:88",
+        "scenario": "사후 검토 기록의 묶음 필드로 전후를 구분하면 reviewer 호출을 생략한 신판 태스크에는 분류에 필요한 기록 자체가 없다. 예상 절감의 주요 원천이 측정에서 빠질 수 있다.",
+        "reproduction": "신판 적용 뒤 reviewer를 생략한 문서 태스크와 묶음을 점검한 코드 태스크 각 하나를 측정 규칙에 넣는다. 두 태스크가 모두 신판 분모에 들어가고, 생략 태스크는 reviewer 호출 0으로 집계되는지 확인한다.",
+        "impact": "criterion",
+        "criterion": "B-2",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "B-1",
+          "state": "absent",
+          "observation": "호출자 제공 owner 합의와 BACKLOG·BR01~BR03을 대조했다. tester 전담, 사전 지정 검토, Q1, 변경 영향 경로 원칙은 확인됐다. 이유 있는 묶음 제외와 비-diff 산출물까지 사후 묶음 검토로 처리하는 범위 때문에 전체 목표 일치 기준은 충족하지 못한다."
+        },
+        {
+          "id": "B-2",
+          "state": "absent",
+          "observation": "BR01 23-33행, BR02 31-45행, BR03 37-48행을 판정 코드 및 절차와 대조했다. 기본 형식, TASK 첨부, 기준별 실행 증거 요구 제거는 시험할 수 있다. 부분 재확인의 최종 판정, P047 범위 축소의 검출력과 생략 태스크의 집계는 현재 완료 기준으로 충분히 판정할 수 없다."
+        },
+        {
+          "id": "B-3",
+          "state": "absent",
+          "observation": "BR01→BR02→BR03 의존 순서와 BL261118_02 BR04 13·25·29행의 충돌을 확인했다. 이 백로그 우선 및 후속 BR04 갱신 순서는 타당하다. 다만 D5의 진행 중 태스크 일회 이전 경로는 기존 사후 예산과 마감까지 이어지는 절차가 빠져 있다. 착수 전 측정 기준선 마감 여부는 제공 범위에서 미확인이다."
+        },
+        {
+          "id": "B-4",
+          "state": "absent",
+          "observation": "호출자 제공 합의에서 Q1과 추가만 허용한다는 결정은 끝났다. 그러나 현 BR은 이유 있는 제외까지 구현하도록 요구하며, 그 변경을 승인한 owner 결정은 확인되지 않았다. decision-rights.md:11의 A-1에 따라 제외를 유지하려면 owner 결정이 필요하다. 추가만 허용하도록 정정하고 나머지 설계·완료 기준을 보완하는 데에는 새 owner 결정이 필요하지 않다."
+        }
+      ],
+      "issues": []
+    }
+  }
+}
