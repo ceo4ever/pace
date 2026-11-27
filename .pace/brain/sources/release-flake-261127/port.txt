@@ -1,0 +1,32 @@
+통제 재현: 제품·시험 원본 무수정, preload로 환경 주입. 종료 코드 1 (의도한 실패)
+✖ S-19 대화형 수동 입력 — 시크릿·허용 사용자를 저장하고(토큰은 출력·질문에 없다), 거절하면 건너뛰고, 형식이 틀리면 API 없이 건너뛴다 (16.837125ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 196.246708
+
+✖ failing tests:
+
+test at test/daemon-wizard-follow.test.ts:75:1
+✖ S-19 대화형 수동 입력 — 시크릿·허용 사용자를 저장하고(토큰은 출력·질문에 없다), 거절하면 건너뛰고, 형식이 틀리면 API 없이 건너뛴다 (16.837125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - '<fixture-token>'
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace/test/daemon-wizard-follow.test.ts:81:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: '<fixture-token>',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

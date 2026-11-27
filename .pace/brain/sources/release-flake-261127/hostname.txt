@@ -1,0 +1,36 @@
+통제 재현: 제품·시험 원본 무수정, preload로 환경 주입. 종료 코드 1 (의도한 실패)
+✖ 자기 갱신은 일시적 외부 시작 조회 실패로 작업을 중단하지 않고 감사 파일을 매번 늘리지 않는다 (443.058084ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 571.898791
+
+✖ failing tests:
+
+test at test/team-lock.test.ts:91:1
+✖ 자기 갱신은 일시적 외부 시작 조회 실패로 작업을 중단하지 않고 감사 파일을 매번 늘리지 않는다 (443.058084ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   reason: 'other-host',
+  -   reason: 'start-query-unavailable',
+      state: 'unknown'
+    }
+  
+      at TestContext.<anonymous> (file:///Volumes/Data/AiStudio/workspace/pace/test/team-lock.test.ts:101:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { state: 'unknown', reason: 'other-host' },
+    expected: { state: 'unknown', reason: 'start-query-unavailable' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

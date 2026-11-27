@@ -1,6 +1,6 @@
 # 프로젝트 브레인 목차
 
-> 자동 생성 — 직접 고치지 말 것. 페이지 29개. 형식은 SCHEMA.md.
+> 자동 생성 — 직접 고치지 말 것. 페이지 30개. 형식은 SCHEMA.md.
 
 ## 결정과 이유
 
@@ -42,6 +42,7 @@
 - [pace-scout 기회 탐색 구조와 함정](pages/synthesis/pace-scout-기회-탐색-구조와-함정.md) — 명령(기계)·스킬(생각)·증명(외부 증거) 3레이어, 유튜브 자막은 봇 차단이라 붙여넣기, 수치 대조의 시간·날짜·번역 함정, 루프 수정은 실패 단언으로 범위를 고정 #pace-scout #scout #pitfalls
 - [도구별 세션 시작 훅 동작 (실측)](pages/synthesis/platform-hook-behavior.md) — 호스트별 부트 훅 실측과 최신 공식 문서: Codex 약 2,500토큰, Cursor 비차단, Antigravity 시작 훅 지원 #hooks #platform #claude #codex #cursor #antigravity #gemini
 - [Telegram 어댑터 설계 함정](pages/synthesis/telegram-어댑터-설계-함정.md) — update_id는 일주일 무수신 뒤 무작위, getUpdates offset은 요청 시점에 확인, 토큰 비노출은 자르기 전 제거, 토픽 메뉴는 chat 단위, 파일 조회는 워커로 #telegram #daemon #security #adapter
+- [릴리즈 간헐 실패의 호스트 관측과 포트 격리](pages/synthesis/릴리즈-간헐-실패의-호스트-관측과-포트-격리.md) — team-lock other-host와 S-19 undefined는 서로 다른 환경 의존 경로로 통제 재현되며 당시 원인 확정과 구별한다 #testing #daemon #team #flaky
 - [프로젝트 지표 해석과 세션 기록 함정](pages/synthesis/프로젝트-지표-해석과-세션-기록-함정.md) — 사건 우선 시간·도구별 토큰 의미, 삭제된 worktree 귀속·코디네이터 분리, 상세/비교 지표와 경계 검증 함정
 
 ## 용어

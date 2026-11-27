@@ -169,3 +169,10 @@
 ## [2026-11-27] update | Canvas 스킬 묶음 설치 경계 (.pace/brain/pages/concept/canvas-추출-도구-봉인과-설치-경계.md)
 ## [2026-11-27] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
 ## [2026-11-27] update | 작업 하네스 실측 함정 (.pace/brain/pages/concept/작업-하네스-실측-함정.md)
+
+
+## [2026-11-27] ingest | 릴리즈 간헐 실패의 호스트 관측과 포트 격리 (.pace/brain/pages/synthesis/릴리즈-간헐-실패의-호스트-관측과-포트-격리.md)
+## [2026-11-27] update | OPAL 가져오기 adopt opal 결정과 함정 (.pace/brain/pages/concept/opal-가져오기-adopt-opal-결정과-함정.md)
+## [2026-11-27] update | 변경 기반 검사와 실행 선언 신뢰 경계 (.pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md)
+## [2026-11-27] update | 정의서 크기·분리 기준과 다운사이즈 검증 (.pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md)
+## [2026-11-27] lint | 릴리즈 간헐 실패 두 경로 통제 재현을 저장하고 기존 릴리즈 문서 stale-source 세 페이지를 diff와 대조했다
