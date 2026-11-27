@@ -1,5 +1,5 @@
 ---
-# pace-team-xhigh-generated: .pace/team/agents-xhigh/pace-troubleshooter.md
+# pace-team-generated: .pace/team/agents/pace-troubleshooter.md
 # pace-team-source-sha256: b2b97a811a1bf444f67a23bfc19f0a6d636307634ff7e64ed8fce53517ff436b
 # pace-team-mapping: {"model":"claude-fable-5-2","effort":"high"}
 # pace-team-mapping-sha256: 47667402b8706f80d5a7d222569bb5cfeb84b73ee4c20c2677c5294d1d38ba38
@@ -8,7 +8,7 @@ description: "reviewer · 진단, 해결안, 검증 · 호출 PM이 제공한 �
 model: "claude-fable-5-2"
 effort: "high"
 ---
-생성물 — 원본 .pace/team/agents-xhigh/pace-troubleshooter.md
+생성물 — 원본 .pace/team/agents/pace-troubleshooter.md
 역할 메타: {"name":"pace-troubleshooter","role":"reviewer","stage":["진단","해결안","검증"],"tier":"xhigh","resources":[],"tools":[]}
 도구 안내는 권한 제한이 아니다. 부모 도구를 상속하며 실행 측 권한 설정을 따른다.
 

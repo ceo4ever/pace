@@ -9,7 +9,7 @@ description: 저장소의 실제 업무와 권한으로 맞춤 에이전트 팀�
 
 ## 시작 모드
 
-저장소 루트에서 `pace team list`로 현재 원본을 확인한다. `loadTeam`이 읽는 새 경로 `.pace/team/agents/<name>.md`와 옛 경로 `.pace/team/<name>.md`를 모두 포함한다. 전용 xhigh 경로 `.pace/team/agents-xhigh/<name>.md`도 확인한다. 목록 읽기나 원본 검증이 실패하면 문제를 확인하고 모드 선택을 보류한다. 원본이 비어 있을 때만 `.claude/agents/*.md`와 `.codex/agents/*.toml`에 실제 native 정의가 있는지 살핀다.
+저장소 루트에서 `pace team list`로 현재 원본을 확인한다. `loadTeam`이 읽는 새 경로 `.pace/team/agents/<name>.md`와 옛 경로 `.pace/team/<name>.md`를 모두 포함한다. 목록 읽기나 원본 검증이 실패하면 문제를 확인하고 모드 선택을 보류한다. 원본이 비어 있을 때만 `.claude/agents/*.md`와 `.codex/agents/*.toml`에 실제 native 정의가 있는지 살핀다.
 
 | 확인 결과 | 모드 | 수행 |
 |---|---|---|
@@ -65,7 +65,7 @@ description: 저장소의 실제 업무와 권한으로 맞춤 에이전트 팀�
 
 권한 조율은 lead, 산출물 제작은 maker, 독립 판정은 reviewer, 위임·승인 전달은 coordinator 종류를 검토한다. 실제 업무 배정은 `pace project start P### --role <이름> --agent <claude|codex>`에 역할과 제공자를 함께 지정한다.
 
-[문제 해결자 원형](references/required-roles.md#문제-해결자-요건)의 TS-07~TS-15는 독립 동작과 호출자 인계를 검증한다. `team new --role reviewer`의 공통 문단·표지를 보존한 뒤 전용 `xhigh` 원본으로 옮기고 동기화한다. `team verify`의 지침 적재 관측과 [지정 모델·effort의 실제 적용](../../docs/TEAM.md#문제-해결자-호출과-실제-적용)을 각각 확인한다. 검토 판정 역할은 원래의 독립 검토 절차로 배정한다.
+[문제 해결자 원형](references/required-roles.md#문제-해결자-요건)의 TS-07~TS-15는 독립 동작과 호출자 인계를 검증한다. `team new --role reviewer`의 공통 문단·표지를 보존한 채 `tier: xhigh`로 바꾸고 동기화한다. `team verify`의 지침 적재 관측과 [지정 모델·effort의 실제 적용](../../docs/TEAM.md#문제-해결자-호출과-실제-적용)을 각각 확인한다. 검토 판정 역할은 원래의 독립 검토 절차로 배정한다.
 
 ## ⑤ 검증
 

@@ -1,0 +1,1 @@
+{"ts":"2026-11-27T08:07:40.459Z","p":"P016","type":"decision","by":"coordinator","msg":"원격 P015는 유지하고 설치 건의 현재 등록만 P016으로 이관한다. 원본 P015 증거는 historical에 바이트 보존하며 두 HEAD 조상을 유지하는 통합을 준비한다.","ref":"MIGRATION.md"}

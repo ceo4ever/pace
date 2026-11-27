@@ -90,8 +90,10 @@ test("project role: workerSpec and all team sources apply the same decision and 
     .map((entry) => join(sourceDir, entry.name));
   assert.ok(sources.length > 0, "팀 원본을 적어도 하나 대조한다");
   const template = join(root, "templates/team/member.md");
-  const { roles: rolePolicies } = JSON.parse(readFileSync(join(root, ".pace/team/required-roles.json"), "utf8")) as { roles: { role: string; scope: "hub" | "worktree" }[] };
+  const { roles: rolePolicies } = JSON.parse(readFileSync(join(root, ".pace/team/required-roles.json"), "utf8")) as { roles: { role: string; scope: "hub" | "worktree"; conditional: boolean }[] };
   const hubRoles = new Set(rolePolicies.filter((policy) => policy.scope === "hub").map((policy) => policy.role));
+  // 조건부로 호출되어 해결안을 반환하는 역할만 호출 PM에게 해결안·결정 요청을 돌려준다.
+  const solutionRoles = new Set(rolePolicies.filter((policy) => policy.conditional).map((policy) => policy.role));
   for (const filename of [...sources, template]) {
     const text = readFileSync(filename, "utf8").replace(/\r\n/g, "\n");
     const paragraphs = text.split("\n\n");
@@ -111,6 +113,10 @@ test("project role: workerSpec and all team sources apply the same decision and 
     const [instruction, ...workerInstructions] = roleSpec.split("\n");
     assert.ok(instruction!.includes(member.source) && instruction!.includes(member.hash), filename);
     assert.equal(workerInstructions.join("\n"), spec, filename);
+    if (solutionRoles.has(member.name)) {
+      assert.ok(text.includes("`HANDOFF: <호출 PM> | 해결안·검증 계획 또는 결정 요청 | 근거`"), filename);
+      continue;
+    }
     const receiver = /`HANDOFF: ([^|]+) \| 요청 \| 근거`/.exec(text)?.[1];
     if (member.role === "lead" || hubRoles.has(member.name)) assert.equal(receiver, "허브 PM", filename);
     else assert.match(receiver ?? "", /^(?:pace-project-lead|호출자)$/, filename);
@@ -130,11 +136,9 @@ function fakeOrca(home: string, mode: "ok" | "unknown" | "fail" = "ok") {
 function starts(worktree: string) {
   return readFileSync(join(projectPath(worktree), "../log.jsonl"), "utf8").trim().split("\n").map((line) => JSON.parse(line)).filter((event) => event.type === "start");
 }
-const xhighBuilderSource = ".pace/team/agents-xhigh/builder.md";
+const xhighBuilderSource = ".pace/team/agents/builder.md";
 function promoteBuilder(f: ReturnType<typeof fixture>): string {
-  const original = join(f.root, ".pace/team/agents/builder.md"), promoted = join(f.root, xhighBuilderSource);
-  mkdirSync(join(f.root, ".pace/team/agents-xhigh"));
-  renameSync(original, promoted);
+  const promoted = join(f.root, xhighBuilderSource);
   const text = readFileSync(promoted, "utf8").replace("tier: medium", "tier: xhigh");
   writeFileSync(promoted, text);
   f.git("add", ".pace/team"); f.git("commit", "-qm", "xhigh role");
@@ -144,7 +148,7 @@ function promoteBuilder(f: ReturnType<typeof fixture>): string {
 for (const [host, model, effort] of [
   ["claude", "claude-fable-5-2", "high"],
   ["codex", "gpt-6.2-astra", "medium"],
-] as const) test(`project role ${host}: xhigh settings and old-readable start row`, async () => {
+] as const) test(`project role ${host}: xhigh settings and start row`, async () => {
   const f = fixture(), orca = fakeOrca(f.home);
   const definition = promoteBuilder(f);
   const args = ["project", "start", "P001", "--agent", host, "--role", "builder"];
@@ -157,8 +161,8 @@ for (const [host, model, effort] of [
   assert.equal(value("--effort"), effort);
   assert.ok(value("--spec")?.startsWith(`먼저 ${xhighBuilderSource}를 읽고`));
   const stored = starts(f.worktree).at(-1)!;
-  assert.equal(stored.role.definition, ".pace/team/agents/builder.md", "the existing wire slot is accepted by the old reader");
-  assert.deepEqual(stored.data, { teamMetricsVersion: 1, xhighRoleDefinition: 1 });
+  assert.equal(stored.role.definition, xhighBuilderSource);
+  assert.deepEqual(stored.data, { teamMetricsVersion: 1 });
   assert.equal(stored.role.model, model);
   assert.equal(stored.role.effort, effort);
   const { readEvents } = await import("../src/project/event-log.ts");
@@ -166,7 +170,7 @@ for (const [host, model, effort] of [
   const dir = join(projectPath(f.worktree), "..");
   for (const read of [readEvents(dir), readTeamEvents(dir, "P001")!]) {
     const restored = read.find((event) => event.type === "start")!;
-    assert.deepEqual(restored.role, { ...stored.role, definition: xhighBuilderSource });
+    assert.deepEqual(restored.role, stored.role);
     assert.deepEqual(restored.data, { teamMetricsVersion: 1 });
     assert.equal(restored.role!.hash, createHash("sha256").update(definition.replaceAll("\r\n", "\n")).digest("hex"));
   }
@@ -178,29 +182,25 @@ for (const [host, model, effort] of [
   assert.equal(starts(f.worktree).at(-1)!.role.effort, "low");
 });
 
-test("project role: both start readers reject malformed xhigh path and marker combinations", async () => {
-  const { readEvents, recordEvent } = await import("../src/project/event-log.ts");
+test("project role: both start readers reject unknown definition paths including the removed xhigh folder", async () => {
+  const { readEvents } = await import("../src/project/event-log.ts");
   const { readTeamEvents } = await import("../src/project/team-input.ts");
-  const dir = tempDir("pace-xhigh-record-");
+  const dir = tempDir("pace-role-record-");
   const role = { name: "builder", source: "option", definition: ".pace/team/agents/builder.md", hash: "a".repeat(64), method: "prompt", model: "fixture-model", effort: "medium", settingsStatus: "planned", toolsPermissionApplied: false, runtimeObserved: false } as const;
-  const start = { ts: "2026-11-26T00:00:00Z", p: "P001", type: "start", by: "cli", ok: true, msg: "start", role, data: { teamMetricsVersion: 1, xhighRoleDefinition: 1 } } as const;
+  const start = { ts: "2026-11-26T00:00:00Z", p: "P001", type: "start", by: "cli", ok: true, msg: "start", role, data: { teamMetricsVersion: 1 } } as const;
   const path = join(dir, "log.jsonl");
+  writeFileSync(path, JSON.stringify(start) + "\n");
+  assert.equal(readEvents(dir).length, 1);
+  assert.equal(readTeamEvents(dir, "P001")!.length, 1);
   for (const bad of [
     { ...start, role: { ...role, name: "other" } },
-    ...[".pace/team/agents/other.md", ".pace/team/builder.md", ".pace/team/other/builder.md", ".pace/team/agents/../builder.md", ".pace/team/agents/*.md", xhighBuilderSource]
+    ...[".pace/team/agents/other.md", ".pace/team/agents-xhigh/builder.md", ".pace/team/other/builder.md", ".pace/team/agents/../builder.md", ".pace/team/agents/*.md"]
       .map((definition) => ({ ...start, role: { ...role, definition } })),
-    { ...start, role: { ...role, definition: xhighBuilderSource }, data: { teamMetricsVersion: 1 } },
-    { ...start, data: { ...start.data, xhighRoleDefinition: 2 } },
-    { ...start, data: { ...start.data, xhighRoleDefinition: "1" } },
-    { ...start, type: "note", role: undefined, data: { xhighRoleDefinition: 1 } },
   ]) {
     writeFileSync(path, JSON.stringify(bad) + "\n");
     assert.deepEqual(readEvents(dir), []);
     assert.throws(() => readTeamEvents(dir, "P001"), /팀 사건 로그 손상/);
   }
-  const before = readFileSync(path);
-  assert.equal(recordEvent(dir, start), false, "callers cannot inject the internal marker");
-  assert.deepEqual(readFileSync(path), before);
 });
 
 test("project role: xhigh source rejects unsafe file types, bytes and size", async () => {

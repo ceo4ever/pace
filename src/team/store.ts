@@ -5,7 +5,7 @@ import { closeSync, constants, fstatSync, lstatSync, mkdirSync, openSync, readSy
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { packageRoot, assertSafeGitPath } from "../core/paths.ts";
 import { fillTemplate } from "../core/fsutil.ts";
-import { isTeamRole, LEGACY_TEAM_DIR, parseTeamSource, TEAM_AGENTS_DIR, XHIGH_AGENTS_DIR, teamSourcePath, xhighTeamSourcePath, validTeamName, type TeamMember } from "./model.ts";
+import { isTeamRole, LEGACY_TEAM_DIR, parseTeamSource, TEAM_AGENTS_DIR, teamSourcePath, validTeamName, type TeamMember } from "./model.ts";
 
 export function teamRoot(cwd: string): string {
   assertSafeGitPath(cwd);
@@ -61,7 +61,7 @@ export function teamFiles(root: string, rel: string, extension: string, inputs?:
 }
 export function findTeamSource(name: string, read: (path: string) => string | null): { path: string; text: string } | null {
   if (!validTeamName(name) || name === "resources") throw new Error("팀 이름이 올바르지 않거나 예약된 메타파일 이름이다");
-  const sources = [teamSourcePath(name), teamSourcePath(name, true), xhighTeamSourcePath(name)].flatMap((path) => {
+  const sources = [teamSourcePath(name), teamSourcePath(name, true)].flatMap((path) => {
     const text = read(path);
     return text === null ? [] : [{ path, text }];
   });
@@ -75,7 +75,7 @@ export function loadTeamMember(root: string, name: string, inputs?: InputTrace):
   return parseTeamSource(source.text, name, source.path);
 }
 export function teamMemberNames(root: string, inputs?: InputTrace): string[] {
-  const files = [TEAM_AGENTS_DIR, LEGACY_TEAM_DIR, XHIGH_AGENTS_DIR].flatMap((dir) => teamFiles(root, dir, ".md", inputs));
+  const files = [TEAM_AGENTS_DIR, LEGACY_TEAM_DIR].flatMap((dir) => teamFiles(root, dir, ".md", inputs));
   return [...new Set(files)].sort().map((file) => file.slice(0, -3));
 }
 export function loadTeam(root: string, inputs?: InputTrace): TeamMember[] {
