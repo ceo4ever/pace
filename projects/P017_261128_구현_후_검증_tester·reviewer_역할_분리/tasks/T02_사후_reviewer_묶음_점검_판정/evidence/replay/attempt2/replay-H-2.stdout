@@ -1,0 +1,140 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "배포를 보류한다. `docs/ia/ia.md:78`이 조직 이동에 PV-04 미리보기 단계를 추가한다. 데이터 범위를 조직 소속으로 산정한다는 합의에 적용 전 화면 단계까지 더하는 변경이다. 결정 권한 A-1에 따라 이번 IA 변경에서 해당 단계를 제거하거나, 범위 변경에 대한 owner 결정을 받아 흐름과 검증 범위를 함께 갱신해야 한다.\n\n읽은 자료는 요청에 포함된 상위 목적과 TASK.md, 디스크의 `input.patch` 전체, `decision-rights.md`다. `PROJECT.md`의 결정·마감 문구는 패치에 포함된 줄까지 노출되었으며 테스터 결과나 독립 판정의 근거로 사용하지 않았다. 호스트가 제공한 작업 환경과 스킬 목록이 세션에 표시됐다. 별도 자동 부트·메모리 자료나 작성자의 마감·자체 판정·지적 대응 문서는 열지 않았다. 파일 변경과 실행 검증은 수행하지 않았다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"flow\",\n      \"location\": \"docs/ia/ia.md:78\",\n      \"scenario\": \"조직 이동을 반영할 때 배포된 IA를 따르면 데이터 범위 재계산을 PV-04에서 적용 전에 확인하는 단계가 생긴다. 제공된 합의와 태스크에는 이 화면 단계가 없으며, 패치는 미리보기 후 적용·취소·실패 시 조직과 데이터 범위가 어떻게 처리되는지 정하지 않는다.\",\n      \"reproduction\": \"input.patch 9~10행의 조직 이동 흐름을 TASK.md의 목적, T-2, T-4, S-16 및 S-18과 문서 대조한다. 패치 45행의 승인문과 비교해 PV-04가 추가하는 적용 전 단계를 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"RA-1\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"US-01·US-02·PM-03 설명과 PV-04 언급을 확인했다. 패치에 추가된 실행 진입점이나 인가 호출은 없다.\"\n    },\n    {\n      \"id\": \"RA-2\",\n      \"state\": \"none\",\n      \"observation\": \"IA의 화면 규칙에서 사용여부 N이면 직접 주소로도 차단하고, 메뉴에 속하지 않은 화면은 공통 화면을 제외하면 시스템관리만 연다는 문구가 유지된다. 등록 설명은 전사 기본 역할 적용으로 바뀐다.\"\n    },\n    {\n      \"id\": \"RA-3\",\n      \"state\": \"none\",\n      \"observation\": \"등록 문구에는 Google 이메일이라는 입력 항목명만 들어간다. 문서 변경에 실제 이메일 값, 연락처 원문, 토큰 또는 이를 출력하는 경로가 없다.\"\n    },\n    {\n      \"id\": \"RA-4\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"두 Markdown 파일의 변경에는 외부 입력을 셸, 파일 경로 또는 쿼리로 전달하는 코드가 없다.\"\n    },\n    {\n      \"id\": \"RB-1\",\n      \"state\": \"none\",\n      \"observation\": \"PROJECT.md의 마감 행은 최초 권한 지정 감사를 후속으로 적고, 기존 ‘사용자 등록’ 감사 설명은 유지한다. 이 패치에서 기존 등록 감사나 조직 감사의 기록 경로를 삭제하는 변경은 발견되지 않았다.\"\n    },\n    {\n      \"id\": \"RB-2\",\n      \"state\": \"none\",\n      \"observation\": \"PROJECT.md는 승인 화면과의 대조 기준을 수정하고 결정 기록 한 행을 추가한다. 기존 결정 행과 데이터에 대한 소급 갱신은 패치에 없다.\"\n    },\n    {\n      \"id\": \"RB-3\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"이 패치에는 마이그레이션, ORM 또는 기존 행을 다루는 변경이 없다.\"\n    },\n    {\n      \"id\": \"RB-4\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"이 패치에는 저장 후 재조회나 단언을 추가·변경하는 시험 코드가 없다.\"\n    },\n    {\n      \"id\": \"RC-1\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"IA의 순서 변경은 메뉴 표시 순서다. 잠금 획득·해제 경로는 패치에 없다.\"\n    },\n    {\n      \"id\": \"RC-2\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"등록·조직 저장과 관련해 바뀐 부분은 문서 설명이다. 트랜잭션 밖에서 실행되는 호출이나 쓰기는 패치에 없다.\"\n    },\n    {\n      \"id\": \"RC-3\",\n      \"state\": \"none\",\n      \"observation\": \"IA의 반영 실패 후 이력 확인·재시도와 SM-01 변경 실패 시 되돌림 문구가 유지된다. 패치에 부분 쓰기나 롤백 구현을 바꾸는 코드는 없다.\"\n    },\n    {\n      \"id\": \"RC-4\",\n      \"state\": \"defect\",\n      \"observation\": \"조직 이동의 기존 저장·범위 변경 시험과 문서 대조 범위를 따라갔다. 새로 명시된 PV-04의 미리보기 후 적용·취소·실패 조합은 제공된 흐름이나 시험에 없다.\"\n    }\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a5-5baa-7a91-9ecb-3b6fbfe77c0a",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 49465,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 30840
+    },
+    "usage_total_tokens": 30840,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "c1efc8309e9be52197fe70f83d3ea9e15fb21858958f46ecfca83005eff4c11b",
+    "verdict": "fail",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "6f8f13114f6fcc3f1b442d8ba774e90e",
+  "assessment": {
+    "stage": "post",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "flow",
+        "confidence": "high",
+        "location": "docs/ia/ia.md:78",
+        "scenario": "조직 이동을 반영할 때 배포된 IA를 따르면 데이터 범위 재계산을 PV-04에서 적용 전에 확인하는 단계가 생긴다. 제공된 합의와 태스크에는 이 화면 단계가 없으며, 패치는 미리보기 후 적용·취소·실패 시 조직과 데이터 범위가 어떻게 처리되는지 정하지 않는다.",
+        "reproduction": "input.patch 9~10행의 조직 이동 흐름을 TASK.md의 목적, T-2, T-4, S-16 및 S-18과 문서 대조한다. 패치 45행의 승인문과 비교해 PV-04가 추가하는 적용 전 단계를 확인한다.",
+        "impact": "goal",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "not_applicable",
+          "observation": "US-01·US-02·PM-03 설명과 PV-04 언급을 확인했다. 패치에 추가된 실행 진입점이나 인가 호출은 없다."
+        },
+        {
+          "id": "RA-2",
+          "state": "none",
+          "observation": "IA의 화면 규칙에서 사용여부 N이면 직접 주소로도 차단하고, 메뉴에 속하지 않은 화면은 공통 화면을 제외하면 시스템관리만 연다는 문구가 유지된다. 등록 설명은 전사 기본 역할 적용으로 바뀐다."
+        },
+        {
+          "id": "RA-3",
+          "state": "none",
+          "observation": "등록 문구에는 Google 이메일이라는 입력 항목명만 들어간다. 문서 변경에 실제 이메일 값, 연락처 원문, 토큰 또는 이를 출력하는 경로가 없다."
+        },
+        {
+          "id": "RA-4",
+          "state": "not_applicable",
+          "observation": "두 Markdown 파일의 변경에는 외부 입력을 셸, 파일 경로 또는 쿼리로 전달하는 코드가 없다."
+        },
+        {
+          "id": "RB-1",
+          "state": "none",
+          "observation": "PROJECT.md의 마감 행은 최초 권한 지정 감사를 후속으로 적고, 기존 ‘사용자 등록’ 감사 설명은 유지한다. 이 패치에서 기존 등록 감사나 조직 감사의 기록 경로를 삭제하는 변경은 발견되지 않았다."
+        },
+        {
+          "id": "RB-2",
+          "state": "none",
+          "observation": "PROJECT.md는 승인 화면과의 대조 기준을 수정하고 결정 기록 한 행을 추가한다. 기존 결정 행과 데이터에 대한 소급 갱신은 패치에 없다."
+        },
+        {
+          "id": "RB-3",
+          "state": "not_applicable",
+          "observation": "이 패치에는 마이그레이션, ORM 또는 기존 행을 다루는 변경이 없다."
+        },
+        {
+          "id": "RB-4",
+          "state": "not_applicable",
+          "observation": "이 패치에는 저장 후 재조회나 단언을 추가·변경하는 시험 코드가 없다."
+        },
+        {
+          "id": "RC-1",
+          "state": "not_applicable",
+          "observation": "IA의 순서 변경은 메뉴 표시 순서다. 잠금 획득·해제 경로는 패치에 없다."
+        },
+        {
+          "id": "RC-2",
+          "state": "not_applicable",
+          "observation": "등록·조직 저장과 관련해 바뀐 부분은 문서 설명이다. 트랜잭션 밖에서 실행되는 호출이나 쓰기는 패치에 없다."
+        },
+        {
+          "id": "RC-3",
+          "state": "none",
+          "observation": "IA의 반영 실패 후 이력 확인·재시도와 SM-01 변경 실패 시 되돌림 문구가 유지된다. 패치에 부분 쓰기나 롤백 구현을 바꾸는 코드는 없다."
+        },
+        {
+          "id": "RC-4",
+          "state": "defect",
+          "observation": "조직 이동의 기존 저장·범위 변경 시험과 문서 대조 범위를 따라갔다. 새로 명시된 PV-04의 미리보기 후 적용·취소·실패 조합은 제공된 흐름이나 시험에 없다."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-H-2-repo.wQZE/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 1,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

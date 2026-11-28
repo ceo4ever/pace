@@ -1,0 +1,146 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "내보내기 보류. 연락처 원문 조회는 요청 사업장의 개인정보 보기 권한을 확인하지 않습니다. 생성된 클라이언트는 원문 조회 POST를 자동 실행할 수 있고, 받은 원문을 쿼리 캐시에 보관합니다.\n\nA-1 판정은 **합의 변경 없음**입니다. 사업장별 인가를 적용하고, 원문 조회를 명시적 요청에 연결하며, 클라이언트 계약과 검증을 보완하는 조치는 합의된 목적·범위·기준을 충족하기 위한 수정입니다. 사업장별 인가를 완화하거나 원문 자동 조회를 허용하려면 합의 변경이 필요합니다.\n\n검토 입력은 메시지에 첨부된 상위 목적·TASK.md·전체 diff와 로컬 `evidence/input.patch`입니다. `pace-project-dev/SKILL.md`와 `references/decision-rights.md`를 읽었으며, `references/reviewer.md`는 키워드 검색 결과가 없었습니다. 노출된 호스트 맥락은 세션 지시와 작업 디렉터리·권한 정보입니다. 별도 자동 부트·메모리 본문이나 작성자 마감·자체 판정·지적 대응 문서는 열람하지 않았습니다. 파일 수정과 API·테스트 실행은 없었습니다. 직전 blocking이 제공되지 않아 해소 대조는 해당 없습니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"RA-2\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:195\",\n      \"scenario\": \"일반 사업장 범위에는 포함되지만 개인정보 보기 지정이 없는 사업장의 원문 요청이 거부되지 않는다. 연락처 경로는 요청자 ID만으로 취급 상태를 조회하고, 저장소의 privacy_periods도 사용자 ID만 조건으로 사용한다. 따라서 다른 사업장의 유효한 보기 지정으로 해당 사업장의 연락처 원문을 반환할 수 있다. 전사 범위 세션에도 같은 개인정보 보기 경로가 적용된다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-2\",\n      \"safety_path\": {\n        \"input\": \"일반 조회 범위와 개인정보 보기 지정 범위가 다른 요청 상태\",\n        \"reached\": \"UserAdminService.contacts의 대상 소속 확인 후 _privacy_map과 UserAdminRepository.privacy_periods를 거친다. 요청 사업장 ID는 취급 권한 조회에 전달되지 않는다.\",\n        \"result\": \"사용자 단위 취급 상태가 active이고 view가 참이면 요청 사업장의 보기 지정 확인 없이 원문 응답 생성과 감사 커밋에 도달한다.\"\n      }\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"RA-3\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:401\",\n      \"scenario\": \"공개된 원문 조회 훅을 사용하면 UserContact 응답이 React Query 캐시에 들어간다. 기본 키에 세션이나 권한 정보가 없어, 동일 QueryClient와 동일 대상·사업장을 쓰는 후속 관찰자가 서버 재검증 전에 이미 받아 둔 원문을 받을 수 있다. HTTP no-store는 이 애플리케이션 캐시에 적용되지 않는다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-3\",\n      \"safety_path\": {\n        \"input\": \"공개 원문 조회 훅이 성공한 뒤 동일 QueryClient에서 세션이나 권한이 바뀌는 상태\",\n        \"reached\": \"대상과 요청 본문으로만 만든 키를 useQuery에 사용하며 훅에 별도의 원문 응답 폐기 처리가 없다.\",\n        \"result\": \"기존 원문 응답이 같은 키의 결과로 남아 서버의 다음 권한 판정보다 먼저 노출될 수 있다.\"\n      }\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"RC-2\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:423\",\n      \"scenario\": \"유효한 사용자 ID로 원문 조회 훅을 마운트하면 별도의 열람 조작 없이 POST가 실행된다. 쿼리 재조회 설정에 따라 다시 요청할 수도 있다. 성공한 요청마다 서버는 감사 행을 커밋하므로 화면 수명주기가 원문 열람과 감사 기록 생성을 일으킨다.\",\n      \"reproduction\": \"POST를 모의 처리한 QueryClient에서 유효한 사용자와 사업장 인자로 훅을 마운트하고, 열람 조작 없이 요청 호출 수를 관찰한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"should_fix\",\n      \"category\": \"RA-4\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:241\",\n      \"scenario\": \"상세와 원문 URL 생성 함수는 임의의 문자열 userId를 검증하거나 경로 세그먼트로 인코딩하지 않고 보간한다. 생성된 Zod 경로 스키마는 요청 함수에서 호출되지 않는다. 서버의 RowId 검증은 요청이 의도한 라우트에 도달한 뒤 적용된다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RA-4\",\n      \"safety_path\": {\n        \"input\": \"숫자 ID 계약을 벗어나고 URL 구조에 영향을 주는 문자열\",\n        \"reached\": \"상세와 원문 URL 생성 함수에서 userId가 그대로 보간된 뒤 apiFetch에 전달된다.\",\n        \"result\": \"입력이 하나의 사용자 ID 경로 세그먼트로 제한되지 않는다. 다른 라우트의 인가 우회 여부는 이 diff로 확인되지 않았다.\"\n      }\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"should_fix\",\n      \"category\": \"RC-4\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:239\",\n      \"scenario\": \"시험은 일반 사업장 범위에서 탈락하는 요청과 취급 미지정 전사 세션을 사용한다. 일반 범위에는 속하고 대상의 조직 건도 있으나 그 사업장의 취급 보기만 없는 조합이 없어 T-2의 사업장별 취급 권한 누락을 검출할 수 없다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": {\n        \"input\": \"사업장 접근은 허용되고 해당 사업장의 취급 보기만 거부되는 시험 분기\",\n        \"reached\": \"현재 fixture와 거절 단언은 일반 범위 탈락 또는 사용자 단위 취급 거절까지만 각각 도달한다.\",\n        \"result\": \"사업장별 취급 권한 확인이 빠져도 기존 단언으로 검출할 수 없다.\"\n      }\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"should_fix\",\n      \"category\": \"RC-4\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/zod/system-user/system-user.zod.ts:93\",\n      \"scenario\": \"서버 통합 시험의 상세 응답은 last_login_dt에 오프셋 없는 2026-07-13T09:00:00을 단언한다. 공개된 클라이언트 상세 검증기는 시간대 표기가 있는 날짜시간 또는 null만 받으므로, 성공 로그인 기록이 있는 정상 응답이 클라이언트 검증에서 거절된다.\",\n      \"reproduction\": \"서버 시험이 단언하는 합성 상세 응답을 WorklinkSystemUserDetailResponse.safeParse에 전달해 last_login_dt 검증 결과를 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F7\",\n      \"severity\": \"should_fix\",\n      \"category\": \"RC-4\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:94\",\n      \"scenario\": \"생성된 타입과 Zod가 허용하는 목록 필터의 null이 실제 요청에서는 문자열 null로 전송된다. 사업장·부서·상태 필터는 서버에서 형식 오류가 되고, 검색 필터는 실제 검색어 null로 적용된다. 서버 통합 시험은 생성된 클라이언트의 필터 초기화 경로를 지나지 않는다.\",\n      \"reproduction\": \"getWorklinkSystemUserListUrl에 business_place_id가 null인 필터를 전달하고, 필터 생략과 달리 business_place_id=null이 URL에 남는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"RA-1\",\n      \"state\": \"none\",\n      \"observation\": \"목록·상세·원문 세 진입점에 공통 US-01 메뉴 선언이 있다. 서비스에서는 로그인과 사업장 범위를 확인하며 원문 경로에는 별도 취급 권한 검사 위치가 있다. 그 검사의 사업장 조건 누락은 RA-2에 기록했다.\"\n    },\n    {\n      \"id\": \"RA-2\",\n      \"state\": \"defect\",\n      \"observation\": \"원문 경로는 사용자 단위 보기 지정으로 요청 사업장의 확인되지 않은 보기 권한을 허용한다. F1.\"\n    },\n    {\n      \"id\": \"RA-3\",\n      \"state\": \"defect\",\n      \"observation\": \"기본 응답은 연락처를 마스킹하고 감사에는 식별자만 전달한다. 생성된 원문 조회 훅은 성공 응답을 쿼리 캐시에 남긴다. F2.\"\n    },\n    {\n      \"id\": \"RA-4\",\n      \"state\": \"defect\",\n      \"observation\": \"서버 검색은 SQLAlchemy 조건과 LIKE 이스케이프를 사용하고 셸 호출은 없다. 생성된 상세·원문 클라이언트는 userId를 요청 경로에 그대로 보간한다. F4.\"\n    },\n    {\n      \"id\": \"RB-1\",\n      \"state\": \"none\",\n      \"observation\": \"서비스의 유일한 쓰기는 원문 접근 감사다. 감사 호출에 사업장과 대상 식별자를 넘기고 커밋 후 원문을 반환한다. 별도 사용자 쓰기 경로는 없다.\"\n    },\n    {\n      \"id\": \"RB-2\",\n      \"state\": \"none\",\n      \"observation\": \"운영 경로는 사용자·조직·취급기간·기존 이력을 조회한다. 취급 해제는 기존 이력을 읽어 응답에 반영하며, 원문 접근 시 새 감사 행만 추가한다. 기간·이력 갱신은 합성 시험 준비에 있다.\"\n    },\n    {\n      \"id\": \"RB-3\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"마이그레이션과 테이블 정의 변경이 없어 왕복 대상이 없다. 전화번호는 읽을 때 새 AAD 함수로 복호화하며, 시험은 같은 함수로 생성한 합성 암호문만 사용한다. 기존 암호문의 호환 여부는 이 입력에서 확인되지 않는다.\"\n    },\n    {\n      \"id\": \"RB-4\",\n      \"state\": \"none\",\n      \"observation\": \"시험은 원문 요청 이후 별도 DB 세션으로 감사 행을 다시 읽어 건수, 접근자, 대상, 시각, 비고를 단언한다. 시험 중 커밋한 취급 권한 변경은 뒤이은 API 요청으로 다시 읽는다.\"\n    },\n    {\n      \"id\": \"RC-1\",\n      \"state\": \"none\",\n      \"observation\": \"새 저장소 경로는 일반 SELECT를 사용하며 명시적 잠금이나 업무 행 갱신을 추가하지 않는다. 새 쓰기는 감사 행 추가 한 종류로, 변경에서 상충하는 잠금 순서는 발견되지 않았다.\"\n    },\n    {\n      \"id\": \"RC-2\",\n      \"state\": \"defect\",\n      \"observation\": \"생성된 원문 훅이 자동 쿼리 실행을 감사 쓰기가 있는 POST에 연결한다. F3.\"\n    },\n    {\n      \"id\": \"RC-3\",\n      \"state\": \"none\",\n      \"observation\": \"연락처 복호화와 응답 모델 구성은 감사 쓰기보다 앞선다. 복호화 예외는 감사 호출 전에 종료되며 커밋 오류가 전파되면 서비스는 원문을 반환하지 않는다. 커밋 실패 시 공통 세션의 롤백 동작은 diff에 포함되지 않았다.\"\n    },\n    {\n      \"id\": \"RC-4\",\n      \"state\": \"defect\",\n      \"observation\": \"일반 범위 허용과 해당 사업장 취급 거부의 교차 분기, 성공 로그인 시각이 있는 응답의 생성 스키마 검증, null 필터의 실제 요청 직렬화를 시험이 지나지 않는다. F5, F6, F7.\"\n    }\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a0-03e7-7710-86c8-c2d3a828db46",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 122306,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 81939
+    },
+    "usage_total_tokens": 81939,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "ae53eb83474ca1b4d7c01db5a9be5c15ce732d461adcaa01a1b9ff497642d9bb",
+    "verdict": "unknown",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "17c4e9d17bdb8d99dc57f054b7c9b174",
+  "assessment": {
+    "stage": "post",
+    "verdict": "unknown",
+    "reported_verdict": "fail",
+    "differs": true,
+    "findings": null,
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-4",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-4",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-4",
+          "state": "unverified",
+          "observation": null
+        }
+      ],
+      "issues": [
+        "missing_criteria"
+      ]
+    }
+  },
+  "evidence_action": {
+    "action": "collect_evidence",
+    "gaps": [
+      "RA-1",
+      "RA-2",
+      "RA-3",
+      "RA-4",
+      "RB-1",
+      "RB-2",
+      "RB-3",
+      "RB-4",
+      "RC-1",
+      "RC-2",
+      "RC-3",
+      "RC-4",
+      "missing_criteria"
+    ],
+    "if_proceed_without_evidence": "A-3"
+  },
+  "warning": "구조화된 지적의 판정이 미확인이다. 원문과 형식을 확인한다.",
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T01-1-repo.Frqf/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 0,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

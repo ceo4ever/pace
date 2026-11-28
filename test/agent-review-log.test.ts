@@ -40,6 +40,10 @@ function harness() {
 
 const FIRST = /이전 지적과 그 대응 문서는 받거나 읽지 않는다/;
 const REREVIEW = /판정 범위: 직전 검토의 blocking이 해소됐는지/;
+const POST_REREVIEW = /재검토\(구현 후 묶음 점검\)/;
+/** 구현 후 reviewer 대상은 diff다 — 한 줄 바꾼 최소 패치 */
+const diffOf = (line: string) => `diff --git a/src/x.ts b/src/x.ts\n--- a/src/x.ts\n+++ b/src/x.ts\n@@ -1 +1 @@\n-old\n+${line}\n`;
+const BUNDLE_IDS = ["RA-1", "RA-2", "RA-3", "RA-4", "RB-1", "RB-2", "RB-3", "RB-4", "RC-1", "RC-2", "RC-3", "RC-4"];
 
 test("general review recommends a troubleshooter only on the second valid failure", async () => {
   const h = harness();
@@ -72,7 +76,7 @@ function budgetHarness() {
   writeFileSync(join(task, "TASK.md"), "합성 검토 조건과 관측 기준\n");
   writeFileSync(join(backlog, "BACKLOG.md"), "합성 백로그의 수용 기준\n");
   const prompts: string[] = [];
-  const review = async (target: string, reply: string, kind = "goal", provider = "openai", wait?: () => Promise<void>) => {
+  const review = async (target: string, reply: string, kind = "goal", provider = "openai", wait?: () => Promise<void>, extra: string[] = []) => {
     const executor: Executor = {
       agent: provider === "openai" ? "codex" : "claude", mode: "p",
       capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
@@ -83,7 +87,7 @@ function budgetHarness() {
       },
     };
     const output: string[] = [];
-    const code = await verifyCommand(["--author-agent", provider === "openai" ? "claude" : "codex", "--target", target, "--purpose", "목적", "--kind", kind], {
+    const code = await verifyCommand(["--author-agent", provider === "openai" ? "claude" : "codex", "--target", target, "--purpose", "목적", "--kind", kind, ...extra], {
       executors: () => [executor], write: (text) => output.push(text),
     });
     return { code, json: JSON.parse(output.join("")) };
@@ -98,18 +102,17 @@ test("verify reports the repeated file area before spending the second valid rev
   const raw = (id: string, line: number, complete: boolean) => [
     "```pace-review", JSON.stringify({
       version: 2, findings: [{
-        id, severity: "should_fix", category: "criteria", location: `src/codec.ts:${line}`,
+        id, severity: "should_fix", category: "boundary", location: `src/codec.ts:${line}`,
         scenario: "유효하지 않은 값을 거부하지 않는다", reproduction: "검증 시험에 빈 값을 준다",
-        confidence: "high", impact: "criterion", criterion: "T-1", safety_path: null,
+        confidence: "high", impact: "criterion", criterion: "RA-2", safety_path: null,
       }, ...(complete ? [{
-        id: "F8", severity: "blocking", category: "criteria", location: "src/storage.ts:5",
+        id: "F8", severity: "blocking", category: "state", location: "src/storage.ts:5",
         scenario: "기존 기록을 지운다", reproduction: "두 기록을 보존하는 고정 시험 실행",
-        confidence: "high", impact: "criterion", criterion: "T-2", safety_path: null,
+        confidence: "high", impact: "criterion", criterion: "RB-2", safety_path: null,
       }] : [])],
-      criteria: [
-        { id: "T-1", state: "present", observation: "빈 입력을 호출했다" },
-        ...(complete ? [{ id: "T-2", state: "present", observation: "실패한 기록 바이트가 유지됐다" }] : []),
-      ],
+      criteria: BUNDLE_IDS.filter((id) => complete || id.startsWith("RA-")).map((id) => id === "RB-2"
+        ? { id, state: "defect", observation: "두 기록 중 하나가 사라졌다" }
+        : { id, state: "none", observation: "변경 경로를 따라가 확인했다" }),
     }), "```", "fail",
   ].join("\n");
   const patch = (value: string) => `diff --git a/src/codec.ts b/src/codec.ts\n--- a/src/codec.ts\n+++ b/src/codec.ts\n@@ -12 +12 @@\n-original\n+${value}\n`;
@@ -140,15 +143,15 @@ test("P013 T01: 같은 태스크의 두 원장이 구현 후 예산을 공유하
   const h = budgetHarness();
   const first = join(h.task, "change.patch");
   const second = join(h.task, "evidence/TASK.md");
-  writeFileSync(first, "시작 상태\n");
-  writeFileSync(second, "고친 상태\n");
+  writeFileSync(first, diffOf("시작 상태"));
+  writeFileSync(second, diffOf("고친 상태"));
   assert.equal((await h.review(first, "F1 [blocking] 고칠 부분\nfail")).code, 0);
   const resolved = await h.review(second, "pass", "goal", "anthropic");
   assert.equal(resolved.code, 0);
-  assert.match(h.prompts.at(-1)!, REREVIEW);
+  assert.match(h.prompts.at(-1)!, POST_REREVIEW);
   assert.match(h.prompts.at(-1)!, /## 직전 검토 원문\nF1 \[blocking\]/);
-  assert.match(h.prompts.at(-1)!, /- 시작 상태\n\+ 고친 상태/);
-  writeFileSync(second, "바뀐 상태\n");
+  assert.match(h.prompts.at(-1)!, /- \+시작 상태\n\+ \+고친 상태/);
+  writeFileSync(second, diffOf("바뀐 상태"));
   const blocked = await h.review(second, "never");
   assert.equal(blocked.code, 16);
   assert.equal(blocked.json.reason, "budget_exhausted");
@@ -220,7 +223,7 @@ test("P013 T01: 옛 evidence/TASK.md의 goal·task 판정과 복구는 사전 �
   const plan = join(h.task, "TASK.md");
   const result = join(h.task, "evidence/TASK.md");
   writeFileSync(plan, "사전 계획\n");
-  writeFileSync(result, "구현 검토 기록\n");
+  writeFileSync(result, diffOf("구현 검토 기록"));
   const entries = [1, 2].map((n): ReviewEntry => ({
     type: "review", at: "2026-01-01", kind: n === 1 ? "goal" : "task", target: "TASK.md", hash: "old",
     verdict: "fail", verifier: "codex", provider: "openai", rereview_of: null,
@@ -229,6 +232,14 @@ test("P013 T01: 옛 evidence/TASK.md의 goal·task 판정과 복구는 사전 �
   writeFileSync(join(h.task, "evidence/REVIEW-LOG.jsonl"), entries.map((e) => JSON.stringify(e)).join("\n") + "\n");
   mkdirSync(join(h.task, "evidence/review-records"));
   writeFileSync(join(h.task, "evidence/review-records/R3.json"), JSON.stringify({ pending: true, review: { target: "TASK.md", hash: "old" } }));
+  // 비-diff 거부는 중단 복구·소진 판정보다 먼저다 — 원장을 바꾸지 않고 tester 경로를 안내한다
+  const notes = join(h.task, "evidence/notes.md");
+  writeFileSync(notes, "# 결과 문서\n");
+  const tester = /tester 경로\(`pace agent run`으로 tester 배정\)/;
+  const early = await h.review(notes, "never", "goal");
+  assert.equal(early.code, 2);
+  assert.match(early.json.error.message, tester);
+  assert.equal(readLedger(result).length, 2, "고아 기록을 복구하지 않는다");
   const pre = await h.review(plan, "pass", "task");
   assert.equal(pre.code, 0, "같은 파일명이라도 루트 TASK.md의 첫 사전 판정은 실행한다");
   assert.deepEqual([pre.json.budget.calls, pre.json.budget.rounds], [1, 1]);
@@ -238,14 +249,17 @@ test("P013 T01: 옛 evidence/TASK.md의 goal·task 판정과 복구는 사전 �
   const post = await h.review(result, "never", "goal");
   assert.equal(post.code, 16);
   assert.deepEqual([post.json.budget.stage, post.json.budget.calls, post.json.budget.rounds], ["post", 3, 2]);
+  const late = await h.review(notes, "never", "goal");
+  assert.equal(late.code, 2, "소진 뒤에도 비-diff는 형식 거부다");
+  assert.match(late.json.error.message, tester);
   assert.equal(h.prompts.length, 1);
 });
 
 test("P013 T01: 무효·중단·unknown은 판정 없이 공유 예약 수만 쓴다", async () => {
   const h = budgetHarness();
   const patch = join(h.task, "change.patch"), second = join(h.task, "evidence/change.patch");
-  writeFileSync(patch, "첫 대상\n");
-  writeFileSync(second, "다른 대상\n");
+  writeFileSync(patch, diffOf("첫 대상"));
+  writeFileSync(second, diffOf("다른 대상"));
   assert.equal((await h.review(patch, "F1 [blocking] 잘못된 도구 출력\nfail")).code, 0);
   const reason = join(h.task, "reason.md");
   writeFileSync(reason, "무효의 원인과 재현\n");
@@ -280,8 +294,8 @@ test("P013 T01: 무효·중단·unknown은 판정 없이 공유 예약 수만 �
 test("P013 T01: 마지막 판정 자리는 두 원장에서 동시에 실행되지 않는다", async () => {
   const h = budgetHarness();
   const first = join(h.task, "change.patch"), second = join(h.task, "evidence/change.patch");
-  writeFileSync(first, "첫 대상\n");
-  writeFileSync(second, "다른 대상\n");
+  writeFileSync(first, diffOf("첫 대상"));
+  writeFileSync(second, diffOf("다른 대상"));
   await h.review(first, "pass");
   const started = Promise.withResolvers<void>(), resume = Promise.withResolvers<void>();
   const inFlight = h.review(second, "pass", "goal", "openai", async () => {
@@ -367,7 +381,7 @@ test("P013 T01: 옛 구조 전용 판정은 근거가 확인되면 호출로만 
   mkdirSync(join(h.task, "evidence/review-records"));
   writeFileSync(join(h.task, "evidence", record), JSON.stringify({ review: { snapshot }, result: { text } }));
   writeFileSync(join(h.task, "evidence/REVIEW-LOG.jsonl"), JSON.stringify(entry) + "\n");
-  writeFileSync(post, "구현 후 변경\n");
+  writeFileSync(post, diffOf("구현 후 변경"));
   const postFull = await h.review(post, "pass", "goal");
   assert.equal(postFull.code, 0);
   assert.equal(postFull.json.review.rereview_of, null, "옛 구조 전용 판정은 구현 후 전체 판정 자리도 소비하지 않는다");
@@ -974,4 +988,48 @@ test("P017 T01 S-5: legacyStructureOnly 판정은 reviewer 줄과 무관하게 �
   assert.deepEqual(seed("- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n"), [1, 1]);
   // 증명 범위가 없는 옛 v2 fail — 여전히 구조 전용이라 호출로만 센다.
   assert.deepEqual(seed("- TASK 형식: v2\n## 목적\n안전한 처리\n"), [0, 1]);
+});
+
+test("P017 T02 S-5: verify는 비-diff·헝크 없는 diff·같은 해시 fail 재요청을 예약 전에 거부한다", async () => {
+  const h = budgetHarness();
+  const target = join(h.task, "evidence/impl.patch");
+  const snapshot = () => {
+    const scope = reviewBudgetScope(target)!;
+    const records = join(h.task, "evidence/review-records");
+    return JSON.stringify({ status: readReviewBudget(scope).status, ledger: readLedger(target),
+      records: existsSync(records) ? readdirSync(records).sort() : [], prompts: h.prompts.length });
+  };
+  const rejected = async (text: string, pattern: RegExp) => {
+    writeFileSync(target, text);
+    const before = snapshot();
+    const result = await h.review(target, "F1 [blocking] 실행되면 안 된다\nfail");
+    assert.equal(result.code, 2);
+    assert.match(result.json.error.message, pattern);
+    assert.equal(snapshot(), before, "실행기·호출 예약·고정 기록·원장이 그대로다");
+  };
+  const tester = /구현 후 reviewer 대상은 구현 diff다.*tester 경로\(`pace agent run`으로 tester 배정\)/;
+  await rejected("# 결과 문서\n\n검증 결과를 정리했다.\n", tester);
+  await rejected("diff --git a/a.ts b/a.ts\nrename from a.ts\nrename to b.ts\n", tester);
+  await rejected("메모 한 줄\n" + diffOf("앞에 메모가 붙은 패치"), tester);
+  // 루트 TASK.md는 계약 입력이라 --out으로 바꿔 끼우지 않는다
+  writeFileSync(target, diffOf("첫 구현"));
+  const contract = join(h.task, "TASK.md");
+  writeFileSync(contract, "# 계약\n");
+  const before = snapshot();
+  const out = await h.review(target, "pass", "goal", "openai", undefined, ["--out", contract]);
+  assert.equal(out.code, 2);
+  assert.match(out.json.error.message, /태스크 계약/);
+  assert.deepEqual([readFileSync(contract, "utf8"), snapshot()], ["# 계약\n", before]);
+
+  writeFileSync(target, diffOf("첫 구현"));
+  const failed = await h.review(target, "F1 [blocking] 재현\nfail");
+  assert.deepEqual([failed.code, failed.json.review.verdict], [0, "fail"]);
+  await rejected(diffOf("첫 구현"), /직전 fail 검토\(review-records\/R1\.json\) 뒤 대상이 바뀌지 않았다/);
+
+  // 같은 이름·같은 바이트라도 다른 원장의 대상은 직전 fail 대상이 아니다
+  const rootPatch = join(h.task, "impl.patch");
+  writeFileSync(rootPatch, diffOf("첫 구현"));
+  const other = await h.review(rootPatch, "pass");
+  assert.deepEqual([other.code, other.json.review.verdict], [0, "pass"]);
+  assert.equal(h.prompts.length, 2);
 });

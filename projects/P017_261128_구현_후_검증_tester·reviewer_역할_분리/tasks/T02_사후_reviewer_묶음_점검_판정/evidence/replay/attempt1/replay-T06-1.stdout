@@ -1,0 +1,146 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "배포를 보류해야 합니다. 기존 조직 편집을 제한하는 회귀가 있고, 개인정보 취급 저장이 경과 날짜에 새 효력을 기록하거나 기존 예약을 복원할 기록 없이 삭제할 수 있습니다. 실패 주입 시험도 재시도 전에 기간표의 잔여 행을 검출하지 못합니다.\n\nA-1에 따르면 기존 조직 편집 범위를 복구하고 저장과 검증을 보완하는 조치는 합의 범위 안입니다. 새 조직 편집 제한을 유지하려면 합의된 운영 범위가 바뀌므로 owner 결정이 필요합니다. 패치에 추가된 main 판단은 그 변경의 증거로 읽었습니다.\n\n열람 범위는 요청에 포함된 상위 목적과 TASK.md 본문, `evidence/input.patch` 전체 12개 파일 변경, `pace-project-dev/SKILL.md`, `references/decision-rights.md`, `references/reviewer.md`입니다. 작업 디렉터리에서는 파일명과 Git 상태·현재 커밋 메타데이터를 확인했습니다. 자동 부트·메모리·호스트에서 노출된 추가 맥락은 세션·환경 안내와 스킬 목록입니다. 작성자 마감·자체 판정·지적 대응 및 별도 리뷰 기록의 본문은 미열람입니다. 판단 근거는 정적 검토이며, 파일 변경과 시험 실행은 0건입니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"RA-1\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:592\",\n      \"scenario\": \"사업장 US-01 처리자가 기존 조직 범위 검사를 통과해도 대상 계정이 고정 시스템관리 역할이면 조직만 바꾸는 요청이 403으로 거절된다. PROJECT.md diff의 94행에 적힌 기존 동작을 99행의 main 판단과 새 서비스 가드가 뒤집는다. 934행의 새 통합시험은 이 회귀를 기대값으로 고정한다.\",\n      \"reproduction\": \"합성 DB에서 한 사업장의 US-01 처리자와 조직 전체가 그 사업장에 속한 시스템관리 계정을 준비한다. 같은 사업장 부서를 추가하는 조직 요청을 변경 전후에 비교한다. 역할·계정 상태 입력 없이도 변경 후 가드에서 403이 반환되는 경로다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RA-1\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"RB-2\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_privacy.py:100\",\n      \"scenario\": \"기간표가 비어 있는 대상의 첫 Y 지정에 과거 시작일과 오늘 이후 종료일을 주면 시작일이 그대로 저장된다. 오늘로 보정하는 조건은 같은 시작일의 활성 판을 편집하거나 경과 중인 기존 기간을 닫을 때만 적용된다. 결과적으로 지정 전에 권한이 없던 날짜가 새 기간표에는 취급 가능 날짜로 기록된다.\",\n      \"reproduction\": \"업무일을 D로 고정하고 취급 기간과 사건이 없는 합성 대상에 시작 D-3, 종료 D+2로 처음 지정한다. 저장 뒤 별도 세션에서 기간표를 읽어 D 이전 날짜가 새 행에 포함되는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RB-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"RB-3\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_privacy.py:115\",\n      \"scenario\": \"기존 기간표에 현재 기간과 그 뒤의 겹치지 않는 예약이 있고 두 판의 사건이 없으면, 첫 US-01 해제 또는 교체는 현재 판만 변경 전 스냅샷에 넣고 예약 행을 삭제한다. 삭제된 예약의 날짜와 취급 내용은 사건에도 남지 않아 운영 이력에서 복원할 수 없다.\",\n      \"reproduction\": \"합성 대상에 현재 기간 1건과 미래 예약 1건을 기간표에만 넣는다. N으로 해제한 뒤 별도 세션에서 기간표와 ChangeLog를 다시 읽는다. 예약 행은 삭제되고 변경 전 값에는 현재 기간만 남는 경로다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"data_loss\",\n      \"criterion\": \"RB-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"blocking\",\n      \"category\": \"RB-4\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:1144\",\n      \"scenario\": \"취급 감사 실패 직후 시험은 이력 응답과 상세 상태만 다시 본다. ChangeLog와 감사가 되돌아가도 종료일이 미래인 기간 행만 남으면 그 행에서 만료 이력이 나오지 않고 상세는 마지막 사건을 우선해 여전히 만료를 표시한다. 후속 저장이 그 잔여 행을 삭제·교체할 수 있어 최종 기간 수 단언도 실패하지 않는다.\",\n      \"reproduction\": \"실패 주입 직후와 다음 PUT 사이에 새 DB 세션으로 기간표·변경 이력·감사를 각각 실패 전 상태와 비교한다. 합성 잔여 기간 행이 있는 상태에서 기존 두 HTTP 단언과 즉시 DB 단언의 검출 결과를 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"RB-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"should_fix\",\n      \"category\": \"RC-4\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:478\",\n      \"scenario\": \"취급 저장은 잠금 조회 전에 업무일을 읽어 종료일을 검증하고, 잠금 조회가 끝난 뒤 489행에서 사건 시각을 다시 읽는다. 두 읽기 사이에 자정이 지나면 D 종료 설정을 D의 유효한 변경으로 저장하면서 사건에는 D+1을 기록한다. 기간 교체와 만료 파생이 같은 변경을 서로 다른 업무일에 처리한다. 새 시험의 시계는 하루 안에서 10시로 고정되어 이 조합을 지나지 않는다.\",\n      \"reproduction\": \"합성 시계에서 업무일 읽기는 D, 잠금 조회 뒤 사건 시각 읽기는 D+1 00:00으로 설정한다. 종료일이 D인 취급 저장을 호출하고 응답, 기간표, 사건일, 파생 만료를 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\"id\":\"RA-1\",\"state\":\"defect\",\"observation\":\"이력의 대상 범위 검사와 역할·취급 PUT의 PROC 및 고정 역할 검사를 따라갔다. 기존 조직 PATCH의 추가 가드가 합의된 처리 주체를 차단한다(F1).\"},\n    {\"id\":\"RA-2\",\"state\":\"none\",\"observation\":\"역할과 취급 저장은 공통 메뉴 및 고정 관리자 검사 뒤 변경으로 진행한다. 제한 범위의 이력은 볼 수 있는 조직 행이 없을 때 거부한다. 연락처는 대상의 활동 사업장이 확인돼야 원문 경로로 진행한다.\"},\n    {\"id\":\"RA-3\",\"state\":\"none\",\"observation\":\"이력 서비스는 허용 필드만 선택하고 보호 연락처를 가리며 등록·조직 전후의 부서를 각각 필터링한다. 라우터는 이력에 no-store를 설정하고, 새 감사 인자는 대상 ID와 역할 ID를 사용한다.\"},\n    {\"id\":\"RA-4\",\"state\":\"none\",\"observation\":\"라우터 ID는 RowId에서 정수로 변환되고, 역할·기간 입력과 저장된 부서 ID는 스키마 및 SQLAlchemy 조건을 거친다. 변경 경로에 입력을 셸이나 파일 경로로 연결하는 코드가 없다.\"},\n    {\"id\":\"RB-1\",\"state\":\"none\",\"observation\":\"등록의 역할 지정과 실제 역할·취급 변경은 각각 ChangeLog와 감사를 커밋 전에 기록한다. 같은 값의 재저장과 조회에서 파생하는 만료는 쓰기를 수행하지 않는다.\"},\n    {\"id\":\"RB-2\",\"state\":\"defect\",\"observation\":\"만료된 기존 행을 건너뛰어도 빈 기간표에 과거 날짜의 취급 효력을 새로 기록할 수 있다(F2).\"},\n    {\"id\":\"RB-3\",\"state\":\"defect\",\"observation\":\"스키마 마이그레이션 변경은 없다. 기존 기간표를 사건 기반 설정으로 처음 전환할 때 현재 판과 공존하는 예약이 이력에서 유실된다(F3).\"},\n    {\"id\":\"RB-4\",\"state\":\"defect\",\"observation\":\"역할 실패는 별도 DB 세션에서 역할·메뉴·조직·감사·이력을 읽는다. 취급 실패는 재시도 전에 기간표를 직접 확인하지 않아 다음 성공 저장이 잔여 행을 가릴 수 있다(F4).\"},\n    {\"id\":\"RC-1\",\"state\":\"none\",\"observation\":\"역할과 계정 상태 변경은 고정 역할 행을 먼저 잠근 뒤 사용자 행으로 진행한다. 변경된 공통 잠금은 사용자 ID 순을 요청하고, 취급 쓰기는 사용자 잠금 뒤 기간·사건을 잠근다. 제공된 코드에서 역순 경로를 확인하지 못했다.\"},\n    {\"id\":\"RC-2\",\"state\":\"none\",\"observation\":\"새 역할·취급 쓰기의 기간·메뉴·사건·감사는 서비스 커밋 앞에 있다. 새 이력 조회의 자동 만료는 응답 생성 단계에서만 파생한다.\"},\n    {\"id\":\"RC-3\",\"state\":\"none\",\"observation\":\"등록·역할 교체·취급 교체에서 중간 flush와 감사 사이에 별도 커밋이 추가되지 않았다. 실패 뒤 기간표의 잔여 행 검출 공백은 RB-4에 기록했다.\"},\n    {\"id\":\"RC-4\",\"state\":\"defect\",\"observation\":\"경합과 날짜별 요청을 다루지만 단일 쓰기 안에서 종료일 검증과 사건 기록이 자정을 사이에 두는 조합은 빠져 있다(F5).\"}\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a0-03e7-7503-8de0-86f79a8ca70f",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 146212,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 72721
+    },
+    "usage_total_tokens": 72721,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "8c5865a3eede5f9a3fe7d57d5a2c71f77535d5fec7d69778d5e5db39ffcc96f7",
+    "verdict": "unknown",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "d899233ed4e97992f795848a6d4267f0",
+  "assessment": {
+    "stage": "post",
+    "verdict": "unknown",
+    "reported_verdict": "fail",
+    "differs": true,
+    "findings": null,
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-4",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-4",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-4",
+          "state": "unverified",
+          "observation": null
+        }
+      ],
+      "issues": [
+        "missing_criteria"
+      ]
+    }
+  },
+  "evidence_action": {
+    "action": "collect_evidence",
+    "gaps": [
+      "RA-1",
+      "RA-2",
+      "RA-3",
+      "RA-4",
+      "RB-1",
+      "RB-2",
+      "RB-3",
+      "RB-4",
+      "RC-1",
+      "RC-2",
+      "RC-3",
+      "RC-4",
+      "missing_criteria"
+    ],
+    "if_proceed_without_evidence": "A-3"
+  },
+  "warning": "구조화된 지적의 판정이 미확인이다. 원문과 형식을 확인한다.",
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T06-1-repo.Y3Fo/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 0,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

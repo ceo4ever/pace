@@ -1,0 +1,227 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**내보내기 보류.** 원문 열람은 요청자가 해당 사업장의 개인정보 보기 권한을 보유했는지 확인하지 않습니다. 생성된 프런트엔드 훅은 원문을 캐시에 보관하고, 사용자의 명시적 열람 없이 감사 행을 남기는 요청을 보낼 수 있습니다.\n\nA-1 기준으로 사업장별 인가 복원, 원문 열람 흐름 수정, 회귀시험 보강은 기존 합의 안의 조치입니다. 사업장별 인가를 생략하거나 해당 검증을 제외한 채 완료 처리하면 합의한 범위와 완료 기준이 실질적으로 달라집니다.\n\n검토 입력은 메시지에 제공된 상위 목적·TASK.md 전문, `evidence/input.patch` 전체 25개 파일, `pace-project-dev/SKILL.md`, `references/decision-rights.md`입니다. 작업 디렉터리 및 샌드박스 정보와 증거 디렉터리의 파일·폴더 이름이 노출됐습니다. 자동 부트·메모리·별도 호스트 첨부 본문은 검토 맥락에 제공되지 않았습니다. 마감 문서, 자체 판정, 지적 대응 및 검토 원장 본문은 열지 않았습니다. 파일 변경과 API·DB 실행은 없었습니다. 직전 blocking은 이번 입력에 제공되지 않았습니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"boundary\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:195\",\n      \"scenario\": \"대상 사업장이 요청자의 일반 조회 범위 안에 있고 대상 소속이 확인되면, 요청자에게 다른 사업장의 유효한 취급 보기만 있어도 원문 반환 경로가 열린다. _privacy_map은 요청자 ID와 날짜로 상태를 계산하며 요청 사업장에 대한 sensAt 확인이 없다. 전사 범위 세션에도 같은 문제가 적용된다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-1\",\n      \"safety_path\": {\n        \"input\": \"일반 조회 범위에 포함되지만 개인정보 보기 권한은 없는 사업장의 원문 열람 요청\",\n        \"reached\": \"contacts의 대상 소속 확인 후 사업장 정보가 없는 _privacy_map 결과를 active와 view 조건으로 검사\",\n        \"result\": \"다른 사업장의 유효한 보기가 통과에 쓰이며, 연락처 조회와 성공 감사 기록으로 이어진다.\"\n      }\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"boundary\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:503\",\n      \"scenario\": \"호출자가 생성된 원문 훅을 기본 설정으로 연결하면 성공 응답의 원문이 QueryClient에 저장된다. 키에는 대상과 요청 본문만 들어가므로 같은 캐시에서 동일 키를 구독하면 서버가 현재 권한을 확인하기 전에 기존 원문이 다시 표시될 수 있다. HTTP no-store는 이 캐시에 적용되지 않는다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-3\",\n      \"safety_path\": {\n        \"input\": \"생성된 원문 훅의 합성 성공 응답과 동일 QueryClient의 동일 키 재구독\",\n        \"reached\": \"getWorklinkSystemUserContactsQueryKey 및 useWorklinkSystemUserContacts의 useQuery\",\n        \"result\": \"서버 재인가 결과가 도착하기 전에 기존 원문이 훅 결과에 나타날 수 있다.\"\n      }\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"should_fix\",\n      \"category\": \"boundary\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:382\",\n      \"scenario\": \"생성된 상세·원문 클라이언트가 일반 string인 식별자를 검증하거나 인코딩하지 않고 URL 경로에 넣는다. 서버의 RowId 검증은 요청이 해당 라우트에 도달한 뒤 실행되므로 클라이언트 쪽 요청 경로를 고정하지 못한다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-4\",\n      \"safety_path\": {\n        \"input\": \"숫자 ID 계약을 벗어나고 URL 구문에 의미를 갖는 호출자 입력\",\n        \"reached\": \"상세·원문 URL 생성기의 문자열 보간과 apiFetch\",\n        \"result\": \"입력이 단일 ID 경로 세그먼트로 제한되지 않아 의도한 라우트와 다른 URL이 구성될 수 있다.\"\n      }\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:423\",\n      \"scenario\": \"유효한 대상 ID로 원문 훅을 마운트하면 기본적으로 열람 POST가 시작된다. 재조회가 발생해 서버가 다시 성공 처리하면 한 번의 명시적 열람 의도에 감사 행이 여러 건 남을 수 있다.\",\n      \"reproduction\": \"합성 응답을 제공하는 클라이언트 단위 테스트에서 원문 훅을 열람 이벤트 없이 마운트한 뒤 재조회를 일으키고 POST 호출 횟수를 관찰한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:237\",\n      \"scenario\": \"현재 거부 사례는 일반 조회 범위 밖, 대상 소속 불일치, 취급 권한 부재를 확인한다. 일반 조회 범위와 대상 소속은 충족하면서 취급 보기만 다른 사업장에 있는 조합이 빠져 있어 F1을 검출할 수 없다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/frontend/src/domains/worklink/api/zod/system-user/system-user.zod.ts:93\",\n      \"scenario\": \"서버 시험이 성공 응답으로 단언하는 last_login_dt는 시간대 표기가 없는 2026-07-13T09:00:00이다. 생성된 Zod 스키마는 Z 또는 오프셋이 있는 날짜·시각을 요구하므로 그 성공 응답을 검증하는 소비자가 상세 전체를 거부한다. 서버 시험은 이 응답을 생성 스키마에 통과시키지 않는다.\",\n      \"reproduction\": \"서버 시험이 단언하는 상세 성공 응답을 WorklinkSystemUserDetailResponse.safeParse의 합성 입력으로 사용한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"RA-1\",\n      \"state\": \"defect\",\n      \"observation\": \"세 라우트의 공통 menu 선언과 서비스의 범위 결정을 추적했다. 목록과 상세에 범위 적용 위치가 있으며, 원문 경로에는 요청 사업장별 취급 보기 확인이 빠져 있다.\"\n    },\n    {\n      \"id\": \"RA-2\",\n      \"state\": \"none\",\n      \"observation\": \"기본 거부 분기를 추적했다. 익명은 _places에서 거부되며, 전사 판정이 없고 소속이 비어 있으면 빈 집합이 유지된다. 원문은 비활성 또는 보기 거짓이면 거부된다. 거부에 사용하는 권한의 사업장 결합 문제는 RA-1에 기록했다. 공용 메뉴 게이트의 내부 구현은 제공 diff 범위 밖이다.\"\n    },\n    {\n      \"id\": \"RA-3\",\n      \"state\": \"defect\",\n      \"observation\": \"기본 응답의 마스킹, 복호화 오류 응답, 감사 행의 식별자 기록, HTTP no-store, 프런트엔드 훅까지 추적했다. 원문 훅은 응답을 애플리케이션 캐시에 보관한다.\"\n    },\n    {\n      \"id\": \"RA-4\",\n      \"state\": \"defect\",\n      \"observation\": \"서버는 숫자 ID 검증과 SQLAlchemy 조건식을 사용하며 검색은 LIKE 와일드카드를 이스케이프한다. 셸 호출은 없고, 생성된 상세·원문 클라이언트의 URL 경로에는 검증 전 문자열이 직접 들어간다.\"\n    },\n    {\n      \"id\": \"RB-1\",\n      \"state\": \"none\",\n      \"observation\": \"목록·상세는 조회만 한다. 원문 성공의 유일한 제품 데이터 쓰기는 요청자·대상·사업장 식별자를 담는 감사 행이며, 커밋 뒤 응답한다.\"\n    },\n    {\n      \"id\": \"RB-2\",\n      \"state\": \"none\",\n      \"observation\": \"기간·해제 이력·조직·성공 로그인 이력은 읽기와 집계에 사용된다. 원문 열람 시 기존 행을 갱신하거나 삭제하는 경로는 보이지 않는다.\"\n    },\n    {\n      \"id\": \"RB-3\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"마이그레이션이나 DB 열 변경이 없다. 기존 전화번호를 읽는 경로의 복호화 실패는 마스킹 조회에서 대체값, 원문 조회에서 일반화된 409 응답으로 처리된다.\"\n    },\n    {\n      \"id\": \"RB-4\",\n      \"state\": \"none\",\n      \"observation\": \"통합시험은 API 호출이 끝난 뒤 별도 DB 세션에서 감사 행을 다시 조회하고 행 수, 접근자, 대상, 사업장, 생성 시각을 단언한다.\"\n    },\n    {\n      \"id\": \"RC-1\",\n      \"state\": \"none\",\n      \"observation\": \"신규 저장소 조회에 명시적 행 잠금이 없고 원문 경로는 감사 행 한 건을 추가한다. 변경에서 서로 역순으로 잠그는 쓰기 경로는 보이지 않는다.\"\n    },\n    {\n      \"id\": \"RC-2\",\n      \"state\": \"defect\",\n      \"observation\": \"원문 열람의 DB 부작용인 감사 기록은 커밋되지만, 클라이언트가 이를 자동 조회 수명주기에 묶어 마운트나 재조회가 새 감사 쓰기를 일으킬 수 있다.\"\n    },\n    {\n      \"id\": \"RC-3\",\n      \"state\": \"none\",\n      \"observation\": \"원문 조립과 복호화가 감사 쓰기보다 앞서고, 감사 기록과 커밋을 모두 기다린 후 원문을 반환한다. 제공 diff에서 커밋 실패를 성공으로 바꾸거나 별도 저장물만 남기는 경로는 보이지 않는다.\"\n    },\n    {\n      \"id\": \"RC-4\",\n      \"state\": \"defect\",\n      \"observation\": \"서버 시험은 기간·메뉴·범위 분기를 확인하지만 일반 조회 범위와 사업장별 취급 보기 권한이 엇갈리는 조합이 없다. 상세 성공 응답을 생성된 Zod 스키마로 검증하는 경로도 없다.\"\n    }\n  ]\n}\n```\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a2-fbe9-7941-b082-10f29d15fd6a",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 97914,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 59252
+    },
+    "usage_total_tokens": 59252,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "ae53eb83474ca1b4d7c01db5a9be5c15ce732d461adcaa01a1b9ff497642d9bb",
+    "verdict": "fail",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "8358b303fe5d398a6efffde9dbc30c5e",
+  "assessment": {
+    "stage": "post",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "boundary",
+        "confidence": "high",
+        "location": "workspace/backend/src/domains/worklink/services/system/user_admin.py:195",
+        "scenario": "대상 사업장이 요청자의 일반 조회 범위 안에 있고 대상 소속이 확인되면, 요청자에게 다른 사업장의 유효한 취급 보기만 있어도 원문 반환 경로가 열린다. _privacy_map은 요청자 ID와 날짜로 상태를 계산하며 요청 사업장에 대한 sensAt 확인이 없다. 전사 범위 세션에도 같은 문제가 적용된다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": "RA-1",
+        "safety_path": {
+          "input": "일반 조회 범위에 포함되지만 개인정보 보기 권한은 없는 사업장의 원문 열람 요청",
+          "reached": "contacts의 대상 소속 확인 후 사업장 정보가 없는 _privacy_map 결과를 active와 view 조건으로 검사",
+          "result": "다른 사업장의 유효한 보기가 통과에 쓰이며, 연락처 조회와 성공 감사 기록으로 이어진다."
+        },
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "boundary",
+        "confidence": "high",
+        "location": "workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:503",
+        "scenario": "호출자가 생성된 원문 훅을 기본 설정으로 연결하면 성공 응답의 원문이 QueryClient에 저장된다. 키에는 대상과 요청 본문만 들어가므로 같은 캐시에서 동일 키를 구독하면 서버가 현재 권한을 확인하기 전에 기존 원문이 다시 표시될 수 있다. HTTP no-store는 이 캐시에 적용되지 않는다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": "RA-3",
+        "safety_path": {
+          "input": "생성된 원문 훅의 합성 성공 응답과 동일 QueryClient의 동일 키 재구독",
+          "reached": "getWorklinkSystemUserContactsQueryKey 및 useWorklinkSystemUserContacts의 useQuery",
+          "result": "서버 재인가 결과가 도착하기 전에 기존 원문이 훅 결과에 나타날 수 있다."
+        },
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "boundary",
+        "confidence": "high",
+        "location": "workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:382",
+        "scenario": "생성된 상세·원문 클라이언트가 일반 string인 식별자를 검증하거나 인코딩하지 않고 URL 경로에 넣는다. 서버의 RowId 검증은 요청이 해당 라우트에 도달한 뒤 실행되므로 클라이언트 쪽 요청 경로를 고정하지 못한다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": "RA-4",
+        "safety_path": {
+          "input": "숫자 ID 계약을 벗어나고 URL 구문에 의미를 갖는 호출자 입력",
+          "reached": "상세·원문 URL 생성기의 문자열 보간과 apiFetch",
+          "result": "입력이 단일 ID 경로 세그먼트로 제한되지 않아 의도한 라우트와 다른 URL이 구성될 수 있다."
+        },
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/frontend/src/domains/worklink/api/system-user/system-user.ts:423",
+        "scenario": "유효한 대상 ID로 원문 훅을 마운트하면 기본적으로 열람 POST가 시작된다. 재조회가 발생해 서버가 다시 성공 처리하면 한 번의 명시적 열람 의도에 감사 행이 여러 건 남을 수 있다.",
+        "reproduction": "합성 응답을 제공하는 클라이언트 단위 테스트에서 원문 훅을 열람 이벤트 없이 마운트한 뒤 재조회를 일으키고 POST 호출 횟수를 관찰한다.",
+        "impact": "goal",
+        "criterion": "RC-2",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/backend/tests/integration/test_user_admin_api_db.py:237",
+        "scenario": "현재 거부 사례는 일반 조회 범위 밖, 대상 소속 불일치, 취급 권한 부재를 확인한다. 일반 조회 범위와 대상 소속은 충족하면서 취급 보기만 다른 사업장에 있는 조합이 빠져 있어 F1을 검출할 수 없다.",
+        "reproduction": null,
+        "impact": "goal",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F6",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/frontend/src/domains/worklink/api/zod/system-user/system-user.zod.ts:93",
+        "scenario": "서버 시험이 성공 응답으로 단언하는 last_login_dt는 시간대 표기가 없는 2026-07-13T09:00:00이다. 생성된 Zod 스키마는 Z 또는 오프셋이 있는 날짜·시각을 요구하므로 그 성공 응답을 검증하는 소비자가 상세 전체를 거부한다. 서버 시험은 이 응답을 생성 스키마에 통과시키지 않는다.",
+        "reproduction": "서버 시험이 단언하는 상세 성공 응답을 WorklinkSystemUserDetailResponse.safeParse의 합성 입력으로 사용한다.",
+        "impact": "goal",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "defect",
+          "observation": "세 라우트의 공통 menu 선언과 서비스의 범위 결정을 추적했다. 목록과 상세에 범위 적용 위치가 있으며, 원문 경로에는 요청 사업장별 취급 보기 확인이 빠져 있다."
+        },
+        {
+          "id": "RA-2",
+          "state": "none",
+          "observation": "기본 거부 분기를 추적했다. 익명은 _places에서 거부되며, 전사 판정이 없고 소속이 비어 있으면 빈 집합이 유지된다. 원문은 비활성 또는 보기 거짓이면 거부된다. 거부에 사용하는 권한의 사업장 결합 문제는 RA-1에 기록했다. 공용 메뉴 게이트의 내부 구현은 제공 diff 범위 밖이다."
+        },
+        {
+          "id": "RA-3",
+          "state": "defect",
+          "observation": "기본 응답의 마스킹, 복호화 오류 응답, 감사 행의 식별자 기록, HTTP no-store, 프런트엔드 훅까지 추적했다. 원문 훅은 응답을 애플리케이션 캐시에 보관한다."
+        },
+        {
+          "id": "RA-4",
+          "state": "defect",
+          "observation": "서버는 숫자 ID 검증과 SQLAlchemy 조건식을 사용하며 검색은 LIKE 와일드카드를 이스케이프한다. 셸 호출은 없고, 생성된 상세·원문 클라이언트의 URL 경로에는 검증 전 문자열이 직접 들어간다."
+        },
+        {
+          "id": "RB-1",
+          "state": "none",
+          "observation": "목록·상세는 조회만 한다. 원문 성공의 유일한 제품 데이터 쓰기는 요청자·대상·사업장 식별자를 담는 감사 행이며, 커밋 뒤 응답한다."
+        },
+        {
+          "id": "RB-2",
+          "state": "none",
+          "observation": "기간·해제 이력·조직·성공 로그인 이력은 읽기와 집계에 사용된다. 원문 열람 시 기존 행을 갱신하거나 삭제하는 경로는 보이지 않는다."
+        },
+        {
+          "id": "RB-3",
+          "state": "not_applicable",
+          "observation": "마이그레이션이나 DB 열 변경이 없다. 기존 전화번호를 읽는 경로의 복호화 실패는 마스킹 조회에서 대체값, 원문 조회에서 일반화된 409 응답으로 처리된다."
+        },
+        {
+          "id": "RB-4",
+          "state": "none",
+          "observation": "통합시험은 API 호출이 끝난 뒤 별도 DB 세션에서 감사 행을 다시 조회하고 행 수, 접근자, 대상, 사업장, 생성 시각을 단언한다."
+        },
+        {
+          "id": "RC-1",
+          "state": "none",
+          "observation": "신규 저장소 조회에 명시적 행 잠금이 없고 원문 경로는 감사 행 한 건을 추가한다. 변경에서 서로 역순으로 잠그는 쓰기 경로는 보이지 않는다."
+        },
+        {
+          "id": "RC-2",
+          "state": "defect",
+          "observation": "원문 열람의 DB 부작용인 감사 기록은 커밋되지만, 클라이언트가 이를 자동 조회 수명주기에 묶어 마운트나 재조회가 새 감사 쓰기를 일으킬 수 있다."
+        },
+        {
+          "id": "RC-3",
+          "state": "none",
+          "observation": "원문 조립과 복호화가 감사 쓰기보다 앞서고, 감사 기록과 커밋을 모두 기다린 후 원문을 반환한다. 제공 diff에서 커밋 실패를 성공으로 바꾸거나 별도 저장물만 남기는 경로는 보이지 않는다."
+        },
+        {
+          "id": "RC-4",
+          "state": "defect",
+          "observation": "서버 시험은 기간·메뉴·범위 분기를 확인하지만 일반 조회 범위와 사업장별 취급 보기 권한이 엇갈리는 조합이 없다. 상세 성공 응답을 생성된 Zod 스키마로 검증하는 경로도 없다."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T01-1-repo.U3iw/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 1,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "author": "anthropic",
+  "attempts": [
+    {
+      "hash": "6d274eb19e001e46224d76fb12fc6f19139b34c533de1a6b3cee1f83ef56a82d",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 5,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "2c5e868da524291cfe7216781adc2691c31f4dce2b51223f59253c65f47c2c95",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R1.json에서 재검토"
+    },
+    {
+      "hash": "a54f78edb8e0bda1c63202a0c401f3b3a7816196e7d92e81b1d33ebb231b2fc4",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R2.json에서 재검토"
+    },
+    {
+      "hash": "308b08e67ad452c6726e54e3ae83de160708a2d61a3d07dc705100b11ec40c7d",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R4.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R3.json에서 재검토"
+    },
+    {
+      "hash": "18a6c0efdd338471b0ccff8b8f44acdabc8694d969014b74a4d377ab3a87f152",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 5,
+      "evidence": "review-records/R5.json",
+      "continuity": "changed",
+      "reason": "기록된 사용자 결정 뒤 새 전체 검토"
+    }
+  ],
+  "waiver": {
+    "by": "user",
+    "date": "2026-11-28",
+    "hash": "444106e3a6b191256a00864eaec48ebddf11d63eed43e976d5f9bee97055802f",
+    "evidence": "evidence/owner-waiver-T02.md",
+    "reason": "R5 owner 회차 전체 재검토 fail(blocking 5) — owner A-3 결정: F1·F2·F3·F5 반영(삭제·교체 위주), F4는 TASK-CLOSE 한계, 고친 TASK로 구현. 구현 후 tester·reviewer 검증은 그대로 — owner A-1(2026-11-28 재생 관문 기록·보고) 뒤 T-8·S-7 교체본으로 해시 이동"
+  }
+}

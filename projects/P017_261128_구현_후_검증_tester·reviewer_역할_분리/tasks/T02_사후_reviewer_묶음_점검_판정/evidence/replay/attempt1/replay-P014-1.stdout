@@ -1,0 +1,189 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**반출 보류.** 상위 검토의 원문이 수신 권한 확인 전에 제공자에게 전달될 수 있습니다. 전문가 호출이 끝난 뒤 영수증 연결이 끊기면, 같은 기회를 재개할 때 기존 호출을 복구하거나 중복 호출을 막는 절차도 필요합니다.\n\n검토 기록에는 메시지로 제공된 상위 목적과 TASK.md, `evidence/input.patch`의 5개 파일 변경 전체, 설치된 `pace-project-dev/references/decision-rights.md`를 사용했습니다. 부트·호스트 노출은 작업 디렉터리, 읽기 전용 권한, 스킬 목록과 경로에 한정됐습니다. 저장소 상태 조회에서 원장과 판정 파일의 이름이 노출됐습니다. 해당 내용, 작성자 마감·자체 판정·지적 대응 자료, 별도 메모리는 열람하지 않았습니다. 파일 변경과 실제 제공자 호출은 수행하지 않았습니다.\n\nA-1 기준에서 원문 전달 권한을 확인하고 같은 기회의 호출을 복구하는 조치는 기존 목적과 기준을 지키는 수정입니다. 백로그 범위 확대는 실제로 합의 범위를 바꿀 때 A-1에 해당합니다. 이번 diff에 추가된 계정 간 공유 문단은 그 자체로 공유를 승인하지 않지만, 문제 해결자 호출과의 연결 근거가 없습니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"boundary\",\n      \"location\": \"skills/pace-project-dev/references/coordinator.md:32\",\n      \"scenario\": \"상위 검토의 owner 원문, 실패 로그 또는 변경 줄에 지정 제공자의 열람 범위를 벗어난 비밀이 섞여 있다. 절차는 그 원문들을 호출 입력에 넣도록 한다. 다음 줄의 비밀 미기록 규칙은 호출 후 근거 작성에 적용되므로 전송을 막지 못한다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-3\",\n      \"safety_path\": {\n        \"input\": \"외부 제공자에게 전달할 권한이 없는 비밀이 섞인 owner 원문을 포함한 upper_review 인계\",\n        \"reached\": \"coordinator.md:32의 지정 제공자 호출 입력 작성. reviewer.md:54의 기회별 범위 제한은 자료의 관련성을 제한하지만 수신 권한이나 비밀 제거를 판정하지 않는다.\",\n        \"result\": \"절차대로 원문을 넣으면 호출 영수증에서 비밀을 제외하더라도 제공자는 이미 입력에서 원문을 받는다.\"\n      }\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"flow\",\n      \"location\": \"skills/pace-project-dev/references/reviewer.md:65\",\n      \"scenario\": \"실제 호출이 끝나 원장에 시도 행이 생겼으나 기회 영수증과 ref를 연결하기 전에 PM 세션이 중단된다. 재개 절차에는 호출 전에 같은 opportunity의 기존 시도를 대조하거나, 끊긴 연결을 복구할 기준이 없다. 같은 신호로 절차를 다시 따르면 두 번째 호출이 발생할 수 있고, 결합 보류로 끝내면 원래 호출은 독립 재검증 경로에서 추적할 수 없다. 상위 검토에서도 같은 틈이 호출과 call_ref 기록 사이에 생긴다.\",\n      \"reproduction\": \"호출 원장에 성공한 시도 행 하나와 영수증이 없는 상태를 가정한다. 같은 대상·단계·근거 회차로 PM이 재개할 때 호출 표와 증거 연결 절을 순서대로 따라 기존 시도를 복구하는 분기가 있는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"skills/pace-project-dev/evals/scenarios.md:87\",\n      \"scenario\": \"W03은 두 신호가 한 번에 들어오는 경우, W05는 서로 다른 기회가 순서대로 열리는 경우를 다룬다. 호출 완료와 증거 연결 사이에 중단된 뒤 같은 신호가 다시 처리되는 입력이 없어, 재개 시 매번 재호출하는 절차도 두 사례를 통과할 수 있다.\",\n      \"reproduction\": \"최초 처리에서는 신호를 합쳐 한 번 호출하고, 재개 시에는 기존 원장을 확인하지 않고 다시 호출하는 가상의 응답을 W03·W05의 상황과 금지 행동에 대입한다. 어느 상황도 재개 분기를 밟지 않는다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"note\",\n      \"category\": \"other\",\n      \"location\": \"skills/pace-project-dev/references/coordinator.md:46\",\n      \"scenario\": \"문제 해결자 호출과 독립 재검증을 연결하는 변경에 일반 백로그 확대, 다른 계정 공유, 행 번호·상태 정정 절차를 함께 추가했다. 이 문단은 해당 호출이나 반환을 조건으로 하지 않아 호출 변경과 무관한 경우에도 적용된다.\",\n      \"reproduction\": \"전문가 호출이 없는 백로그의 계정 간 공유 제안을 문단에 대입하면 새 지침이 그대로 적용된다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"minor\",\n      \"criterion\": null,\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"RA-1\",\n      \"state\": \"none\",\n      \"observation\": \"SKILL 안내에서 reviewer 호출표, coordinator 장애 인계, 필수 역할 표를 따라 워크트리 PM·허브·문서 PM의 호출 책임과 작업자의 적용 책임을 대조했다. 호출 자료의 수신 권한 문제는 RA-3에 기록했다.\"\n    },\n    {\n      \"id\": \"RA-2\",\n      \"state\": \"none\",\n      \"observation\": \"무신호 첫 실패는 기존 절차로 가고, 역할·실행 미확인은 B로 보낸다. 시도 행이 미확인이면 증거 결합을 보류하며, 합의 변경과 필수 검증 완화는 owner 결정을 기다린다.\"\n    },\n    {\n      \"id\": \"RA-3\",\n      \"state\": \"defect\",\n      \"observation\": \"상위 인계 원문에서 지정 제공자 입력을 거쳐 호출·검토 기록으로 이어지는 경로에서 전송 전 보호가 빠져 있다. F1.\"\n    },\n    {\n      \"id\": \"RA-4\",\n      \"state\": \"none\",\n      \"observation\": \"review-note의 근거 파일, 프로젝트와 호출 원장의 참조 경로, 로컬 R*.json 조회 지시를 확인했다. 외부 응답의 값을 그대로 셸·경로·쿼리로 넘기는 동작은 diff에서 확인되지 않았다.\"\n    },\n    {\n      \"id\": \"RB-1\",\n      \"state\": \"none\",\n      \"observation\": \"정상 완료 경로에서 조기 호출의 프로젝트·호출 기록, 백로그의 단계 근거, 상위 검토의 call_ref, 결정·독립 재검증의 사후 기록을 확인했다. 그 기록 사이의 중단은 RC-3에 기록했다.\"\n    },\n    {\n      \"id\": \"RB-2\",\n      \"state\": \"none\",\n      \"observation\": \"호출 행의 기존 ID·시각을 유지하고 ref를 보강하는 지시, A-1 대기 중 기존 판정과 원장 근거의 보존, 승인된 계약 변경 뒤 해당 단계 예산 재개를 대조했다.\"\n    },\n    {\n      \"id\": \"RB-3\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"문서 변경 5개이며 원장 스키마, 기존 행 변환, 마이그레이션의 변경은 없다.\"\n    },\n    {\n      \"id\": \"RB-4\",\n      \"state\": \"none\",\n      \"observation\": \"W05의 실제 시도 행 대조, W09의 호출과 근본 검토 근거 결합, W12의 기존 R*.json 재조회 지시를 확인했다. 이 diff는 저장 동작을 수행하는 시험 코드를 추가하지 않는다.\"\n    },\n    {\n      \"id\": \"RC-1\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"잠금 획득·해제 순서를 바꾸는 코드나 운영 명령이 추가되지 않았다.\"\n    },\n    {\n      \"id\": \"RC-2\",\n      \"state\": \"none\",\n      \"observation\": \"전문가 호출 뒤 PM 영향 분류와 결정, 작업자의 적용, 독립 확인 순서를 대조했다. 외부 호출의 원문 노출은 RA-3, 호출과 원장 연결 사이의 실패는 RC-3에 기록했다.\"\n    },\n    {\n      \"id\": \"RC-3\",\n      \"state\": \"defect\",\n      \"observation\": \"호출 원장 행은 남았지만 영수증·ref 연결이 끝나지 않은 상태에서 같은 기회를 재개하는 절차가 빠져 있다. F2.\"\n    },\n    {\n      \"id\": \"RC-4\",\n      \"state\": \"defect\",\n      \"observation\": \"W01~W12에서 신호 중첩, 서로 다른 기회, 인계, 결정 대기를 대조했다. 실제 호출 완료 후 연결 중단과 같은 기회 재처리의 조합은 관측하지 않는다. F3.\"\n    }\n  ]\n}\n```\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a0-03e7-78d3-9b9f-e88d803b0a16",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 81541,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 42867
+    },
+    "usage_total_tokens": 42867,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "8a6a5d833a482c95eb2faf177f59846c52daeaf739eb19eba0104b40c4c6529b",
+    "verdict": "fail",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "3aa2fc3780d0a67a321115719b97b25e",
+  "assessment": {
+    "stage": "post",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "boundary",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/references/coordinator.md:32",
+        "scenario": "상위 검토의 owner 원문, 실패 로그 또는 변경 줄에 지정 제공자의 열람 범위를 벗어난 비밀이 섞여 있다. 절차는 그 원문들을 호출 입력에 넣도록 한다. 다음 줄의 비밀 미기록 규칙은 호출 후 근거 작성에 적용되므로 전송을 막지 못한다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": "RA-3",
+        "safety_path": {
+          "input": "외부 제공자에게 전달할 권한이 없는 비밀이 섞인 owner 원문을 포함한 upper_review 인계",
+          "reached": "coordinator.md:32의 지정 제공자 호출 입력 작성. reviewer.md:54의 기회별 범위 제한은 자료의 관련성을 제한하지만 수신 권한이나 비밀 제거를 판정하지 않는다.",
+          "result": "절차대로 원문을 넣으면 호출 영수증에서 비밀을 제외하더라도 제공자는 이미 입력에서 원문을 받는다."
+        },
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "flow",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/references/reviewer.md:65",
+        "scenario": "실제 호출이 끝나 원장에 시도 행이 생겼으나 기회 영수증과 ref를 연결하기 전에 PM 세션이 중단된다. 재개 절차에는 호출 전에 같은 opportunity의 기존 시도를 대조하거나, 끊긴 연결을 복구할 기준이 없다. 같은 신호로 절차를 다시 따르면 두 번째 호출이 발생할 수 있고, 결합 보류로 끝내면 원래 호출은 독립 재검증 경로에서 추적할 수 없다. 상위 검토에서도 같은 틈이 호출과 call_ref 기록 사이에 생긴다.",
+        "reproduction": "호출 원장에 성공한 시도 행 하나와 영수증이 없는 상태를 가정한다. 같은 대상·단계·근거 회차로 PM이 재개할 때 호출 표와 증거 연결 절을 순서대로 따라 기존 시도를 복구하는 분기가 있는지 확인한다.",
+        "impact": "goal",
+        "criterion": "RC-3",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/evals/scenarios.md:87",
+        "scenario": "W03은 두 신호가 한 번에 들어오는 경우, W05는 서로 다른 기회가 순서대로 열리는 경우를 다룬다. 호출 완료와 증거 연결 사이에 중단된 뒤 같은 신호가 다시 처리되는 입력이 없어, 재개 시 매번 재호출하는 절차도 두 사례를 통과할 수 있다.",
+        "reproduction": "최초 처리에서는 신호를 합쳐 한 번 호출하고, 재개 시에는 기존 원장을 확인하지 않고 다시 호출하는 가상의 응답을 W03·W05의 상황과 금지 행동에 대입한다. 어느 상황도 재개 분기를 밟지 않는다.",
+        "impact": "goal",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "note",
+        "category": "other",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/references/coordinator.md:46",
+        "scenario": "문제 해결자 호출과 독립 재검증을 연결하는 변경에 일반 백로그 확대, 다른 계정 공유, 행 번호·상태 정정 절차를 함께 추가했다. 이 문단은 해당 호출이나 반환을 조건으로 하지 않아 호출 변경과 무관한 경우에도 적용된다.",
+        "reproduction": "전문가 호출이 없는 백로그의 계정 간 공유 제안을 문단에 대입하면 새 지침이 그대로 적용된다.",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "none",
+          "observation": "SKILL 안내에서 reviewer 호출표, coordinator 장애 인계, 필수 역할 표를 따라 워크트리 PM·허브·문서 PM의 호출 책임과 작업자의 적용 책임을 대조했다. 호출 자료의 수신 권한 문제는 RA-3에 기록했다."
+        },
+        {
+          "id": "RA-2",
+          "state": "none",
+          "observation": "무신호 첫 실패는 기존 절차로 가고, 역할·실행 미확인은 B로 보낸다. 시도 행이 미확인이면 증거 결합을 보류하며, 합의 변경과 필수 검증 완화는 owner 결정을 기다린다."
+        },
+        {
+          "id": "RA-3",
+          "state": "defect",
+          "observation": "상위 인계 원문에서 지정 제공자 입력을 거쳐 호출·검토 기록으로 이어지는 경로에서 전송 전 보호가 빠져 있다. F1."
+        },
+        {
+          "id": "RA-4",
+          "state": "none",
+          "observation": "review-note의 근거 파일, 프로젝트와 호출 원장의 참조 경로, 로컬 R*.json 조회 지시를 확인했다. 외부 응답의 값을 그대로 셸·경로·쿼리로 넘기는 동작은 diff에서 확인되지 않았다."
+        },
+        {
+          "id": "RB-1",
+          "state": "none",
+          "observation": "정상 완료 경로에서 조기 호출의 프로젝트·호출 기록, 백로그의 단계 근거, 상위 검토의 call_ref, 결정·독립 재검증의 사후 기록을 확인했다. 그 기록 사이의 중단은 RC-3에 기록했다."
+        },
+        {
+          "id": "RB-2",
+          "state": "none",
+          "observation": "호출 행의 기존 ID·시각을 유지하고 ref를 보강하는 지시, A-1 대기 중 기존 판정과 원장 근거의 보존, 승인된 계약 변경 뒤 해당 단계 예산 재개를 대조했다."
+        },
+        {
+          "id": "RB-3",
+          "state": "not_applicable",
+          "observation": "문서 변경 5개이며 원장 스키마, 기존 행 변환, 마이그레이션의 변경은 없다."
+        },
+        {
+          "id": "RB-4",
+          "state": "none",
+          "observation": "W05의 실제 시도 행 대조, W09의 호출과 근본 검토 근거 결합, W12의 기존 R*.json 재조회 지시를 확인했다. 이 diff는 저장 동작을 수행하는 시험 코드를 추가하지 않는다."
+        },
+        {
+          "id": "RC-1",
+          "state": "not_applicable",
+          "observation": "잠금 획득·해제 순서를 바꾸는 코드나 운영 명령이 추가되지 않았다."
+        },
+        {
+          "id": "RC-2",
+          "state": "none",
+          "observation": "전문가 호출 뒤 PM 영향 분류와 결정, 작업자의 적용, 독립 확인 순서를 대조했다. 외부 호출의 원문 노출은 RA-3, 호출과 원장 연결 사이의 실패는 RC-3에 기록했다."
+        },
+        {
+          "id": "RC-3",
+          "state": "defect",
+          "observation": "호출 원장 행은 남았지만 영수증·ref 연결이 끝나지 않은 상태에서 같은 기회를 재개하는 절차가 빠져 있다. F2."
+        },
+        {
+          "id": "RC-4",
+          "state": "defect",
+          "observation": "W01~W12에서 신호 중첩, 서로 다른 기회, 인계, 결정 대기를 대조했다. 실제 호출 완료 후 연결 중단과 같은 기회 재처리의 조합은 관측하지 않는다. F3."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-P014-1-repo.AJUv/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 1,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

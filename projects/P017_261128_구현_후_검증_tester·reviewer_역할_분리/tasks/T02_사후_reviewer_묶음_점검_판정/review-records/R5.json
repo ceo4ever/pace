@@ -1,0 +1,199 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**1단계 독립 판정 · 계획 목표 미달.** 실행 증거 재판정을 tester에 맡기고, reviewer가 TASK와 diff로 경계·상태·흐름 결함을 확인하는 방향은 상위 목적에 맞습니다. 실제 Codex 재생은 결함 검출과 무해 변경의 오탐을 함께 측정하도록 설계돼 있습니다. 다만 두 명령의 수정 확인·owner 경로가 현행 라우팅과 맞지 않고, 예약 전 diff 검사와 조기 신호의 일부 결함을 현재 시험표로는 검출할 수 없습니다. TASK 첨부의 파일 경계도 증명 범위에 빠져 있습니다. 구현 결과와 실제 호출 절감은 미확인입니다.\n\n**올릴 단계는 T02 TASK 설계·시험입니다.** 아래 보완은 합의된 기준을 입증하는 일이므로 A-1 합의 변경에 해당하지 않습니다. `구현 후 reviewer: 필요`는 예약 전 거부 분기가 바뀐다는 TASK의 사실과 맞습니다. T-6의 기존 동작 비교는 공유 판정 경로의 회귀 확인으로 적절합니다. 저장소의 현행 대조 기준은 PROJECT의 P-2·P-3이며, 결정 기록은 사후 pass 뒤 새 주기·새 예산을 여는 규칙의 철회를 명시합니다. 요청문의 P-1·T-10 참조에 대응하는 T02 범위는 P-2·P-3과 TASK의 T-9·접근에서 확인했습니다. 새 주기 규칙을 다시 도입하려면 A-1 결정이 필요합니다. [PROJECT.md](/Volumes/Data/AiStudio/workspace/pace.wt/P017/projects/P017_261128_구현_후_검증_tester·reviewer_역할_분리/PROJECT.md:44)\n\n**노출 범위.** 사용자 요청과 첨부 TASK, 작업환경·AGENTS 지침, 디스크의 TASK·PROJECT·BACKLOG·BR02, `docs/README.md`와 `docs/AGENT-CALL.md`, `pace-project-dev` 스킬과 `decision-rights.md`, 관련 CLI·판정·신호·파일 읽기 코드와 `test/agent-review-hand.test.ts`의 해당 절을 읽었습니다. `main`의 `verify.ts`도 문구 대조에 사용했습니다. 계약 문서에 인용된 이전 검토·결정의 요약은 노출됐고, 링크된 이전 지적 원문·대응 문서·작성자 마감·자체 판정은 열지 않았습니다. 별도 부트 출력이나 메모리 본문은 이 호출에서 확인되지 않았습니다. 검토는 Codex의 읽기 전용 소스 대조였으며 작성자 제공자와 교차 여부는 미확인입니다. 파일 변경, 테스트 실행, 검토 주체 교체, 2단계 호스트 검토는 없었습니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:53\",\n      \"scenario\": \"판정기가 이유가 있는 not_applicable 또는 같은 항목의 유효한 비차단 지적을 단 defect를 무조건 unknown으로 처리해도, 정상 입력을 none으로만 구성한 S-2와 blocking defect를 쓰는 S-3이 통과할 수 있다.\",\n      \"reproduction\": \"유효한 none·not_applicable·비차단 defect를 섞은 12항목 원문에서 pass를 단언한다. 짝이 다른 항목의 지적만 남긴 원문에서는 해당 defect가 미확인이어서 unknown인지 단언한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"scope\",\n      \"location\": \"TASK.md:55\",\n      \"scenario\": \"S-4는 review-hand 고정본에서 진단 유무별 수정 확인 프롬프트를 관측하도록 적었으나 현행 review-hand는 수정 확인을 verify로 넘긴다. S-5의 owner 같은 해시 진행도 동일한 경계에 걸린다. 이대로는 관측할 고정본이 없거나 시험을 맞추기 위해 기존 배정 흐름을 바꾸게 된다.\",\n      \"reproduction\": \"src/agent/review-hand.ts:175-178 및 :121-127과 test/agent-review-hand.test.ts:423-429를 대조한다. review-hand에서는 고정본 없이 verify로 안내하는지, verify에서는 진단 유무별 실제 프롬프트와 owner 같은 해시 진행을 각각 확인하도록 시험표를 정리한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"scope\",\n      \"location\": \"TASK.md:67\",\n      \"scenario\": \"새 TASK 첨부를 경로 검증 없는 파일 읽기로 구현하면 루트 TASK.md가 링크인 경우 검토 범위 밖 본문이 프롬프트에 들어갈 수 있다. 정상 TASK를 쓰는 S-4는 이 구현에서도 통과한다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": null,\n      \"safety_path\": {\n        \"input\": \"정상 형식의 사후 diff와, 태스크 범위 밖의 무해한 표식 파일을 가리키는 루트 TASK.md 링크\",\n        \"reached\": \"TASK.md:67의 새 프롬프트 조립 경로. src/project/pre-review.ts:119-128의 기존 링크 거부를 첨부 읽기에 적용하는지가 분기점이다.\",\n        \"result\": \"경로 검사 없는 읽기는 범위 밖 표식을 실행기 입력이나 review-hand 고정본에 넣는다. 두 진입점에서 범위 밖 본문을 읽거나 전달하기 전에 거부하는지 모의 입력으로 검증할 수 있다.\"\n      }\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:56\",\n      \"scenario\": \"헝크 머리만 검사하는 구현은 문서 앞에 비공백 설명이 붙은 패치를 받아들인다. 첫 줄만 맞고 헝크가 없는 입력과 헝크가 없는 일반 문서는 여전히 거부하므로 현재 S-5가 통과할 수 있다.\",\n      \"reproduction\": \"유효한 패치 앞에 비공백 설명을 붙인 입력과 공백 줄만 붙인 입력을 각각 verify·review-hand에 준다. 앞 입력은 실행기·호출 행·고정본·예산 변화 없이 거부하고, 뒤 입력은 진행하는지 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-5\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:58\",\n      \"scenario\": \"같은 위치만 지정한 두 회차는 recurring_area를 확인할 수 있어도 superficial_fix에 필요한 같은 대상·같은 유효 등급·해당 파일의 패치 변경을 보장하지 못한다. 반대로 위치 반복만으로 superficial_fix까지 항상 내는 구현도 현재 기대값으로는 배제할 수 없다.\",\n      \"reproduction\": \"src/agent/review-signals.ts:75-93에 맞춰 같은 패치 대상에서 지적 파일의 변경과 유효 등급 일치가 있는 두 회차에 두 신호를 각각 단언한다. 유효 등급이나 지적 파일의 패치 변경 조건만 제거한 대조에서는 recurring_area만 남는지 확인한다. 두 recurrence 값은 판정 원문에서 각각 보존되는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-7\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"T-1\",\n      \"state\": \"present\",\n      \"observation\": \"TASK 38·52·64-65행과 S-4에서 세 묶음, 고정 ID 12개, 필수 T-n 제외, 필요·생략 두 입력의 묶음 동일성을 대조한다.\"\n    },\n    {\n      \"id\": \"T-2\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK 39행에 규칙이 있고 S-2가 누락과 빈 근거를 다룬다. 유효한 not_applicable과 비차단 defect가 포함된 원문의 pass를 잡아내는 관측이 지정되지 않았다.\"\n    },\n    {\n      \"id\": \"T-3\",\n      \"state\": \"present\",\n      \"observation\": \"S-3이 교착과 소급 변경을 따로 넣어 각각 유효 blocking과 fail을 관측한다. 기존 분류와 기준 재판정·계획 지적은 outside_question 및 note를 단언한다.\"\n    },\n    {\n      \"id\": \"T-4\",\n      \"state\": \"unverified\",\n      \"observation\": \"S-4가 루트 TASK·diff 포함과 일곱 문장의 개별 부재를 검사한다. 수정 확인의 review-hand 고정본은 현행 흐름에서 생성되지 않으며 새 TASK 읽기의 파일 경계가 시험에 없다.\"\n    },\n    {\n      \"id\": \"T-5\",\n      \"state\": \"unverified\",\n      \"observation\": \"S-5가 거부 부작용과 정상 진행을 관측한다. 유효 헝크가 있으나 첫 비공백 줄이 diff 머리가 아닌 입력이 빠져 있고 owner의 명령별 기대가 구분되지 않았다.\"\n    },\n    {\n      \"id\": \"T-6\",\n      \"state\": \"present\",\n      \"observation\": \"S-6이 세 비사후 프롬프트 바이트, admission 파일 해시, 옛 기록의 판정·통계, legacyStructureOnly 관련 두 기록의 회차·호출 수를 변경 전 기대값에 대조한다.\"\n    },\n    {\n      \"id\": \"T-7\",\n      \"state\": \"unverified\",\n      \"observation\": \"S-7에 위치 반복과 recurrence 보존이 있다. superficial_fix의 발동 조건을 갖춘 입력과 신호별 기대가 지정되지 않았다.\"\n    },\n    {\n      \"id\": \"T-8\",\n      \"state\": \"present\",\n      \"observation\": \"TASK 45·59·68행과 BR02 39-62행이 분모 12회의 재생과 별도 무해 대조 2회, 세 묶음의 필수 유효 blocking·fail, tester의 원문 판정을 지정한다. 실제 재생은 구현 후 관문이다.\"\n    },\n    {\n      \"id\": \"T-9\",\n      \"state\": \"present\",\n      \"observation\": \"TASK 46·60행이 구현 후보의 고정 단언 갱신과 변경 경로 대조를 tester에게 맡긴다. 갱신 기록 위치와 call-hook.ts·하네스 등 제외 경로도 명시돼 있다.\"\n    }\n  ],\n  \"permission\": {\n    \"mode\": \"implementation\",\n    \"paths\": [],\n    \"protected\": []\n  }\n}\n```\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 124362,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 69364
+    },
+    "usage_total_tokens": 69364,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "18a6c0efdd338471b0ccff8b8f44acdabc8694d969014b74a4d377ab3a87f152",
+    "kind": "task",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# T02 사후 reviewer 묶음 점검 판정\n\n- 프로젝트: [P017](../../PROJECT.md) · 백로그: [BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음](../../../../backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n\n## 목적\n\n사후 reviewer의 필수 판정 항목을 TASK 기준 `T-n`에서 경계(A)·상태(B)·흐름(C) 세 묶음 12항목으로 바꾼다. 실행 증거 부재로 생기는 unknown과 그로 인한 호출 소진을 없애고, 묶음 안 결함(교착·소급 변경·감사 누락·빈 시험)이 질문 안 지적으로 판정에 닿게 한다. 계약 정본은 [BR02](../../../../backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR02_사후_reviewer_묶음_점검_판정.md) 범위·완료 기준이며 여기서 다시 쓰지 않는다(P-1).\n\n## 재료\n\n- 질문·판정: `src/agent/structured-review.ts`(`questions.post`, `assessFinding`·`assessCriteria`·`assessStructuredReview`), 필수 항목 `src/agent/review-criteria.ts`(`reviewCriteria` — post는 루트 TASK.md의 기준 표를 읽는다).\n- 프롬프트: `src/agent/verify.ts` `buildVerifyPrompt`. main 기준 1단계 지시 `verify.ts:70`·`:76`·`:81`, 범위를 좁히는 문장 `verify.ts:61`·`:62`·`structured-review.ts:111`·`verify-cli.ts:368`(진단 없는 수정 확인의 \"지정한 지적과 적용한 수정의 영향만 판정한다. 수정 영향 밖의 다른 기존 지적은 note로 남긴다.\").\n- 예약·거부: `src/agent/verify-cli.ts`(`reserveReviewCall` 앞의 사전 거부 자리, 같은 해시 fail 재요청 거부는 지금 예약 뒤 `loadRereview`), `src/agent/review-hand.ts`(예약 전에 `loadRereview`).\n- 옛 기록을 다시 판정하는 호출자: `review-followup.ts`·`verify-cli.ts`·`review-hand.ts`·`review-pre.ts`·`src/project/review-metrics.ts`·`src/project/pre-review.ts`·`src/agent/review-signals.ts`(조기 신호는 `findings`의 `location`·`effective`를 읽는다).\n- 재생 입력 7개: 2026-11-28 BR02 규칙(바이너리 diff 절만 뺌)으로 다시 계산해 패치·TASK sha256 앞 16자리가 BR02 표와 모두 같음을 확인했다(경계(A) 합성 `88340aa38c20c93c` 포함). 모든 패치의 첫 줄이 `diff --git `이다.\n\n## 증명 범위\n\n- 판정 주체: 자동 테스트(`node --test`) + 설치 전 관문은 tester가 실제 `pace agent verify`(Codex) 재생 원문으로 판정\n- 구현 후 reviewer: 필요 — 흐름(C) 예약 전 거부 분기가 바뀐다\n- 포함: 사후 단계(태스크 `evidence/…` 등 루트 TASK.md가 아닌 대상)의 필수 항목·답 형식·판정 계산, 사후 프롬프트(입력 TASK+diff, 1단계·범위 축소 문장 제거), 사후 대상 diff 판정과 예약 전 거부 두 가지, 조기 신호 입력 유지, 문구 고정 시험 갱신\n- 범위 밖: 백로그·사전·scope 없는 일반 검토의 프롬프트와 판정, `review-admission.ts`, 예산 값·공동 시도·escalation, 이미 커밋된 사후 기록의 판정·통계 — 기존 동작 — 기존 회귀 시험(`npm run check`)과 아래 T-6의 고정 비교. 배정 절차·스킬·docs(T03). \"tester 통과 diff에만 reviewer\"는 절차라 도구가 확인하지 않는다(T03). diff 판정은 형식만 본다 — 헝크 없는 diff(이름 바꾸기·모드만)와 내용의 진위는 판정하지 않는다. 재생은 한 제공자·표본 7개라 일반화 한계를 TASK-CLOSE에 적는다\n\n<!--\n경계(A): 새 진입점 없음, 인가 판정 없음, 비밀 없음, 외부 전송·셸·삭제 없음(재생은 기존 `pace agent verify`).\n상태(B): 아니오. 원장 행 형식·판독은 그대로다.\n흐름(C): 예. 예약 전 거부 분기가 바뀐다.\n-->\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | 사후 프롬프트의 하위 확인이 묶음 경계·상태·흐름이고 필수 항목이 12개 점검 항목 ID(`RA-1~4`·`RB-1~4`·`RC-1~4`, 결정 권한·`B-n`·`C-n`과 겹치지 않음)다. `T-n`이 없고, TASK 줄 값이 `생략`이어도 같다 |\n| T-2 | 12항목이 모두 `defect`(그 항목 ID를 `criterion`으로 단 지적이 있음)·`none`(따라가 본 경로)·`not_applicable`(이유) 중 하나로 답하고 유효 blocking이 없으면 pass다. 항목 누락·경로 없는 `none`·이유 없는 `not_applicable`·지적 없는 `defect`는 unknown이다. 실행 증거 요구로는 unknown이 되지 않는다 |\n| T-3 | 인수 사례: P045/T06 R1의 교착(F2)을 흐름 항목, 소급 변경(F1)을 상태 항목의 blocking으로 낸 원문은 fail이다. 원래대로(note, `implementation`·`design`) 낸 원문과 기준 재판정·계획 타당성 지적은 질문 밖 note다 |\n| T-4 | 사후 프롬프트에 루트 TASK.md와 diff가 있고, main의 1단계 지시 3문장(`verify.ts:70`·`:76`·`:81`)과 범위 축소 4문장(`verify.ts:61`·`:62`·`structured-review.ts:111`·`verify-cli.ts:368`의 note 문장)이 첫 검토·재검토·수정 확인과 `verify`·`review-hand` 모두에서 없다 |\n| T-5 | 첫 비공백 줄이 `diff --git `이고 헝크 머리(`@@ -n[,n] +n[,n] @@`)가 하나 이상인 대상만 사후 검토한다. 비-diff 대상(tester 경로 안내와 함께)과 사후 같은 대상·같은 해시 fail 재요청은 `verify`·`review-hand` 모두 예약 전에 거부한다(실행기·call 행·고정본·예산 불변). owner 회차의 같은 해시 재요청 허용은 그대로다 |\n| T-6 | 단계 경계: 백로그·사전·scope 없는 검토의 프롬프트가 변경 전과 같고 `review-admission.ts`가 바뀌지 않는다. 옛 사후 기록(T-n 필수 기준·기존 범주)의 다시 판정한 결과와 `legacyStructureOnly`·`pace project stats` 결과가 변경 전과 같다 |\n| T-7 | 묶음 지적에서도 조기 호출 신호가 현행 계산(`location` 영역 반복·같은 등급 수정 재발)대로 나오고 `recurrence` 값이 보존된다 |\n| T-8 | 설치 전 관문: BR02의 6입력 × 2회를 새 사후 프롬프트로 실제 재생해 unknown ≤1/12, T06 2회 모두 교착=흐름·소급 변경=상태 항목의 유효 blocking·fail, 경계(A) 합성 2회 모두 권한 검사 빠진 원문 열람=경계 항목의 유효 blocking·fail, 무해 diff 2회 모두 유효 blocking 없음이다 |\n| T-9 | 문구 고정 시험(`test/agent-structured-review.test.ts`의 질문·1단계 단언)을 의도적으로 갱신하고 TASK-CLOSE에 적는다. 바꾼 경로가 `src/agent/**`(`call-hook.ts` 제외)·`test/**`(필요하면 `src/project/review-metrics.ts`)뿐이다(프로젝트 기록·`.pace/memory/**`·하네스 관리 파일 제외) |\n\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | unit | T-1 | post 범위, TASK 줄 `필요`/`생략` 두 판 | `reviewCriteria`·`buildVerifyPrompt` | 필수 ID가 정확히 12개 고정 순서, `T-` 없음, 두 판 프롬프트의 묶음 부분 동일. ID가 `A-`·`B-`·`C-`로 시작하지 않음 | `test/agent-structured-review.test.ts` |\n| S-2 | unit | T-2 | 12항목 모의 원문: 모두 정상 / 항목 하나씩 누락·빈 경로 `none`·빈 이유 `not_applicable`·지적 없는 `defect` / 실행 증거 없음을 적은 정상 `none` | `assessStructuredReview('post')` | 정상 pass, 각 결손 unknown, 실행 증거 문장만으로는 pass. 음성 대조: 결손 판정을 빼면 시험 실패 | 같은 파일 |\n| S-3 | unit | T-3 | T06 R1 시나리오 원문을 지적 하나씩 따로: 교착(F2)만 흐름 blocking / 소급 변경(F1)만 상태 blocking / 각각 원래 note·`implementation`·`design` / 기준 재판정·계획 타당성을 `other` | 같은 함수 | 앞 둘은 각각 fail이고 그 지적의 effective가 blocking(강등 사유 없음), 나머지는 각 지적 effective note·`outside_question`·pass. 음성 대조: 묶음 범주를 질문 밖으로 두면 앞 둘이 각각 실패 | 같은 파일 |\n| S-4 | unit | T-4 | 첫 검토·재검토(직전 fail·pass)·진단 없는/있는 수정 확인, `verify`(실행기 대역이 받은 프롬프트)·`review-hand`(고정본 prompt) | 프롬프트 조립 | 루트 TASK.md·diff 원문 포함, main 문장 7개 각각 부재, 모든 모드에 12항목 전체 지시. 모드별 지시 원문은 tester가 BR02와 대조한다 | `test/agent-structured-review.test.ts`·`test/agent-review-hand.test.ts` |\n| S-5 | unit | T-5 | 비-diff 대상(문서), 헝크 없는 diff 머리, 정상 패치 / H fail 뒤 같은 H 재요청 / owner 회차 같은 H | `verify`·`review-hand` | 앞 둘·같은 H는 거부, 실행기 0·call 행 0·고정본 없음·budget 불변. 비-diff 거부 메시지가 tester 경로(`pace agent run`으로 tester 배정)를 안내한다. 정상 패치·owner 회차는 진행 | `test/agent-review-log.test.ts`·`test/agent-review-hand.test.ts` |\n| S-6 | unit | T-6 | 백로그·사전·scope 없는 프롬프트 고정 비교, 이 프로젝트 앞 태스크의 옛 사후 기록 원문(R1~R5) | `buildVerifyPrompt`, `assessStructuredReview`, `readReviewBudget`, `stats` | 프롬프트 바이트 동일(변경 전 기대값), 옛 기록 verdict·budget·stats 불변, `review-admission.ts` 해시 불변. `legacyStructureOnly`는 줄 없는 v2 옛 fail과 증명 범위 없는 옛 fail의 [rounds, calls]를 변경 전 값과 직접 비교 | `test/agent-structured-review.test.ts`·`test/project-review-metrics.test.ts`·`test/agent-review-log.test.ts` |\n| S-7 | unit | T-7 | 묶음 범주 지적 두 회차(같은 위치) | `recurringReviewSignals`, `assessStructuredReview` | 현행 신호가 나오고 `recurrence` 보존. 음성 대조: 위치를 버리면 실패 | `test/review-signals.test.ts` |\n| S-8 | e2e | T-8 | 입력 7개(해시 확인), 입력·회차마다 새 임시 저장소·`PACE_HOME`·고정 목적 | `./bin/pace.ts agent verify`(Codex) | 구현 후 tester가 원자료를 BR02 통과 조건과 대조해 판정한다. 원자료·판정은 evidence에 남긴다 | tester, `evidence/replay-*` |\n| S-9 | check | T-9 | 구현 커밋 후보 | 변경 경로·갱신한 고정 시험 | 구현 후 tester가 원자료를 BR02 경로 기준과 대조해 판정한다 | tester, TASK-CLOSE |\n\n## 접근\n\n- `review-criteria.ts`: post는 고정 12항목(`RA`·`RB`·`RC`)을 돌려준다. 항목 문구는 BACKLOG 수정안 2의 점검 문장이다.\n- `structured-review.ts`: 기록된 필수 항목이 이 12 ID 집합이면 묶음 규칙(하위 확인 `boundary`·`state`·`flow`, 답 상태 `defect`·`none`·`not_applicable`)을 쓰고, 아니면 지금 규칙 그대로 판독한다. 규칙은 기록에 이미 있는 필수 항목으로 고르고, 날짜·경로로 고르지 않는다(옛 기록 판독만, 생성 경로 없음).\n- `verify.ts`: 사후 단계 프롬프트 분기 — 1단계 지시 대신 묶음 점검 지시, `## 태스크 계약: TASK.md` 절, 재검토는 12항목 전체와 직전 blocking 해소를 함께 묻는다. 수정 확인 문구의 note 문장은 사후에서 빼고 해소 의미는 그대로 둔다.\n- `verify-cli.ts`·`review-hand.ts`: 사후 대상 diff 판정과 같은 해시 fail 재요청 거부를 예약 전에 둔다. 루트 TASK.md를 프롬프트에 붙인다.\n- 재생(S-8)은 사후 tester·reviewer 배정 전에 한다. 실패하면 질문 문구·프롬프트만 고쳐 같은 표본으로 최대 2회 다시 재고, 그래도 실패면 허브에 원문 보고한다.\n",
+    "followup": {
+      "type": "owner",
+      "id": "1f0ff506-f1e3-4096-8b71-e753c665198d"
+    },
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3",
+      "T-4",
+      "T-5",
+      "T-6",
+      "T-7",
+      "T-8",
+      "T-9"
+    ],
+    "permission_basis": {
+      "base": "070f105de5b75281a153dbe7e6d00d9610e46a08",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:53",
+        "scenario": "판정기가 이유가 있는 not_applicable 또는 같은 항목의 유효한 비차단 지적을 단 defect를 무조건 unknown으로 처리해도, 정상 입력을 none으로만 구성한 S-2와 blocking defect를 쓰는 S-3이 통과할 수 있다.",
+        "reproduction": "유효한 none·not_applicable·비차단 defect를 섞은 12항목 원문에서 pass를 단언한다. 짝이 다른 항목의 지적만 남긴 원문에서는 해당 defect가 미확인이어서 unknown인지 단언한다.",
+        "impact": "criterion",
+        "criterion": "T-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "scope",
+        "confidence": "high",
+        "location": "TASK.md:55",
+        "scenario": "S-4는 review-hand 고정본에서 진단 유무별 수정 확인 프롬프트를 관측하도록 적었으나 현행 review-hand는 수정 확인을 verify로 넘긴다. S-5의 owner 같은 해시 진행도 동일한 경계에 걸린다. 이대로는 관측할 고정본이 없거나 시험을 맞추기 위해 기존 배정 흐름을 바꾸게 된다.",
+        "reproduction": "src/agent/review-hand.ts:175-178 및 :121-127과 test/agent-review-hand.test.ts:423-429를 대조한다. review-hand에서는 고정본 없이 verify로 안내하는지, verify에서는 진단 유무별 실제 프롬프트와 owner 같은 해시 진행을 각각 확인하도록 시험표를 정리한다.",
+        "impact": "criterion",
+        "criterion": "T-4",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "blocking",
+        "category": "scope",
+        "confidence": "high",
+        "location": "TASK.md:67",
+        "scenario": "새 TASK 첨부를 경로 검증 없는 파일 읽기로 구현하면 루트 TASK.md가 링크인 경우 검토 범위 밖 본문이 프롬프트에 들어갈 수 있다. 정상 TASK를 쓰는 S-4는 이 구현에서도 통과한다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": null,
+        "safety_path": {
+          "input": "정상 형식의 사후 diff와, 태스크 범위 밖의 무해한 표식 파일을 가리키는 루트 TASK.md 링크",
+          "reached": "TASK.md:67의 새 프롬프트 조립 경로. src/project/pre-review.ts:119-128의 기존 링크 거부를 첨부 읽기에 적용하는지가 분기점이다.",
+          "result": "경로 검사 없는 읽기는 범위 밖 표식을 실행기 입력이나 review-hand 고정본에 넣는다. 두 진입점에서 범위 밖 본문을 읽거나 전달하기 전에 거부하는지 모의 입력으로 검증할 수 있다."
+        },
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:56",
+        "scenario": "헝크 머리만 검사하는 구현은 문서 앞에 비공백 설명이 붙은 패치를 받아들인다. 첫 줄만 맞고 헝크가 없는 입력과 헝크가 없는 일반 문서는 여전히 거부하므로 현재 S-5가 통과할 수 있다.",
+        "reproduction": "유효한 패치 앞에 비공백 설명을 붙인 입력과 공백 줄만 붙인 입력을 각각 verify·review-hand에 준다. 앞 입력은 실행기·호출 행·고정본·예산 변화 없이 거부하고, 뒤 입력은 진행하는지 대조한다.",
+        "impact": "criterion",
+        "criterion": "T-5",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:58",
+        "scenario": "같은 위치만 지정한 두 회차는 recurring_area를 확인할 수 있어도 superficial_fix에 필요한 같은 대상·같은 유효 등급·해당 파일의 패치 변경을 보장하지 못한다. 반대로 위치 반복만으로 superficial_fix까지 항상 내는 구현도 현재 기대값으로는 배제할 수 없다.",
+        "reproduction": "src/agent/review-signals.ts:75-93에 맞춰 같은 패치 대상에서 지적 파일의 변경과 유효 등급 일치가 있는 두 회차에 두 신호를 각각 단언한다. 유효 등급이나 지적 파일의 패치 변경 조건만 제거한 대조에서는 recurring_area만 남는지 확인한다. 두 recurrence 값은 판정 원문에서 각각 보존되는지 확인한다.",
+        "impact": "criterion",
+        "criterion": "T-7",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "TASK 38·52·64-65행과 S-4에서 세 묶음, 고정 ID 12개, 필수 T-n 제외, 필요·생략 두 입력의 묶음 동일성을 대조한다."
+        },
+        {
+          "id": "T-2",
+          "state": "unverified",
+          "observation": "TASK 39행에 규칙이 있고 S-2가 누락과 빈 근거를 다룬다. 유효한 not_applicable과 비차단 defect가 포함된 원문의 pass를 잡아내는 관측이 지정되지 않았다."
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "S-3이 교착과 소급 변경을 따로 넣어 각각 유효 blocking과 fail을 관측한다. 기존 분류와 기준 재판정·계획 지적은 outside_question 및 note를 단언한다."
+        },
+        {
+          "id": "T-4",
+          "state": "unverified",
+          "observation": "S-4가 루트 TASK·diff 포함과 일곱 문장의 개별 부재를 검사한다. 수정 확인의 review-hand 고정본은 현행 흐름에서 생성되지 않으며 새 TASK 읽기의 파일 경계가 시험에 없다."
+        },
+        {
+          "id": "T-5",
+          "state": "unverified",
+          "observation": "S-5가 거부 부작용과 정상 진행을 관측한다. 유효 헝크가 있으나 첫 비공백 줄이 diff 머리가 아닌 입력이 빠져 있고 owner의 명령별 기대가 구분되지 않았다."
+        },
+        {
+          "id": "T-6",
+          "state": "present",
+          "observation": "S-6이 세 비사후 프롬프트 바이트, admission 파일 해시, 옛 기록의 판정·통계, legacyStructureOnly 관련 두 기록의 회차·호출 수를 변경 전 기대값에 대조한다."
+        },
+        {
+          "id": "T-7",
+          "state": "unverified",
+          "observation": "S-7에 위치 반복과 recurrence 보존이 있다. superficial_fix의 발동 조건을 갖춘 입력과 신호별 기대가 지정되지 않았다."
+        },
+        {
+          "id": "T-8",
+          "state": "present",
+          "observation": "TASK 45·59·68행과 BR02 39-62행이 분모 12회의 재생과 별도 무해 대조 2회, 세 묶음의 필수 유효 blocking·fail, tester의 원문 판정을 지정한다. 실제 재생은 구현 후 관문이다."
+        },
+        {
+          "id": "T-9",
+          "state": "present",
+          "observation": "TASK 46·60행이 구현 후보의 고정 단언 갱신과 변경 경로 대조를 tester에게 맡긴다. 갱신 기록 위치와 call-hook.ts·하네스 등 제외 경로도 명시돼 있다."
+        }
+      ],
+      "issues": [
+        "permission_unverified"
+      ]
+    }
+  }
+}

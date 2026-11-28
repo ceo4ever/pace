@@ -11,7 +11,9 @@ import { effectiveBlocking } from "../src/agent/structured-review.ts";
 import { readAgentCalls, recordAgentCall, unknownCallValue, type AgentCall } from "../src/project/agent-calls.ts";
 import { reviewArtifactCommand } from "../src/agent/review-hand.ts";
 import { tryRecordCall } from "../src/agent/call-context.ts";
-import { evidenceReviewFixture, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
+import { assertPostBundlePrompt, evidenceReviewFixture, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
+import { readReviewBudget, reviewBudgetScope } from "../src/agent/review-budget.ts";
+import { createHash } from "node:crypto";
 
 const initial = "# T06 검토\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n기존 결과를 확인한다.\n\n## 증명 범위\n- 판정 주체: 자동 시험\n- 구현 후 reviewer: 필요 — 시험 고정본\n\n## 기준\n\n| # | 기준 |\n|---|---|\n| T-1 | 실제 결과가 보인다 |\n\n## 접근\n순서 A를 확인한다.\n";
 const grant = { mode: "implementation", paths: [], protected: [{ from: 7, to: 7 }] };
@@ -35,7 +37,7 @@ function fixture() {
   const records = join(directory, "review-records");
   mkdirSync(evidence, { recursive: true });
   writeFileSync(target, initial);
-  writeFileSync(other, "구현 전후 차이");
+  writeFileSync(other, "diff --git a/src/main.ts b/src/main.ts\n--- a/src/main.ts\n+++ b/src/main.ts\n@@ -1 +1 @@\n-구현 전\n+구현 후\n");
   writeFileSync(purpose, "상위 목적과 합의된 검토 범위를 확인한다.\n");
   const git = (...args: string[]) => {
     const r = spawnSync("git", ["-C", root, "-c", "user.name=fixture", "-c", "user.email=test@example.com", ...args],
@@ -372,7 +374,7 @@ test("T06 기존 고정 뒤 상위 조치가 열리면 일반 고정과 판정 �
   const fixed = h.hand();
   assert.equal(fixed.status, 0, fixed.output);
   h.setReply(fixed.body.snapshot, raw());
-  const failed = await h.verify(raw([{ ...blocking, category: "defect", location: "src/main.ts:1" }]), h.other);
+  const failed = await h.verify(raw([{ ...blocking, category: "flow", location: "src/main.ts:1" }]), h.other);
   assert.equal(failed.body.escalation.stage, "upper_review", JSON.stringify(failed.body));
   const before = readFileSync(ledgerPath(h.target), "utf8");
   const newHand = h.hand(), lateRecord = h.record(fixed.body.hand);
@@ -587,4 +589,66 @@ test("P017 T01 S-4: review-hand는 reviewer 줄 형식 문제를 고정 없이 �
     assert.ok(existsSync(handed.body.snapshot), choice);
     assert.deepEqual(readLedger(h.target).map((row) => row.type), ["call"], choice);
   }
+});
+
+/** 태스크 폴더의 모든 파일 바이트와 예산 상태 — 예약 전 거부가 아무것도 남기지 않았는지 대조한다 */
+function taskState(directory: string, target: string): string {
+  const files: string[] = [];
+  const walk = (dir: string) => {
+    for (const name of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, name.name);
+      if (name.isDirectory()) walk(path);
+      else files.push(`${path} ${createHash("sha256").update(readFileSync(path)).digest("hex")}`);
+    }
+  };
+  walk(directory);
+  return JSON.stringify({ files: files.sort(), budget: readReviewBudget(reviewBudgetScope(target)!).status });
+}
+
+test("P017 T02 S-4: review-hand 구현 후 첫 검토·재검토 고정본이 TASK·diff·12항목을 싣고 7문장이 없다", () => {
+  const h = fixture();
+  const first = h.hand(h.other);
+  assert.equal(first.status, 0, first.output);
+  const firstPrompt = JSON.parse(readFileSync(first.body.snapshot, "utf8")).prompt;
+  assertPostBundlePrompt(firstPrompt, initial, readFileSync(h.other, "utf8"));
+  assert.match(firstPrompt, /지금은 구현 후 묶음 점검이다/);
+  h.setReply(first.body.snapshot, raw([{ ...blocking, category: "flow", location: "src/main.ts:1" }], "fail"));
+  const failed = h.record(first.body.hand, [], h.other);
+  assert.equal(failed.body.review.verdict, "fail", failed.output);
+  writeFileSync(h.other, readFileSync(h.other, "utf8").replace("+구현 후", "+고친 구현"));
+  const again = h.hand(h.other);
+  assert.equal(again.status, 0, again.output);
+  const rereview = JSON.parse(readFileSync(again.body.snapshot, "utf8")).prompt;
+  assertPostBundlePrompt(rereview, initial, readFileSync(h.other, "utf8"));
+  assert.match(rereview, /재검토\(구현 후 묶음 점검\)/);
+  assert.match(rereview, /직전 검토의 blocking 각각이 해소됐는지도 답한다/);
+});
+
+test("P017 T02 S-5: review-hand는 비-diff·헝크 없는 diff·같은 해시 fail 재요청을 예약 전에 거부한다", () => {
+  const h = fixture();
+  const rejected = (text: string, pattern: RegExp) => {
+    writeFileSync(h.other, text);
+    const before = taskState(h.directory, h.other);
+    const result = h.hand(h.other);
+    assert.equal(result.status, 2, result.output);
+    assert.match(result.body.error.message, pattern);
+    assert.equal(taskState(h.directory, h.other), before, "고정본·원장·예산이 그대로다");
+  };
+  const tester = /tester 경로\(`pace agent run`으로 tester 배정\)/;
+  rejected("# 결과 문서\n검증 결과를 정리했다.\n", tester);
+  rejected("diff --git a/a.ts b/a.ts\nold mode 100644\nnew mode 100755\n", tester);
+  const patch = "diff --git a/src/main.ts b/src/main.ts\n--- a/src/main.ts\n+++ b/src/main.ts\n@@ -1 +1 @@\n-구현 전\n+구현 후\n";
+  writeFileSync(h.other, patch);
+  const first = h.hand(h.other);
+  assert.equal(first.status, 0, first.output);
+  h.setReply(first.body.snapshot, raw([{ ...blocking, category: "flow", location: "src/main.ts:1" }], "fail"));
+  assert.equal(h.record(first.body.hand, [], h.other).body.review.verdict, "fail");
+  rejected(patch, /직전 fail 검토\(.*\) 뒤 대상이 바뀌지 않았다/);
+  // 예산을 소진한 뒤에도 비-diff 거부가 먼저다 — tester 경로를 안내한다
+  writeFileSync(h.other, patch.replace("+구현 후", "+고친 구현"));
+  const second = h.hand(h.other);
+  assert.equal(second.status, 0, second.output);
+  h.setReply(second.body.snapshot, raw([{ ...blocking, category: "flow", location: "src/main.ts:1" }], "fail"));
+  assert.equal(h.record(second.body.hand, [], h.other).body.review.verdict, "fail");
+  rejected("# 결과 문서\n소진 뒤 문서다.\n", tester);
 });

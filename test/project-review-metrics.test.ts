@@ -197,3 +197,23 @@ test("원장 없음과 손상된 원장을 0회 확인으로 보고하지 않는
   assert.equal(partial.ledgers, 1);
   assert.match(formatReviewLedgerMetrics(partial), /원장 판독 미확인/);
 });
+
+test("P017 T02 S-6: T01 옛 사후 기록의 예산·stats는 변경 전 값과 같다", async () => {
+  // 기대값은 변경 전 커밋(070f105) 소스로 같은 사본을 계산한 결과다(T02 evidence/s6-baseline-head.json).
+  const { cpSync } = await import("node:fs");
+  const { readReviewBudget, reviewBudgetScope } = await import("../src/agent/review-budget.ts");
+  const projects = join(packageRoot, "projects");
+  const project = readdirSync(projects).find((name) => name.startsWith("P017_"))!;
+  const tasks = join(projects, project, "tasks");
+  const t01 = join(tasks, readdirSync(tasks).find((name) => name.startsWith("T01_"))!);
+  const t02 = join(tasks, readdirSync(tasks).find((name) => name.startsWith("T02_"))!);
+  const expected = JSON.parse(readFileSync(join(t02, "evidence/s6-baseline-head.json"), "utf8"));
+  const status = readReviewBudget(reviewBudgetScope(join(t01, "evidence/post-review-diff.md"))!).status;
+  assert.deepEqual([status.stage, status.rounds, status.calls, status.exhausted],
+    [expected.budget.stage, expected.budget.rounds, expected.budget.calls, expected.budget.exhausted]);
+  assert.deepEqual([status.rounds, status.calls, status.exhausted], [2, 2, "rounds"]);
+  const copy = tempDir("pace-s6-");
+  cpSync(t01, join(copy, "projects/P900_copy/tasks/T01_copy"), { recursive: true });
+  cpSync(join(projects, project, "PROJECT.md"), join(copy, "projects/P900_copy/PROJECT.md"));
+  assert.equal(formatReviewLedgerMetrics(collectReviewLedgerMetrics(copy, "P900_copy")), expected.stats);
+});

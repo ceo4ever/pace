@@ -1,0 +1,219 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "현재 diff는 내보내기 어렵습니다. 직전 `note`까지 수정·재검토 대상으로 읽히는 회귀가 있고, 전문가 호출에 넘기는 원문의 공개 범위와 호출 후 중단 시 복구 절차가 비어 있습니다. 이 결함을 바로잡는 데 A-1 합의 변경은 필요하지 않습니다. 상위 해결안이 완료 기준을 줄이면서 필수 검증도 생략한다면, A-1과 A-3을 각각 적용해야 합니다.\n\n읽은 범위는 메시지에 첨부된 상위 목적·태스크 계약, 디스크의 `input.patch` 전체 168줄, 설치본 `decision-rights.md`의 A·B·C 관련 절입니다. 저장소에서는 작업 경로와 Git 상태·파일명·해시를 확인했습니다. 자동 제공된 작업환경·스킬 목록과 호스트 지시가 노출됐습니다. 별도 부트·메모리 본문, 작성자 마감·자체 판정·지적 대응 문서, 작업 디렉터리에 있던 검토 원장·판정 파일의 본문은 열지 않았습니다. 파일은 수정하지 않았으며, 아래 재현은 문서 경로를 따라간 정적 재현입니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"flow\",\n      \"location\": \"skills/pace-project-dev/references/reviewer.md:41\",\n      \"scenario\": \"직전 판정의 blocking은 모두 해소됐고 영향 밖 note만 남았다. 기존 문구는 직전 blocking과 수정이 만든 결함을 재검토 대상으로 삼았으나, 새 문구는 직전 지적의 미해소 부분을 고치고 재검토하라고 한다. 같은 문단에서 영향 밖 지적을 note로 두라고 해도, 이미 note인 지적을 재작업에서 제외하는 조건은 없다. 이를 따르면 출고 판단이 합의 범위 밖 수정에 종속되고 불필요한 검토 회차가 생긴다.\",\n      \"reproduction\": \"직전 blocking 하나와 영향 밖 note 하나를 둔 판정에서 blocking만 해결한 변경을 대입한다. 새 지시가 note의 미수정을 이유로 추가 수정과 verify를 요구하는지 기존 문구와 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"boundary\",\n      \"location\": \"skills/pace-project-dev/references/coordinator.md:34\",\n      \"scenario\": \"실패 원문, owner 원문 또는 검토 원장에 호출 제공자에게 공개할 수 없는 내용이 섞여 있다. 상위 호출은 해당 자료를 호출 입력으로 제공하도록 하고, 조기 호출과 B 호출도 실패 원문을 넘기도록 한다. 입력 범위를 해당 기회의 근거로 한정하는 것만으로는 근거 안의 비밀을 제거할 수 없다. 36줄의 비밀 기록 금지는 제공자로 넘어가기 전 입력을 보호하지 못한다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-3\",\n      \"safety_path\": {\n        \"input\": \"전문가 제공자에게 공개하도록 위임받지 않은 가상 비밀이 포함된 실패 원문 또는 owner 원문\",\n        \"reached\": \"reviewer.md 59줄의 조기 호출 입력 또는 coordinator.md 34줄의 상위 호출 입력\",\n        \"result\": \"호출 전 비밀 제거 또는 공개 범위 확인 단계 없이 원문이 제공자 요청에 포함될 수 있다. 이후 원장에 비밀을 기록하지 않아도 이미 전달된 입력은 회수할 수 없다.\"\n      }\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"skills/pace-project-dev/references/reviewer.md:70\",\n      \"scenario\": \"실제 전문가 호출이 끝나 시도 행이 생겼지만, 기회 영수증과 ref, 프로젝트 사건 또는 근본 검토를 연결하기 전에 PM 세션이 중단된다. 기회와 시도 ID를 호출 뒤에 연결하는 지시만 있고, 재개 시 기존 시도를 먼저 찾아 이어 붙이거나 귀속이 불명확할 때 재호출을 보류하는 절차는 없다. 같은 기회를 다시 호출하거나, 실제 호출을 프로젝트 기록에서 잃을 수 있다.\",\n      \"reproduction\": \"가상 원장에 완료된 전문가 시도 한 행을 두고 해당 행의 ref와 프로젝트·근본 검토 연결을 비운다. 같은 발동 근거를 받는 재개 절차를 따라 기존 ID의 재사용 또는 재호출 보류가 지시되는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"should_fix\",\n      \"category\": \"boundary\",\n      \"location\": \"skills/pace-project-dev/references/coordinator.md:38\",\n      \"scenario\": \"상위 해결안 한 건이 완료 기준 축소와 필수 독립 검증 생략을 함께 요구한다. 표는 A-1과 A-3을 별도 행으로 안내하고 상위 경로에서 해당되는 항목을 모두 적용한다는 연결이 없다. 정본 A는 다섯 질문 각각을 판정하도록 요구한다. 표를 한 행만 선택하는 절차로 따르면 기준 변경 승인만으로 검증 생략까지 진행할 수 있다.\",\n      \"reproduction\": \"완료 기준 한 줄 삭제와 독립 검증 한 건 생략을 함께 제안하는 가상 상위 해결안을 표에 대입한다. 적용을 보류한 채 A-1 기준 변경과 A-3 검증 생략을 모두 owner에게 올리도록 지시하는지 확인한다.\",\n      \"confidence\": \"medium\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RA-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"skills/pace-project-dev/evals/scenarios.md:97\",\n      \"scenario\": \"W10은 기준 축소, W11은 검증 생략 또는 잔여 blocking 수용을 각각 평가한다. 두 조치가 동시에 들어오면 하나의 승인만 요청하는 구현이 두 사례를 모두 통과할 수 있다. W05 역시 호출부터 기록 연결까지 정상적으로 끝나는 경우만 다뤄, 기록 연결 전에 중단된 뒤 같은 기회를 다시 부르는 오류를 검출하지 못한다.\",\n      \"reproduction\": \"A-1과 A-3이 함께 해당하면 A-1만 보고하고, 호출 시도 행만 남은 채 세션을 재개하면 전문가를 다시 부르는 응답을 가정한다. 이 응답이 현재 W05·W10·W11의 실패 조건에 걸리는지 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"note\",\n      \"category\": \"other\",\n      \"location\": \"skills/pace-project-dev/references/coordinator.md:52\",\n      \"scenario\": \"다른 계정 공유의 권한 판정과 일반 백로그 행 번호·상태 정정 절차를 별도 지침으로 추가했다. reviewer.md 21줄도 사전 기록 복구 절차를 별도로 확장한다. 두 변경은 반복 실패 시 전문가 호출을 연결하는 절차와 독립적이다. 확인한 문구에서는 기존 결정 권한을 위임하거나 승인 없이 범위를 넓히도록 하는 동작까지는 발견하지 못했다.\",\n      \"reproduction\": \"두 문단을 호출의 등록, 발동, 인계, 적용, 독립 재검증 경로와 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"minor\",\n      \"criterion\": null,\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"RA-1\",\n      \"state\": \"none\",\n      \"observation\": \"SKILL 시작 안내에서 reviewer의 호출 표, coordinator의 B·백로그·상위 인계, required-roles의 TS-16~22까지 따라갔다. 기존 CLI에 새 진입점이 추가된 부분은 없으며 절차상 호출과 결정 주체는 명시돼 있다.\"\n    },\n    {\n      \"id\": \"RA-2\",\n      \"state\": \"defect\",\n      \"observation\": \"소진·상위 신호 우선, 무신호 첫 실패, agreement_required 대기는 보류 경로가 있다. 상위 조치에 A-1과 A-3이 함께 걸릴 때 양쪽 승인을 확인하는 기본 동작은 표에 빠져 있다. F4.\"\n    },\n    {\n      \"id\": \"RA-3\",\n      \"state\": \"defect\",\n      \"observation\": \"조기·B·상위 호출의 원문 입력, 전문가 반환과 원장 연결까지 추적했다. 비밀의 기록 금지는 있지만 제공자 호출 전 공개 범위 확인이 빠져 있다. F2.\"\n    },\n    {\n      \"id\": \"RA-4\",\n      \"state\": \"none\",\n      \"observation\": \"새 명령 예시의 --summary·--file·--ref와 영수증 반환 상대 경로를 살폈다. 외부 원문을 셸 명령 문자열, 임의 경로 또는 쿼리로 직접 조합하는 변경은 보이지 않는다.\"\n    },\n    {\n      \"id\": \"RB-1\",\n      \"state\": \"none\",\n      \"observation\": \"정상 경로의 조기 프로젝트·호출 원장, 공동 회차 기록, 백로그 단계 근거, 상위 call_ref와 사후 보고를 대조했다. 각 기록의 목적지가 있다. 중단 때 연결이 끊기는 경우는 F3에 기록했다.\"\n    },\n    {\n      \"id\": \"RB-2\",\n      \"state\": \"none\",\n      \"observation\": \"시도 ID·시각은 유지하고 ref를 보강한다. 계약 변경 후 예산 재개는 정본 B를 참조하며, B는 승인 원문과 실제 계약 변경을 전제로 해당 단계의 일반 예산만 다시 연다. 기존 판정이나 확정된 결과를 소급 변경하는 지시는 발견하지 못했다.\"\n    },\n    {\n      \"id\": \"RB-3\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"다섯 변경 파일은 모두 문서다. 마이그레이션과 영속 스키마 변경은 없다.\"\n    },\n    {\n      \"id\": \"RB-4\",\n      \"state\": \"none\",\n      \"observation\": \"W05는 실제 시도 행과 caller·opportunity의 연결을 기대하고, W09·W12는 호출 ID·근본 검토 근거와 원장 판정 조회를 요구한다. 계약 S-3도 CLI 응답과 별도로 저장된 행과 참조를 대조하도록 한다. diff가 저장 대상의 재조회를 성공 응답만 확인하는 방식으로 바꾼 부분은 없다.\"\n    },\n    {\n      \"id\": \"RC-1\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"새 파일 잠금이나 트랜잭션 잠금 획득 순서를 도입하지 않는다. 중단 후 같은 기회를 다시 처리하는 절차는 RC-3에서 다뤘다.\"\n    },\n    {\n      \"id\": \"RC-2\",\n      \"state\": \"none\",\n      \"observation\": \"전문가 호출, 근거 기록, 허브 결정, 적용, 독립 재검증의 순서를 따라갔다. 새 트랜잭션 구현은 없다. 제공자 호출의 외부 공개는 F2, 호출이 끝난 뒤 기록 연결이 끊기는 부작용은 F3에 기록했다.\"\n    },\n    {\n      \"id\": \"RC-3\",\n      \"state\": \"defect\",\n      \"observation\": \"전문가 실행 직후부터 시도 ID가 영수증과 프로젝트·근본 검토에 연결되기 전까지 중단될 수 있다. 재개 시 기존 시도를 확인하고 같은 기회 재호출을 막는 동작이 없다. F3.\"\n    },\n    {\n      \"id\": \"RC-4\",\n      \"state\": \"defect\",\n      \"observation\": \"W01~W12는 정상 호출·소진·상위 진입·종료와 개별 승인 분기를 다룬다. 해소된 blocking과 남은 note의 조합에서 재작업 회귀가 생기며, A-1·A-3 동시 적용과 호출 뒤 기록 연결 중단을 검출하는 분기가 없다. F1, F5.\"\n    }\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a5-5bd1-7a21-8b81-ac1eda0cc461",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 107617,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 33771
+    },
+    "usage_total_tokens": 33771,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "8a6a5d833a482c95eb2faf177f59846c52daeaf739eb19eba0104b40c4c6529b",
+    "verdict": "fail",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "7f7ba77c3cfaf4e3f7614a1e17bb74a7",
+  "assessment": {
+    "stage": "post",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "flow",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/references/reviewer.md:41",
+        "scenario": "직전 판정의 blocking은 모두 해소됐고 영향 밖 note만 남았다. 기존 문구는 직전 blocking과 수정이 만든 결함을 재검토 대상으로 삼았으나, 새 문구는 직전 지적의 미해소 부분을 고치고 재검토하라고 한다. 같은 문단에서 영향 밖 지적을 note로 두라고 해도, 이미 note인 지적을 재작업에서 제외하는 조건은 없다. 이를 따르면 출고 판단이 합의 범위 밖 수정에 종속되고 불필요한 검토 회차가 생긴다.",
+        "reproduction": "직전 blocking 하나와 영향 밖 note 하나를 둔 판정에서 blocking만 해결한 변경을 대입한다. 새 지시가 note의 미수정을 이유로 추가 수정과 verify를 요구하는지 기존 문구와 대조한다.",
+        "impact": "goal",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "boundary",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/references/coordinator.md:34",
+        "scenario": "실패 원문, owner 원문 또는 검토 원장에 호출 제공자에게 공개할 수 없는 내용이 섞여 있다. 상위 호출은 해당 자료를 호출 입력으로 제공하도록 하고, 조기 호출과 B 호출도 실패 원문을 넘기도록 한다. 입력 범위를 해당 기회의 근거로 한정하는 것만으로는 근거 안의 비밀을 제거할 수 없다. 36줄의 비밀 기록 금지는 제공자로 넘어가기 전 입력을 보호하지 못한다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": "RA-3",
+        "safety_path": {
+          "input": "전문가 제공자에게 공개하도록 위임받지 않은 가상 비밀이 포함된 실패 원문 또는 owner 원문",
+          "reached": "reviewer.md 59줄의 조기 호출 입력 또는 coordinator.md 34줄의 상위 호출 입력",
+          "result": "호출 전 비밀 제거 또는 공개 범위 확인 단계 없이 원문이 제공자 요청에 포함될 수 있다. 이후 원장에 비밀을 기록하지 않아도 이미 전달된 입력은 회수할 수 없다."
+        },
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/references/reviewer.md:70",
+        "scenario": "실제 전문가 호출이 끝나 시도 행이 생겼지만, 기회 영수증과 ref, 프로젝트 사건 또는 근본 검토를 연결하기 전에 PM 세션이 중단된다. 기회와 시도 ID를 호출 뒤에 연결하는 지시만 있고, 재개 시 기존 시도를 먼저 찾아 이어 붙이거나 귀속이 불명확할 때 재호출을 보류하는 절차는 없다. 같은 기회를 다시 호출하거나, 실제 호출을 프로젝트 기록에서 잃을 수 있다.",
+        "reproduction": "가상 원장에 완료된 전문가 시도 한 행을 두고 해당 행의 ref와 프로젝트·근본 검토 연결을 비운다. 같은 발동 근거를 받는 재개 절차를 따라 기존 ID의 재사용 또는 재호출 보류가 지시되는지 확인한다.",
+        "impact": "goal",
+        "criterion": "RC-3",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "should_fix",
+        "category": "boundary",
+        "confidence": "medium",
+        "location": "skills/pace-project-dev/references/coordinator.md:38",
+        "scenario": "상위 해결안 한 건이 완료 기준 축소와 필수 독립 검증 생략을 함께 요구한다. 표는 A-1과 A-3을 별도 행으로 안내하고 상위 경로에서 해당되는 항목을 모두 적용한다는 연결이 없다. 정본 A는 다섯 질문 각각을 판정하도록 요구한다. 표를 한 행만 선택하는 절차로 따르면 기준 변경 승인만으로 검증 생략까지 진행할 수 있다.",
+        "reproduction": "완료 기준 한 줄 삭제와 독립 검증 한 건 생략을 함께 제안하는 가상 상위 해결안을 표에 대입한다. 적용을 보류한 채 A-1 기준 변경과 A-3 검증 생략을 모두 owner에게 올리도록 지시하는지 확인한다.",
+        "impact": "goal",
+        "criterion": "RA-2",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/evals/scenarios.md:97",
+        "scenario": "W10은 기준 축소, W11은 검증 생략 또는 잔여 blocking 수용을 각각 평가한다. 두 조치가 동시에 들어오면 하나의 승인만 요청하는 구현이 두 사례를 모두 통과할 수 있다. W05 역시 호출부터 기록 연결까지 정상적으로 끝나는 경우만 다뤄, 기록 연결 전에 중단된 뒤 같은 기회를 다시 부르는 오류를 검출하지 못한다.",
+        "reproduction": "A-1과 A-3이 함께 해당하면 A-1만 보고하고, 호출 시도 행만 남은 채 세션을 재개하면 전문가를 다시 부르는 응답을 가정한다. 이 응답이 현재 W05·W10·W11의 실패 조건에 걸리는지 대조한다.",
+        "impact": "goal",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F6",
+        "severity": "note",
+        "category": "other",
+        "confidence": "high",
+        "location": "skills/pace-project-dev/references/coordinator.md:52",
+        "scenario": "다른 계정 공유의 권한 판정과 일반 백로그 행 번호·상태 정정 절차를 별도 지침으로 추가했다. reviewer.md 21줄도 사전 기록 복구 절차를 별도로 확장한다. 두 변경은 반복 실패 시 전문가 호출을 연결하는 절차와 독립적이다. 확인한 문구에서는 기존 결정 권한을 위임하거나 승인 없이 범위를 넓히도록 하는 동작까지는 발견하지 못했다.",
+        "reproduction": "두 문단을 호출의 등록, 발동, 인계, 적용, 독립 재검증 경로와 대조한다.",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "none",
+          "observation": "SKILL 시작 안내에서 reviewer의 호출 표, coordinator의 B·백로그·상위 인계, required-roles의 TS-16~22까지 따라갔다. 기존 CLI에 새 진입점이 추가된 부분은 없으며 절차상 호출과 결정 주체는 명시돼 있다."
+        },
+        {
+          "id": "RA-2",
+          "state": "defect",
+          "observation": "소진·상위 신호 우선, 무신호 첫 실패, agreement_required 대기는 보류 경로가 있다. 상위 조치에 A-1과 A-3이 함께 걸릴 때 양쪽 승인을 확인하는 기본 동작은 표에 빠져 있다. F4."
+        },
+        {
+          "id": "RA-3",
+          "state": "defect",
+          "observation": "조기·B·상위 호출의 원문 입력, 전문가 반환과 원장 연결까지 추적했다. 비밀의 기록 금지는 있지만 제공자 호출 전 공개 범위 확인이 빠져 있다. F2."
+        },
+        {
+          "id": "RA-4",
+          "state": "none",
+          "observation": "새 명령 예시의 --summary·--file·--ref와 영수증 반환 상대 경로를 살폈다. 외부 원문을 셸 명령 문자열, 임의 경로 또는 쿼리로 직접 조합하는 변경은 보이지 않는다."
+        },
+        {
+          "id": "RB-1",
+          "state": "none",
+          "observation": "정상 경로의 조기 프로젝트·호출 원장, 공동 회차 기록, 백로그 단계 근거, 상위 call_ref와 사후 보고를 대조했다. 각 기록의 목적지가 있다. 중단 때 연결이 끊기는 경우는 F3에 기록했다."
+        },
+        {
+          "id": "RB-2",
+          "state": "none",
+          "observation": "시도 ID·시각은 유지하고 ref를 보강한다. 계약 변경 후 예산 재개는 정본 B를 참조하며, B는 승인 원문과 실제 계약 변경을 전제로 해당 단계의 일반 예산만 다시 연다. 기존 판정이나 확정된 결과를 소급 변경하는 지시는 발견하지 못했다."
+        },
+        {
+          "id": "RB-3",
+          "state": "not_applicable",
+          "observation": "다섯 변경 파일은 모두 문서다. 마이그레이션과 영속 스키마 변경은 없다."
+        },
+        {
+          "id": "RB-4",
+          "state": "none",
+          "observation": "W05는 실제 시도 행과 caller·opportunity의 연결을 기대하고, W09·W12는 호출 ID·근본 검토 근거와 원장 판정 조회를 요구한다. 계약 S-3도 CLI 응답과 별도로 저장된 행과 참조를 대조하도록 한다. diff가 저장 대상의 재조회를 성공 응답만 확인하는 방식으로 바꾼 부분은 없다."
+        },
+        {
+          "id": "RC-1",
+          "state": "not_applicable",
+          "observation": "새 파일 잠금이나 트랜잭션 잠금 획득 순서를 도입하지 않는다. 중단 후 같은 기회를 다시 처리하는 절차는 RC-3에서 다뤘다."
+        },
+        {
+          "id": "RC-2",
+          "state": "none",
+          "observation": "전문가 호출, 근거 기록, 허브 결정, 적용, 독립 재검증의 순서를 따라갔다. 새 트랜잭션 구현은 없다. 제공자 호출의 외부 공개는 F2, 호출이 끝난 뒤 기록 연결이 끊기는 부작용은 F3에 기록했다."
+        },
+        {
+          "id": "RC-3",
+          "state": "defect",
+          "observation": "전문가 실행 직후부터 시도 ID가 영수증과 프로젝트·근본 검토에 연결되기 전까지 중단될 수 있다. 재개 시 기존 시도를 확인하고 같은 기회 재호출을 막는 동작이 없다. F3."
+        },
+        {
+          "id": "RC-4",
+          "state": "defect",
+          "observation": "W01~W12는 정상 호출·소진·상위 진입·종료와 개별 승인 분기를 다룬다. 해소된 blocking과 남은 note의 조합에서 재작업 회귀가 생기며, A-1·A-3 동시 적용과 호출 뒤 기록 연결 중단을 검출하는 분기가 없다. F1, F5."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-P014-2-repo.zeTt/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 1,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

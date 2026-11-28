@@ -1,0 +1,204 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "릴리스 판정은 **fail**이다. 시스템관리 계정의 조직 편집에 새 제한이 생겼고, 개인정보 취급을 재지정할 때 이미 해제된 과거 날짜가 기간 표에 다시 채워진다.\n\nA-1에 따르면 기존 조직 편집 범위를 복원하고 과거 해제 구간을 보존하는 구현 수정은 현행 합의 안에 있다. 조직 편집 제한을 제품 정책으로 채택하려면 A-1에 따라 승인받고 계약의 인가 범위를 갱신해야 한다.\n\n작업 폴더의 [TASK.md](/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T06-1-repo.FUfK/projects/P901_replay/tasks/T01_replay/TASK.md), [input.patch 전체 12개 파일](/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T06-1-repo.FUfK/projects/P901_replay/tasks/T01_replay/evidence/input.patch), [decision-rights.md](/Users/lucas/.agents/skills/pace-project-dev/references/decision-rights.md)를 읽었다. 자동 부트·메모리·호스트 첨부의 노출은 대화에 제공된 지침, 환경 정보, 계약과 패치 본문에 한정됐다. Git 목록에서 검토 기록의 경로명이 보였고, 작성자 마감·자체 판정·지적 대응 문서의 별도 본문은 열지 않았다. 패치에 포함된 프로젝트 문서의 판단 문구는 산출물로 읽었다. 읽기 전용 정적 검토이며 파일 수정과 API·DB 시험 실행은 없었다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"boundary\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:592\",\n      \"scenario\": \"기존 사업장 범위 검사에서 허용되던 일반 US-01 처리자의 조직 편집이 대상의 전사 역할이 시스템관리라는 이유로 403이 된다. 패치 속 프로젝트 문맥은 이 조직 편집에 기존 범위 동작을 유지한다고 기록하며, 새 시험은 반대로 403을 고정한다.\",\n      \"reproduction\": \"패치의 test_roles_and_manager_serialization에서 동일 사업장에 속한 일반 처리자와 시스템관리 대상의 조직 추가 분기를 따라간다. 기존 대상 잠금·범위 검사 뒤 추가된 시스템관리 검사에서 거절된다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"state\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_privacy.py:100\",\n      \"scenario\": \"활성 Y를 9월 5일에 해제하면 기존 기간은 9월 4일에 끝난다. 9월 10일에 시작일 9월 5일인 Y를 다시 저장하면 확정 기간과 겹치지 않아 통과한다. 이전 상태가 미지정이고 기존 행은 모두 종료됐으므로 새 투영의 시작일을 오늘로 보정하는 분기도 건너뛴다. 기간 표에는 9월 5일부터 9일까지 취급 기간이 생겨, 그 날짜의 N 사건과 기간 표가 다른 사실을 기록한다.\",\n      \"reproduction\": \"합성 사용자로 활성 설정을 해제한 뒤 업무일을 넘겨 해제일을 시작일로 재지정하는 경로를 정적으로 추적한다. 새 기간 행의 시작일과 N 사건 이후의 날짜를 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RB-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"should_fix\",\n      \"category\": \"boundary\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_privacy.py:59\",\n      \"scenario\": \"최신 저장 사건이 일부 필드만 가진 객체이면, 지정 여부가 확인되지 않아도 시작일과 보기 플래그만으로 취급을 활성화할 수 있다. 종료일 누락과 파싱 오류도 종료일이 없는 기간으로 처리된다. 기존 데이터에 이러한 객체가 있는지는 패치로 확인할 수 없다.\",\n      \"reproduction\": null,\n      \"confidence\": \"medium\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-2\",\n      \"safety_path\": {\n        \"input\": \"시작일과 보기 플래그가 있는 불완전한 저장 사건. 현재 유효한 기간 행이 없는 경우.\",\n        \"reached\": \"user_privacy.py:59에서 사건의 시작일을 채택하고 user_privacy.py:71에서 빠진 종료일을 None으로 읽는다.\",\n        \"result\": \"유효 기간 행 없이 활성·보기 상태가 반환된다. 나머지 연락처 인가가 충족되면 원문 열람 판정에 사용된다.\"\n      }\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"should_fix\",\n      \"category\": \"state\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:1144\",\n      \"scenario\": \"개인정보 취급 감사 실패 직후 시험은 API 이력과 상세 상태를 재조회한다. 최신 사건이 기존 만료 상태를 유지하면 두 조회는 새 기간 행만 남은 경우를 놓칠 수 있다. 이후 정상 재시도가 같은 행을 교체할 수 있어 마지막 기간 수 검사도 이 잔여 행을 구별하지 못한다.\",\n      \"reproduction\": \"시험의 감사 실패 직후부터 정상 재시도 직전까지의 단언을 따라간다. 기간 투영만 남았을 때도 기존 만료 사건이 상세를 결정하고 미종료 투영은 합성 만료를 추가하지 않는 경로와 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RB-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:961\",\n      \"scenario\": \"경합 시험의 두 번째 요청은 고정 역할을 유지하는 별도 관리자가 보낸다. 대기 중 자기 역할을 회수당한 처리자가 잠금 획득 뒤 계속 쓸 수 있는지는 이 조합에서 드러나지 않는다. 이 분기는 요청 시작 시 메뉴 수준과 잠금 이후 실제 역할을 함께 사용하는 인가 경로를 구별한다.\",\n      \"reproduction\": \"첫 요청이 다른 관리자의 역할을 변경하고 커밋 직전 멈춘 경우를 기존 경합 시험에 대조한다. 역할을 잃을 관리자가 시작한 두 번째 쓰기의 거절과 상태 보존을 관찰하는 단언이 없다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"RA-1\",\n      \"state\": \"none\",\n      \"observation\": \"이력 GET은 사용자 라우터에서 대상 가시성 검사로 이어진다. 권한·취급 PUT은 PROC 선언, 대상 잠금과 범위 검사, 시스템관리 확인을 거친다.\"\n    },\n    {\n      \"id\": \"RA-2\",\n      \"state\": \"defect\",\n      \"observation\": \"새 쓰기의 고정 역할 확인과 연락처의 활동 사업장 확인을 따라갔다. 저장 사건에서 취급 효력을 복구하는 경로에 F3이 있다.\"\n    },\n    {\n      \"id\": \"RA-3\",\n      \"state\": \"none\",\n      \"observation\": \"이력의 전후 값 허용 필드, 양쪽 연락처 마스킹, 등록·조직 사업장 필터, no-store 응답, 신규 감사의 대상 ID와 역할 ID를 확인했다.\"\n    },\n    {\n      \"id\": \"RA-4\",\n      \"state\": \"none\",\n      \"observation\": \"새 경로와 본문의 ID는 형식 검증과 정수 변환을 거쳐 SQLAlchemy 조건에 들어간다. 추가 구간에 셸 호출이나 파일 경로 조립은 없었다.\"\n    },\n    {\n      \"id\": \"RB-1\",\n      \"state\": \"none\",\n      \"observation\": \"등록은 일반 등록 감사와 role.assign을 남긴다. 역할·취급 변경은 사건과 감사를 커밋 전에 추가한다. 중복 저장은 변경 전에 반환한다.\"\n    },\n    {\n      \"id\": \"RB-2\",\n      \"state\": \"defect\",\n      \"observation\": \"완료된 기존 기간 행은 건너뛰지만, 해제 뒤 재지정이 과거 공백을 채우는 F2를 확인했다.\"\n    },\n    {\n      \"id\": \"RB-3\",\n      \"state\": \"none\",\n      \"observation\": \"스키마 마이그레이션이 없는 패치다. 기존 기간 표를 읽는 분기, 기존 N 사건, 처리자 이름 외부 조인을 확인했다. 불완전한 사건의 인가 문제는 F3에 기록했다.\"\n    },\n    {\n      \"id\": \"RB-4\",\n      \"state\": \"defect\",\n      \"observation\": \"권한 실패 시험의 독립 세션 조회와 취급 성공 뒤 기간 표 조회를 확인했다. 취급 실패 직후의 투영 재조회 공백은 F4에 기록했다.\"\n    },\n    {\n      \"id\": \"RC-1\",\n      \"state\": \"none\",\n      \"observation\": \"역할·계정 변경은 고정 역할 행을 먼저 잠그며, 사용자 잠금 쿼리는 ID 순으로 정렬한다. 취급은 사용자 행 뒤 기간과 사건을 잠근다. 제공된 변경 구간에서 반대 잠금 순서를 확인하지 못했다.\"\n    },\n    {\n      \"id\": \"RC-2\",\n      \"state\": \"none\",\n      \"observation\": \"역할 메뉴 교체, 취급 기간 수정, 사건, 감사의 호출이 각 서비스 커밋 앞에 있다. 자동 만료는 이력 조회에서 응답 항목으로 계산된다.\"\n    },\n    {\n      \"id\": \"RC-3\",\n      \"state\": \"none\",\n      \"observation\": \"기간 교체에서 삭제와 삽입 사이의 flush, 감사 뒤 최종 커밋을 따라갔다. 추가된 중간 커밋은 없었다. 감사 실패 직후 잔여 행을 검출하는 시험 공백은 F4에 기록했다.\"\n    },\n    {\n      \"id\": \"RC-4\",\n      \"state\": \"defect\",\n      \"observation\": \"역할·계정 경합, 두 취급 저장의 경합, 같은 날과 다음 날의 만료 분기를 확인했다. 대기 중 처리자 본인의 자격이 회수되는 조합은 F5에 기록했다.\"\n    }\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a2-fc4e-7563-b429-75d32f4d6c2c",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 154987,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 76152
+    },
+    "usage_total_tokens": 76152,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "8c5865a3eede5f9a3fe7d57d5a2c71f77535d5fec7d69778d5e5db39ffcc96f7",
+    "verdict": "fail",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "256ede607db1cb0c5c6b6c66a8f7d076",
+  "assessment": {
+    "stage": "post",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "boundary",
+        "confidence": "high",
+        "location": "workspace/backend/src/domains/worklink/services/system/user_admin.py:592",
+        "scenario": "기존 사업장 범위 검사에서 허용되던 일반 US-01 처리자의 조직 편집이 대상의 전사 역할이 시스템관리라는 이유로 403이 된다. 패치 속 프로젝트 문맥은 이 조직 편집에 기존 범위 동작을 유지한다고 기록하며, 새 시험은 반대로 403을 고정한다.",
+        "reproduction": "패치의 test_roles_and_manager_serialization에서 동일 사업장에 속한 일반 처리자와 시스템관리 대상의 조직 추가 분기를 따라간다. 기존 대상 잠금·범위 검사 뒤 추가된 시스템관리 검사에서 거절된다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "state",
+        "confidence": "high",
+        "location": "workspace/backend/src/domains/worklink/services/system/user_privacy.py:100",
+        "scenario": "활성 Y를 9월 5일에 해제하면 기존 기간은 9월 4일에 끝난다. 9월 10일에 시작일 9월 5일인 Y를 다시 저장하면 확정 기간과 겹치지 않아 통과한다. 이전 상태가 미지정이고 기존 행은 모두 종료됐으므로 새 투영의 시작일을 오늘로 보정하는 분기도 건너뛴다. 기간 표에는 9월 5일부터 9일까지 취급 기간이 생겨, 그 날짜의 N 사건과 기간 표가 다른 사실을 기록한다.",
+        "reproduction": "합성 사용자로 활성 설정을 해제한 뒤 업무일을 넘겨 해제일을 시작일로 재지정하는 경로를 정적으로 추적한다. 새 기간 행의 시작일과 N 사건 이후의 날짜를 대조한다.",
+        "impact": "goal",
+        "criterion": "RB-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "boundary",
+        "confidence": "medium",
+        "location": "workspace/backend/src/domains/worklink/services/system/user_privacy.py:59",
+        "scenario": "최신 저장 사건이 일부 필드만 가진 객체이면, 지정 여부가 확인되지 않아도 시작일과 보기 플래그만으로 취급을 활성화할 수 있다. 종료일 누락과 파싱 오류도 종료일이 없는 기간으로 처리된다. 기존 데이터에 이러한 객체가 있는지는 패치로 확인할 수 없다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": "RA-2",
+        "safety_path": {
+          "input": "시작일과 보기 플래그가 있는 불완전한 저장 사건. 현재 유효한 기간 행이 없는 경우.",
+          "reached": "user_privacy.py:59에서 사건의 시작일을 채택하고 user_privacy.py:71에서 빠진 종료일을 None으로 읽는다.",
+          "result": "유효 기간 행 없이 활성·보기 상태가 반환된다. 나머지 연락처 인가가 충족되면 원문 열람 판정에 사용된다."
+        },
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "should_fix",
+        "category": "state",
+        "confidence": "high",
+        "location": "workspace/backend/tests/integration/test_user_admin_api_db.py:1144",
+        "scenario": "개인정보 취급 감사 실패 직후 시험은 API 이력과 상세 상태를 재조회한다. 최신 사건이 기존 만료 상태를 유지하면 두 조회는 새 기간 행만 남은 경우를 놓칠 수 있다. 이후 정상 재시도가 같은 행을 교체할 수 있어 마지막 기간 수 검사도 이 잔여 행을 구별하지 못한다.",
+        "reproduction": "시험의 감사 실패 직후부터 정상 재시도 직전까지의 단언을 따라간다. 기간 투영만 남았을 때도 기존 만료 사건이 상세를 결정하고 미종료 투영은 합성 만료를 추가하지 않는 경로와 대조한다.",
+        "impact": "goal",
+        "criterion": "RB-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/backend/tests/integration/test_user_admin_api_db.py:961",
+        "scenario": "경합 시험의 두 번째 요청은 고정 역할을 유지하는 별도 관리자가 보낸다. 대기 중 자기 역할을 회수당한 처리자가 잠금 획득 뒤 계속 쓸 수 있는지는 이 조합에서 드러나지 않는다. 이 분기는 요청 시작 시 메뉴 수준과 잠금 이후 실제 역할을 함께 사용하는 인가 경로를 구별한다.",
+        "reproduction": "첫 요청이 다른 관리자의 역할을 변경하고 커밋 직전 멈춘 경우를 기존 경합 시험에 대조한다. 역할을 잃을 관리자가 시작한 두 번째 쓰기의 거절과 상태 보존을 관찰하는 단언이 없다.",
+        "impact": "goal",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "none",
+          "observation": "이력 GET은 사용자 라우터에서 대상 가시성 검사로 이어진다. 권한·취급 PUT은 PROC 선언, 대상 잠금과 범위 검사, 시스템관리 확인을 거친다."
+        },
+        {
+          "id": "RA-2",
+          "state": "defect",
+          "observation": "새 쓰기의 고정 역할 확인과 연락처의 활동 사업장 확인을 따라갔다. 저장 사건에서 취급 효력을 복구하는 경로에 F3이 있다."
+        },
+        {
+          "id": "RA-3",
+          "state": "none",
+          "observation": "이력의 전후 값 허용 필드, 양쪽 연락처 마스킹, 등록·조직 사업장 필터, no-store 응답, 신규 감사의 대상 ID와 역할 ID를 확인했다."
+        },
+        {
+          "id": "RA-4",
+          "state": "none",
+          "observation": "새 경로와 본문의 ID는 형식 검증과 정수 변환을 거쳐 SQLAlchemy 조건에 들어간다. 추가 구간에 셸 호출이나 파일 경로 조립은 없었다."
+        },
+        {
+          "id": "RB-1",
+          "state": "none",
+          "observation": "등록은 일반 등록 감사와 role.assign을 남긴다. 역할·취급 변경은 사건과 감사를 커밋 전에 추가한다. 중복 저장은 변경 전에 반환한다."
+        },
+        {
+          "id": "RB-2",
+          "state": "defect",
+          "observation": "완료된 기존 기간 행은 건너뛰지만, 해제 뒤 재지정이 과거 공백을 채우는 F2를 확인했다."
+        },
+        {
+          "id": "RB-3",
+          "state": "none",
+          "observation": "스키마 마이그레이션이 없는 패치다. 기존 기간 표를 읽는 분기, 기존 N 사건, 처리자 이름 외부 조인을 확인했다. 불완전한 사건의 인가 문제는 F3에 기록했다."
+        },
+        {
+          "id": "RB-4",
+          "state": "defect",
+          "observation": "권한 실패 시험의 독립 세션 조회와 취급 성공 뒤 기간 표 조회를 확인했다. 취급 실패 직후의 투영 재조회 공백은 F4에 기록했다."
+        },
+        {
+          "id": "RC-1",
+          "state": "none",
+          "observation": "역할·계정 변경은 고정 역할 행을 먼저 잠그며, 사용자 잠금 쿼리는 ID 순으로 정렬한다. 취급은 사용자 행 뒤 기간과 사건을 잠근다. 제공된 변경 구간에서 반대 잠금 순서를 확인하지 못했다."
+        },
+        {
+          "id": "RC-2",
+          "state": "none",
+          "observation": "역할 메뉴 교체, 취급 기간 수정, 사건, 감사의 호출이 각 서비스 커밋 앞에 있다. 자동 만료는 이력 조회에서 응답 항목으로 계산된다."
+        },
+        {
+          "id": "RC-3",
+          "state": "none",
+          "observation": "기간 교체에서 삭제와 삽입 사이의 flush, 감사 뒤 최종 커밋을 따라갔다. 추가된 중간 커밋은 없었다. 감사 실패 직후 잔여 행을 검출하는 시험 공백은 F4에 기록했다."
+        },
+        {
+          "id": "RC-4",
+          "state": "defect",
+          "observation": "역할·계정 경합, 두 취급 저장의 경합, 같은 날과 다음 날의 만료 분기를 확인했다. 대기 중 처리자 본인의 자격이 회수되는 조합은 F5에 기록했다."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T06-1-repo.FUfK/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 1,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

@@ -2,8 +2,14 @@ import { lstatSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { ReviewBudgetScope } from "./review-budget.ts";
 import { taskFormat } from "../project/pre-review.ts";
+import { regularBytes, utf8 } from "../project/handoff-files.ts";
+import { AgentError } from "./contract.ts";
+import { POST_BUNDLE_ITEMS } from "./structured-review.ts";
 
-export type ReviewCriterion = { id: string; text: string };
+export { isBundleItems, POST_BUNDLE_ITEMS } from "./structured-review.ts";
+
+export type { ReviewCriterion } from "./structured-review.ts";
+import type { ReviewCriterion } from "./structured-review.ts";
 
 const criterionId = /^[A-Z][A-Z0-9]*-[1-9]\d*$/;
 
@@ -46,9 +52,9 @@ const backlogReadiness: ReviewCriterion[] = [
 ];
 
 export function reviewCriteria(scope: ReviewBudgetScope, artifact: string): ReviewCriterion[] {
+  if (scope.stage === "post") return [...POST_BUNDLE_ITEMS];
   let document = artifact;
-  const contract = scope.stage === "post" ? scope.lockTarget
-    : scope.stage === "backlog" && !/^(?:BACKLOG\.md|BR\d{2}_[^/]+\.md)$/i.test(scope.name) ? join(scope.root, "BACKLOG.md")
+  const contract = scope.stage === "backlog" &&!/^(?:BACKLOG\.md|BR\d{2}_[^/]+\.md)$/i.test(scope.name) ? join(scope.root, "BACKLOG.md")
     : null;
   if (contract) {
     try {
@@ -64,4 +70,18 @@ export function reviewCriteria(scope: ReviewBudgetScope, artifact: string): Revi
   if (/^# BR\d{2}\b/m.test(document) || taskFormat(document) !== "legacy" || !document.trim()) return [];
   // 고정 ID를 채택하기 전의 문서는 원문에서 승인 기준과 그 관측을 한 항목으로 대조한다.
   return [{ id: "C-1", text: "검토 대상 원문의 수용 기준을 식별하고 관측 근거를 확인한다" }];
+}
+
+/** 사후 reviewer 대상의 형식: 첫 비공백 줄이 `diff --git `이고 헝크 머리가 하나 이상이다. 내용의 진위는 보지 않는다. */
+export function postTargetIssue(text: string): string | null {
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  const first = lines.find((line) => line.trim() !== "");
+  if (first?.startsWith("diff --git ") && lines.some((line) => /^@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@/.test(line))) return null;
+  return "구현 후 reviewer 대상은 구현 diff다(첫 줄 `diff --git `과 헝크 머리) — 문서·결과물 확인은 tester 경로(`pace agent run`으로 tester 배정)로 한다";
+}
+
+/** 사후 묶음 점검이 붙이는 태스크 계약. 링크·하드 링크·비UTF-8은 거부한다. */
+export function postTaskContract(scope: ReviewBudgetScope): string {
+  try { return utf8(regularBytes(scope.lockTarget, 16 * 1024 * 1024)); }
+  catch { throw new AgentError("invalid_request", "태스크 계약(TASK.md)을 안전한 일반 UTF-8 파일로 읽을 수 없다"); }
 }

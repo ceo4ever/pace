@@ -15,7 +15,7 @@ import { checkGrant, checkRecoveryProof, confirmationDiagnosis, diagnosisLink, f
 import { crossVerify, type Rereview, type VerifyKind } from "./verify.ts";
 import { assessStructuredReview, effectiveBlocking, evidenceGaps, hasStructuredReviewFence, isStructuredStage, type StructuredAssessment } from "./structured-review.ts";
 import { recurringReviewSignals, reviewFailureSignal } from "./review-signals.ts";
-import { matchingCriteria, reviewCriteria } from "./review-criteria.ts";
+import { matchingCriteria, postTargetIssue, postTaskContract, reviewCriteria } from "./review-criteria.ts";
 import { isReviewText, matchesPermissionBasis, parseGrantedPermission, permissionBasis, samePermission, type PermissionBasis } from "../project/review-permission.ts";
 
 // `pace agent verify`·`pace agent review-note` 명령 처리 (P007 T01). src/cli.ts는 여기로 위임만 한다 — 시험이 실행기를 주입해 같은 경로를 탄다.
@@ -60,8 +60,10 @@ function checkOut(out: string, target: string, ledgers: readonly string[], scope
     return group === "projects" && /^p\d{3}_/.test(owner) || group === "backlogs" && /^bl\d{6}_\d{2}_/.test(owner);
   });
   if (calls) throw new AgentError("invalid_request", "--out이 에이전트 호출 원장 폴더를 가리킨다");
-  if (target.toLowerCase() === low || managed || followups) {
-    throw new AgentError("invalid_request", "--out이 대상·검토 원장·잠금 파일·기록 폴더를 가리킨다");
+  // 검토 단위의 루트 TASK.md는 계약 입력이다 — 사본으로 바꿔 끼우지 않는다.
+  const contract = scope !== undefined && low === scope.lockTarget.toLowerCase();
+  if (target.toLowerCase() === low || managed || followups || contract) {
+    throw new AgentError("invalid_request", "--out이 대상·검토 원장·잠금 파일·기록 폴더·태스크 계약을 가리킨다");
   }
 }
 
@@ -307,6 +309,11 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     release = acquireLock(scope?.lockTarget ?? target);
     const artifact = readFileSync(target, "utf8");
     const hash = reviewHash(artifact);
+    // 사후 reviewer는 구현 diff만 본다. 형식 거부는 중단 복구·소진 판정보다 먼저다 — 원장을 바꾸지 않고 tester 경로를 안내한다.
+    if (scope?.stage === "post") {
+      const issue = postTargetIssue(artifact);
+      if (issue) throw new AgentError("invalid_request", issue);
+    }
     const criteria = scope ? reviewCriteria(scope, artifact) : undefined;
     const criterionIds = criteria?.map(({ id }) => id);
     let permission_base: PermissionBasis | undefined;
@@ -334,6 +341,14 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     if (scope?.stage === "pre") {
       const issues = reviewerLineIssues(artifact);
       if (issues.length) throw new AgentError("invalid_request", issues.join(" · "));
+    }
+    // 사후 같은 해시 fail 재요청도 예약 전에 거부한다.
+    const taskContract = scope?.stage === "post" ? postTaskContract(scope) : undefined;
+    if (scope?.stage === "post" && state) {
+      const latest = state.decision.kind === "ordinary" && !recovery ? state.budget.latest?.entry : undefined;
+      if (latest && state.budget.latest?.ledgerTarget === ledgerTarget && latest.target === name && latest.hash === hash && latest.verdict === "fail") {
+        throw new AgentError("invalid_request", `직전 fail 검토(${latest.record}) 뒤 대상이 바뀌지 않았다 — 지적을 반영한 뒤 다시 검토한다`);
+      }
     }
     const budget = scope && !recovery && state?.decision.kind === "ordinary" ? reserveReviewCall(scope, now(), state.budget) : undefined;
     if (scope && grant) checkGrant(scope, target, grant);
@@ -370,7 +385,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     const focus = recovery?.type === "focused_check"
       ? `수정 확인의 지적은 ${recovery.finding.id}의 원래 위치 ${recovery.finding.location}이다. 해소 여부와 수정 영향(${recovery.impact})을 함께 판정한다.${
         recovery.diagnosed ? " 진단 뒤 한정 확인이므로 직전 원문의 다른 잔여 blocking도 해소됐는지 확인한다."
-          : " 지정한 지적과 적용한 수정의 영향만 판정한다. 수정 영향 밖의 다른 기존 지적은 note로 남긴다."}`
+          : scope?.stage === "post" ? "" : " 지정한 지적과 적용한 수정의 영향만 판정한다. 수정 영향 밖의 다른 기존 지적은 note로 남긴다."}`
       : recovery ? `상위 근본 검토 해결안의 한정 재검증이다. 수정 영향(${recovery.impact})과 합의한 기준을 함께 대조한다.` : undefined;
 
     // 실행 전에 이번 기록 자리를 먼저 만든다 — 실행 뒤 기록·원장 확정이 끊기면 원장에 없는 기록으로 남아 다음 검토를 막는다
@@ -384,6 +399,7 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
     try {
       const taskEdit = scope?.stage === "post" ? approvedTaskEdit(scope.root) : undefined;
       outcome = await crossVerify({
+        taskContract,
         kind, rereview, reviewStage: scope?.stage, focus, criteria, requirePermission: !!permission_base,
         approvedTaskEdit: taskEdit ? JSON.stringify(taskEdit, null, 2) : undefined,
         authorAgent: author, authorProvider: values["author-provider"] as "anthropic" | "openai" | undefined,

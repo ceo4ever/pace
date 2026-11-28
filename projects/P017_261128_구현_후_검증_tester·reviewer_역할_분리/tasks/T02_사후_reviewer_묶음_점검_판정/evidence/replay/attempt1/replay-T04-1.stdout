@@ -1,0 +1,146 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**배포 보류.** 일반 상세와 과거 이력에서 보호 주소의 원문이 노출되고, 기본 정보 저장에서는 주소에 대한 개인정보 처리 권한 확인이 빠졌습니다. 변경된 시험은 이 동작을 정상으로 고정합니다.\n\nA-1에서 주소의 일반 공개, 과거 이력 공개, 수정 인가 완화는 각각 기존 합의에 실질적인 영향을 줍니다. 현재 계약의 보호 동작을 복구하는 수정은 A-1의 합의 변경에 해당하지 않습니다. 공개 정책을 채택하려면 owner 승인 원문과 적용 범위를 확인하고 계약을 먼저 갱신해야 합니다. diff에 인용된 문구만으로 과거 이력이나 수정 인가까지 위임됐다고 판정할 수 없습니다.\n\n읽은 범위는 요청에 첨부된 상위 목적·TASK.md 계약, 로컬 `input.patch` 전체 32개 파일 변경, `decision-rights.md`, 재생 프로젝트 `PROJECT.md`입니다. 호스트가 제공한 세션 지침·환경·스킬 목록과 저장소 파일명에 노출됐습니다. 별도 자동 부트·메모리 본문, 작성자 마감·자체 판정·지적 대응 문서, 기존 검토 기록의 본문은 열지 않았습니다. 재생 저장소에는 원본 앱 트리가 없어 변경 전 공통 라우터와 저장소 구현에는 확인 한계가 있습니다. 파일 변경과 앱 실행 없이 정적으로 검토했습니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"RA-3\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:331\",\n      \"scenario\": \"대상을 조회할 수 있지만 개인정보 원문 열람 자격이 없는 계정에도 일반 상세가 저장된 주소를 원문으로 반환한다. 응답의 can_view_contacts 값은 주소 필드를 제한하지 않으며 별도 원문 열람 감사 경로도 통과하지 않는다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-3\",\n      \"safety_path\": {\n        \"input\": \"주소가 저장된 합성 대상과 US-01 일반 조회만 허용된 주체\",\n        \"reached\": \"일반 상세 서비스가 개인정보 취급 상태를 계산한 뒤 UserDetail의 address에 user.address를 직접 대입한다.\",\n        \"result\": \"원문 열람 권한이나 열람 감사 없이 일반 상세 응답과 기본 정보 화면에 주소가 나타난다.\"\n      }\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"RA-1\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:610\",\n      \"scenario\": \"주소가 보호 연락처 입력에서 일반 프로필 입력으로 옮겨졌다. 프로필 처리 권한은 있고 개인정보 취급 기간이 지나거나 아직 시작하지 않은 주체가 주소를 수정할 수 있다. 변경 통합 시험도 그 조합에서 성공을 기대한다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-1\",\n      \"safety_path\": {\n        \"input\": \"일반 프로필 저장 범위 안의 합성 대상, 유효한 개인정보 처리 자격이 없는 편집자, 합성 주소 변경\",\n        \"reached\": \"프로필 저장이 주소를 일반 fields로 분류하고 개인정보 처리 검사 분기를 contacts에만 적용한다.\",\n        \"result\": \"개인정보 처리 자격과 연락처 대상 사업장 확인 없이 주소가 저장된다.\"\n      }\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"RB-2\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_history.py:22\",\n      \"scenario\": \"이미 저장된 이력에 있는 주소의 공개 범위를 소급 변경한다. 주소를 마스킹 집합에서 제외하고 프로필 이력 응답 필드로 통과시켜 새 저장이나 DB 갱신 없이 과거 스냅샷의 원문이 공개된다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RB-2\",\n      \"safety_path\": {\n        \"input\": \"주소가 들어 있는 기존 합성 프로필 이력과 일반 이력 조회 권한\",\n        \"reached\": \"이력 응답이 기존 변경 전후 스냅샷을 변환한다. 변경된 통합 시험 1353행도 레거시 주소 원문을 기대한다.\",\n        \"result\": \"기존에 가려졌던 주소가 과거 이력의 변경 전후 값에 표시된다.\"\n      }\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"blocking\",\n      \"category\": \"RC-4\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:609\",\n      \"scenario\": \"필수 보호 동작의 검출 방향이 뒤집혔다. 통합 시험은 취급 기간 밖 주소 변경의 성공과 일반 상세·과거 이력의 주소 원문을 기대한다. 화면의 S-26 시험도 원문 보기 전후에 주소가 평문이라고 단언한다. 이 시험들이 통과해도 주소 보호 회귀를 걸러내지 못한다.\",\n      \"reproduction\": \"변경된 통합 시험의 313행·609행·1353행과 UserScreen.test.tsx의 219행·223행에서 기대하는 값을 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"should_fix\",\n      \"category\": \"RC-3\",\n      \"location\": \"workspace/frontend/src/domains/worklink/features/system/administration/UserProfile.tsx:156\",\n      \"scenario\": \"연락처를 편집하다 다른 탭으로 이동하면 다섯 연락처의 원문과 함께 미저장 연락처 초안도 지워진다. 기본 정보 저장이 실패한 뒤 탭을 이동해 다시 시도하는 경우에도 수정값을 복구할 수 없다.\",\n      \"reproduction\": \"합성 연락처 값을 편집하고 저장 전에 이력 탭으로 갔다가 기본 정보 탭으로 돌아온다. 연락처 편집을 열어 초안과 저장 가능 상태를 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"RC-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"should_fix\",\n      \"category\": \"RC-3\",\n      \"location\": \"workspace/frontend/src/domains/worklink/features/system/administration/UserProfile.tsx:29\",\n      \"scenario\": \"저장 중에도 일반 프로필 필드의 입력이 가능하다. 입력 변경이 진행 중인 mutation을 reset해 저장 버튼의 pending 제어를 풀 수 있으므로 같은 대상을 향한 두 저장이 겹친다. 요청 처리 순서가 반대면 앞선 값이 최종값으로 남을 수 있다. 조직·권한·취급 폼에도 입력 변경 시 mutation을 reset하는 분기가 있다.\",\n      \"reproduction\": \"합성 사용자 프로필의 첫 저장 응답을 지연시킨 상태에서 같은 항목을 다시 편집하고 저장한다. 첫 요청을 나중에 처리해 최종 재조회 값과 화면의 저장 상태를 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"RC-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F7\",\n      \"severity\": \"should_fix\",\n      \"category\": \"RB-4\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:584\",\n      \"scenario\": \"계정과 프로필을 같이 저장하다 감사 기록에서 실패하는 시험은 사용자 상세와 두 종류의 변경 이력만 다시 조회한다. 실패 지점 전에 수행된 세션 폐기가 되돌아가는지는 확인하지 않는다. 사용자와 감사 상태만 복구되고 로그인 세션이 끊기는 회귀가 이 시험을 통과할 수 있다.\",\n      \"reproduction\": \"실패 주입 전에 합성 대상에게 활성 세션을 발급하고, 합성 감사 실패 후 그 세션으로 인증 요청을 다시 보내 결과를 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"RB-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F8\",\n      \"severity\": \"should_fix\",\n      \"category\": \"implementation\",\n      \"location\": \"workspace/frontend/src/domains/worklink/data/system/useUsers.ts:20\",\n      \"scenario\": \"새 options 클라이언트 함수·응답 검증기와 모델을 정적으로 가져오지만 32개 파일 변경에 대응하는 생성 모듈이 없다. 기존 생성 모듈에 이 패치만 적용하고 별도 재생성 없이 빌드하면 새 내보내기를 해석할 수 없다. 원본 빌드에서 생성 단계를 자동 실행하는지는 재생 입력에서 확인되지 않는다.\",\n      \"reproduction\": \"원본 대상 체크아웃의 기존 생성 모듈과 useUsers.ts의 options 가져오기를 대조하고, 출하 빌드가 새 모듈을 생성한 뒤 타입 검사하는지 확인한다.\",\n      \"confidence\": \"medium\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F9\",\n      \"severity\": \"should_fix\",\n      \"category\": \"implementation\",\n      \"location\": \"workspace/frontend/src/domains/worklink/features/system/administration/PermissionScreen.tsx:173\",\n      \"scenario\": \"별개인 PM-01의 삭제 확인에서 보유자의 기본 권한 전환과 개인 추가 메뉴 해제 안내를 제거했다. 삭제 명령은 같은데 실행 전에 확인할 수 있는 영향이 축소됐다.\",\n      \"reproduction\": \"보유자가 있는 일반 권한의 삭제 확인을 열어 이전 안내의 두 후속 효과와 변경된 확인 문구를 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"minor\",\n      \"criterion\": null,\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"RA-1\",\n      \"state\": \"defect\",\n      \"observation\": \"옵션은 UserRouter에서 동적 상세보다 먼저 등록되고 서비스가 사업장 범위를 적용한다. 새 주소 저장 경로는 연락처 전용 처리 인가를 건너뛴다.\"\n    },\n    {\n      \"id\": \"RA-2\",\n      \"state\": \"none\",\n      \"observation\": \"셸은 누락·비정상 US-01 수준을 0으로 해석해 메뉴와 화면 요청을 막는다. 목록·옵션은 허용 사업장으로 좁히고 대상 상세는 가시성 검사를 거친다. 공통 서버 데코레이터의 기본 수준 정의는 diff 밖이다.\"\n    },\n    {\n      \"id\": \"RA-3\",\n      \"state\": \"defect\",\n      \"observation\": \"다섯 보호 연락처는 일반 상세에서 계속 가려지지만 주소는 평문으로 응답한다. 과거 이력의 주소 공개도 F3에서 확인했다.\"\n    },\n    {\n      \"id\": \"RA-4\",\n      \"state\": \"none\",\n      \"observation\": \"추가 회사코드와 역할 ID는 스키마 검증을 거쳐 SQLAlchemy 조건에 값으로 전달된다. 새 사진 UI는 기존 업로드 API에 파일 본문을 전달한다. 변경된 경로에 셸 호출이나 외부 입력으로 로컬 경로를 만드는 코드가 없다.\"\n    },\n    {\n      \"id\": \"RB-1\",\n      \"state\": \"none\",\n      \"observation\": \"변경된 저장 경로에서 프로필과 계정 변화는 각각 _change를 호출한 뒤 공통 커밋에 도달한다. 주소 읽기 감사 누락은 F1에 기록했다. 기존 조직·권한·사진 감사 본체는 변경 범위 밖이다.\"\n    },\n    {\n      \"id\": \"RB-2\",\n      \"state\": \"defect\",\n      \"observation\": \"과거 행을 갱신하는 SQL은 없지만 레거시 주소 이력의 노출 결과가 기존 마스킹에서 원문으로 소급 변경된다.\"\n    },\n    {\n      \"id\": \"RB-3\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"패치에 DDL·마이그레이션·백필 또는 저장 형식 변환이 없다. 기존 행의 이력 응답 변경은 RB-2에 기록했다.\"\n    },\n    {\n      \"id\": \"RB-4\",\n      \"state\": \"defect\",\n      \"observation\": \"등록·프로필은 저장 뒤 상세를 다시 조회하고 주소는 DB도 조회한다. 결합 저장 실패 시험의 재조회에서 기존 세션 상태가 빠져 있다.\"\n    },\n    {\n      \"id\": \"RC-1\",\n      \"state\": \"none\",\n      \"observation\": \"계정 상태 변경이 있는 결합 저장은 기존 계정 단독 경로와 동일하게 고정 역할 잠금 뒤 대상 사용자 잠금을 요청한다. 변경부에 역순 잠금이 보이지 않는다.\"\n    },\n    {\n      \"id\": \"RC-2\",\n      \"state\": \"none\",\n      \"observation\": \"변경된 서버 저장에서 세션 폐기와 감사 호출은 같은 세션을 사용하고 커밋은 끝에 있다. 사진은 기존 API의 별도 조작이며 화면 쿼리 갱신은 저장 성공 뒤 호출된다.\"\n    },\n    {\n      \"id\": \"RC-3\",\n      \"state\": \"defect\",\n      \"observation\": \"서버의 결합 저장은 단일 커밋이지만 화면에서 탭 이동이 연락처 초안을 없애고, 저장 중 입력이 pending 제어를 풀어 다른 저장이 겹칠 수 있다.\"\n    },\n    {\n      \"id\": \"RC-4\",\n      \"state\": \"defect\",\n      \"observation\": \"일반 상세·과거 이력·취급 기간 밖 주소 저장의 시험이 보호 동작 대신 원문 공개와 변경 성공을 기대한다. 화면 시험은 탭 이동 시 원문 제거를 검사하지만 미저장 연락처 편집값의 복구나 진행 중 저장과 입력의 조합은 검사하지 않는다.\"\n    }\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a0-03e6-78c3-88c5-98c049aa2411",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 139218,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 82967
+    },
+    "usage_total_tokens": 82967,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "d2d90555963f7430a341f1839d20c8482bb374960d7233170c806953927b93c4",
+    "verdict": "unknown",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "e688924c07b8db27fabe622ba5264f43",
+  "assessment": {
+    "stage": "post",
+    "verdict": "unknown",
+    "reported_verdict": "fail",
+    "differs": true,
+    "findings": null,
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RA-4",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RB-4",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-1",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-2",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-3",
+          "state": "unverified",
+          "observation": null
+        },
+        {
+          "id": "RC-4",
+          "state": "unverified",
+          "observation": null
+        }
+      ],
+      "issues": [
+        "missing_criteria"
+      ]
+    }
+  },
+  "evidence_action": {
+    "action": "collect_evidence",
+    "gaps": [
+      "RA-1",
+      "RA-2",
+      "RA-3",
+      "RA-4",
+      "RB-1",
+      "RB-2",
+      "RB-3",
+      "RB-4",
+      "RC-1",
+      "RC-2",
+      "RC-3",
+      "RC-4",
+      "missing_criteria"
+    ],
+    "if_proceed_without_evidence": "A-3"
+  },
+  "warning": "구조화된 지적의 판정이 미확인이다. 원문과 형식을 확인한다.",
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T04-1-repo.Em6s/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 0,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

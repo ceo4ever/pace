@@ -849,7 +849,7 @@ test("허가 범위: 최신 원본과 대조해 여러 줄의 작은 수정만 �
   assert.match(applied.diff, /- 먼저 문구 A\n\+ 먼저 문구 A 수정\n\+ 보충 한 줄/);
   assert.match(applied.diff, /- 나중 문구 B\n\+ 나중 문구 B 수정/);
   const implementation = join(h.dir, "evidence/implementation.patch");
-  write(implementation, "합성 구현 변경과 시험 결과\n");
+  write(implementation, "diff --git a/src/a.ts b/src/a.ts\n--- a/src/a.ts\n+++ b/src/a.ts\n@@ -1 +1 @@\n-old\n+합성 구현 변경\n");
   const prompts: string[] = [];
   const result = await reviewWithFixture(implementation, "```pace-review\n{\"version\":1,\"findings\":[]}\n```\npass", prompts);
   assert.equal(result.code, 0, JSON.stringify(result.output));
@@ -950,7 +950,7 @@ test("T06 외부 검토와 생성한 PRE-REVIEW가 실제 프로젝트 check를 
   const changed = h.snapshot.replace("먼저 문구 A", "허용 위치에 반영한 문구 A");
   write(h.target, changed);
   const artifact = join(h.dir, "evidence/implementation.patch");
-  write(artifact, "독립 구현 후 검토 입력\n");
+  write(artifact, "diff --git a/src/a.ts b/src/a.ts\n--- a/src/a.ts\n+++ b/src/a.ts\n@@ -1 +1 @@\n-old\n+독립 구현 후 검토 입력\n");
   const post = runAt(artifact, "review-hand", "--author-provider", "anthropic", "--purpose-file", file);
   const postFixed = JSON.parse(readFileSync(post.snapshot, "utf8"));
   assert.match(postFixed.prompt, /사전 검토 허용 위치에서 반영한 TASK 변경/);

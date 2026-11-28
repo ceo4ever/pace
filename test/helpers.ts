@@ -178,12 +178,33 @@ export function scopedReviewFixture(prompt: string, text: string): string {
 /** 기존 회귀 fixture에는 합성 관측을 연결하되, 구조가 깨진 응답은 원래대로 검사한다. */
 export function evidenceReviewFixture(prompt: string, text: string): string {
   if (!/```pace-review\n\{"version":2,/.test(prompt)) return text;
-  const criteria = [...prompt.matchAll(/^\- \[필수 기준 ([A-Z0-9-]+)\]/gm)].map((match) =>
-    ({ id: match[1], state: "present", observation: "시험의 고정 입력에서 결과를 확인했다" }));
+  const criteria = [...prompt.matchAll(/^\- \[(?:필수 기준|점검 항목) ([A-Z0-9-]+)\]/gm)].map((match) =>
+    ({ id: match[1], state: /^R[ABC]-\d$/.test(match[1]!) ? "none" : "present", observation: "시험의 고정 입력에서 결과를 확인했다" }));
   return text.replace(/^(```pace-review[ \t]*\r?\n)([^\r\n]+)(\r?\n```)/m, (block, start: string, json: string, end: string) => {
     if (!/"version"\s*:\s*1\b/.test(json)) return block;
     const updated = json.replace(/"version"\s*:\s*1\b/, `"version":2,"criteria":${JSON.stringify(criteria)}`)
       .replace(/"severity"\s*:/g, '"impact":"goal","severity":');
     return start + updated + end;
   });
+}
+
+/** P017 T02: 구현 후 reviewer 프롬프트에서 뺀 main 기준 문장 7개(1단계 지시 3 · 범위 축소 4) */
+export const POST_REMOVED_SENTENCES = [
+  "지금은 1단계 독립 목표 대조다. 작업 문서(TASK·테스트 표·작성자 마감/자체 판정·지적 대응)는 받거나 읽지 않는다.",
+  "첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다.",
+  "2단계 작업 문서는 첫 판정을 받은 호출자가 1단계 원문과 함께 호스트 검토 절차로 별도 전달한다. 검토 주체가 바뀌면 제공자·독립성 수준·변경 이유를 기록한다. 이 호출만으로 두 단계가 실행됐다고 주장하지 않는다.",
+  "판정 범위: 직전 검토의 blocking이 해소됐는지와 그 수정(바뀐 줄)이 만든 새 결함만 판정한다. 직전에 지적되지 않았고 바뀌지 않은 부분의 새 지적은 note로만 남기고 판정에 넣지 않는다.",
+  "직전 판정은 pass였다. 해소 여부를 판정할 blocking은 없으며 이번 변경이 만든 결함만 판정한다.",
+  "재검토에서 이전 기준 상태를 확인하고, 바뀐 증거와 그 영향만 새로 관측한다. 그대로 적용되는 확인의 근거를 함께 반환한다.",
+  "지정한 지적과 적용한 수정의 영향만 판정한다. 수정 영향 밖의 다른 기존 지적은 note로 남긴다.",
+] as const;
+
+/** 구현 후 묶음 점검 프롬프트의 공통 단언: TASK·diff 원문, 12항목 전체 지시, 뺀 문장 부재 */
+export function assertPostBundlePrompt(prompt: string, task: string, diff: string): void {
+  const assert = (ok: boolean, message: string) => { if (!ok) throw new Error(`${message}\n---\n${prompt}`); };
+  assert(prompt.includes(`## 태스크 계약: TASK.md\n${task}`), "루트 TASK.md 원문이 없다");
+  assert(prompt.includes(diff), "diff 원문이 없다");
+  assert(prompt.includes("세 묶음 12항목 전체를 diff 전체에 대해 답한다."), "12항목 전체 지시가 없다");
+  for (const sentence of POST_REMOVED_SENTENCES) assert(!prompt.includes(sentence), `뺀 문장이 남았다: ${sentence}`);
+  for (const id of ["RA", "RB", "RC"].flatMap((group) => [1, 2, 3, 4].map((n) => `${group}-${n}`))) assert(prompt.includes(`[점검 항목 ${id}]`), `${id} 항목이 없다`);
 }

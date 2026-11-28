@@ -1,0 +1,59 @@
+{
+  "choices": [
+    "고치고 예외로 구현",
+    "추가 사전 검토"
+  ],
+  "recommendation": "고치고 예외로 구현",
+  "assessments": [
+    {
+      "finding": "F1 [blocking] TASK.md:53 — 판정기가 이유가 있는 not_applicable 또는 같은 항목의 유효한 비차단 지적을 단 defect를 무조건 unknown으로 처리해도, 정상 입력을 none으로만 구성한 S-2와 blocking defect를 쓰는 S-3이 통과할 수 있다.",
+      "decision": "A-3",
+      "reason": "반영: S-2 정상 사례를 none·유효 not_applicable·비차단 defect 혼합으로 교체(기존 사례 교체). owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "F2 [blocking] TASK.md:55 — S-4는 review-hand 고정본에서 진단 유무별 수정 확인 프롬프트를 관측하도록 적었으나 현행 review-hand는 수정 확인을 verify로 넘긴다. S-5의 owner 같은 해시 진행도 동일한 경계에 걸린다. 이대로는 관측할 고정본이 없거나 시험을 맞추기 위해 기존 배정 흐름을 바꾸게 된다.",
+      "decision": "A-3",
+      "reason": "반영(삭제 방향): S-4의 review-hand 모드를 첫 검토·재검토로 줄이고, S-5 owner 회차 같은 H는 verify만. owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "F3 [blocking] TASK.md:67 — 새 TASK 첨부를 경로 검증 없는 파일 읽기로 구현하면 루트 TASK.md가 링크인 경우 검토 범위 밖 본문이 프롬프트에 들어갈 수 있다. 정상 TASK를 쓰는 S-4는 이 구현에서도 통과한다.",
+      "decision": "A-3",
+      "reason": "반영: 접근에 루트 TASK.md를 reviewInput(링크 거부 일반 파일)으로 읽어 붙인다는 한 구절. owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "F4 [blocking] TASK.md:56 — 헝크 머리만 검사하는 구현은 문서 앞에 비공백 설명이 붙은 패치를 받아들인다. 첫 줄만 맞고 헝크가 없는 입력과 헝크가 없는 일반 문서는 여전히 거부하므로 현재 S-5가 통과할 수 있다.",
+      "decision": "A-3",
+      "reason": "반영하지 않음: TASK-CLOSE 한계(앞에 비공백 설명이 붙은 패치는 시험하지 않음). owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "F5 [blocking] TASK.md:58 — 같은 위치만 지정한 두 회차는 recurring_area를 확인할 수 있어도 superficial_fix에 필요한 같은 대상·같은 유효 등급·해당 파일의 패치 변경을 보장하지 못한다. 반대로 위치 반복만으로 superficial_fix까지 항상 내는 구현도 현재 기대값으로는 배제할 수 없다.",
+      "decision": "A-3",
+      "reason": "반영(삭제 방향): S-7 신호 행 삭제, T-7은 기존 회귀 시험(test/review-signals.test.ts)과 tester 원자료 대조. owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "T-2",
+      "decision": "A-3",
+      "reason": "R5의 증거 공백 T-2은 위 지적과 같은 내용이며 같은 owner 결정으로 처리한다. owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "T-4",
+      "decision": "A-3",
+      "reason": "R5의 증거 공백 T-4은 위 지적과 같은 내용이며 같은 owner 결정으로 처리한다. owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "T-5",
+      "decision": "A-3",
+      "reason": "R5의 증거 공백 T-5은 위 지적과 같은 내용이며 같은 owner 결정으로 처리한다. owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "T-7",
+      "decision": "A-3",
+      "reason": "R5의 증거 공백 T-7은 위 지적과 같은 내용이며 같은 owner 결정으로 처리한다. owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    },
+    {
+      "finding": "permission_unverified",
+      "decision": "A-3",
+      "reason": "R5의 증거 공백 permission_unverified은 위 지적과 같은 내용이며 같은 owner 결정으로 처리한다. owner A-3(2026-11-28, 원문 \"고치고 예외로 구현 (Recommended)\"): R5 blocking 중 F1·F2·F3·F5는 고치고 F4는 TASK-CLOSE 한계로 두고, 고친 TASK에 사전 검토 waiver를 묶어 구현한다. 구현 후 tester·reviewer 검증은 그대로다."
+    }
+  ]
+}

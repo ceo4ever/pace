@@ -1,0 +1,223 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "배포 보류입니다. 일반 조회 권한으로 현재 주소와 과거 주소 원문이 반환되고, 주소 수정도 개인정보 처리 자격을 확인하는 경로를 벗어났습니다.\n\nA-1 판정은 **예**입니다. 변경을 유지하면 제공된 계약이 정한 개인정보 접근 범위가 달라집니다. 패치의 IA와 데이터 모델에는 캡틴 결정 인용이 있지만, 이번 검토에서 확인된 승인 원문과 적용 범위는 없습니다. 변경을 유지하려면 일반 상세·수정·과거 이력 각각에 적용되는 범위를 확인해 계약을 먼저 정정해야 합니다. 현 계약에 맞춰 보호를 복원하는 조치는 A-1에 해당하지 않습니다.\n\n읽은 범위는 제공된 상위 목적과 TASK.md 본문, `evidence/input.patch` 전체 32개 파일의 변경분, `decision-rights.md`의 A-1입니다. 세션의 작업 디렉터리와 읽기 전용 권한, 호스트 지침, 저장소 파일명과 상태는 노출됐습니다. 별도 자동 부트·프로젝트 메모리 본문, 작성자 마감·자체 판정·지적 대응 문서, 이전 검토 기록은 열지 않았습니다. 아래 판정은 정적 검토 결과이며, 직접 재현과 파일 수정은 수행하지 않았습니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"boundary\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:331\",\n      \"scenario\": \"US-01에서 대상 조회는 가능하고 유효한 개인정보 취급 자격은 없는 사용자가 일반 상세에서 현재 주소 원문을 받는다. user_history.py:22의 가림 제거와 :37의 허용 필드 추가로 이력 응답도 주소 원문을 반환한다. 변경된 통합시험은 기존 이력의 주소 원문 반환까지 기대한다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-3\",\n      \"safety_path\": {\n        \"input\": \"비어 있지 않은 합성 주소와 과거 주소 이력이 있는 가시 대상, US-01 보기 권한만 있고 개인정보 취급 자격은 없는 세션\",\n        \"reached\": \"일반 상세의 address=user.address와 사용자 변경 이력의 주소 필드 직렬화\",\n        \"result\": \"별도의 원문 열람 인가와 열람 감사를 거치지 않고 현재 및 과거 주소가 일반 응답에 포함된다.\"\n      }\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"boundary\",\n      \"location\": \"workspace/backend/src/domains/worklink/services/system/user_admin.py:607\",\n      \"scenario\": \"주소가 프로필 최상위 필드로 옮겨졌다. 프로필 수정은 가능하고 개인정보 처리는 허용되지 않는 처리자의 주소 변경이 일반 필드로 분류되어 취급 기간·처리 자격·대상 사업장 확인을 건너뛴다. 통합시험의 :610도 취급 기간 밖에서 이 변경이 성공하는 것을 기대한다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"security\",\n      \"criterion\": \"RA-2\",\n      \"safety_path\": {\n        \"input\": \"프로필 수정 권한은 있고 개인정보 취급 기간이 만료된 처리자, 편집 범위 안의 합성 대상\",\n        \"reached\": \"기본 정보 저장의 최상위 주소 필드가 일반 프로필 변경 목록에 들어가고 contacts 전용 인가 분기를 통과하지 않는다.\",\n        \"result\": \"보호 대상인 주소가 유효한 개인정보 처리 자격 확인 없이 변경된다.\"\n      }\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/frontend/src/domains/worklink/features/system/administration/UserProfile.tsx:57\",\n      \"scenario\": \"기본 정보 저장 중에도 연락처 입력은 편집 가능하다. 요청을 보낸 뒤 입력한 연락처 변경은 전송된 페이로드에 없는데, 먼저 보낸 요청이 성공하면 성공 콜백의 reset이 최신 연락처 초안까지 지운다. 화면에는 저장 성공이 표시된다.\",\n      \"reproduction\": \"합성 데이터로 기본 정보 저장 응답을 지연한다. 연락처 편집을 열린 상태로 두고 저장을 누른 직후 비상 관계 값을 바꾼다. 첫 응답을 성공으로 완료한 뒤 입력값과 재조회 결과를 비교한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"data_loss\",\n      \"criterion\": \"RC-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/frontend/src/domains/worklink/features/system/administration/UserProfile.tsx:103\",\n      \"scenario\": \"연락처 편집 중 다른 탭으로 이동하면 UserContacts가 언마운트되고 :156의 정리 함수가 부모의 구조화된 수정 초안까지 지운다. 원문 닫기 시험은 열람 후 이동만 다루므로 편집 초안 유실을 잡지 못한다.\",\n      \"reproduction\": \"합성 사용자의 비상 관계를 새 값으로 편집하고 저장하기 전에 이력 탭을 열었다가 기본 정보로 돌아온다. 연락처 초안이 사라졌는지 확인한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"data_loss\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/frontend/src/domains/worklink/features/system/administration/UserProfile.tsx:287\",\n      \"scenario\": \"사진 선택 직후 진행되는 FileReader 작업은 사진 입력을 잠그지 않는다. 두 번 선택하면 각각의 읽기 완료가 업로드를 시작하므로 첫 번째 선택의 읽기가 늦게 끝날 때 마지막으로 고른 사진을 덮어쓸 수 있다.\",\n      \"reproduction\": \"테스트에서 첫 사진의 FileReader 완료를 지연한다. 두 번째 사진을 선택해 업로드를 완료한 다음 첫 사진의 읽기를 완료한다. 두 요청의 순서와 최종 사진을 비교한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"note\",\n      \"category\": \"other\",\n      \"location\": \"workspace/frontend/src/domains/worklink/features/system/administration/PermissionScreen.tsx:173\",\n      \"scenario\": \"US-01 연동과 별개인 권한 삭제 확인의 문구가 바뀌었다. 같은 삭제 명령을 호출하지만, 변경 전 화면이 명시하던 기본 권한 전환과 개인 추가 메뉴 해제 안내가 포괄적인 삭제 문구로 대체됐다.\",\n      \"reproduction\": \"권한 삭제 확인 컴포넌트의 변경 전후 문구와 같은 삭제 핸들러 연결을 비교한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"minor\",\n      \"criterion\": null,\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"RA-1\",\n      \"state\": \"none\",\n      \"observation\": \"새 /options는 기존 US-01 UserRouter 안에서 정적 경로로 선언되고 서비스에서 _places로 회사·사업장·부서를 제한한다. 등록과 기본 정보 저장은 기존 쓰기 진입점을 재사용한다. 공통 라우터의 기본 인가 구현은 패치 변경분에 없다.\"\n    },\n    {\n      \"id\": \"RA-2\",\n      \"state\": \"defect\",\n      \"observation\": \"연락처 묶음에는 개인정보 처리 자격 검사가 남아 있다. 최상위 주소는 기본 프로필 권한만 적용되는 분기로 들어간다. F2.\"\n    },\n    {\n      \"id\": \"RA-3\",\n      \"state\": \"defect\",\n      \"observation\": \"일반 상세와 기존 이력의 주소 원문이 새로 노출된다. 나머지 연락처는 상세에서 가림 변환을 거치고 별도 연락처 응답에는 no-store가 적용된다. F1.\"\n    },\n    {\n      \"id\": \"RA-4\",\n      \"state\": \"none\",\n      \"observation\": \"회사·역할 필터를 입력 스키마와 SQLAlchemy 조건식까지 추적했다. 상세 선택 ID는 숫자 형식 확인 뒤 API에 전달되며 사진 원본은 이름과 Base64 데이터로 기존 API에 전달된다. 변경분에 외부 입력을 직접 연결하는 셸이나 파일 경로 구성은 보이지 않는다.\"\n    },\n    {\n      \"id\": \"RB-1\",\n      \"state\": \"none\",\n      \"observation\": \"복합 저장은 프로필 변경의 _change와 계정 변경의 _change를 모두 거쳐 한 번 커밋한다. 무변경 계정 요청은 쓰기를 건너뛴다. 등록은 기존 생성 경로를 사용하고 선택지 호출은 조회다.\"\n    },\n    {\n      \"id\": \"RB-2\",\n      \"state\": \"none\",\n      \"observation\": \"기존 행을 일괄 수정하거나 확정된 이력 스냅샷을 덮어쓰는 변경은 없다. 기존 이력의 주소를 읽을 때 적용하던 가림은 사라지며 해당 노출은 F1에 기록했다.\"\n    },\n    {\n      \"id\": \"RB-3\",\n      \"state\": \"not_applicable\",\n      \"observation\": \"DB 스키마 변경·데이터 변환·마이그레이션 파일이 없다. 기존 주소 행의 새 응답 동작은 F1에 해당한다.\"\n    },\n    {\n      \"id\": \"RB-4\",\n      \"state\": \"none\",\n      \"observation\": \"등록 성공 뒤 상세를 새로 읽는다. 복합 저장 성공 뒤 상세를 읽고, 감사 쓰기 뒤 실패를 주입한 경우 상세와 두 종류의 이력을 다시 조회하도록 작성돼 있다.\"\n    },\n    {\n      \"id\": \"RC-1\",\n      \"state\": \"none\",\n      \"observation\": \"복합 저장에서 계정값을 보낸 분기는 고정 역할 잠금 뒤 대상 쓰기 잠금을 잡으며 기존 단독 계정 경로와 순서가 같다. 복합 저장의 계정 변경 함수 안에서 고정 역할 잠금을 다시 잡는 경로는 보이지 않는다.\"\n    },\n    {\n      \"id\": \"RC-2\",\n      \"state\": \"defect\",\n      \"observation\": \"사진은 기본 정보 저장과 별개이며 FileReader의 완료 순서가 업로드 순서를 정한다. 연속 선택 시 최신 선택을 보장하지 않는다. F5.\"\n    },\n    {\n      \"id\": \"RC-3\",\n      \"state\": \"defect\",\n      \"observation\": \"서버 복합 저장은 단일 커밋을 사용하고 실패 주입 뒤 상세·이력을 읽는 시험이 있다. 화면에서는 먼저 전송한 요청의 성공 처리로 그 후 입력한 초안이 지워진다. F3.\"\n    },\n    {\n      \"id\": \"RC-4\",\n      \"state\": \"defect\",\n      \"observation\": \"연락처 원문을 열고 이력으로 이동하는 시험은 있지만 연락처를 편집한 뒤 이동하는 조합은 없다. 해당 조합에서 원문을 닫는 정리 함수가 수정 초안도 지운다. F4.\"\n    }\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a5-5be4-7281-bd21-6c27870afc6c",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 134477,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 93089
+    },
+    "usage_total_tokens": 93089,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "d2d90555963f7430a341f1839d20c8482bb374960d7233170c806953927b93c4",
+    "verdict": "fail",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "bd51bad3c5a8e9697bcc3221db0560c4",
+  "assessment": {
+    "stage": "post",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "boundary",
+        "confidence": "high",
+        "location": "workspace/backend/src/domains/worklink/services/system/user_admin.py:331",
+        "scenario": "US-01에서 대상 조회는 가능하고 유효한 개인정보 취급 자격은 없는 사용자가 일반 상세에서 현재 주소 원문을 받는다. user_history.py:22의 가림 제거와 :37의 허용 필드 추가로 이력 응답도 주소 원문을 반환한다. 변경된 통합시험은 기존 이력의 주소 원문 반환까지 기대한다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": "RA-3",
+        "safety_path": {
+          "input": "비어 있지 않은 합성 주소와 과거 주소 이력이 있는 가시 대상, US-01 보기 권한만 있고 개인정보 취급 자격은 없는 세션",
+          "reached": "일반 상세의 address=user.address와 사용자 변경 이력의 주소 필드 직렬화",
+          "result": "별도의 원문 열람 인가와 열람 감사를 거치지 않고 현재 및 과거 주소가 일반 응답에 포함된다."
+        },
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "boundary",
+        "confidence": "high",
+        "location": "workspace/backend/src/domains/worklink/services/system/user_admin.py:607",
+        "scenario": "주소가 프로필 최상위 필드로 옮겨졌다. 프로필 수정은 가능하고 개인정보 처리는 허용되지 않는 처리자의 주소 변경이 일반 필드로 분류되어 취급 기간·처리 자격·대상 사업장 확인을 건너뛴다. 통합시험의 :610도 취급 기간 밖에서 이 변경이 성공하는 것을 기대한다.",
+        "reproduction": null,
+        "impact": "security",
+        "criterion": "RA-2",
+        "safety_path": {
+          "input": "프로필 수정 권한은 있고 개인정보 취급 기간이 만료된 처리자, 편집 범위 안의 합성 대상",
+          "reached": "기본 정보 저장의 최상위 주소 필드가 일반 프로필 변경 목록에 들어가고 contacts 전용 인가 분기를 통과하지 않는다.",
+          "result": "보호 대상인 주소가 유효한 개인정보 처리 자격 확인 없이 변경된다."
+        },
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/frontend/src/domains/worklink/features/system/administration/UserProfile.tsx:57",
+        "scenario": "기본 정보 저장 중에도 연락처 입력은 편집 가능하다. 요청을 보낸 뒤 입력한 연락처 변경은 전송된 페이로드에 없는데, 먼저 보낸 요청이 성공하면 성공 콜백의 reset이 최신 연락처 초안까지 지운다. 화면에는 저장 성공이 표시된다.",
+        "reproduction": "합성 데이터로 기본 정보 저장 응답을 지연한다. 연락처 편집을 열린 상태로 두고 저장을 누른 직후 비상 관계 값을 바꾼다. 첫 응답을 성공으로 완료한 뒤 입력값과 재조회 결과를 비교한다.",
+        "impact": "data_loss",
+        "criterion": "RC-3",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/frontend/src/domains/worklink/features/system/administration/UserProfile.tsx:103",
+        "scenario": "연락처 편집 중 다른 탭으로 이동하면 UserContacts가 언마운트되고 :156의 정리 함수가 부모의 구조화된 수정 초안까지 지운다. 원문 닫기 시험은 열람 후 이동만 다루므로 편집 초안 유실을 잡지 못한다.",
+        "reproduction": "합성 사용자의 비상 관계를 새 값으로 편집하고 저장하기 전에 이력 탭을 열었다가 기본 정보로 돌아온다. 연락처 초안이 사라졌는지 확인한다.",
+        "impact": "data_loss",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/frontend/src/domains/worklink/features/system/administration/UserProfile.tsx:287",
+        "scenario": "사진 선택 직후 진행되는 FileReader 작업은 사진 입력을 잠그지 않는다. 두 번 선택하면 각각의 읽기 완료가 업로드를 시작하므로 첫 번째 선택의 읽기가 늦게 끝날 때 마지막으로 고른 사진을 덮어쓸 수 있다.",
+        "reproduction": "테스트에서 첫 사진의 FileReader 완료를 지연한다. 두 번째 사진을 선택해 업로드를 완료한 다음 첫 사진의 읽기를 완료한다. 두 요청의 순서와 최종 사진을 비교한다.",
+        "impact": "goal",
+        "criterion": "RC-2",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F6",
+        "severity": "note",
+        "category": "other",
+        "confidence": "high",
+        "location": "workspace/frontend/src/domains/worklink/features/system/administration/PermissionScreen.tsx:173",
+        "scenario": "US-01 연동과 별개인 권한 삭제 확인의 문구가 바뀌었다. 같은 삭제 명령을 호출하지만, 변경 전 화면이 명시하던 기본 권한 전환과 개인 추가 메뉴 해제 안내가 포괄적인 삭제 문구로 대체됐다.",
+        "reproduction": "권한 삭제 확인 컴포넌트의 변경 전후 문구와 같은 삭제 핸들러 연결을 비교한다.",
+        "impact": "minor",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "none",
+          "observation": "새 /options는 기존 US-01 UserRouter 안에서 정적 경로로 선언되고 서비스에서 _places로 회사·사업장·부서를 제한한다. 등록과 기본 정보 저장은 기존 쓰기 진입점을 재사용한다. 공통 라우터의 기본 인가 구현은 패치 변경분에 없다."
+        },
+        {
+          "id": "RA-2",
+          "state": "defect",
+          "observation": "연락처 묶음에는 개인정보 처리 자격 검사가 남아 있다. 최상위 주소는 기본 프로필 권한만 적용되는 분기로 들어간다. F2."
+        },
+        {
+          "id": "RA-3",
+          "state": "defect",
+          "observation": "일반 상세와 기존 이력의 주소 원문이 새로 노출된다. 나머지 연락처는 상세에서 가림 변환을 거치고 별도 연락처 응답에는 no-store가 적용된다. F1."
+        },
+        {
+          "id": "RA-4",
+          "state": "none",
+          "observation": "회사·역할 필터를 입력 스키마와 SQLAlchemy 조건식까지 추적했다. 상세 선택 ID는 숫자 형식 확인 뒤 API에 전달되며 사진 원본은 이름과 Base64 데이터로 기존 API에 전달된다. 변경분에 외부 입력을 직접 연결하는 셸이나 파일 경로 구성은 보이지 않는다."
+        },
+        {
+          "id": "RB-1",
+          "state": "none",
+          "observation": "복합 저장은 프로필 변경의 _change와 계정 변경의 _change를 모두 거쳐 한 번 커밋한다. 무변경 계정 요청은 쓰기를 건너뛴다. 등록은 기존 생성 경로를 사용하고 선택지 호출은 조회다."
+        },
+        {
+          "id": "RB-2",
+          "state": "none",
+          "observation": "기존 행을 일괄 수정하거나 확정된 이력 스냅샷을 덮어쓰는 변경은 없다. 기존 이력의 주소를 읽을 때 적용하던 가림은 사라지며 해당 노출은 F1에 기록했다."
+        },
+        {
+          "id": "RB-3",
+          "state": "not_applicable",
+          "observation": "DB 스키마 변경·데이터 변환·마이그레이션 파일이 없다. 기존 주소 행의 새 응답 동작은 F1에 해당한다."
+        },
+        {
+          "id": "RB-4",
+          "state": "none",
+          "observation": "등록 성공 뒤 상세를 새로 읽는다. 복합 저장 성공 뒤 상세를 읽고, 감사 쓰기 뒤 실패를 주입한 경우 상세와 두 종류의 이력을 다시 조회하도록 작성돼 있다."
+        },
+        {
+          "id": "RC-1",
+          "state": "none",
+          "observation": "복합 저장에서 계정값을 보낸 분기는 고정 역할 잠금 뒤 대상 쓰기 잠금을 잡으며 기존 단독 계정 경로와 순서가 같다. 복합 저장의 계정 변경 함수 안에서 고정 역할 잠금을 다시 잡는 경로는 보이지 않는다."
+        },
+        {
+          "id": "RC-2",
+          "state": "defect",
+          "observation": "사진은 기본 정보 저장과 별개이며 FileReader의 완료 순서가 업로드 순서를 정한다. 연속 선택 시 최신 선택을 보장하지 않는다. F5."
+        },
+        {
+          "id": "RC-3",
+          "state": "defect",
+          "observation": "서버 복합 저장은 단일 커밋을 사용하고 실패 주입 뒤 상세·이력을 읽는 시험이 있다. 화면에서는 먼저 전송한 요청의 성공 처리로 그 후 입력한 초안이 지워진다. F3."
+        },
+        {
+          "id": "RC-4",
+          "state": "defect",
+          "observation": "연락처 원문을 열고 이력으로 이동하는 시험은 있지만 연락처를 편집한 뒤 이동하는 조합은 없다. 해당 조합에서 원문을 닫는 정리 함수가 수정 초안도 지운다. F4."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T04-2-repo.0X02/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 1,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

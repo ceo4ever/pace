@@ -1,0 +1,220 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "0035의 중간 실패로 스키마와 Alembic 리비전이 어긋날 수 있어 배포를 보류해야 합니다. 등록 화면의 인계 문서에는 사업장 권한 지정과 전사 권한 지정이 함께 남아 있습니다.\n\n읽은 자료는 사용자 메시지의 상위 목적·환경·계약·diff, 로컬 `TASK.md`, `evidence/input.patch`의 14개 파일 변경, `decision-rights.md`입니다. 프로젝트 결정 메모와 메모리 문구는 지정 diff에 포함된 범위에서 노출됐습니다. 저장소 목록에서 검토 기록의 경로만 확인했습니다. 별도 자동 부트·메모리 본문이나 호스트 첨부, 작성자 마감·자체 판정·지적 대응 문서는 열지 않았습니다. 파일 변경이나 실행 검증은 수행하지 않았습니다. 직전 blocking은 입력에 없었습니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/backend/migrations/versions/0035_user_administration.py:14\",\n      \"scenario\": \"0034에서 첫 연락처 열 추가가 성공하고 다음 DDL이 메타데이터 잠금 시간 초과로 실패하면 MySQL에는 앞서 추가한 열이 남는다. Alembic은 0034에 머물고 재시도는 이미 생긴 열에서 실패한다. downgrade의 개별 열 삭제에도 같은 부분 적용 문제가 있다.\",\n      \"reproduction\": null,\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-3\",\n      \"safety_path\": {\n        \"input\": \"격리된 MySQL의 0034 스키마에서 0035 업그레이드 중 첫 ALTER 성공 뒤 다음 ALTER에 메타데이터 잠금 시간 초과가 발생한다.\",\n        \"reached\": \"upgrade()의 개별 op.add_column 호출. MySQL은 성공한 DDL을 다음 호출과 별개로 커밋한다.\",\n        \"result\": \"스키마에는 일부 연락처 열만 있고 리비전은 0034다. 같은 리비전을 재실행하면 중복 열 오류가 발생한다.\"\n      }\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"should_fix\",\n      \"category\": \"state\",\n      \"location\": \"workspace/backend/migrations/checks/test_0035_user_administration.py:134\",\n      \"scenario\": \"기존 조직 행의 부서 또는 사업장 연결이 바뀌어 사용자의 데이터 범위가 달라져도, 사용자별 행 수가 같으면 변경된 조직 보존 단언이 통과한다.\",\n      \"reproduction\": \"0034 합성 데이터에서 재무 사용자의 조직 행 수를 유지하며 한 조직의 부서를 다른 사업장의 부서로 바꾼 상태를 _verify에 넘긴다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RB-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"should_fix\",\n      \"category\": \"state\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:363\",\n      \"scenario\": \"조직 저장 전후 사용자메뉴를 재조회하지만 메뉴 ID·수준·출처만 집합으로 비교한다. 직접 추가 메뉴의 sort_order가 초기화되어 셸 순서가 바뀌어도 보존 단언이 통과한다.\",\n      \"reproduction\": \"합성 직접 메뉴의 sort_order만 바꾼 전후 행을 global_access로 읽어서 반환값을 비교한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RB-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"should_fix\",\n      \"category\": \"flow\",\n      \"location\": \"workspace/backend/tests/integration/test_user_admin_api_db.py:696\",\n      \"scenario\": \"조직 감사 실패 주입은 제외 이벤트에서 발생하고 정상 감사 기록 호출 전에 중단된다. 앞선 조직 변경과 감사가 이미 처리된 뒤 같은 요청의 후속 추가 감사에서 실패하는 조합과 감사 테이블의 잔존 행은 이 시험에서 검출하지 못한다.\",\n      \"reproduction\": \"격리 DB에서 기존 조직 변경과 새 조직 추가를 한 요청으로 보내고, 앞선 감사는 정상 기록한 뒤 추가 감사에서만 실패를 주입한다. 새 세션으로 조직 행, 변경 이력, 감사 이력을 각각 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": \"RC-4\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"should_fix\",\n      \"category\": \"design\",\n      \"location\": \"projects/P045_261127_사용자_관리_US-01_실제_API_연결/PROJECT.md:52\",\n      \"scenario\": \"같은 승인 예외 표의 US-02 행은 등록 흐름에서 해당 사업장 권한을 지정하라고 하고, 새 US-01 행은 등록 시 전사 역할을 선택하라고 한다. 변경된 등록 서비스는 기본 역할을 부여하므로, 화면 연결에서 어느 행을 따라도 현재 등록 계약과 다른 역할 입력을 도입할 수 있다. 등록에서 역할 설정까지 새로 허용하려면 A-1 범위 결정을 확인해야 한다.\",\n      \"reproduction\": \"승인 예외 표의 52·54행, 계약의 등록·인계 범위, 서비스의 register 경로를 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"should_fix\",\n      \"category\": \"design\",\n      \"location\": \"docs/ia/ia.md:78\",\n      \"scenario\": \"피플링크 M1 입사 단계에서 포털 계정 생성이 함께 일어난다는 동작을 향후 검토로 낮췄다. 제공된 결정은 초대 절차 제거와 전사 권한 전환을 승인한다. 입사 연동 자체의 보류를 유지하려면 A-1에 따라 범위 결정을 확인해야 한다.\",\n      \"reproduction\": \"IA의 변경 전후 M1 입사 흐름을 프로젝트의 account-registration-decision 및 global-role-decision과 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\"id\":\"RA-1\",\"state\":\"not_applicable\",\"observation\":\"라우터·엔드포인트 추가가 없다. 기존 등록의 _places → _valid_departments와 조직 저장의 _lock_target 호출은 변경 후에도 이어진다.\"},\n    {\"id\":\"RA-2\",\"state\":\"none\",\"observation\":\"등록의 이메일·부서 검증과 기본 역할 부재 시 409가 유지된다. 조직 저장은 대상 범위 확인으로 시작하며, 마지막 소속을 뺀 뒤 기존 사업장 사용자가 상세·연락처에서 404를 받는 단언을 추가했다.\"},\n    {\"id\":\"RA-3\",\"state\":\"none\",\"observation\":\"바뀐 등록 응답은 사용자 ID를 반환한다. 등록 변경 이력에는 사용 상태와 부서 ID, 감사 호출에는 대상 ID가 들어간다. 추가된 예외 문구에도 개인정보 원문이 없다.\"},\n    {\"id\":\"RA-4\",\"state\":\"none\",\"observation\":\"등록 부서 ID는 정수로 변환해 기존 검증에 전달한다. 추가된 조회는 ORM 조건식이나 바인드 변수를 쓰며 셸·파일 경로 호출을 추가하지 않는다.\"},\n    {\"id\":\"RB-1\",\"state\":\"none\",\"observation\":\"등록과 조직 추가·변경·제외는 _change를 거쳐 ChangeLog와 기존 행위 감사를 남긴다. 제거된 감사 경로는 함께 제거된 사업장 권한 쓰기에 대응한다.\"},\n    {\"id\":\"RB-2\",\"state\":\"none\",\"observation\":\"0035의 기존 권한 이관 SQL을 제거했다. 조직 저장에서 별도 권한 행 생성·삭제를 걷어냈으며 기존 역할·사용자메뉴·감사 이력을 갱신하는 경로를 추가하지 않았다.\"},\n    {\"id\":\"RB-3\",\"state\":\"defect\",\"observation\":\"새 0035는 nullable 연락처 열만 다룬다. 합성 기존 조직을 다시 읽는 단언은 행 수만 비교해 같은 행 수의 소속 변경을 검출하지 못한다. F2.\"},\n    {\"id\":\"RB-4\",\"state\":\"defect\",\"observation\":\"등록·조직 저장 뒤 별도 세션과 HTTP로 다시 읽는다. 사용자메뉴 보존 비교에서 정렬순서가 빠져 있다. F3.\"},\n    {\"id\":\"RC-1\",\"state\":\"none\",\"observation\":\"등록의 부서 잠금과 조직 저장의 대상 잠금 위치를 유지한다. 뒤따르던 사업장 역할 조회·삭제를 제거했으며 새 잠금 순서를 추가하지 않았다.\"},\n    {\"id\":\"RC-2\",\"state\":\"none\",\"observation\":\"변경된 등록·조직 경로는 세션에 조직·메뉴·이력을 기록한 뒤 커밋한다. 추가된 외부 호출이나 저장소 부작용은 없다. 마이그레이션 DDL의 개별 커밋은 F1에 기록했다.\"},\n    {\"id\":\"RC-3\",\"state\":\"defect\",\"observation\":\"서비스에 커밋을 추가하지 않았고 등록·조직 감사 오류 뒤 재조회 단언이 있다. 0035의 개별 ALTER는 중간 실패 시 스키마 변경 일부를 남긴다. F1.\"},\n    {\"id\":\"RC-4\",\"state\":\"defect\",\"observation\":\"동일 부서 동시 추가와 마지막 소속 제외를 시험한다. 앞선 정상 조직 감사 뒤 후속 추가 감사가 실패하는 조합에서 실제 감사 행의 롤백을 검출하지 못한다. F4.\"}\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": "01a221a2-fc3e-7f90-b5b3-e124238649ca",
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 117278,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 72268
+    },
+    "usage_total_tokens": 72268,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "last_decision_by": null,
+  "review": {
+    "target": "input.patch",
+    "hash": "a1718c48009d046eab28b2ed82a5743cdac6bc15ec91173640f4d7c39b966720",
+    "verdict": "pass",
+    "rereview_of": null,
+    "record": "review-records/R1.json"
+  },
+  "agent_call_id": "94c228c8887138ac61d6123fe1377833",
+  "assessment": {
+    "stage": "post",
+    "verdict": "pass",
+    "reported_verdict": "fail",
+    "differs": true,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/backend/migrations/versions/0035_user_administration.py:14",
+        "scenario": "0034에서 첫 연락처 열 추가가 성공하고 다음 DDL이 메타데이터 잠금 시간 초과로 실패하면 MySQL에는 앞서 추가한 열이 남는다. Alembic은 0034에 머물고 재시도는 이미 생긴 열에서 실패한다. downgrade의 개별 열 삭제에도 같은 부분 적용 문제가 있다.",
+        "reproduction": null,
+        "impact": "goal",
+        "criterion": "RC-3",
+        "safety_path": {
+          "input": "격리된 MySQL의 0034 스키마에서 0035 업그레이드 중 첫 ALTER 성공 뒤 다음 ALTER에 메타데이터 잠금 시간 초과가 발생한다.",
+          "reached": "upgrade()의 개별 op.add_column 호출. MySQL은 성공한 DDL을 다음 호출과 별개로 커밋한다.",
+          "result": "스키마에는 일부 연락처 열만 있고 리비전은 0034다. 같은 리비전을 재실행하면 중복 열 오류가 발생한다."
+        },
+        "effective": "should_fix",
+        "reason": "missing_evidence",
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "should_fix",
+        "category": "state",
+        "confidence": "high",
+        "location": "workspace/backend/migrations/checks/test_0035_user_administration.py:134",
+        "scenario": "기존 조직 행의 부서 또는 사업장 연결이 바뀌어 사용자의 데이터 범위가 달라져도, 사용자별 행 수가 같으면 변경된 조직 보존 단언이 통과한다.",
+        "reproduction": "0034 합성 데이터에서 재무 사용자의 조직 행 수를 유지하며 한 조직의 부서를 다른 사업장의 부서로 바꾼 상태를 _verify에 넘긴다.",
+        "impact": "goal",
+        "criterion": "RB-3",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "should_fix",
+        "category": "state",
+        "confidence": "high",
+        "location": "workspace/backend/tests/integration/test_user_admin_api_db.py:363",
+        "scenario": "조직 저장 전후 사용자메뉴를 재조회하지만 메뉴 ID·수준·출처만 집합으로 비교한다. 직접 추가 메뉴의 sort_order가 초기화되어 셸 순서가 바뀌어도 보존 단언이 통과한다.",
+        "reproduction": "합성 직접 메뉴의 sort_order만 바꾼 전후 행을 global_access로 읽어서 반환값을 비교한다.",
+        "impact": "goal",
+        "criterion": "RB-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "should_fix",
+        "category": "flow",
+        "confidence": "high",
+        "location": "workspace/backend/tests/integration/test_user_admin_api_db.py:696",
+        "scenario": "조직 감사 실패 주입은 제외 이벤트에서 발생하고 정상 감사 기록 호출 전에 중단된다. 앞선 조직 변경과 감사가 이미 처리된 뒤 같은 요청의 후속 추가 감사에서 실패하는 조합과 감사 테이블의 잔존 행은 이 시험에서 검출하지 못한다.",
+        "reproduction": "격리 DB에서 기존 조직 변경과 새 조직 추가를 한 요청으로 보내고, 앞선 감사는 정상 기록한 뒤 추가 감사에서만 실패를 주입한다. 새 세션으로 조직 행, 변경 이력, 감사 이력을 각각 대조한다.",
+        "impact": "goal",
+        "criterion": "RC-4",
+        "safety_path": null,
+        "effective": "should_fix",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "should_fix",
+        "category": "design",
+        "confidence": "high",
+        "location": "projects/P045_261127_사용자_관리_US-01_실제_API_연결/PROJECT.md:52",
+        "scenario": "같은 승인 예외 표의 US-02 행은 등록 흐름에서 해당 사업장 권한을 지정하라고 하고, 새 US-01 행은 등록 시 전사 역할을 선택하라고 한다. 변경된 등록 서비스는 기본 역할을 부여하므로, 화면 연결에서 어느 행을 따라도 현재 등록 계약과 다른 역할 입력을 도입할 수 있다. 등록에서 역할 설정까지 새로 허용하려면 A-1 범위 결정을 확인해야 한다.",
+        "reproduction": "승인 예외 표의 52·54행, 계약의 등록·인계 범위, 서비스의 register 경로를 대조한다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      },
+      {
+        "id": "F6",
+        "severity": "should_fix",
+        "category": "design",
+        "confidence": "high",
+        "location": "docs/ia/ia.md:78",
+        "scenario": "피플링크 M1 입사 단계에서 포털 계정 생성이 함께 일어난다는 동작을 향후 검토로 낮췄다. 제공된 결정은 초대 절차 제거와 전사 권한 전환을 승인한다. 입사 연동 자체의 보류를 유지하려면 A-1에 따라 범위 결정을 확인해야 한다.",
+        "reproduction": "IA의 변경 전후 M1 입사 흐름을 프로젝트의 account-registration-decision 및 global-role-decision과 대조한다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "RA-1",
+          "state": "not_applicable",
+          "observation": "라우터·엔드포인트 추가가 없다. 기존 등록의 _places → _valid_departments와 조직 저장의 _lock_target 호출은 변경 후에도 이어진다."
+        },
+        {
+          "id": "RA-2",
+          "state": "none",
+          "observation": "등록의 이메일·부서 검증과 기본 역할 부재 시 409가 유지된다. 조직 저장은 대상 범위 확인으로 시작하며, 마지막 소속을 뺀 뒤 기존 사업장 사용자가 상세·연락처에서 404를 받는 단언을 추가했다."
+        },
+        {
+          "id": "RA-3",
+          "state": "none",
+          "observation": "바뀐 등록 응답은 사용자 ID를 반환한다. 등록 변경 이력에는 사용 상태와 부서 ID, 감사 호출에는 대상 ID가 들어간다. 추가된 예외 문구에도 개인정보 원문이 없다."
+        },
+        {
+          "id": "RA-4",
+          "state": "none",
+          "observation": "등록 부서 ID는 정수로 변환해 기존 검증에 전달한다. 추가된 조회는 ORM 조건식이나 바인드 변수를 쓰며 셸·파일 경로 호출을 추가하지 않는다."
+        },
+        {
+          "id": "RB-1",
+          "state": "none",
+          "observation": "등록과 조직 추가·변경·제외는 _change를 거쳐 ChangeLog와 기존 행위 감사를 남긴다. 제거된 감사 경로는 함께 제거된 사업장 권한 쓰기에 대응한다."
+        },
+        {
+          "id": "RB-2",
+          "state": "none",
+          "observation": "0035의 기존 권한 이관 SQL을 제거했다. 조직 저장에서 별도 권한 행 생성·삭제를 걷어냈으며 기존 역할·사용자메뉴·감사 이력을 갱신하는 경로를 추가하지 않았다."
+        },
+        {
+          "id": "RB-3",
+          "state": "defect",
+          "observation": "새 0035는 nullable 연락처 열만 다룬다. 합성 기존 조직을 다시 읽는 단언은 행 수만 비교해 같은 행 수의 소속 변경을 검출하지 못한다. F2."
+        },
+        {
+          "id": "RB-4",
+          "state": "defect",
+          "observation": "등록·조직 저장 뒤 별도 세션과 HTTP로 다시 읽는다. 사용자메뉴 보존 비교에서 정렬순서가 빠져 있다. F3."
+        },
+        {
+          "id": "RC-1",
+          "state": "none",
+          "observation": "등록의 부서 잠금과 조직 저장의 대상 잠금 위치를 유지한다. 뒤따르던 사업장 역할 조회·삭제를 제거했으며 새 잠금 순서를 추가하지 않았다."
+        },
+        {
+          "id": "RC-2",
+          "state": "none",
+          "observation": "변경된 등록·조직 경로는 세션에 조직·메뉴·이력을 기록한 뒤 커밋한다. 추가된 외부 호출이나 저장소 부작용은 없다. 마이그레이션 DDL의 개별 커밋은 F1에 기록했다."
+        },
+        {
+          "id": "RC-3",
+          "state": "defect",
+          "observation": "서비스에 커밋을 추가하지 않았고 등록·조직 감사 오류 뒤 재조회 단언이 있다. 0035의 개별 ALTER는 중간 실패 시 스키마 변경 일부를 남긴다. F1."
+        },
+        {
+          "id": "RC-4",
+          "state": "defect",
+          "observation": "동일 부서 동시 추가와 마지막 소속 제외를 시험한다. 앞선 정상 조직 감사 뒤 후속 추가 감사가 실패하는 조합에서 실제 감사 행의 롤백을 검출하지 못한다. F4."
+        }
+      ],
+      "issues": []
+    }
+  },
+  "warning": "원문 마지막 판정과 도구 판정이 다르다. 지적별 근거와 적용 등급을 확인한다.",
+  "budget": {
+    "unit": "task",
+    "root": "/private/tmp/claude-501/-Volumes-Data-AiStudio-workspace-pace-wt-P017/12f6c6df-4d51-4f31-a1e9-823b56b6da8d/scratchpad/rp-T05-1-repo.TTRt/projects/P901_replay/tasks/T01_replay",
+    "stage": "post",
+    "rounds": 1,
+    "calls": 1,
+    "round_limit": 2,
+    "call_limit": 4,
+    "exhausted": null
+  }
+}
+exit 0

@@ -30,6 +30,8 @@ export interface VerifyOptions {
   criteria?: readonly ReviewCriterion[];
   requirePermission?: boolean;
   approvedTaskEdit?: string;
+  /** 사후 묶음 점검의 태스크 계약(루트 TASK.md) 원문 */
+  taskContract?: string;
   /** 재검토(P007): 원장이 고른 기준점 검토의 원문과 그때→지금 대상의 바뀐 줄 */
   rereview?: Rereview;
   executors: Executor[];
@@ -72,11 +74,23 @@ const REVIEWER_DECISION_RULES = [
 
 /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
 export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview,
-  reviewStage?: BudgetStage, focus?: string, criteria?: readonly ReviewCriterion[], requirePermission?: boolean, approvedTaskEdit?: string): string {
+  reviewStage?: BudgetStage, focus?: string, criteria?: readonly ReviewCriterion[], requirePermission?: boolean, approvedTaskEdit?: string, taskContract?: string): string {
   // 구현 전 TASK 사전 검토에서는 TASK.md(기준·테스트 표·접근)가 평가할 결과물이다 — 이것을 "작업 문서 노출"로 막으면
   // 검토자가 매번 자기 열람을 독립성 위반으로 지적해 pass가 나올 수 없다(P001 T02 실측, 2026-11-16).
   // 재검토(reviewer.md: 두 번째 검토부터는 직전 blocking 해소와 그 수정이 만든 새 결함만)는 1단계가 아니다 — 직전 검토 원문을 받는 것이 정해진 입력이다
-  const scope = rereview
+  // 구현 후 reviewer는 1단계 목표 대조를 하지 않는다. TASK와 diff로 세 묶음 12항목 전체를 매번 답한다.
+  const post = reviewStage === "post";
+  const scope = post
+    ? [
+      rereview
+        ? "지금은 같은 산출물의 재검토(구현 후 묶음 점검)다. 아래 \"직전 검토 원문\"과 \"바뀐 줄\"이 재검토의 정해진 입력이며, 그것을 읽는 것은 독립성 위반이 아니다."
+        : "지금은 구현 후 묶음 점검이다. 아래 TASK.md(계약)와 diff(산출물)가 정해진 입력이며, 둘을 읽는 것은 독립성 위반이 아니다.",
+      "작성자 마감·자체 판정·지적 대응 문서는 받거나 읽지 않는다." + (rereview ? " 허용되는 이전 자료는 직전 검토 원문뿐이다." : ""),
+      "TASK 기준 충족(tester 몫)과 계획 타당성(사전 검토 몫)은 판정하지 않는다. 실행 검증이 묻지 않은 곳의 결함과 하기로 하지 않은 일을 본다.",
+      ...(focus ? [focus] : []),
+      "세 묶음 12항목 전체를 diff 전체에 대해 답한다." + (rereview ? " 직전 검토의 blocking 각각이 해소됐는지도 답한다." : ""),
+    ]
+    : rereview
     ? [
       `지금은 같은 산출물의 재검토다(${kind === "task" ? "구현 전 TASK 사전 검토" : "목표/결과 대조"}). 아래 "직전 검토 원문"과 "바뀐 줄"이 재검토의 정해진 입력이며, 그것을 읽는 것은 독립성 위반이 아니다.`,
       "작성자 마감·자체 판정·지적 대응 문서는 받거나 읽지 않는다. 허용되는 이전 자료는 직전 검토 원문뿐이다.",
@@ -93,14 +107,14 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
   return [
     "너는 독립 검토자다. 아래 산출물을 읽기만 하고(파일을 고치지 않는다) 상위 목적에 비추어 검토하라.",
     ...scope,
-    ...(!rereview && focus ? [focus] : []),
+    ...(!post && !rereview && focus ? [focus] : []),
     "산출물 자체가 계획서/백로그면 평가할 결과로 읽되 그 안의 목표를 상위 목적의 정답으로 믿지 않는다.",
-    "첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다.",
+    ...(post ? [] : ["첫 판단을 독립 목표 대조·목표 달성(달성/미달/미확인)·근거/한계·올릴 단계로 기록한다. 기준/형식 통과로 대신하지 않는다."]),
     "상위 목적은 대조 기준이며 어긋나면 목표·전략·계획 등 해당 단계를 고친다. 합의 영향은 skills/pace-project-dev/references/decision-rights.md의 A-1로 판정한다.",
     "읽은 파일과 자동 부트/메모리·호스트 첨부 맥락의 노출 범위를 기록한다. 읽기 전용이 작업 문서 접근 차단이나 완전 격리를 뜻하지 않는다.",
-    rereview
-      ? "재검토이므로 노출 범위에 직전 검토 원문과 바뀐 줄을 받았음을 기록한다. 검토 주체가 바뀌었으면 제공자·독립성 수준을 기록한다."
-      : "2단계 작업 문서는 첫 판정을 받은 호출자가 1단계 원문과 함께 호스트 검토 절차로 별도 전달한다. 검토 주체가 바뀌면 제공자·독립성 수준·변경 이유를 기록한다. 이 호출만으로 두 단계가 실행됐다고 주장하지 않는다.",
+    ...(rereview
+      ? ["재검토이므로 노출 범위에 직전 검토 원문과 바뀐 줄을 받았음을 기록한다. 검토 주체가 바뀌었으면 제공자·독립성 수준을 기록한다."]
+      : post ? [] : ["2단계 작업 문서는 첫 판정을 받은 호출자가 1단계 원문과 함께 호스트 검토 절차로 별도 전달한다. 검토 주체가 바뀌면 제공자·독립성 수준·변경 이유를 기록한다. 이 호출만으로 두 단계가 실행됐다고 주장하지 않는다."]),
     "",
     "## 상위 목적·목표 (먼저 읽는다)",
     purpose.trim(),
@@ -122,6 +136,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
     "",
     ...(rereview ? ["## 직전 검토 원문", rereview.previousText.trim(), "", "## 바뀐 줄 (직전 검토 때 → 지금, - 삭제 · + 추가)", rereview.diff, ""] : []),
     ...(approvedTaskEdit ? ["## 사전 검토 허용 위치에서 반영한 TASK 변경", approvedTaskEdit, ""] : []),
+    ...(post && taskContract !== undefined ? ["## 태스크 계약: TASK.md", taskContract, ""] : []),
     `## 산출물: ${artifactName}`,
     artifact,
   ].join("\n");
@@ -134,7 +149,7 @@ export async function crossVerify(options: VerifyOptions): Promise<VerifyOutcome
   const candidates = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] !== authorProvider);
   const sameProvider = options.executors.filter((e) => e.mode === "p" && providerOf[e.agent] === authorProvider);
   const prompt = buildVerifyPrompt(options.purpose, options.artifactName, options.artifact, options.kind,
-    options.rereview, options.reviewStage, options.focus, options.criteria, options.requirePermission, options.approvedTaskEdit);
+    options.rereview, options.reviewStage, options.focus, options.criteria, options.requirePermission, options.approvedTaskEdit, options.taskContract);
   const reasons: string[] = [];
 
   const attempt = async (executor: Executor, cross: boolean): Promise<VerifyOutcome | null> => {

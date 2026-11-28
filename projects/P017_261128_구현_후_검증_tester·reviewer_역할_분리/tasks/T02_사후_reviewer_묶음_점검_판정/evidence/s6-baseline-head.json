@@ -1,0 +1,52 @@
+{
+ "prompts": {
+  "backlog": "866de7f202abb8d2ff4d4e5cdf41ed4de81666c94f7e9085b6939fc5559ca600",
+  "backlogRereview": "01b8a6b02dc87594df1dbe318e91423e6f08156dc51af327b3ad96cdaf6b8f79",
+  "pre": "081cadae336088d1a48e6def83351235accc9c4b3f8f7653e1b895c385e03b6d",
+  "preRereview": "1a2175e097b1e529795381b80dcac7f805bed8b634bdeb90a35f8196e9dfd59e",
+  "preFocus": "eaca60449822560c4f90ee579c3f077770edc349335a52618e18c8db72777e1c",
+  "general": "ff02cd2aebc42bf52868d13c41697d83f0a2adf4c63c84c0762fa2f45bc81b07",
+  "generalRereview": "2e3da9a6a652b2a044a3d5400b03e2b6053336075960aa198e7201fac55ca52a",
+  "generalTask": "05f8c95cc248e28d3cbefe42a2f11d139e0d5315bc9de42cf9b427807881fe90"
+ },
+ "records": {
+  "R1": {
+   "verdict": "fail",
+   "same": true,
+   "sha": "10f0eddc78f9885783bf1a24e7633bb99adbff2113fbf82a57ee2dafcb03d891"
+  },
+  "R2": {
+   "verdict": "fail",
+   "same": true,
+   "sha": "050ebbd9f39bfb446a7e3e793f236b2480a7a16db8c14639048f3db50c63c172"
+  },
+  "R3": {
+   "verdict": "fail",
+   "same": true,
+   "sha": "9ebda86c9c647490307198b6f4ad7583309af89967ad469902c6227dde19910b"
+  },
+  "R4": {
+   "verdict": "fail",
+   "same": true,
+   "sha": "821cc6046118cbe0215999c77cae39358ec150c55f9ef6e4462a19ce95337e5d"
+  },
+  "R5": {
+   "verdict": "fail",
+   "same": true,
+   "sha": "e0cd76253e1e5c9ce2b5eb53b58768a60727c3dee2656002b2dc1ccef8525afe"
+  }
+ },
+ "budget": {
+  "unit": "task",
+  "root": "projects/P017_…/tasks/T01_…",
+  "stage": "post",
+  "rounds": 2,
+  "calls": 2,
+  "round_limit": 2,
+  "call_limit": 4,
+  "exhausted": "rounds"
+ },
+ "stats": "## 검토 원장 집계\n\n검토 호출·유효 판정의 원본은 REVIEW-LOG.jsonl이다. 기존 리뷰 사건·팀 수치와 합산하지 않는다.\n입력·출력은 원장 필드 그대로다. 캐시·추론은 기존 도구별 지표에서 확인한다.\nowner 요청은 구조화된 승인 요청 사건의 관측이다. 옛 원장의 공동 기록과 owner 요청은 미관측일 수 있다.\n해소 비율은 변경된 같은 대상에서 기존 재현 지적을 잇는 독립 pass가 있는 비율이며 결함 확인의 대리 지표다.\n\n| 대상 | 원장 | 호출 | 유효 판정 | 시간 | 입력 토큰 | 출력 토큰 | blocking | 기록상 해소 | 공동 | owner 요청 | 진단 / 상위 검토 |\n|---|---|---|---|---|---|---|---|---|---|---|---|\n| 전체 | 2 | 14 | 14 | 1610984 ms | 미보고 14회 | 990290 | 27 | 3/27 (11.1%) | 2 | 3 | 2 / 2 |\n| 사전 | 1 | 9 | 9 | 747146 ms | 미보고 9회 | 532085 | 18 | 3/18 (16.7%) | 2 | 2 | 1 / 0 |\n| 구현 후 | 1 | 5 | 5 | 863838 ms | 미보고 5회 | 458205 | 9 | 0/9 (0.0%) | 0 | 1 | 1 / 2 |\n| P900 직속 | 원장 없음 | 0 | 0 | 미보고 | 미보고 | 미보고 | 0 | 미확인 | 0 | 0 | 0 / 0 |\n| T01 | 2 | 14 | 14 | 1610984 ms | 미보고 14회 | 990290 | 27 | 3/27 (11.1%) | 2 | 3 | 2 / 2 |\n| T01 · 사전 | 1 | 9 | 9 | 747146 ms | 미보고 9회 | 532085 | 18 | 3/18 (16.7%) | 2 | 2 | 1 / 0 |\n| T01 · 구현 후 | 1 | 5 | 5 | 863838 ms | 미보고 5회 | 458205 | 9 | 0/9 (0.0%) | 0 | 1 | 1 / 2 |\n\n한 재검토는 관련된 각 영향 범주에 한 번씩 들어간다.\n\n| 대상 | 강등 사유별 집계 | 직전 지적 영향별 재검토 |\n|---|---|---|\n| 전체 | 관측 없음 | criterion 10회 · 1152442 ms / goal 1회 · 98918 ms |\n| T01 | 관측 없음 | criterion 10회 · 1152442 ms / goal 1회 · 98918 ms |\n",
+ "admission": "517127ebfb4a6ba733dc3e1157541b3e21ea728e1a5356474348e9c9d8c7fdf3",
+ "source": "070f105 (변경 전) 소스로 계산 — scratchpad baseline.ts, 현재 소스 결과와 동일"
+}

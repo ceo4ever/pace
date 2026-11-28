@@ -9,7 +9,7 @@ import { readAgentCalls, recordAgentCall, type AgentCall, type CallTarget } from
 import { AgentError, errorCodes, errorPayload, providerOf } from "./contract.ts";
 import { automaticCallTarget, tryRecordCall } from "./call-context.ts";
 import { reserveReviewCall, reviewBudgetScope, type ReviewBudgetScope, type BudgetStage } from "./review-budget.ts";
-import { reviewCriteria } from "./review-criteria.ts";
+import { postTargetIssue, postTaskContract, reviewCriteria } from "./review-criteria.ts";
 import { diagnosisLink, FOLLOWUPS_FILE, followupReport, readReviewState, recoveryGrant } from "./review-followup.ts";
 import { acquireLock, appendLedger, fixedReviewPath, LedgerError, ledgerPath, lockPath, nextRecordName, RECORDS_DIR, REVIEW_HAND_ID, textHash, type ReviewEntry } from "./review-log.ts";
 import { assessStructuredReview, evidenceGaps } from "./structured-review.ts";
@@ -65,6 +65,11 @@ function recordExternalCallLink(link: ExternalCallLink, destination: string, wri
   const { target, call } = link;
   const linked = writeCall(target, { ...call, ref: externalCallRef(target, destination) });
   return { agent_call_id: call.id, agent_call_linked: linked };
+}
+
+/** 고정 뒤 판정 기준이 바뀌었는지 대조한다. 구현 후 묶음은 항목이 고정이라 붙인 태스크 계약 원문을 함께 본다. */
+function criteriaDigest(criteria: readonly { id: string; text: string }[], contract: string | undefined): string {
+  return textHash(JSON.stringify(contract === undefined ? criteria : { criteria, contract }));
 }
 
 export function reviewIdentity(value: unknown): value is string {
@@ -168,8 +173,13 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
     const target = reviewTarget(values.target);
     const scope = reviewBudgetScope(target) ?? reject("태스크·백로그 안의 검토 대상이 필요하다");
     release = lockReviewScope(scope);
-    recoverBudgetOrphans(scope, now);
     const snapshot = reviewInput(target);
+    // 사후 reviewer는 구현 diff만 본다. 형식 거부는 중단 복구·소진 판정보다 먼저다 — 원장을 바꾸지 않고 tester 경로를 안내한다.
+    if (action === "review-hand" && scope.stage === "post") {
+      const issue = postTargetIssue(snapshot);
+      if (issue) return reject(issue);
+    }
+    recoverBudgetOrphans(scope, now);
     const hash = reviewHash(snapshot);
     const state = readReviewState(scope, hash);
     const recovery = state.recovery.upper || recoveryGrant(scope, state) || state.decision.kind === "joint" || state.decision.kind === "owner";
@@ -181,6 +191,7 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
         const issues = [...proofScopeIssues(snapshot), ...reviewerLineIssues(snapshot)];
         if (issues.length) return reject(issues.join(" · "));
       }
+      const taskContract = scope.stage === "post" ? postTaskContract(scope) : undefined;
       const purpose = reviewInput(values["purpose-file"]);
       if (!purpose.trim()) return reject("검토의 상위 목적이 비었다");
       const criteria = reviewCriteria(scope, snapshot);
@@ -192,8 +203,8 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
       const fixed: FixedReview = {
         version: 1, target: scope.name, stage: scope.stage, kind: scope.kind, author_provider: values["author-provider"],
         hash, snapshot, prompt: buildVerifyPrompt(purpose, scope.name, snapshot, scope.kind, rereview, scope.stage, undefined, criteria, !!basis,
-          taskEdit ? JSON.stringify(taskEdit, null, 2) : undefined),
-        required_criteria: ids, criteria_digest: textHash(JSON.stringify(criteria)),
+          taskEdit ? JSON.stringify(taskEdit, null, 2) : undefined, taskContract),
+        required_criteria: ids, criteria_digest: criteriaDigest(criteria, taskContract),
         ...(basis ? { permission_basis: basis } : {}),
         rereview_of: reviewReference(scope, previous),
         ...(state.activeDiagnosis ? { after_diagnosis: diagnosisLink(scope, target, state.activeDiagnosis) } : {}),
@@ -248,7 +259,8 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
     const link = externalCallLink(target, values["call-id"], values.reviewer, values.provider, reservation.at, at);
     const currentDiagnosis = state.activeDiagnosis && diagnosisLink(scope, target, state.activeDiagnosis);
     const criteria = reviewCriteria(scope, snapshot);
-    const stale = fixed.hash !== hash || fixed.criteria_digest !== textHash(JSON.stringify(criteria)) ||
+    const contract = scope.stage === "post" ? postTaskContract(scope) : undefined;
+    const stale = fixed.hash !== hash || fixed.criteria_digest !== criteriaDigest(criteria, contract) ||
       fixed.rereview_of !== reviewReference(scope, ordinaryBase(scope, state, criteria.map(({ id }) => id))) ||
       fixed.after_diagnosis?.id !== currentDiagnosis?.id || fixed.after_diagnosis?.contract !== currentDiagnosis?.contract;
     const assessment = assessStructuredReview(scope.stage, raw, fixed.required_criteria,

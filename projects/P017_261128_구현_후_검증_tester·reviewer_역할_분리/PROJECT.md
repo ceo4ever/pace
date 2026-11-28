@@ -42,8 +42,8 @@
 | # | 합격 기준 | 확인 방법 |
 |---|---|---|
 | P-1 | BR01 완료 기준 전부: v2 TASK의 `구현 후 reviewer` 줄 형식 검사(예약 전 거부·check/done 보고), 사전 판정(`생략`+사실 질문 "예" → blocking, 기준 범위 넓힘 판정), TASK-CLOSE 회차 시각 칸, `legacyStructureOnly` 결과 불변 | T01 시험 + 행동 평가(TASK-CLOSE) |
-| P-2 | BR02 완료 기준 전부: 사후 reviewer는 TASK+diff 입력으로 12항목을 묻고 `T-n`을 필수에서 뺌, 답 형식·판정, 좁히는 문장 4개 미적용, 비-diff·같은 대상 fail 재요청 예약 전 거부, pass 뒤 새 주기 예산(verify·review-hand 두 경로), 단계 경계 회귀 불변 | T02 시험 |
-| P-3 | BR02 설치 전 관문: 고정 입력 6개×2회(분모 12) 재생에서 unknown ≤ 1, 세 묶음 모두 유효 blocking·fail, 음성 대조 T05 `post-02-docs.patch` 2회 blocking 없음 — 원문 evidence 고정, tester 판정 | T02 evidence |
+| P-2 | BR02 완료 기준 전부: 사후 reviewer는 TASK+diff 입력으로 12항목을 묻고 `T-n`을 필수에서 뺌, 답 형식·판정, 좁히는 문장 4개 미적용, 비-diff·같은 대상 fail 재요청 예약 전 거부, 단계 경계 회귀 불변 | T02 시험 |
+| P-3 | BR02 설치 전 재생 보고: 고정 입력 6개×2회와 음성 대조의 관측값을 원문과 함께 evidence에 기록 — 통과선 없음, 설치는 owner가 보고로 결정 | T02 evidence |
 | P-4 | BR03 완료 기준 전부: 배정 절차(tester 통과 diff에만 reviewer, 재호출·예외), 역할·보안·팀 문서 정렬, 사례 대조표에서 문서 간 답이 갈리는 칸 0, `pace team sync` | T03 check·TASK-CLOSE |
 | P-5 | `npm run check` 통과, 구판 호환 경로·표지·이중 판독 없음 | finish |
 
@@ -57,15 +57,15 @@
 |---|---|
 | `templates/project/TASK.md`·`TASK-CLOSE.md` | reviewer 필요·생략 줄과 사실 질문 주석, 증명 범위 = 변경 영향 경로, 회차별 시각 칸 (T01) |
 | `src/project/pre-review.ts`, `src/agent/structured-review.ts`·`verify-cli.ts`·`review-hand.ts` | 줄 형식 검사·사전 하위 확인 (T01) |
-| `src/agent/structured-review.ts`·`verify.ts`·`verify-cli.ts`·`review-hand.ts`·`review-criteria.ts`·`review-budget.ts`·`review-followup.ts`·`review-admission.ts` | 사후 12항목 질문·입력·판정, 예약 전 거부, 새 주기 (T02) |
+| `src/agent/structured-review.ts`·`verify.ts`·`verify-cli.ts`·`review-hand.ts`·`review-criteria.ts` | 사후 12항목 질문·입력·판정, 예약 전 거부 (T02) |
 | `skills/pace-project-dev/**`(SKILL·task-steps·reviewer·tester·security·verification·goal-review·tools·cross-verify), `docs/AGENT-CALL.md`·`WORK-PROCESS.md`·`SECURITY.md`, `.pace/team/agents/pace-reviewer.md`·`pace-tester.md` | 배정·재확인 절차와 역할 정렬 (T03) |
 
 ## 태스크
 
 | T | 이름 | 상태 | 커밋 |
 |---|---|---|---|
-| T01 | TASK 묶음 지정과 사전 판정 | 완료 | |
-| T02 | 사후 reviewer 묶음 점검 판정 | 대기 | |
+| T01 | TASK 묶음 지정과 사전 판정 | 완료 | 070f105 |
+| T02 | 사후 reviewer 묶음 점검 판정 | 완료 | |
 | T03 | 구현 후 배정·재확인 절차와 문서·팀 정렬 | 대기 | |
 
 ## 결정·진행 메모
@@ -81,4 +81,12 @@
 | 2026-11-28 12:42 | T01: 상위 검토 슬롯 1 적용(main 판단): reviewerLineIssues 정확 일치 복귀, S-2 계약+경계 2, S-1 T-n 한정 문구, S-4 필요·생략 둘 다, 음성 대조 2종 fail 확인, 전체 검사 통과, upper-check 기록 — 독립 확인(tester ∥ reviewer, codex 새 맥락) 실행 중 |
 | 2026-11-28 13:05 | T01: 상위 검토 슬롯 2 적용(main 판단): reviewerLineIssues 원문 줄 동일성, S-2 R4 a·b·c·tester 입력·이유만 주석, 동일성 제거 음성 대조 fail, 전체 검사 통과, upper-check 기록 — 독립 확인 실행 중 |
 | 2026-11-28 14:33 | T01: owner A-3 F5 한계 기록: review-note --request-waiver weaken(근거 a3-request-F5.json, 지적 F5·증거 공백 T-2·T-3 A 판정) → --decision --by user(owner-decision-F5.md), tester 5회차 원문 evidence/tester-post 보관 |
+| 2026-11-28 15:04 | T02: owner A-1 철회: 사후 pass 뒤 새 주기·새 예산 규칙 철회, 기존 합산 예산 유지(00:52 새 주기 결정 대체) — BACKLOG·BR02·BR03 (7)·P-2·정본 목록에서 삭제만 |
+| 2026-11-28 17:40 | T02: owner A-1 재생 보고: BR02 재생 관문 통과선 삭제, 관측값 기록과 owner 보고로 교체(입력에 base 트리, BL261128_01 최종 설치 후보에서 1회). T02는 흐름(C) 미검증을 기록하고 닫는다 — BR02·T-8·S-7·P-3 교체만 |
+| 2026-11-28 15:05 | T02: T02 TASK 철회 반영: 주기 경계 절·T-7·S-7·재료 예산·주기 줄 삭제, S-4·S-8(신호) 기대를 tester 대조·한 줄로 축소, 번호 당김 — 7145자(R1 7717자 이하) |
+| 2026-11-28 15:18 | T02: T02 사전 게이트: owner A-3 waiver(고친 TASK 해시 9eb2b9c9…)로 pre_review_ok true — 구현 착수 |
+| 2026-11-28 20:43 | T02: owner A-1 반영(삭제와 교체만): 백로그 evidence 결정 기록, BR02 관문 절을 재생 보고로 교체(base 트리 입력, 통과 조건·실패 시 삭제), D5·BR02 행·결정 행, T-8·S-7·P-3 교체, replay/summary.md 원인 정정과 관측값 기록 |
+| 2026-11-28 21:03 | T02: 사후 1회차 반영(허브 결정 A): 비-diff 거부를 복구·소진 앞으로, 12개 ID 단언, 묶음 답 상태 post 한정, 상태명만 관측·위치 없는 defect는 unknown, 같은 해시 거부에 원장 일치, --out TASK.md 보호. 음성 대조 M7~M13 검출, 전체 검사 통과. F4 한계, F6 변경 없음 |
+| 2026-11-28 21:11 | T02: tester 2회차 반영(허브 결정 범위 안): defect 답도 빈·상태명 관측이면 unknown(M14 검출), 재생 요약 표에 합성 1회차 RA-3 추가 |
+| 2026-11-28 21:12 | T02: 허브 무응답(코디네이터 종료) — 자체 판단: 잔여 blocking F7·F8·F9를 안고 마감하는 것은 A-3(owner) 결정이라 스스로 정하지 않는다. 꾸며낸 입력 수정도 허브 원칙상 적용 전 확인 대상이라 보류. T02 마감 보류, 재검토·추가 수정 없이 owner A-3 대기 |
 
