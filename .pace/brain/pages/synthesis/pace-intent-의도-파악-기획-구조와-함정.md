@@ -6,7 +6,7 @@ tags: [pace-intent, intent, planning, pitfalls]
 sources: [code:src/intent/, doc:skills/pace-intent/SKILL.md, doc:skills/pace-intent/references/handoff.md, doc:skills/pace-canvas-skills/canvas-wireframe/SKILL.md, doc:skills/pace-project-dev/references/document-shape.md, doc:skills/pace-intent/references/preview.md, code:src/intent/preview.ts, doc:skills/pace-project-dev/references/decision-rights.md, doc:skills/pace-team/references/required-roles.md]
 related: [pace-scout-기회-탐색-구조와-함정, 작업-하네스-실측-함정]
 created: 2026-10-29
-updated: 2026-11-27
+updated: 2026-11-28
 status: active
 ---
 
@@ -62,3 +62,7 @@ pace intent preview는 명시한 제품 프레임·요소 ID를 읽어 이미지
 ## 근거 변경 대조 (2026-11-24)
 
 현재 document-shape.md의 최소 추적/명령용 필수 구조/업무별 본문 선택과 말미 TASK 파서 한계 설명을 대조했다. 구조 파서는 전체 Markdown renderer가 아니라는 설명이 추가돼도 기획 정본/인계 확인/실제 성과 구분을 유지한다. T06 팀 표의 구조 검증도 별도이며 intent의 의미 판정을 대신하지 않는다.
+
+## 근거 변경 대조 (2026-11-28)
+
+현재 decision-rights A-1/A-3 및 B1을 대조했다. 합의 범위의 작성·정정과 독립 검토는 진행하고 실제 합의 변경이나 검증 생략·완화만 owner에게 올리는 인계 경계를 유지한다. [근거: skills/pace-project-dev/references/decision-rights.md]

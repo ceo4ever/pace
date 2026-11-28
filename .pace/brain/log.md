@@ -176,3 +176,8 @@
 ## [2026-11-27] update | 변경 기반 검사와 실행 선언 신뢰 경계 (.pace/brain/pages/concept/변경-기반-검사와-실행-선언-신뢰-경계.md)
 ## [2026-11-27] update | 정의서 크기·분리 기준과 다운사이즈 검증 (.pace/brain/pages/concept/정의서-크기-분리-기준과-다운사이즈-검증.md)
 ## [2026-11-27] lint | 릴리즈 간헐 실패 두 경로 통제 재현을 저장하고 기존 릴리즈 문서 stale-source 세 페이지를 diff와 대조했다
+## [2026-11-28] update | 프로필 = 독립 에이전트, 역할은 AI 비서 고정 (.pace/brain/pages/concept/profile-is-independent-agent.md)
+## [2026-11-28] update | 검토 반복 실패 하네스 (.pace/brain/pages/concept/검토-반복-실패-하네스.md)
+## [2026-11-28] update | 작업 하네스 흐름 (.pace/brain/pages/flow/작업-하네스-흐름.md)
+## [2026-11-28] update | pace-intent 의도 파악 기획 구조와 함정 (.pace/brain/pages/synthesis/pace-intent-의도-파악-기획-구조와-함정.md)
+## [2026-11-28] lint | decision-rights 정본 변경과 관련 위키 네 페이지의 결정·위임·재검증·승인 경계를 대조하고 확인 근거를 갱신했다.
