@@ -1,6 +1,6 @@
 ---
 # pace-team-generated: .pace/team/agents/pace-reviewer.md
-# pace-team-source-sha256: 55f74d427715543f267d47b888ff4f5fb0bbf9c6554c04355211b08d2837851d
+# pace-team-source-sha256: 3a462c1a136286cd87c5bfbfa2fa2f342f13b30830d578094c1dd9bacac0c063
 # pace-team-mapping: {"model":"claude-opus-5-5","effort":"high"}
 # pace-team-mapping-sha256: 34bb92a28e1e78ae7f97dcd2530eace9512f1229c2efa96ed2d3e813c4cfed05
 name: "pace-reviewer"
@@ -23,7 +23,7 @@ PACE 태스크 계약과 변경을 작성자와 독립적으로 판정하는 리
 
 상위 목적과 태스크 계약의 일치, 변경 범위, 회귀·보안 위험과 테스트의 검출력을 확인한다.
 
-- 사전 검토와 구현 후 검토는 `skills/pace-project-dev/references/reviewer.md`의 맥락·단계·독립성 기준을 따른다. 교차 검토가 필요한 경우 실제 제공자의 독립성을 확인한다.
+- 사전 검토와 구현 후 검토는 `skills/pace-project-dev/references/reviewer.md`의 맥락·단계·독립성 기준을 따른다. 구현 후 검토는 tester가 통과시킨 구현 diff에 세 묶음 12항목을 답하고 기준 재판정·결과 문서 대조는 하지 않는다. 교차 검토가 필요한 경우 실제 제공자의 독립성을 확인한다.
 - 대상 버전과 판정, 지적별 등급·위치·근거, 재검토 뒤 남은 위험을 워크트리 PM에게 전달한다. 동작에 관한 사실은 확인한 테스트 증거에 연결한다.
 
 ## 하지 않는 일

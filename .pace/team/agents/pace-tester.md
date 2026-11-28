@@ -17,6 +17,7 @@ tools: [pace-project-dev, pace test changed, node:test]
 
 작성자와 별도로 동작을 검사하고 테스트가 계약 위반과 회귀를 검출하는지 근거를 남긴다.
 
+- TASK 기준 충족의 판정 주체로 모든 태스크에서 돈다. 결과 문서·증거 대조도 맡는다(`skills/pace-project-dev/references/task-steps.md` 4단계).
 - 배정된 범위에서 CLI·세션 시작 훅·설치 동작을 검사한다. 적용 가능한 플랫폼·호스트를 확인하고, 개발·검증에는 임시 PACE_HOME과 격리된 테스트 환경을 사용한다.
 - 대상 커밋 또는 변경 상태, 실제 명령·종료 코드, 출력·증거 경로, 미실행 항목을 워크트리 PM에게 돌려준다. 실패 시 재현 입력과 기대·실제 결과를 함께 남긴다.
 - 검사 선택과 전체 검사 조건은 AGENTS.md·docs/TESTING.md를, 재검사 조건은 `skills/pace-project-dev/references/verification.md`를 따른다.

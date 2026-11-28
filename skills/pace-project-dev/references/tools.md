@@ -4,7 +4,7 @@
 
 | 필요 | 현재 호스트에서 기능이 보이고 적합하면 | 없거나 비활성화되었으면 |
 |---|---|---|
-| 독립적인 새 맥락의 tester·reviewer | 호스트의 서브에이전트·팀·새 세션 기능으로 각각 판정을 받는다. 단 같은 대상의 reviewer 판정(사전 검토·구현 후 reviewer)은 반복 실패 원장이 이어지도록 처음부터 `pace agent verify`로 받는다(호스트 reviewer는 원장에 남지 않는다). `goal-review.md` 1단계 회수 뒤 `tester.md`·`reviewer.md`의 작업 문서를 전달한다 | 별도 세션에서 목표/결과의 첫 판단을 회수한 뒤 TASK.md·diff·판정 기준을 준다 |
+| 독립적인 새 맥락의 tester·reviewer | 호스트의 서브에이전트·팀·새 세션 기능으로 각각 판정을 받는다. 단 같은 대상의 reviewer 판정(사전 검토·구현 후 reviewer)은 반복 실패 원장이 이어지도록 처음부터 `pace agent verify`로 받는다(호스트 reviewer는 원장에 남지 않는다). `goal-review.md` 1단계 회수 뒤 `tester.md`·`reviewer.md`의 작업 문서를 전달한다(구현 후 reviewer는 예외로 1단계 없이 TASK와 구현 diff를 함께 받는다(Q1). tester와 백로그·큰 산출물 검토의 1단계는 그대로다.) | 별도 세션에서 목표/결과의 첫 판단을 회수한 뒤 TASK.md·diff·판정 기준을 준다(구현 후 reviewer는 1단계 없이 TASK와 구현 diff를 함께 준다 — Q1) |
 | 코드·보안 리뷰 | 호스트의 리뷰 기능 또는 독립 에이전트에 `reviewer.md`·`security.md` 기준을 준다 | 별도 세션에 해당 기준을 주고 판정받는다 |
 | 계획·작업 분할 | 호스트의 계획·태스크·병렬 작업 기능을 필요와 독립성에 맞춰 쓴다 | PROJECT.md·TASK.md에 직접 계획하고 순차 작업한다. 복잡한 화면·구조는 `html-plan`을 쓸 수 있다 |
 | E2E 브라우저 | 현재 세션의 브라우저 도구로 실제 사용자 흐름을 확인한다 | HTTP·CLI로 검증 가능한 부분을 확인하고, 브라우저 확인이 남으면 `e2e.md`에 한계를 기록한다 |
@@ -22,7 +22,7 @@
 
 ## 판정과 기록
 
-- [goal-review.md](goal-review.md)의 입력 순서를 먼저 지킨다. TASK/diff 같은 작업 문서는 첫 판단 회수 뒤 2단계에 전달한다.
+- [goal-review.md](goal-review.md)의 입력 순서를 먼저 지킨다. TASK/diff 같은 작업 문서는 첫 판단 회수 뒤 2단계에 전달한다. 구현 후 reviewer는 예외로 1단계 없이 TASK와 구현 diff를 함께 받는다(Q1). tester와 백로그·큰 산출물 검토의 1단계는 그대로다.
 - tester·reviewer에게는 **판정 기준과 재료만** 넘기고 구현자의 결론("잘 됐다")을 넘기지 않는다.
 - 역할 에이전트 파일을 PACE이 설치하지 않는다. 역할은 이 references의 프롬프트로만 정의한다.
 - 호스트 리뷰 결과도 `reviewer.md` 등급(blocking·should_fix·note)으로 옮겨 TASK-CLOSE에 적는다.

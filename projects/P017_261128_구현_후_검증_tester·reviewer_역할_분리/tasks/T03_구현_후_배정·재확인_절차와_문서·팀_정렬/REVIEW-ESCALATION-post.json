@@ -1,0 +1,120 @@
+{
+  "stage": "post",
+  "target": "evidence/post-review.patch",
+  "hash": "fdd47c9547dffad3fcdda443fe7bdfd551fdef186abdda44b9c66bb0fc1ce2b1",
+  "action": "confirm_findings",
+  "decision": null,
+  "recommendation": null,
+  "choices": [],
+  "joint_attempts": 2,
+  "joint_decisions": [
+    {
+      "stage": "pre",
+      "target": "TASK.md",
+      "hash": "646f1a9d39b546a9343db3f42e1e3f59480e86b48ef8b186e4d8cc938889d82b",
+      "evidence": "evidence/joint-pre-1.md",
+      "evidence_hash": "fb034034b566ccc097d2342f91a5d9f58b6be2b8fa7ec32ed7ac57738ae6140f",
+      "summary": "T03 사전 공동 1회차 — detection 2회 연속 행을 tester 원문 대조로 축소(허브 결정)",
+      "at": "2026-11-28T12:27:43.267Z",
+      "id": "e567f089-2972-4f8a-9948-b167eeee4905",
+      "type": "joint",
+      "choice": "공동 검토 1회",
+      "rounds": 1
+    },
+    {
+      "stage": "pre",
+      "target": "TASK.md",
+      "hash": "333974bc1da1c6a70d1571bc03518630981c98813f6e3dbf57beb6fcc67283a4",
+      "evidence": "evidence/joint-pre-2.md",
+      "evidence_hash": "99906dcad1dee8bc7a5278fa4d41d54dada6346cc3ecc8b91078461885f6d06a",
+      "summary": "T03 사전 공동 2회차 — 대조 대상 BR03 원문 전체·구현 직전 스냅샷 교체(허브 결정)",
+      "at": "2026-11-28T12:29:37.830Z",
+      "id": "f8b94efb-2119-4a99-9917-2ba9bddec88c",
+      "type": "joint",
+      "choice": "공동 검토 1회",
+      "rounds": 1
+    }
+  ],
+  "confirmation_count": 0,
+  "diagnostic_confirmation_count": 0,
+  "confirmations": [],
+  "confirmation_source": "evidence/review-records/R2.json",
+  "confirmation_findings": [
+    {
+      "id": "F1",
+      "location": "skills/pace-project-dev/references/task-steps.md:15"
+    },
+    {
+      "id": "F2",
+      "location": "skills/pace-project-dev/references/task-steps.md:14"
+    }
+  ],
+  "upper_reviews": [],
+  "upper_results": [],
+  "verdict_summary": "일반 유효 판정 2회, 최신 유효 판정 fail",
+  "review_history": [
+    {
+      "from": "evidence/REVIEW-LOG.jsonl",
+      "at": "2026-11-28T13:12:18.090Z",
+      "target": "post-review.patch",
+      "hash": "09b25d70f406c50a7169d96517475a4586f23a7b2b07d3944b938ec45da88b6c",
+      "record": "review-records/R1.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] skills/pace-project-dev/references/task-steps.md:15 — 사후 일반 판정 두 회차를 이미 사용했고 최신 판정이 pass인 상태에서, 예외에 해당하지 않는 변경이 추가되면 tester 통과 후 reviewer 재호출이 필수다. 그러나 도구는 예산 소진으로 실행을 거부한다. 최신 pass 때문에 공동 검토를 열 수 없고, 수정 확인에도 최신 fail이 필요하다. 문서의 소진 후 실패 복구 절차로는 이 상태를 처리할 수 없어, 변경을 반영한 태스크가 기존 위임으로 마감까지 갈 수 없다.",
+        "F2 [blocking] skills/pace-project-dev/references/task-steps.md:14 — reviewer가 필요한 구현이라도 Git 패치에 텍스트 헝크가 없으면 사후 검토를 시작할 수 없다. 배정 정본은 호출을 요구하지만 docs/AGENT-CALL.md:25와 도구는 해당 패치를 거부하며, tester 경로만 안내한다. tester가 통과해도 필수 독립 검토가 남는다.",
+        "F3 [blocking] docs/SECURITY.md:11 — 민감 경로에서 경계(A) 답이 아니오이고 상태(B)나 흐름(C) 답이 예인 경우, 보안 문서는 A로 필요·생략을 정하라고 하고 배정 정본은 세 질문으로 정하라고 한다. 같은 지시가 skills/pace-project-dev/references/security.md:18에도 있다. 보안 문서를 따른 PM이 생략을 기록하면 이미 드러난 상태·흐름 위험이 PM의 재량 판단에만 남는다."
+      ]
+    },
+    {
+      "from": "evidence/REVIEW-LOG.jsonl",
+      "at": "2026-11-28T13:19:35.621Z",
+      "target": "post-review.patch",
+      "hash": "fdd47c9547dffad3fcdda443fe7bdfd551fdef186abdda44b9c66bb0fc1ce2b1",
+      "record": "review-records/R2.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] skills/pace-project-dev/references/task-steps.md:15 — 사후 일반 판정을 두 회차 사용한 뒤 최신 판정이 pass이고, 이후 예외에 해당하지 않는 필수 변경을 tester가 통과시켰다. 새 문구는 허브에 인계하도록 하지만, 연결된 반복 실패 절차에서는 새 diff의 독립 판정을 회수할 수 없다. 필수 변경을 유지한 태스크가 기존 위임으로 마감까지 갈 경로가 빠져 있다.",
+        "F2 [blocking] skills/pace-project-dev/references/task-steps.md:14 — reviewer가 필요한 최초 구현에 텍스트 헝크가 없으면 tester가 통과해도 reviewer 판정을 회수할 수 없다. 추가된 인계 문구는 재호출에만 적용된다. 재호출에서도 반복 실패 절차는 헝크 없는 구현 diff가 도구의 입력 검사를 통과할 경로를 제공하지 않는다."
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "type": "call",
+      "at": "2026-11-28T13:10:19.369Z",
+      "target": "post-review.patch",
+      "kind": "goal",
+      "call_id": "2ab9aac8-d304-4749-9623-f8fcc2c737a7",
+      "from": "evidence/REVIEW-LOG.jsonl"
+    },
+    {
+      "type": "call",
+      "at": "2026-11-28T13:17:33.788Z",
+      "target": "post-review.patch",
+      "kind": "goal",
+      "call_id": "23b7802e-16dc-4240-96b0-25e6cbb46949",
+      "from": "evidence/REVIEW-LOG.jsonl"
+    }
+  ],
+  "diagnoses": [],
+  "voids": [],
+  "finding_assessments": [
+    {
+      "finding": "F1 [blocking] skills/pace-project-dev/references/task-steps.md:15 — 사후 일반 판정을 두 회차 사용한 뒤 최신 판정이 pass이고, 이후 예외에 해당하지 않는 필수 변경을 tester가 통과시켰다. 새 문구는 허브에 인계하도록 하지만, 연결된 반복 실패 절차에서는 새 diff의 독립 판정을 회수할 수 없다. 필수 변경을 유지한 태스크가 기존 위임으로 마감까지 갈 경로가 빠져 있다.",
+      "decision": null,
+      "reason": null
+    },
+    {
+      "finding": "F2 [blocking] skills/pace-project-dev/references/task-steps.md:14 — reviewer가 필요한 최초 구현에 텍스트 헝크가 없으면 tester가 통과해도 reviewer 판정을 회수할 수 없다. 추가된 인계 문구는 재호출에만 적용된다. 재호출에서도 반복 실패 절차는 헝크 없는 구현 diff가 도구의 입력 검사를 통과할 경로를 제공하지 않는다.",
+      "decision": null,
+      "reason": null
+    }
+  ]
+}

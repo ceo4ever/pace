@@ -10,6 +10,7 @@
 
 - [Orca 안 전체 검사는 브라우저 E2E 끔](orca-안-전체-검사는-브라우저-e2e-끔.md) — Orca 터미널에서 npm run check는 PACE_SKIP_BROWSER_E2E=1로 돌린다 — playbook E2E 4개가 Orca 브라우저 탭을 열어 사용자 화면을 어지럽힌다. 브라우저 동작을 바꾼 일만 켠다
 - [구판 호환 설계 금지](구판-호환-설계-금지.md) — PACE 변경에 구판 CLI 호환 장치(별도 경로·표지·이중 판독)를 만들지 말고 신판 하나로 고친다
+- [by user 기록 변경은 먼저 허브에](by-user-기록-변경은-먼저-허브에.md) — by user waiver·decision의 해시·내용 변경은 바꾸기 전에 허브에 묻는다
 
 ## 열린 이슈
 

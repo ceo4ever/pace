@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "author": "anthropic",
+  "attempts": [
+    {
+      "hash": "765504cf2405c2536c047e551deed19c9416a4743d92f8f3d7c120a13a646412",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 4,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "7de0a83d52f4b09e375e9d92c876ff1b23ba8a90c6d408531956a5055c1bebd3",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R1.json에서 재검토"
+    },
+    {
+      "hash": "646f1a9d39b546a9343db3f42e1e3f59480e86b48ef8b186e4d8cc938889d82b",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R2.json에서 재검토"
+    },
+    {
+      "hash": "333974bc1da1c6a70d1571bc03518630981c98813f6e3dbf57beb6fcc67283a4",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R4.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R3.json에서 재검토"
+    }
+  ],
+  "waiver": {
+    "by": "user",
+    "date": "2026-11-28",
+    "hash": "333974bc1da1c6a70d1571bc03518630981c98813f6e3dbf57beb6fcc67283a4",
+    "evidence": "evidence/owner-waiver-T03.md",
+    "reason": "공동 2회차 R4 fail(blocking 1, detection) — owner A-3 결정: 구현 직전 스냅샷에 미추적 파일 sha256을 함께 고정해 증거 쪽에서 닫고 현재 TASK로 구현. 구현 후 tester·reviewer 검증은 그대로"
+  }
+}

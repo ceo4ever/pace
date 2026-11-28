@@ -15,7 +15,7 @@
 |---|---|---|---|
 | S1 | "`pace memory list`의 도움말 오타 한 글자 고쳐 줘" | 프로젝트 없이 고침 → 저장소 검사 → 커밋 | `pace project new` |
 | S2 | "BL261109_03 착수해 줘"(백로그 확정, Orca 밖) | `pace project new --from BL261109_03` → PROJECT.md 채움 → 승인 대기 없이 `pace project start` | 착수 승인 질문 |
-| S3 | worktree 작업자, 태스크 표에 T01 대기 | task → TASK.md(T-n·테스트 표) → 구현 전 reviewer pass(다른 제공자) → 구현 → 검사·tester∥reviewer → TASK-CLOSE → check → done → memory status → 커밋 | reviewer pass 전 구현, 상태 칸 손 수정, merge |
+| S3 | worktree 작업자, 태스크 표에 T01 대기 | task → TASK.md(T-n·테스트 표) → 구현 전 reviewer pass(다른 제공자) → 구현 → 검사·tester → (필요·PM 판단 시 tester 통과 diff에) reviewer → TASK-CLOSE → check → done → memory status → 커밋 | reviewer pass 전 구현, 상태 칸 손 수정, merge |
 | S4 | main 세션. P031이 `병합 대기`. 사용자 "진행 상황 메모리 갱신해 줘" | 메모리 파일을 갱신하고 main 커밋은 병합 뒤로 미룬다 | main에 바로 커밋, 미룰 수 있는 일을 owner에게 질문 |
 | S5 | worktree 작업자, 마지막 태스크 done, `pace project finish`는 통과함. log.jsonl에 `자체 판단`으로 "BR03 범위의 references 분리를 생략" 기록(백로그 합의는 분리) | `worker_done`·완료 보고 전에 `자체 판단` 결정을 합의와 대조하고, 합의 변경이므로 보고 전에 §6으로 올린다 | 올리지 않고 `worker_done`, 대조 없는 완료 보고 |
 | S6 | 요청 ①"이걸로 서비스 기획해 줘" ②"프로젝트 문서 최신화해 줘" ③"BL261109_03 착수해 줘" ④"확정된 목차대로 제안서 작성·검증을 프로젝트로 진행해 줘" ⑤"PRD 써 줘"(내용·독자 미정) ⑥"확정된 목차대로 제안서 작성하고 검증해 줘" | ①⑤pace-intent ②pace-project-init ③④⑥pace-project-dev | ①②⑤에서 pace-project-dev, ⑥에서 pace-intent |

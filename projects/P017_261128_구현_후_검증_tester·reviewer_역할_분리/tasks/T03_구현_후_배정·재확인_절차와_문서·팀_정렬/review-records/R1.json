@@ -1,0 +1,159 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**첫 판단 — 미달.** 계획은 tester를 수용 기준의 판정 주체로 두고, 사후 reviewer를 tester가 통과시킨 diff의 결함 검토에 배정한다. 이 역할 분리와 BR03의 여섯 사례는 반복 호출을 줄이면서 위험 변경을 검토한다는 목적에 맞는다. 다만 현재 테스트 표로는 재호출 누락, reviewer 답 근거 누락, 잘못된 시각 기록, 문서 정렬 누락을 통과시킬 수 있다.\n\n`구현 후 reviewer: 필요`는 적절하다. TASK 23·30행의 배정·재호출 절차와 BR03 사례 (5)는 스킬 문서가 에이전트의 검증 분기를 바꾼다는 근거다. 여섯 사례에 등장하는 화면 문구와 저장 필드는 바뀐 절차의 분기를 확인하는 입력이다. 기존 제품 동작을 별도 수용 기준으로 넓힌 경우는 확인되지 않았다.\n\n**올릴 단계 — T03 사전 계획.** 기존 BR03의 판정 조건을 시험에 추가하는 보완이므로 A-1의 합의 변경에 해당하지 않는다. 구현 허가 판정은 fail이다. 구현 결과와 설치 후 호출 시간·토큰 절감은 미확인이다.\n\n**검토 입력과 노출 범위.** 요청에 첨부된 TASK 원문과 저장소의 `TASK.md`, `PROJECT.md`, BR03, `BACKLOG.md` 목표·측정 절, `decision-rights.md`, 설치된 `pace-project-dev/SKILL.md`, `docs/README.md`를 읽었다. 도구 계약과 검사 방법은 `structured-review.ts`, `review-criteria.ts`, `project-dev-skill.test.ts`, `verification.md`, `docs/AGENT-CALL.md`, `docs/WORK-PROCESS.md`의 관련 부분을 대조했다. `PROJECT.md`에 기재된 이전 백로그 검토 결과와 `BACKLOG.md` 검색 출력에 포함된 과거 지적·대응 일부가 노출됐다. 해당 기록은 판정 근거에서 제외했다. 작성자 마감·자체 판정이나 별도 지적·대응 파일을 열지 않았다. 호스트에서 보인 입력은 요청문과 TASK, AGENTS.md 지시, 환경 및 스킬 목록이다. 별도 부트·메모리 조회, 파일 수정, 구현 시험 실행, 후속 호스트 2단계 검토는 수행하지 않았다. 검토자는 이 세션의 Codex이며 작성자와의 제공자 차이는 미확인이다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:48-49\",\n      \"scenario\": \"네 문서가 모두 직전 reviewer가 pass가 아니면 재호출하는 분기를 빠뜨려도 BR03의 여섯 사례와 문서 간 일치 검사에 통과할 수 있다.\",\n      \"reproduction\": \"BR03 18행의 '직전 reviewer 판정이 pass가 아니거나' 조건을 배정 정본에서 뺀 결함 문안을 가정한다. BR03 36~38행은 최초 배정이고 39~41행은 직전 pass 뒤 수정이다. TASK 49행은 정본 링크와 문서 간 일치를 확인하므로 동일한 누락을 검출하지 못한다. 직전 non-pass 뒤 tester가 수정 diff를 통과시킨 경우와 아직 통과시키지 않은 경우를 대조하면 이 분기를 확인할 수 있다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:50\",\n      \"scenario\": \"reviewer.md에 질문, 세 묶음 이름, 12항목과 세 상태명을 모두 두고도 none에 따라간 경로, not_applicable에 이유, defect에 같은 항목 ID의 지적을 요구하는 규칙을 빠뜨릴 수 있다. 사후 기준 재판정 금지와 사전 필요·생략 판정의 누락도 S-3의 기대 결과를 바꾸지 않는다.\",\n      \"reproduction\": \"TASK 50행의 단언 대상은 유지하고 reviewer.md에서 상태별 근거 규칙과 사전·사후 역할 경계 문장만 삭제한 경우를 대입한다. T02의 structured-review.ts 151행과 TASK 39행은 위 규칙을 요구하지만 S-3의 이름·항목 단언과 묶음 이름 삭제 음성 대조는 여전히 성립한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:52\",\n      \"scenario\": \"TASK-CLOSE의 필수 시각 칸 이름을 그대로 두고 '판정 결과 회수'에 배정 시작 회신이나 검토 원장의 review 행 시각을 기록하도록 지시해도 S-5의 존재·이름 검사를 통과할 수 있다.\",\n      \"reproduction\": \"회차별 칸 이름과 필수 문구를 유지한 채 task-steps.md의 회수 시각 출처만 검토 원장 review 행으로 바꾼 문안을 TASK 52행에 대입한다. BR03 19·46행 및 BACKLOG 89~93행은 실제 판정 결과 회수 사건을 요구한다. S-5의 기대 결과에는 사건의 의미와 허용 출처의 대조가 없다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-5\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:53\",\n      \"scenario\": \"팀 생성물이 동기화됐어도 역할 표, 호출 문서, TASK v2 안내가 옛 절차를 가리키거나 허용 범위 밖 파일이 변경 후보에 포함될 수 있다.\",\n      \"reproduction\": \"팀 원본과 생성물만 맞추고 docs/WORK-PROCESS.md 22행의 reviewer 줄 정렬을 누락한 경우를 대입한다. sync 종료 코드와 diff 통계는 그 문장 누락을 검출하지 못한다. 범위 밖 파일을 스테이징한 경우에도 기본 git diff --stat는 해당 변경을 보지 못한다. T-6에는 세 문서의 문장 대조와 실제 변경 후보 전체의 경로 대조가 필요하다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-6\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"T-1\",\n      \"state\": \"present\",\n      \"observation\": \"TASK 37·48행은 BR03 35~41행의 여섯 기대값을 문서 원문에 대입하고 tester가 칸별 결과를 TASK-CLOSE에 기록하게 한다. 예를 들어 절차 문서 변경을 화면 문구 예외로 처리하면 사례 (5)에서 실패한다.\"\n    },\n    {\n      \"id\": \"T-2\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK 38·49·57행에 배정 정본과 대조 방법이 있다. 직전 non-pass 뒤의 필수 재호출이 빠진 문안을 실패시킬 관측이 부족하다.\"\n    },\n    {\n      \"id\": \"T-3\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK 39·50행의 문구 시험과 묶음 이름 삭제 대조는 이름 누락을 검출한다. 답 상태별 근거 요건과 사전·사후 역할 경계 누락에 대한 실패 조건이 없다.\"\n    },\n    {\n      \"id\": \"T-4\",\n      \"state\": \"present\",\n      \"observation\": \"TASK 40·51행은 다섯 문서의 Q1 예외를 대조하고 tester와 백로그의 1단계 문장을 변경 전과 비교한다. 한 문서에 사후 reviewer의 첫 판단 회수 요구가 남거나 보존 대상의 1단계 문장이 바뀌면 기대 결과에 어긋난다.\"\n    },\n    {\n      \"id\": \"T-5\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK 41·52행에 보안 둘째 겹, 묶음 밖 보완, 시각 칸, 기준 범위 규칙의 문구 대조가 있다. 회차 시각이 BR03과 BACKLOG가 지정한 사건과 출처를 따르는지 확인하는 실패 조건이 없다.\"\n    },\n    {\n      \"id\": \"T-6\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK 42·53행의 sync 종료 코드와 diff 통계로는 지정 문서 세 곳의 의미 정렬이나 스테이징된 변경까지 포함한 경로 제한을 입증할 수 없다.\"\n    }\n  ],\n  \"permission\": {\n    \"mode\": \"implementation\",\n    \"paths\": [],\n    \"protected\": []\n  }\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 78100,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 65810
+    },
+    "usage_total_tokens": 65810,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "765504cf2405c2536c047e551deed19c9416a4743d92f8f3d7c120a13a646412",
+    "kind": "task",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# T03 구현 후 배정·재확인 절차와 문서·팀 정렬\n\n- 프로젝트: [P017](../../PROJECT.md) · 백로그: [BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음](../../../../backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\nBR01·BR02의 도구 동작을 PM 절차·역할 문서·팀 원본에 맞춘다. 지금 문서는 구현 뒤 tester ∥ reviewer를 항상 배정하고 고친 뒤 둘 다 다시 돌린다(`skills/pace-project-dev/SKILL.md:59`, `references/task-steps.md:11`). 계약 정본은 [BR03](../../../../backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR03_구현_후_배정·재확인_절차와_문서·팀_정렬.md) 범위·완료 기준이며 여기서 다시 쓰지 않는다(P-1, P-4).\n\n## 재료\n\n- 바꿀 문서: `skills/pace-project-dev/SKILL.md` §3-4, `references/{task-steps,reviewer,tester,goal-review,tools,cross-verify,security,verification}.md`, `docs/{WORK-PROCESS,SECURITY,AGENT-CALL}.md`, `.pace/team/agents/pace-{reviewer,tester}.md`(→ `pace team sync`).\n- 도구 문구 정본(T02): 사후 질문 \"이 변경을 내보내도 되는가?\", 세 묶음 `boundary`·`state`·`flow`, 12항목 `RA-1~4`·`RB-1~4`·`RC-1~4`(`src/agent/structured-review.ts` `POST_BUNDLE_ITEMS`), 답 상태 `defect`·`none`·`not_applicable`, 비-diff 거부 안내(`src/agent/review-criteria.ts` `postTargetIssue`).\n- 앞 태스크가 넘긴 것: T01 구현 후 reviewer 줄(`필요`·`생략`)과 사실 질문, T02 사후 대상은 구현 diff만·문서 확인은 tester, 묶음 답 형식(빈·상태명 관측과 위치 없는 지적의 defect는 unknown).\n- owner 결정 반영분: 사후 새 검토 주기 철회(BR03 범위 문장 삭제, 2026-11-28), 재생은 기록·보고(BR02).\n- 문구 고정 시험: `test/project-dev-skill.test.ts:129`(검토 정본 질문 단언).\n\n## 증명 범위\n\n- 판정 주체: 자동 테스트(`node --test`의 문구 고정 시험) + 사례 대조표·문구 대조는 구현 후 tester가 문서 원문으로 판정\n- 구현 후 reviewer: 필요 — 바꾸는 스킬·절차 문서가 에이전트의 흐름 규칙이다\n- 포함: BR03 범위의 배정 절차·재호출·예외, 역할 문서, Q1 예외, 보안 둘째 겹, 묶음 밖 보완 (a)(b), 기타 정렬, 팀 원본 동기화, 문구 고정 시험 갱신\n- 범위 밖: 코드·시험 동작(T01·T02), done 게이트(Q2), BL261118_02 BR04 문장(그 백로그 최신화), 설치본 반영(병합 뒤 main) — 기존 동작 — 기존 회귀 시험(`npm run check`)\n\n<!--\n경계(A): 아니오. 코드·권한 경로 변경 없음(문서).\n상태(B): 아니오. 저장 형식 변경 없음.\n흐름(C): 예. 에이전트 배정·재호출 절차 문서가 바뀐다.\n-->\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | BR03 사례 대조표 (1)~(6)을 바꾼 문서 문장에 대입한 결과가 문서 간 갈리는 칸 없이 BR03 기대와 같다 |\n| T-2 | `SKILL.md`·`task-steps.md`·`reviewer.md`·`tester.md`가 배정 절차(tester는 항상, reviewer는 `필요` 또는 PM 판단, tester 통과 diff에만, 재호출 조건과 예외, 사후 대상은 구현 diff만)를 같은 뜻으로 말하고 정의는 `task-steps.md` 한 곳이다. 네 문서와 팀 원본에 \"∥\"가 없다 |\n| T-3 | `reviewer.md`의 사후 질문·세 묶음·12항목·답 형식이 T02 도구 문구와 같고, 사후 reviewer가 하지 않는 일(기준 재판정·계획 타당성)과 사전 검토의 필요·생략 판정이 있다. 문구 고정 시험을 의도적으로 갱신한다 |\n| T-4 | Q1 예외(구현 후 reviewer는 1단계 없이 TASK와 diff를 받는다)가 `goal-review.md`·`tools.md`·`cross-verify.md`·`docs/WORK-PROCESS.md`·`reviewer.md`에서 같은 뜻이고, tester·백로그 검토의 1단계 문장은 그대로다 |\n| T-5 | 보안 둘째 겹(`security.md`·`docs/SECURITY.md`)이 경계(A) 묶음 점검과 사실 질문으로 이어지고, 묶음 밖 보완 (a)(b), `task-steps.md`의 TASK-CLOSE 회차별 요청·회수 시각 필수와 TASK 기준 범위 한정 규칙(`reviewer.md` 사전 절과 같은 문구)이 있다 |\n| T-6 | `verification.md` 역할 표·`docs/AGENT-CALL.md`·`docs/WORK-PROCESS.md:22`가 정렬되고 `pace team sync --check` 종료 0이다. 바꾼 경로가 스킬·docs 문서, 팀 원본·생성물, 문구 고정 시험뿐이다 |\n\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | check | T-1 | 바꾼 문서 | 사례 (1)~(6)을 문서 문장에 대입 | 칸마다 문서 간 같은 답, BR03 기대와 같음 | TASK-CLOSE 대조표, tester 원문 판정 |\n| S-2 | check | T-2 | 바꾼 문서 | `grep -n \"∥\"`·배정 문장 대조 | \"∥\" 0건, 네 문서가 `task-steps.md` 정의를 링크·같은 뜻 | tester |\n| S-3 | unit | T-3 | `reviewer.md` | 문구 고정 시험 | 사후 질문·묶음 세 이름·답 상태 세 값·12항목 단언 통과. 음성 대조: 묶음 이름 하나를 지우면 실패 | `test/project-dev-skill.test.ts` |\n| S-4 | check | T-4 | 다섯 문서 | `grep -n \"1단계\\|첫 판단\"` 대조 | 구현 후 reviewer 예외 문장이 같은 뜻, tester·백로그 1단계 문장은 변경 전과 같음 | tester |\n| S-5 | check | T-5 | 각 위치 | 문구 대조 | 보안 둘째 겹·(a)(b)·회차별 시각 필수·범위 한정 규칙이 있음, 시각 칸 이름이 TASK-CLOSE 템플릿과 같음 | tester |\n| S-6 | check | T-6 | 팀 원본·변경 경로 | `pace team sync --check`, `git diff --stat` | 종료 0, 허용 경로만 | tester, TASK-CLOSE |\n\n## 접근\n\n- 배정 정의를 `task-steps.md` 4단계에 한 번 쓰고 `SKILL.md` §3-4는 한 줄 요약+링크, `reviewer.md`·`tester.md`는 역할 쪽 한 줄씩. 삭제·교체 위주로 고친다.\n- `reviewer.md` 관점 절의 구현 후 줄을 세 묶음·답 형식으로 교체하고 `넘길 것`의 구현 후 첫 판단 회수 문장을 Q1 예외로 교체한다.\n- 팀 원본 두 파일은 맡는 일 한 줄씩 고친 뒤 `pace team sync`.\n",
+    "call_id": "5a215cfc-4b52-496d-bea4-1c8100c0b0de",
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3",
+      "T-4",
+      "T-5",
+      "T-6"
+    ],
+    "permission_basis": {
+      "base": "9756e3da21f8365829e807afcd5a071ae2962054",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:48-49",
+        "scenario": "네 문서가 모두 직전 reviewer가 pass가 아니면 재호출하는 분기를 빠뜨려도 BR03의 여섯 사례와 문서 간 일치 검사에 통과할 수 있다.",
+        "reproduction": "BR03 18행의 '직전 reviewer 판정이 pass가 아니거나' 조건을 배정 정본에서 뺀 결함 문안을 가정한다. BR03 36~38행은 최초 배정이고 39~41행은 직전 pass 뒤 수정이다. TASK 49행은 정본 링크와 문서 간 일치를 확인하므로 동일한 누락을 검출하지 못한다. 직전 non-pass 뒤 tester가 수정 diff를 통과시킨 경우와 아직 통과시키지 않은 경우를 대조하면 이 분기를 확인할 수 있다.",
+        "impact": "criterion",
+        "criterion": "T-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:50",
+        "scenario": "reviewer.md에 질문, 세 묶음 이름, 12항목과 세 상태명을 모두 두고도 none에 따라간 경로, not_applicable에 이유, defect에 같은 항목 ID의 지적을 요구하는 규칙을 빠뜨릴 수 있다. 사후 기준 재판정 금지와 사전 필요·생략 판정의 누락도 S-3의 기대 결과를 바꾸지 않는다.",
+        "reproduction": "TASK 50행의 단언 대상은 유지하고 reviewer.md에서 상태별 근거 규칙과 사전·사후 역할 경계 문장만 삭제한 경우를 대입한다. T02의 structured-review.ts 151행과 TASK 39행은 위 규칙을 요구하지만 S-3의 이름·항목 단언과 묶음 이름 삭제 음성 대조는 여전히 성립한다.",
+        "impact": "criterion",
+        "criterion": "T-3",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:52",
+        "scenario": "TASK-CLOSE의 필수 시각 칸 이름을 그대로 두고 '판정 결과 회수'에 배정 시작 회신이나 검토 원장의 review 행 시각을 기록하도록 지시해도 S-5의 존재·이름 검사를 통과할 수 있다.",
+        "reproduction": "회차별 칸 이름과 필수 문구를 유지한 채 task-steps.md의 회수 시각 출처만 검토 원장 review 행으로 바꾼 문안을 TASK 52행에 대입한다. BR03 19·46행 및 BACKLOG 89~93행은 실제 판정 결과 회수 사건을 요구한다. S-5의 기대 결과에는 사건의 의미와 허용 출처의 대조가 없다.",
+        "impact": "criterion",
+        "criterion": "T-5",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:53",
+        "scenario": "팀 생성물이 동기화됐어도 역할 표, 호출 문서, TASK v2 안내가 옛 절차를 가리키거나 허용 범위 밖 파일이 변경 후보에 포함될 수 있다.",
+        "reproduction": "팀 원본과 생성물만 맞추고 docs/WORK-PROCESS.md 22행의 reviewer 줄 정렬을 누락한 경우를 대입한다. sync 종료 코드와 diff 통계는 그 문장 누락을 검출하지 못한다. 범위 밖 파일을 스테이징한 경우에도 기본 git diff --stat는 해당 변경을 보지 못한다. T-6에는 세 문서의 문장 대조와 실제 변경 후보 전체의 경로 대조가 필요하다.",
+        "impact": "criterion",
+        "criterion": "T-6",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "TASK 37·48행은 BR03 35~41행의 여섯 기대값을 문서 원문에 대입하고 tester가 칸별 결과를 TASK-CLOSE에 기록하게 한다. 예를 들어 절차 문서 변경을 화면 문구 예외로 처리하면 사례 (5)에서 실패한다."
+        },
+        {
+          "id": "T-2",
+          "state": "unverified",
+          "observation": "TASK 38·49·57행에 배정 정본과 대조 방법이 있다. 직전 non-pass 뒤의 필수 재호출이 빠진 문안을 실패시킬 관측이 부족하다."
+        },
+        {
+          "id": "T-3",
+          "state": "unverified",
+          "observation": "TASK 39·50행의 문구 시험과 묶음 이름 삭제 대조는 이름 누락을 검출한다. 답 상태별 근거 요건과 사전·사후 역할 경계 누락에 대한 실패 조건이 없다."
+        },
+        {
+          "id": "T-4",
+          "state": "present",
+          "observation": "TASK 40·51행은 다섯 문서의 Q1 예외를 대조하고 tester와 백로그의 1단계 문장을 변경 전과 비교한다. 한 문서에 사후 reviewer의 첫 판단 회수 요구가 남거나 보존 대상의 1단계 문장이 바뀌면 기대 결과에 어긋난다."
+        },
+        {
+          "id": "T-5",
+          "state": "unverified",
+          "observation": "TASK 41·52행에 보안 둘째 겹, 묶음 밖 보완, 시각 칸, 기준 범위 규칙의 문구 대조가 있다. 회차 시각이 BR03과 BACKLOG가 지정한 사건과 출처를 따르는지 확인하는 실패 조건이 없다."
+        },
+        {
+          "id": "T-6",
+          "state": "unverified",
+          "observation": "TASK 42·53행의 sync 종료 코드와 diff 통계로는 지정 문서 세 곳의 의미 정렬이나 스테이징된 변경까지 포함한 경로 제한을 입증할 수 없다."
+        }
+      ],
+      "issues": [
+        "permission_unverified"
+      ]
+    }
+  }
+}

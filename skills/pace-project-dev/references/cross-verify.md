@@ -1,6 +1,6 @@
 # 교차 검증 (백로그·큰 산출물)
 
-[목표 검토](goal-review.md)의 첫 독립 판단을 회수한 뒤 작업 문서를 넘긴다. 작성자와 다른 제공자의 새 맥락을 우선하고 결과의 제공자와 열람 범위를 확인한다. 호스트의 독립 세션 호출을 쓰거나 `pace agent verify --author-agent <claude|codex> --target <파일> --purpose-file <상위 목적 글> --out <기록>`으로 검토한다.
+[목표 검토](goal-review.md)의 첫 독립 판단을 회수한 뒤 작업 문서를 넘긴다. 구현 후 reviewer는 예외로 1단계 없이 TASK와 구현 diff를 함께 받는다(Q1). tester와 백로그·큰 산출물 검토의 1단계는 그대로다. 작성자와 다른 제공자의 새 맥락을 우선하고 결과의 제공자와 열람 범위를 확인한다. 호스트의 독립 세션 호출을 쓰거나 `pace agent verify --author-agent <claude|codex> --target <파일> --purpose-file <상위 목적 글> --out <기록>`으로 검토한다.
 
 - 교차 검토 미실행은 [B1](decision-rights.md#a-결정-주체)로 복구하고 제공자·미실행 사유를 기록한다. 검증 생략·완화를 선택할 때 A-3을 적용한다.
 - `verify`는 질문별 구조화된 지적으로 판정을 계산한다. 원문·판정·지적별 반영 여부를 확인한다. 실제 조치가 합의를 바꾸면 [A-1](decision-rights.md#a-결정-주체)을 적용한다. 세부 판정과 후속 상태는 [독립 리뷰어](reviewer.md)를 따른다.

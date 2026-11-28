@@ -22,6 +22,8 @@
 | 소진·공동 검토·한정 확인·상위 검토·사용자 결정의 상태 및 근거 | `verify-cli.ts`, `review-followup.ts` |
 | 사전 검토의 허가와 실제 Git 후보 | `src/project/pre-review.ts`, `review-permission.ts`, `harness.ts` |
 
+구현 후 단계는 TASK와 구현 diff를 받아 세 묶음 12항목(`RA`·`RB`·`RC`)을 묻는다. 대상은 첫 비공백 줄이 `diff --git `이고 헝크가 있는 diff여야 하며, 비-diff는 예약 전에 거부한다(문서·결과물 확인은 tester 경로). 같은 대상·같은 해시의 fail 재요청도 예약 전에 거부하되 owner 결정 회차는 허용한다. 외부 검토의 `review-hand`도 같은 질문과 거부를 쓴다. 고정 뒤 대상이 바뀌면 `review-record`는 원문을 보존하고 stale `unknown`으로 기록한다.
+
 다음 조치는 명령 출력의 `followup`·`escalation`과 [독립 리뷰어](../skills/pace-project-dev/references/reviewer.md#반복-실패-진단과-사용자-결정)를 따른다. 재검증은 기존 기준으로 진행하며, 실제 합의 변경(A-1)과 필수 검증 생략·완화(A-3)의 승인 원문과 범위는 [결정 권한](../skills/pace-project-dev/references/decision-rights.md#a-결정-주체)으로 대조한다.
 
 실행된 실패 기록이 검토 도구 오류로 무효라면 `review-note --void`를 사용한다. 명령 출력에서 적용할 상태와 대상, 근거를 확인한다.

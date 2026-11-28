@@ -6,7 +6,7 @@
 
 문서 템플릿은 개발 업무의 예시다. 업무별 형식·추적과 명령용 최소 구조는 [문서 형식과 추적](../skills/pace-project-dev/references/document-shape.md)을 따른다.
 
-독립 검토는 [목표 대조 절차](../skills/pace-project-dev/references/goal-review.md)의 첫 판단을 받은 뒤 작업 문서를 대조한다. 마감의 목표 달성 판정은 기준 대조와 별도로 남긴다.
+독립 검토는 [목표 대조 절차](../skills/pace-project-dev/references/goal-review.md)의 첫 판단을 받은 뒤 작업 문서를 대조한다. 구현 후 reviewer는 예외로 1단계 없이 TASK와 구현 diff를 함께 받는다(Q1). tester와 백로그·큰 산출물 검토의 1단계는 그대로다. 마감의 목표 달성 판정은 기준 대조와 별도로 남긴다.
 
 팀 측정을 채택한 프로젝트는 검토한 변경과 회고 자료를 먼저 커밋하고 깨끗한 worktree에서 finish를 실행한다. finish는 검사한 커밋의 자료와 하네스가 생성한 최종 Git tree를 대조한다. main에서 미리보기를 확인한 뒤 `pace project merge P### --yes --commit <표시된 전체 SHA>`로 승인 대상을 고정한다. finish 뒤 내용이 바뀌면 재마감·재확인이 필요하다. 채택 이력과 검증 근거는 [팀 측정](TEAM-METRICS.md)을 따른다. 팀 없는 기존 프로젝트는 `--yes`를 유지한다.
 
@@ -19,7 +19,7 @@
 프로젝트 작업자 역할은 `start --role <팀 구성원 이름>` > PROJECT 머리의 `작업자 역할` > 없음으로 고른다. 기존 worktree에 명시 역할을 적용하려면 `--launch`가 필요하다. 원본 적재와 tier 인자·시작 기록의 요청/관측 구별·재개/복구 경계는 [TEAM의 프로젝트 작업자 역할](TEAM.md#프로젝트-작업자-역할)을 따른다. 역할 미지정은 기존 경로이고 자동 lead는 없다.
 
 - 지표: `pace project stats P### [--json]` — 프로젝트·태스크 시간, 도구별 토큰, 게이트 실패, 리뷰 지적 수·개선 후보. main에서도 소유 worktree를 조회한다. `projects/P###_…/log.jsonl`은 커밋하는 사건 기록(`{ts,p,t?,type,by,msg,ok?,src?,ref?,data?,to?,requestId?}` — 시간대 포함 ISO·작성자 cli/agent/coordinator/user·짧은 메시지·수치 data)이며 기록 오류는 명령을 막지 않는다. finish·merge는 프로젝트의 `METRICS.md`(프로젝트 기준·태스크 기준·태스크 밖 집계)와 `projects/METRICS.md`(비교표)를 자동 생성한다. PROJECT-CLOSE `## 지표`는 METRICS.md 링크와 에이전트 해석 1~3줄이며 누락 시 finish 실패. 개선 후보를 메모리·브레인으로 올릴지는 사람이 고른다
-- 새 TASK의 `TASK 형식: v2`는 증명 범위와 비어 있지 않은 판정 주체를 요구한다(기준·테스트 앞 배치는 템플릿 관례이며 게이트의 순서 검사는 아니다). 게이트·verify·수동 reviewer는 같은 표지로 나누며 표지 없는 옛 TASK에는 새 규칙을 강제하지 않는다. 구조 검사와 의미 판정의 경계는 reviewer.md의 TASK 증명 범위 절을 따른다. 표지 제거·허위 기록의 우회와 의미·진정성은 기계가 보증하지 않는다.
+- 새 TASK의 `TASK 형식: v2`는 증명 범위와 비어 있지 않은 판정 주체, 증명 범위 안의 `구현 후 reviewer: 필요|생략 — 이유` 한 줄을 요구한다(줄 형식은 check·done·사전 verify·review-hand가 예약 전에 확인하고, 판단 내용은 사전 reviewer가 판정한다. 구현 후 배정은 [태스크 단계](../skills/pace-project-dev/references/task-steps.md) 4단계)(기준·테스트 앞 배치는 템플릿 관례이며 게이트의 순서 검사는 아니다). 게이트·verify·수동 reviewer는 같은 표지로 나누며 표지 없는 옛 TASK에는 새 규칙을 강제하지 않는다. 구조 검사와 의미 판정의 경계는 reviewer.md의 TASK 증명 범위 절을 따른다. 표지 제거·허위 기록의 우회와 의미·진정성은 기계가 보증하지 않는다.
 - 새 태스크의 `사전 검토: v1`은 `PRE-REVIEW.json`의 마지막 판정·대상 해시·증거를 check/done/finish에서 확인한다. 작성법과 교차 대체 조건은 `skills/pace-project-dev/references/reviewer.md`의 사전 검토 기록 v1을 따른다. 과거 마커 없는 태스크는 기존 방식이며, 마커와 기록 삭제·허위 기록 우회 및 검토 의미·실제 선행 시점은 기계가 보증하지 않는다.
 - 검토 원장 decision의 `by: pm|user`는 프로젝트 사건의 `by: agent|coordinator|user`와 별개다. 옛 결정의 주체는 unknown이다. 도구 계약은 [AGENT-CALL](AGENT-CALL.md), 영향 분류·허브의 장애 대응·승인 원문 확인은 [결정 권한 정본](../skills/pace-project-dev/references/decision-rights.md)을 따른다.
 - 사건 작성: `pace project log P### [T##] --type decision|change|review|question|answer|escalation|note --msg "한 줄" [--src "사용자 결정|main 판단|자체 판단"] [--ref 프로젝트의_상대파일] [--by agent|coordinator|user] [--to owner|coordinator]`. decision/change는 PROJECT 결정 표도 자동 반영하므로 손으로 두 번 쓰지 않는다. review 메시지는 `tester pass blocking 0 should_fix 0` 또는 `reviewer fail blocking 1 should_fix 2`처럼 판정·지적 수를 적는다. start는 도구·선택 출처·launch 결과 및 PROJECT 출처 기반 착수 결정을, merge는 사용자 승인·커밋 수를 함께 기록한다. 출력 원문·세션 내용·코드 diff·비밀은 남기지 않는다

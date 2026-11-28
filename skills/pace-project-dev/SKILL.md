@@ -56,7 +56,7 @@ main에서 worktree 파일을 절대 경로로 고치지 않는다 — 프로젝
 1. **분석** — `pace project task P### "<이름>"`이 TASK.md를 만들고 표 상태를 `진행`으로 둔다. 목적·재료를 쓰고 앞 태스크 TASK-CLOSE의 "남긴 것"을 읽는다.
 2. **설계** — 기준 `T-n`, 테스트 표(기준마다 시나리오 한 줄 이상), 접근을 쓰고 기준 문서는 §5 규칙으로 고른다. **구현 전 검토**: 별도 reviewer(작성 PM과 다른 제공자 우선)에게 TASK.md를 `pace agent verify`로 검토받아 pass(blocking 0)이거나 사용자 결정 waiver일 때만 구현한다. 세부: [task-steps.md](references/task-steps.md).
 3. **구현** — 기존 코드 스타일을 따르되, 언어 색인의 안티패턴으로 주변 코드와 변경을 대조한다. 보안·성능 문제가 있거나, 따를 주변 코드가 없거나(새 프로젝트·새 모듈), 주변이 안티패턴이면 교본을 따른다(§5). 버그는 실패하는 테스트(RED)부터.
-4. **테스트** — 워크트리 PM이 저장소 검사 명령과 E2E를 수행하고 **tester ∥ reviewer**를 새 맥락으로 배정·회수·판정한다. 출력의 `escalation`을 먼저 따르고, 없으면 fail·blocking을 고쳐 **둘 다** 다시 돈다. 세부·TASK-CLOSE 리뷰 기록 형식은 [task-steps.md](references/task-steps.md).
+4. **테스트** — PM이 검사·E2E를 수행하고 새 맥락의 tester를, TASK가 `필요`이거나 PM이 판단하면 tester 통과 diff에 reviewer를 배정한다. `escalation`을 먼저 따르고, 없으면 고쳐 같은 순서로 다시 확인한다. 배정·재호출과 TASK-CLOSE 리뷰 기록 형식은 [task-steps.md](references/task-steps.md).
 5. **마감** — TASK-CLOSE.md를 쓰고 → `pace project check P### T0n` 통과 → `pace project done P### T0n` → 진행 상황 갱신(§7) → 커밋 `feat(P###/T0n): …`(TASK-CLOSE·상태·메모리 같은 커밋).
 
 ## 4. finish → merge

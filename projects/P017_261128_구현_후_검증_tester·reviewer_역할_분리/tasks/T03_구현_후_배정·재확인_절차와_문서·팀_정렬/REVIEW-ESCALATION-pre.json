@@ -1,0 +1,150 @@
+{
+  "stage": "pre",
+  "target": "TASK.md",
+  "hash": "333974bc1da1c6a70d1571bc03518630981c98813f6e3dbf57beb6fcc67283a4",
+  "action": "confirm_findings",
+  "decision": null,
+  "recommendation": null,
+  "choices": [],
+  "evidence_action": {
+    "action": "collect_evidence",
+    "gaps": [
+      "T-6"
+    ],
+    "if_proceed_without_evidence": "A-3"
+  },
+  "joint_attempts": 2,
+  "joint_decisions": [
+    {
+      "stage": "pre",
+      "target": "TASK.md",
+      "hash": "646f1a9d39b546a9343db3f42e1e3f59480e86b48ef8b186e4d8cc938889d82b",
+      "evidence": "evidence/joint-pre-1.md",
+      "evidence_hash": "fb034034b566ccc097d2342f91a5d9f58b6be2b8fa7ec32ed7ac57738ae6140f",
+      "summary": "T03 사전 공동 1회차 — detection 2회 연속 행을 tester 원문 대조로 축소(허브 결정)",
+      "at": "2026-11-28T12:27:43.267Z",
+      "id": "e567f089-2972-4f8a-9948-b167eeee4905",
+      "type": "joint",
+      "choice": "공동 검토 1회",
+      "rounds": 1
+    },
+    {
+      "stage": "pre",
+      "target": "TASK.md",
+      "hash": "333974bc1da1c6a70d1571bc03518630981c98813f6e3dbf57beb6fcc67283a4",
+      "evidence": "evidence/joint-pre-2.md",
+      "evidence_hash": "99906dcad1dee8bc7a5278fa4d41d54dada6346cc3ecc8b91078461885f6d06a",
+      "summary": "T03 사전 공동 2회차 — 대조 대상 BR03 원문 전체·구현 직전 스냅샷 교체(허브 결정)",
+      "at": "2026-11-28T12:29:37.830Z",
+      "id": "f8b94efb-2119-4a99-9917-2ba9bddec88c",
+      "type": "joint",
+      "choice": "공동 검토 1회",
+      "rounds": 1
+    }
+  ],
+  "confirmation_count": 0,
+  "diagnostic_confirmation_count": 0,
+  "confirmations": [],
+  "confirmation_source": "review-records/R4.json",
+  "confirmation_findings": [
+    {
+      "id": "F1",
+      "location": "TASK.md:52"
+    }
+  ],
+  "upper_reviews": [],
+  "upper_results": [],
+  "verdict_summary": "일반 유효 판정 2회, 최신 유효 판정 fail",
+  "review_history": [
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-28T12:20:40.449Z",
+      "target": "TASK.md",
+      "hash": "765504cf2405c2536c047e551deed19c9416a4743d92f8f3d7c120a13a646412",
+      "record": "review-records/R1.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] TASK.md:48-49 — 네 문서가 모두 직전 reviewer가 pass가 아니면 재호출하는 분기를 빠뜨려도 BR03의 여섯 사례와 문서 간 일치 검사에 통과할 수 있다.",
+        "F2 [blocking] TASK.md:50 — reviewer.md에 질문, 세 묶음 이름, 12항목과 세 상태명을 모두 두고도 none에 따라간 경로, not_applicable에 이유, defect에 같은 항목 ID의 지적을 요구하는 규칙을 빠뜨릴 수 있다. 사후 기준 재판정 금지와 사전 필요·생략 판정의 누락도 S-3의 기대 결과를 바꾸지 않는다.",
+        "F3 [blocking] TASK.md:52 — TASK-CLOSE의 필수 시각 칸 이름을 그대로 두고 '판정 결과 회수'에 배정 시작 회신이나 검토 원장의 review 행 시각을 기록하도록 지시해도 S-5의 존재·이름 검사를 통과할 수 있다.",
+        "F4 [blocking] TASK.md:53 — 팀 생성물이 동기화됐어도 역할 표, 호출 문서, TASK v2 안내가 옛 절차를 가리키거나 허용 범위 밖 파일이 변경 후보에 포함될 수 있다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-28T12:22:17.698Z",
+      "target": "TASK.md",
+      "hash": "7de0a83d52f4b09e375e9d92c876ff1b23ba8a90c6d408531956a5055c1bebd3",
+      "record": "review-records/R2.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] TASK.md:48 — 직전 reviewer의 non-pass 자체를 재호출 조건에서 빼고, tester가 통과시킨 수정 diff에만 재호출하도록 해도 추가 사례 (7)을 통과할 수 있다. 이 경우 tester가 이미 통과시킨 동일 diff에서 reviewer가 unknown을 반환하면 재호출할 근거가 사라진다.",
+        "F2 [blocking] TASK.md:52 — S-5에서 회차별 시각 기록을 필수로 명시하는 검사가 빠졌다. 올바른 칸 이름·사건·출처를 설명하면서 기록을 선택 사항으로 두는 문안이 통과할 수 있다.",
+        "F3 [blocking] TASK.md:53 — 프로젝트 기록·백로그·메모리·대시보드를 경로 대조에서 일괄 제외하면, 해당 경로에 구현 과정에서 새로 들어간 범위 밖 편집도 검출할 수 없다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-28T12:28:56.750Z",
+      "target": "TASK.md",
+      "hash": "646f1a9d39b546a9343db3f42e1e3f59480e86b48ef8b186e4d8cc938889d82b",
+      "record": "review-records/R3.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] TASK.md:51 — 시각 기록을 필수로 두고 칸 이름과 요청·회수 사건을 올바르게 정의해도, 판정 결과 수신 시각 대신 검토 원장의 판정 등록 시각을 옮겨 적도록 하는 문안이 통과할 수 있다. 이전 S-5는 이 출처를 명시적으로 금지했다.",
+        "F2 [blocking] TASK.md:52 — 기준 커밋 대비 diff에 이미 있던 범위 밖 변경과 구현이 같은 파일에 추가한 변경을 구별할 수 없다. 구현에서 새로 만든 미추적 파일도 이 diff에 나타나지 않는다.",
+        "F3 [blocking] TASK.md:52 — 배정 본문과 팀 원본은 갱신했지만 verification.md 역할 표에 이전 절차를 남겨도 S-6이 통과할 수 있다. 이전 S-6은 세 문서에서 새 배정 절차와 reviewer 줄을 직접 확인했다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-28T12:30:48.210Z",
+      "target": "TASK.md",
+      "hash": "333974bc1da1c6a70d1571bc03518630981c98813f6e3dbf57beb6fcc67283a4",
+      "record": "review-records/R4.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] TASK.md:52 — 구현 전에 이미 미추적 상태인 범위 밖 파일의 내용이 구현 중 바뀌고 경로와 미추적 상태가 유지되면, 전후 status와 추적 파일 diff가 같아서 S-6이 변경을 놓칠 수 있다."
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "type": "call",
+      "at": "2026-11-28T12:19:22.334Z",
+      "target": "TASK.md",
+      "kind": "task",
+      "call_id": "5a215cfc-4b52-496d-bea4-1c8100c0b0de",
+      "from": "REVIEW-LOG.jsonl"
+    },
+    {
+      "type": "call",
+      "at": "2026-11-28T12:20:58.341Z",
+      "target": "TASK.md",
+      "kind": "task",
+      "call_id": "8ad92b6a-5278-4fb3-a177-40798fda7b4e",
+      "from": "REVIEW-LOG.jsonl"
+    }
+  ],
+  "diagnoses": [],
+  "voids": [],
+  "finding_assessments": [
+    {
+      "finding": "F1 [blocking] TASK.md:52 — 구현 전에 이미 미추적 상태인 범위 밖 파일의 내용이 구현 중 바뀌고 경로와 미추적 상태가 유지되면, 전후 status와 추적 파일 diff가 같아서 S-6이 변경을 놓칠 수 있다.",
+      "decision": null,
+      "reason": null
+    }
+  ]
+}

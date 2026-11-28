@@ -127,6 +127,14 @@ test("검토 정본은 단계별 판정 질문과 새 반환 형식을 연결한
   const reviewer = readFileSync(join(skillDir, "references/reviewer.md"), "utf8");
   assert.match(reviewer, /이 계획이 목적을 증명할 수 있는가\?/u);
   assert.match(reviewer, /이 변경을 내보내도 되는가\?/u);
+  // P017 T03: 구현 후 질문은 T02 도구와 같은 세 묶음 12항목·답 형식이고, 사후·사전 역할 경계를 말한다
+  assert.match(reviewer, /경계\(`boundary`\) RA-1~4, 상태\(`state`\) RB-1~4, 흐름\(`flow`\) RC-1~4/u);
+  assert.match(reviewer, /`defect`\(그 항목 ID를 `criterion`으로 단 위치 있는 질문 안 지적\), `none`\(따라가 본 경로\), `not_applicable`\(이유\)/u);
+  assert.match(reviewer, /관측이 비었거나 상태 이름만 있거나 defect에 위치 있는 지적이 없으면 미확인/u);
+  assert.match(reviewer, /구현 후 reviewer는 기준 재판정·계획 타당성을 보지 않는다/u);
+  assert.match(reviewer, /구현 후 reviewer 줄의 `필요`·`생략` 판단이 경계·상태·흐름 사실 질문의 답과 맞는지/u);
+  assert.match(reviewer, /구현 후 reviewer는 예외로 1단계 없이 TASK와 구현 diff를 함께 받는다\(Q1\)/u);
+  assert.match(reviewer, /구현 후 재검토는 매번 diff 전체에 세 묶음 12항목을 다시 묻는다\(범위를 바뀐 줄로 줄이지 않는다\)/u);
   assert.match(reviewer, /이 백로그로 프로젝트에 착수하면.*합의한 목표까지 갈 수 있는가\?/u);
   assert.match(reviewer, /`pace-review` JSON 블록/u);
   assert.doesNotMatch(reviewer, /^\| `handoff` \|/m);
