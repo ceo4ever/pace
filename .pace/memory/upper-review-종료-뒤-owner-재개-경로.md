@@ -3,7 +3,9 @@ name: upper_review 종료 뒤 owner 재개 경로
 description: 두 번째 상위 근본 검토 뒤 owner가 '한 번 더'나 범위를 정해 재개하는 결정을 기록·해제하는 하네스 경로가 없다 — 새 백로그로 발의한다
 type: idea
 created: 2026-11-26
-updated: 2026-11-26
+updated: 2026-11-28
 ---
 
-현재 해제는 --contract-change(계약 변경+A-1 원문)뿐이고 owner --resume은 A-3 요청에만 붙는다(review-followup.ts). P013 T09 R-4는 owner 회신 뒤 범위를 그때 확정한다고 남김. BL261125_01 재검토(2026-11-26) 때 허브가 범위 밖으로 분리.
+두 번째 상위 근본 검토 뒤 owner 재개 결정을 기록·해제하는 경로가 없다. 2026-11-28 P017 T01 사례: 사전 예산 소진 뒤 한정 확인 pass가 PRE-REVIEW 허가가 되지 않아 전체 재검토마다 owner 기록이 필요했다. 한정 확인을 허가로 올리는 수정은 Codex 독립 검토 fail(범위 밖 잔여 blocking 해소를 입증 못함) — 수정·검토 원문은 브랜치 wip/confirm-gate-permission에 보관. 방향: 상태가 confirmed_findings이면 허브가 owner 기록 없이 일반 전체 검토 1회를 연다(입장 쪽, 게이트 불변, 1회, 미확인 지적 남으면 닫힘). 게이트는 설치본이 실행하므로 P017 병합 뒤 백로그로.
+ 같은 날 두 번째 사례: 공동 시도 집계(review-followup.ts jointAttempts)가 단계 구분 없이 사전 검토 공동 2회를 세어, 구현 후 단계 공동 시도가 열리지 않았다 — 허브는 진단·한정 확인 경로로 우회. 같은 백로그에서 단계별 집계로 고친다.
+ 세 번째: P017 T01 슬롯 2에서 visibleMarkdown 줄 안 주석 제거가 형제 필드(TASK 형식·판정 주체·증명 범위 제목) 판독에도 원문에 없는 머리를 만든다고 재현 — 같은 백로그에서 원문 줄 동일성으로 닫는다.

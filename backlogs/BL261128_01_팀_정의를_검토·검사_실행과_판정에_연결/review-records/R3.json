@@ -1,0 +1,129 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**독립 목표 대조 — 미달.** 팀이 정한 역할과 effort로 검토·검사를 실행한다는 목표는 owner 합의에 맞는다. BR02는 실제로 실은 정의의 지문이 있는 호출 원장 행을 사용 근거로 삼고, 지문 없는 옛 라벨 행을 제외하는 음성 관측을 추가했다. F8은 해소됐다. BR03은 중대한 결함이 차단되는 실제 인수 사례를 추가했지만, 그 사례를 **사전 reviewer 경로**로 실행하도록 지정하지 않았다. 사후 검토에서만 결함을 잡아도 문면상 기준을 충족할 수 있어 F3은 남는다. 구현·설치 효과는 미확인이다.\n\n**올릴 단계 — 백로그의 완료 기준.** BR03 (b)에서 실제 사전 reviewer를 호출하고, 입력에 넣은 결함 자체가 유효 blocking으로 기록되어 도구 판정이 fail인지 확인하도록 명시하면 된다. 이는 `decision-rights.md:11`의 A-1상 기존 합의를 확인하는 일이므로 허브가 결정할 수 있다. 추가 착수 결정이 필요한 owner 안건은 확인되지 않았다.\n\n**열람·노출 범위.** 호출자가 제공한 상위 목적, owner 결정, 저장소 지침·환경, BACKLOG 본문, 직전 검토 원문과 기준 상태, 바뀐 줄을 받았다. 로컬에서는 대상 BACKLOG 관련 줄, BR01~BR03, `decision-rights.md`, `docs/README.md`·`SECURITY.md`·`TEAM-METRICS.md`, `structured-review.ts`·`call-context.ts`·`team-metrics.ts` 관련 줄과 선행·인접 백로그의 관련 조항을 읽었다. 선행 BACKLOG 검색 결과에 D5의 과거 확인 기록 한 줄이 함께 노출됐다. 별도 작성자 마감·자체 판정·지적 대응 문서와 메모리 파일은 열지 않았다. 현재 검토자는 작성에 참여하지 않은 Codex다. 직전 검토도 Codex로 기록돼 있으며, 동일 세션 여부와 추가 자동 부트·메모리·호스트 첨부 범위는 미확인이다. 파일 변경과 실측 실행은 없었다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"completion\",\n      \"location\": \"BR03_위험_크기에_맞춘_검토_판정.md:44\",\n      \"scenario\": \"(a)는 사전 입력을 지정하지만, (b)는 실제 실행의 검토 단계를 지정하지 않는다. (b)를 사후 reviewer로 실행해 중대한 결함을 차단하면, 사전 reviewer가 같은 결함을 누락하거나 should_fix로 보고해도 완료 기준을 충족할 수 있다.\",\n      \"reproduction\": \"BR03 35~44행과 선행 BL261127_01 BR02 41·55~63행을 대조한다. (a)는 사전 reviewer로, (b)는 사후 reviewer로 실행한다고 놓으면 단위 시험과 사후 재생 관문은 모두 통과할 수 있다. 이때 사전 reviewer가 (b)의 결함을 유효 blocking으로 판정했는지 확인하는 조건이 없다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"B-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F7\",\n      \"severity\": \"note\",\n      \"category\": \"completion\",\n      \"location\": \"BR02_검토·검사_실행에_팀_정의와_effort_연결.md:52\",\n      \"scenario\": \"상위 검토의 교차 실행 지시는 있으나, 실제 제공자·effort와 같은 호출의 원장 행 및 call_ref를 대조하는 완료 관측은 여전히 없다.\",\n      \"reproduction\": \"BR02 30~32행의 상위 검토 지시와 52행의 실제 호출 대상을 대조한다. 52행은 verify와 tester run을 지정한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"B-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F9\",\n      \"severity\": \"note\",\n      \"category\": \"goal\",\n      \"location\": \"BR03_위험_크기에_맞춘_검토_판정.md:17\",\n      \"scenario\": \"사전 checks에서 detection을 빼고 공통 impact 문장을 바꾸더라도, 기존 기준별 관측 지시가 시험이 실패를 잡는지 계속 묻는 상태로 남을 수 있다. 이번 수정 범위 밖의 지적이다.\",\n      \"reproduction\": \"BR03 16~26행의 프롬프트 변경 범위를 src/agent/structured-review.ts 39·108행의 사전 관측 지시와 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"B-1\",\n      \"state\": \"present\",\n      \"observation\": \"BACKLOG 목표와 Q1·Q2, G2의 reviewer 본문·effort 연결은 owner 합의에 부합한다. BR02 14·52행은 실제로 실은 정의의 지문을 호출 원장 참여 근거에 요구하고, 지문 없는 옛 라벨 완료 행을 제외하는 음성 관측을 추가했다. 직전 F8의 거짓 사용 경로를 차단하는 계약이다.\"\n    },\n    {\n      \"id\": \"B-2\",\n      \"state\": \"absent\",\n      \"observation\": \"BR01 25행의 실제 세션과 start 사건, BR02 46·52행의 설정 전달과 호출·팀 마감 집계 대조는 유지되며, BR02에 옛 라벨 행 음성 관측이 추가됐다. BR03 43행은 사전 입력 재생을 지정하지만 44행은 중대한 결함 사례의 실행 단계를 지정하지 않는다. 선행 사후 관문을 통과해도 실제 사전 reviewer의 유효 blocking은 확인되지 않는다.\"\n    },\n    {\n      \"id\": \"B-3\",\n      \"state\": \"present\",\n      \"observation\": \"직전 근거가 유지된다. BACKLOG 87~89행은 P017 병합 후 착수, 최종 합본 후보에서 선행 재생 관문 재실행, 설치 직전 등록 워크스페이스의 진행 프로젝트 확인과 마감·병합까지의 설치 동결을 적용한다. 기존 lead 선택 규칙과 읽기 전용 인접 작업의 순서 관계도 유지된다.\"\n    },\n    {\n      \"id\": \"B-4\",\n      \"state\": \"present\",\n      \"observation\": \"호출자가 제공한 owner 결정과 BACKLOG 106·108~109행에서 착수 시점, Q1, Q2를 확인했다. 사전 reviewer가 합의한 중대 결함을 차단하는지 확인할 실행 경로를 명시하는 일은 A-1상 기존 합의 유지에 해당한다.\"\n    }\n  ]\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 71001,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 62701
+    },
+    "usage_total_tokens": 62701,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "BACKLOG.md",
+    "hash": "28c82671d9c098081dc76900686a1880238efc120208882ff4e8d03b63e59640",
+    "kind": "goal",
+    "verdict": "fail",
+    "rereview_of": "review-records/R2.json",
+    "snapshot": "# BL261128_01 팀 정의를 검토·검사 실행과 판정에 연결\n\n- 상태: 대기\n- 작성: 2026-11-28\n- 프로젝트 기준 경로: projects/\n\n<!-- 개발 업무의 예시 형식. 형식·추적 정본: pace-project-dev의 references/document-shape.md. -->\n\n## 목표\n\nPACE를 쓰는 프로젝트가 **만들어 둔 팀을 실제 검토·검사에서 쓰게 한다**. owner 원문(2026-11-28): \"PACE를 쓰는 프로젝트들이 만들어 둔 팀을 제대로 쓰지 못하고 있다 — 심각한 개선.\"\n\n- **결과**: 검토·검사는 팀이 정한 역할 정의와 의도한 노력값(effort)으로 실행된다. 검토 판정은 위험의 크기를 따져 검토 반복이 끝난다. 팀 지표는 실제로 일어난 일을 보여 준다.\n- **비용**: 의도한 effort로 실행되어 검토·검사 호출의 시간과 토큰이 늘 수 있다. P017(BL261127_01) 병합 직후 최우선으로 착수하고, fin-link P046 병합 뒤 P017과 함께 설치한다.\n- **위험**: 검토가 막지 않게 되는 지적 가운데 진짜 결함이 섞여, 그 결함이 더 늦게 드러날 수 있다.\n- **상위 목적**: owner가 자리를 비워도 프로젝트가 품질을 지키며 끝까지 가고, 검토·검사 반복에 시간과 토큰을 낭비하지 않는다([BL261127_01 목표](../BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md#목표)와 같은 축).\n\n## 근거 대조\n\nmain `d82d530` 기준으로 직접 확인했다. 표의 `src/` 행은 P017이 같은 파일을 바꾸므로 **P017 병합 뒤 다시 확인**한다(BP-06). 상태는 확인·낡음(갱신값 병기)·미확인이다.\n\n| # | 사실 | 상태 | 확인 위치 |\n|---|---|---|---|\n| E1 | Codex 검토(`verify`) 요청에 effort가 없다. 실행 요청이 `model`만 넘기고 CLI에 effort 옵션이 없다. `--ignore-user-config`는 사용자 설정을 끄는 보안 장치로, 이것만으로 effort가 빠지는 것은 아니다. | 확인 | `src/agent/verify.ts:121`, `src/agent/verify-cli.ts:282`, `src/agent/p-executor.ts:110-112` |\n| E2 | 호출 원장의 effort는 요청 없음·실제 `none`(host)이다. BL261127_01은 14행 모두 verify/codex이고, P017은 24행(verify 19, p 5)이다. effort를 요청한 P014 문제 해결자 호출은 요청 medium·실제 medium으로 남았다. | 확인 | `backlogs/BL261127_01_…/calls/log.jsonl`, `pace.wt/P017/projects/P017_…/calls/log.jsonl`, `pace.wt/P017/projects/P014_…/calls/log.jsonl` |\n| E3 | `none`이 추론 없음인지 모델 기본값인지 | 미확인 | BR02 완료 기준 첫 항목에서 관측한다 |\n| E4 | 팀 정의의 등급은 reviewer·tester가 high다. 등급에서 model·effort를 계산하는 함수가 이미 있고 native 생성물에 쓰인다(`.codex/agents/pace-reviewer.toml`은 effort high). 생성물은 verify 경로에 쓰이지 않는다. | 확인 | `.pace/team/agents/pace-reviewer.md:5`, `pace-tester.md:5`, `src/core/worker-tiers.ts:63-70`, `src/team/sync.ts:48` |\n| E5 | verify는 자체 프롬프트를 만들고 `pace-reviewer` 정의를 읽지 않는다. 그런데 reviewer 정의의 도구는 verify를 가리킨다(순환). | 확인 | `src/agent/verify.ts:52`(정의)·`:113`(호출), `.pace/team/agents/pace-reviewer.md:7` |\n| E6 | tester 실행에는 tester 정의가 실리지 않는다. 스킬은 \"새 맥락\"만 말한다. P017 T01 tester는 read-only에서 mkdtemp EPERM으로 시험을 못 돌렸고 이후 `--write`로 실행했다. | 확인 | `skills/pace-project-dev/references/tester.md:3`, `task-steps.md:11`, `pace.wt/P017/…/T01_…/evidence/tester-post/round1.md`, `TASK-CLOSE.md:58` |\n| E7 | `--call-agent`는 원장의 집계 이름만 바꾼다. 그래서 정의를 읽지 않은 verify도 `pace-reviewer`로 집계된다(P014 4행). | 확인 | `src/agent/call-context.ts:88`(`agent: callAgent ?? agent`), `docs/AGENT-CALL.md:39` |\n| E8 | 허브가 main에서 부른 native 서브에이전트는 원장에 남지 않는다. 프로젝트·백로그 경로도 `project/P###` 브랜치도 아니면 범위가 없다. BL261127_01 원장에는 Claude native 상위 검토 4회가 있었지만 `native` 행이 0이다. | 확인 | `src/agent/call-context.ts:57-59`, `src/agent/call-hook.ts:101-104` |\n| E9 | 팀 지표가 거짓 사용·미사용을 보일 수 있다 | 미확인 | P017·P015는 `팀 측정:`이 빈칸이라 팀 측정이 꺼져 있다. stats는 실행하지 않았다. E7·E8은 원장 입력의 왜곡까지만 확인했다 |\n| E10 | Orca 작업자 lead가 적용되지 않는다. 템플릿의 `작업자 역할:`이 빈칸이고 자동 lead가 없다. P015·P017 모두 빈칸이다. \"자동 기본 lead를 두지 않는다\"는 이전 결정이며, 이유는 기존 프로젝트를 다시 시작할 때 지금 동작을 유지하는 것이다. | 확인 | `templates/project/PROJECT.md:8`, `src/team/worker-role.ts:38-46`, `docs/TEAM.md:155`, `docs/WORK-PROCESS.md:19`, `projects/P015_…/PROJECT.md:8`, `pace.wt/P017/projects/P017_…/PROJECT.md` 머리, 출처 [BL261123_01 BR03:15](../BL261123_01_프로젝트_맞춤_에이전트_팀/BR03_작업자_역할_지정(start_--role).md) |\n| E11 | 사전 검토의 `detection` 점검이 blocking 대부분을 냈다. 비-minor 지적은 위치·재현만 있으면 모두 blocking으로 남는다. 프롬프트도 \"검출력 없는 필수 시험\"을 기준 영향으로 보라고 지시한다. P017 T01 사전은 18건 중 13건이 detection이다. T02 사전은 낡은 값 \"9/10\"(R1~R4)을 **12/15**(R1~R5)로 갱신했다. | 확인(T02 갱신) | `src/agent/structured-review.ts:21`·`:104-105`·`:160-171`, `pace.wt/P017/…/T0{1,2}_…/review-records/R*.json` |\n| E12 | P017에서 owner 결정이 5회 필요했다(T01 3회, T02 2회 — 전체 재검토 허용과 A-3 예외). | 확인 | `pace.wt/P017/…/T01_…/REVIEW-FOLLOWUPS.jsonl`, `…/T02_…/REVIEW-FOLLOWUPS.jsonl` |\n| E13 | 문서는 허브 상위 검토를 Codex 직접 p로 적고, 교차 실행이 불가할 때만 같은 제공자 대체를 허용한다. 실제 상위 검토 6회는 모두 Claude native, `cross: false`였고 사유는 \"미구성\"이다. 6개 근거 모두 `coordinator.md:36`이 요구하는 `call_ref`가 없다(E8과 같은 뿌리). | 확인 | `docs/TEAM.md:173-180`, `skills/pace-project-dev/references/coordinator.md:34-36`, `pace.wt/P017/{backlogs/BL261127_01_…,projects/P017_…/tasks/T01_…}/evidence/upper-review*.json` |\n| E14 | P017 T02 원장에 agent `claude`·engine `codex`인 verify 행이 5개 있다. 원인이 `--call-agent claude` 라벨인지 | 미확인 | `pace.wt/P017/projects/P017_…/calls/log.jsonl` 마지막 5행. `requireCallAgent`는 이름 형식과 범위만 검사하고 팀 구성원 여부는 보지 않는다(`call-context.ts:71-75`) |\n| E15 | 역할을 실어 start하면 그 프로젝트의 팀 측정 v1이 켜진다. 그러면 finish가 팀 측정·회고 입력을 요구한다. 팀 역할은 작업자 도구가 claude·codex일 때만 지원하고, 그 밖의 도구는 start에서 거부한다. | 확인 | `src/project/harness.ts:2192`(`teamMetricsVersion: 1`), `src/project/team-contract.ts:30`, `harness.ts:1634-1668`, `src/team/worker-role.ts:67`, `docs/TEAM.md:155` |\n| E16 | 검토 원장의 옛 원문은 읽을 때마다 **현재** 분류기로 다시 계산한다. 그래서 사전 checks에서 범주를 지우면 옛 기록이 형식 오류가 된다. finish는 완료 태스크를 다시 검사한다. | 확인 | `src/agent/review-pre.ts:54`, `src/project/pre-review.ts:200`·`:245`, `src/project/review-metrics.ts:202`, `src/agent/structured-review.ts:131`(`findingInput`의 범주 대조), BL261127_01 `BACKLOG.md:80`(D5의 finish 재검사 근거) |\n| E17 | P017 T01 owner A-3 예외 \"R5 F5 과잉 거부\"는 **구현 후** 검토의 지적이다. 안전 쪽 과잉 거부는 사전 단계에만 있는 일이 아니다. | 확인 | `pace.wt/P017/…/T01_…/evidence/a3-request-F5.json`, `…/evidence/review-records/R5.json`, `REVIEW-FOLLOWUPS.jsonl` 05:31 |\n\n## 설계 — 공백별 선택\n\n각 공백에 대해 정의를 경로에 잇는 길(연결)과 정의를 현실에 맞게 줄이는 길(축소)을 비교했다. 추천은 새 상태·옵션을 늘리지 않는 쪽을 우선한다.\n\n| 공백 | 연결 | 축소 | 추천 | 이유 |\n|---|---|---|---|---|\n| G1 effort(E1~E4) | `--call-agent <구성원>`을 주면 그 등급의 model·effort를 기존 `resolveTeamSettings`로 계산해 실행에 싣는다. 명시한 `--model`·`--effort`가 우선이다. | 정의에서 tier를 지우고 도구 기본값이라고 적는다 | **연결**(BR02) | 의도한 effort는 owner 목적이다. 계산 함수가 이미 있어 새 옵션이 필요 없다. `--ignore-user-config`는 유지한다(read-only 집행, `p-executor.ts:114`). |\n| G2 reviewer 정의(E5) | `verify --call-agent <reviewer>`가 그 구성원의 정의 본문을 도구 프롬프트 앞에 붙이고 등급 effort를 싣는다. 검토 질문·형식은 뒤의 도구 프롬프트가 정본이다. | 정의를 줄이고 등급만 쓴다 | **연결**(BR02) | 프로젝트마다 맞춘 reviewer 정의가 실행에 닿아야 팀을 쓴다(R1 F1·F6). tester도 role이 reviewer라 역할 종류로 자동 선택하지 않고 이름으로 고른다. |\n| G3 tester 정의(E6) | `pace agent run --call-agent pace-tester`가 정의 본문을 싣고(Claude는 system prompt, Codex는 앞에 붙임 — `docs/TEAM.md:182` 기존 방식) G1 effort를 적용한다. 스킬의 tester 실행 예시에 `--write`와 이 형태를 적는다. | tester 정의를 지우고 스킬 `tester.md`만 둔다 | **연결**(BR02) | 문제 해결자는 이미 같은 일을 손으로 한다(`TEAM.md:182-190`). 자동화하면 그 손 지시 3개(본문 파일·model·effort)를 지울 수 있다. tester 등급과 집계를 잃지 않는다. |\n| G4 지표(E7·E8) | 호스트 훅이 main native 호출의 범위를 추정해 기록한다(`call-hook.ts`, 민감 경로) | E7은 G1·G3로 라벨이 실제 적용을 뜻하게 되어 해소된다. main native 호출은 원장 밖이라고 `docs/TEAM-METRICS.md`에 적는다. 허브 상위 검토는 G5의 직접 p로 옮겨 원장에 남긴다. | **축소**(BR02) | main에서는 어느 백로그·프로젝트의 호출인지 훅이 알 수 없다. 민감 경로를 새로 고치지 않고, 기록이 필요한 호출(상위 검토)을 이미 기록되는 경로로 옮기는 편이 작다. |\n| G5 상위 검토 경로(E13) | 허브가 문서대로 Codex 직접 p로 부른다. G1·G3 덕분에 `pace agent run --call-agent pace-troubleshooter --call-scope …` 한 줄이 된다. `call_ref`는 그 원장 행이다. | 문서를 \"허브 native 허용\"으로 바꾼다 | **연결**(BR02 문서) | 교차 제공자가 상위 검토의 목적이다. 한 줄 명령이 되면 \"미구성\" 사유가 사라지고 E8 기록 공백도 함께 닫힌다. |\n| G6 Orca lead(E10·E15) | `pace project new`가 팀에 role `lead` 구성원이 하나뿐이면 새 PROJECT.md의 `작업자 역할:` 칸에 그 이름을 쓴다. start의 선택 규칙은 바꾸지 않는다. | 칸과 PROJECT 역할 판독을 지우고 `start --role`만 남긴다 | **연결**(BR01, Q2) | 칸을 채우는 주체가 없어 두 프로젝트 연속 빈칸이었다. 새 문서에 보이게 채우면 이전 결정의 이유(기존 프로젝트 재시작 시 동작 유지)를 지킨다. start에서 숨겨 고르는 자동 lead는 여전히 없다. 대가로 그 프로젝트마다 팀 측정이 켜지고 마감 때 팀 회고 입력이 필요하다(E15). 그래서 Q2로 올린다. |\n| G7 위험 크기(E11·E12·E16·E17) | — | (가) 사전 질문 목록에서 `detection`을 뺀다. 시험 검출력은 구현 뒤 tester가 판정한다(tester 정의 `맡는 일`). 옛 기록이 형식 오류가 되지 않도록 `detection` 범주는 판독에서 질문 밖 note로 받는다(E16). (나) 모든 단계의 impact 정의에서 \"검출력 없는 필수 시험은 기준 영향\"을 지우고, \"안전 쪽 과잉 거부와 실제 사용 경로에서 닿지 않는 입력에만 기대는 지적은 minor\"를 적는다. | **축소**(BR03, Q1) | 사전 blocking의 70% 이상이 이 점검 하나에서 나왔다(E11). 같은 질문을 tester가 실행 증거로 다시 묻는다. 과잉 거부 예외는 구현 후 단계에서도 owner 예외를 불렀다(E17). 새 상태·문턱 없이 기존 `minor → should_fix` 분류(`structured-review.ts:161`)를 쓴다. |\n\n**메모리 idea `upper-review-종료-뒤-owner-재개-경로`의 세 항목은 이 백로그에 넣지 않는다(추천, 허브 범위 판단).**\n\n- confirmed_findings 재개 경로: 입장 게이트에 새 상태 전이를 더하는 다른 기제다. 같은 방향의 수정이 이미 독립 검토에서 fail했다(브랜치 `wip/confirm-gate-permission` 보존 확인).\n- 공동 시도 단계 구분 집계(`src/agent/review-followup.ts:174-175`): 검토 반복을 끝내는 같은 축이고 작은 버그 수정이다. 다만 입장 기제 쪽이라 BR03의 판정 분류와 파일·시험이 다르다. 넣으면 BR03이 두 기제를 갖게 된다. 허브가 원하면 BR03에 합칠 수 있는 유일한 후보다.\n- visibleMarkdown 판독: P017 T01이 만든 코드라 P017 범위다.\n- BR03이 blocking을 줄이면 owner 재개 경로를 타는 빈도도 함께 줄어든다.\n\n## 남은 결정\n\n없음. Q1·Q2는 owner가 정했다(결정·기록 2026-11-28 17:20 행). 그 밖의 선택(G1~G5, 메모리 idea 범위)은 결정 권한 A-1~A-5에 해당하지 않아 허브가 정한다. 추천은 위 설계 표에 있다.\n\n## 측정과 위험\n\n- **설치 뒤 보고**: BL261127_01의 측정 보고(설치 뒤 3개 프로젝트 마감)에 합쳐, 허브가 아래 관측값을 조건 없이 owner에게 보고한다. 판정 선은 두지 않는다.\n  - 역할별 호출 원장의 effort 요청값과 실제값\n  - 태스크별 사전·사후 blocking 수(범주·impact별), 회차 수, owner 결정 수\n  - 새 프로젝트의 `작업자 역할:` 값, 팀 측정 활성 여부, 마감의 팀 지표(사용·미사용 역할)\n  - BR02의 `none` 관측 결과\n- **위험**\n  - Q1에서 막지 않게 된 지적이 결함일 수 있다. 이 경우 구현 뒤 tester fail로 드러나는지 보고 값에서 확인한다.\n  - `--call-agent`의 의미가 라벨에서 적용으로 바뀐다.\n    - 문제 해결자처럼 본문·effort를 손으로 함께 넘기던 호출은 본문이 두 번 실린다. 그래서 BR02에서 문서의 손 지시를 함께 지운다.\n    - 팀 구성원이 아닌 이름(E14의 `claude` 같은 라벨)은 지금은 통과하지만, BR02 뒤에는 실행 전에 거부된다. 거짓 집계를 막으려는 새 동작이다. 라벨로 쓰던 호출자는 실패한다.\n  - Q2 (1)을 고르면 lead가 하나인 저장소의 작업자 도구가 claude·codex가 아닐 때 start가 역할 미지원으로 거부된다(E15). 칸을 비우거나 `--agent claude|codex`를 고르라는 기존 안내로 풀린다. 이 저장소들의 작업자 도구는 확인하지 않았다.\n  - BR03은 옛 검토 기록도 새 분류로 다시 계산한다(E16). 옛 사전 기록의 detection blocking이 note로 바뀌어 과거 지표의 blocking 수가 줄어든다. 판정이 완화되는 쪽이라 finish를 막지는 않는다.\n  - 높은 effort는 호출 시간과 토큰을 늘린다. 이 비용은 보고 값으로 드러낸다.\n\n## 백로그 간 점검\n\n| 대상 | 관계 | 근거 | 조치 |\n|---|---|---|---|\n| BL261127_01 / P017 | **선행**이자 같은 파일 변경 | P017이 `src/agent/verify.ts`, `verify-cli.ts`, `structured-review.ts`, `review-hand.ts`, `review-criteria.ts`(미커밋)를 바꾼다. P017 BR03은 `.pace/team/agents/pace-reviewer.md`, `pace-tester.md`, `references/reviewer.md`, `tester.md`, `task-steps.md`, `docs/AGENT-CALL.md`, `docs/SECURITY.md:11`을 고친다. 사전 점검에 `reviewer`·`breadth`가 더해진다(`pace.wt/P017` diff). | P017 병합 뒤 착수한다. 착수 때 E1·E5·E7·E11과 위 문서의 인용 행을 다시 확인한다. 설치는 BL261127_01 [D5](../BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md#설계-세부-결정)(fin-link P046 병합 뒤)를 따라 P017과 함께 하고, 설치 전에 BL261127_01의 설치 전 재생 관문을 P017과 이 백로그를 합친 최종 설치 후보에 다시 실행한다. |\n| BL261123_01(완료) | 이전 결정 변경 | \"자동 기본 lead를 두지 않는다\"(BR03:15) | G6은 start의 자동 선택을 만들지 않고 새 문서의 칸만 채운다. 이유는 유지된다. 완료 백로그는 편집하지 않는다. |\n| BL261124_02(대기) | 인접 영역 | 읽기 전용 실행 경계. `p-executor` 계열이지만 인용 행이 겹치지 않는다(`BR02:15`는 `acp-executor.ts`). | 순서 제약은 없다. BR02는 `--ignore-user-config`와 sandbox 인자를 건드리지 않는다. |\n| 메모리 idea `upper-review-종료-뒤-owner-재개-경로` | 범위 분리 | 위 설계 절 | idea로 유지한다. |\n\n## 진행 현황\n\n| 브리프 | 상태 | 선행 | 프로젝트 | 비고 |\n|---|---|---|---|---|\n| [BR01 새 프로젝트의 작업자 역할 채우기](BR01_새_프로젝트의_작업자_역할_채우기.md) | 대기 | P017 병합, Q2 | — | 민감 경로 코드만 |\n| [BR02 검토·검사 실행에 팀 정의와 effort 연결](BR02_검토·검사_실행에_팀_정의와_effort_연결.md) | 대기 | P017 병합, BR01 | — | |\n| [BR03 위험 크기에 맞춘 검토 판정](BR03_위험_크기에_맞춘_검토_판정.md) | 대기 | P017 병합, Q1 | — | |\n\n## 결정·기록\n\n<!-- 작성일시는 로컬 시각 YYYY-MM-DD HH:mm(프로젝트 결정·진행 메모와 같은 형식), 아래에 한 줄씩 덧붙인다. 끝난 백로그에는 브리프를 덧붙이지 않는다. 새 묶음은 새 백로그로 만든다. -->\n\n| 작성일시 | 내용 |\n|---|---|\n| 2026-11-28 16:05 | **owner 결정**(2026-11-28 허브 질문에 대한 회신, 선택지 \"백로그 지금, P017 바로 다음 (Recommended)\"): 이 백로그를 지금 만든다. P017(BL261127_01) 병합 직후 최우선으로 착수하고, fin-link P046 병합 뒤 P017과 함께 설치한다(BL261127_01 D5 설치 동결). 상위 목적 원문: \"PACE를 쓰는 프로젝트들이 만들어 둔 팀을 제대로 쓰지 못하고 있다 — 심각한 개선.\" 출처 메모리 idea `팀-정의-실행-경로-공백`. |\n| 2026-11-28 16:05 | 초안(기획자). 근거 E1~E14를 main `d82d530`과 P017 worktree에서 대조했다. T02 사전 detection은 \"9/10\"(R1~R4)을 12/15(R1~R5)로 갱신했다. E1의 원인은 `--ignore-user-config`가 아니라 verify 요청에 effort가 없는 것으로 정정했다. 설계는 G2·G4·G7을 축소, G1·G3·G5·G6을 연결로 추천한다. owner 결정은 Q1(검토가 막지 않을 범위)과 Q2(lead 채움에 따른 팀 측정 비용) 둘이다. 옛 기록을 현재 분류기로 다시 계산하므로(E16), detection은 질문에서만 빼고 판독은 note로 받게 설계했다. 메모리 idea `upper-review-…`의 세 항목은 범위 밖으로 추천했다. 독립 검토 전이다. |\n| 2026-11-28 17:20 | **owner 결정 Q1(A-1·A-3)**(허브 질문, 선택지 \"검출력 질문 삭제+완화 (Recommended)\"): 사전 검토는 시험 검출력을 묻지 않는다(구현 뒤 tester가 실행으로 본다). 모든 단계에서 안전 쪽 과잉 거부와 실제 사용 경로에서 닿지 않는 입력에만 기대는 지적은 막지 않는다(should_fix). 보안·데이터 손실·되돌릴 수 없는 변경은 지금처럼 막는다. 받는 위험: 아무것도 검증하지 않는 시험을 구현 뒤에 잡는다. |\n| 2026-11-28 17:20 | **owner 결정 Q2(비용)**(허브 질문, owner 원문 \"lead 정의 입히는 걸로 진행해줘\"): 새 프로젝트의 `작업자 역할:`(워크트리 PM)을 팀 lead로 채운다. 워크트리 PM은 제우스 프로필에 lead 정의를 더해 실행되고, 팀 측정이 켜져 마감 때 팀 회고 입력이 필요하다. BR01 유지. |\n| 2026-11-28 17:45 | **허브 결정(main 판단) R1 반영**(독립 검토 R1 fail, 원문 scratchpad `bl0128-verify-1.json`): F1·F6 G2를 연결로 바꿈(verify가 reviewer 구성원 정의 본문과 등급 effort를 싣는다, owner 목적 안이라 A-1 아님). F2 BR02에 실제 호출 원장 행이 팀 마감 지표의 사용으로 세지는 기준. F3 BR03 보고용 행동 평가를 인수 사례 둘로 교체. F4 BR01 양성 사례를 실제 launch한 워크트리 PM 관측으로 교체. F5 최종 합본 설치 후보에 BL261127_01 설치 전 재생 관문 재실행. F7(should_fix, 상위 검토 교차 실행·call_ref 관측)은 pass 전 계약 문장에 반영하지 않는다(허브 운영 규칙) |\n| 2026-11-28 18:05 | **허브 결정(main 판단) R2 반영**(R2 fail, `bl0128-verify-2.json`): F3 BR03 인수 사례를 (a) detection 지적 비차단 (b) 실제 경로의 보안·데이터 손실·비가역 결함은 계속 차단, 둘로 교체. tester 검출 사례는 Q1에서 owner가 받은 위험이라 삭제. F8 팀 지표는 정의 지문이 기록된 원장 행만 사용으로 센다(옛 라벨 행 음성 관측). F7 note 변경 없음 |\n",
+    "followup": {
+      "type": "joint",
+      "id": "4bc1bb3f-e805-4741-99fe-83a1f5c6641d"
+    },
+    "structured_stage": "backlog",
+    "required_criteria": [
+      "B-1",
+      "B-2",
+      "B-3",
+      "B-4"
+    ]
+  },
+  "assessment": {
+    "stage": "backlog",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F3",
+        "severity": "blocking",
+        "category": "completion",
+        "confidence": "high",
+        "location": "BR03_위험_크기에_맞춘_검토_판정.md:44",
+        "scenario": "(a)는 사전 입력을 지정하지만, (b)는 실제 실행의 검토 단계를 지정하지 않는다. (b)를 사후 reviewer로 실행해 중대한 결함을 차단하면, 사전 reviewer가 같은 결함을 누락하거나 should_fix로 보고해도 완료 기준을 충족할 수 있다.",
+        "reproduction": "BR03 35~44행과 선행 BL261127_01 BR02 41·55~63행을 대조한다. (a)는 사전 reviewer로, (b)는 사후 reviewer로 실행한다고 놓으면 단위 시험과 사후 재생 관문은 모두 통과할 수 있다. 이때 사전 reviewer가 (b)의 결함을 유효 blocking으로 판정했는지 확인하는 조건이 없다.",
+        "impact": "criterion",
+        "criterion": "B-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F7",
+        "severity": "note",
+        "category": "completion",
+        "confidence": "high",
+        "location": "BR02_검토·검사_실행에_팀_정의와_effort_연결.md:52",
+        "scenario": "상위 검토의 교차 실행 지시는 있으나, 실제 제공자·effort와 같은 호출의 원장 행 및 call_ref를 대조하는 완료 관측은 여전히 없다.",
+        "reproduction": "BR02 30~32행의 상위 검토 지시와 52행의 실제 호출 대상을 대조한다. 52행은 verify와 tester run을 지정한다.",
+        "impact": "criterion",
+        "criterion": "B-2",
+        "safety_path": null,
+        "effective": "note",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F9",
+        "severity": "note",
+        "category": "goal",
+        "confidence": "high",
+        "location": "BR03_위험_크기에_맞춘_검토_판정.md:17",
+        "scenario": "사전 checks에서 detection을 빼고 공통 impact 문장을 바꾸더라도, 기존 기준별 관측 지시가 시험이 실패를 잡는지 계속 묻는 상태로 남을 수 있다. 이번 수정 범위 밖의 지적이다.",
+        "reproduction": "BR03 16~26행의 프롬프트 변경 범위를 src/agent/structured-review.ts 39·108행의 사전 관측 지시와 대조한다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "B-1",
+          "state": "present",
+          "observation": "BACKLOG 목표와 Q1·Q2, G2의 reviewer 본문·effort 연결은 owner 합의에 부합한다. BR02 14·52행은 실제로 실은 정의의 지문을 호출 원장 참여 근거에 요구하고, 지문 없는 옛 라벨 완료 행을 제외하는 음성 관측을 추가했다. 직전 F8의 거짓 사용 경로를 차단하는 계약이다."
+        },
+        {
+          "id": "B-2",
+          "state": "absent",
+          "observation": "BR01 25행의 실제 세션과 start 사건, BR02 46·52행의 설정 전달과 호출·팀 마감 집계 대조는 유지되며, BR02에 옛 라벨 행 음성 관측이 추가됐다. BR03 43행은 사전 입력 재생을 지정하지만 44행은 중대한 결함 사례의 실행 단계를 지정하지 않는다. 선행 사후 관문을 통과해도 실제 사전 reviewer의 유효 blocking은 확인되지 않는다."
+        },
+        {
+          "id": "B-3",
+          "state": "present",
+          "observation": "직전 근거가 유지된다. BACKLOG 87~89행은 P017 병합 후 착수, 최종 합본 후보에서 선행 재생 관문 재실행, 설치 직전 등록 워크스페이스의 진행 프로젝트 확인과 마감·병합까지의 설치 동결을 적용한다. 기존 lead 선택 규칙과 읽기 전용 인접 작업의 순서 관계도 유지된다."
+        },
+        {
+          "id": "B-4",
+          "state": "present",
+          "observation": "호출자가 제공한 owner 결정과 BACKLOG 106·108~109행에서 착수 시점, Q1, Q2를 확인했다. 사전 reviewer가 합의한 중대 결함을 차단하는지 확인할 실행 경로를 명시하는 일은 A-1상 기존 합의 유지에 해당한다."
+        }
+      ],
+      "issues": []
+    }
+  }
+}
