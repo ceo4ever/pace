@@ -108,7 +108,7 @@
 
 | 브리프 | 상태 | 선행 | 프로젝트 | 비고 |
 |---|---|---|---|---|
-| [BR01 TASK 묶음 지정과 사전 판정](BR01_TASK_묶음_지정과_사전_판정.md) | 대기 | — | — | 코드 `templates/project/`·`src/project/pre-review.ts`·`src/agent/` + 시험. `필요`·`생략` 줄과 사전 판정, 기준 범위 한정(P047) |
+| [BR01 TASK 묶음 지정과 사전 판정](BR01_TASK_묶음_지정과_사전_판정.md) | 완료 | — | — | 코드 `templates/project/`·`src/project/pre-review.ts`·`src/agent/` + 시험. `필요`·`생략` 줄과 사전 판정, 기준 범위 한정(P047) |
 | [BR02 사후 reviewer 묶음 점검 판정](BR02_사후_reviewer_묶음_점검_판정.md) | 대기 | BR01 | — | 코드 `src/agent/` + 시험. 세 묶음 12항목, TASK+diff 입력, 설치 전 과거 diff 재생 관문 |
 | [BR03 구현 후 배정·재확인 절차와 문서·팀 정렬](BR03_구현_후_배정·재확인_절차와_문서·팀_정렬.md) | 대기 | BR01, BR02 | — | 문서·팀 원본만. PM 배정, tester 통과 diff에만 reviewer, Q1 예외, 보안 둘째 겹 |
 

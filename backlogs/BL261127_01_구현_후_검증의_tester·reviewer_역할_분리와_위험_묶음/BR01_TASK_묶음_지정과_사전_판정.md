@@ -1,6 +1,6 @@
 # BR01 TASK 묶음 지정과 사전 판정
 
-- 상태: 대기
+- 상태: 완료
 - 백로그: [BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음](BACKLOG.md)
 
 <!-- 개발 업무의 예시. 형식·추적 정본: pace-project-dev의 references/document-shape.md. -->

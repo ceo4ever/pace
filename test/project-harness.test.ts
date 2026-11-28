@@ -598,7 +598,7 @@ test("check: 템플릿 주석이 남아도 통과하고, 빠진 기준·판정 �
 
 /** 통과하는 TASK-CLOSE를 쓴다(기준 T-1 하나). */
 function passTask(taskDir: string): void {
-  writeFileSync(join(taskDir, "TASK.md"), readFileSync(join(taskDir, "TASK.md"), "utf8").replace(/\| T-1 \| <!--.*?--> \|/, "| T-1 | 된다 |").replace(/- 판정 주체: <!--[^\n]*-->/, '- 판정 주체: 자동 테스트'));
+  writeFileSync(join(taskDir, "TASK.md"), readFileSync(join(taskDir, "TASK.md"), "utf8").replace(/\| T-1 \| <!--.*?--> \|/, "| T-1 | 된다 |").replace(/- 판정 주체: <!--[^\n]*-->/, '- 판정 주체: 자동 테스트').replace(/- 구현 후 reviewer: [^\n]*/, '- 구현 후 reviewer: 필요 — 시험 고정본'));
   write(
     join(taskDir, "TASK-CLOSE.md"),
     "# 마감\n\n- 태스크: [TASK.md](TASK.md) · 판정: 통과\n\n## 기준 대조\n\n| # | 결과 | 증거 |\n|---|---|---|\n| T-1 | 통과 | S-1 |\n\n## 단위 테스트\n\n통과 1\n\n## E2E\n\n해당 없음\n\n## 리뷰\n\nblocking 0\n\n## 남긴 것\n\n없음\n",
@@ -699,7 +699,7 @@ function permissionFixture() {
   const dir = join(project, "tasks", "T01_허가");
   passTask(dir);
   const target = join(dir, "TASK.md");
-  const snapshot = "# 허가\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n목적 고정\n\n## 증명 범위\n- 판정 주체: 독립 점검\n\n## 기준\n\n| # | 기준 |\n|---|---|\n| T-1 | 결과 |\n\n## 접근\n먼저 문구 A\n통과 근거\n나중 문구 B\n후속 문구 C\n";
+  const snapshot = "# 허가\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n목적 고정\n\n## 증명 범위\n- 판정 주체: 독립 점검\n- 구현 후 reviewer: 필요 — 시험 고정본\n## 기준\n\n| # | 기준 |\n|---|---|\n| T-1 | 결과 |\n\n## 접근\n먼저 문구 A\n통과 근거\n나중 문구 B\n후속 문구 C\n";
   write(target, snapshot);
   const base = git(wt, "rev-parse", "HEAD");
   const prompt = "- [필수 기준 T-1]\n```pace-review\n{\"version\":2,";
@@ -2585,7 +2585,7 @@ test('신규 태스크 사전 검토 게이트는 check와 done을 막고 기록
   assert.equal(generated.match(/^- TASK 형식: v2$/gm)?.length, 1);
   assert.ok(generated.includes('## 증명 범위'));
   assert.ok(generated.indexOf('## 증명 범위') < generated.indexOf('## 기준'));
-  writeFileSync(join(dir, 'TASK.md'), generated.replace(/- 판정 주체: [^\n]*/, '- 판정 주체: 자동 테스트'));
+  writeFileSync(join(dir, 'TASK.md'), generated.replace(/- 판정 주체: [^\n]*/, '- 판정 주체: 자동 테스트').replace(/- 구현 후 reviewer: [^\n]*/, '- 구현 후 reviewer: 필요 — 시험 고정본'));
   passTask(dir);
   const task = readFileSync(join(dir, 'TASK.md'), 'utf8');
   assert.match(task, /사전 검토: v1/);
@@ -2660,4 +2660,41 @@ test("start --launch: worktree에서 done이 백로그 현황 표를 고치고 m
   assert.equal(relaunched.status, 0, relaunched.stderr + relaunched.stdout);
   assert.match(calls(orca.log).at(-1)!, /orchestration worker-start[\s\S]*--model m2/);
   assert.match(readFileSync(wtBacklog, "utf8"), /\| 완료 \| — \| P001 \|/, "worktree 백로그를 되돌리지 않는다");
+});
+
+test('P017 T01 S-3: check와 done은 구현 후 reviewer 줄 형식 문제를 같은 문구로 보고하고, 줄을 넣으면 그 문제가 없다', async () => {
+  const { reviewHash } = await import('../src/project/pre-review.ts');
+  const { home, main } = repoFixture();
+  assert.equal(runCli(home, main, 'new', '줄 게이트').status, 0);
+  assert.equal(runCli(home, main, 'start', 'P001').status, 0);
+  const wt = join(dirname(main), 'app.wt', 'P001');
+  assert.equal(runPace(['project', 'task', 'P001', '줄'], { home, cwd: wt, timeout: 60_000 }).status, 0);
+  const dir = join(projectDir(wt), 'tasks', 'T01_줄');
+  const generated = readFileSync(join(dir, 'TASK.md'), 'utf8');
+  const valid = generated.replace(/- 판정 주체: [^\n]*/, '- 판정 주체: 자동 테스트').replace(/- 구현 후 reviewer: [^\n]*/, '- 구현 후 reviewer: 생략 — 문구만 바뀐다');
+  const missing = valid.replace(/- 구현 후 reviewer: [^\n]*\n/, '');
+  writeFileSync(join(dir, 'TASK.md'), missing);
+  passTask(dir);
+  const pass = (task: string) => {
+    write(join(dir, 'evidence', 'review.md'), '독립 검토 결과');
+    write(join(dir, 'PRE-REVIEW.json'), JSON.stringify({ version: 1, author: 'openai', attempts: [{ hash: reviewHash(task), provider: 'anthropic', cross: true, status: 'pass', blocking: 0, evidence: 'evidence/review.md', continuity: 'new' }] }));
+  };
+  pass(readFileSync(join(dir, 'TASK.md'), 'utf8'));
+  const beforeProject = readFileSync(join(projectDir(wt), 'PROJECT.md'), 'utf8');
+  const outputs = ['check', 'done'].map((name) => {
+    const result = runCli(home, wt, name, 'P001', 'T01');
+    assert.equal(result.status, 1, name);
+    return (result.stdout + result.stderr).split('\n').filter((line) => line.includes('구현 후 reviewer')).map((line) => line.trim());
+  });
+  assert.equal(outputs[0]!.length, 1, outputs.join('\n'));
+  assert.match(outputs[0]![0]!, /T01: 구현 후 reviewer: 줄 누락/);
+  assert.deepEqual(outputs[1], outputs[0]);
+  assert.equal(readFileSync(join(projectDir(wt), 'PROJECT.md'), 'utf8'), beforeProject);
+  writeFileSync(join(dir, 'TASK.md'), readFileSync(join(dir, 'TASK.md'), 'utf8').replace('- 판정 주체: 자동 테스트\n', '- 판정 주체: 자동 테스트\n- 구현 후 reviewer: 생략 — 문구만 바뀐다\n'));
+  pass(readFileSync(join(dir, 'TASK.md'), 'utf8'));
+  const check = runCli(home, wt, 'check', 'P001', 'T01');
+  assert.doesNotMatch(check.stdout + check.stderr, /구현 후 reviewer/);
+  assert.equal(check.status, 0, check.stdout + check.stderr);
+  const done = runCli(home, wt, 'done', 'P001', 'T01');
+  assert.equal(done.status, 0, done.stdout + done.stderr);
 });

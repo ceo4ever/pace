@@ -1,0 +1,7 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { loadSettings } from "../src/settings.ts";
+
+test("없는 파일은 기본값", () => {
+  assert.deepEqual(loadSettings("/nonexistent/settings.json"), { theme: "light", lang: "en" });
+});

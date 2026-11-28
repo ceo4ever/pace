@@ -3,7 +3,7 @@ import { lstatSync, readdirSync, realpathSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
 import { regularBytes, utf8 } from "../project/handoff-files.ts";
-import { approvedTaskEdit, proofScopeIssues, reviewHash } from "../project/pre-review.ts";
+import { approvedTaskEdit, proofScopeIssues, reviewerLineIssues, reviewHash } from "../project/pre-review.ts";
 import { permissionBasis, type PermissionBasis } from "../project/review-permission.ts";
 import { readAgentCalls, recordAgentCall, type AgentCall, type CallTarget } from "../project/agent-calls.ts";
 import { AgentError, errorCodes, errorPayload, providerOf } from "./contract.ts";
@@ -178,7 +178,7 @@ export function reviewArtifactCommand(action: "review-hand" | "review-record", a
       if (recovery || state.decision.kind !== "ordinary") return reportsToVerify(scope, state, deps.write);
       if (!reviewIdentity(values["author-provider"]) || !values["purpose-file"]) return reject(REVIEW_HAND_USAGE);
       if (scope.stage === "pre") {
-        const issues = proofScopeIssues(snapshot);
+        const issues = [...proofScopeIssues(snapshot), ...reviewerLineIssues(snapshot)];
         if (issues.length) return reject(issues.join(" · "));
       }
       const purpose = reviewInput(values["purpose-file"]);

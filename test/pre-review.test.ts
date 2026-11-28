@@ -5,12 +5,12 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { tempDir } from './helpers.ts';
-import { reviewIssues, reviewHash, taskFormat } from '../src/project/pre-review.ts';
+import { proofScopeIssues, reviewerLineIssues, reviewIssues, reviewHash, taskFormat } from '../src/project/pre-review.ts';
 
 test('v2 증명 범위는 검토 기록보다 먼저 검사하고 옛 TASK는 호환한다', () => {
   const dir = tempDir('pace-proof-');
   const marker = '- TASK 형식: v2\n';
-  const scope = '## 증명 범위\n\n- 판정 주체: 자동 테스트\n- 포함: 호환 검사\n- 범위 밖: 운영 측정은 설치 뒤\n\n## 기준\nT-1\n';
+  const scope = '## 증명 범위\n\n- 판정 주체: 자동 테스트\n- 구현 후 reviewer: 필요 — 시험 고정본\n- 포함: 호환 검사\n- 범위 밖: 운영 측정은 설치 뒤\n\n## 기준\nT-1\n';
   const valid = marker + scope;
   assert.deepEqual(reviewIssues(dir, '## 목적\n옛 TASK\n'), []);
   assert.deepEqual(reviewIssues(dir, valid), []);
@@ -38,6 +38,53 @@ test('v2 증명 범위는 검토 기록보다 먼저 검사하고 옛 TASK는 �
   writeFileSync(join(dir, 'evidence.md'), '독립 검토');
   writeFileSync(join(dir, 'PRE-REVIEW.json'), JSON.stringify({ version: 1, author: 'openai', attempts: [{ hash: reviewHash(missing), provider: 'anthropic', cross: true, status: 'pass', blocking: 0, evidence: 'evidence.md', continuity: 'new' }] }));
   assert.match(reviewIssues(dir, missing).join(), /절 누락/);
+});
+
+test('P017 T01 S-2: 구현 후 reviewer 줄은 증명 범위 안 정확히 한 줄의 필요·생략 — 이유다', () => {
+  const dir = tempDir('pace-reviewer-line-');
+  const marker = '- TASK 형식: v2\n';
+  const line = '- 구현 후 reviewer: 필요 — 허가 분기가 바뀐다\n';
+  const scope = (body: string) => marker + '## 증명 범위\n- 판정 주체: 자동 테스트\n' + body + '- 포함: 게이트\n\n## 기준\nT-1\n';
+  const issues = (text: string) => ({ line: reviewerLineIssues(text), gate: reviewIssues(dir, text) });
+  for (const [text, expected] of [
+    [scope(''), /줄 누락/],
+    [scope(line + line), /줄 중복/],
+    [scope('- 구현 후 reviewer: 아마 — 모른다\n'), /필요 또는 생략/],
+    [scope('- 구현 후 reviewer: 필수 — 이유\n'), /필요 또는 생략/],
+    [scope('- 구현 후 reviewer: 필요\n'), /이유 누락/],
+    [scope('- 구현 후 reviewer: 생략 —   \n'), /이유 누락/],
+    [scope('- 구현 후 reviewer: <!-- 필요 — 이유 | 생략 — 이유 -->\n'), /주석이 섞였다/],
+    [scope('<!--\n' + line + '-->\n'), /줄 누락/],
+    [scope('```\n' + line + '```\n'), /줄 누락/],
+    [scope(line) + '## 접근\n' + line, /절 밖/],
+    // 경계: 정본 머리가 아닌 변형 줄 단독은 필드가 아니므로 누락이다(의미 판독은 사전 reviewer 몫, D3).
+    [scope('* 구현 후 reviewer: 필요 — 이유\n'), /줄 누락/],
+    // 원문 줄 동일성(상위 검토 슬롯 2): 주석 제거로만 생긴 머리는 세지 않고, 줄 안 주석은 형식 문제다.
+    [scope('<!-- 예시 -->- 구현 후 reviewer: 생략 — 문구만\n'), /줄 누락/],
+    [scope('- 구현 후 revi<!-- 예시 -->ewer: 생략 — 문구만\n'), /줄 누락/],
+    [scope('- 구현 후 reviewer: 생<!-- 설명 -->략 — 이유\n'), /주석이 섞였다/],
+    [scope('- 구현 후 reviewer: 필요 — <!-- 이유 -->\n'), /주석이 섞였다/],
+  ] as const) {
+    const found = issues(text);
+    assert.match(found.line.join(), expected, text);
+    assert.deepEqual(found.gate, found.line, text);
+  }
+  for (const text of [scope(line), scope('- 구현 후 reviewer: 생략 — 문구만 바뀐다\n'), scope('- 구현 후 reviewer:필요-이유\n'),
+    scope(line).replaceAll('\n', '\r\n'),
+    // 경계: 정본 줄과 변형 줄이 함께 있으면 변형은 필드로 보지 않는다(상충은 사전 reviewer가 본다).
+    scope(line + '1. 구현 후 reviewer: 생략 — 문구만\n'),
+    // 정본 줄과 주석 제거로만 머리가 생기는 줄: 허위 중복이 아니다(R4 b).
+    scope(line + '<!-- 예시 -->- 구현 후 reviewer: 생략 — 문구만\n')]) {
+    assert.deepEqual(issues(text), { line: [], gate: [] }, text);
+  }
+  // legacy TASK는 줄이 없어도 문제 없다.
+  assert.deepEqual(issues('## 목적\n옛 TASK\n## 증명 범위\n- 판정 주체: 자동 테스트\n'), { line: [], gate: [] });
+  // 증명 범위 구조가 깨지면 기존 구조 문제만 낸다.
+  for (const text of [marker + '## 목적\n없음\n', marker + '## 증명 범위\n' + line, marker + '## 증명 범위\n<!-- 빈 절 -->\n## 기준\n']) {
+    assert.deepEqual(reviewerLineIssues(text), []);
+    assert.deepEqual(reviewIssues(dir, text), proofScopeIssues(text));
+    assert.ok(proofScopeIssues(text).length);
+  }
 });
 
 test('사전 검토 해시는 CRLF만 정규화하고 기존 LF 기록·기록 명령과 일치한다', () => {

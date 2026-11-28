@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, renameSync, rmdirSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { parseArgs } from "node:util";
-import { approvedTaskEdit, proofScopeIssues, reviewHash } from "../project/pre-review.ts";
+import { approvedTaskEdit, proofScopeIssues, reviewerLineIssues, reviewHash } from "../project/pre-review.ts";
 import { AgentError, errorCodes, errorPayload, type Executor } from "./contract.ts";
 import { automaticCallTarget, callCancellation, observedAgentCall, requireCallAgent, tryRecordCall } from "./call-context.ts";
 import type { AgentCall } from "../project/agent-calls.ts";
@@ -329,6 +329,11 @@ export async function verifyCommand(args: string[], deps: VerifyCliDeps): Promis
       if (out !== undefined) writeOrLedgerError(out, response, "--out 사본");
       deps.write(response);
       return ESCALATION_EXIT;
+    }
+    // 구현 후 reviewer 줄 형식은 호출을 예약하기 전에 거부한다. 예산·call 행·실행기를 쓰지 않는다.
+    if (scope?.stage === "pre") {
+      const issues = reviewerLineIssues(artifact);
+      if (issues.length) throw new AgentError("invalid_request", issues.join(" · "));
     }
     const budget = scope && !recovery && state?.decision.kind === "ordinary" ? reserveReviewCall(scope, now(), state.budget) : undefined;
     if (scope && grant) checkGrant(scope, target, grant);

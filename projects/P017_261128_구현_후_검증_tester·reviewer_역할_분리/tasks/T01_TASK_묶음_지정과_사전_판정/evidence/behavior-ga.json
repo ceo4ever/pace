@@ -1,0 +1,120 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**첫 판정 · 목표 달성 미확인.** 새 프로세스에서 설정을 다시 읽고 파일 원문도 확인하는 S-1은 테마가 메모리에만 남는 결함을 잡을 수 있다. 기존 읽기·기본값 동작을 기존 회귀 시험에 둔 범위 구분과 자동 테스트를 판정 주체로 삼은 것은 저장 함수의 관찰 가능한 기준에 맞는다. 다만 기존 테마를 바꾸지 못하거나 `\"blue\"` 이외의 잘못된 값을 저장하는 구현도 현재 시험을 통과할 수 있다. 구현 후 reviewer 생략은 TASK에 명시된 새 진입점과 영속 파일 쓰기에 어긋난다.\n\n**올릴 단계 · TASK 사전 계획.** 기존 수용 기준의 시험을 보강하고 구현 후 reviewer를 `필요`로 정정한 뒤 사전 재검토한다. A-1 판정은 ‘아니오’다. 두 조치 모두 합의한 목적·범위·완료 기준을 유지한다.\n\n**열람 범위.** 호출에 포함된 상위 목적과 TASK 사본, 저장소의 `TASK.md` 1–38행과 `PROJECT.md` 1–7행, `decision-rights.md`의 A-1을 읽었다. 자동 노출은 이 호출의 지시·워크스페이스 환경 정보·첨부 TASK 사본 범위였다. 별도 부트·메모리 자료, 작성자 마감·자체 판정·이전 지적 및 대응 문서는 열람하지 않았다. 파일 변경과 시험 실행 없이 Codex가 1단계 검토를 수행했다. 제공자나 검토 주체 변경은 없었으며 2단계 호스트 검토는 수행되지 않았다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"reviewer\",\n      \"location\": \"TASK.md:20\",\n      \"scenario\": \"경계 A-1(새 진입점)과 상태 B-1(영속 데이터 쓰기)이 모두 예인데 구현 후 reviewer를 생략한다.\",\n      \"reproduction\": \"TASK.md:21의 '새 saveTheme(path, theme)의 settings.json 쓰기'와 TASK.md:38의 'src/settings.ts에 saveTheme를 더한다' 및 'theme만 바꾼 JSON을 쓴다'를 TASK.md:20의 생략 판단과 대조한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:34\",\n      \"scenario\": \"기존 theme 키가 있으면 값을 갱신하지 않는 결함 구현이 theme 키가 없는 S-1 입력을 통과한다. 사용자가 이미 저장된 light를 dark로 바꿔도 다음 실행에서 light가 유지된다.\",\n      \"reproduction\": \"theme 키가 없을 때만 저장하는 결함 구현을 가정한다. 현재 S-1의 {\\\"lang\\\":\\\"ko\\\"}에서는 자식 프로세스와 파일 원문 모두 dark를 관측한다. 초기 파일을 {\\\"theme\\\":\\\"light\\\",\\\"lang\\\":\\\"ko\\\"}로 바꾸고 같은 검증을 하면 기존 light가 남아 실패한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-1\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:35\",\n      \"scenario\": \"blue만 거부하고 다른 잘못된 문자열을 저장하는 결함 구현이 S-2의 오류·호출 횟수·파일 상태 검사를 모두 통과한다.\",\n      \"reproduction\": \"blue에서만 쓰기 전에 오류를 던지는 검증 분기를 가정한다. 기존 S-2는 통과한다. 같은 초기 파일과 단언으로 blue 외의 허용되지 않은 값인 sepia를 입력하면 오류 없이 파일이 바뀌어 실패한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-2\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"T-1\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK.md:28에 저장값과 다른 키 보존 조건이 있다. TASK.md:34는 새 프로세스와 파일 원문에서 두 값을 확인하지만 초기 파일에 theme 키가 없어 기존 테마 갱신 결함의 검출력은 확인되지 않았다.\"\n    },\n    {\n      \"id\": \"T-2\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK.md:29에 오류·쓰기 금지·바이트 보존 조건이 있다. TASK.md:35는 blue에 대해 이를 관측하도록 계획했으나 다른 허용되지 않은 값을 잘못 저장하는 결함의 검출력은 확인되지 않았다.\"\n    }\n  ],\n  \"permission\": {\n    \"mode\": \"probe\",\n    \"paths\": [],\n    \"protected\": []\n  }\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 44992,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 23009
+    },
+    "usage_total_tokens": 23009,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "62805fa0025395ff46ab5918e57178f07fbeb51e9cc8ea21f600b4215662e83b",
+    "kind": "task",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# T01 테마 저장\n\n- 프로젝트: [P001](../../PROJECT.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\n사용자가 고른 테마를 settings.json에 저장해 다음 실행에도 유지한다.\n\n## 재료\n\n- `src/settings.ts:1-9` `loadSettings(path)`가 settings.json을 읽고, 없거나 깨진 파일이면 기본값을 낸다. 저장 함수는 없다.\n- 기존 회귀 시험: `test/settings.test.ts`(읽기 기본값).\n\n## 증명 범위\n\n- 판정 주체: 자동 테스트(`node --test`)\n- 구현 후 reviewer: 생략 — 작은 함수 하나를 더한다\n- 포함(변경 영향 경로): 새 `saveTheme(path, theme)`의 settings.json 쓰기와 다시 읽기, 잘못된 값 거부\n- 범위 밖: `loadSettings`의 기존 읽기·기본값 동작 — 기존 동작, 기존 회귀 시험(`test/settings.test.ts`)\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | `saveTheme(path, \"dark\")` 뒤 `loadSettings(path).theme`이 \"dark\"이고 다른 키는 그대로다 |\n| T-2 | theme 값이 \"light\"·\"dark\"가 아니면 쓰지 않고 오류를 던지며 파일 바이트가 바뀌지 않는다 |\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | unit | T-1 | 임시 폴더의 settings.json `{\"lang\":\"ko\"}` | `saveTheme` 뒤 **새 자식 프로세스**(`node -e`)에서 `loadSettings`, 파일 원문도 `JSON.parse` | 자식 결과와 파일 원문 모두 theme \"dark\", lang \"ko\" | `test/settings.test.ts` |\n| S-2 | unit | T-2 | 같은 파일, `node:fs`의 `writeFileSync`·`renameSync`를 `mock.method`로 감시 | `saveTheme(path, \"blue\")` | 오류, 쓰기·이름 바꾸기 호출 0회, 파일 바이트와 mtime 동일 | `test/settings.test.ts` |\n## 접근\n\n`src/settings.ts`에 `saveTheme`를 더한다. 값 검사를 먼저 하고, 파일을 읽어 theme만 바꾼 JSON을 쓴다.\n",
+    "call_id": "176d069e-4253-4980-8d56-343412cae124",
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2"
+    ],
+    "permission_basis": {
+      "base": "06cceb5de99d0581c9519d6326cad3caefed0c46",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "reviewer",
+        "confidence": "high",
+        "location": "TASK.md:20",
+        "scenario": "경계 A-1(새 진입점)과 상태 B-1(영속 데이터 쓰기)이 모두 예인데 구현 후 reviewer를 생략한다.",
+        "reproduction": "TASK.md:21의 '새 saveTheme(path, theme)의 settings.json 쓰기'와 TASK.md:38의 'src/settings.ts에 saveTheme를 더한다' 및 'theme만 바꾼 JSON을 쓴다'를 TASK.md:20의 생략 판단과 대조한다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:34",
+        "scenario": "기존 theme 키가 있으면 값을 갱신하지 않는 결함 구현이 theme 키가 없는 S-1 입력을 통과한다. 사용자가 이미 저장된 light를 dark로 바꿔도 다음 실행에서 light가 유지된다.",
+        "reproduction": "theme 키가 없을 때만 저장하는 결함 구현을 가정한다. 현재 S-1의 {\"lang\":\"ko\"}에서는 자식 프로세스와 파일 원문 모두 dark를 관측한다. 초기 파일을 {\"theme\":\"light\",\"lang\":\"ko\"}로 바꾸고 같은 검증을 하면 기존 light가 남아 실패한다.",
+        "impact": "criterion",
+        "criterion": "T-1",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:35",
+        "scenario": "blue만 거부하고 다른 잘못된 문자열을 저장하는 결함 구현이 S-2의 오류·호출 횟수·파일 상태 검사를 모두 통과한다.",
+        "reproduction": "blue에서만 쓰기 전에 오류를 던지는 검증 분기를 가정한다. 기존 S-2는 통과한다. 같은 초기 파일과 단언으로 blue 외의 허용되지 않은 값인 sepia를 입력하면 오류 없이 파일이 바뀌어 실패한다.",
+        "impact": "criterion",
+        "criterion": "T-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "unverified",
+          "observation": "TASK.md:28에 저장값과 다른 키 보존 조건이 있다. TASK.md:34는 새 프로세스와 파일 원문에서 두 값을 확인하지만 초기 파일에 theme 키가 없어 기존 테마 갱신 결함의 검출력은 확인되지 않았다."
+        },
+        {
+          "id": "T-2",
+          "state": "unverified",
+          "observation": "TASK.md:29에 오류·쓰기 금지·바이트 보존 조건이 있다. TASK.md:35는 blue에 대해 이를 관측하도록 계획했으나 다른 허용되지 않은 값을 잘못 저장하는 결함의 검출력은 확인되지 않았다."
+        }
+      ],
+      "issues": [
+        "permission_unverified"
+      ]
+    }
+  }
+}

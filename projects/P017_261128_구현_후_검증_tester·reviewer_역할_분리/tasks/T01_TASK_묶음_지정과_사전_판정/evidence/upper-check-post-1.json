@@ -1,0 +1,12 @@
+{
+  "agreement": "confirmed",
+  "verification": "required",
+  "upper": "1bb15c58-092b-498d-ba68-e1cadeafa970",
+  "change": "상위 검토 슬롯 1 적용 — reviewerLineIssues 정규화 삭제·정확 일치 복귀(TASK.md:55 설계 문법), S-2 계약 사례+경계 2, S-1 T-n 한정 문구 단언, S-4 review-hand 필요·생략 둘 다. TASK.md 불변(계약 지문 동일).",
+  "negative_controls": [
+    "템플릿 포함 안내 반전 → S-1 fail",
+    "review-hand 생략만 거부 결함 → S-4 fail"
+  ],
+  "check": "PACE_SKIP_BROWSER_E2E=1 npm run check: 1536 tests, pass 1518, fail 0",
+  "detail": "# T01 상위 검토 슬롯 1 적용 — upper-check 근거\n\n- 상위 검토: evidence/upper-review-post-1.json (허브 Orca 회신 msg_c79a5bba3bab, 원인 층 설계, 영향 (a) 기존 합의 충족)\n- 적용:\n  1. src/project/pre-review.ts:88 reviewerLineIssues — 정규화 삭제, 보이는 증명 범위 안 정확히 `^- 구현 후 reviewer:` 줄만 셈(0 누락, 2 이상 중복, 절 밖 정본 줄 문제), 줄 머리 검사 삭제. TASK.md:55 설계 문법과 같다.\n  2. test/pre-review.test.ts S-2 — 계약 사례(누락·중복·모르는 값 2·빈 이유 2·주석 값·주석/fence 안·절 밖)와 경계 두 사례(변형 단독 → 누락, 정본+변형 → 변형은 필드 아님)만 남기고 변형 사례 삭제.\n  3. test/project-templates.test.ts S-1 — templates/project/TASK.md:26 \"기준 T-n은 이 경로로 한정한다\"와 범위 밖 \"변경이 건드리지 않는 기존 동작\" 문구 단언.\n  4. test/agent-review-hand.test.ts S-4 — review-hand 올바른 줄을 필요·생략 둘 다 예약·고정.\n- TASK.md 수정 없음. 의미 상충(숨은 변형 선언)은 사전 reviewer 몫으로 TASK-CLOSE에 적는다.\n- 음성 대조(PM 실행, 원본 복원 cmp 확인): 템플릿 포함 안내를 \"기준 T-n은 변경과 무관한 기존 경로도 포함한다\"로 반전 → S-1 fail 1. review-hand에서 생략 줄만 거부하는 결함 → S-4 fail 1.\n- 검사: PACE_SKIP_BROWSER_E2E=1 npm run check — 1536 tests, pass 1518, fail 0 (직전 1회는 무관 dashboard-init 간헐 1건).\n"
+}

@@ -1,0 +1,9 @@
+import { readFileSync } from "node:fs";
+
+export type Settings = { theme: "light" | "dark"; lang: string; [key: string]: unknown };
+const defaults: Settings = { theme: "light", lang: "en" };
+
+export function loadSettings(path: string): Settings {
+  try { return { ...defaults, ...JSON.parse(readFileSync(path, "utf8")) }; }
+  catch { return { ...defaults }; }
+}

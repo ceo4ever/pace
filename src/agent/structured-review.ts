@@ -19,6 +19,8 @@ const questions = {
       scope: "증명 범위와 판정 주체가 목적을 덮는가",
       observable: "완료 기준과 관측 방법이 명확한가",
       detection: "시험이 결함에서 실패하는가",
+      reviewer: "구현 후 reviewer 필요·생략 판단이 경계·상태·흐름 사실 질문의 답과 맞는가",
+      breadth: "기준이 변경 영향 경로를 넘어 기존 동작까지 넓혀지지 않았는가",
     },
   },
   post: {

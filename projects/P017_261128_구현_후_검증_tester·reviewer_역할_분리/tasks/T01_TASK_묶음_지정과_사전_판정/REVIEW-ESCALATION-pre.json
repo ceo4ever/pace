@@ -1,0 +1,246 @@
+{
+  "stage": "pre",
+  "target": "TASK.md",
+  "hash": "0563020389e379188ecdba318cb80d159cadb59d4b729763f16556e7e7ec5b44",
+  "action": "classify_followup",
+  "decision": null,
+  "recommendation": null,
+  "choices": [],
+  "joint_attempts": 2,
+  "joint_decisions": [
+    {
+      "stage": "pre",
+      "target": "TASK.md",
+      "hash": "224903d12f96b3ecc9b431bae1a08fdc13758671f33906e014f3d3db8cf55cce",
+      "evidence": "evidence/joint-1.md",
+      "evidence_hash": "1fa95982444ac94d69dd0d34f593835f70badd1a0f0f57c51a5f9c243715427e",
+      "summary": "허브 결정(main 판단): R2 blocking 4건 반영 뒤 공동 검토 1회차",
+      "at": "2026-11-27T22:43:38.832Z",
+      "id": "aaed2fb7-3d3a-450b-891d-a16d7f0fe39f",
+      "type": "joint",
+      "choice": "공동 검토 1회차 진행",
+      "rounds": 1
+    },
+    {
+      "stage": "pre",
+      "target": "TASK.md",
+      "hash": "4830098cf4c214df13f5590362dd270f3d71480e8f18c9edf21a6284b0027973",
+      "evidence": "evidence/joint-2.md",
+      "evidence_hash": "05dbc690bcd4914a8c3389c71d0fa88310c9eb5246fc9d78a0387a37d0a5eba4",
+      "summary": "허브 결정(main 판단): F7 대체 반영 뒤 공동 검토 2회차",
+      "at": "2026-11-27T22:45:42.098Z",
+      "id": "97c57003-eb6a-4a1d-b958-33c5cbad149a",
+      "type": "joint",
+      "choice": "공동 검토 2회차 진행",
+      "rounds": 1
+    }
+  ],
+  "confirmation_count": 2,
+  "diagnostic_confirmation_count": 1,
+  "confirmations": [
+    {
+      "id": "20d3a48c-fb3f-412b-924d-d728cb45e2d0",
+      "finding": {
+        "id": "F8",
+        "location": "TASK.md:50"
+      },
+      "source": "review-records/R4.json",
+      "target": "TASK.md",
+      "hash": "d07119452a965c22b0a117052fbaacb510afd0060c0a1459b000539a58883f85",
+      "verdict": "fail",
+      "record": "review-records/R5.json",
+      "diagnosed": false,
+      "cross": true
+    },
+    {
+      "id": "0e1303b7-83b6-4298-99e0-fc880c7338ae",
+      "finding": {
+        "id": "F8",
+        "location": "TASK.md:50"
+      },
+      "source": "review-records/R4.json",
+      "target": "TASK.md",
+      "hash": "249795e2bd0eb72024f4ab87374c754ed1ffe97c092dd12c4dca098e89910148",
+      "verdict": "pass",
+      "record": "review-records/R6.json",
+      "diagnosed": true,
+      "cross": true
+    },
+    {
+      "id": "bda8d2d6-f807-422e-b26f-1f7e2a73450b",
+      "finding": {
+        "id": "F1",
+        "location": "TASK.md:50"
+      },
+      "source": "review-records/R7.json",
+      "target": "TASK.md",
+      "hash": "0563020389e379188ecdba318cb80d159cadb59d4b729763f16556e7e7ec5b44",
+      "verdict": "pass",
+      "record": "review-records/R8.json",
+      "diagnosed": false,
+      "cross": true
+    }
+  ],
+  "upper_reviews": [],
+  "upper_results": [],
+  "verdict_summary": "일반 유효 판정 2회, 최신 유효 판정 fail",
+  "review_history": [
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-27T22:39:54.969Z",
+      "target": "TASK.md",
+      "hash": "2871e2d850c3b9ec7963dd61ca510a053fdaf0c72850014a72ef1fe9528106eb",
+      "record": "review-records/R1.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] TASK.md:43 — S-1의 기대 결과는 줄 개수, 질문 키워드, 제목 목록이다. TASK-CLOSE에서 reviewer 생략 안내나 역할별 회차 요청·결과 회수 칸이 빠져도 이 단언은 통과할 수 있다. 같은 키워드를 리뷰 절의 보이는 본문에 옮기면 빈 리뷰 절을 차단하는 기존 동작도 우회할 수 있다.",
+        "F2 [blocking] TASK.md:44-45 — S-2는 공통 검사 함수를 직접 부르고 S-3은 check만 실행한다. done이 공통 검사를 우회하거나 그 진단을 누락하는 회귀는 이 두 시험에서 검출되지 않는다.",
+        "F3 [blocking] TASK.md:46 — S-4의 정상 대조는 '올바른 줄은 실행'이다. review-hand는 실행기를 호출하지 않고 예약과 고정본을 반환한다. 정상 verify가 예약 없이 실행하거나 정상 review-hand가 예약·고정 없이 반환하는 회귀를 잡을 단언이 없다.",
+        "F4 [blocking] TASK.md:48 — S-6은 (나)와 (라)에 pass만 요구한다. (나)에 판단 불일치 지적이 note로 남거나 (라)의 기존 경로 반례가 note로 강등되거나 사라져도 pass는 유지된다.",
+        "F5 [blocking] TASK.md:49 — S-7의 기대 결과는 판정·범주 대조표다. 실제로 Codex 교차 사전 검토가 실행됐는지, (가)·(다)의 fail을 만든 것이 해당 범주의 유효 blocking인지, (나)에서 지정 지적이 사라졌는지 판별할 관측 항목이 없다.",
+        "F6 [blocking] TASK.md:25-26 — BR01:34의 변경 경로 제한이 P-1에 포함되지만 TASK에는 일부 제외 경로만 적혀 있고, 전체 변경 경로를 허용 범위와 대조하는 완료 확인이 없다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-27T22:42:37.650Z",
+      "target": "TASK.md",
+      "hash": "fb3c90f39a75fbacc6f9dc3d75a549d40824c366637eec03a9bda335934a4165",
+      "record": "review-records/R2.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] TASK.md:44 — S-1은 리뷰 절의 주석 안에서 판정·생략 문구와 시각 항목의 존재를 확인한다. tester 쪽에만 회차별 요청·회수 칸이 있고 reviewer 쪽에는 판정 문구만 있어도 기대 결과를 만족할 수 있다. BR01:20은 호출된 reviewer에게도 회차별 두 시각을 요구한다.",
+        "F3 [blocking] TASK.md:47 — S-4의 정상 verify 기대 결과는 실행기 1회와 call 행의 존재다. 예약 없이 실행기를 먼저 시작하고, 실행이 돌아온 뒤 call 행을 추가하는 회귀도 두 조건을 모두 만족한다. 실행 도중 중단되면 사용한 호출이 예약에 남지 않는다.",
+        "F5 [blocking] TASK.md:50 — S-7은 교차 호출과 (가)·(다)의 유효 blocking을 명시했지만, (나)에는 reviewer 범주 지적 없음만 요구한다. 실제 Codex가 (나)에서 형식이 깨진 원문을 반환하면 도구는 findings: null과 unknown을 낸다. 표에서 이 결과를 지적 없음으로 기록할 수 있어 유효한 검토에서 지적이 사라졌는지 판별할 수 없다.",
+        "F6 [blocking] TASK.md:51 — S-8의 git diff --name-only는 Git이 이름 변경을 감지하면 새 경로만 출력한다. 예를 들어 금지된 src/agent/call-hook.ts를 내용 그대로 허용된 test/ 경로로 이동한 커밋 후보에서 원래 경로의 삭제가 허용 목록 검사에 들어오지 않는다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-27T22:45:10.290Z",
+      "target": "TASK.md",
+      "hash": "224903d12f96b3ecc9b431bae1a08fdc13758671f33906e014f3d3db8cf55cce",
+      "record": "review-records/R3.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F7 [blocking] TASK.md:50 — S-7의 새 조건은 사례 (나)에서 findings가 null이 아니고 판정이 unknown이 아니며 reviewer 범주가 없으면 성공으로 센다. 다른 범주의 유효 blocking이 있으면 판정기는 필수 기준 관측이나 허가 근거가 빠져도 fail을 반환한다. 이 응답이 세 조건을 모두 만족하면 tester가 근거가 불완전한 fail을 음성 대조의 성공으로 기록할 수 있다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-27T22:46:56.385Z",
+      "target": "TASK.md",
+      "hash": "4830098cf4c214df13f5590362dd270f3d71480e8f18c9edf21a6284b0027973",
+      "record": "review-records/R4.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F8 [blocking] TASK.md:50 — S-7은 사례 (나)에서 증거 공백 0과 reviewer 범주 지적 부재만 요구한다. 다른 범주의 유효 blocking이 있는 응답은 두 조건을 만족하면서도 도구 판정이 fail이다. tester가 사전 관문에서 실제로 막힌 사례 (나)를 음성 대조 성공으로 기록할 수 있다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-27T22:48:37.617Z",
+      "target": "TASK.md",
+      "hash": "d07119452a965c22b0a117052fbaacb510afd0060c0a1459b000539a58883f85",
+      "record": "review-records/R5.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F9 [blocking] TASK.md:50 — 사례 (나)의 필요 판단에 대해 reviewer 범주가 잘못된 불일치 지적을 should_fix로 남기고 나머지 증거가 완전하면 도구 판정은 pass다. S-7의 새 조건은 이 결과를 성공으로 세므로 BR01과 T-6이 요구하는 해당 지적 부재를 확인하지 못한다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-28T00:01:00.474Z",
+      "target": "TASK.md",
+      "hash": "249795e2bd0eb72024f4ab87374c754ed1ffe97c092dd12c4dca098e89910148",
+      "record": "review-records/R6.json",
+      "verdict": "pass",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": null
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-28T00:48:30.910Z",
+      "target": "TASK.md",
+      "hash": "f602743bd77423a0f849446a93944e14566d6efe11adf57ced77cc0a0c5adab7",
+      "record": "review-records/R7.json",
+      "verdict": "fail",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": [
+        "F1 [blocking] TASK.md:50 — (나)의 Codex 호출이 완료됐지만 구조화된 응답을 판독할 수 없거나, (나) 고정본에서 (가)의 영속 쓰기 사실까지 사라진다. 두 경우 모두 reviewer 지적 0건으로 집계될 수 있어 필요한 reviewer를 올바르게 판단했는지 입증하지 못한다.",
+        "F2 [blocking] TASK.md:51 — 허용 목록 밖 파일이 스테이징된 커밋 후보에만 있거나, T03 소유인 .pace/team 변경이 .pace/ 전체 예외에 가려진다."
+      ]
+    },
+    {
+      "from": "REVIEW-LOG.jsonl",
+      "at": "2026-11-28T00:50:47.619Z",
+      "target": "TASK.md",
+      "hash": "0563020389e379188ecdba318cb80d159cadb59d4b729763f16556e7e7ec5b44",
+      "record": "review-records/R8.json",
+      "verdict": "pass",
+      "interrupted": false,
+      "invalidated": null,
+      "cross": true,
+      "blocking": null
+    }
+  ],
+  "calls": [
+    {
+      "type": "call",
+      "at": "2026-11-27T22:38:17.318Z",
+      "target": "TASK.md",
+      "kind": "task",
+      "call_id": "625f1eeb-ba85-438e-97c3-d7a9212fefca",
+      "from": "REVIEW-LOG.jsonl"
+    },
+    {
+      "type": "call",
+      "at": "2026-11-27T22:40:58.717Z",
+      "target": "TASK.md",
+      "kind": "task",
+      "call_id": "7a29df97-b951-48bc-940c-a38439a9b9e5",
+      "from": "REVIEW-LOG.jsonl"
+    }
+  ],
+  "diagnoses": [
+    {
+      "type": "diagnosis",
+      "at": "2026-11-27T23:59:01.796Z",
+      "target": "TASK.md",
+      "layer": "design",
+      "summary": "원인 층 시험 설계 — (나) 음성 대조 두 관측 결합 필요(main 판단 승인)",
+      "file": "/Volumes/Data/AiStudio/workspace/pace.wt/P017/projects/P017_261128_구현_후_검증_tester·reviewer_역할_분리/tasks/T01_TASK_묶음_지정과_사전_판정/evidence/diagnosis-1.md",
+      "recovery_id": "8691b515-0211-4de6-8e1a-aa4dd0c3548f",
+      "recovery_evidence": {
+        "source": "review-records/R4.json",
+        "evidence_hash": "0f3cec9537c66471695aa6053a711664ea1ba4dc6de92a104ccfccbc21a89458"
+      },
+      "confirmation": {
+        "source": "review-records/R4.json",
+        "evidence_hash": "0f3cec9537c66471695aa6053a711664ea1ba4dc6de92a104ccfccbc21a89458"
+      },
+      "from": "REVIEW-LOG.jsonl"
+    }
+  ],
+  "voids": [],
+  "finding_assessments": []
+}

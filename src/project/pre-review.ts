@@ -74,6 +74,39 @@ export function proofScopeIssues(task: string): string[] {
   return [];
 }
 
+/**
+ * v2 `## 증명 범위`의 `- 구현 후 reviewer: 필요|생략 — 이유` 줄 형식만 본다.
+ * `proofScopeIssues`와 분리해 옛 기록 재판정(`legacyStructureOnly`)의 의미를 바꾸지 않는다.
+ * 증명 범위 구조가 이미 깨졌으면 그 문제가 먼저이므로 빈 배열을 낸다.
+ */
+export function reviewerLineIssues(task: string): string[] {
+  if (taskFormat(task) !== 'v2' || proofScopeIssues(task).length) return [];
+  // 형식만 기계가 본다(D3): 정본 줄 머리 `- 구현 후 reviewer:`의 정확 일치를 원문 줄에 적용한다.
+  // visibleMarkdown은 줄 수를 보존하므로 원문 줄과 인덱스로 맞춘다. 주석 제거로만 머리가 생긴 줄은 세지 않고,
+  // 원문과 주석 제거 결과가 다르면(줄 안 주석) 형식 문제다. 표지·들여쓰기 변형 같은 의미 상충은 사전 reviewer가 판정한다.
+  const head = '- 구현 후 reviewer:';
+  const raw = task.replace(/\r\n/g, '\n').split('\n');
+  const visible = visibleMarkdown(task).split('\n');
+  let inScope = false, outside = 0, mixed = false;
+  const inside: string[] = [];
+  visible.forEach((shown, i) => {
+    if (shown.startsWith('## ')) { inScope = /^## 증명 범위[ \t]*$/.test(shown); return; }
+    if (!shown.startsWith(head) || !raw[i]!.startsWith(head)) return;
+    if (raw[i] !== shown) mixed = true;
+    if (inScope) inside.push(shown.slice(head.length)); else outside++;
+  });
+  if (mixed) return ['구현 후 reviewer: 줄에 주석이 섞였다 — 주석 없이 원문 한 줄로 쓴다'];
+  const issues: string[] = [];
+  if (outside) issues.push('구현 후 reviewer: 증명 범위 절 밖에 줄이 있다');
+  if (!inside.length) return [...issues, '구현 후 reviewer: 줄 누락 — `- 구현 후 reviewer: 필요|생략 — 이유`'];
+  if (inside.length > 1) return [...issues, '구현 후 reviewer: 줄 중복'];
+  const value = inside[0]!;
+  const choice = value.trim().split(/[ \t—-]/)[0];
+  if (choice !== '필요' && choice !== '생략') return [...issues, '구현 후 reviewer: 값은 필요 또는 생략'];
+  if (!/^[ \t]*(?:필요|생략)[ \t]*[—-][ \t]*\S/.test(value)) return [...issues, '구현 후 reviewer: 이유 누락 — `필요|생략 — 이유`'];
+  return issues;
+}
+
 /** CRLF만 LF로 정규화하고 상태 값을 제외한다. 나머지 문자는 그대로다. */
 export function reviewHash(task: string): string {
   return createHash('sha256').update(task.replace(/\r\n/g, '\n').replace(/^- 상태: .+$/m, '- 상태:')).digest('hex');
@@ -206,6 +239,8 @@ function verifiedPermission(current: ReviewEntry, candidate: ReviewCandidate, le
 export function reviewIssues(dir: string, task: string, candidate = workingReview(dir), gate: PermissionCheck = {}): string[] {
   const scopeIssues = proofScopeIssues(task);
   if (scopeIssues.length) return scopeIssues;
+  const lineIssues = reviewerLineIssues(task);
+  if (lineIssues.length) return lineIssues;
   const markers = [...task.matchAll(/^- 사전 검토:([^\r\n]*)\r?$/gm)];
   const marker = markers[0]?.[1]?.trim();
   const name = 'PRE-REVIEW.json';

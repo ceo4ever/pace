@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "author": "anthropic",
+  "attempts": [
+    {
+      "hash": "2871e2d850c3b9ec7963dd61ca510a053fdaf0c72850014a72ef1fe9528106eb",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 6,
+      "evidence": "review-records/R1.json",
+      "continuity": "new"
+    },
+    {
+      "hash": "fb3c90f39a75fbacc6f9dc3d75a549d40824c366637eec03a9bda335934a4165",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 4,
+      "evidence": "review-records/R2.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R1.json에서 재검토"
+    },
+    {
+      "hash": "224903d12f96b3ecc9b431bae1a08fdc13758671f33906e014f3d3db8cf55cce",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R3.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R2.json에서 재검토"
+    },
+    {
+      "hash": "4830098cf4c214df13f5590362dd270f3d71480e8f18c9edf21a6284b0027973",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 1,
+      "evidence": "review-records/R4.json",
+      "continuity": "changed",
+      "reason": "원장 기준점 review-records/R3.json에서 재검토"
+    },
+    {
+      "hash": "f602743bd77423a0f849446a93944e14566d6efe11adf57ced77cc0a0c5adab7",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 2,
+      "evidence": "review-records/R7.json",
+      "continuity": "changed",
+      "reason": "기록된 사용자 결정 뒤 새 전체 검토"
+    },
+    {
+      "hash": "0563020389e379188ecdba318cb80d159cadb59d4b729763f16556e7e7ec5b44",
+      "provider": "openai",
+      "cross": true,
+      "status": "fail",
+      "blocking": 3,
+      "evidence": "review-records/R9.json",
+      "continuity": "changed",
+      "reason": "기록된 사용자 결정 뒤 새 전체 검토"
+    }
+  ],
+  "waiver": {
+    "by": "user",
+    "date": "2026-11-28",
+    "hash": "87c738882491f2ceae818d234697584d3a983ba06ebc7696fab9a8fc1276e67c",
+    "evidence": "evidence/owner-waiver-R9.md",
+    "reason": "R9 owner 허용 전체 재검토 fail(blocking 3, rounds 소진) — owner A-3 결정: F3 반영, F1·F2(S-7·S-8 기계 조건) 축소해 구현 후 tester 원자료 대조 판정으로, 남은 F1·F2는 TASK-CLOSE 한계"
+  }
+}

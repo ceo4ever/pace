@@ -13,7 +13,7 @@ import { reviewArtifactCommand } from "../src/agent/review-hand.ts";
 import { tryRecordCall } from "../src/agent/call-context.ts";
 import { evidenceReviewFixture, runPace, sessionFreeEnv, tempDir } from "./helpers.ts";
 
-const initial = "# T06 검토\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n기존 결과를 확인한다.\n\n## 증명 범위\n- 판정 주체: 자동 시험\n\n## 기준\n\n| # | 기준 |\n|---|---|\n| T-1 | 실제 결과가 보인다 |\n\n## 접근\n순서 A를 확인한다.\n";
+const initial = "# T06 검토\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n기존 결과를 확인한다.\n\n## 증명 범위\n- 판정 주체: 자동 시험\n- 구현 후 reviewer: 필요 — 시험 고정본\n\n## 기준\n\n| # | 기준 |\n|---|---|\n| T-1 | 실제 결과가 보인다 |\n\n## 접근\n순서 A를 확인한다.\n";
 const grant = { mode: "implementation", paths: [], protected: [{ from: 7, to: 7 }] };
 const blocking = { id: "F1", severity: "blocking", category: "scope", location: "TASK.md:7",
   scenario: "대상 결과를 확인하지 못한다", reproduction: "주어진 계획으로 결과 관측 조건을 실행한다", confidence: "high" };
@@ -522,4 +522,69 @@ test("T07 S-5: 백로그 원장은 외부 시도 한 개와 해당 판정 ref를
   assert.equal(verified.body.agent_call_linked, true);
   assert.equal(readAgentCalls(target)?.length, 1);
   assert.equal(readAgentCalls(target)?.[0]?.ref, "review-records/R1.json");
+});
+
+const reviewerLine = "- 구현 후 reviewer: 필요 — 시험 고정본\n";
+const lineCases: [string, string, RegExp][] = [
+  ["줄 없음", initial.replace(reviewerLine, ""), /줄 누락/],
+  ["중복", initial.replace(reviewerLine, reviewerLine + reviewerLine), /줄 중복/],
+  ["모르는 값", initial.replace(reviewerLine, "- 구현 후 reviewer: 아마 — 모름\n"), /필요 또는 생략/],
+  ["빈 이유", initial.replace(reviewerLine, "- 구현 후 reviewer: 생략 — \n"), /이유 누락/],
+];
+
+test("P017 T01 S-4: 사전 verify는 reviewer 줄 형식 문제를 예약 전에 거부하고 올바른 줄은 예약 뒤 실행한다", async () => {
+  for (const [name, text, expected] of lineCases) {
+    const h = fixture();
+    writeFileSync(h.target, text);
+    const result = await h.verify(raw());
+    assert.equal(result.status, 2, name);
+    assert.match(result.body.error.message, expected, name);
+    assert.equal(result.executed, 0, name);
+    assert.deepEqual(readLedger(h.target), [], name);
+    assert.equal(existsSync(h.records), false, name);
+  }
+  for (const choice of ["필요 — 허가 분기", "생략 — 문구만"]) {
+    const h = fixture();
+    writeFileSync(h.target, initial.replace(reviewerLine, `- 구현 후 reviewer: ${choice}\n`));
+    let output = "", executed = 0;
+    let atEntry: string[] = [];
+    const agent: Executor = {
+      agent: "claude", mode: "p",
+      capabilities: { models: true, effort: true, systemPrompt: false, resume: false, writeAccess: true },
+      async run(request) {
+        executed++;
+        atEntry = readLedger(h.target).map((row) => row.type);
+        return normalizeResult(request, { text: evidenceReviewFixture(request.prompt, raw()), provider: "anthropic" },
+          { durationMs: 10, enforcement: "fixture" });
+      },
+    };
+    const status = await verifyCommand(["--target", h.target, "--author-agent", "codex", "--purpose-file", h.purpose], {
+      executors: () => [agent], write: (value) => { output += value; },
+    });
+    assert.equal(status, 0, output);
+    assert.equal(executed, 1);
+    assert.deepEqual(atEntry, ["call"], "실행기 진입 시점에 이번 호출의 call 행이 이미 원장에 있다");
+  }
+});
+
+test("P017 T01 S-4: review-hand는 reviewer 줄 형식 문제를 고정 없이 거부하고 올바른 줄은 예약·고정한다", () => {
+  for (const [name, text, expected] of lineCases) {
+    const h = fixture();
+    writeFileSync(h.target, text);
+    const result = h.hand();
+    assert.notEqual(result.status, 0, name);
+    assert.match(result.output, expected, name);
+    assert.deepEqual(readLedger(h.target), [], name);
+    assert.equal(existsSync(h.records), false, name);
+  }
+  for (const choice of ["필요 — 허가 분기", "생략 — 문구만"]) {
+    const h = fixture();
+    writeFileSync(h.target, initial.replace(reviewerLine, `- 구현 후 reviewer: ${choice}\n`));
+    const handed = h.hand();
+    assert.equal(handed.status, 0, `${choice}: ${handed.output}`);
+    assert.equal(handed.body.handed, true, choice);
+    assert.equal(typeof handed.body.hand, "string", choice);
+    assert.ok(existsSync(handed.body.snapshot), choice);
+    assert.deepEqual(readLedger(h.target).map((row) => row.type), ["call"], choice);
+  }
 });

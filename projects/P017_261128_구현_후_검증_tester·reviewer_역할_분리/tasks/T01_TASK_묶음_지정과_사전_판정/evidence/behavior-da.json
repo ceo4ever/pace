@@ -1,0 +1,141 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**첫 판정은 미달입니다.** 현재 계획은 기존 파일에 `\"dark\"`를 저장한 뒤 새 프로세스에서 복원하고 `lang`을 보존하는지 확인할 수 있습니다. 사용자가 `\"light\"`를 선택하거나 설정 파일이 없는 상태에서 처음 저장하는 경우는 증명하지 못합니다. 기존 `loadSettings`의 기본값 동작은 변경 범위 밖으로 명시됐지만 T-3에서 다시 완료 기준으로 요구합니다. 자동 테스트를 판정 주체로 둔 것은 적절하고, 영속 파일 쓰기를 근거로 구현 후 reviewer를 요구한 것도 TASK에 적힌 영향과 일치합니다. 실제 구현의 목표 달성은 미확인입니다.\n\n**올릴 단계는 TASK 설계와 사전 검토입니다.** 저장 경로의 시험 보강과 기존 읽기 회귀 시험의 위치 정리는 주어진 목적·범위를 유지하므로 A-1상 PM이 처리할 수 있습니다. T-3에 별도의 owner 합의가 있다면 기준의 지위를 바꾸기 전에 owner에게 올려야 합니다. 확인한 `PROJECT.md`에는 테마 저장 목적만 기록돼 있습니다.\n\n**검토 노출 범위**는 호출에 첨부된 상위 목적·TASK 원문·환경 지시, 디스크의 `TASK.md`·`PROJECT.md`, pace-project-dev의 `SKILL.md`·`decision-rights.md`입니다. 자동 부트나 프로젝트 메모리의 본문은 이번 검토에서 별도로 제공되거나 열린 기록이 없습니다. 작성자 마감·자체 판정·이전 지적 및 대응 문서도 열지 않았습니다. 파일 변경과 시험 실행은 없었습니다. 현재 검토자는 OpenAI Codex이며 작성자 제공자는 확인되지 않아 교차 제공자 여부는 미확인입니다. 이번 호출에서는 1단계 판단만 수행했습니다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"breadth\",\n      \"location\": \"TASK.md:30\",\n      \"scenario\": \"저장 함수만 추가해도 기존 loadSettings가 없는 파일, 깨진 JSON, 읽기 권한 없음에서 어떻게 동작하느냐에 따라 태스크 완료 여부가 달라진다.\",\n      \"reproduction\": \"TASK.md:21-22에서 새 저장 경로를 포함하고 기존 읽기·기본값을 범위 밖의 회귀 시험으로 지정한다. TASK.md:40의 접근도 saveTheme 추가로 한정된다. 그런데 TASK.md:30과 :37은 저장 함수를 호출하지 않는 기존 읽기 세 분기를 T-3의 완료 판정에 넣는다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:35\",\n      \"scenario\": \"saveTheme가 유효성 검사를 통과한 입력을 항상 dark로 저장하면 사용자가 고른 light가 다음 실행에서 복원되지 않아도 S-1이 통과한다.\",\n      \"reproduction\": \"light와 dark를 모두 유효한 값으로 받아들인 뒤 항상 dark를 쓰는 결함 구현을 S-1과 S-2에 대입한다. S-1의 dark 기대값을 만족하고 S-2의 blue는 여전히 오류로 거부된다. 기존 파일의 dark를 light로 바꾼 뒤 새 프로세스에서 확인하는 경우를 추가하면 이 결함을 검출할 수 있다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:36\",\n      \"scenario\": \"saveTheme가 blue만 거부하고 green 같은 다른 잘못된 값을 파일에 기록해도 S-2가 통과한다.\",\n      \"reproduction\": \"theme가 blue일 때만 쓰기 전에 오류를 던지는 결함 구현을 S-2에 대입한다. S-2의 유일한 입력인 blue에 대해서는 예외, 쓰기 호출 0회, 바이트 및 mtime 동일을 모두 만족한다. 허용 목록 밖의 별도 값을 같은 관측으로 확인하면 이 결함을 검출할 수 있다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-2\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"blocking\",\n      \"category\": \"design\",\n      \"location\": \"TASK.md:40\",\n      \"scenario\": \"settings.json이 없는 초기 상태에서 저장 함수가 기존 파일 읽기 오류를 그대로 전파하면 첫 테마 선택을 저장할 수 없다.\",\n      \"reproduction\": \"TASK.md:14에 명시된 파일 없음 상태에서 saveTheme를 호출하는 경우를 대입한다. :40에는 읽은 JSON을 갱신하는 절차만 있고 :35는 이미 존재하는 파일로 시작한다. 없는 경로에 처음 저장한 뒤 새 프로세스로 다시 읽는 시험이 있어야 이 실패를 잡을 수 있다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"T-1\",\n      \"state\": \"present\",\n      \"observation\": \"TASK.md:28과 :35에서 dark 저장 후 새 자식 프로세스의 loadSettings 결과와 파일 원문의 파싱 결과를 모두 확인한다. 두 관측에서 theme이 dark이고 기존 lang이 ko여야 하므로 메모리에만 저장하거나 이 키를 누락하면 실패한다.\"\n    },\n    {\n      \"id\": \"T-2\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK.md:29와 :36에 예외, 쓰기 호출 0회, 바이트 및 mtime 동일이 명시됐지만 입력은 blue 하나다. 다른 비허용 값을 기록하는 구현도 이 시험을 통과할 수 있다.\"\n    },\n    {\n      \"id\": \"T-3\",\n      \"state\": \"unverified\",\n      \"observation\": \"TASK.md:30과 :37에 세 읽기 조건과 기본값·예외 없음이 명시됐다. 다만 권한 000은 시험 프로세스가 실제로 읽기 거부를 받는다는 전제가 필요하며, S-3에는 그 전제의 확인이 없다. 이 시험은 :22가 범위 밖으로 지정한 기존 회귀 경로다.\"\n    }\n  ],\n  \"permission\": {\n    \"mode\": \"probe\",\n    \"paths\": [],\n    \"protected\": []\n  }\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 52654,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 28286
+    },
+    "usage_total_tokens": 28286,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "44cc5e05e2a60184f69ea9b7c283a395ee0edd467f1fc1e1db1b3706cb7c0f76",
+    "kind": "task",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# T01 테마 저장\n\n- 프로젝트: [P001](../../PROJECT.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\n사용자가 고른 테마를 settings.json에 저장해 다음 실행에도 유지한다.\n\n## 재료\n\n- `src/settings.ts:1-9` `loadSettings(path)`가 settings.json을 읽고, 없거나 깨진 파일이면 기본값을 낸다. 저장 함수는 없다.\n- 기존 회귀 시험: `test/settings.test.ts`(읽기 기본값).\n\n## 증명 범위\n\n- 판정 주체: 자동 테스트(`node --test`)\n- 구현 후 reviewer: 필요 — 상태(B) 영속 데이터(settings.json)를 쓴다\n- 포함(변경 영향 경로): 새 `saveTheme(path, theme)`의 settings.json 쓰기와 다시 읽기, 잘못된 값 거부\n- 범위 밖: `loadSettings`의 기존 읽기·기본값 동작 — 기존 동작, 기존 회귀 시험(`test/settings.test.ts`)\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | `saveTheme(path, \"dark\")` 뒤 `loadSettings(path).theme`이 \"dark\"이고 다른 키는 그대로다 |\n| T-2 | theme 값이 \"light\"·\"dark\"가 아니면 쓰지 않고 오류를 던지며 파일 바이트가 바뀌지 않는다 |\n| T-3 | 기존 `loadSettings`가 없는 파일·깨진 JSON·읽기 권한 없음에서 모두 기본값을 내고 오류를 던지지 않는다 |\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | unit | T-1 | 임시 폴더의 settings.json `{\"lang\":\"ko\"}` | `saveTheme` 뒤 **새 자식 프로세스**(`node -e`)에서 `loadSettings`, 파일 원문도 `JSON.parse` | 자식 결과와 파일 원문 모두 theme \"dark\", lang \"ko\" | `test/settings.test.ts` |\n| S-2 | unit | T-2 | 같은 파일, `node:fs`의 `writeFileSync`·`renameSync`를 `mock.method`로 감시 | `saveTheme(path, \"blue\")` | 오류, 쓰기·이름 바꾸기 호출 0회, 파일 바이트와 mtime 동일 | `test/settings.test.ts` |\n| S-3 | unit | T-3 | 없는 파일 / 깨진 JSON / 권한 000 파일 | `loadSettings` | 세 경우 모두 기본값, 예외 없음 | `test/settings.test.ts` |\n## 접근\n\n`src/settings.ts`에 `saveTheme`를 더한다. 값 검사를 먼저 하고, 파일을 읽어 theme만 바꾼 JSON을 쓴다.\n",
+    "call_id": "830f3f16-5fd6-412e-914f-4f2c99f4baa3",
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3"
+    ],
+    "permission_basis": {
+      "base": "eb808cdac458e0c601a95d8639b9415ac8ff9916",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "breadth",
+        "confidence": "high",
+        "location": "TASK.md:30",
+        "scenario": "저장 함수만 추가해도 기존 loadSettings가 없는 파일, 깨진 JSON, 읽기 권한 없음에서 어떻게 동작하느냐에 따라 태스크 완료 여부가 달라진다.",
+        "reproduction": "TASK.md:21-22에서 새 저장 경로를 포함하고 기존 읽기·기본값을 범위 밖의 회귀 시험으로 지정한다. TASK.md:40의 접근도 saveTheme 추가로 한정된다. 그런데 TASK.md:30과 :37은 저장 함수를 호출하지 않는 기존 읽기 세 분기를 T-3의 완료 판정에 넣는다.",
+        "impact": "criterion",
+        "criterion": "T-3",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:35",
+        "scenario": "saveTheme가 유효성 검사를 통과한 입력을 항상 dark로 저장하면 사용자가 고른 light가 다음 실행에서 복원되지 않아도 S-1이 통과한다.",
+        "reproduction": "light와 dark를 모두 유효한 값으로 받아들인 뒤 항상 dark를 쓰는 결함 구현을 S-1과 S-2에 대입한다. S-1의 dark 기대값을 만족하고 S-2의 blue는 여전히 오류로 거부된다. 기존 파일의 dark를 light로 바꾼 뒤 새 프로세스에서 확인하는 경우를 추가하면 이 결함을 검출할 수 있다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:36",
+        "scenario": "saveTheme가 blue만 거부하고 green 같은 다른 잘못된 값을 파일에 기록해도 S-2가 통과한다.",
+        "reproduction": "theme가 blue일 때만 쓰기 전에 오류를 던지는 결함 구현을 S-2에 대입한다. S-2의 유일한 입력인 blue에 대해서는 예외, 쓰기 호출 0회, 바이트 및 mtime 동일을 모두 만족한다. 허용 목록 밖의 별도 값을 같은 관측으로 확인하면 이 결함을 검출할 수 있다.",
+        "impact": "criterion",
+        "criterion": "T-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "blocking",
+        "category": "design",
+        "confidence": "high",
+        "location": "TASK.md:40",
+        "scenario": "settings.json이 없는 초기 상태에서 저장 함수가 기존 파일 읽기 오류를 그대로 전파하면 첫 테마 선택을 저장할 수 없다.",
+        "reproduction": "TASK.md:14에 명시된 파일 없음 상태에서 saveTheme를 호출하는 경우를 대입한다. :40에는 읽은 JSON을 갱신하는 절차만 있고 :35는 이미 존재하는 파일로 시작한다. 없는 경로에 처음 저장한 뒤 새 프로세스로 다시 읽는 시험이 있어야 이 실패를 잡을 수 있다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "note",
+        "reason": "outside_question",
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "TASK.md:28과 :35에서 dark 저장 후 새 자식 프로세스의 loadSettings 결과와 파일 원문의 파싱 결과를 모두 확인한다. 두 관측에서 theme이 dark이고 기존 lang이 ko여야 하므로 메모리에만 저장하거나 이 키를 누락하면 실패한다."
+        },
+        {
+          "id": "T-2",
+          "state": "unverified",
+          "observation": "TASK.md:29와 :36에 예외, 쓰기 호출 0회, 바이트 및 mtime 동일이 명시됐지만 입력은 blue 하나다. 다른 비허용 값을 기록하는 구현도 이 시험을 통과할 수 있다."
+        },
+        {
+          "id": "T-3",
+          "state": "unverified",
+          "observation": "TASK.md:30과 :37에 세 읽기 조건과 기본값·예외 없음이 명시됐다. 다만 권한 000은 시험 프로세스가 실제로 읽기 거부를 받는다는 전제가 필요하며, S-3에는 그 전제의 확인이 없다. 이 시험은 :22가 범위 밖으로 지정한 기존 회귀 경로다."
+        }
+      ],
+      "issues": [
+        "permission_unverified"
+      ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+ "trigger": "361ce5b9-3325-4af4-afd5-aaede772e05d",
+ "slot": 1,
+ "target": "evidence/post-review-diff.md",
+ "hash": "8fb97d03950bfdef53b9246b2222b472bc9eed32cd823de3955710c23afa0770",
+ "reviewer": "pace-troubleshooter",
+ "author": "worktree-pm",
+ "worker": "hub-pm",
+ "provider": "anthropic",
+ "context": "hub-subagent-upper-review-P017-T01-post-1",
+ "cross": false,
+ "cross_unavailable": "허브 Claude 세션의 새 맥락 서브에이전트 — 작성자·작업자와 분리, 교차 제공자 실행 미구성",
+ "analysis": "상위 계약은 Markdown 변형 견고성을 요구하지 않는다: BACKLOG D3 '형식(줄 하나·값·이유)만 기계가 본다, 내용은 사전 reviewer', BR01 '정확한 문법은 설계에서'. 설계 TASK.md:55는 '^- 구현 후 reviewer:' 정확 일치. R1 F1을 받아 '선언형 줄' 정규화가 A 밖으로 들어오며 S-2가 계약 8종에서 약 23종으로 늘었고, 어떤 구문 검사도 굵은 키·전각 콜론·표·산문 변형을 닫지 못한다(현재 코드로 R3 F1·F3 재현). tester 3회차의 S-1·S-4 검출력 부족은 별개 부류(시험 검출력).",
+ "root_cause": "설계 층: '선언'의 단위를 계약은 정확한 줄로, 검토는 Markdown 의미로 읽었고 이를 받아들이며 기계가 의미 판독을 떠맡았다. 허브 진단의 '구현' 층은 반증된다.",
+ "recommendation": "정규화를 지우고 pre-review.ts reviewerLineIssues를 설계 문법으로 되돌린다: 보이는 증명 범위 안 '^- 구현 후 reviewer:' 줄만 세고 0=누락, 2+=중복, 절 밖 정본 줄=문제, 줄 머리 검사 삭제. S-2는 계약 8종과 경계(변형 단독=누락, 정본+변형=필드 아님)만. TASK.md 불변. 의미 상충은 사전 reviewer 몫. 같은 적용에 S-1(templates/project/TASK.md:26 'T-n은 이 경로로 한정' 단언)·S-4(review-hand 올바른 줄을 필요·생략 둘 다) 보강."
+}

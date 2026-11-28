@@ -1,0 +1,168 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**첫 판단 — 사전 계획의 목표 달성은 미달.** B​R01과 P017 P-1에 대조하면, 허가 분기가 바뀌는 T01에서 구현 후 reviewer를 `필요`로 판단하고 실제 Codex 행동 평가를 tester에게 맡긴 것은 역할 분리 목적에 맞는다. 직전 F2·F4는 해소됐다. 수정된 시험은 reviewer의 회차별 기록 누락, verify의 실행 후 예약, 사례 (나)의 유효 판정 부재를 놓칠 수 있다. 새 경로 검사는 허용 범위 밖 파일의 이동을 놓칠 수 있다. 구현 결과와 프로젝트 전체의 검토 반복 감소 효과는 미확인이다.\n\n**올릴 단계 — T01 설계·테스트 계획.** 네 지적은 합의한 동작과 완료 기준의 검출력을 보완하는 일이다. 결정 권한 A-1은 ‘아니오’이며 담당 PM이 처리할 수 있다.\n\n**입력과 독립성.** 호출에 제공된 상위 목적, AGENTS.md, 작업 환경, TASK 원문, 직전 검토 원문과 기준별 결과, 바뀐 줄을 받았다. 저장소의 TASK.md, BR01, PROJECT.md 목적·P-1, BACKLOG.md 목표·수정안 1~4·설계 결정, `pace-project-dev` SKILL.md, `decision-rights.md`, `docs/README.md` 발췌를 읽었다. 관련 `pre-review.ts`, `harness.ts`, `verify-cli.ts`, `review-hand.ts`, `structured-review.ts`, `TASK-CLOSE.md` 템플릿, `agent-review-hand.test.ts` 일부와 기존 Git 이름 변경 출력도 대조했다. 백로그 목표 절에 포함된 과거 사례 요약이 함께 노출됐다. 별도의 작성자 마감·자체 판정·지적 대응 문서는 열지 않았다. 자동 부트·메모리 출력과 별도 호스트 첨부는 제공된 맥락에서 확인되지 않았고 따로 조회하지 않았다. 검토 제공자는 직전과 같은 OpenAI Codex이며, 검토 주체의 동일 여부와 작성자 제공자는 확인되지 않았다. 작성에 참여하지 않은 읽기 전용 검토이며 저장소 문서에 접근했다. 파일 변경과 구현 시험 실행은 없었다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:44\",\n      \"scenario\": \"S-1은 리뷰 절의 주석 안에서 판정·생략 문구와 시각 항목의 존재를 확인한다. tester 쪽에만 회차별 요청·회수 칸이 있고 reviewer 쪽에는 판정 문구만 있어도 기대 결과를 만족할 수 있다. BR01:20은 호출된 reviewer에게도 회차별 두 시각을 요구한다.\",\n      \"reproduction\": \"TASK-CLOSE 리뷰 주석에 tester의 회차별 요청·회수 칸, reviewer 판정 및 reviewer 생략 문구를 남기고 reviewer용 시각 칸만 제거한 변형을 S-1에 대입한다. 역할별로 각 회차의 요청·결과 회수 칸을 확인하면 이 변형에서 실패한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-1\",\n      \"safety_path\": null,\n      \"recurrence\": \"superficial_fix\"\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:47\",\n      \"scenario\": \"S-4의 정상 verify 기대 결과는 실행기 1회와 call 행의 존재다. 예약 없이 실행기를 먼저 시작하고, 실행이 돌아온 뒤 call 행을 추가하는 회귀도 두 조건을 모두 만족한다. 실행 도중 중단되면 사용한 호출이 예약에 남지 않는다.\",\n      \"reproduction\": \"정상 verify에서 예약을 실행기 반환 뒤로 늦춘 변형을 S-4에 대입한다. 종료 후 검사에서는 실행기 1회와 call 행이 모두 보인다. 실행기 대역이 진입하는 시점에 이번 호출의 예약 행을 읽어 확인하면 변형에서 실패한다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-3\",\n      \"safety_path\": null,\n      \"recurrence\": \"superficial_fix\"\n    },\n    {\n      \"id\": \"F5\",\n      \"severity\": \"blocking\",\n      \"category\": \"observable\",\n      \"location\": \"TASK.md:50\",\n      \"scenario\": \"S-7은 교차 호출과 (가)·(다)의 유효 blocking을 명시했지만, (나)에는 reviewer 범주 지적 없음만 요구한다. 실제 Codex가 (나)에서 형식이 깨진 원문을 반환하면 도구는 findings: null과 unknown을 낸다. 표에서 이 결과를 지적 없음으로 기록할 수 있어 유효한 검토에서 지적이 사라졌는지 판별할 수 없다.\",\n      \"reproduction\": \"(가)·(다)는 기대대로 반환하고, (나)만 cross: true인 Codex 응답에서 pace-review 분석에 실패한 결과를 대입한다. (나)의 유효한 사전 구조화 판정과 분석된 지적 목록을 요구하고 그 목록에서 reviewer 범주 부재를 확인하면 미판정을 통과시키지 않는다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-6\",\n      \"safety_path\": null,\n      \"recurrence\": \"superficial_fix\"\n    },\n    {\n      \"id\": \"F6\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:51\",\n      \"scenario\": \"S-8의 git diff --name-only는 Git이 이름 변경을 감지하면 새 경로만 출력한다. 예를 들어 금지된 src/agent/call-hook.ts를 내용 그대로 허용된 test/ 경로로 이동한 커밋 후보에서 원래 경로의 삭제가 허용 목록 검사에 들어오지 않는다.\",\n      \"reproduction\": \"저장소의 기존 이름 변경 커밋 121e79e에서 git diff --name-only 121e79e^ 121e79e -- .pace/team은 새 경로만 반환했고, --no-renames를 더한 명령은 두 경로를 반환했다. 같은 출력 규칙을 금지 경로에서 허용 경로로 이동하는 후보에 적용하면 S-8의 누락을 재현할 수 있다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-7\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"T-1\",\n      \"state\": \"absent\",\n      \"observation\": \"TASK.md:44에서 주석 내부의 판정·생략 서식, 제목 불변, 주석 제거 후 빈 리뷰 절을 확인한다. reviewer 쪽 회차별 요청·회수 칸만 빠진 경우를 검출하지 못한다.\"\n    },\n    {\n      \"id\": \"T-2\",\n      \"state\": \"present\",\n      \"observation\": \"TASK.md:45-46에서 공통 검사에 4종 형식 오류와 필요·생략·legacy 대조를 넣었다. 소스 CLI의 check와 done이 줄 없음에서 같은 형식 진단을 내고 정상 줄을 넣으면 해당 진단이 사라지는지 비교한다.\"\n    },\n    {\n      \"id\": \"T-3\",\n      \"state\": \"absent\",\n      \"observation\": \"TASK.md:47에서 오류 시 실행기·call 행·고정본 부재를 확인하며 정상 review-hand의 call 행·고정본·hand 응답과 정상 verify의 실행기·call 행을 확인한다. 정상 verify의 실행 전 예약은 관측하지 않는다.\"\n    },\n    {\n      \"id\": \"T-4\",\n      \"state\": \"present\",\n      \"observation\": \"직전의 present 근거를 유지한다. TASK.md:48은 reviewer 줄만 빠진 옛 fail은 판정 회차로, 증명 범위가 빠진 옛 fail은 호출로만 세는 고정 기대값을 명시한다. TASK.md:55는 새 검사와 과거 기록 판독에 쓰는 proofScopeIssues를 분리한다.\"\n    },\n    {\n      \"id\": \"T-5\",\n      \"state\": \"present\",\n      \"observation\": \"TASK.md:49,55에서 두 하위 확인과 프롬프트를 검사한다. (가)·(다)의 해당 범주 유효 blocking·fail, (나)의 해당 범주 지적 부재·pass, (라)의 해당 지적 유효 should_fix·pass를 구별한다.\"\n    },\n    {\n      \"id\": \"T-6\",\n      \"state\": \"absent\",\n      \"observation\": \"TASK.md:23,37,50에 tester, 고정 입력·사례별 격리 환경, 실제 Codex 교차 실행, 입력 해시와 원문·유효 등급 대조가 있다. (나)의 유효한 구조화 결과를 요구하지 않아 지적 부재와 미판정을 구별할 수 없다.\"\n    },\n    {\n      \"id\": \"T-7\",\n      \"state\": \"absent\",\n      \"observation\": \"TASK.md:38,51에 허용 목록과 PM의 마감 확인을 추가했다. S-8이 사용하는 이름 변경 출력은 삭제된 원래 경로를 빠뜨릴 수 있다.\"\n    }\n  ],\n  \"permission\": {\n    \"mode\": \"probe\",\n    \"paths\": [],\n    \"protected\": []\n  }\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 98918,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 56832
+    },
+    "usage_total_tokens": 56832,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "fb3c90f39a75fbacc6f9dc3d75a549d40824c366637eec03a9bda335934a4165",
+    "kind": "task",
+    "verdict": "fail",
+    "rereview_of": "review-records/R1.json",
+    "snapshot": "# T01 TASK 묶음 지정과 사전 판정\n\n- 프로젝트: [P017](../../PROJECT.md) · 백로그: [BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음](../../../../backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\nTASK에 구현 후 reviewer 필요·생략을 사실 질문으로 미리 적고, 사전 reviewer가 그 판단과 기준 범위(변경 영향 경로 한정, fin-link P047)를 판정하게 한다. 계약 정본은 [BR01](../../../../backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BR01_TASK_묶음_지정과_사전_판정.md) 범위·완료 기준이며 여기서 다시 쓰지 않는다(P-1).\n\n## 재료\n\n- 형식 검사: `src/project/pre-review.ts:64-75`(`proofScopeIssues`), 게이트 `:206-208`(`reviewIssues` — check·done이 `harness.ts:1389`·`:1399`에서 부름).\n- 예약 지점: `src/agent/verify-cli.ts:333`(`reserveReviewCall`) — 기존 구조 검사 `:336-340`은 예약 **뒤**다. `src/agent/review-hand.ts:180-183` 구조 검사는 예약 `:206` 앞이다.\n- 옛 기록 재판정: `src/agent/review-budget.ts:88-100`(`legacyStructureOnly` → `proofScopeIssues`), `verify-cli.ts:132`(재검토 기준점)도 같은 함수를 쓴다.\n- 사전 질문: `src/agent/structured-review.ts:16-23`, 범주 밖 → note `:154-158`. v2 증명 범위 규칙 `src/agent/verify.ts:91-98`(확대 요구 should_fix `:93`).\n- 템플릿 `templates/project/TASK.md`·`TASK-CLOSE.md`, 고정 시험 `test/project-templates.test.ts`.\n- 리뷰 절 게이트는 주석을 지운 뒤 비었는지만 본다(`harness.ts:1406-1411`) — 템플릿 리뷰 절에 보이는 표를 두면 빈 절이 통과하므로 회차 칸은 주석 안 서식으로 둔다(Q2, harness 불변).\n\n## 증명 범위\n\n- 판정 주체: 자동 테스트(`node --test`) + 행동 평가는 tester가 실제 `pace agent verify`(Codex) 원문으로 판정\n- 구현 후 reviewer: 필요 — 흐름(C) check·done 게이트와 사전 verify·review-hand의 허가 분기가 바뀐다\n- 포함(변경 영향 경로): 새 줄의 형식 검사(게이트·사전 verify·review-hand 예약 전 거부), 사전 질문 범주 두 개와 v2 지시 문구, 두 템플릿 주석·줄, `legacyStructureOnly` 결과 불변\n- 범위 밖: 사후 질문·판정(T02), 배정 절차·스킬·docs·팀 문서(T03), `harness.ts`·`call-hook.ts` 수정 — 기존 동작은 기존 회귀 시험(`npm run check`). 행동 평가는 한 제공자·고정 입력 표본이라 일반화 한계를 TASK-CLOSE에 적는다\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | 새 TASK 템플릿의 `## 증명 범위`에 `- 구현 후 reviewer:` 줄 하나와 경계(A)·상태(B)·흐름(C) 사실 질문 주석, 포함=변경 영향 경로·범위 밖=기존 동작 안내가 있고 절 제목 목록은 그대로다. TASK-CLOSE 리뷰 주석에 tester·reviewer 판정 또는 `reviewer 생략 — 이유`와 회차별 요청·회수 시각 서식이 있다 |\n| T-2 | v2 TASK의 줄 없음·중복·`필요`·`생략` 외 값·빈 이유마다 형식 문제를 내고 올바른 `필요 — 이유`·`생략 — 이유`와 legacy TASK는 문제 없다. check·done(`reviewIssues`)이 같은 문제를 보고한다 |\n| T-3 | 사전 `pace agent verify`와 `review-hand`가 형식 문제 TASK를 실행기 호출·`call` 행·고정본 없이 거부하고, 올바른 줄이면 예약·실행으로 넘어간다 |\n| T-4 | `legacyStructureOnly`의 판정이 바뀌지 않는다 — 줄 없는 v2 옛 fail 기록은 구조 전용이 아니고, 증명 범위 누락 기록은 여전히 구조 전용이다 |\n| T-5 | 사전 질문에 필요·생략 판단과 기준 넓힘 하위 확인이 있어 그 지적이 질문 밖 note로 낮아지지 않는다. 인수 사례 (가) `생략`+영속 쓰기 지적 → fail, (나) `필요`로 고친 판 지적 없음 → pass, (다) 넓힌 기준 지적 → blocking 유지·fail, (라) 좁힌 판의 기존 경로 반례 should_fix → pass |\n| T-6 | 행동 평가: (가)·(나)·(다) 고정 입력을 실제 `pace agent verify`(Codex)에 돌려 (가)·(다)는 해당 범주 유효 blocking으로 fail, (나)는 그 지적 없음으로 갈리는지 tester가 판정한다 |\n| T-7 | 프로젝트 기록(`projects/P017_*`·`.pace/`)을 뺀 바꾼 경로가 `templates/project/**`·`src/project/pre-review.ts`·`src/agent/**`(`call-hook.ts` 제외)·`test/**`뿐이다 |\n\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | unit | T-1 | 두 템플릿 | TASK: 증명 범위 안 줄 1개·질문 11개 키워드·포함/범위 밖 안내, `## ` 제목 목록 대조, 생성 TASK에 줄 1개. TASK-CLOSE: 리뷰 절 **주석 안**에 tester 판정·reviewer 판정·`reviewer 생략 —`·회차·요청 시각·회수 시각 | 모두 있음, 제목 불변, 리뷰 절에서 주석을 지우면 빈 절(게이트 불변) | `test/project-templates.test.ts` |\n| S-2 | unit | T-2 | 모의 TASK 8종 | `reviewerLineIssues`·`reviewIssues` | 줄 없음·중복·모르는 값·빈 이유·절 밖 줄은 문제, 필요·생략·legacy는 없음. 증명 범위 절 자체가 없으면 기존 구조 문제만 | `test/pre-review.test.ts` |\n| S-3 | unit | T-2 | 워크트리 소스 CLI, v2 태스크 줄 없음 | `project check`와 `project done` | 둘 다 같은 형식 문제로 실패, 줄을 넣으면 그 문제 없음 | `test/project-harness.test.ts` |\n| S-4 | unit | T-3 | 형식 문제 4종 / 올바른 줄 | 사전 verify, review-hand | 문제: 거부, 실행기 0회·call 행 0·고정본 없음. 올바른 줄: verify는 실행기 1회+call 행, review-hand는 call 행+고정본+`hand` 응답 | `test/agent-verify.test.ts`·`test/agent-review-hand.test.ts` |\n| S-5 | unit | T-4 | 옛 fail 기록 2개(줄 없음 / 증명 범위 없음) | 예산 읽기 | 앞은 판정 회차로, 뒤는 호출로만 센다(rounds·calls 고정값) | `test/agent-review-log.test.ts` |\n| S-6 | unit | T-5 | 모의 검토 원문 | `assessStructuredReview('pre')`, 사전 프롬프트 | (가)·(다) 해당 범주 유효 blocking·fail, (나) 그 범주 지적 없음·pass, (라) 그 지적 유효 should_fix·pass. 범주가 질문 안(note 아님), 지시대로 쓴 impact·위치가 강등되지 않음. 프롬프트에 사실 질문 11개·필요/생략 규칙·작성자 넓힘 blocking/검토자 확대 should_fix 구분 | `test/agent-structured-review.test.ts` |\n| S-7 | e2e | T-6 | 고정 TASK 3개, 사례마다 새 임시 저장소·`PACE_HOME` | `./bin/pace.ts agent verify`(Codex) | 사례별 입력 sha256, `cross: true`·제공자 openai, 원문 등급과 도구 계산 유효 등급·판정을 표로 대조. (가)·(다)는 해당 범주 유효 blocking으로 fail, (나)는 reviewer 범주 지적 없음 | tester, `evidence/behavior-*` |\n| S-8 | check | T-7 | 구현 커밋 후보 | `git diff --name-only main...` | 프로젝트 기록(`projects/P017_*`·`.pace/`) 밖 경로가 `templates/project/**`·`src/project/pre-review.ts`·`src/agent/**`(`call-hook.ts` 제외)·`test/**`뿐(BR01 마지막 기준) | PM, TASK-CLOSE |\n\n## 접근\n\n`pre-review.ts`에 `reviewerLineIssues(task)`를 `proofScopeIssues`와 **별도로** 두고(D4 — 옛 기록 재판정 의미 불변), 증명 범위 구조가 이미 깨졌으면 `[]`를 내 기존 구조 누락 경로(예약 뒤 호출만 남김)를 그대로 둔다. `reviewIssues`·사전 verify(예약 전으로 이동한 별도 검사)·review-hand가 부른다. 문법: `^- 구현 후 reviewer:[ \\t]*(필요|생략)[ \\t]*[—-][ \\t]*\\S`, 주석·fence 밖 `## 증명 범위` 안에서 정확히 한 줄. `structured-review.ts` pre에 `reviewer`·`breadth` 하위 확인을 더하고 `verify.ts` v2 규칙에 사실 질문 11개, `생략`+\"예\" blocking(해당 없는 위험 예측 요구는 아님), 작성자 넓힘 blocking(위치는 넓힌 `T-n`)·검토자 확대 요구 should_fix 구분과, 강등되지 않을 필드(필요·생략: `impact: goal`·위치 `TASK.md:줄`·시나리오에 \"예\"인 사실 질문, 넓힘: `impact: criterion`·넓힌 `T-n`)를 넣는다. 영향받는 v2 시험 고정본에 줄을 더한다.\n",
+    "call_id": "7a29df97-b951-48bc-940c-a38439a9b9e5",
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3",
+      "T-4",
+      "T-5",
+      "T-6",
+      "T-7"
+    ],
+    "permission_basis": {
+      "base": "ad7196e13fe6828e072e2a0888048ecf457c6782",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:44",
+        "scenario": "S-1은 리뷰 절의 주석 안에서 판정·생략 문구와 시각 항목의 존재를 확인한다. tester 쪽에만 회차별 요청·회수 칸이 있고 reviewer 쪽에는 판정 문구만 있어도 기대 결과를 만족할 수 있다. BR01:20은 호출된 reviewer에게도 회차별 두 시각을 요구한다.",
+        "reproduction": "TASK-CLOSE 리뷰 주석에 tester의 회차별 요청·회수 칸, reviewer 판정 및 reviewer 생략 문구를 남기고 reviewer용 시각 칸만 제거한 변형을 S-1에 대입한다. 역할별로 각 회차의 요청·결과 회수 칸을 확인하면 이 변형에서 실패한다.",
+        "recurrence": "superficial_fix",
+        "impact": "criterion",
+        "criterion": "T-1",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:47",
+        "scenario": "S-4의 정상 verify 기대 결과는 실행기 1회와 call 행의 존재다. 예약 없이 실행기를 먼저 시작하고, 실행이 돌아온 뒤 call 행을 추가하는 회귀도 두 조건을 모두 만족한다. 실행 도중 중단되면 사용한 호출이 예약에 남지 않는다.",
+        "reproduction": "정상 verify에서 예약을 실행기 반환 뒤로 늦춘 변형을 S-4에 대입한다. 종료 후 검사에서는 실행기 1회와 call 행이 모두 보인다. 실행기 대역이 진입하는 시점에 이번 호출의 예약 행을 읽어 확인하면 변형에서 실패한다.",
+        "recurrence": "superficial_fix",
+        "impact": "criterion",
+        "criterion": "T-3",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F5",
+        "severity": "blocking",
+        "category": "observable",
+        "confidence": "high",
+        "location": "TASK.md:50",
+        "scenario": "S-7은 교차 호출과 (가)·(다)의 유효 blocking을 명시했지만, (나)에는 reviewer 범주 지적 없음만 요구한다. 실제 Codex가 (나)에서 형식이 깨진 원문을 반환하면 도구는 findings: null과 unknown을 낸다. 표에서 이 결과를 지적 없음으로 기록할 수 있어 유효한 검토에서 지적이 사라졌는지 판별할 수 없다.",
+        "reproduction": "(가)·(다)는 기대대로 반환하고, (나)만 cross: true인 Codex 응답에서 pace-review 분석에 실패한 결과를 대입한다. (나)의 유효한 사전 구조화 판정과 분석된 지적 목록을 요구하고 그 목록에서 reviewer 범주 부재를 확인하면 미판정을 통과시키지 않는다.",
+        "recurrence": "superficial_fix",
+        "impact": "criterion",
+        "criterion": "T-6",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F6",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:51",
+        "scenario": "S-8의 git diff --name-only는 Git이 이름 변경을 감지하면 새 경로만 출력한다. 예를 들어 금지된 src/agent/call-hook.ts를 내용 그대로 허용된 test/ 경로로 이동한 커밋 후보에서 원래 경로의 삭제가 허용 목록 검사에 들어오지 않는다.",
+        "reproduction": "저장소의 기존 이름 변경 커밋 121e79e에서 git diff --name-only 121e79e^ 121e79e -- .pace/team은 새 경로만 반환했고, --no-renames를 더한 명령은 두 경로를 반환했다. 같은 출력 규칙을 금지 경로에서 허용 경로로 이동하는 후보에 적용하면 S-8의 누락을 재현할 수 있다.",
+        "impact": "criterion",
+        "criterion": "T-7",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "absent",
+          "observation": "TASK.md:44에서 주석 내부의 판정·생략 서식, 제목 불변, 주석 제거 후 빈 리뷰 절을 확인한다. reviewer 쪽 회차별 요청·회수 칸만 빠진 경우를 검출하지 못한다."
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "TASK.md:45-46에서 공통 검사에 4종 형식 오류와 필요·생략·legacy 대조를 넣었다. 소스 CLI의 check와 done이 줄 없음에서 같은 형식 진단을 내고 정상 줄을 넣으면 해당 진단이 사라지는지 비교한다."
+        },
+        {
+          "id": "T-3",
+          "state": "absent",
+          "observation": "TASK.md:47에서 오류 시 실행기·call 행·고정본 부재를 확인하며 정상 review-hand의 call 행·고정본·hand 응답과 정상 verify의 실행기·call 행을 확인한다. 정상 verify의 실행 전 예약은 관측하지 않는다."
+        },
+        {
+          "id": "T-4",
+          "state": "present",
+          "observation": "직전의 present 근거를 유지한다. TASK.md:48은 reviewer 줄만 빠진 옛 fail은 판정 회차로, 증명 범위가 빠진 옛 fail은 호출로만 세는 고정 기대값을 명시한다. TASK.md:55는 새 검사와 과거 기록 판독에 쓰는 proofScopeIssues를 분리한다."
+        },
+        {
+          "id": "T-5",
+          "state": "present",
+          "observation": "TASK.md:49,55에서 두 하위 확인과 프롬프트를 검사한다. (가)·(다)의 해당 범주 유효 blocking·fail, (나)의 해당 범주 지적 부재·pass, (라)의 해당 지적 유효 should_fix·pass를 구별한다."
+        },
+        {
+          "id": "T-6",
+          "state": "absent",
+          "observation": "TASK.md:23,37,50에 tester, 고정 입력·사례별 격리 환경, 실제 Codex 교차 실행, 입력 해시와 원문·유효 등급 대조가 있다. (나)의 유효한 구조화 결과를 요구하지 않아 지적 부재와 미판정을 구별할 수 없다."
+        },
+        {
+          "id": "T-7",
+          "state": "absent",
+          "observation": "TASK.md:38,51에 허용 목록과 PM의 마감 확인을 추가했다. S-8이 사용하는 이름 변경 출력은 삭제된 원래 경로를 빠뜨릴 수 있다."
+        }
+      ],
+      "issues": [
+        "permission_unverified"
+      ]
+    }
+  }
+}

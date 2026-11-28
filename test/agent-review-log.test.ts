@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { AgentError, normalizeResult, type Executor } from "../src/agent/contract.ts";
 import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
 import { acquireLock, lineDiff, parseVerdict, readLedger, reviewStage, textHash, type LedgerEntry, type ReviewEntry } from "../src/agent/review-log.ts";
-import { reserveReviewCall, reviewBudgetScope } from "../src/agent/review-budget.ts";
+import { readReviewBudget, reserveReviewCall, reviewBudgetScope } from "../src/agent/review-budget.ts";
 import { reviewHash } from "../src/project/pre-review.ts";
 import { runPace, scopedReviewFixture, tempDir } from "./helpers.ts";
 
@@ -331,7 +331,7 @@ test("P013 T01: 사전 검토의 구조 누락이 첫 전체 판정을 소비하
   assert.equal(structural.code, 2);
   assert.match(structural.json.error.message, /증명 범위/);
   assert.equal(h.prompts.length, 0);
-  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n## 기준\n| T-1 | 안전 출력 확인 |\n");
+  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n- 구현 후 reviewer: 필요 — 시험 고정본\n## 목적\n안전한 처리\n## 기준\n| T-1 | 안전 출력 확인 |\n");
   const first = await h.review(plan, "pass");
   assert.equal(first.code, 0);
   assert.equal(first.json.review.rereview_of, null);
@@ -352,7 +352,7 @@ test("P013 T01: 옛 구조 전용 판정은 근거가 확인되면 호출로만 
   mkdirSync(join(h.task, "review-records"));
   writeFileSync(join(h.task, record), JSON.stringify({ review: { snapshot }, result: { text } }));
   writeFileSync(join(h.task, "REVIEW-LOG.jsonl"), JSON.stringify(entry) + "\n");
-  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n## 기준\n| T-1 | 안전 출력 확인 |\n");
+  writeFileSync(plan, "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n- 구현 후 reviewer: 필요 — 시험 고정본\n## 목적\n안전한 처리\n## 기준\n| T-1 | 안전 출력 확인 |\n");
   const full = await h.review(plan, "F1 [blocking] 안전 누락\nfail", "task");
   assert.equal(full.code, 0);
   assert.equal(full.json.review.rereview_of, null);
@@ -954,3 +954,24 @@ test("lineDiff는 바뀐 줄과 앞뒤 1줄 맥락만 낸다", () => {
   assert.equal(lineDiff("x\n", "x\n"), "(바뀐 줄 없음)");
 });
 
+
+test("P017 T01 S-5: legacyStructureOnly 판정은 reviewer 줄과 무관하게 그대로다", () => {
+  const seed = (snapshot: string) => {
+    const h = budgetHarness();
+    const text = "F1 [blocking] 계획 누락\nfail";
+    const record = "review-records/R1.json";
+    const entry: ReviewEntry = {
+      type: "review", at: "2026-01-01", kind: "task", target: "TASK.md", hash: reviewHash(snapshot),
+      verdict: "fail", verifier: "codex", provider: "openai", rereview_of: null, record, result_hash: textHash(text),
+    };
+    mkdirSync(join(h.task, "review-records"));
+    writeFileSync(join(h.task, record), JSON.stringify({ review: { snapshot }, result: { text } }));
+    writeFileSync(join(h.task, "REVIEW-LOG.jsonl"), JSON.stringify(entry) + "\n");
+    const status = readReviewBudget(reviewBudgetScope(join(h.task, "TASK.md"))!).status;
+    return [status.rounds, status.calls];
+  };
+  // 증명 범위는 온전하고 reviewer 줄만 없는 옛 v2 fail — 구조 전용이 아니므로 판정 회차로 센다.
+  assert.deepEqual(seed("- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n## 목적\n안전한 처리\n"), [1, 1]);
+  // 증명 범위가 없는 옛 v2 fail — 여전히 구조 전용이라 호출로만 센다.
+  assert.deepEqual(seed("- TASK 형식: v2\n## 목적\n안전한 처리\n"), [0, 1]);
+});

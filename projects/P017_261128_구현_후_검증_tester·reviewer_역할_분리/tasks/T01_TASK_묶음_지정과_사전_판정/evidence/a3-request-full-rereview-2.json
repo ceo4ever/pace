@@ -1,0 +1,11 @@
+{
+  "choices": ["전체 재검토 1회", "R8 한정 확인 pass로 사전 허가 대체(새 검토 생략)"],
+  "recommendation": "전체 재검토 1회",
+  "assessments": [
+    {
+      "finding": "R7 전체 재검토 fail 뒤 R8 한정 확인 pass(implementation 허가)는 PRE-REVIEW·게이트가 세지 않아 최종 시도가 R7 fail로 남는다",
+      "decision": "A-3",
+      "reason": "새 독립 판정 없이 R8로 허가를 대체하면 필수 사전 검토 생략이다. 현재 TASK(R8 pass판)의 전체 재검토 1회는 예산 밖 추가 검토라 owner 결정이 필요하다. 허브가 owner에게 올려 '전체 재검토 1회 + 도구는 병합 뒤'를 받았다(2026-11-28)."
+    }
+  ]
+}

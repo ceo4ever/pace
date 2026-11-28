@@ -1,0 +1,141 @@
+{
+  "ran": true,
+  "cross": true,
+  "verifier": "codex",
+  "result": {
+    "text": "**독립 첫 판정 · 계획 미달.** 상위 목적은 사용자가 고른 테마를 파일에 저장해 다음 실행에서도 유지하는 것이다. `PROJECT.md`의 테마 저장 목적과 호출에 명시된 저장 함수 추가 범위를 대조했다. 현재 시험은 같은 프로세스에서만 테마를 기억하는 구현과 같은 바이트를 다시 쓰는 구현을 통과시킬 수 있다. T-3은 TASK가 범위 밖으로 둔 기존 읽기 동작을 완료 기준에 넣었다. 실제 구현의 목표 달성은 미확인이다.\n\n자동 테스트는 이 태스크의 동작을 판정할 수 있다. 구현 후 reviewer를 `필요`로 둔 판단도 TASK에 명시된 영속 데이터 쓰기(B-1)와 일치한다.\n\n**올릴 단계 · TASK 설계.** 파일 영속성과 잘못된 값의 쓰기 금지를 관찰할 수 있도록 시험을 보강하고, T-3의 세 경우는 기존 회귀 확인으로 유지한다. 이 조치는 합의된 저장 목적·변경 범위·검증 요구를 유지하므로 A-1에 해당하지 않는다. 기존 읽기 동작을 변경 범위에 편입하거나 합의된 회귀 검증을 제거하는 결정은 A-1로 owner에게 올린다.\n\n**검토 근거와 노출 범위.** 디스크의 `TASK.md`, `PROJECT.md`, `src/settings.ts`, `test/settings.test.ts`, `pace-project-dev/SKILL.md`, `references/decision-rights.md`, `references/reviewer.md`의 키워드 검색 결과를 확인했다. 호스트가 전달한 호출 본문, TASK 발췌문, 작업 경로와 권한 맥락에 노출됐다. 별도 자동 부트·메모리 내용은 표시되지 않았다. 작성자 마감·자체 판정·이전 지적 및 대응 문서는 열지 않았다. 결함 재현은 시험표를 바탕으로 정적으로 대조했으며 파일 변경과 시험 실행은 없었다. 이 응답은 Codex의 읽기 전용 1단계 검토다. 작성자 제공자 정보가 없어 제공자 간 독립성은 미확인이며, 검토 주체 변경과 2단계 실행은 없었다.\n\n```pace-review\n{\n  \"version\": 2,\n  \"findings\": [\n    {\n      \"id\": \"F1\",\n      \"severity\": \"blocking\",\n      \"category\": \"breadth\",\n      \"location\": \"TASK.md:30\",\n      \"scenario\": \"없는 파일, 깨진 JSON, 읽기 권한 없음에서의 기존 loadSettings 기본값 처리를 저장 함수 추가의 완료 기준으로 판정한다.\",\n      \"reproduction\": \"TASK.md:22는 기존 읽기와 기본값 처리를 범위 밖의 회귀 시험으로 지정하고, TASK.md:40은 saveTheme 추가를 명시한다. TASK.md:30을 두 줄과 대조하면 새 저장을 거치지 않는 기존 읽기 경로가 완료 기준에 편입되어 있다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-3\",\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F2\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:35\",\n      \"scenario\": \"saveTheme이 테마를 같은 프로세스의 메모리에만 저장하고 loadSettings가 메모리의 테마를 읽은 파일 내용에 덮어씌우면 S-1은 통과하지만 다음 실행에는 테마가 사라진다.\",\n      \"reproduction\": \"S-1의 파일에 lang을 유지하고 저장 전후 파일 바이트를 같게 둔 채 같은 프로세스에서 loadSettings가 theme dark와 lang ko를 반환한다고 가정한다. TASK.md:35의 기대 결과를 모두 충족한다. 저장 직후 파일을 직접 읽거나 새 프로세스에서 같은 경로를 읽으면 결함을 검출할 수 있다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F3\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:35\",\n      \"scenario\": \"유효한 입력을 받을 때마다 dark를 저장하는 구현이 S-1과 S-2를 통과하지만, 사용자가 dark에서 light로 바꾼 선택은 유지되지 않는다.\",\n      \"reproduction\": \"유효한 입력이면 항상 dark를 저장하고 blue에는 파일을 쓰지 않고 오류를 던지는 구현을 TASK.md:35-36에 대입한다. 두 시험 모두 통과한다. dark가 들어 있는 파일에 light를 저장하고 다시 읽는 경우에서 결함이 드러난다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"goal\",\n      \"criterion\": null,\n      \"safety_path\": null\n    },\n    {\n      \"id\": \"F4\",\n      \"severity\": \"blocking\",\n      \"category\": \"detection\",\n      \"location\": \"TASK.md:36\",\n      \"scenario\": \"잘못된 테마를 받았을 때 원본 바이트를 그대로 파일에 다시 쓴 뒤 오류를 던지는 구현이 S-2를 통과한다.\",\n      \"reproduction\": \"saveTheme(path, \\\"blue\\\")가 기존 바이트로 파일을 덮어쓴 뒤 오류를 던지는 경우를 TASK.md:36에 대입한다. 오류와 바이트 동일 조건은 충족한다. 쓰기 호출을 관찰하면 TASK.md:29의 쓰기 금지 위반을 검출할 수 있다.\",\n      \"confidence\": \"high\",\n      \"impact\": \"criterion\",\n      \"criterion\": \"T-2\",\n      \"safety_path\": null\n    }\n  ],\n  \"criteria\": [\n    {\n      \"id\": \"T-1\",\n      \"state\": \"present\",\n      \"observation\": \"TASK.md:28,35에 저장 뒤 theme dark와 기존 lang ko를 비교하는 판정이 있다. 저장 무동작과 lang 유실을 잡을 수 있다. 다음 실행까지의 영속성은 같은 프로세스의 반환값만으로 판정할 수 없다.\"\n    },\n    {\n      \"id\": \"T-2\",\n      \"state\": \"present\",\n      \"observation\": \"TASK.md:29,36에 잘못된 값 blue에 대한 오류와 전후 바이트 동일 판정이 있다. 오류 누락과 바이트 변경은 잡지만 같은 바이트를 다시 쓰는 경우는 잡지 못한다.\"\n    },\n    {\n      \"id\": \"T-3\",\n      \"state\": \"present\",\n      \"observation\": \"TASK.md:30,37에 세 입력별 기본값과 예외 없음 판정이 있다. test/settings.test.ts:5-7의 기존 시험은 파일 없음만 확인한다. 권한 000 조건이 실행 계정에서 실제 읽기 거부를 일으키는지는 미확인이다. 이 세 경우는 TASK.md:22에 따라 기존 회귀 확인에 속한다.\"\n    }\n  ],\n  \"permission\": {\n    \"mode\": \"probe\",\n    \"paths\": [],\n    \"protected\": []\n  }\n}\n```\n\nfail",
+    "agent": "codex",
+    "mode": "p",
+    "model": {
+      "value": "gpt-6.2-sol",
+      "source": "reported"
+    },
+    "reported_effort": "none",
+    "provider": {
+      "value": "openai",
+      "source": "reported"
+    },
+    "access": "read-only",
+    "enforcement": "codex exec --sandbox read-only + --ignore-user-config + approval never (사용자 auto_review가 쓰기를 승인하는 것 차단), 실행 뒤 머리글의 sandbox 값으로 재확인",
+    "session_id": null,
+    "stop_reason": "completed",
+    "is_error": false,
+    "duration_ms": 51462,
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": 27089
+    },
+    "usage_total_tokens": 27089,
+    "raw_path": null,
+    "process_cleanup": "verified"
+  },
+  "review": {
+    "target": "TASK.md",
+    "hash": "bddadac252aff5c5dd9933719f505933f76956a8a077711a3efbdbe893a432a4",
+    "kind": "task",
+    "verdict": "fail",
+    "rereview_of": null,
+    "snapshot": "# T01 테마 저장\n\n- 프로젝트: [P001](../../PROJECT.md)\n- 상태: 진행\n- 사전 검토: v1\n- TASK 형식: v2\n\n## 목적\n\n사용자가 고른 테마를 settings.json에 저장해 다음 실행에도 유지한다.\n\n## 재료\n\n- `src/settings.ts:1-9` `loadSettings(path)`가 settings.json을 읽고, 없거나 깨진 파일이면 기본값을 낸다. 저장 함수는 없다.\n- 기존 회귀 시험: `test/settings.test.ts`(읽기 기본값).\n\n## 증명 범위\n\n- 판정 주체: 자동 테스트(`node --test`)\n- 구현 후 reviewer: 필요 — 상태(B) 영속 데이터(settings.json)를 쓴다\n- 포함(변경 영향 경로): 새 `saveTheme(path, theme)`의 settings.json 쓰기와 다시 읽기, 잘못된 값 거부\n- 범위 밖: `loadSettings`의 기존 읽기·기본값 동작 — 기존 동작, 기존 회귀 시험(`test/settings.test.ts`)\n\n## 기준\n\n| # | 완료 기준 |\n|---|---|\n| T-1 | `saveTheme(path, \"dark\")` 뒤 `loadSettings(path).theme`이 \"dark\"이고 다른 키는 그대로다 |\n| T-2 | theme 값이 \"light\"·\"dark\"가 아니면 쓰지 않고 오류를 던지며 파일 바이트가 바뀌지 않는다 |\n| T-3 | 기존 `loadSettings`가 없는 파일·깨진 JSON·읽기 권한 없음에서 모두 기본값을 내고 오류를 던지지 않는다 |\n## 테스트\n\n| ID | 유형 | 검증 기준 | 조건 | 행동 | 기대 결과 | 방법 |\n|---|---|---|---|---|---|---|\n| S-1 | unit | T-1 | 임시 폴더의 settings.json `{\"lang\":\"ko\"}` | `saveTheme` 뒤 `loadSettings` | theme \"dark\", lang \"ko\" | `test/settings.test.ts` |\n| S-2 | unit | T-2 | 같은 파일 | `saveTheme(path, \"blue\")` | 오류, 파일 바이트 동일 | `test/settings.test.ts` |\n| S-3 | unit | T-3 | 없는 파일 / 깨진 JSON / 권한 000 파일 | `loadSettings` | 세 경우 모두 기본값, 예외 없음 | `test/settings.test.ts` |\n## 접근\n\n`src/settings.ts`에 `saveTheme`를 더한다. 값 검사를 먼저 하고, 파일을 읽어 theme만 바꾼 JSON을 쓴다.\n",
+    "call_id": "361ebeb2-90ff-4d09-9694-f437b83cdfc5",
+    "structured_stage": "pre",
+    "required_criteria": [
+      "T-1",
+      "T-2",
+      "T-3"
+    ],
+    "permission_basis": {
+      "base": "cd1a46c43edccba637f3a9c20905210e948399d8",
+      "task_mode": "100644"
+    }
+  },
+  "assessment": {
+    "stage": "pre",
+    "verdict": "fail",
+    "reported_verdict": "fail",
+    "differs": false,
+    "findings": [
+      {
+        "id": "F1",
+        "severity": "blocking",
+        "category": "breadth",
+        "confidence": "high",
+        "location": "TASK.md:30",
+        "scenario": "없는 파일, 깨진 JSON, 읽기 권한 없음에서의 기존 loadSettings 기본값 처리를 저장 함수 추가의 완료 기준으로 판정한다.",
+        "reproduction": "TASK.md:22는 기존 읽기와 기본값 처리를 범위 밖의 회귀 시험으로 지정하고, TASK.md:40은 saveTheme 추가를 명시한다. TASK.md:30을 두 줄과 대조하면 새 저장을 거치지 않는 기존 읽기 경로가 완료 기준에 편입되어 있다.",
+        "impact": "criterion",
+        "criterion": "T-3",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F2",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:35",
+        "scenario": "saveTheme이 테마를 같은 프로세스의 메모리에만 저장하고 loadSettings가 메모리의 테마를 읽은 파일 내용에 덮어씌우면 S-1은 통과하지만 다음 실행에는 테마가 사라진다.",
+        "reproduction": "S-1의 파일에 lang을 유지하고 저장 전후 파일 바이트를 같게 둔 채 같은 프로세스에서 loadSettings가 theme dark와 lang ko를 반환한다고 가정한다. TASK.md:35의 기대 결과를 모두 충족한다. 저장 직후 파일을 직접 읽거나 새 프로세스에서 같은 경로를 읽으면 결함을 검출할 수 있다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F3",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:35",
+        "scenario": "유효한 입력을 받을 때마다 dark를 저장하는 구현이 S-1과 S-2를 통과하지만, 사용자가 dark에서 light로 바꾼 선택은 유지되지 않는다.",
+        "reproduction": "유효한 입력이면 항상 dark를 저장하고 blue에는 파일을 쓰지 않고 오류를 던지는 구현을 TASK.md:35-36에 대입한다. 두 시험 모두 통과한다. dark가 들어 있는 파일에 light를 저장하고 다시 읽는 경우에서 결함이 드러난다.",
+        "impact": "goal",
+        "criterion": null,
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      },
+      {
+        "id": "F4",
+        "severity": "blocking",
+        "category": "detection",
+        "confidence": "high",
+        "location": "TASK.md:36",
+        "scenario": "잘못된 테마를 받았을 때 원본 바이트를 그대로 파일에 다시 쓴 뒤 오류를 던지는 구현이 S-2를 통과한다.",
+        "reproduction": "saveTheme(path, \"blue\")가 기존 바이트로 파일을 덮어쓴 뒤 오류를 던지는 경우를 TASK.md:36에 대입한다. 오류와 바이트 동일 조건은 충족한다. 쓰기 호출을 관찰하면 TASK.md:29의 쓰기 금지 위반을 검출할 수 있다.",
+        "impact": "criterion",
+        "criterion": "T-2",
+        "safety_path": null,
+        "effective": "blocking",
+        "reason": null,
+        "handoff": null
+      }
+    ],
+    "evidence": {
+      "criteria": [
+        {
+          "id": "T-1",
+          "state": "present",
+          "observation": "TASK.md:28,35에 저장 뒤 theme dark와 기존 lang ko를 비교하는 판정이 있다. 저장 무동작과 lang 유실을 잡을 수 있다. 다음 실행까지의 영속성은 같은 프로세스의 반환값만으로 판정할 수 없다."
+        },
+        {
+          "id": "T-2",
+          "state": "present",
+          "observation": "TASK.md:29,36에 잘못된 값 blue에 대한 오류와 전후 바이트 동일 판정이 있다. 오류 누락과 바이트 변경은 잡지만 같은 바이트를 다시 쓰는 경우는 잡지 못한다."
+        },
+        {
+          "id": "T-3",
+          "state": "present",
+          "observation": "TASK.md:30,37에 세 입력별 기본값과 예외 없음 판정이 있다. test/settings.test.ts:5-7의 기존 시험은 파일 없음만 확인한다. 권한 000 조건이 실행 계정에서 실제 읽기 거부를 일으키는지는 미확인이다. 이 세 경우는 TASK.md:22에 따라 기존 회귀 확인에 속한다."
+        }
+      ],
+      "issues": [
+        "permission_unverified"
+      ]
+    }
+  }
+}

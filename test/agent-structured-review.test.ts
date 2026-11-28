@@ -3,10 +3,12 @@ import assert from "node:assert/strict";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { normalizeResult, type Executor } from "../src/agent/contract.ts";
-import { buildVerifyPrompt } from "../src/agent/verify.ts";
+import { buildVerifyPrompt, REVIEWER_FACT_QUESTIONS } from "../src/agent/verify.ts";
 import { reviewNoteCommand, verifyCommand } from "../src/agent/verify-cli.ts";
 import { ledgerPath, readLedger, textHash, type LedgerEntry } from "../src/agent/review-log.ts";
 import { assessStructuredReview } from "../src/agent/structured-review.ts";
+import { reviewCriteria } from "../src/agent/review-criteria.ts";
+import type { ReviewBudgetScope } from "../src/agent/review-budget.ts";
 import { reviewHash } from "../src/project/pre-review.ts";
 import { evidenceReviewFixture, tempDir } from "./helpers.ts";
 
@@ -486,4 +488,79 @@ test("T04는 A-1 계약 변경 뒤 과거 증거 미확인을 건너뛰고 전�
   assert.match(h.prompts.at(-1)!, /1단계 독립 목표 대조/);
   assert.doesNotMatch(h.prompts.at(-1)!, /직전 기준별 증거 상태/);
   assert.deepEqual([changed.output.budget.calls, changed.output.budget.rounds], [1, 1]);
+});
+
+test("P017 T01 S-6: 사전 reviewer·breadth 범주는 질문 안이고 인수 사례 (가)~(라)의 TASK 입력을 가른다", () => {
+  // 사례마다 실제 TASK 원문을 만들고 기준 ID·지적 위치·프롬프트를 그 원문에서 얻는다.
+  const task = (declaration: string, t2: string, outside: string) => [
+    "# T09 설정 저장", "", "- TASK 형식: v2", "", "## 증명 범위", "", "- 판정 주체: 자동 테스트",
+    `- 구현 후 reviewer: ${declaration}`, "- 포함(변경 영향 경로): 설정 저장 버튼", `- 범위 밖: ${outside}`, "",
+    "## 기준", "", "| # | 완료 기준 |", "|---|---|", "| T-1 | 저장 버튼이 설정을 파일에 영속 쓰기하고 다시 읽는다 |", `| T-2 | ${t2} |`, "",
+  ].join("\n");
+  const own = "저장 뒤 화면에 저장됨 표시가 뜬다";
+  const wide = "저장 뒤 화면 표시와 기존 목록 화면 전체의 정렬·필터가 그대로다";
+  const old = "기존 목록 화면 — 기존 회귀 시험";
+  const ga = task("생략 — 문구만 바뀐다", own, old);
+  const na = task("필요 — 상태(B) 영속 쓰기", own, old);
+  const da = task("필요 — 상태(B) 영속 쓰기", wide, "없음");
+  const ra = task("필요 — 상태(B) 영속 쓰기", own, old);
+  const at = (text: string, needle: string) => `TASK.md:${text.split("\n").findIndex((row) => row.includes(needle)) + 1}`;
+  const criteriaOf = (text: string) => reviewCriteria({ stage: "pre" } as ReviewBudgetScope, text).map((criterion) => criterion.id);
+  const assess = (text: string, findings: unknown[]) => {
+    const criteria = criteriaOf(text);
+    const evidence = criteria.map((id) => ({ id, state: "present", observation: `${id} 시험이 있다` }));
+    return assessStructuredReview("pre", evidenceResponse(findings, evidence), criteria);
+  };
+  // 입력 차이: (가)→(나)는 선언 줄만, (다)→(라)는 넓힌 T-2와 범위 밖 줄만 다르다.
+  const changed = (a: string, b: string) => a.split("\n").flatMap((row, i) => row === b.split("\n")[i] ? [] : [i + 1]);
+  assert.deepEqual(changed(ga, na), [Number(at(ga, "구현 후 reviewer").slice(8))]);
+  assert.deepEqual(changed(da, ra), [Number(at(da, "범위 밖").slice(8)), Number(at(da, "| T-2").slice(8))]);
+  for (const text of [ga, na, da, ra]) {
+    assert.deepEqual(criteriaOf(text), ["T-1", "T-2"]);
+    const prompt = buildVerifyPrompt("상위 목적", "TASK.md", text, "task", undefined, "pre");
+    // 사례를 가르는 선언 줄·넓힌 T-2·범위 밖 줄을 포함해 TASK 원문 전체가 사전 reviewer 입력에 실린다.
+    for (const row of text.split("\n").filter(Boolean)) assert.ok(prompt.includes(row), row);
+  }
+  // (가) 생략 + T-1 영속 쓰기 → 선언 줄의 유효 blocking, fail
+  const mismatch = {
+    id: "F1", severity: "blocking", category: "reviewer", location: at(ga, "구현 후 reviewer"), confidence: "high", impact: "goal", criterion: null,
+    scenario: "생략인데 상태(B) '영속 데이터를 쓰거나 지우나?'가 예다", reproduction: `${at(ga, "| T-1")} T-1이 파일 영속 쓰기를 적는다`,
+  };
+  assert.ok(ga.includes("영속 쓰기") && ga.includes("생략 —"));
+  const a = assess(ga, [mismatch]);
+  assert.deepEqual([a.verdict, a.findings![0]!.effective, a.findings![0]!.reason], ["fail", "blocking", null]);
+  // (나) 필요로 고친 판 → 지적 없음, pass
+  const b = assess(na, []);
+  assert.equal(b.verdict, "pass");
+  assert.equal(b.findings!.length, 0);
+  // (다) 작성자가 넓힌 T-2 → 그 줄·기준의 blocking 유지, fail. should_fix로 낮추면 안 된다.
+  const widened = {
+    id: "F2", severity: "blocking", category: "breadth", location: at(da, "| T-2"), confidence: "high", impact: "criterion", criterion: "T-2",
+    scenario: "T-2가 이 변경이 건드리지 않는 기존 목록 화면까지 요구한다", reproduction: "포함 줄의 변경 영향 경로에 목록 화면이 없다",
+  };
+  assert.ok(da.includes(wide));
+  const c = assess(da, [widened]);
+  assert.deepEqual([c.verdict, c.findings![0]!.effective, c.findings![0]!.reason], ["fail", "blocking", null]);
+  // (라) 좁힌 판: 넓힌 문장이 없고 기존 경로는 범위 밖 줄에 있다 → 그 줄의 반례(검토자의 확대 요구)는 유효 should_fix, pass
+  assert.ok(!ra.includes(wide) && ra.includes(old));
+  const d = assess(ra, [{ ...widened, severity: "should_fix", location: at(ra, "범위 밖"), criterion: null, impact: "goal",
+    scenario: "기존 목록 화면 회귀도 이 태스크에서 보면 좋다" }]);
+  assert.deepEqual([d.verdict, d.findings![0]!.effective, d.findings![0]!.category], ["pass", "should_fix", "breadth"]);
+  for (const result of [a, c, d]) assert.ok(result.findings!.every((finding) => finding.reason !== "outside_question" && finding.handoff === null));
+});
+
+test("P017 T01 S-6: v2 사전 프롬프트에 두 하위 확인·사실 질문 11개·필요/생략과 넓힘 등급 규칙이 있다", () => {
+  const task = "- TASK 형식: v2\n## 증명 범위\n- 판정 주체: 자동 테스트\n- 구현 후 reviewer: 생략 — 문구만\n## 기준\n| T-1 | 결과 |\n";
+  const prompt = buildVerifyPrompt("상위 목적", "TASK.md", task, "task", undefined, "pre");
+  assert.match(prompt, /^- reviewer: /m);
+  assert.match(prompt, /^- breadth: /m);
+  for (const question of REVIEWER_FACT_QUESTIONS) assert.ok(prompt.includes(`- ${question}`), question);
+  assert.equal(REVIEWER_FACT_QUESTIONS.length, 11);
+  assert.deepEqual(["경계(A)", "상태(B)", "흐름(C)"].map((bundle) => REVIEWER_FACT_QUESTIONS.filter((q) => q.startsWith(bundle)).length), [4, 3, 4]);
+  assert.match(prompt, /`생략`인데 위 질문 중 하나라도 TASK 내용상 "예"이면 blocking이다\. impact는 goal, location은 그 줄의 `TASK\.md:줄`/);
+  assert.match(prompt, /예측해 "예"로 만들지 않는다/);
+  assert.match(prompt, /작성자가 기준을 기존 경로까지 넓혔으면 blocking이다\. impact는 criterion, criterion과 location은 넓어진 `T-n`/);
+  assert.match(prompt, /검토자가 범위 밖으로 넓히라고 요구하는 지적은 위 증명 범위 규칙대로 should_fix다/);
+  const legacy = buildVerifyPrompt("상위 목적", "TASK.md", "## 기준\n| T-1 | 결과 |\n", "task", undefined, "pre");
+  assert.ok(!legacy.includes(REVIEWER_FACT_QUESTIONS[0]));
 });

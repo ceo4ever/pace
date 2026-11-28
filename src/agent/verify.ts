@@ -48,6 +48,28 @@ export interface Rereview {
   previousPassed?: boolean;
 }
 
+/** v2 사전 검토의 구현 후 reviewer 판단(reviewer)과 기준 넓힘(breadth) 규칙. 사실 질문은 변경 영향 경로에 대해 TASK에 적힌 사실로 답한다. */
+export const REVIEWER_FACT_QUESTIONS = [
+  "경계(A) 1. 새로 생기거나 바뀐 진입점이 있나?",
+  "경계(A) 2. 인가 판정이 바뀌나?",
+  "경계(A) 3. 개인정보·비밀을 읽거나 내보내나?",
+  "경계(A) 4. 외부 전송·셸·삭제가 있나?",
+  "상태(B) 1. 영속 데이터를 쓰거나 지우나?",
+  "상태(B) 2. 스키마·마이그레이션이 있나?",
+  "상태(B) 3. 감사·변경 이력이 있나?",
+  "흐름(C) 1. 같은 대상에 대한 동시 쓰기 경로가 기준·시험에 있나?",
+  "흐름(C) 2. 잠금·트랜잭션 범위가 바뀌나?",
+  "흐름(C) 3. 여러 단계 중간에 실패할 수 있나?",
+  "흐름(C) 4. 상태 전이나 허가 분기가 바뀌나?",
+] as const;
+
+const REVIEWER_DECISION_RULES = [
+  "구현 후 reviewer 판단(category reviewer): `## 증명 범위`의 `- 구현 후 reviewer: 필요|생략 — 이유` 줄을 아래 사실 질문의 답과 대조한다. 답은 TASK에 적힌 변경 영향 경로의 사실로만 정한다.",
+  ...REVIEWER_FACT_QUESTIONS.map((question) => `- ${question}`),
+  "`생략`인데 위 질문 중 하나라도 TASK 내용상 \"예\"이면 blocking이다. impact는 goal, location은 그 줄의 `TASK.md:줄`, scenario에 \"예\"인 질문, reproduction에 그 답의 근거인 TASK 위치와 문장을 쓴다. TASK에 적히지 않은 위험을 예측해 \"예\"로 만들지 않는다. 그런 요구는 blocking이 아니다. `필요`이고 이유가 사실과 맞으면 이 범주 지적을 내지 않는다.",
+  "기준 넓힘(category breadth): 기준 `T-n`은 변경 영향 경로(이 변경이 실제로 건드리는 진입점·데이터·흐름)로 한정한다. 변경이 건드리지 않는 기존 동작은 `범위 밖`에 기존 회귀 시험으로 둔다. 작성자가 기준을 기존 경로까지 넓혔으면 blocking이다. impact는 criterion, criterion과 location은 넓어진 `T-n`(location은 그 기준 행의 `TASK.md:줄`)이고, scenario·reproduction에 넓어진 기존 경로와 그 경로를 이 변경이 건드리지 않는 근거를 쓴다. 검토자가 범위 밖으로 넓히라고 요구하는 지적은 위 증명 범위 규칙대로 should_fix다.",
+];
+
 /** 1단계 목표/결과 대조. 2단계 작업 문서 인계는 첫 판정을 받은 호출자의 호스트 검토 절차다. */
 export function buildVerifyPrompt(purpose: string, artifactName: string, artifact: string, kind: VerifyKind = "goal", rereview?: Rereview,
   reviewStage?: BudgetStage, focus?: string, criteria?: readonly ReviewCriterion[], requirePermission?: boolean, approvedTaskEdit?: string): string {
@@ -92,6 +114,7 @@ export function buildVerifyPrompt(purpose: string, artifactName: string, artifac
       "새 TASK 형식(v2)의 증명 범위 규칙: 형식 표지가 중복되거나 지원하지 않는 버전이면 blocking이다. 증명 범위 절·판정 주체가 누락되거나 비면 그것 자체만 blocking 1건으로 내고 다른 지적을 늘어놓지 않는다. 단건 억제의 빈 값은 게이트가 거부하는 구조 누락(절 없음·주석뿐인 절·주체 줄 없음·값 공백)이다. 미정·TBD처럼 실제 텍스트가 있으나 의미상 불충분한 값은 단건 억제하지 않고 목적·안전까지 함께 평가한다.",
       "포함·범위 밖(이유·넘길 곳)의 내용과 판정 주체를 목적·기준에 대조한다. blocking은 적힌 증명 범위로 목적·기준을 증명할 수 없을 때다. 목적에 충분한 범위를 넓히라는 요구는 should_fix다. 현재 적힌 범위가 이미 목적·기준을 충분히 입증한다면 그 밖으로 확대하라는 요구는 목적 증명에 필요하지 않아도 반드시 should_fix로 분류한다. 합의 범위 밖이라는 이유로 note로 바꾸지 않는다. should_fix는 확장 승인이나 반영 의무가 아니며 범위 변경은 별도 합의한다. 범위 자체가 목적에 비해 좁으면 blocking이며 범위 밖 선언으로 검토를 피할 수 없다.",
       "판정 주체의 권한도 대조한다. 사람의 결정이 정답인 기준은 승인받은 사람의 원문을 왜곡·누락 없이 옮기고 불완전하면 미확인으로 드러내면 통과다. 작성자나 자동 검사가 그 결정을 대신하거나 필수 안전 기준(보안·데이터·되돌리기 어려운 행동)을 범위 밖으로 빼면 blocking이다.",
+      ...REVIEWER_DECISION_RULES,
       ...(rereview ? [focus
         ? "증명 범위 규칙도 위 한정 확인의 판정 범위에 적용한다."
         : "재검토에서는 위 규칙도 직전 blocking 해소와 바뀐 줄의 새 결함 범위 안에서 적용한다. 바뀌지 않은 부분의 새 지적은 note다."] : []),
