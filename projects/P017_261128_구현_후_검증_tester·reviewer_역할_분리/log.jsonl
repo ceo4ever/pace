@@ -152,3 +152,5 @@
 {"ts":"2026-11-28T13:42:32.713Z","p":"P017","t":"T03","type":"gate","by":"cli","msg":"check","ok":true,"data":{"check":1}}
 {"ts":"2026-11-28T13:42:38.660Z","p":"P017","t":"T03","type":"gate","by":"cli","msg":"done","ok":true,"data":{"done":1}}
 {"ts":"2026-11-28T13:42:38.660Z","p":"P017","t":"T03","type":"task_done","by":"cli","msg":"done","ok":true}
+{"ts":"2026-11-28T13:43:34.249Z","p":"P017","type":"gate","by":"cli","msg":"finish: contract","ok":false,"data":{"finish":1}}
+{"ts":"2026-11-28T13:44:22.228Z","p":"P017","type":"gate","by":"cli","msg":"finish: rebase","ok":false,"data":{"finish":1}}

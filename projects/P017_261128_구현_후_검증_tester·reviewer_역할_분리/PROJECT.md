@@ -55,10 +55,10 @@
 
 | 정본 | 바뀌는 것 |
 |---|---|
-| `templates/project/TASK.md`·`TASK-CLOSE.md` | reviewer 필요·생략 줄과 사실 질문 주석, 증명 범위 = 변경 영향 경로, 회차별 시각 칸 (T01) |
-| `src/project/pre-review.ts`, `src/agent/structured-review.ts`·`verify-cli.ts`·`review-hand.ts` | 줄 형식 검사·사전 하위 확인 (T01) |
-| `src/agent/structured-review.ts`·`verify.ts`·`verify-cli.ts`·`review-hand.ts`·`review-criteria.ts` | 사후 12항목 질문·입력·판정, 예약 전 거부 (T02) |
-| `skills/pace-project-dev/**`(SKILL·task-steps·reviewer·tester·security·verification·goal-review·tools·cross-verify), `docs/AGENT-CALL.md`·`WORK-PROCESS.md`·`SECURITY.md`, `.pace/team/agents/pace-reviewer.md`·`pace-tester.md` | 배정·재확인 절차와 역할 정렬 (T03) |
+| `templates/project/TASK.md`·`templates/project/TASK-CLOSE.md` | reviewer 필요·생략 줄과 사실 질문 주석, 증명 범위 = 변경 영향 경로, 회차별 시각 칸 (T01) |
+| `src/project/pre-review.ts`, `src/agent/structured-review.ts`·`src/agent/verify-cli.ts`·`src/agent/review-hand.ts` | 줄 형식 검사·사전 하위 확인 (T01) |
+| `src/agent/structured-review.ts`·`src/agent/verify.ts`·`src/agent/verify-cli.ts`·`src/agent/review-hand.ts`·`src/agent/review-criteria.ts` | 사후 12항목 질문·입력·판정, 예약 전 거부 (T02) |
+| `skills/pace-project-dev/**`(SKILL·task-steps·reviewer·tester·security·verification·goal-review·tools·cross-verify), `docs/AGENT-CALL.md`·`docs/WORK-PROCESS.md`·`docs/SECURITY.md`, `.pace/team/agents/pace-reviewer.md`·`.pace/team/agents/pace-tester.md` | 배정·재확인 절차와 역할 정렬 (T03) |
 
 ## 태스크
 
