@@ -157,3 +157,4 @@
 {"ts":"2026-11-28T13:53:26.554Z","p":"P017","type":"gate","by":"cli","msg":"finish","ok":true,"data":{"finish":1}}
 {"ts":"2026-11-28T13:53:26.554Z","p":"P017","type":"finish","by":"cli","msg":"finish","ok":true}
 {"ts":"2026-11-28T13:53:41.985Z","p":"P017","type":"decision","by":"agent","msg":"자체 판단 대조: agent 결정 24건을 백로그·PROJECT 합의(목적·기준·범위)와 대조 — 합의 변경 없음. 참고: T03에서 정본 목록 밖 decision-rights.md 한 구절(구현 후 수정 확인 범위 구분)·evals S3 문구를 정렬, PROJECT-CLOSE에 기록. T02 게이트 예외 해시 이동은 owner 사후 인정"}
+{"ts":"2026-11-28T13:55:22.430Z","p":"P017","type":"merge","by":"cli","msg":"merge: 사용자 승인","ok":true,"data":{"approved":1,"commits":6}}

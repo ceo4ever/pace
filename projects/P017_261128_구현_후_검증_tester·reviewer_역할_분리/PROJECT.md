@@ -1,6 +1,6 @@
 # P017 구현 후 검증 tester·reviewer 역할 분리
 
-- 상태: 병합 대기
+- 상태: 완료
 - 규모: L(태스크 3개)
 - 출처: [BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음](../../backlogs/BL261127_01_구현_후_검증의_tester·reviewer_역할_분리와_위험_묶음/BACKLOG.md)
 - 브랜치: `project/P017` · worktree: `../pace.wt/P017/`
